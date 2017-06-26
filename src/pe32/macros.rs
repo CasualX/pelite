@@ -11,3 +11,7 @@ macro_rules! current_target {
 macro_rules! current_target {
 	($($tt:tt)*) => ();
 }
+
+macro_rules! branch {
+	(pe32 $pe32:tt pe64 $pe64:tt) => ($pe32);
+}

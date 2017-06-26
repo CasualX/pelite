@@ -156,8 +156,10 @@ pub mod base_relocs;
 pub mod resources;
 pub mod tls;
 pub mod debug;
+mod ptr;
 
 pub use self::image::{Va, Rva};
 pub use self::pe::{Pe};
 pub use self::view::{PeView};
 pub use self::file::{PeFile};
+pub use self::ptr::Ptr;

@@ -4,7 +4,7 @@ use ::std::env;
 use ::std::process::exit;
 
 use pelite::FileMap;
-use pelite::pe32::{Pe, PeFile};
+use pelite::pe32::{Pe, PeFile, Ptr};
 use pelite::pe32::image::{Rva, Va};
 use pelite::pe32::msvc::*;
 use pelite::util::strn;
@@ -17,8 +17,8 @@ struct VTable<'a> {
 	rva: Rva,
 }
 struct Type<'a> {
-	type_rva: Rva,
-	class_rva: Rva,
+	type_ptr: Ptr<TypeDescriptor>,
+	class_ptr: Ptr<RTTIClassHierarchyDescriptor>,
 	ty_name: &'a str,
 	class_desc: &'a RTTIClassHierarchyDescriptor,
 	vtables: Vec<VTable<'a>>,
@@ -55,7 +55,7 @@ fn main() {
 			return None;
 		}
 		// Read the pointer being relocated
-		let &target_va = file.derva::<Va>(rva).expect(&format!("ms-rtti: corrupt reloc at {:08X}", rva));
+		let &target_va = file.derva(rva).expect(&format!("ms-rtti: corrupt reloc at {:08X}", rva));
 		let target_rva = file.va_to_rva(target_va).expect(&format!("ms-rtti: corrupt xref at {:08X}", rva));
 		// Look for xrefs to text (the virtual functions themselves)
 		if target_rva < text.VirtualAddress || target_rva >= (text.VirtualAddress + text.VirtualSize) {
@@ -71,7 +71,7 @@ fn main() {
 	// By collecting all xrefs to the previously collected pointers, we can find the start of the vtable
 	let mut xrefs: Vec<usize> = base_relocs.into_iter().flat_map(|relocs| relocs).filter_map(|rva| {
 		// Read the pointer being relocated
-		let &target_va = file.derva::<Va>(rva).expect(&format!("ms-rtti: corrupt reloc at {:08X}", rva));
+		let &target_va = file.derva(rva).expect(&format!("ms-rtti: corrupt reloc at {:08X}", rva));
 		let target_rva = file.va_to_rva(target_va).expect(&format!("ms-rtti: corrupt xref at {:08X}", rva));
 		// Find the target_rva in the coderefs
 		vrefs.binary_search(&target_rva).ok()
@@ -114,18 +114,17 @@ fn main() {
 
 fn vtable<'a>(file: PeFile<'a>, types: &mut Vec<Type<'a>>, xref: usize, vrefs: &[Rva]) -> pelite::Result<()> {
 	// Grab the complete object locator
-	let col = file.derva::<RTTICompleteObjectLocator>(file.va_to_rva(*file.derva(vrefs[xref] - 4)?)?)?;
-	let type_rva = file.va_to_rva(col.type_descriptor)?;
-	let class_rva = file.va_to_rva(col.class_descriptor)?;
+	let col_ptr: Ptr<RTTICompleteObjectLocator> = Ptr::from(*file.derva::<Va>(vrefs[xref] - 4)?);
+	let col = file.deref(col_ptr)?;
 
 	// Look for an existing type or create a new one
-	let index = if let Some(index) = types.iter_mut().position(|ty| ty.type_rva == type_rva && ty.class_rva == class_rva) { index }
+	let index = if let Some(index) = types.iter_mut().position(|ty| ty.type_ptr == col.type_descriptor && ty.class_ptr == col.class_descriptor) { index }
 	else {
 		// First time seeing this type, get its descriptors
-		let ty_name = file.derva_c_str(type_rva + 8)?.to_str().or(Err(pelite::Error::Insanity))?;
-		let class_desc = file.derva(class_rva)?;
+		let ty_name = file.deref_c_str(col.type_descriptor.shift(8))?.to_str().or(Err(pelite::Error::CStr))?;
+		let class_desc = file.deref(col.class_descriptor)?;
 		// And add it to the list of types
-		types.push(Type { type_rva, class_rva, ty_name, class_desc, vtables: Vec::new() });
+		types.push(Type { type_ptr: col.type_descriptor, class_ptr: col.class_descriptor, ty_name, class_desc, vtables: Vec::new() });
 		types.len() - 1
 	};
 	// Unfortunate due to lexical lifetimes...
@@ -153,13 +152,13 @@ fn print<'a>(_file: PeFile<'a>, ty: &Type<'a>) -> pelite::Result<()> {
 
 fn print_vtable<'a>(file: PeFile<'a>, ty: &Type<'a>, vtable: &VTable<'a>) -> pelite::Result<()> {
 	// Lookup the vtable type in the class descriptor
-	let base_classes = file.derva_slice::<Va>(file.va_to_rva(ty.class_desc.base_class_array)?, ty.class_desc.num_base_classes as usize)?;
+	let base_classes = file.deref_slice(ty.class_desc.base_class_array, ty.class_desc.num_base_classes as usize)?;
 	// There is no direct link between the COL and the name of this particular vtable
 	// So try to match its offset in the class itself with the pointer-to-member info in the base class descriptor
-	for &base_class_va in base_classes {
-		let base_class = file.derva::<RTTIBaseClassDescriptor>(file.va_to_rva(base_class_va)?)?;
+	for &base_class_ptr in base_classes {
+		let base_class = file.deref(base_class_ptr)?;
 		if base_class.pmd.mdisp == vtable.col.offset as i32 {
-			let base_ty_name = file.derva_c_str(file.va_to_rva(base_class.type_descriptor)? + 8)?.to_str().or(Err(pelite::Error::Insanity))?;
+			let base_ty_name = file.deref_c_str(Ptr::from(base_class.type_descriptor.shift(8)))?.to_str().or(Err(pelite::Error::CStr))?;
 			println!("{:#010X}: ??_7{}6B@ {{for `{}'}} ({} methods)", vtable.rva, &ty.ty_name[4..], base_ty_name, vtable.vtable.len());
 			return Ok(())
 		}
@@ -171,7 +170,7 @@ fn print_vtable<'a>(file: PeFile<'a>, ty: &Type<'a>, vtable: &VTable<'a>) -> pel
 
 fn print_class<'a>(file: PeFile<'a>, ty: &Type<'a>) -> pelite::Result<()> {
 	// Get the base class array
-	let base_classes = file.derva_slice::<Va>(file.va_to_rva(ty.class_desc.base_class_array)?, ty.class_desc.num_base_classes as usize)?;
+	let base_classes = file.deref_slice(ty.class_desc.base_class_array, ty.class_desc.num_base_classes as usize)?;
 	// Dump the hierarchy
 	let mut margin = [false; 32];
 	let mut stack = [0u32; 32];
@@ -179,8 +178,8 @@ fn print_class<'a>(file: PeFile<'a>, ty: &Type<'a>) -> pelite::Result<()> {
 	let mut depth = 0;
 	let mut bc_iter = base_classes.iter();
 	let mut s = String::new();
-	while let Some(&base_class_va) = bc_iter.next() {
-		let base_class = file.derva::<RTTIBaseClassDescriptor>(file.va_to_rva(base_class_va)?)?;
+	while let Some(&base_class_ptr) = bc_iter.next() {
+		let base_class = file.deref(base_class_ptr)?;
 		// Mark virtual inheritance as special...
 		// I'm not sure how to best display this information
 		if base_class.pmd.pdisp != -1 { s += "****: "; }
@@ -196,9 +195,7 @@ fn print_class<'a>(file: PeFile<'a>, ty: &Type<'a>) -> pelite::Result<()> {
 			s += prefix;
 		}
 		// Get its type name
-		let base_ty_rva = file.va_to_rva(base_class.type_descriptor)?;
-		// let base_ty = file.derva::<TypeDescriptor>(base_ty_rva)?;
-		let base_ty_name = file.derva_c_str(base_ty_rva + 8)?.to_str().or(Err(pelite::Error::Insanity))?;
+		let base_ty_name = file.deref_c_str(base_class.type_descriptor.shift(8))?.to_str().or(Err(pelite::Error::CStr))?;
 		s += base_ty_name; s += "\n";
 		// Manage the inheritance stack...
 		stack[depth] -= base_class.num_contained_bases + 1;

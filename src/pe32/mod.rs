@@ -167,6 +167,8 @@ pub mod resources;
 pub mod tls;
 #[path = "../pe64/debug.rs"]
 pub mod debug;
+#[path = "../pe64/ptr.rs"]
+mod ptr;
 
 pub mod msvc;
 
@@ -174,3 +176,4 @@ pub use self::image::{Va, Rva};
 pub use self::pe::{Pe};
 pub use self::view::{PeView};
 pub use self::file::{PeFile};
+pub use self::ptr::Ptr;

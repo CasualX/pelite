@@ -5,6 +5,7 @@ Abstract over mapped images and file binaries.
 use ::std::{mem, slice};
 
 use super::image::*;
+use super::ptr::Ptr;
 use ::{Error, Result};
 use ::util::{CStr, Pod};
 
@@ -184,6 +185,36 @@ pub trait Pe<'a> {
 	/// Reads a nul-terminated C string.
 	fn derva_c_str(self, rva: Rva) -> Result<&'a CStr> where Self: Copy {
 		self.slice_rva(rva, 0, 1).and_then(CStr::from_bytes)
+	}
+
+	//----------------------------------------------------------------
+	// Deref impls for `Ptr`s
+
+	/// Dereferences the pointer to a pod `T`.
+	fn deref<T, P: Into<Ptr<T>>>(self, ptr: P) -> Result<&'a T> where Self: Copy, T: Pod {
+		let ptr = ptr.into();
+		self.derva(self.va_to_rva(ptr.into())?)
+	}
+	/// Dereferences the pointer to an array of pod `T` with known length.
+	fn deref_slice<T, P: Into<Ptr<[T]>>>(self, ptr: P, len: usize) -> Result<&'a [T]> where Self: Copy, T: Pod {
+		let ptr = ptr.into();
+		self.derva_slice(self.va_to_rva(ptr.into())?, len)
+	}
+	/// Dereferences the pointer to an array of pod `T` guarded by a sentinel value.
+	///
+	/// The callback is called for each `T` found, return `true` to indicate this is the sentinel value.
+	///
+	/// The returned slice contains all `T` up to but not including the sentinel value.
+	///
+	/// Returns [`Err(OOB)`](../enum.Error.html#variant.OOB) if no sentinel value was found before reaching the end of the image.
+	fn deref_slice_f<T, P: Into<Ptr<[T]>>, F>(self, ptr: P, f: F) -> Result<&'a [T]> where Self: Copy, T: Pod, F: FnMut(&T) -> bool {
+		let ptr = ptr.into();
+		self.derva_slice_f(self.va_to_rva(ptr.into())?, f)
+	}
+	/// Dereferences the pointer to a nul-terminated C string.
+	fn deref_c_str<P: Into<Ptr<CStr>>>(self, ptr: P) -> Result<&'a CStr> where Self: Copy {
+		let ptr = ptr.into();
+		self.derva_c_str(self.va_to_rva(ptr.into())?)
 	}
 
 	//----------------------------------------------------------------

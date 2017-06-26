@@ -8,6 +8,7 @@ References:
 */
 
 use super::image::{Va};
+use super::ptr::Ptr;
 use ::util::Pod;
 
 //----------------------------------------------------------------
@@ -48,15 +49,11 @@ pub struct FuncInfo {
 	/// Number of try blocks in the function.
 	pub try_blocks: u32,
 	/// Mapping of catch blocks to try blocks.
-	///
-	/// Pointer to [`UnwindMapEntry`](struct.UnwindMapEntry.html).
-	pub try_block_map: Va,
+	pub try_block_map: Ptr<UnwindMapEntry>,
 	pub ip_map_entries: u32,
 	pub ip_to_state_map: Va,
 	/// VC7+ only, expected exceptions list (function "throw" specifier).
-	///
-	/// Pointer to [`ESTypeList`](struct.ESTypeList.html).
-	pub es_type_list: Va,
+	pub es_type_list: Ptr<ESTypeList>,
 	/// VC8+ only, bit 0 set if function was compiled with `/EHs`.
 	pub eh_flags: i32,
 }
@@ -83,9 +80,7 @@ pub struct TryBlockMapEntry {
 	/// Number of catch handlers.
 	pub catches: i32,
 	/// Catch handlers table.
-	///
-	/// Pointer to array of [`HandlerType`](struct.HandlerType.html).
-	pub handler_array: Va,
+	pub handler_array: Ptr<[HandlerType]>,
 }
 
 #[derive(Debug)]
@@ -94,9 +89,7 @@ pub struct HandlerType {
 	/// 0x01: const, 0x02: volatile, 0x08: reference.
 	pub adjectives: u32,
 	/// RTTI descriptor of the exception type. 0 = any (ellipsis).
-	///
-	/// Pointer to [`TypeDescriptor`](struct.TypeDescriptor.html).
-	pub ty: Va,
+	pub ty: Ptr<TypeDescriptor>,
 	/// EBP-based offset of the exception object in the function stack. 0 = no object (catch by type).
 	pub disp_catch_obj: i32,
 	/// Address of the catch handler Code.
@@ -111,9 +104,7 @@ pub struct ESTypeList {
 	/// Number of entries in the list.
 	pub count: i32,
 	/// list of exceptions; it seems only pType field in HandlerType is used.
-	///
-	/// Pointer to array of [`HandlerType`](struct.HandlerType.html).
-	pub type_array: Va,
+	pub type_array: Ptr<[HandlerType]>,
 }
 
 //----------------------------------------------------------------
@@ -132,9 +123,7 @@ pub struct ThrowInfo {
 	/// Pointer to function with signature `fn() -> i32`.
 	pub forward_compat: Va,
 	/// List of types that can catch this exception; i.e. the actual type and all its ancestors.
-	///
-	/// Pointer to [`CatchableTypeArray`](struct.CatchableTypeArray.html).
-	pub catchable_type_array: Va,
+	pub catchable_type_array: Ptr<CatchableTypeArray>,
 }
 
 #[derive(Debug)]
@@ -142,8 +131,8 @@ pub struct ThrowInfo {
 pub struct CatchableTypeArray {
 	/// Number of entries in the following array.
 	pub catchable_types: i32,
-	/// Array of pointers to [`CatchableType`](struct.CatchableType.html).
-	pub array: [Va; 0],
+	/// Array of pointers to catchable types.
+	pub array: [Ptr<CatchableType>; 0],
 }
 
 #[derive(Debug)]
@@ -151,8 +140,8 @@ pub struct CatchableTypeArray {
 pub struct CatchableType {
 	/// 0x01: simple type (can be copied by memmove), 0x02: can be caught by reference only, 0x04: has virtual bases.
 	pub properties: u32,
-	/// Pointer to [`TypeDescriptor`](struct.TypeDescriptor.html).
-	pub type_descriptor: Va,
+	/// Pointer to its type descriptor.
+	pub type_descriptor: Ptr<TypeDescriptor>,
 	/// How to cast the thrown object to this type.
 	pub pmd: PMD,
 	/// Object size.
@@ -172,10 +161,10 @@ pub struct RTTICompleteObjectLocator {
 	pub offset: u32,
 	/// Constructor displacement offset.
 	pub cd_offset: u32,
-	/// Pointer to the [type descriptor](struct.TypeDescriptor.html) of the complete class.
-	pub type_descriptor: Va,
-	/// Pointer to the [class hierarchy descriptor](struct.RTTIClassHierarchyDescriptor.html).
-	pub class_descriptor: Va,
+	/// Pointer to the type descriptor of the complete class.
+	pub type_descriptor: Ptr<TypeDescriptor>,
+	/// Pointer to the class hierarchy descriptor.
+	pub class_descriptor: Ptr<RTTIClassHierarchyDescriptor>,
 }
 
 #[derive(Debug)]
@@ -187,15 +176,15 @@ pub struct RTTIClassHierarchyDescriptor {
 	pub attributes: u32,
 	/// Number of classes in `base_class_array`.
 	pub num_base_classes: u32,
-	/// Pointer to an array of pointers to [base class descriptor](struct.RTTIBaseClassDescriptor.html)s.
-	pub base_class_array: Va,
+	/// Pointer to an array of pointers to base class descriptors.
+	pub base_class_array: Ptr<[Ptr<RTTIBaseClassDescriptor>]>,
 }
 
 #[derive(Debug)]
 #[repr(C)]
 pub struct RTTIBaseClassDescriptor {
 	/// Type descriptor of the class.
-	pub type_descriptor: Va,
+	pub type_descriptor: Ptr<TypeDescriptor>,
 	/// Number of nested classes following in the `base_class_array`.
 	pub num_contained_bases: u32,
 	/// Pointer-to-member displacement info.
