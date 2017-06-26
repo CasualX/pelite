@@ -87,6 +87,19 @@ fn base_relocs() {
 //----------------------------------------------------------------
 
 #[test]
+fn find_data() {
+	let file_map = FileMap::open(FILE_NAME).unwrap();
+	let file = PeFile::from_bytes(&file_map).unwrap();
+	let resources = file.resources().unwrap();
+	let entry = resources.find_data("/Manifest/2/1033").unwrap();
+	let data = entry.data().unwrap();
+	let manifest = ::std::str::from_utf8(data).unwrap();
+	println!("\n{}", manifest);
+}
+
+//----------------------------------------------------------------
+
+#[test]
 fn tls() {
 	let file_map = FileMap::open(FILE_NAME).unwrap();
 	let file = PeFile::from_bytes(&file_map).unwrap();

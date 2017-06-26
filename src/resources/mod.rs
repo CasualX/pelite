@@ -8,13 +8,16 @@ use super::image::*;
 use super::error::{Error, Result};
 use super::util::WideStr;
 
+mod find;
+pub use self::find::FindError;
+
 //----------------------------------------------------------------
 
 /// Resources filesystem.
 #[derive(Copy, Clone)]
 pub struct Resources<'a> {
 	data: &'a [u8],
-	vbase: u32,
+	base: u32,
 }
 
 //----------------------------------------------------------------
@@ -23,18 +26,15 @@ impl<'a> Resources<'a> {
 	/// Interprets the given bytes as PE resources.
 	///
 	/// All offsets _except_ the final `IMAGE_RESOURCE_DATA_ENTRY::OffsetToData` are relative to the resource directory.
-	/// `vbase` is subtracted from `OffsetToData` before being used as an offset in this resource directory.
+	/// `base` is subtracted from `OffsetToData` before being used as an offset in this resource directory.
 	/// Microsoft... Why would you do this?
 	///
 	/// # Remarks
 	///
 	/// No validation is done ahead of time.
 	#[inline]
-	pub fn new(data: &'a [u8], vbase: u32) -> Resources<'a> {
-		Resources {
-			data: data,
-			vbase: vbase,
-		}
+	pub fn new(data: &'a [u8], base: u32) -> Resources<'a> {
+		Resources { data, base }
 	}
 	/// Gets the root directory.
 	pub fn root(self) -> Result<Directory<'a>> {
@@ -44,6 +44,7 @@ impl<'a> Resources<'a> {
 
 //----------------------------------------------------------------
 
+/// Directory.
 #[derive(Copy, Clone)]
 pub struct Directory<'a> {
 	resources: Resources<'a>,
@@ -65,12 +66,15 @@ impl<'a> Directory<'a> {
 		}
 		Ok(Directory { resources, image })
 	}
+	/// Gets the resources.
 	pub fn resources(&self) -> Resources<'a> {
 		self.resources
 	}
+	/// Gets the underlying resource directory image.
 	pub fn image(&self) -> &'a IMAGE_RESOURCE_DIRECTORY {
 		self.image
 	}
+	/// Gets the directory entries.
 	pub fn entries(&self) -> Entries<'a> {
 		// Validated by constructor
 		let slice = unsafe {
@@ -80,6 +84,9 @@ impl<'a> Directory<'a> {
 		};
 		Entries { resources: self.resources, iter: slice.iter() }
 	}
+	/// Gets the named entries in this directory.
+	///
+	/// Note that it while it would be a violation of the format, there's no strict safety guarantee that these are only named entries.
 	pub fn named_entries(&self) -> Entries<'a> {
 		// Validated by constructor
 		let slice = unsafe {
@@ -90,6 +97,9 @@ impl<'a> Directory<'a> {
 		};
 		Entries { resources: self.resources, iter: slice.iter() }
 	}
+	/// Gets the id entries in this directory.
+	///
+	/// Note that it while it would be a violation of the format, there's no strict safety guarantee that these are only id entries.
 	pub fn id_entries(&self) -> Entries<'a> {
 		// Validated by the constructor
 		let slice = unsafe {
@@ -104,12 +114,14 @@ impl<'a> Directory<'a> {
 
 //----------------------------------------------------------------
 
+/// Iterator over directory entries.
 #[derive(Clone)]
 pub struct Entries<'a> {
 	resources: Resources<'a>,
 	iter: slice::Iter<'a, IMAGE_RESOURCE_DIRECTORY_ENTRY>,
 }
 impl<'a> Entries<'a> {
+	/// Gets the underlying resource directory entry images.
 	pub fn image(&self) -> &'a [IMAGE_RESOURCE_DIRECTORY_ENTRY] {
 		self.iter.as_slice()
 	}
@@ -145,7 +157,9 @@ impl<'a> ExactSizeIterator for Entries<'a> {}
 /// Represents a resource name.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum Name<'a> {
-	/// A u16 resource ID.
+	/// Resource ID.
+	///
+	/// Technically allows `u32` ids, but some Windows APIs will be unable to use resources with an id which isn't `u16`.
 	Id(u32),
 	/// UTF-16 named resource.
 	Str(&'a WideStr),
@@ -153,6 +167,7 @@ pub enum Name<'a> {
 
 //----------------------------------------------------------------
 
+/// Data or directory entry.
 #[derive(Copy, Clone, Debug)]
 pub enum Entry<'a> {
 	Directory(Directory<'a>),
@@ -160,12 +175,14 @@ pub enum Entry<'a> {
 }
 
 impl<'a> Entry<'a> {
+	/// Returns some if the entry is a directory.
 	pub fn dir(self) -> Option<Directory<'a>> {
 		match self {
 			Entry::Directory(dir) => Some(dir),
 			Entry::DataEntry(_) => None,
 		}
 	}
+	/// Returns some if the entry is a data entry.
 	pub fn data(self) -> Option<DataEntry<'a>> {
 		match self {
 			Entry::Directory(_) => None,
@@ -176,18 +193,24 @@ impl<'a> Entry<'a> {
 
 //----------------------------------------------------------------
 
+/// Directory child entry.
+///
+/// Contains a name and a reference to the associated data or directory entry.
 #[derive(Copy, Clone)]
 pub struct DirectoryEntry<'a> {
 	resources: Resources<'a>,
 	image: &'a IMAGE_RESOURCE_DIRECTORY_ENTRY,
 }
 impl<'a> DirectoryEntry<'a> {
+	/// Gets the resources.
 	pub fn resources(&self) -> Resources<'a> {
 		self.resources
 	}
+	/// Gets the underlying resource directory entry image.
 	pub fn image(&self) -> &'a IMAGE_RESOURCE_DIRECTORY_ENTRY {
 		self.image
 	}
+	/// Gets the name for this entry.
 	pub fn name(&self) -> Result<Name<'a>> {
 		if self.image.Name & 0x80000000 != 0 {
 			let offset = (self.image.Name & !0x80000000) as usize;
@@ -205,9 +228,11 @@ impl<'a> DirectoryEntry<'a> {
 			Ok(Name::Id(self.image.Name))
 		}
 	}
+	/// Returns if this entry is a directory.
 	pub fn is_dir(&self) -> bool {
 		self.image.Offset & 0x80000000 != 0
 	}
+	/// Returns the directory or data entry for this entry.
 	pub fn entry(&self) -> Result<Entry<'a>> {
 		if self.is_dir() {
 			let offset = (self.image.Offset & !0x80000000) as usize;
@@ -222,6 +247,7 @@ impl<'a> DirectoryEntry<'a> {
 
 //----------------------------------------------------------------
 
+/// Data entry.
 #[derive(Copy, Clone)]
 pub struct DataEntry<'a> {
 	resources: Resources<'a>,
@@ -236,14 +262,17 @@ impl<'a> DataEntry<'a> {
 		let image = unsafe { &*(resources.data.as_ptr().offset(offset as isize) as *const IMAGE_RESOURCE_DATA_ENTRY) };
 		Ok(DataEntry { resources, image })
 	}
+	/// Gets the resources.
 	pub fn resources(&self) -> Resources<'a> {
 		self.resources
 	}
+	/// Gets the underlying resource data entry image.
 	pub fn image(&self) -> &'a IMAGE_RESOURCE_DATA_ENTRY {
 		self.image
 	}
+	/// Gets the actual data.
 	pub fn data(&self) -> Result<&'a [u8]> {
-		let start = u32::checked_sub(self.image.OffsetToData, self.resources.vbase).ok_or(Error::Overflow)?;
+		let start = u32::checked_sub(self.image.OffsetToData, self.resources.base).ok_or(Error::Overflow)?;
 		let end = u32::checked_add(start, self.image.Size).ok_or(Error::Overflow)?;
 		self.resources.data.get(start as usize..end as usize).ok_or(Error::OOB)
 	}
@@ -256,20 +285,27 @@ struct Art {
 	dir: &'static str,
 	file: &'static str,
 }
+/// Art used to format a directory tree.
 pub struct TreeArt {
 	it: Art,
 	en: Art,
 }
+/// Uses [box-drawing characters](https://en.wikipedia.org/wiki/Box-drawing_character) to draw the tree art.
 pub static TREE_ART_U: TreeArt = TreeArt {
 	it: Art { margin: "│ ", dir: "├─┬ ", file: "│   " },
 	en: Art { margin: "  ", dir: "└─┬ ", file: "╵   " },
 };
+/// Uses ascii to draw the tree art.
 pub static TREE_ART_A: TreeArt = TreeArt {
 	it: Art { margin: "| ", dir: "+-. ", file: "|   " },
 	en: Art { margin: "  ", dir: "`-. ", file: "`   " },
 };
 
-/// Tree formatting.
+/// Format the directory tree.
+///
+/// For the art use [`&TREE_ART_U`](static.TREE_ART_U.html) or [`&TREE_ART_A`](static.TREE_ART_A.html) for unicode and ascii based tree art respectively.
+///
+/// Specify if this is the root directory to have its children ids printed with their names instead.
 pub fn tree_fmt(f: &mut fmt::Formatter, dir: Directory, art: &TreeArt, root: bool) -> fmt::Result {
 	let mut margin = [false; 32];
 	tree_fmt_rec(f, &mut margin, if root { !0 } else { 0 }, art, dir)
