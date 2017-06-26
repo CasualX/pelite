@@ -33,10 +33,21 @@ pub fn image_base() -> &'static IMAGE_DOS_HEADER {
 /// Gets the base address of the module this code is linked with.
 ///
 /// This uses a linker pseudovariable and is only available on windows targets.
-#[cfg(all(windows, target_env = "gnu"))]
+#[cfg(all(windows, target_env = "gnu", target_pointer_width = "64"))]
 #[inline]
 pub fn image_base() -> &'static IMAGE_DOS_HEADER {
 	unsafe { &__image_base__ }
+}
+/// Gets the base address of the module this code is linked with.
+///
+/// When linked with GCC on 32-bit targets the linker pseudovariable is undefined?
+/// Since this function isn't critical, panic instead of failing to link.
+///
+/// FIXME! I've been scouring the internet for a solution but no dice.
+#[cfg(all(windows, target_env = "gnu", not(target_pointer_width = "64")))]
+#[inline]
+pub fn image_base() -> &'static IMAGE_DOS_HEADER {
+	panic!("undefined reference to `__image_base__'")
 }
 
 //----------------------------------------------------------------

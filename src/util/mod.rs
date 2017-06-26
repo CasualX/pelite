@@ -15,7 +15,7 @@ pub use self::pod::Pod;
 
 /// Splits a slice at the point defined by the callback.
 #[inline]
-fn split_f<T, F: FnMut(&T) -> bool>(slice: &[T], f: F) -> (&[T], &[T]) {
+pub(crate) fn split_f<T, F: FnMut(&T) -> bool>(slice: &[T], f: F) -> (&[T], &[T]) {
 	let i = slice.iter().position(f).unwrap_or(slice.len());
 	(&slice[..i], &slice[i..])
 }

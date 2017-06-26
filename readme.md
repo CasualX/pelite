@@ -1,6 +1,11 @@
 PeLite
 ======
 
+[![MIT license](https://img.shields.io/crates/l/pelite.svg)](https://opensource.org/licenses/MIT)
+[![crates.io](https://img.shields.io/crates/v/pelite.svg)](https://crates.io/crates/pelite)
+[![docs.rs](https://docs.rs/pelite/badge.svg)](https://docs.rs/pelite)
+[![Build status](https://ci.appveyor.com/api/projects/status/6obf6w6awf4b540r/branch/master?svg=true)](https://ci.appveyor.com/project/CasualX/pelite/branch/master)
+
 Lightweight, memory-safe, zero-allocation library for reading and navigating PE binaries.
 
 Design
@@ -98,4 +103,9 @@ fn example() -> Result<(), Error> {
 License
 -------
 
-MIT - see license.txt
+Licensed under [MIT License](https://opensource.org/licenses/MIT), see [license.txt](license.txt).
+
+### Contribution
+
+Unless you explicitly state otherwise, any contribution intentionally submitted
+for inclusion in the work by you, shall be licensed as above, without any additional terms or conditions.

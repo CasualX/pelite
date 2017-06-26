@@ -94,7 +94,7 @@ impl error::Error for Error {
 
 //----------------------------------------------------------------
 
-fn file_map<P: AsRef<Path>>(path: &P) -> Result<(), Error> {
+fn file_map<P: AsRef<Path> + ?Sized>(path: &P) -> Result<(), Error> {
 	use pelite::FileMap;
 	use pelite::pe64::{Pe, PeFile};
 
@@ -111,7 +111,7 @@ fn file_map<P: AsRef<Path>>(path: &P) -> Result<(), Error> {
 }
 
 #[cfg(windows)]
-fn image_map<P: AsRef<Path>>(path: &P) -> Result<(), Error> {
+fn image_map<P: AsRef<Path> + ?Sized>(path: &P) -> Result<(), Error> {
 	use pelite::ImageMap;
 	use pelite::pe64::{Pe, PeView};
 

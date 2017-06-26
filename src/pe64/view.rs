@@ -25,7 +25,7 @@ current_target! {
 }
 impl<'a> PeView<'a> {
 	/// Try to read the given bytes as a mapped PE image.
-	pub fn from_bytes<T: AsRef<[u8]>>(image: &'a T) -> Result<PeView<'a>> {
+	pub fn from_bytes<T: AsRef<[u8]> + ?Sized>(image: &'a T) -> Result<PeView<'a>> {
 		let image = image.as_ref();
 		let info = validate_headers(image)?;
 		// Sanity check, this values should match.
@@ -57,14 +57,14 @@ impl<'a> Pe<'a> for PeView<'a> {
 	fn image(&self) -> &'a [u8] {
 		self.image
 	}
-	fn slice_rva(&self, rva: Rva, size: usize, _align: usize) -> Result<&'a [u8]> {
+	fn slice_rva(&self, rva: Rva, size: usize, align: usize) -> Result<&'a [u8]> {
 		let start = rva as usize;
 		if rva == 0 {
 			Err(Error::Null)
 		}
-		// else if start & (align - 1) != 0 {
-		// 	Err(Error::Misalign)
-		// }
+		else if start & (align - 1) != 0 {
+			Err(Error::Misalign)
+		}
 		else {
 			// NOTE! Should it reject slices over multiple sections?
 			match self.image.get(start..) {
@@ -72,5 +72,18 @@ impl<'a> Pe<'a> for PeView<'a> {
 				_ => Err(Error::OOB),
 			}
 		}
+	}
+}
+
+//----------------------------------------------------------------
+
+#[cfg(test)]
+mod tests {
+	use super::PeView;
+	use ::Error;
+
+	#[test]
+	fn from_byte_slice() {
+		assert!(match PeView::from_bytes(&[][..]) { Err(Error::OOB) => true, _ => false });
 	}
 }

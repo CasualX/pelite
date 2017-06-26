@@ -10,9 +10,13 @@ repository = "https://github.com/CasualX/pelite"
 
 readme = "readme.md"
 
-keywords = ["exe", "dll", "mui"]
+keywords = ["exe", "dll", "mui", "bin", "pe"]
+categories = ["parsing", "command-line-utilities"]
 
 license = "MIT"
+
+[badges]
+appveyor = { repository = "CasualX/pelite", branch = "master", service = "github" }
 
 [profile.release]
 lto = true

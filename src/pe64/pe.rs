@@ -137,7 +137,7 @@ pub trait Pe<'a> {
 	fn derva<T>(self, rva: Rva) -> Result<&'a T> where Self: Copy, T: Pod {
 		// This is safe as per `Pod` bound
 		unsafe {
-			let bytes = self.slice_rva(rva, mem::size_of::<T>(), mem::align_of::<T>())?;
+			let bytes = self.slice_rva(rva, mem::size_of::<T>(), 1)?;
 			let p = &*(bytes.as_ptr() as *const T);
 			Ok(p)
 		}
@@ -147,7 +147,7 @@ pub trait Pe<'a> {
 		// This is safe as per `Pod` bound
 		unsafe {
 			let size = mem::size_of::<T>().checked_mul(len).ok_or(Error::OOB)?;
-			let bytes = self.slice_rva(rva, size, mem::align_of::<T>())?;
+			let bytes = self.slice_rva(rva, size, 1)?;
 			let p = slice::from_raw_parts(bytes.as_ptr() as *const T, len);
 			Ok(p)
 		}
@@ -160,7 +160,7 @@ pub trait Pe<'a> {
 	///
 	/// Returns [`Err(OOB)`](../enum.Error.html#variant.OOB) if no sentinel value was found before reaching the end of the image.
 	fn derva_slice_f<T, F>(self, rva: Rva, mut f: F) -> Result<&'a [T]> where Self: Copy, T: Pod, F: FnMut(&T) -> bool {
-		let bytes = self.slice_rva(rva, 0, mem::align_of::<T>())?;
+		let bytes = self.slice_rva(rva, 0, 1)?;
 		let size_of_t = mem::size_of::<T>();
 		let mut len = 0;
 		let mut size = 0;
@@ -257,13 +257,13 @@ impl<'s, 'a, P: Pe<'a> + ?Sized> Pe<'a> for &'s P {
 
 //----------------------------------------------------------------
 
-pub struct VH {
+pub(crate) struct VH {
 	pub image_base: Va,
 	pub size_of_image: u32,
 }
 // TODO: This code needs to be audited...
 // The safety of `Pe` relies on it.
-pub fn validate_headers(image: &[u8]) -> ::Result<VH> {
+pub(crate) fn validate_headers(image: &[u8]) -> ::Result<VH> {
 	// Grab the DOS header
 	if mem::size_of::<IMAGE_DOS_HEADER>() > image.len() {
 		return Err(Error::OOB);

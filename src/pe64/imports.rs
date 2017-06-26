@@ -60,8 +60,7 @@ pub struct Imports<'a, P> {
 	image: &'a [IMAGE_IMPORT_DESCRIPTOR],
 }
 impl<'a, P: Pe<'a> + Copy> Imports<'a, P> {
-	#[doc(hidden)]
-	pub fn new(pe: P) -> Result<Imports<'a, P>> {
+	pub(crate) fn new(pe: P) -> Result<Imports<'a, P>> {
 		let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_IMPORT).ok_or(Error::OOB)?;
 		let image = pe.derva_slice_f(datadir.VirtualAddress, |image: &IMAGE_IMPORT_DESCRIPTOR| image.is_null())?;
 		Ok(Imports { pe, image })

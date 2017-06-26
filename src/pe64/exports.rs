@@ -71,8 +71,7 @@ pub struct Exports<'a, P> {
 	image: &'a IMAGE_EXPORT_DIRECTORY,
 }
 impl<'a, P: Pe<'a> + Copy> Exports<'a, P> {
-	#[doc(hidden)]
-	pub fn new(pe: P) -> Result<Exports<'a, P>> {
+	pub(crate) fn new(pe: P) -> Result<Exports<'a, P>> {
 		let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_EXPORT).ok_or(Error::OOB)?;
 		let image = pe.derva(datadir.VirtualAddress)?;
 		Ok(Exports { pe, datadir, image })
@@ -187,7 +186,7 @@ impl<'a, P: Pe<'a> + Copy> By<'a, P> {
 		}
 	}
 	/// Looks up an `Export` by its name.
-	pub fn name<S: AsRef<[u8]>>(&self, name: S) -> Result<Export<'a>> {
+	pub fn name<S: AsRef<[u8]> + ?Sized>(&self, name: &S) -> Result<Export<'a>> {
 		self.name_(name.as_ref())
 	}
 	fn name_(&self, name: &[u8]) -> Result<Export<'a>> {

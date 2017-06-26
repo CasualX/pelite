@@ -26,7 +26,7 @@ fn exports() {
 
 	assert_eq!(exports_by.ordinal(9), Ok(Export::Symbol(&0x12D0)));
 
-	let s_export_name = CStr::from_bytes(&b"?fnPasswdsBypass@@YAHXZ\0"[..]).unwrap();
+	let s_export_name = CStr::from_bytes(b"?fnPasswdsBypass@@YAHXZ\0").unwrap();
 
 	// Double check it can look up broken hints
 	let bad_hint = Import::ByName { hint: 5, name: s_export_name };

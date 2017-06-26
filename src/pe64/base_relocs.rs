@@ -34,8 +34,7 @@ pub struct BaseRelocs<'a, P> {
 	relocs: &'a [u8],
 }
 impl<'a, P: Pe<'a> + Copy> BaseRelocs<'a, P> {
-	#[doc(hidden)]
-	pub fn new(pe: P) -> Result<BaseRelocs<'a, P>> {
+	pub(crate) fn new(pe: P) -> Result<BaseRelocs<'a, P>> {
 		let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_BASERELOC).ok_or(Error::OOB)?;
 		let relocs = pe.derva_slice(datadir.VirtualAddress, datadir.Size as usize)?;
 		// Validate the relocations...
