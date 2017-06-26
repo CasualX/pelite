@@ -444,6 +444,169 @@ pub struct IMAGE_BASE_RELOCATION {
 
 #[derive(Copy, Clone, Debug)]
 #[repr(C)]
+pub struct IMAGE_LOAD_CONFIG_DIRECTORY32 {
+	pub Size: u32,
+	pub TimeDateStamp: u32,
+	pub MajorVersion: u16,
+	pub MinorVersion: u16,
+	pub GlobalFlagsClear: u32,
+	pub GlobalFlagsSet: u32,
+	pub CriticalSectionDefaultTimeout: u32,
+	pub DeCommitFreeBlockThreshold: u32,
+	pub DeCommitTotalFreeThreshold: u32,
+	pub LockPrefixTable: u32,
+	pub MaximumAllocationSize: u32,
+	pub VirtualMemoryThreshold: u32,
+	pub ProcessAffinityMask: u32,
+	pub ProcessHeapFlags: u32,
+	pub CSDVersion: u16,
+	pub DependentLoadFlags: u16,
+	pub EditList: u32,
+	pub SecurityCookie: u32,
+	pub SEHandlerTable: u32,
+	pub SEHandlerCount: u32,
+}
+
+#[derive(Copy, Clone, Debug)]
+#[repr(C)]
+pub struct IMAGE_LOAD_CONFIG_DIRECTORY64 {
+	pub Size: u32,
+	pub TimeDateStamp: u32,
+	pub MajorVersion: u16,
+	pub MinorVersion: u16,
+	pub GlobalFlagsClear: u32,
+	pub GlobalFlagsSet: u32,
+	pub CriticalSectionDefaultTimeout: u32,
+	pub DeCommitFreeBlockThreshold: u64,
+	pub DeCommitTotalFreeThreshold: u64,
+	pub LockPrefixTable: u64,
+	pub MaximumAllocationSize: u64,
+	pub VirtualMemoryThreshold: u64,
+	pub ProcessAffinityMask: u64,
+	pub ProcessHeapFlags: u32,
+	pub CSDVersion: u16,
+	pub DependentLoadFlags: u16,
+	pub EditList: u64,
+	pub SecurityCookie: u64,
+	pub SEHandlerTable: u64,
+	pub SEHandlerCount: u64,
+}
+
+//----------------------------------------------------------------
+// Control flow guard bits of the LoadConfig
+//
+// Note that IMAGE_GUARDCF is not an official name but to keep it separate from IMAGE_LOAD_CONFIG.
+//
+// References:
+// https://docs.microsoft.com/en-us/windows/desktop/api/winnt/ns-winnt-_image_load_config_directory32
+// https://docs.microsoft.com/en-us/windows/desktop/api/winnt/ns-winnt-_image_load_config_directory64
+// https://redplait.blogspot.com/2016/10/imageloadconfigdirectory-from-sdk-14951.html
+// https://lucasg.github.io/2017/02/05/Control-Flow-Guard/
+
+#[derive(Copy, Clone, Debug)]
+#[repr(C)]
+pub struct IMAGE_LOAD_CONFIG_CODE_INTEGRITY {
+	pub Flags: u16,
+	pub Catalog: u16,
+	pub CatalogOffset: u32,
+	pub Reserved: u32,
+}
+
+pub const IMAGE_DYNAMIC_RELOCATION_GUARD_RF_PROLOGUE: u32 = 0x00000001;
+pub const IMAGE_DYNAMIC_RELOCATION_GUARD_RF_EPILOGUE: u32 = 0x00000002;
+
+#[derive(Copy, Clone, Debug)]
+#[repr(C)]
+pub struct IMAGE_DYNAMIC_RELOCATION_TABLE {
+	pub Version: u32,
+	pub Size: u32,
+}
+
+#[derive(Copy, Clone, Debug)]
+#[repr(C)]
+pub struct IMAGE_DYNAMIC_RELOCATION32 {
+	pub Symbol: u32,
+	pub BaseRelocSize: u32,
+}
+
+#[derive(Copy, Clone, Debug)]
+#[repr(C)]
+pub struct IMAGE_DYNAMIC_RELOCATION64 {
+	pub Symbol: u64,
+	pub BaseRelocSize: u32,
+}
+
+pub const IMAGE_GUARD_CF_INSTRUMENTED: u32                    = 0x00000100;
+pub const IMAGE_GUARD_CFW_INSTRUMENTED: u32                   = 0x00000200;
+pub const IMAGE_GUARD_CF_FUNCTION_TABLE_PRESENT: u32          = 0x00000400;
+pub const IMAGE_GUARD_SECURITY_COOKIE_UNUSED: u32             = 0x00000800;
+pub const IMAGE_GUARD_PROTECT_DELAYLOAD_IAT: u32              = 0x00001000;
+pub const IMAGE_GUARD_DELAYLOAD_IAT_IN_ITS_OWN_SECTION: u32   = 0x00002000;
+pub const IMAGE_GUARD_CF_EXPORT_SUPPRESSION_INFO_PRESENT: u32 = 0x00004000;
+pub const IMAGE_GUARD_CF_ENABLE_EXPORT_SUPPRESSION: u32       = 0x00008000;
+pub const IMAGE_GUARD_CF_LONGJUMP_TABLE_PRESENT: u32          = 0x00010000;
+pub const IMAGE_GUARD_RF_INSTRUMENTED: u32                    = 0x00020000;
+pub const IMAGE_GUARD_RF_ENABLE: u32                          = 0x00040000;
+pub const IMAGE_GUARD_RF_STRICT: u32                          = 0x00080000;
+pub const IMAGE_GUARD_CF_FUNCTION_TABLE_SIZE_MASK: u32        = 0xF0000000;
+pub const IMAGE_GUARD_CF_FUNCTION_TABLE_SIZE_SHIFT: u32       = 28;
+
+#[derive(Copy, Clone, Debug)]
+#[repr(C)]
+pub struct IMAGE_GUARDCF32 {
+	pub GuardCFCheckFunctionPointer: u32,
+	pub GuardCFDispatchFunctionPointer: u32,
+	pub GuardCFFunctionTable: u32,
+	pub GuardCFFunctionCount: u32,
+	pub GuardFlags: u32,
+	pub CodeIntegrity: IMAGE_LOAD_CONFIG_CODE_INTEGRITY,
+	pub GuardAddressTakenIatEntryTable: u32,
+	pub GuardAddressTakenIatEntryCount: u32,
+	pub GuardLongJumpTargetTable: u32,
+	pub GuardLongJumpTargetCount: u32,
+	pub DynamicValueRelocTable: u32,
+	pub HybridMetadataPointer: u32,
+	pub GuardRFFailureRoutine: u32,
+	pub GuardRFFailureRoutineFunctionPointer: u32,
+	pub DynamicValueRelocTableOffset: u32,
+	pub DynamicValueRelocTableSection: u16,
+	pub Reserved2: u16,
+	pub GuardRFVerifyStackPointerFunctionPointer: u32,
+	pub HotPatchTableOffset: u32,
+	pub Reserved3: u32,
+	pub EnclaveConfigurationPointer: u32,
+}
+
+#[derive(Copy, Clone, Debug)]
+#[repr(C)]
+pub struct IMAGE_GUARDCF64 {
+	pub GuardCFCheckFunctionPointer: u64,
+	pub GuardCFDispatchFunctionPointer: u64,
+	pub GuardCFFunctionTable: u64,
+	pub GuardCFFunctionCount: u64,
+	pub GuardFlags: u32,
+	pub CodeIntegrity: IMAGE_LOAD_CONFIG_CODE_INTEGRITY,
+	pub GuardAddressTakenIatEntryTable: u64,
+	pub GuardAddressTakenIatEntryCount: u64,
+	pub GuardLongJumpTargetTable: u64,
+	pub GuardLongJumpTargetCount: u64,
+	pub DynamicValueRelocTable: u64,
+	pub HybridMetadataPointer: u64,
+	pub GuardRFFailureRoutine: u64,
+	pub GuardRFFailureRoutineFunctionPointer: u64,
+	pub DynamicValueRelocTableOffset: u32,
+	pub DynamicValueRelocTableSection: u16,
+	pub Reserved2: u16,
+	pub GuardRFVerifyStackPointerFunctionPointer: u64,
+	pub HotPatchTableOffset: u32,
+	pub Reserved3: u32,
+	pub EnclaveConfigurationPointer: u64,
+}
+
+//----------------------------------------------------------------
+
+#[derive(Copy, Clone, Debug)]
+#[repr(C)]
 pub struct IMAGE_TLS_DIRECTORY32 {
 	pub StartAddressOfRawData: u32,
 	pub EndAddressOfRawData: u32,
@@ -550,6 +713,14 @@ unsafe impl Pod for IMAGE_RESOURCE_DIRECTORY {}
 unsafe impl Pod for IMAGE_RESOURCE_DIRECTORY_ENTRY {}
 unsafe impl Pod for IMAGE_RESOURCE_DATA_ENTRY {}
 unsafe impl Pod for IMAGE_BASE_RELOCATION {}
+unsafe impl Pod for IMAGE_LOAD_CONFIG_DIRECTORY32 {}
+unsafe impl Pod for IMAGE_LOAD_CONFIG_DIRECTORY64 {}
+unsafe impl Pod for IMAGE_LOAD_CONFIG_CODE_INTEGRITY {}
+unsafe impl Pod for IMAGE_DYNAMIC_RELOCATION_TABLE {}
+unsafe impl Pod for IMAGE_DYNAMIC_RELOCATION32 {}
+unsafe impl Pod for IMAGE_DYNAMIC_RELOCATION64 {}
+unsafe impl Pod for IMAGE_GUARDCF32 {}
+unsafe impl Pod for IMAGE_GUARDCF64 {}
 unsafe impl Pod for IMAGE_TLS_DIRECTORY32 {}
 unsafe impl Pod for IMAGE_TLS_DIRECTORY64 {}
 unsafe impl Pod for GUID {}
@@ -577,6 +748,14 @@ fn sizes() {
 	assert_size_of!(8, IMAGE_RESOURCE_DIRECTORY_ENTRY);
 	assert_size_of!(16, IMAGE_RESOURCE_DATA_ENTRY);
 	assert_size_of!(8, IMAGE_BASE_RELOCATION);
+	assert_size_of!(18 * 4, IMAGE_LOAD_CONFIG_DIRECTORY32);
+	assert_size_of!(28 * 4, IMAGE_LOAD_CONFIG_DIRECTORY64);
+	assert_size_of!(3 * 4, IMAGE_LOAD_CONFIG_CODE_INTEGRITY);
+	assert_size_of!(2 * 4, IMAGE_DYNAMIC_RELOCATION_TABLE); // Unsized
+	assert_size_of!(2 * 4, IMAGE_DYNAMIC_RELOCATION32); // Unsized
+	assert_size_of!(4 * 4, IMAGE_DYNAMIC_RELOCATION64); // Unsized
+	assert_size_of!(22 * 4, IMAGE_GUARDCF32);
+	assert_size_of!(36 * 4, IMAGE_GUARDCF64);
 	assert_size_of!(24, IMAGE_TLS_DIRECTORY32);
 	assert_size_of!(40, IMAGE_TLS_DIRECTORY64);
 	assert_size_of!(16, GUID);
