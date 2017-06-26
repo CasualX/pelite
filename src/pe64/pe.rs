@@ -244,6 +244,13 @@ pub trait Pe<'a> {
 		let data = self.derva_slice(datadir.VirtualAddress, datadir.Size as usize)?;
 		Ok(::resources::Resources::new(data, datadir.VirtualAddress))
 	}
+
+	/// Gets Scanner access.
+	///
+	/// See the [scanner](scanner/index.html) module for more information.
+	fn scanner(self) -> super::scanner::Scanner<Self> where Self: Copy {
+		super::scanner::Scanner::new(self)
+	}
 }
 
 // Make `&Pe<'a>` trait objects work seamlessly.

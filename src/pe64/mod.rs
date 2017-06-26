@@ -157,6 +157,7 @@ pub mod resources;
 pub mod tls;
 pub mod debug;
 mod ptr;
+pub mod scanner;
 
 pub use self::image::{Va, Rva};
 pub use self::pe::{Pe};
