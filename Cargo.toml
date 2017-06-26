@@ -1,0 +1,22 @@
+[package]
+name = "pelite"
+version = "0.3.0"
+authors = ["CasualX <CasualX@GitHub.com>"]
+
+description = "Lightweight, memory-safe, zero-allocation library for reading and navigating PE binaries."
+
+documentation = "https://docs.rs/pelite/"
+repository = "https://github.com/CasualX/pelite"
+
+readme = "readme.md"
+
+keywords = ["exe", "dll", "mui"]
+
+license = "MIT"
+
+[profile.release]
+lto = true
+opt-level = 3
+
+[target.'cfg(unix)'.dependencies]
+libc = "0.2"

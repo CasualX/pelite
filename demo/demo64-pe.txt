@@ -1,0 +1,348 @@
+----------------------------------------------------------------
+MZ Header
+  e_magic:    5A4D: MZ
+  e_cblp:     ··90
+  e_cp:       ···3
+  e_crlc:     ···0
+  e_cparhdr:  ···4
+  e_minalloc: ···0
+  e_maxalloc: FFFF
+  e_ss:       ···0
+  e_sp:       ··B8
+  e_csum:     ···0
+  e_ip:       ···0
+  e_cs:       ···0
+  e_lfarlc:   ··40
+  e_ovno:     ···0
+  e_oemid:    ···0
+  e_oeminfo:  ···0
+  e_lfanew:   ·····110
+----------------------------------------------------------------
+NT Headers
+  Signature:               ····4550: PE
+File Header
+  Machine:                 8664: AMD64
+  NumberOfSections:        7
+  TimeDateStamp:           1496673116
+  PointerToSymbolTable:    ·······0
+  NumberOfSymbols:         0
+  SizeOfOptionalHeader:    ··F0
+  Characteristics:         2022
+    ···2: EXECUTABLE_IMAGE
+    ··20: LARGE_ADDRESS_AWARE
+    2000: DLL
+Optional Header
+  Magic:                   ·20B: PE32+
+  LinkerVersion:           12.0
+  SizeOfCode:              ····1200
+  SizeOfInitializedData:   ····6200
+  SizeOfUninitializedData: ·······0
+  AddressOfEntryPoint:     ····1868
+  BaseOfCode:              ····1000
+  ImageBase:               ·······180000000
+  SectionAlignment:        ····1000
+  FileAlignment:           ·····200
+  OperatingSystemVersion:  6.0
+  ImageVersion:            0.0
+  SubsystemVersion:        6.0
+  Win32VersionValue:       ·······0
+  SizeOfImage:             ····E000
+  SizeOfHeaders:           ·····400
+  CheckSum:                ·······0
+  Subsystem:               ···2: Windows GUI
+  DllCharacteristics:      ·160
+    ··20: High Entropy VA
+    ··40: Dynamic Base
+    ·100: NX Compat
+  SizeOfStackReserve:      ··········100000
+  SizeOfStackCommit:       ············1000
+  SizeOfHeapReserve:       ··········100000
+  SizeOfHeapCommit:        ············1000
+  LoaderFlags:             ·······0
+  NumberOfRvaAndSizes:     ······10
+     0 [RVA:····3A30 Size:·····276] of Export Directory
+     1 [RVA:····3CA8 Size:······3C] of Import Directory
+     2 [RVA:····8000 Size:····41D0] of Resource Directory
+     3 [RVA:····6000 Size:·····1C8] of Exception Directory
+     5 [RVA:····D000 Size:······60] of BaseReloc Directory
+     6 [RVA:····3190 Size:······38] of Debug Directory
+     9 [RVA:····3370 Size:······28] of TLS Directory
+    10 [RVA:····3300 Size:······70] of Load Config Directory
+    12 [RVA:····3000 Size:·····148] of IAT Directory
+----------------------------------------------------------------
+Section Header
+  Name:                 .text···
+  VirtualSize:          ····11BB
+  VirtualAddress:       ····1000
+  SizeOfRawData:        ····1200
+  PointerToRawData:     ·····400
+  PointerToRelocations: ·······0
+  PointerToLinenumbers: ·······0
+  NumberOfRelocations:  ·······0
+  NumberOfLinenumbers:  ·······0
+  Characteristics:      60000020
+    ······20: CNT_CODE
+    20000000: MEM_EXECUTE
+    40000000: MEM_READ
+Section Header
+  Name:                 .rdata··
+  VirtualSize:          ····116C
+  VirtualAddress:       ····3000
+  SizeOfRawData:        ····1200
+  PointerToRawData:     ····1600
+  PointerToRelocations: ·······0
+  PointerToLinenumbers: ·······0
+  NumberOfRelocations:  ·······0
+  NumberOfLinenumbers:  ·······0
+  Characteristics:      40000040
+    ······40: CNT_INITIALIZED_DATA
+    40000000: MEM_READ
+Section Header
+  Name:                 .data···
+  VirtualSize:          ·····710
+  VirtualAddress:       ····5000
+  SizeOfRawData:        ·····200
+  PointerToRawData:     ····2800
+  PointerToRelocations: ·······0
+  PointerToLinenumbers: ·······0
+  NumberOfRelocations:  ·······0
+  NumberOfLinenumbers:  ·······0
+  Characteristics:      C0000040
+    ······40: CNT_INITIALIZED_DATA
+    40000000: MEM_READ
+    80000000: MEM_WRITE
+Section Header
+  Name:                 .pdata··
+  VirtualSize:          ·····1C8
+  VirtualAddress:       ····6000
+  SizeOfRawData:        ·····200
+  PointerToRawData:     ····2A00
+  PointerToRelocations: ·······0
+  PointerToLinenumbers: ·······0
+  NumberOfRelocations:  ·······0
+  NumberOfLinenumbers:  ·······0
+  Characteristics:      40000040
+    ······40: CNT_INITIALIZED_DATA
+    40000000: MEM_READ
+Section Header
+  Name:                 .tls····
+  VirtualSize:          ·······3
+  VirtualAddress:       ····7000
+  SizeOfRawData:        ·····200
+  PointerToRawData:     ····2C00
+  PointerToRelocations: ·······0
+  PointerToLinenumbers: ·······0
+  NumberOfRelocations:  ·······0
+  NumberOfLinenumbers:  ·······0
+  Characteristics:      C0000040
+    ······40: CNT_INITIALIZED_DATA
+    40000000: MEM_READ
+    80000000: MEM_WRITE
+Section Header
+  Name:                 .rsrc···
+  VirtualSize:          ····41D0
+  VirtualAddress:       ····8000
+  SizeOfRawData:        ····4200
+  PointerToRawData:     ····2E00
+  PointerToRelocations: ·······0
+  PointerToLinenumbers: ·······0
+  NumberOfRelocations:  ·······0
+  NumberOfLinenumbers:  ·······0
+  Characteristics:      40000040
+    ······40: CNT_INITIALIZED_DATA
+    40000000: MEM_READ
+Section Header
+  Name:                 .reloc··
+  VirtualSize:          ······60
+  VirtualAddress:       ····D000
+  SizeOfRawData:        ·····200
+  PointerToRawData:     ····7000
+  PointerToRelocations: ·······0
+  PointerToLinenumbers: ·······0
+  NumberOfRelocations:  ·······0
+  NumberOfLinenumbers:  ·······0
+  Characteristics:      42000040
+    ······40: CNT_INITIALIZED_DATA
+    40000000: MEM_READ
+----------------------------------------------------------------
+Exports for Demo.dll
+  TimeDateStamp:   1496673116
+  Version:         0.0
+  OrdinalBase:     1
+  # of functions:  20
+  # of names:      20
+
+  ord hint RVA      name
+    1 ···0 ····1260 ??0Passwds@@QEAA@PEBD@Z
+    2 ···1 ····12A0 ??1Passwds@@QEAA@XZ
+    3 ···2 ····1490 ??4Passwds@@QEAAAEAV0@AEBV0@@Z
+    4 ···3 ····1340 ?AddPass@Passwds@@QEAAXPEBD00@Z
+    5 ···4 ····5018 ?GLOBAL_A@@3VA@@A
+    6 ···5 ····5028 ?GLOBAL_B@@3VB@@A
+    7 ···6 ····5038 ?GLOBAL_C@@3VC@@A
+    8 ···7 ····13C0 ?GetPass@Passwds@@QEAAPEBDPEBD0@Z
+    9 ···8 ····12D0 ?Lock@Passwds@@QEAAXXZ
+   10 ···9 ····12F0 ?Unlock@Passwds@@QEAA_NPEBD@Z
+   11 ···A ····14B0 ?__autoclassinit2@Passwds@@QEAAX_K@Z
+   12 ···B ····1230 ?fnPasswdsBypass@@YAHXZ
+   13 ···C ····56D8 ?nPasswds@@3HA
+   14 ···D ····1090 CallA1
+   15 ···E ····10A0 CallA2
+   16 ···F ····1090 CallB1
+   17 ··10 ····10A0 CallB2
+   18 ··11 ····10A0 CallC1
+   19 ··12 ····10B0 CallC2
+   20 ··13 ····10C0 ThrowException
+----------------------------------------------------------------
+Imports from "KERNEL32.dll"
+  TimeDateStamp:   0
+  ForwarderChain:  ·······0
+  FirstThunk:      ····3000
+    532 GetCurrentThreadId
+    528 GetCurrentProcessId
+   1072 QueryPerformanceCounter
+    880 IsProcessorFeaturePresent
+    874 IsDebuggerPresent
+    255 DecodePointer
+    293 EncodePointer
+    733 GetSystemTimeAsFileTime
+Imports from "MSVCR120.dll"
+  TimeDateStamp:   0
+  ForwarderChain:  ·······0
+  FirstThunk:      ····3048
+   1137 _strdup
+   1706 malloc
+   1616 free
+    349 __CppXcptFilter
+    498 _amsg_exit
+    876 _malloc_crt
+    737 _initterm
+    738 _initterm_e
+    348 __C_specific_handler
+    413 __crt_debugger_hook
+     44 ??0exception@std@@QEAA@AEBV01@@Z
+    411 __crtTerminateProcess
+    382 __crtCapturePreviousContext
+    307 ?terminate@@YAXXZ
+    283 ?_type_info_dtor_internal_method@type_info@@QEAAXXZ
+    859 _lock
+   1223 _unlock
+    521 _calloc_crt
+    415 __dllonexit
+   1026 _onexit
+    379 __clean_type_info_names_internal
+   1742 printf
+     42 ??0exception@std@@QEAA@AEBQEBD@Z
+    106 ??1exception@std@@UEAA@XZ
+    114 ??3@YAXPEAX@Z
+    320 ?what@exception@std@@UEBAPEBDXZ
+    412 __crtUnhandledException
+    325 _CxxThrowException
+    354 __CxxFrameHandler3
+    364 __RTDynamicCast
+   1721 memset
+----------------------------------------------------------------
+Resources
++-. L"IMPORTANT"
+| `-. 106
+|   `   2057
++-. Icons
+| `-. 1
+|   `   2057
++-. Strings
+| `-. 7
+|   `   2057
++-. Accelerators
+| `-. 101
+|   `   2057
++-. Group Icons
+| `-. 103
+|   `   2057
++-. Version
+| `-. 1
+|   `   2057
+`-. Manifest
+  `-. 2
+    `   1033
+----------------------------------------------------------------
+Base Relocations
+  VirtualAddress: ····3000
+  SizeOfBlock:    ······40
+    A ····3160: DIR64
+    A ····3168: DIR64
+    A ····3180: DIR64
+    A ····31C8: DIR64
+    A ····31D0: DIR64
+    A ····31E0: DIR64
+    A ····31E8: DIR64
+    A ····3230: DIR64
+    A ····3238: DIR64
+    A ····3240: DIR64
+    A ····3248: DIR64
+    A ····3250: DIR64
+    A ····3258: DIR64
+    A ····3260: DIR64
+    A ····3268: DIR64
+    A ····3270: DIR64
+    A ····3278: DIR64
+    A ····3280: DIR64
+    A ····3288: DIR64
+    A ····3290: DIR64
+    A ····3298: DIR64
+    A ····32A0: DIR64
+    A ····3358: DIR64
+    A ····3370: DIR64
+    A ····3378: DIR64
+    A ····3380: DIR64
+    A ····3388: DIR64
+    0 ····3000: ABSOLUTE
+Base Relocations
+  VirtualAddress: ····5000
+  SizeOfBlock:    ······20
+    A ····5018: DIR64
+    A ····5028: DIR64
+    A ····5038: DIR64
+    A ····5048: DIR64
+    A ····5060: DIR64
+    A ····5080: DIR64
+    A ····5098: DIR64
+    A ····50C0: DIR64
+    A ····50E8: DIR64
+    A ····5110: DIR64
+    A ····5128: DIR64
+    0 ····5000: ABSOLUTE
+----------------------------------------------------------------
+TLS Directory
+  StartAddressOfRawData:  ·······180007000
+  EndAddressOfRawData:    ·······180007002
+  AddressOfIndex:         ·······180005140
+  AddressOfCallBacks:     ·······180003180
+  SizeOfZeroFill:         ·······0
+  Characteristics:        ··100000
+TLS Callbacks
+  ·······1800014C0
+----------------------------------------------------------------
+Debug Directory
+  Characteristics:  ·······0
+  TimeDateStamp:    1496673116
+  Version:          0.0
+  Type:             2: CodeView
+  SizeOfData:       ······4B
+  AddressOfRawData: ····3398
+  PointerToRawData: ····1998
+CodeView PDB 7.0
+  CvSignature:      53445352: RSDS
+  Signature:        B0E3D873-3136-6A44-B907-9C724C47A865
+  Age:              1
+  PdbFileName:      D:\Projects\pelite\proto\Demo\x64\Release\Demo.pdb
+
+Debug Directory
+  Characteristics:  ·······0
+  TimeDateStamp:    1496673116
+  Version:          0.0
+  Type:             12
+  SizeOfData:       ······14
+  AddressOfRawData: ····33E4
+  PointerToRawData: ····19E4
+Unknown
+

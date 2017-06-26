@@ -1,0 +1,101 @@
+PeLite
+======
+
+Lightweight, memory-safe, zero-allocation library for reading and navigating PE binaries.
+
+Design
+------
+
+The purpose of this library is inspecting PE binaries (whether on disk or already loaded in memory).
+
+A trade-off was made to not unify the 32-bit (PE32) and 64-bit (PE32+) formats for two reasons:
+
+* There are small but incompatible differences, which would add overhead by requiring constant matching even if at source code level the match arms look identical.
+
+* Most of the time you know (at build time) what format you're working with anyway.
+
+This makes it rather awkward to work with both formats together transparently.
+
+Note that while the correct name is PE32+, the name PE64 is used as it is a valid identifier; they are otherwise synonymous.
+
+ELF format is not supported and not planned. There is an [elf library crate](https://crates.io/crates/elf) but its design has a different focus.
+
+Tools
+-----
+
+Included are bins showing some uses for the library, try them out on the [demos](demo)!
+
+Library
+-------
+
+This library is available on [crates.io](https://crates.io/crates/pelite).
+
+Documentation can be found on [docs.rs](https://docs.rs/pelite/).
+
+In your Cargo.toml, put
+
+```
+[dependencies]
+pelite = "0.3"
+```
+
+Examples
+--------
+
+Try this example out with
+
+`cargo run --example readme`
+
+```rust
+extern crate pelite;
+
+use std::io;
+
+use pelite::FileMap;
+use pelite::pe64::{Pe, PeFile};
+
+//----------------------------------------------------------------
+// Handle IO and PE errors
+
+#[derive(Debug)]
+enum Error {
+	IO(io::Error),
+	PE(pelite::Error),
+}
+impl From<io::Error> for Error {
+	fn from(err: io::Error) -> Error { Error::IO(err) }
+}
+impl From<pelite::Error> for Error {
+	fn from(err: pelite::Error) -> Error { Error::PE(err) }
+}
+
+//----------------------------------------------------------------
+
+fn main() {
+	example().expect("something went wrong!");
+}
+
+fn example() -> Result<(), Error> {
+	// Load the desired file into memory
+	let file_map = FileMap::open("demo/Demo64.dll")?;
+	// Interpret the bytes as a PE32+ binary
+	let file = PeFile::from_bytes(&file_map)?;
+
+	// Let's read the DLL dependencies
+	let imports = file.imports()?;
+	for desc in imports {
+		// Get the DLL name being imported from
+		let dll_name = desc.dll_name()?;
+		// Get the number of imports for this dll
+		let iat = desc.iat()?;
+		println!("imported {} functions from {}", iat.len(), dll_name);
+	}
+
+	Ok(())
+}
+```
+
+License
+-------
+
+MIT - see license.txt

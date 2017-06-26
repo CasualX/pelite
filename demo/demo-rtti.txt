@@ -1,0 +1,24 @@
+class .?AVA@@ (SI)
+0x00002160: ??_7A@@6B@ {for `.?AVA@@'} (2 methods)
+0000: .?AVA@@
+
+class .?AVB@@ (SI)
+0x00002154: ??_7B@@6B@ {for `.?AVB@@'} (2 methods)
+0000: .?AVB@@
+
+class .?AVC@@ (MI)
+0x00002178: ??_7C@@6B@ {for `.?AVC@@'} (2 methods)
+0x0000216C: ??_7C@@6B@ {for `.?AVB@@'} (2 methods)
+0000: .?AVC@@
+0000: +-- .?AVA@@
+0008: `-- .?AVB@@
+
+class .?AVruntime_error@std@@ (SI)
+0x00002184: ??_7runtime_error@std@@6B@ {for `.?AVruntime_error@std@@'} (2 methods)
+0000: .?AVruntime_error@std@@
+0000: `-- .?AVexception@std@@
+
+class .?AVtype_info@@ (SI)
+0x0000210C: ??_7type_info@@6B@ {for `.?AVtype_info@@'} (1 methods)
+0000: .?AVtype_info@@
+
