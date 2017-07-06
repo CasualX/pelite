@@ -54,37 +54,19 @@ Try this example out with
 ```rust
 extern crate pelite;
 
-use std::io;
-
 use pelite::FileMap;
 use pelite::pe64::{Pe, PeFile};
 
-//----------------------------------------------------------------
-// Handle IO and PE errors
-
-#[derive(Debug)]
-enum Error {
-	IO(io::Error),
-	PE(pelite::Error),
-}
-impl From<io::Error> for Error {
-	fn from(err: io::Error) -> Error { Error::IO(err) }
-}
-impl From<pelite::Error> for Error {
-	fn from(err: pelite::Error) -> Error { Error::PE(err) }
-}
-
-//----------------------------------------------------------------
-
 fn main() {
-	example().expect("something went wrong!");
+	// Load the desired file into memory
+	let file_map = FileMap::open("demo/Demo64.dll").unwrap();
+	// Process the image file
+	example(file_map.as_ref()).expect("invalid pe file");
 }
 
-fn example() -> Result<(), Error> {
-	// Load the desired file into memory
-	let file_map = FileMap::open("demo/Demo64.dll")?;
-	// Interpret the bytes as a PE32+ binary
-	let file = PeFile::from_bytes(&file_map)?;
+fn example(image: &[u8]) -> Result<(), pelite::Error> {
+	// Interpret the bytes as a PE32+ executable
+	let file = PeFile::from_bytes(&image)?;
 
 	// Let's read the DLL dependencies
 	let imports = file.imports()?;
