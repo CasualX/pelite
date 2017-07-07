@@ -7,12 +7,12 @@ fn main() {
 	// Load the desired file into memory
 	let file_map = FileMap::open("demo/Demo64.dll").unwrap();
 	// Process the image file
-	example(file_map.as_ref()).expect("invalid pe file");
+	dll_deps(file_map.as_ref()).unwrap();
 }
 
-fn example(image: &[u8]) -> Result<(), pelite::Error> {
+fn dll_deps(image: &[u8]) -> pelite::Result<()> {
 	// Interpret the bytes as a PE32+ executable
-	let file = PeFile::from_bytes(&image)?;
+	let file = PeFile::from_bytes(image)?;
 
 	// Let's read the DLL dependencies
 	let imports = file.imports()?;

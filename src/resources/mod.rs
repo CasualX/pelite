@@ -86,7 +86,7 @@ impl<'a> Directory<'a> {
 	}
 	/// Gets the named entries in this directory.
 	///
-	/// Note that it while it would be a violation of the format, there's no strict safety guarantee that these are only named entries.
+	/// Note that while it would be a violation of the format, there's no strict safety guarantee that these are only named entries.
 	pub fn named_entries(&self) -> Entries<'a> {
 		// Validated by constructor
 		let slice = unsafe {
@@ -99,7 +99,7 @@ impl<'a> Directory<'a> {
 	}
 	/// Gets the id entries in this directory.
 	///
-	/// Note that it while it would be a violation of the format, there's no strict safety guarantee that these are only id entries.
+	/// Note that while it would be a violation of the format, there's no strict safety guarantee that these are only id entries.
 	pub fn id_entries(&self) -> Entries<'a> {
 		// Validated by the constructor
 		let slice = unsafe {

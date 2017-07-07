@@ -7,7 +7,7 @@ use ::std::{fmt, error, result};
 /// Errors while parsing the PE binary.
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Hash)]
 pub enum Error {
-	/// Null rva.
+	/// Null address.
 	Null,
 	/// Index was out of bounds.
 	OOB,

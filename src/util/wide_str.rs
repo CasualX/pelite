@@ -10,7 +10,9 @@ use ::std::{char, ops, fmt, mem};
 ///
 /// Used as the string format for file names by the PE resources.
 #[derive(Eq, PartialEq, Ord, PartialOrd, Hash)]
-pub struct WideStr([u16]);
+pub struct WideStr {
+	words: [u16],
+}
 
 impl WideStr {
 	/// Interprets a word slice as a length word prefixed wide string.
@@ -45,7 +47,7 @@ impl ops::Deref for WideStr {
 impl AsRef<[u16]> for WideStr {
 	#[inline]
 	fn as_ref(&self) -> &[u16] {
-		unsafe { self.0.get_unchecked(1..) }
+		unsafe { self.words.get_unchecked(1..) }
 	}
 }
 

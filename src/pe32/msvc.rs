@@ -3,8 +3,8 @@ Some MSVC structs for RTTI and exception handling.
 
 References:
 
-[1]: [Reversing Microsoft Visual C++ Part I: Exception Handling](http://www.openrce.org/articles/full_view/21)
-[2]: [Reversing Microsoft Visual C++ Part II: Classes, Methods and RTTI](http://www.openrce.org/articles/full_view/23)
+[1]: [Reversing Microsoft Visual C++ Part I: Exception Handling](http://www.openrce.org/articles/full_view/21)  
+[2]: [Reversing Microsoft Visual C++ Part II: Classes, Methods and RTTI](http://www.openrce.org/articles/full_view/23)  
 */
 
 use super::image::{Va};
@@ -13,11 +13,15 @@ use ::util::Pod;
 
 //----------------------------------------------------------------
 
+/// Represents the C++ `std::type_info` class returned by the `typeid` operator.
 #[derive(Debug)]
 #[repr(C)]
 pub struct TypeDescriptor {
+	/// Vtable of the `type_info` class.
 	pub vftable: Va,
+	/// Used to keep the demangled name returned by `type_info::name()`.
 	pub spare: Va,
+	/// Inlined mangled type name, nul terminated.
 	pub name: [u8; 0],
 }
 
@@ -35,12 +39,15 @@ pub struct PMD {
 
 //----------------------------------------------------------------
 
+/// Fully describes all try/catch blocks and unwindable objects in the function.
 #[derive(Debug)]
 #[repr(C)]
 pub struct FuncInfo {
 	/// Compiler version.
 	///
-	/// 0x19930520: up to VC6, 0x19930521: VC7.x(2002-2003), 0x19930522: VC8 (2005)
+	/// * `0x19930520`: up to VC6
+	/// * `0x19930521`: VC7.x (2002-2003)
+	/// * `0x19930522`: VC8 (2005)
 	pub magic_number: u32,
 	/// Number of entries in the unwind table.
 	pub max_state: i32,
@@ -54,7 +61,7 @@ pub struct FuncInfo {
 	pub ip_to_state_map: Va,
 	/// VC7+ only, expected exceptions list (function "throw" specifier).
 	pub es_type_list: Ptr<ESTypeList>,
-	/// VC8+ only, bit 0 set if function was compiled with `/EHs`.
+	/// VC8+ only, bit `0` set if function was compiled with `/EHs`.
 	pub eh_flags: i32,
 }
 
@@ -69,6 +76,9 @@ pub struct UnwindMapEntry {
 	pub action: Va,
 }
 
+/// Try block descriptor.
+///
+/// Describes a try block with associated catches.
 #[derive(Debug)]
 #[repr(C)]
 pub struct TryBlockMapEntry {
@@ -83,14 +93,19 @@ pub struct TryBlockMapEntry {
 	pub handler_array: Ptr<[HandlerType]>,
 }
 
+/// Catch block descriptor.
+///
+/// Describes a single catch of a try block.
 #[derive(Debug)]
 #[repr(C)]
 pub struct HandlerType {
-	/// 0x01: const, 0x02: volatile, 0x08: reference.
+	/// * `0x01`: const
+	/// * `0x02`: volatile
+	/// * `0x08`: reference
 	pub adjectives: u32,
-	/// RTTI descriptor of the exception type. 0 = any (ellipsis).
+	/// RTTI descriptor of the exception type. `0` = any (ellipsis).
 	pub ty: Ptr<TypeDescriptor>,
-	/// EBP-based offset of the exception object in the function stack. 0 = no object (catch by type).
+	/// EBP-based offset of the exception object in the function stack. `0` = no object (catch by type).
 	pub disp_catch_obj: i32,
 	/// Address of the catch handler Code.
 	///
@@ -98,12 +113,13 @@ pub struct HandlerType {
 	pub address_of_handler: Va,
 }
 
+/// List of expected exceptions.
 #[derive(Debug)]
 #[repr(C)]
 pub struct ESTypeList {
 	/// Number of entries in the list.
 	pub count: i32,
-	/// list of exceptions; it seems only pType field in HandlerType is used.
+	/// List of exceptions; it seems only pType field in HandlerType is used.
 	pub type_array: Ptr<[HandlerType]>,
 }
 
@@ -112,7 +128,8 @@ pub struct ESTypeList {
 #[derive(Debug)]
 #[repr(C)]
 pub struct ThrowInfo {
-	/// 0x01: const, 0x02: volatile
+	/// * `0x01`: const
+	/// * `0x02`: volatile
 	pub attributes: u32,
 	/// Exception destructor.
 	///
@@ -135,10 +152,13 @@ pub struct CatchableTypeArray {
 	pub array: [Ptr<CatchableType>; 0],
 }
 
+/// Describes a type that can catch this exception.
 #[derive(Debug)]
 #[repr(C)]
 pub struct CatchableType {
-	/// 0x01: simple type (can be copied by memmove), 0x02: can be caught by reference only, 0x04: has virtual bases.
+	/// * `0x01`: simple type (can be copied by memmove)
+	/// * `0x02`: can be caught by reference only
+	/// * `0x04`: has virtual bases
 	pub properties: u32,
 	/// Pointer to its type descriptor.
 	pub type_descriptor: Ptr<TypeDescriptor>,
@@ -152,6 +172,12 @@ pub struct CatchableType {
 
 //----------------------------------------------------------------
 
+/// Complete Object Locator.
+///
+/// MSVC compiler puts a pointer to this structure just before the vftable.
+/// The structure is called so because it lets you find the location to the complete object from a specific vftable pointer.
+///
+/// Every vftable has its own Complete Object Locator.
 #[derive(Debug)]
 #[repr(C)]
 pub struct RTTICompleteObjectLocator {
@@ -167,12 +193,15 @@ pub struct RTTICompleteObjectLocator {
 	pub class_descriptor: Ptr<RTTIClassHierarchyDescriptor>,
 }
 
+/// Class Hierarchy Descriptor.
+///
+/// Describes the inheritance hierarchy of the class, it is shared by all [COL](struct.RTTICompleteObjectLocator.html)s.
 #[derive(Debug)]
 #[repr(C)]
 pub struct RTTIClassHierarchyDescriptor {
 	/// Always zero?
 	pub signature: u32,
-	/// bit 0 set = multiple inheritance, bit 1 set = virtual inheritance.
+	/// Bit `0` set = multiple inheritance, bit `1` set = virtual inheritance.
 	pub attributes: u32,
 	/// Number of classes in `base_class_array`.
 	pub num_base_classes: u32,
@@ -180,6 +209,7 @@ pub struct RTTIClassHierarchyDescriptor {
 	pub base_class_array: Ptr<[Ptr<RTTIBaseClassDescriptor>]>,
 }
 
+/// Entry in the [Base Class Array](struct.RTTIClassHierarchyDescriptor.html#base_class_array.v).
 #[derive(Debug)]
 #[repr(C)]
 pub struct RTTIBaseClassDescriptor {
@@ -189,7 +219,7 @@ pub struct RTTIBaseClassDescriptor {
 	pub num_contained_bases: u32,
 	/// Pointer-to-member displacement info.
 	pub pmd: PMD,
-	/// Flags, usually 0. (?)
+	/// Flags, usually `0`. (?)
 	pub attributes: u32,
 }
 

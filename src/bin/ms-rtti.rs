@@ -91,7 +91,7 @@ fn main() {
 		let _ = vtable(file, &mut types, xref, &vrefs);
 	}
 
-	// The order in which these types was found is not significant
+	// The order in which these types were found is not significant
 	// To present a better diff between versions, sort the types by their name
 	types.sort_by_key(|ty| ty.ty_name);
 	for ty in &mut types {
@@ -158,7 +158,7 @@ fn print_vtable<'a>(file: PeFile<'a>, ty: &Type<'a>, vtable: &VTable<'a>) -> pel
 	for &base_class_ptr in base_classes {
 		let base_class = file.deref(base_class_ptr)?;
 		if base_class.pmd.mdisp == vtable.col.offset as i32 {
-			let base_ty_name = file.deref_str(Ptr::from(base_class.type_descriptor.shift(8)))?.to_str().or(Err(pelite::Error::CStr))?;
+			let base_ty_name = file.deref_str(base_class.type_descriptor.shift(8))?.to_str().or(Err(pelite::Error::CStr))?;
 			println!("{:#010X}: ??_7{}6B@ {{for `{}'}} ({} methods)", vtable.rva, &ty.ty_name[4..], base_ty_name, vtable.vtable.len());
 			return Ok(())
 		}
