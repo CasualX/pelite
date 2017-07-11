@@ -66,7 +66,7 @@ impl<'a, P: Pe<'a> + Copy> Tls<'a, P> {
 	}
 	pub fn callbacks(&self) -> Result<&'a [Va]> {
 		let rva = self.pe.va_to_rva(self.image.AddressOfCallBacks)?;
-		self.pe.derva_slice_f(rva, |&callback| callback == BADVA)
+		self.pe.derva_slice(rva, |&callback| callback == BADVA)
 	}
 }
 

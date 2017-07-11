@@ -7,7 +7,7 @@ use ::std::{mem, slice};
 use super::image::*;
 use super::ptr::Ptr;
 use ::{Error, Result};
-use ::util::{CStr, Pod};
+use ::util::{CStr, Pod, SliceLen};
 
 //----------------------------------------------------------------
 
@@ -143,44 +143,18 @@ pub trait Pe<'a> {
 			Ok(p)
 		}
 	}
-	/// Reads an array of pod `T` with known length.
-	fn derva_slice<T>(self, rva: Rva, len: usize) -> Result<&'a [T]> where Self: Copy, T: Pod {
-		// This is safe as per `Pod` bound
-		unsafe {
-			let size = mem::size_of::<T>().checked_mul(len).ok_or(Error::OOB)?;
-			let bytes = self.slice_rva(rva, size, 1)?;
-			let p = slice::from_raw_parts(bytes.as_ptr() as *const T, len);
-			Ok(p)
-		}
-	}
-	/// Reads an array of pod `T` guarded by a sentinel value.
+	/// Reads an array of pod `T`.
 	///
-	/// The callback is called for each `T` found, return `true` to indicate this is the sentinel value.
+	/// The length of the array can be specified by a known length of type `usize`.
+	///
+	/// Sometimes the length of an array is determined by a [sentinel value](https://en.wikipedia.org/wiki/Sentinel_value), a special value of `T` which marks the end of the array.
+	/// The length of the array is then specified by a callable with parameter `&'a T` returning a `bool` indicating if this value is the sentinel.
 	///
 	/// The returned slice contains all `T` up to but not including the sentinel value.
-	///
-	/// Returns [`Err(OOB)`](../enum.Error.html#variant.OOB) if no sentinel value was found before reaching the end of the image.
-	fn derva_slice_f<T, F>(self, rva: Rva, mut f: F) -> Result<&'a [T]> where Self: Copy, T: Pod, F: FnMut(&T) -> bool {
-		let bytes = self.slice_rva(rva, 0, 1)?;
-		let size_of_t = mem::size_of::<T>();
-		let mut len = 0;
-		let mut size = 0;
-		loop {
-			// Safety critical OOB check
-			if size + size_of_t >= bytes.len() {
-				return Err(Error::OOB);
-			}
-			// Safe because size is checked above and T is Pod
-			unsafe {
-				let s = bytes.as_ptr().offset(size as isize) as *const T;
-				if f(&*s) {
-					let p = slice::from_raw_parts(bytes.as_ptr() as *const T, len);
-					return Ok(p);
-				}
-			}
-			size += size_of_t;
-			len += 1;
-		}
+	fn derva_slice<T, L>(self, rva: Rva, len: L) -> Result<&'a [T]> where Self: Copy, T: Pod, L: SliceLen<'a, T> {
+		let min_size = len.min_size().ok_or(Error::Overflow)?;
+		let bytes = self.slice_rva(rva, min_size, 1)?;
+		unsafe { len.slice_len(bytes).ok_or(Error::OOB) }
 	}
 	/// Reads a nul-terminated C string.
 	fn derva_c_str(self, rva: Rva) -> Result<&'a CStr> where Self: Copy {
@@ -191,30 +165,26 @@ pub trait Pe<'a> {
 	// Deref impls for `Ptr`s
 
 	/// Dereferences the pointer to a pod `T`.
-	fn deref<T, P: Into<Ptr<T>>>(self, ptr: P) -> Result<&'a T> where Self: Copy, T: Pod {
+	fn deref<T, P>(self, ptr: P) -> Result<&'a T> where Self: Copy, T: Pod, P: Into<Ptr<T>> {
 		let ptr = ptr.into();
 		self.derva(self.va_to_rva(ptr.into())?)
 	}
-	/// Dereferences the pointer to an array of pod `T` with known length.
-	fn deref_slice<T, P: Into<Ptr<[T]>>>(self, ptr: P, len: usize) -> Result<&'a [T]> where Self: Copy, T: Pod {
-		let ptr = ptr.into();
-		self.derva_slice(self.va_to_rva(ptr.into())?, len)
-	}
-	/// Dereferences the pointer to an array of pod `T` guarded by a sentinel value.
+	/// Dereferences the pointer to an array of pod `T`.
 	///
-	/// The callback is called for each `T` found, return `true` to indicate this is the sentinel value.
+	/// The length of the array can be specified by a known length of type `usize`.
+	///
+	/// Sometimes the length of an array is determined by a [sentinel value](https://en.wikipedia.org/wiki/Sentinel_value), a special value of `T` which marks the end of the array.
+	/// The length of the array is then specified by a callable with parameter `&'a T` returning a `bool` indicating if this value is the sentinel.
 	///
 	/// The returned slice contains all `T` up to but not including the sentinel value.
-	///
-	/// Returns [`Err(OOB)`](../enum.Error.html#variant.OOB) if no sentinel value was found before reaching the end of the image.
-	fn deref_slice_f<T, P: Into<Ptr<[T]>>, F>(self, ptr: P, f: F) -> Result<&'a [T]> where Self: Copy, T: Pod, F: FnMut(&T) -> bool {
-		let ptr = ptr.into();
-		self.derva_slice_f(self.va_to_rva(ptr.into())?, f)
+	fn deref_slice<T, P, L>(self, ptr: P, len: L) -> Result<&'a [T]> where Self: Copy, T: Pod, P: Into<Ptr<[T]>>, L: SliceLen<'a, T> {
+		let min_size = len.min_size().ok_or(Error::Overflow)?;
+		let bytes = self.slice_rva(self.va_to_rva(ptr.into().into())?, min_size, 1)?;
+		unsafe { len.slice_len(bytes).ok_or(Error::OOB) }
 	}
 	/// Dereferences the pointer to a nul-terminated C string.
-	fn deref_c_str<P: Into<Ptr<CStr>>>(self, ptr: P) -> Result<&'a CStr> where Self: Copy {
-		let ptr = ptr.into();
-		self.derva_c_str(self.va_to_rva(ptr.into())?)
+	fn deref_c_str<P>(self, ptr: P) -> Result<&'a CStr> where Self: Copy, P: Into<Ptr<CStr>> {
+		self.derva_c_str(self.va_to_rva(ptr.into().into())?)
 	}
 
 	//----------------------------------------------------------------
