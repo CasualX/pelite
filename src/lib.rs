@@ -22,6 +22,8 @@ mod strings;
 #[macro_use]
 pub mod util;
 
+pub mod pattern;
+
 mod error;
 pub use self::error::{Error, Result};
 

@@ -169,6 +169,8 @@ pub mod tls;
 pub mod debug;
 #[path = "../pe64/ptr.rs"]
 mod ptr;
+#[path = "../pe64/scanner.rs"]
+pub mod scanner;
 
 pub mod msvc;
 
