@@ -130,15 +130,37 @@ pub trait Pe<'a> {
 	/// In case the of PE files on disk, this is limited to the section's size of raw data.
 	///
 	/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) given a null rva.
-	fn slice_rva(&self, rva: Rva, size: usize, align: usize) -> Result<&'a [u8]>;
+	fn slice(&self, rva: Rva, min_size: usize, align: usize) -> Result<&'a [u8]>;
+
+	/// Slices the image at the specified rva returning a byte slice with no alignment or minimum size.
+	fn slice_bytes(self, rva: Rva) -> Result<&'a [u8]> where Self: Sized {
+		self.slice(rva, 0, 1)
+	}
+
+	/// Reads the image at the specified va.
+	///
+	/// If successful the returned slice's length will be at least the given size but often be quite larger.
+	/// This allows to access the image without knowing beforehand how large the structure being accessed will be.
+	///
+	/// The length is the largest consecutive number of bytes available until the end.
+	/// In case the of PE files on disk, this is limited to the section's size of raw data.
+	///
+	/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) given a null va.
+	fn read(&self, va: Va, min_size: usize, align: usize) -> Result<&'a [u8]>;
+
+	/// Reads the image at the specified va returning a byte slice with no alignment or minimum size.
+	fn read_bytes(self, va: Va) -> Result<&'a [u8]> where Self: Sized {
+		self.read(va, 0, 1)
+	}
 
 	//----------------------------------------------------------------
 
 	/// Reads a pod `T`.
 	fn derva<T>(self, rva: Rva) -> Result<&'a T> where Self: Copy, T: Pod {
 		// This is safe as per `Pod` bound
+		// FIXME! What about alignment?
 		unsafe {
-			let bytes = self.slice_rva(rva, mem::size_of::<T>(), 1)?;
+			let bytes = self.slice(rva, mem::size_of::<T>(), 1)?;
 			let p = &*(bytes.as_ptr() as *const T);
 			Ok(p)
 		}
@@ -152,13 +174,15 @@ pub trait Pe<'a> {
 	///
 	/// The returned slice contains all `T` up to but not including the sentinel value.
 	fn derva_slice<T, L>(self, rva: Rva, len: L) -> Result<&'a [T]> where Self: Copy, T: Pod, L: SliceLen<'a, T> {
+		// This is safe as per `Pod` bound
+		// FIXME! What about alignment?
 		let min_size = len.min_size().ok_or(Error::Overflow)?;
-		let bytes = self.slice_rva(rva, min_size, 1)?;
+		let bytes = self.slice(rva, min_size, 1)?;
 		unsafe { len.slice_len(bytes).ok_or(Error::OOB) }
 	}
 	/// Reads a nul-terminated C string.
 	fn derva_c_str(self, rva: Rva) -> Result<&'a CStr> where Self: Copy {
-		self.slice_rva(rva, 0, 1).and_then(CStr::from_bytes)
+		self.slice_bytes(rva).and_then(CStr::from_bytes)
 	}
 
 	//----------------------------------------------------------------
@@ -166,8 +190,13 @@ pub trait Pe<'a> {
 
 	/// Dereferences the pointer to a pod `T`.
 	fn deref<T, P>(self, ptr: P) -> Result<&'a T> where Self: Copy, T: Pod, P: Into<Ptr<T>> {
-		let ptr = ptr.into();
-		self.derva(self.va_to_rva(ptr.into())?)
+		// This is safe as per `Pod` bound
+		// FIXME! What about alignment?
+		unsafe {
+			let bytes = self.read(ptr.into().into(), mem::size_of::<T>(), 1)?;
+			let p = &*(bytes.as_ptr() as *const T);
+			Ok(p)
+		}
 	}
 	/// Dereferences the pointer to an array of pod `T`.
 	///
@@ -178,13 +207,15 @@ pub trait Pe<'a> {
 	///
 	/// The returned slice contains all `T` up to but not including the sentinel value.
 	fn deref_slice<T, P, L>(self, ptr: P, len: L) -> Result<&'a [T]> where Self: Copy, T: Pod, P: Into<Ptr<[T]>>, L: SliceLen<'a, T> {
+		// This is safe as per `Pod` bound
+		// FIXME! What about alignment?
 		let min_size = len.min_size().ok_or(Error::Overflow)?;
-		let bytes = self.slice_rva(self.va_to_rva(ptr.into().into())?, min_size, 1)?;
+		let bytes = self.read(ptr.into().into(), min_size, 1)?;
 		unsafe { len.slice_len(bytes).ok_or(Error::OOB) }
 	}
 	/// Dereferences the pointer to a nul-terminated C string.
 	fn deref_c_str<P>(self, ptr: P) -> Result<&'a CStr> where Self: Copy, P: Into<Ptr<CStr>> {
-		self.derva_c_str(self.va_to_rva(ptr.into().into())?)
+		self.read_bytes(ptr.into().into()).and_then(CStr::from_bytes)
 	}
 
 	//----------------------------------------------------------------
@@ -258,8 +289,11 @@ impl<'s, 'a, P: Pe<'a> + ?Sized> Pe<'a> for &'s P {
 	fn image(&self) -> &'a [u8] {
 		P::image(*self)
 	}
-	fn slice_rva(&self, rva: Rva, size: usize, align: usize) -> Result<&'a [u8]> {
-		P::slice_rva(*self, rva, size, align)
+	fn slice(&self, rva: Rva, min_size: usize, align: usize) -> Result<&'a [u8]> {
+		P::slice(*self, rva, min_size, align)
+	}
+	fn read(&self, va: Va, min_size: usize, align: usize) -> Result<&'a [u8]> {
+		P::read(*self, va, min_size, align)
 	}
 }
 
