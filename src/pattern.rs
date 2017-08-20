@@ -101,8 +101,12 @@ pub enum Atom {
 	Push(i8),
 	/// Pops the cursor from the stack and continues matching.
 	Pop,
+	/// Sets a mask to apply on next byte match.
+	Fuzzy(u8),
 	/// Skips a fixed number of bytes.
 	Skip(i8),
+	/// Looks for the next pattern at most a certain number of bytes ahead.
+	Many(u8),
 	/// Follows a signed 1 byte jump.
 	///
 	/// Reads the byte under the cursor, sign extends it, adds it plus 1 to the cursor and continues matching.
@@ -115,6 +119,10 @@ pub enum Atom {
 	///
 	/// Reads the pointer under the cursor, translates it to an RVA, assigns it to the cursor and continues matching.
 	Ptr,
+	/// Follows a position independent reference.
+	///
+	/// Reads the dword under the cursor and adds it to the saved cursor for the given slot and continues matching.
+	Pir(u8),
 }
 
 /// Patterns are a vector of [`Atom`](enum.Atom.html)s.
@@ -362,6 +370,18 @@ pub(crate) const MAX_SAVE: usize = 7;
 /// Each backtick in a pattern writes to the next slot where the first element is the start of the pattern match.
 #[derive(Copy, Clone, Default, Eq, PartialEq, Debug)]
 pub struct Match(pub u32, pub u32, pub u32, pub u32, pub u32, pub u32, pub u32);
+impl Match {
+	pub(crate) fn merge(mut self, rhs: &Match) -> Match {
+		self.0 |= rhs.0;
+		self.1 |= rhs.1;
+		self.2 |= rhs.2;
+		self.3 |= rhs.3;
+		self.4 |= rhs.4;
+		self.5 |= rhs.5;
+		self.6 |= rhs.6;
+		self
+	}
+}
 impl AsRef<[u32; MAX_SAVE]> for Match {
 	fn as_ref(&self) -> &[u32; MAX_SAVE] {
 		unsafe { mem::transmute(self) }

@@ -96,12 +96,16 @@ impl<'a, P: Pe<'a> + Copy> Scanner<P> {
 		let mut stack = [0u32; pat::STACK_SIZE];
 		let mut sp = 0;
 		let mut result = pat::Match::default();
-		for &atom in pat {
+		let mut mask = 0xFF;
+		let mut iter = pat.iter();
+		while let Some(&atom) = iter.next() {
 			match atom {
-				pat::Atom::Byte(byte) => {
-					if Ok(byte) != self.pe.derva_copy(cursor) {
-						return None;
+				pat::Atom::Byte(p_byte) => {
+					match self.pe.derva_copy::<u8>(cursor) {
+						Ok(byte) if byte & mask == p_byte & mask => {},
+						_ => return None,
 					}
+					mask = 0xFF;
 					cursor += 1;
 				},
 				pat::Atom::Save(slot) => {
@@ -122,9 +126,16 @@ impl<'a, P: Pe<'a> + Copy> Scanner<P> {
 						cursor = stack[sp];
 					}
 				},
+				pat::Atom::Fuzzy(fuzz) => {
+					mask = fuzz;
+				},
 				pat::Atom::Skip(skip) => {
 					let skip = if skip == pat::PTR_SKIP { ptr_skip } else { skip };
 					cursor = cursor.wrapping_add(skip as Rva);
+				},
+				pat::Atom::Many(limit) => {
+					// Use `matches().next()` or just `find()`?
+					return self.matches(iter.as_slice(), cursor..cursor + limit as Rva).next().map(|m| result.merge(&m));
 				},
 				pat::Atom::Jump1 => {
 					if let Ok(sbyte) = self.pe.derva_copy::<i8>(cursor) {
@@ -147,6 +158,15 @@ impl<'a, P: Pe<'a> + Copy> Scanner<P> {
 						Ok(cursor) => cursor,
 						Err(_) => return None,
 					};
+				},
+				pat::Atom::Pir(slot) => {
+					if let Ok(sdword) = self.pe.derva_copy::<i32>(cursor) {
+						let &base = result.as_ref().get(slot as usize).unwrap_or(&cursor);
+						cursor = base.wrapping_add(sdword as Rva);
+					}
+					else {
+						return None;
+					}
 				},
 			}
 		}
