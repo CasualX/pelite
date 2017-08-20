@@ -370,18 +370,6 @@ pub(crate) const MAX_SAVE: usize = 7;
 /// Each backtick in a pattern writes to the next slot where the first element is the start of the pattern match.
 #[derive(Copy, Clone, Default, Eq, PartialEq, Debug)]
 pub struct Match(pub u32, pub u32, pub u32, pub u32, pub u32, pub u32, pub u32);
-impl Match {
-	pub(crate) fn merge(mut self, rhs: &Match) -> Match {
-		self.0 |= rhs.0;
-		self.1 |= rhs.1;
-		self.2 |= rhs.2;
-		self.3 |= rhs.3;
-		self.4 |= rhs.4;
-		self.5 |= rhs.5;
-		self.6 |= rhs.6;
-		self
-	}
-}
 impl AsRef<[u32; MAX_SAVE]> for Match {
 	fn as_ref(&self) -> &[u32; MAX_SAVE] {
 		unsafe { mem::transmute(self) }

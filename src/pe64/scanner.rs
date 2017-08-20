@@ -30,7 +30,7 @@ fn example(file: PeFile, pat: &[Atom]) -> Option<Match> {
 ```
 */
 
-use std::mem;
+use std::{cmp, mem, slice};
 use std::ops::Range;
 
 use pattern as pat;
@@ -91,106 +91,135 @@ impl<'a, P: Pe<'a> + Copy> Scanner<P> {
 		self.matches(pat, range)
 	}
 	/// Returns if the pattern matches the binary image at the given rva.
-	pub fn exec(self, pat: &[self::pat::Atom], mut cursor: Rva) -> Option<pat::Match> {
-		let ptr_skip = mem::size_of::<Va>() as i8;
-		let mut stack = [0u32; pat::STACK_SIZE];
-		let mut sp = 0;
-		let mut result = pat::Match::default();
-		let mut mask = 0xFF;
-		let mut iter = pat.iter();
-		while let Some(&atom) = iter.next() {
-			match atom {
-				pat::Atom::Byte(p_byte) => {
-					match self.pe.derva_copy::<u8>(cursor) {
-						Ok(byte) if byte & mask == p_byte & mask => {},
-						_ => return None,
-					}
-					mask = 0xFF;
-					cursor += 1;
-				},
-				pat::Atom::Save(slot) => {
-					if slot < pat::MAX_SAVE as u8 {
-						result.as_mut()[slot as usize] = cursor;
-					}
-				},
-				pat::Atom::Push(skip) => {
-					if sp < pat::STACK_SIZE {
-						let skip = if skip == pat::PTR_SKIP { ptr_skip } else { skip };
-						stack[sp] = cursor.wrapping_add(skip as Rva);
-						sp += 1;
-					}
-				},
-				pat::Atom::Pop => {
-					if sp > 0 {
-						sp -= 1;
-						cursor = stack[sp];
-					}
-				},
-				pat::Atom::Fuzzy(fuzz) => {
-					mask = fuzz;
-				},
-				pat::Atom::Skip(skip) => {
-					let skip = if skip == pat::PTR_SKIP { ptr_skip } else { skip };
-					cursor = cursor.wrapping_add(skip as Rva);
-				},
-				pat::Atom::Many(limit) => {
-					// Use `matches().next()` or just `find()`?
-					return self.matches(iter.as_slice(), cursor..cursor + limit as Rva).next().map(|m| result.merge(&m));
-				},
-				pat::Atom::Jump1 => {
-					if let Ok(sbyte) = self.pe.derva_copy::<i8>(cursor) {
-						cursor = cursor.wrapping_add(sbyte as Rva).wrapping_add(1);
-					}
-					else {
-						return None;
-					}
-				},
-				pat::Atom::Jump4 => {
-					if let Ok(sdword) = self.pe.derva_copy::<i32>(cursor) {
-						cursor = cursor.wrapping_add(sdword as Rva).wrapping_add(4);
-					}
-					else {
-						return None;
-					}
-				},
-				pat::Atom::Ptr => {
-					cursor = match self.pe.derva_copy(cursor).and_then(|va| self.pe.va_to_rva(va)) {
-						Ok(cursor) => cursor,
-						Err(_) => return None,
-					};
-				},
-				pat::Atom::Pir(slot) => {
-					if let Ok(sdword) = self.pe.derva_copy::<i32>(cursor) {
-						let &base = result.as_ref().get(slot as usize).unwrap_or(&cursor);
-						cursor = base.wrapping_add(sdword as Rva);
-					}
-					else {
-						return None;
-					}
-				},
-			}
+	pub fn exec(self, pat: &[self::pat::Atom], cursor: Rva) -> Option<pat::Match> {
+		let mut state = Exec {
+			iter: pat.iter()
+			cursor,
+			result: pat::Match::default(),
+			stack: [0; pat::STACK_SIZE],
+			sp: 0,
+			mask: 0xFF,
+		};
+		if state.exec(self.pe) {
+			Some(state.result)
 		}
-		// Pattern matches
-		Some(result)
+		else {
+			None
+		}
 	}
-	// Invokes the callback for all sections overlapping the range.
-	// TODO! Specialze me for PeView?
-	fn sections<F>(&self, range: Range<Rva>, mut f: F) -> Option<pat::Match> where F: FnMut(Rva, &'a [u8]) -> Option<pat::Match> {
-		let image = self.pe.image();
-		for it in self.pe.section_headers() {
-			if range.start < (it.VirtualAddress + it.SizeOfRawData) && range.end >= it.VirtualAddress {
-				use std::cmp::{min, max};
-				let start = max(range.start, it.VirtualAddress);
-				let end = min(range.end, it.VirtualAddress + it.SizeOfRawData);
-				if let Some(slice) = image.get((start - it.VirtualAddress + it.PointerToRawData) as FileOffset..(end - it.VirtualAddress + it.PointerToRawData) as FileOffset) {
+	fn map_sections<F>(self, range: Range<Rva>, mut f: F) -> Option<pat::Match>
+		where F: FnMut(Rva, &'a [u8]) -> Option<pat::Match>
+	{
+		self.pe.finder_image(|rva, bytes| {
+			if range.start < rva + bytes.len() as Rva && range.end >= rva {
+				let start = cmp::max(range.start, rva);
+				let end = cmp::min(range.end, rva + bytes.len() as Rva);
+				if let Some(slice) = bytes.get((start - rva) as usize..(end - rva) as usize) {
 					let m = f(start, slice);
 					if m.is_some() {
 						return m;
 					}
 				}
 			}
+			return None;
+		})
+	}
+}
+
+//----------------------------------------------------------------
+
+#[derive(Clone)]
+struct Exec<'u> {
+	iter: slice::Iter<'u, pat::Atom>,
+	cursor: Rva,
+	result: pat::Match,
+	stack: [Rva; pat::STACK_SIZE],
+	sp: usize,
+	mask: u8,
+}
+impl<'u> Exec<'u> {
+	fn exec<'a, P>(&mut self, pe: P) -> bool where P: Pe<'a> + Copy {
+		let ptr_skip = mem::size_of::<Va>() as i8;
+		while let Some(&atom) = self.iter.next() {
+			match atom {
+				pat::Atom::Byte(pat_byte) => {
+					match pe.derva_copy::<u8>(self.cursor) {
+						Ok(byte) if byte & self.mask == pat_byte & self.mask => {},
+						_ => return false,
+					}
+					self.mask = 0xFF;
+					self.cursor += 1;
+				},
+				pat::Atom::Save(slot) => {
+					if slot < pat::MAX_SAVE as u8 {
+						self.result.as_mut()[slot as usize] = self.cursor;
+					}
+				},
+				pat::Atom::Push(skip) => {
+					if self.sp < pat::STACK_SIZE {
+						let skip = if skip == pat::PTR_SKIP { ptr_skip } else { skip };
+						self.stack[self.sp] = self.cursor.wrapping_add(skip as Rva);
+						self.sp += 1;
+					}
+				},
+				pat::Atom::Pop => {
+					if self.sp > 0 {
+						self.sp -= 1;
+						self.cursor = self.stack[self.sp];
+					}
+				},
+				pat::Atom::Fuzzy(pat_mask) => {
+					self.mask = pat_mask;
+				},
+				pat::Atom::Skip(skip) => {
+					let skip = if skip == pat::PTR_SKIP { ptr_skip } else { skip };
+					self.cursor = self.cursor.wrapping_add(skip as Rva);
+				},
+				pat::Atom::Many(limit) => {
+					for i in 0..limit as Rva {
+						let mut state = self.clone();
+						state.cursor = state.cursor.wrapping_add(i);
+						if state.exec(pe) {
+							*self = state;
+							return true;
+						}
+					}
+					return false;
+				},
+				pat::Atom::Jump1 => {
+					if let Ok(sbyte) = pe.derva_copy::<i8>(self.cursor) {
+						self.cursor = self.cursor.wrapping_add(sbyte as Rva).wrapping_add(1);
+					}
+					else {
+						return false;
+					}
+				},
+				pat::Atom::Jump4 => {
+					if let Ok(sdword) = pe.derva_copy::<i32>(self.cursor) {
+						self.cursor = self.cursor.wrapping_add(sdword as Rva).wrapping_add(4);
+					}
+					else {
+						return false;
+					}
+				},
+				pat::Atom::Ptr => {
+					self.cursor = match pe.derva_copy(self.cursor).and_then(|va| pe.va_to_rva(va)) {
+						Ok(cursor) => cursor,
+						Err(_) => return false,
+					};
+				},
+				pat::Atom::Pir(slot) => {
+					if let Ok(sdword) = pe.derva_copy::<i32>(self.cursor) {
+						let &base = self.result.as_ref().get(slot as usize).unwrap_or(&self.cursor);
+						self.cursor = base.wrapping_add(sdword as Rva);
+					}
+					else {
+						return false;
+					}
+				},
+			}
 		}
-		None
+		return true;
 	}
 }
 
@@ -234,7 +263,7 @@ impl<'a, 'u, P: Pe<'a> + Copy> Matches<'u, P> {
 	//  Note that this is (relatively) slow...
 	fn strategy0(&mut self, _qsbuf: &[u8]) -> Option<pat::Match> {
 		let scanner = self.scanner;
-		scanner.sections(self.range.clone(), |mut it, slice| {
+		scanner.map_sections(self.range.clone(), |mut it, slice| {
 			let end = it + slice.len() as Rva;
 			while it < end {
 				self.hits += 1;
@@ -255,7 +284,7 @@ impl<'a, 'u, P: Pe<'a> + Copy> Matches<'u, P> {
 	fn strategy1(&mut self, qsbuf: &[u8]) -> Option<pat::Match> {
 		let byte = qsbuf[0];
 		let scanner = self.scanner;
-		scanner.sections(self.range.clone(), |it, slice| {
+		scanner.map_sections(self.range.clone(), |it, slice| {
 			// Find all places with matching byte
 			// TODO! Replace with actual memchr
 			for cursor in slice.iter().enumerate().filter_map(|(i, &a)| if a == byte { Some(it + i as Rva) } else { None }) {
@@ -282,7 +311,7 @@ impl<'a, 'u, P: Pe<'a> + Copy> Matches<'u, P> {
 		}
 		let jumps = jumps;
 		let scanner = self.scanner;
-		scanner.sections(self.range.clone(), |it, slice| {
+		scanner.map_sections(self.range.clone(), |it, slice| {
 			// Quicksearch baby!
 			let mut i = 0;
 			while i + qslen <= slice.len() {

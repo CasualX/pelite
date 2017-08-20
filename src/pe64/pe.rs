@@ -321,6 +321,21 @@ pub unsafe trait Pe<'a> {
 	fn scanner(self) -> super::scanner::Scanner<Self> where Self: Copy {
 		super::scanner::Scanner::new(self)
 	}
+
+	#[doc(hidden)]
+	fn finder_image<F, T>(&self, mut f: F) -> Option<T> where Self: Sized, F: FnMut(Rva, &'a [u8]) -> Option<T> {
+		let image = self.image();
+		for section in self.section_headers() {
+			let start = section.PointerToRawData as usize;
+			let end = section.PointerToRawData as usize + section.SizeOfRawData as usize;
+			if let Some(slice) = image.get(start..end) {
+				if let Some(result) = f(section.VirtualAddress, slice) {
+					return Some(result);
+				}
+			}
+		}
+		return None;
+	}
 }
 
 // Make `&Pe<'a>` trait objects work seamlessly.
