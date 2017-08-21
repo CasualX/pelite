@@ -2,7 +2,7 @@
 Abstract over mapped images and file binaries.
 */
 
-use ::std::{mem, slice};
+use ::std::{mem, ptr, slice};
 
 use super::image::*;
 use super::ptr::Ptr;
@@ -155,14 +155,22 @@ pub trait Pe<'a> {
 
 	//----------------------------------------------------------------
 
-	/// Reads a pod `T`.
+	/// Reads an aligned pod `T`.
 	fn derva<T>(self, rva: Rva) -> Result<&'a T> where Self: Copy, T: Pod {
 		// This is safe as per `Pod` bound
-		// FIXME! What about alignment?
 		unsafe {
-			let bytes = self.slice(rva, mem::size_of::<T>(), 1)?;
+			let align = if cfg!(feature = "unsafe_alignment") { 1 } else { mem::align_of::<T>() };
+			let bytes = self.slice(rva, mem::size_of::<T>(), align)?;
 			let p = &*(bytes.as_ptr() as *const T);
 			Ok(p)
+		}
+	}
+	/// Reads an unaligned pod `T`.
+	fn derva_copy<T>(self, rva: Rva) -> Result<T> where Self: Copy, T: Copy + Pod {
+		unsafe {
+			let bytes = self.slice(rva, mem::size_of::<T>(), 1)?;
+			let p = bytes.as_ptr() as *const T;
+			Ok(ptr::read_unaligned(p))
 		}
 	}
 	/// Reads an array of pod `T`.
@@ -175,13 +183,13 @@ pub trait Pe<'a> {
 	/// The returned slice contains all `T` up to but not including the sentinel value.
 	fn derva_slice<T, L>(self, rva: Rva, len: L) -> Result<&'a [T]> where Self: Copy, T: Pod, L: SliceLen<'a, T> {
 		// This is safe as per `Pod` bound
-		// FIXME! What about alignment?
 		let min_size = len.min_size().ok_or(Error::Overflow)?;
-		let bytes = self.slice(rva, min_size, 1)?;
+		let align = if cfg!(feature = "unsafe_alignment") { 1 } else { mem::align_of::<T>() };
+		let bytes = self.slice(rva, min_size, align)?;
 		unsafe { len.slice_len(bytes).ok_or(Error::OOB) }
 	}
 	/// Reads a nul-terminated C string.
-	fn derva_c_str(self, rva: Rva) -> Result<&'a CStr> where Self: Copy {
+	fn derva_str(self, rva: Rva) -> Result<&'a CStr> where Self: Copy {
 		self.slice_bytes(rva).and_then(CStr::from_bytes)
 	}
 
@@ -191,11 +199,19 @@ pub trait Pe<'a> {
 	/// Dereferences the pointer to a pod `T`.
 	fn deref<T, P>(self, ptr: P) -> Result<&'a T> where Self: Copy, T: Pod, P: Into<Ptr<T>> {
 		// This is safe as per `Pod` bound
-		// FIXME! What about alignment?
 		unsafe {
-			let bytes = self.read(ptr.into().into(), mem::size_of::<T>(), 1)?;
+			let align = if cfg!(feature = "unsafe_alignment") { 1 } else { mem::align_of::<T>() };
+			let bytes = self.read(ptr.into().into(), mem::size_of::<T>(), align)?;
 			let p = &*(bytes.as_ptr() as *const T);
 			Ok(p)
+		}
+	}
+	/// Dereferences the pointer to an unaligned pod `T`.
+	fn deref_copy<T, P>(self, ptr: P) -> Result<T> where Self: Copy, T: Copy + Pod, P: Into<Ptr<T>> {
+		unsafe {
+			let bytes = self.read(ptr.into().into(), mem::size_of::<T>(), 1)?;
+			let p = bytes.as_ptr() as *const T;
+			Ok(ptr::read_unaligned(p))
 		}
 	}
 	/// Dereferences the pointer to an array of pod `T`.
@@ -210,11 +226,12 @@ pub trait Pe<'a> {
 		// This is safe as per `Pod` bound
 		// FIXME! What about alignment?
 		let min_size = len.min_size().ok_or(Error::Overflow)?;
-		let bytes = self.read(ptr.into().into(), min_size, 1)?;
+		let align = if cfg!(feature = "unsafe_alignment") { 1 } else { mem::align_of::<T>() };
+		let bytes = self.read(ptr.into().into(), min_size, align)?;
 		unsafe { len.slice_len(bytes).ok_or(Error::OOB) }
 	}
 	/// Dereferences the pointer to a nul-terminated C string.
-	fn deref_c_str<P>(self, ptr: P) -> Result<&'a CStr> where Self: Copy, P: Into<Ptr<CStr>> {
+	fn deref_str<P>(self, ptr: P) -> Result<&'a CStr> where Self: Copy, P: Into<Ptr<CStr>> {
 		self.read_bytes(ptr.into().into()).and_then(CStr::from_bytes)
 	}
 

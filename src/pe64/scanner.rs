@@ -97,7 +97,7 @@ impl<'a, P: Pe<'a> + Copy> Scanner<P> {
 		for &atom in pat {
 			match atom {
 				pat::Atom::Byte(byte) => {
-					if Ok(&byte) != self.pe.derva(cursor) {
+					if Ok(byte) != self.pe.derva_copy(cursor) {
 						return None;
 					}
 					cursor += 1;
@@ -125,7 +125,7 @@ impl<'a, P: Pe<'a> + Copy> Scanner<P> {
 					cursor = cursor.wrapping_add(skip as Rva);
 				},
 				pat::Atom::Jump1 => {
-					if let Ok(&sbyte) = self.pe.derva::<i8>(cursor) {
+					if let Ok(sbyte) = self.pe.derva_copy::<i8>(cursor) {
 						cursor = cursor.wrapping_add(sbyte as Rva).wrapping_add(1);
 					}
 					else {
@@ -133,7 +133,7 @@ impl<'a, P: Pe<'a> + Copy> Scanner<P> {
 					}
 				},
 				pat::Atom::Jump4 => {
-					if let Ok(&sdword) = self.pe.derva::<i32>(cursor) {
+					if let Ok(sdword) = self.pe.derva_copy::<i32>(cursor) {
 						cursor = cursor.wrapping_add(sdword as Rva).wrapping_add(4);
 					}
 					else {
@@ -141,7 +141,7 @@ impl<'a, P: Pe<'a> + Copy> Scanner<P> {
 					}
 				},
 				pat::Atom::Ptr => {
-					cursor = match self.pe.derva(cursor).and_then(|&va| self.pe.va_to_rva(va)) {
+					cursor = match self.pe.derva_copy(cursor).and_then(|va| self.pe.va_to_rva(va)) {
 						Ok(cursor) => cursor,
 						Err(_) => return None,
 					};

@@ -86,7 +86,7 @@ impl<'a, P: Pe<'a> + Copy> Exports<'a, P> {
 	}
 	/// Gets the export directory's name for this library.
 	pub fn dll_name(&self) -> Result<&'a CStr> {
-		self.pe.derva_c_str(self.image.Name)
+		self.pe.derva_str(self.image.Name)
 	}
 	/// Gets the ordinal base for the exported functions.
 	///
@@ -130,7 +130,7 @@ impl<'a, P: Pe<'a> + Copy> Exports<'a, P> {
 			Ok(Export::None)
 		}
 		else if self.is_forwarded(*rva) {
-			let fwd = self.pe.derva_c_str(*rva)?;
+			let fwd = self.pe.derva_str(*rva)?;
 			Ok(Export::Forward(fwd))
 		}
 		else {
@@ -196,7 +196,7 @@ impl<'a, P: Pe<'a> + Copy> By<'a, P> {
 		while lower_bound != upper_bound {
 			let i = lower_bound + (upper_bound - lower_bound) / 2;
 			let name_rva = self.names[i];
-			let name_it = self.exp.pe.derva_c_str(name_rva)?.as_ref();
+			let name_it = self.exp.pe.derva_str(name_rva)?.as_ref();
 			use ::std::cmp::Ordering::*;
 			match name.cmp(name_it) {
 				Less => upper_bound = i,
@@ -243,7 +243,7 @@ impl<'a, P: Pe<'a> + Copy> By<'a, P> {
 	/// Looks up the name for a hint.
 	pub fn hint_name(&self, hint: usize) -> Result<&'a CStr> {
 		let &name_rva = self.names.get(hint).ok_or(Error::OOB)?;
-		self.exp.pe.derva_c_str(name_rva)
+		self.exp.pe.derva_str(name_rva)
 	}
 	/// Given an index in the functions array, gets the named export.
 	///
@@ -255,7 +255,7 @@ impl<'a, P: Pe<'a> + Copy> By<'a, P> {
 			Some(hint) => {
 				// Lookup the name
 				let name_rva = self.names[hint];
-				let name = self.exp.pe.derva_c_str(name_rva)?;
+				let name = self.exp.pe.derva_str(name_rva)?;
 				Ok(Import::ByName { hint, name })
 			},
 			None => {
