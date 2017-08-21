@@ -52,7 +52,7 @@ impl<'a> PeFile<'a> {
 	}
 }
 
-impl<'a> Pe<'a> for PeFile<'a> {
+unsafe impl<'a> Pe<'a> for PeFile<'a> {
 	fn image(&self) -> &'a [u8] {
 		self.image
 	}
