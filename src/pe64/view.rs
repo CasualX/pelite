@@ -59,7 +59,7 @@ impl<'a> Pe<'a> for PeView<'a> {
 	}
 	fn slice(&self, rva: Rva, min_size: usize, align: usize) -> Result<&'a [u8]> {
 		let start = rva as FileOffset;
-		if rva == 0 {
+		if rva == BADRVA {
 			Err(Error::Null)
 		}
 		else if start & (align - 1) != 0 {
@@ -77,7 +77,7 @@ impl<'a> Pe<'a> for PeView<'a> {
 			let optional_header = self.optional_header();
 			(optional_header.ImageBase, optional_header.SizeOfImage)
 		};
-		if va == 0 {
+		if va == BADVA {
 			Err(Error::Null)
 		}
 		else if va < image_base || va - image_base > size_of_image as Va {

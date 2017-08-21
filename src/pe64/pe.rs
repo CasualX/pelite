@@ -56,10 +56,12 @@ pub trait Pe<'a> {
 
 	/// Converts an `Rva` to `FileOffset`.
 	///
-	/// Returns [`Err(ZeroFill)`](../enum.Error.html#variant.ZeroFill) if the rva points to the part of a section zero filled.
-	/// This happens when the size of raw data is shorter than the virtual size. Windows fills the remaining of the section with zeroes.
+	/// # Errors
 	///
-	/// Returns [`Err(OOB)`](../enum.Error.html#variant.OOB) if the rva does not point within any section. This includes the headers.
+	/// * [`Err(ZeroFill)`](../enum.Error.html#variant.ZeroFill) if the rva points to the part of a section zero filled.
+	///   This happens when the size of raw data is shorter than the virtual size. Windows fills the remaining of the section with zeroes.
+	///
+	/// * [`Err(OOB)`](../enum.Error.html#variant.OOB) if the rva does not point within any section. This includes the headers.
 	fn rva_to_file_offset(self, rva: Rva) -> Result<FileOffset> where Self: Copy {
 		for it in self.section_headers() {
 			if rva >= it.VirtualAddress && rva < (it.VirtualAddress + it.VirtualSize) {
@@ -73,8 +75,10 @@ pub trait Pe<'a> {
 	}
 	/// Converts a `FileOffset` to `Rva`.
 	///
-	/// Returns [`Err(OOB)`](../enum.Error.html#variant.OOB) if the file offset points within the headers or part of a section which isn't mapped.
-	/// This happens when the virtual size is shorter than the size of raw data.
+	/// # Errors
+	///
+	/// * [`Err(OOB)`](../enum.Error.html#variant.OOB) if the file offset points within the headers or part of a section which isn't mapped.
+	///   This happens when the virtual size is shorter than the size of raw data.
 	fn file_offset_to_rva(self, file_offset: FileOffset) -> Result<Rva> where Self: Copy {
 		for it in self.section_headers() {
 			if file_offset >= it.PointerToRawData as FileOffset && file_offset < (it.PointerToRawData as FileOffset + it.SizeOfRawData as FileOffset) {
@@ -89,33 +93,50 @@ pub trait Pe<'a> {
 
 	/// Converts from `Rva` to `Va`.
 	///
-	/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) given a null rva or [`Err(OOB)`](../enum.Error.html#variant.OOB) if the rva is out of bounds.
+	/// # Errors
+	///
+	/// * [`Err(Null)`](../enum.Error.html#variant.Null) given a null rva.
+	///
+	/// * [`Err(OOB)`](../enum.Error.html#variant.OOB) if the rva is out of bounds.
 	fn rva_to_va(self, rva: Rva) -> Result<Va> where Self: Copy {
-		let (image_base, size_of_image) = {
-			let optional_header = self.optional_header();
-			(optional_header.ImageBase, optional_header.SizeOfImage)
-		};
-		if rva < size_of_image {
-			Ok(image_base + rva as Va)
+		if rva == BADRVA {
+			Err(Error::Null)
 		}
 		else {
-			Err(Error::OOB)
+			let (image_base, size_of_image) = {
+				let optional_header = self.optional_header();
+				(optional_header.ImageBase, optional_header.SizeOfImage)
+			};
+			if rva < size_of_image {
+				Ok(image_base + rva as Va)
+			}
+			else {
+				Err(Error::OOB)
+			}
 		}
 	}
 	/// Converts from `Va` to `Rva`.
 	///
-	/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) given a null va or [`Err(OOB)`](../enum.Error.html#variant.OOB) if the va is out of bounds.
+	/// # Errors
+	///
+	/// * [`Err(Null)`](../enum.Error.html#variant.Null) given a null va.
+	///
+	/// * [`Err(OOB)`](../enum.Error.html#variant.OOB) if the va is out of bounds.
 	fn va_to_rva(self, va: Va) -> Result<Rva> where Self: Copy {
-		let (image_base, size_of_image) = {
-			let optional_header = self.optional_header();
-			(optional_header.ImageBase, optional_header.SizeOfImage)
-		};
-		let rva = va.checked_sub(image_base).ok_or(Error::OOB)?;
-		if rva < size_of_image as Va {
-			Ok(rva as Rva)
+		if va == BADVA {
+			Err(Error::Null)
 		}
 		else {
-			Err(Error::OOB)
+			let (image_base, size_of_image) = {
+				let optional_header = self.optional_header();
+				(optional_header.ImageBase, optional_header.SizeOfImage)
+			};
+			if va < image_base || va - image_base > size_of_image as Va {
+				Err(Error::OOB)
+			}
+			else {
+				Ok((va - image_base) as Rva)
+			}
 		}
 	}
 

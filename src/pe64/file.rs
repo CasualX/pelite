@@ -19,18 +19,32 @@ impl<'a> PeFile<'a> {
 		let _ = validate_headers(image)?;
 		Ok(PeFile { image })
 	}
-	fn find_section(&self, rva: Rva, min_size: usize) -> Result<&'a [u8]> {
-		// Can't reuse `self.rva_to_file_offset` because it doesn't return the size of the section
+	fn section_get(&self, rva: Rva, min_size: usize) -> Result<&'a [u8]> {
+		// Cannot reuse `self.rva_to_file_offset` because it doesn't return the size of the section
+		// FIXME! What to do about all the potential overflows?
 		for it in self.section_headers() {
-			if rva >= it.VirtualAddress && rva < (it.VirtualAddress + it.VirtualSize) {
-				if rva < (it.VirtualAddress + it.SizeOfRawData) {
+			#[allow(non_snake_case)]
+			let VirtualEnd = it.VirtualAddress + it.VirtualSize;
+			// Rva is contained within the virtual space of a section
+			if rva >= it.VirtualAddress && rva < VirtualEnd {
+				// Rva is contained in the physical space of the section
+				if rva < it.VirtualAddress + it.SizeOfRawData {
 					let start = (rva - it.VirtualAddress + it.PointerToRawData) as FileOffset;
 					let end = (it.PointerToRawData + it.SizeOfRawData) as FileOffset;
 					return match self.image.get(start..end) {
 						Some(bytes) if bytes.len() >= min_size => Ok(bytes),
-						_ => if start + min_size > (it.VirtualAddress + it.VirtualSize) as usize { Err(Error::OOB) } else { Err(Error::ZeroFill) },
+						_ => {
+							// Identify the reason the slice fails
+							if start + min_size > VirtualEnd as FileOffset {
+								Err(Error::OOB)
+							}
+							else {
+								Err(Error::ZeroFill)
+							}
+						},
 					};
 				}
+				// Rva is inside the virtual space but outside the physical space
 				return Err(Error::ZeroFill);
 			}
 		}
@@ -42,23 +56,25 @@ impl<'a> Pe<'a> for PeFile<'a> {
 	fn image(&self) -> &'a [u8] {
 		self.image
 	}
+	#[inline(never)]
 	fn slice(&self, rva: Rva, min_size: usize, align: usize) -> Result<&'a [u8]> {
-		if rva == 0 {
+		if rva == BADRVA {
 			Err(Error::Null)
 		}
 		else if rva as FileOffset & (align - 1) != 0 {
 			Err(Error::Misalign)
 		}
 		else {
-			self.find_section(rva, min_size)
+			self.section_get(rva, min_size)
 		}
 	}
+	#[inline(never)]
 	fn read(&self, va: Va, min_size: usize, align: usize) -> Result<&'a [u8]> {
 		let (image_base, size_of_image) = {
 			let optional_header = self.optional_header();
 			(optional_header.ImageBase, optional_header.SizeOfImage)
 		};
-		if va == 0 {
+		if va == BADVA {
 			Err(Error::Null)
 		}
 		else if va < image_base || va - image_base > size_of_image as Va {
@@ -70,7 +86,7 @@ impl<'a> Pe<'a> for PeFile<'a> {
 				Err(Error::Misalign)
 			}
 			else {
-				self.find_section(rva, min_size)
+				self.section_get(rva, min_size)
 			}
 		}
 	}
