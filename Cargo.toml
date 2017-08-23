@@ -15,6 +15,9 @@ categories = ["parsing", "command-line-utilities"]
 
 license = "MIT"
 
+[features]
+unsafe_alignment = []
+
 [badges]
 appveyor = { repository = "CasualX/pelite", branch = "master", service = "github" }
 

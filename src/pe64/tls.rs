@@ -55,18 +55,15 @@ impl<'a, P: Pe<'a> + Copy> Tls<'a, P> {
 		if self.image.StartAddressOfRawData > self.image.EndAddressOfRawData {
 			return Err(Error::Corrupt);
 		}
-		let rva = self.pe.va_to_rva(self.image.StartAddressOfRawData)?;
 		// FIXME! truncation warning on 32bit...
 		let len = (self.image.EndAddressOfRawData - self.image.StartAddressOfRawData) as usize;
-		self.pe.derva_slice(rva, len)
+		self.pe.deref_slice(self.image.StartAddressOfRawData, len)
 	}
 	pub fn slot(&self) -> Result<&'a u32> {
-		let rva = self.pe.va_to_rva(self.image.AddressOfIndex)?;
-		self.pe.derva(rva)
+		self.pe.deref(self.image.AddressOfIndex)
 	}
 	pub fn callbacks(&self) -> Result<&'a [Va]> {
-		let rva = self.pe.va_to_rva(self.image.AddressOfCallBacks)?;
-		self.pe.derva_slice(rva, |&callback| callback == BADVA)
+		self.pe.deref_slice(self.image.AddressOfCallBacks, |&callback| callback == BADVA)
 	}
 }
 

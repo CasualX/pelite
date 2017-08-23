@@ -109,7 +109,7 @@ impl<'a, P: Pe<'a> + Copy> Dir<'a, P> {
 	}
 	/// Gets the referenced debug info.
 	pub fn info(&self) -> Result<Info<'a>> {
-		let bytes = self.pe.slice_rva(self.image.AddressOfRawData, self.image.SizeOfData as usize, 4)?;
+		let bytes = self.pe.slice(self.image.AddressOfRawData, self.image.SizeOfData as usize, 4)?;
 		match self.image.Type {
 			IMAGE_DEBUG_TYPE_CODEVIEW => {
 				if bytes.len() >= 4 {

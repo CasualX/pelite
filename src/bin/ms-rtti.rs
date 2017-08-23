@@ -55,7 +55,7 @@ fn main() {
 			return None;
 		}
 		// Read the pointer being relocated
-		let &target_va = file.derva(rva).expect(&format!("ms-rtti: corrupt reloc at {:08X}", rva));
+		let target_va = file.derva_copy(rva).expect(&format!("ms-rtti: corrupt reloc at {:08X}", rva));
 		let target_rva = file.va_to_rva(target_va).expect(&format!("ms-rtti: corrupt xref at {:08X}", rva));
 		// Look for xrefs to text (the virtual functions themselves)
 		if target_rva < text.VirtualAddress || target_rva >= (text.VirtualAddress + text.VirtualSize) {
@@ -71,7 +71,7 @@ fn main() {
 	// By collecting all xrefs to the previously collected pointers, we can find the start of the vtable
 	let mut xrefs: Vec<usize> = base_relocs.into_iter().flat_map(|relocs| relocs).filter_map(|rva| {
 		// Read the pointer being relocated
-		let &target_va = file.derva(rva).expect(&format!("ms-rtti: corrupt reloc at {:08X}", rva));
+		let target_va = file.derva_copy(rva).expect(&format!("ms-rtti: corrupt reloc at {:08X}", rva));
 		let target_rva = file.va_to_rva(target_va).expect(&format!("ms-rtti: corrupt xref at {:08X}", rva));
 		// Find the target_rva in the coderefs
 		vrefs.binary_search(&target_rva).ok()
@@ -121,7 +121,7 @@ fn vtable<'a>(file: PeFile<'a>, types: &mut Vec<Type<'a>>, xref: usize, vrefs: &
 	let index = if let Some(index) = types.iter_mut().position(|ty| ty.type_ptr == col.type_descriptor && ty.class_ptr == col.class_descriptor) { index }
 	else {
 		// First time seeing this type, get its descriptors
-		let ty_name = file.deref_c_str(col.type_descriptor.shift(8))?.to_str().or(Err(pelite::Error::CStr))?;
+		let ty_name = file.deref_str(col.type_descriptor.shift(8))?.to_str().or(Err(pelite::Error::CStr))?;
 		let class_desc = file.deref(col.class_descriptor)?;
 		// And add it to the list of types
 		types.push(Type { type_ptr: col.type_descriptor, class_ptr: col.class_descriptor, ty_name, class_desc, vtables: Vec::new() });
@@ -158,7 +158,7 @@ fn print_vtable<'a>(file: PeFile<'a>, ty: &Type<'a>, vtable: &VTable<'a>) -> pel
 	for &base_class_ptr in base_classes {
 		let base_class = file.deref(base_class_ptr)?;
 		if base_class.pmd.mdisp == vtable.col.offset as i32 {
-			let base_ty_name = file.deref_c_str(Ptr::from(base_class.type_descriptor.shift(8)))?.to_str().or(Err(pelite::Error::CStr))?;
+			let base_ty_name = file.deref_str(Ptr::from(base_class.type_descriptor.shift(8)))?.to_str().or(Err(pelite::Error::CStr))?;
 			println!("{:#010X}: ??_7{}6B@ {{for `{}'}} ({} methods)", vtable.rva, &ty.ty_name[4..], base_ty_name, vtable.vtable.len());
 			return Ok(())
 		}
@@ -176,9 +176,8 @@ fn print_class<'a>(file: PeFile<'a>, ty: &Type<'a>) -> pelite::Result<()> {
 	let mut stack = [0u32; 32];
 	stack[0] = ty.class_desc.num_base_classes;
 	let mut depth = 0;
-	let mut bc_iter = base_classes.iter();
 	let mut s = String::new();
-	while let Some(&base_class_ptr) = bc_iter.next() {
+	for &base_class_ptr in base_classes {
 		let base_class = file.deref(base_class_ptr)?;
 		// Mark virtual inheritance as special...
 		// I'm not sure how to best display this information
@@ -195,7 +194,7 @@ fn print_class<'a>(file: PeFile<'a>, ty: &Type<'a>) -> pelite::Result<()> {
 			s += prefix;
 		}
 		// Get its type name
-		let base_ty_name = file.deref_c_str(base_class.type_descriptor.shift(8))?.to_str().or(Err(pelite::Error::CStr))?;
+		let base_ty_name = file.deref_str(base_class.type_descriptor.shift(8))?.to_str().or(Err(pelite::Error::CStr))?;
 		s += base_ty_name; s += "\n";
 		// Manage the inheritance stack...
 		stack[depth] -= base_class.num_contained_bases + 1;

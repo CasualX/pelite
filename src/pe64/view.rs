@@ -57,19 +57,42 @@ impl<'a> Pe<'a> for PeView<'a> {
 	fn image(&self) -> &'a [u8] {
 		self.image
 	}
-	fn slice_rva(&self, rva: Rva, size: usize, align: usize) -> Result<&'a [u8]> {
-		let start = rva as usize;
-		if rva == 0 {
+	fn slice(&self, rva: Rva, min_size: usize, align: usize) -> Result<&'a [u8]> {
+		let start = rva as FileOffset;
+		if rva == BADRVA {
 			Err(Error::Null)
 		}
 		else if start & (align - 1) != 0 {
 			Err(Error::Misalign)
 		}
 		else {
-			// NOTE! Should it reject slices over multiple sections?
 			match self.image.get(start..) {
-				Some(bytes) if bytes.len() >= size => Ok(bytes),
+				Some(bytes) if bytes.len() >= min_size => Ok(bytes),
 				_ => Err(Error::OOB),
+			}
+		}
+	}
+	fn read(&self, va: Va, min_size: usize, align: usize) -> Result<&'a [u8]> {
+		let (image_base, size_of_image) = {
+			let optional_header = self.optional_header();
+			(optional_header.ImageBase, optional_header.SizeOfImage)
+		};
+		if va == BADVA {
+			Err(Error::Null)
+		}
+		else if va < image_base || va - image_base > size_of_image as Va {
+			Err(Error::OOB)
+		}
+		else {
+			let start = (va - image_base) as FileOffset;
+			if start & (align - 1) != 0 {
+				Err(Error::Misalign)
+			}
+			else {
+				match self.image.get(start..) {
+					Some(bytes) if bytes.len() >= min_size => Ok(bytes),
+					_ => Err(Error::OOB),
+				}
 			}
 		}
 	}

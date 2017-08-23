@@ -112,7 +112,7 @@ impl<'a, P: Pe<'a> + Copy> Desc<'a, P> {
 	}
 	/// Gets the name of the DLL imported from.
 	pub fn dll_name(&self) -> Result<&'a CStr> {
-		self.pe.derva_c_str(self.image.Name)
+		self.pe.derva_str(self.image.Name)
 	}
 	/// Gets the import address table.
 	///
@@ -144,7 +144,7 @@ fn import_from_va<'a, P: Pe<'a> + Copy>(pe: P, va: Va) -> Result<Import<'a>> {
 		// TODO! Validate that this really is an Rva in PE32+?
 		let rva = va as Rva;
 		let hint = pe.derva::<u16>(rva)?;
-		let name = pe.derva_c_str(rva + 2)?;
+		let name = pe.derva_str(rva + 2)?;
 		Ok(Import::ByName { hint: *hint as usize, name })
 	}
 	else {
