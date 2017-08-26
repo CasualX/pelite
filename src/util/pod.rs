@@ -6,9 +6,9 @@ Podness.
 ///
 /// Types which need to be read from PE files should implement this.
 ///
-/// # Unsafety
+/// # Safety
 ///
-/// Various functions rely on the Podness to assume that any byte slice of sufficient length can be safely transmuted to this type.
+/// Various functions rely on `Pod`ness to mean that any byte array of sufficient length can be safely transmuted to this type.
 pub unsafe trait Pod: 'static {}
 
 // Autoderive `Pod`ness

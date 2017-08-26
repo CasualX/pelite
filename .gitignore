@@ -1,3 +1,10 @@
+# Editors
+.vscode/
+.idea/
+
+# Old Prototype
 proto/
+
+# Cargo
 target/
 Cargo.lock

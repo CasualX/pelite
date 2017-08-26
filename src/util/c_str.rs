@@ -11,12 +11,28 @@ use ::{Error};
 
 /// Nul-terminated C string.
 #[derive(Eq, Ord, Hash)]
-pub struct CStr([u8]);
+pub struct CStr {
+	bytes: [u8],
+}
 
 impl CStr {
 	/// Scans the byte slice for a nul-terminated C string.
 	///
 	/// Errors with `Error::CStr` if there is no nul byte.
+	///
+	/// # Examples
+	///
+	/// ```
+	/// use pelite::util::CStr;
+	///
+	/// let c_str = CStr::from_bytes(b"Hello\0World\0").unwrap();
+	/// assert_eq!(c_str.to_str(), Ok("Hello"));
+	/// assert_eq!(c_str.c_str(), b"Hello\0");
+	/// assert_eq!(c_str.len(), 5);
+	///
+	/// let no_nul = CStr::from_bytes(b"not nul terminated");
+	/// assert_eq!(no_nul, Err(pelite::Error::CStr));
+	/// ```
 	pub fn from_bytes(bytes: &[u8]) -> ::Result<&CStr> {
 		let len = bytes.iter().position(|&byte| byte == 0).ok_or(Error::CStr)?;
 		Ok(unsafe { CStr::from_bytes_unchecked(bytes.get_unchecked(..len + 1)) })
@@ -31,7 +47,7 @@ impl CStr {
 	}
 	/// Gets the C string as a nul terminated byte slice.
 	pub fn c_str(&self) -> &[u8] {
-		&self.0
+		&self.bytes
 	}
 	/// Casts the C string to an UTF8 validated `str`.
 	pub fn to_str(&self) -> Result<&str, str::Utf8Error> {
@@ -63,8 +79,8 @@ impl ops::Deref for CStr {
 impl AsRef<[u8]> for CStr {
 	fn as_ref(&self) -> &[u8] {
 		// Strip the nul byte
-		let len = self.0.len() - 1;
-		unsafe { self.0.get_unchecked(..len) }
+		let len = self.bytes.len() - 1;
+		unsafe { self.bytes.get_unchecked(..len) }
 	}
 }
 

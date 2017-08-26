@@ -68,13 +68,14 @@ impl ImageMap {
 		Self::_open(path.as_ref())
 	}
 	fn _open(path: &Path) -> io::Result<ImageMap> { unsafe {
-		// Get the path as a nul terminated wide string
-		let path: &OsStr = path.as_ref();
-		let mut wpath: Vec<u16> = path.encode_wide().collect();
-		wpath.push(0);
 		// Get its file handle
-		let file = CreateFileW(wpath.as_ptr(), /*GENERIC_READ*/0x80000000, /*FILE_SHARE_READ*/0x00000001, ptr::null(), /*OPEN_EXISTING*/3, /*FILE_ATTRIBUTE_NORMAL*/0x00000080, NULL);
-		drop(wpath);
+		let file = {
+			// Get the path as a nul terminated wide string
+			let path: &OsStr = path.as_ref();
+			let mut wpath: Vec<u16> = path.encode_wide().collect();
+			wpath.push(0);
+			CreateFileW(wpath.as_ptr(), /*GENERIC_READ*/0x80000000, /*FILE_SHARE_READ*/0x00000001, ptr::null(), /*OPEN_EXISTING*/3, /*FILE_ATTRIBUTE_NORMAL*/0x00000080, NULL)
+		};
 		if file != INVALID_HANDLE_VALUE {
 			// Create the image file mapping, `SEC_IMAGE` does its magic thing
 			let map = CreateFileMappingW(file, ptr::null(), /*PAGE_READONLY*/0x02 | /*SEC_IMAGE*/0x1000000, 0, 0, ptr::null());
@@ -120,13 +121,14 @@ impl FileMap {
 		Self::_open(path.as_ref())
 	}
 	fn _open(path: &Path) -> io::Result<FileMap> { unsafe {
-		// Get the path as a nul terminated wide string
-		let path: &OsStr = path.as_ref();
-		let mut wpath: Vec<u16> = path.encode_wide().collect();
-		wpath.push(0);
 		// Get its file handle
-		let file = CreateFileW(wpath.as_ptr(), /*GENERIC_READ*/0x80000000, /*FILE_SHARE_READ*/0x00000001, ptr::null(), /*OPEN_EXISTING*/3, /*FILE_ATTRIBUTE_NORMAL*/0x00000080, NULL);
-		drop(wpath);
+		let file = {
+			// Get the path as a nul terminated wide string
+			let path: &OsStr = path.as_ref();
+			let mut wpath: Vec<u16> = path.encode_wide().collect();
+			wpath.push(0);
+			CreateFileW(wpath.as_ptr(), /*GENERIC_READ*/0x80000000, /*FILE_SHARE_READ*/0x00000001, ptr::null(), /*OPEN_EXISTING*/3, /*FILE_ATTRIBUTE_NORMAL*/0x00000080, NULL)
+		};
 		if file == INVALID_HANDLE_VALUE {
 			return Err(io::Error::last_os_error());
 		}

@@ -11,7 +11,7 @@ use ::util::{CStr, Pod, SliceLen};
 
 //----------------------------------------------------------------
 
-pub trait Pe<'a> {
+pub unsafe trait Pe<'a> {
 	/// Returns the image as a byte slice.
 	fn image(&self) -> &'a [u8];
 
@@ -323,7 +323,7 @@ pub trait Pe<'a> {
 }
 
 // Make `&Pe<'a>` trait objects work seamlessly.
-impl<'s, 'a, P: Pe<'a> + ?Sized> Pe<'a> for &'s P {
+unsafe impl<'s, 'a, P: Pe<'a> + ?Sized> Pe<'a> for &'s P {
 	fn image(&self) -> &'a [u8] {
 		P::image(*self)
 	}

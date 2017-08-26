@@ -53,7 +53,7 @@ impl<'a> PeView<'a> {
 	}
 }
 
-impl<'a> Pe<'a> for PeView<'a> {
+unsafe impl<'a> Pe<'a> for PeView<'a> {
 	fn image(&self) -> &'a [u8] {
 		self.image
 	}
