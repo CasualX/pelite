@@ -1,3 +1,7 @@
+/*!
+Dumps all PE related headers.
+*/
+
 extern crate pelite;
 
 use std::env;

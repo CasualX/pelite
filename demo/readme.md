@@ -6,7 +6,7 @@ Examples of tools that can be build using pelite.
 32-bit RTTI dump
 ----------------
 
-`cargo run --bin ms-rtti -- "demo/Demo.dll" > demo/demo-rtti.txt`
+`cargo run --bin msrtti -- "demo/Demo.dll" > demo/demo-rtti.txt`
 
 Dumps the runtime type information, each associated vtable and class hierarchy for every type found.
 
