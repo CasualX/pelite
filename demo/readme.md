@@ -20,3 +20,8 @@ The result can be seen [here](demo-rtti.txt).
 Dumps all the PE related headers and then some.
 
 The result can be seen [here](demo64-pe.txt).
+
+Generate PE Module-Definition file
+----------------------------------
+
+`cargo run --bin pemoddef -- "demo/Demo64.dll" > demo/demo64.def`
