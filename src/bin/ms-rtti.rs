@@ -1,7 +1,7 @@
 extern crate pelite;
 
-use ::std::env;
-use ::std::process::exit;
+use std::env;
+use std::process::exit;
 
 use pelite::FileMap;
 use pelite::pe32::{Pe, PeFile, Ptr};

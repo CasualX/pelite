@@ -7,9 +7,10 @@ References:
 [2]: [Reversing Microsoft Visual C++ Part II: Classes, Methods and RTTI](http://www.openrce.org/articles/full_view/23)  
 */
 
-use super::image::{Va};
+use util::Pod;
+
+use super::image::Va;
 use super::ptr::Ptr;
-use ::util::Pod;
 
 //----------------------------------------------------------------
 

@@ -26,11 +26,12 @@ fn example(file: PeFile) -> pelite::Result<()> {
 ```
 */
 
-use ::std::fmt;
+use std::fmt;
+
+use error::{Error, Result};
 
 use super::image::*;
-use super::{Pe};
-use ::{Error, Result};
+use super::Pe;
 
 //----------------------------------------------------------------
 
@@ -70,7 +71,7 @@ impl<'a, P: Pe<'a> + Copy> Tls<'a, P> {
 //----------------------------------------------------------------
 // Formatting
 
-use ::strings::Fmt;
+use strings::Fmt;
 
 impl<'a, P: Pe<'a> + Copy> fmt::Debug for Tls<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {

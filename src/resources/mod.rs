@@ -2,11 +2,13 @@
 Resources.
 */
 
-use ::std::{fmt, slice, mem};
+use std::{fmt, mem, slice};
 
-use super::image::*;
-use super::error::{Error, Result};
-use super::util::WideStr;
+use error::{Error, Result};
+use image::*;
+use util::WideStr;
+
+//----------------------------------------------------------------
 
 mod find;
 pub use self::find::FindError;
@@ -335,7 +337,7 @@ fn tree_fmt_rec(f: &mut fmt::Formatter, margin: &mut [bool; 32], depth: u32, art
 			Ok(Name::Id(id)) => {
 				// At root level some resource ids have special names
 				let get_rsrc_name = || {
-					use ::strings::RSRC_TYPES;
+					use strings::RSRC_TYPES;
 					if root { RSRC_TYPES.get(id as usize).and_then(|&a| a) }
 					else { None }
 				};

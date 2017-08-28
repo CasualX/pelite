@@ -33,12 +33,13 @@ fn example(file: PeFile) -> pelite::Result<()> {
 ```
 */
 
-use ::std::{slice, fmt, mem};
+use std::{fmt, mem, slice};
+
+use error::{Error, Result};
+use util::CStr;
 
 use super::image::*;
-use super::{Pe};
-use ::{Error, Result};
-use ::util::CStr;
+use super::Pe;
 
 //----------------------------------------------------------------
 

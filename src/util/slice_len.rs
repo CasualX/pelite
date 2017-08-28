@@ -1,6 +1,6 @@
-use ::std::{mem, slice};
+use std::{mem, slice};
 
-use super::Pod;
+use util::Pod;
 
 /// Helper trait representing the length of an array.
 ///

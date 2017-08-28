@@ -1,9 +1,10 @@
 extern crate pelite;
 
-use ::std::env;
-use ::std::path::PathBuf;
-use ::std::process;
-use ::std::io::{self, Write};
+use std::env;
+use std::io::{self, Write};
+use std::path::PathBuf;
+use std::process;
+
 use pelite::FileMap;
 
 //----------------------------------------------------------------
@@ -194,7 +195,7 @@ fn main() {
 }
 
 fn dump_pe64(args: &Parameters, file: &pelite::pe64::PeFile) {
-	use pelite::pe64::{Pe};
+	use pelite::pe64::Pe;
 	if args.dos {
 		let dos = file.dos_header();
 		print!("{}{:?}", SEPARATOR, dos);
@@ -266,7 +267,7 @@ fn dump_pe64(args: &Parameters, file: &pelite::pe64::PeFile) {
 }
 
 fn dump_pe32(args: &Parameters, file: &pelite::pe32::PeFile) {
-	use pelite::pe32::{Pe};
+	use pelite::pe32::Pe;
 	if args.dos {
 		let dos = file.dos_header();
 		print!("{}{:?}", SEPARATOR, dos);

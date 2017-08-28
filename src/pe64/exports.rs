@@ -34,14 +34,14 @@ fn example(file: PeFile) -> pelite::Result<()> {
 
 */
 
-use ::std::{ops, fmt};
+use std::{fmt, ops};
+
+use error::{Error, Result};
+use util::CStr;
 
 use super::image::*;
-use super::{Pe};
-use ::{Error, Result};
-use ::util::CStr;
-
 use super::imports::Import;
+use super::Pe;
 
 //----------------------------------------------------------------
 
@@ -197,7 +197,7 @@ impl<'a, P: Pe<'a> + Copy> By<'a, P> {
 			let i = lower_bound + (upper_bound - lower_bound) / 2;
 			let name_rva = self.names[i];
 			let name_it = self.exp.pe.derva_str(name_rva)?.as_ref();
-			use ::std::cmp::Ordering::*;
+			use std::cmp::Ordering::*;
 			match name.cmp(name_it) {
 				Less => upper_bound = i,
 				Greater => lower_bound = i + 1,
@@ -270,7 +270,7 @@ impl<'a, P: Pe<'a> + Copy> By<'a, P> {
 //----------------------------------------------------------------
 // Formatting
 
-use ::strings::{Fmt};
+use strings::Fmt;
 
 impl<'a> fmt::Display for Export<'a> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {

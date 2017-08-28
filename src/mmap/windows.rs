@@ -1,11 +1,10 @@
 
-use ::std::path::Path;
-use ::std::{io, ptr, slice};
-
-use ::std::os::windows::io::RawHandle;
-use ::std::os::windows::ffi::OsStrExt;
-use ::std::os::raw::c_void;
-use ::std::ffi::OsStr;
+use std::{io, ptr, slice};
+use std::ffi::OsStr;
+use std::path::Path;
+use std::os::windows::ffi::OsStrExt;
+use std::os::windows::io::RawHandle;
+use std::os::raw::c_void;
 
 const INVALID_HANDLE_VALUE: RawHandle = !0 as RawHandle;
 const NULL: RawHandle = 0 as RawHandle;

@@ -2,12 +2,13 @@
 Abstract over mapped images and file binaries.
 */
 
-use ::std::{mem, ptr, slice};
+use std::{mem, ptr, slice};
+
+use error::{Error, Result};
+use util::{CStr, Pod, SliceLen};
 
 use super::image::*;
 use super::ptr::Ptr;
-use ::{Error, Result};
-use ::util::{CStr, Pod, SliceLen};
 
 //----------------------------------------------------------------
 
@@ -343,7 +344,7 @@ pub(crate) struct VH {
 }
 // TODO: This code needs to be audited...
 // The safety of `Pe` relies on it.
-pub(crate) fn validate_headers(image: &[u8]) -> ::Result<VH> {
+pub(crate) fn validate_headers(image: &[u8]) -> Result<VH> {
 	// Grab the DOS header
 	if mem::size_of::<IMAGE_DOS_HEADER>() > image.len() {
 		return Err(Error::OOB);

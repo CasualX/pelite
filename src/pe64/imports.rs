@@ -30,12 +30,13 @@ fn example(file: PeFile) -> pelite::Result<()> {
 ```
 */
 
-use ::std::{fmt, slice};
+use std::{fmt, slice};
+
+use error::{Error, Result};
+use util::CStr;
 
 use super::image::*;
-use super::{Pe};
-use ::{Error, Result};
-use ::util::CStr;
+use super::Pe;
 
 //----------------------------------------------------------------
 
@@ -162,7 +163,7 @@ def_iter!(struct IntIter -> Va, Result<Import<'a>>; this |&va| import_from_va(th
 //----------------------------------------------------------------
 // Formatting
 
-use ::strings::Fmt;
+use strings::Fmt;
 
 impl<'a> fmt::Display for Import<'a> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {

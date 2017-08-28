@@ -1,9 +1,9 @@
 extern crate libc;
 
-use ::std::{io, slice, mem, ptr};
-use ::std::path::Path;
-use ::std::fs::File;
-use ::std::os::unix::io::AsRawFd;
+use std::{io, mem, ptr, slice};
+use std::fs::File;
+use std::path::Path;
+use std::os::unix::io::AsRawFd;
 
 /// Memory-mapped file.
 pub struct FileMap {
