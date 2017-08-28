@@ -36,7 +36,7 @@ This requires knowledge with reverse engineering programs.
 Here's a resource to learn more about signature scanning: [wiki.alliedmods.net](https://wiki.alliedmods.net/Signature_scanning).
 */
 
-use ::std::{fmt, mem, error};
+use std::{error, fmt, mem};
 
 /// Max recursion depth.
 pub const STACK_SIZE: usize = 4;
@@ -391,10 +391,10 @@ impl fmt::Display for Match {
 #[cfg(test)]
 mod tests {
 	use super::*;
-	use ::std::mem;
 
 	#[test]
 	fn sizes() {
+		use std::mem;
 		// Compile time asserts the sizes of these types.
 		let _ = unsafe { mem::forget::<u16>(mem::transmute(mem::uninitialized::<Atom>())) };
 		let _ = unsafe { mem::forget::<[u32; MAX_SAVE]>(mem::transmute(mem::uninitialized::<Match>())) };

@@ -30,11 +30,13 @@ fn example(file: PeFile, pat: &[Atom]) -> Option<Match> {
 ```
 */
 
-use ::std::ops::Range;
+use std::mem;
+use std::ops::Range;
+
+use pattern as pat;
 
 use super::{Rva, Pe};
 use super::image::*;
-use ::pattern as pat;
 
 /// Size of the prefix buffer for search optimization.
 const QS_BUF_LEN: usize = 16;
@@ -90,7 +92,7 @@ impl<'a, P: Pe<'a> + Copy> Scanner<P> {
 	}
 	/// Returns if the pattern matches the binary image at the given rva.
 	pub fn exec(self, pat: &[self::pat::Atom], mut cursor: Rva) -> Option<pat::Match> {
-		let ptr_skip = ::std::mem::size_of::<Va>() as i8;
+		let ptr_skip = mem::size_of::<Va>() as i8;
 		let mut stack = [0u32; pat::STACK_SIZE];
 		let mut sp = 0;
 		let mut result = pat::Match::default();
@@ -157,7 +159,7 @@ impl<'a, P: Pe<'a> + Copy> Scanner<P> {
 		let image = self.pe.image();
 		for it in self.pe.section_headers() {
 			if range.start < (it.VirtualAddress + it.SizeOfRawData) && range.end >= it.VirtualAddress {
-				use ::std::cmp::{min, max};
+				use std::cmp::{min, max};
 				let start = max(range.start, it.VirtualAddress);
 				let end = min(range.end, it.VirtualAddress + it.SizeOfRawData);
 				if let Some(slice) = image.get((start - it.VirtualAddress + it.PointerToRawData) as FileOffset..(end - it.VirtualAddress + it.PointerToRawData) as FileOffset) {

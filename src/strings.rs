@@ -2,10 +2,10 @@
 Formatting as far as the eye can see...
 */
 
-use ::std::fmt;
+use std::{fmt, mem};
 
-use super::image::*;
-use super::util::*;
+use image::*;
+use util::*;
 
 //----------------------------------------------------------------
 
@@ -13,7 +13,7 @@ pub fn stringify<T>(data: &T) -> Option<&str> {
 	let bytes = unsafe {
 		::std::slice::from_raw_parts(
 			data as *const T as *const u8,
-			::std::mem::size_of_val(data),
+			mem::size_of_val(data),
 		)
 	};
 	::std::str::from_utf8(strn(bytes)).ok()
@@ -582,7 +582,7 @@ impl fmt::Debug for GUID {
 }
 impl fmt::Display for GUID {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		let g: &[u8; 16] = unsafe { ::std::mem::transmute(self) };
+		let g: &[u8; 16] = unsafe { mem::transmute(self) };
 		write!(f, "{:02X}{:02X}{:02X}{:02X}-{:02X}{:02X}-{:02X}{:02X}-{:02X}{:02X}-{:02X}{:02X}{:02X}{:02X}{:02X}{:02X}",
 			g[0], g[1], g[2], g[3], g[4], g[5], g[6], g[7], g[8], g[9], g[10], g[11], g[12], g[13], g[14], g[15])
 	}

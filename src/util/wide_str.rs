@@ -2,7 +2,7 @@
 Length word prefixed wide string.
 */
 
-use ::std::{char, ops, fmt, mem};
+use std::{char, fmt, mem, ops};
 
 //----------------------------------------------------------------
 

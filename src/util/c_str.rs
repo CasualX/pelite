@@ -2,10 +2,10 @@
 Nul-terminated C string.
 */
 
-use ::std::{cmp, str, ops, fmt, mem};
+use std::{cmp, fmt, mem, ops, str};
 
-use ::util::split_f;
-use ::{Error};
+use util::split_f;
+use error::Error;
 
 //----------------------------------------------------------------
 
@@ -165,8 +165,8 @@ impl fmt::Display for CStr {
 
 #[cfg(test)]
 mod tests {
+	use error::Error;
 	use super::CStr;
-	use ::Error;
 
 	#[test]
 	fn units() {

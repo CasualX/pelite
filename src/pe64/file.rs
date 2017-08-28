@@ -2,9 +2,10 @@
 PE file.
 */
 
+use error::{Error, Result};
+
 use super::image::*;
 use super::pe::{Pe, validate_headers};
-use ::{Error, Result};
 
 /// View into an unmapped PE file.
 #[derive(Copy, Clone)]
@@ -96,8 +97,8 @@ unsafe impl<'a> Pe<'a> for PeFile<'a> {
 
 #[cfg(test)]
 mod tests {
+	use error::Error;
 	use super::PeFile;
-	use ::Error;
 
 	#[test]
 	fn from_byte_slice() {

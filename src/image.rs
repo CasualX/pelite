@@ -520,7 +520,7 @@ pub struct IMAGE_DEBUG_MISC {
 
 //----------------------------------------------------------------
 
-use ::util::Pod;
+use util::Pod;
 
 unsafe impl Pod for IMAGE_DOS_HEADER {}
 unsafe impl Pod for IMAGE_FILE_HEADER {}

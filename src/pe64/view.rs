@@ -2,11 +2,12 @@
 PE view.
 */
 
-use ::std::{slice};
+use std::slice;
+
+use error::{Error, Result};
 
 use super::image::*;
 use super::pe::{Pe, validate_headers};
-use ::{Error, Result};
 
 /// View into a mapped PE image.
 #[derive(Copy, Clone)]
@@ -102,8 +103,8 @@ unsafe impl<'a> Pe<'a> for PeView<'a> {
 
 #[cfg(test)]
 mod tests {
+	use error::Error;
 	use super::PeView;
-	use ::Error;
 
 	#[test]
 	fn from_byte_slice() {

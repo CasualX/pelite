@@ -2,11 +2,12 @@
 Typed virtual address.
 */
 
-use ::std::{fmt, cmp};
-use ::std::marker::PhantomData;
+use std::{cmp, fmt};
+use std::marker::PhantomData;
 
-use super::image::{Va};
-use ::util::{Offset, Pod};
+use util::{Offset, Pod};
+
+use super::image::Va;
 
 //----------------------------------------------------------------
 

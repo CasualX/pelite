@@ -20,11 +20,12 @@ fn example(file: PeFile) -> pelite::Result<()> {
 ```
 */
 
-use ::std::{slice, fmt, mem};
+use std::{fmt, mem, slice};
+
+use error::{Error, Result};
 
 use super::image::*;
-use super::{Pe};
-use ::{Error, Result};
+use super::Pe;
 
 //----------------------------------------------------------------
 
@@ -171,7 +172,7 @@ impl<'a> Iterator for BlockIter<'a> {
 //----------------------------------------------------------------
 // Formatting
 
-use ::strings::{Fmt, stringify_reloc_type};
+use strings::{Fmt, stringify_reloc_type};
 
 impl<'a, P: Pe<'a> + Copy> fmt::Debug for BaseRelocs<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {

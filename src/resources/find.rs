@@ -2,8 +2,8 @@
 Resources Find API.
 */
 
-use ::std::{fmt, str, error};
-use ::std::path::Path;
+use std::{error, fmt, str};
+use std::path::Path;
 
 use super::{Resources, Directory, Entry, Name, DataEntry};
 

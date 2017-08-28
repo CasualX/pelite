@@ -2,7 +2,7 @@
 Errors and Results.
 */
 
-use ::std::{fmt, error, result};
+use std::{error, fmt, result};
 
 /// Errors while parsing the PE binary.
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Hash)]
