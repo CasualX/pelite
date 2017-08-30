@@ -1,0 +1,22 @@
+LIBRARY Demo.dll
+EXPORTS
+??0Passwds@@QAE@PBD@Z
+??1Passwds@@QAE@XZ
+??4Passwds@@QAEAAV0@ABV0@@Z
+?AddPass@Passwds@@QAEXPBD00@Z
+?GLOBAL_A@@3VA@@A
+?GLOBAL_B@@3VB@@A
+?GLOBAL_C@@3VC@@A
+?GetPass@Passwds@@QAEPBDPBD0@Z
+?Lock@Passwds@@QAEXXZ
+?Unlock@Passwds@@QAE_NPBD@Z
+?__autoclassinit2@Passwds@@QAEXI@Z
+?fnPasswdsBypass@@YAHXZ
+?nPasswds@@3HA
+CallA1
+CallA2
+CallB1
+CallB2
+CallC1
+CallC2
+ThrowException

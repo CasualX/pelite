@@ -2,21 +2,29 @@
 Writes a [Module-Defintion](https://msdn.microsoft.com/en-us/library/28d6s79h.aspx) file for the given input DLL.
 
 ```bat
-cargo run --bin pemoddef -- "demo\Demo64.dll" > "demo\Demo64.def"
+cargo run --bin pemoddef -- "demo\Demo64.dll" > "demo\Demo64.DEF"
+cargo run --bin pemoddef -- "demo\Demo.dll" > "demo\Demo.DEF"
 ```
 
-Creates an Import Library from the Module-Definition file.
-Note that this needs access the VC build tools for `vcvarsall`.
+An Import Library can be created from the Module-Definition file.
+Note that this needs access the VC build tools.
 
 ```bat
 vcvarsall x64
-lib /def:"demo\Demo64.def" /out:"demo\Demo64.LIB" /machine:x64
+lib /def:"demo\Demo64.DEF" /out:"demo\Demo64.LIB" /machine:x64
+```
+
+Also works for 32-bit binaries using the 32-bit VC build tools and commands.
+
+```bat
+vcvarsall x86
+lib /def:"demo\Demo.DEF" /out:"demo\Demo.LIB" /machine:x86
 ```
 */
 
 extern crate pelite;
 
-use std::{env};
+use std::env;
 
 //----------------------------------------------------------------
 
@@ -24,7 +32,7 @@ const HELP_TEXT: &str = r#"\
 PE Module-Definition Generator from DLL.
 
 To create an import library run the following command afterwards:
-    lib /def:"MODULE.DEF" /out:"MODULE.LIB" /machine:x86 | x64
+    lib /def:"MODULE.DEF" /out:"MODULE.LIB" /machine:[x86|x64]
 
 Usage:
     pemoddef "MODULE.DLL" > "MODULE.DEF"
