@@ -2,10 +2,10 @@
 Typed virtual address.
 */
 
-use std::{cmp, fmt};
+use std::{cmp, fmt, mem, ops};
 use std::marker::PhantomData;
 
-use util::{Offset, Pod};
+use util::{Pod};
 
 use super::image::Va;
 
@@ -51,8 +51,8 @@ impl<T: ?Sized> Ptr<T> {
 	///
 	/// assert_eq!(target, Ptr::from(0x2004));
 	/// ```
-	pub fn shift<U: ?Sized, I>(self, offset: I) -> Ptr<U> where Va: Offset<I> {
-		Ptr(self.0.offset(offset), PhantomData)
+	pub fn shift<U: ?Sized>(self, offset: Va) -> Ptr<U> {
+		Ptr(self.0 + offset, PhantomData)
 	}
 }
 
@@ -108,19 +108,18 @@ impl<T: ?Sized> AsMut<Va> for Ptr<T> {
 		&mut self.0
 	}
 }
-/*
-impl<T: ?Sized> ops::Deref for Ptr<T> {
-	type Target = Va;
-	fn deref(&self) -> &Va {
-		&self.0
+impl<T> ops::Add<Va> for Ptr<T> {
+	type Output = Ptr<T>;
+	fn add(self, rhs: Va) -> Ptr<T> {
+		Ptr(self.0 + rhs * mem::size_of::<T>() as Va, PhantomData)
 	}
 }
-impl<T: ?Sized> ops::DerefMut for Ptr<T> {
-	fn deref_mut(&mut self) -> &mut Va {
-		&mut self.0
+impl<T> ops::Add<Va> for Ptr<[T]> {
+	type Output = Ptr<T>;
+	fn add(self, rhs: Va) -> Ptr<T> {
+		Ptr(self.0 + rhs * mem::size_of::<T>() as Va, PhantomData)
 	}
 }
-*/
 impl<T: ?Sized> fmt::Debug for Ptr<T> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		branch! {

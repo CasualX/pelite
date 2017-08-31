@@ -22,12 +22,10 @@ mod iter;
 mod c_str;
 mod wide_str;
 mod pod;
-mod offset;
 
 pub use self::c_str::CStr;
 pub use self::wide_str::WideStr;
 pub use self::pod::Pod;
-pub use self::offset::Offset;
 
 /// Converts from a byte slice to a string.
 pub trait FromBytes {
