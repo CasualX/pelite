@@ -91,21 +91,15 @@ impl<'a, P: Pe<'a> + Copy> Scanner<P> {
 		self.matches(pat, range)
 	}
 	/// Returns if the pattern matches the binary image at the given rva.
-	pub fn exec(self, pat: &[self::pat::Atom], cursor: Rva) -> Option<pat::Match> {
+	pub fn exec(self, cursor: Rva, pat: &[self::pat::Atom], save: &mut [Rva]) -> bool {
 		let mut state = Exec {
-			iter: pat.iter()
+			iter: pat.iter(),
 			cursor,
-			result: pat::Match::default(),
 			stack: [0; pat::STACK_SIZE],
 			sp: 0,
 			mask: 0xFF,
 		};
-		if state.exec(self.pe) {
-			Some(state.result)
-		}
-		else {
-			None
-		}
+		state.exec(self.pe, save)
 	}
 	fn map_sections<F>(self, range: Range<Rva>, mut f: F) -> Option<pat::Match>
 		where F: FnMut(Rva, &'a [u8]) -> Option<pat::Match>
@@ -132,13 +126,12 @@ impl<'a, P: Pe<'a> + Copy> Scanner<P> {
 struct Exec<'u> {
 	iter: slice::Iter<'u, pat::Atom>,
 	cursor: Rva,
-	result: pat::Match,
 	stack: [Rva; pat::STACK_SIZE],
 	sp: usize,
 	mask: u8,
 }
 impl<'u> Exec<'u> {
-	fn exec<'a, P>(&mut self, pe: P) -> bool where P: Pe<'a> + Copy {
+	fn exec<'a, P>(&mut self, pe: P, save: &mut [Rva]) -> bool where P: Pe<'a> + Copy {
 		let ptr_skip = mem::size_of::<Va>() as i8;
 		while let Some(&atom) = self.iter.next() {
 			match atom {
@@ -151,8 +144,8 @@ impl<'u> Exec<'u> {
 					self.cursor += 1;
 				},
 				pat::Atom::Save(slot) => {
-					if slot < pat::MAX_SAVE as u8 {
-						self.result.as_mut()[slot as usize] = self.cursor;
+					if (slot as usize) < save.len() {
+						save[slot as usize] = self.cursor;
 					}
 				},
 				pat::Atom::Push(skip) => {
@@ -179,7 +172,7 @@ impl<'u> Exec<'u> {
 					for i in 0..limit as Rva {
 						let mut state = self.clone();
 						state.cursor = state.cursor.wrapping_add(i);
-						if state.exec(pe) {
+						if state.exec(pe, save) {
 							*self = state;
 							return true;
 						}
@@ -210,7 +203,7 @@ impl<'u> Exec<'u> {
 				},
 				pat::Atom::Pir(slot) => {
 					if let Ok(sdword) = pe.derva_copy::<i32>(self.cursor) {
-						let &base = self.result.as_ref().get(slot as usize).unwrap_or(&self.cursor);
+						let &base = save.get(slot as usize).unwrap_or(&self.cursor);
 						self.cursor = base.wrapping_add(sdword as Rva);
 					}
 					else {
@@ -263,14 +256,14 @@ impl<'a, 'u, P: Pe<'a> + Copy> Matches<'u, P> {
 	//  Note that this is (relatively) slow...
 	fn strategy0(&mut self, _qsbuf: &[u8]) -> Option<pat::Match> {
 		let scanner = self.scanner;
+		let mut result = pat::Match::default();
 		scanner.map_sections(self.range.clone(), |mut it, slice| {
 			let end = it + slice.len() as Rva;
 			while it < end {
 				self.hits += 1;
-				let m = scanner.exec(self.pat, it);
-				if m.is_some() {
+				if scanner.exec(it, self.pat, result.as_mut()) {
 					self.range.start = it + 1;
-					return m;
+					return Some(result);
 				}
 				it += 1;
 			}
@@ -284,15 +277,15 @@ impl<'a, 'u, P: Pe<'a> + Copy> Matches<'u, P> {
 	fn strategy1(&mut self, qsbuf: &[u8]) -> Option<pat::Match> {
 		let byte = qsbuf[0];
 		let scanner = self.scanner;
+		let mut result = pat::Match::default();
 		scanner.map_sections(self.range.clone(), |it, slice| {
 			// Find all places with matching byte
 			// TODO! Replace with actual memchr
 			for cursor in slice.iter().enumerate().filter_map(|(i, &a)| if a == byte { Some(it + i as Rva) } else { None }) {
 				self.hits += 1;
-				let m = scanner.exec(self.pat, cursor);
-				if m.is_some() {
+				if scanner.exec(cursor, self.pat, result.as_mut()) {
 					self.range.start = cursor + 1;
-					return m;
+					return Some(result);
 				}
 			}
 			self.range.start = it + slice.len() as Rva;
@@ -311,6 +304,7 @@ impl<'a, 'u, P: Pe<'a> + Copy> Matches<'u, P> {
 		}
 		let jumps = jumps;
 		let scanner = self.scanner;
+		let mut result = pat::Match::default();
 		scanner.map_sections(self.range.clone(), |it, slice| {
 			// Quicksearch baby!
 			let mut i = 0;
@@ -321,10 +315,9 @@ impl<'a, 'u, P: Pe<'a> + Copy> Matches<'u, P> {
 				if qsbuf[qslen - 1] == last && tbuf == qsbuf {
 					self.hits += 1;
 					let cursor = it + i as Rva;
-					let m = scanner.exec(self.pat, cursor);
-					if m.is_some() {
+					if scanner.exec(cursor, self.pat, result.as_mut()) {
 						self.range.start = cursor + jump;
-						return m;
+						return Some(result);
 					}
 				}
 				i += jump as usize;
