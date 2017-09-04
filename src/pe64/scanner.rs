@@ -92,14 +92,15 @@ impl<'a, P: Pe<'a> + Copy> Scanner<P> {
 	}
 	/// Returns if the pattern matches the binary image at the given rva.
 	pub fn exec(self, cursor: Rva, pat: &[self::pat::Atom], save: &mut [Rva]) -> bool {
-		let mut state = Exec {
+		let state = Exec {
+			pe: self.pe,
 			iter: pat.iter(),
 			cursor,
 			stack: [0; pat::STACK_SIZE],
 			sp: 0,
 			mask: 0xFF,
 		};
-		state.exec(self.pe, save)
+		state.exec(save)
 	}
 	fn map_sections<F>(self, range: Range<Rva>, mut f: F) -> Option<pat::Match>
 		where F: FnMut(Rva, &'a [u8]) -> Option<pat::Match>
@@ -123,20 +124,21 @@ impl<'a, P: Pe<'a> + Copy> Scanner<P> {
 //----------------------------------------------------------------
 
 #[derive(Clone)]
-struct Exec<'u> {
+struct Exec<'u, P> {
+	pe: P,
 	iter: slice::Iter<'u, pat::Atom>,
 	cursor: Rva,
 	stack: [Rva; pat::STACK_SIZE],
 	sp: usize,
 	mask: u8,
 }
-impl<'u> Exec<'u> {
-	fn exec<'a, P>(&mut self, pe: P, save: &mut [Rva]) -> bool where P: Pe<'a> + Copy {
+impl<'a, 'u, P: Pe<'a> + Copy> Exec<'u, P> {
+	fn exec(mut self, save: &mut [Rva]) -> bool {
 		let ptr_skip = mem::size_of::<Va>() as i8;
 		while let Some(&atom) = self.iter.next() {
 			match atom {
 				pat::Atom::Byte(pat_byte) => {
-					match pe.derva_copy::<u8>(self.cursor) {
+					match self.pe.derva_copy::<u8>(self.cursor) {
 						Ok(byte) if byte & self.mask == pat_byte & self.mask => {},
 						_ => return false,
 					}
@@ -172,15 +174,14 @@ impl<'u> Exec<'u> {
 					for i in 0..limit as Rva {
 						let mut state = self.clone();
 						state.cursor = state.cursor.wrapping_add(i);
-						if state.exec(pe, save) {
-							*self = state;
+						if state.exec(save) {
 							return true;
 						}
 					}
 					return false;
 				},
 				pat::Atom::Jump1 => {
-					if let Ok(sbyte) = pe.derva_copy::<i8>(self.cursor) {
+					if let Ok(sbyte) = self.pe.derva_copy::<i8>(self.cursor) {
 						self.cursor = self.cursor.wrapping_add(sbyte as Rva).wrapping_add(1);
 					}
 					else {
@@ -188,7 +189,7 @@ impl<'u> Exec<'u> {
 					}
 				},
 				pat::Atom::Jump4 => {
-					if let Ok(sdword) = pe.derva_copy::<i32>(self.cursor) {
+					if let Ok(sdword) = self.pe.derva_copy::<i32>(self.cursor) {
 						self.cursor = self.cursor.wrapping_add(sdword as Rva).wrapping_add(4);
 					}
 					else {
@@ -196,13 +197,13 @@ impl<'u> Exec<'u> {
 					}
 				},
 				pat::Atom::Ptr => {
-					self.cursor = match pe.derva_copy(self.cursor).and_then(|va| pe.va_to_rva(va)) {
+					self.cursor = match self.pe.derva_copy(self.cursor).and_then(|va| self.pe.va_to_rva(va)) {
 						Ok(cursor) => cursor,
 						Err(_) => return false,
 					};
 				},
 				pat::Atom::Pir(slot) => {
-					if let Ok(sdword) = pe.derva_copy::<i32>(self.cursor) {
+					if let Ok(sdword) = self.pe.derva_copy::<i32>(self.cursor) {
 						let &base = save.get(slot as usize).unwrap_or(&self.cursor);
 						self.cursor = base.wrapping_add(sdword as Rva);
 					}
