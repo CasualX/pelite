@@ -1,3 +1,13 @@
+/*!
+Dumps the RunTime Type Information, each associated vtable and class hierarchy for every type found.
+
+Limited to PE32 (32bit binaries) only. Pull requests are welcome to support PE32+ and/or GNU ABI!
+
+```
+cargo run --bin msrtti -- "demo/Demo.dll" > demo/demo-rtti.txt
+```
+*/
+
 extern crate pelite;
 
 use std::env;
@@ -32,15 +42,15 @@ fn main() {
 	}
 	let path = args.nth(1).unwrap();
 
-	let file_map = FileMap::open(&path).expect("ms-rtti: failed to open the given file");
-	let file = PeFile::from_bytes(&file_map).expect("ms-rtti: the file isn't a PE32 binary");
+	let file_map = FileMap::open(&path).expect("msrtti: failed to open the given file");
+	let file = PeFile::from_bytes(&file_map).expect("msrtti: the file isn't a PE32 binary");
 
 	// Find .text and .rdata sections
-	let text = file.section_headers().iter().find(|sec| strn(&sec.Name) == b".text").expect("ms-rtti: no `.text` section found");
-	let rdata = file.section_headers().iter().find(|sec| strn(&sec.Name) == b".rdata").expect("ms-rtti: no `.rdata` section found");
+	let text = file.section_headers().iter().find(|sec| strn(&sec.Name) == b".text").expect("msrtti: no `.text` section found");
+	let rdata = file.section_headers().iter().find(|sec| strn(&sec.Name) == b".rdata").expect("msrtti: no `.rdata` section found");
 
 	// Abuse relocations for xrefs
-	let base_relocs = file.base_relocs().expect("ms-rtti: no base relocations found");
+	let base_relocs = file.base_relocs().expect("msrtti: no base relocations found");
 
 	// Vtables are arrays of function pointers stored in rdata
 	// This means we're looking for pointers from rdata to text
@@ -55,8 +65,8 @@ fn main() {
 			return None;
 		}
 		// Read the pointer being relocated
-		let target_va = file.derva_copy(rva).expect(&format!("ms-rtti: corrupt reloc at {:08X}", rva));
-		let target_rva = file.va_to_rva(target_va).expect(&format!("ms-rtti: corrupt xref at {:08X}", rva));
+		let target_va = file.derva_copy(rva).expect(&format!("msrtti: corrupt reloc at {:08X}", rva));
+		let target_rva = file.va_to_rva(target_va).expect(&format!("msrtti: corrupt xref at {:08X}", rva));
 		// Look for xrefs to text (the virtual functions themselves)
 		if target_rva < text.VirtualAddress || target_rva >= (text.VirtualAddress + text.VirtualSize) {
 			return None;
@@ -71,8 +81,8 @@ fn main() {
 	// By collecting all xrefs to the previously collected pointers, we can find the start of the vtable
 	let mut xrefs: Vec<usize> = base_relocs.into_iter().flat_map(|relocs| relocs).filter_map(|rva| {
 		// Read the pointer being relocated
-		let target_va = file.derva_copy(rva).expect(&format!("ms-rtti: corrupt reloc at {:08X}", rva));
-		let target_rva = file.va_to_rva(target_va).expect(&format!("ms-rtti: corrupt xref at {:08X}", rva));
+		let target_va = file.derva_copy(rva).expect(&format!("msrtti: corrupt reloc at {:08X}", rva));
+		let target_rva = file.va_to_rva(target_va).expect(&format!("msrtti: corrupt xref at {:08X}", rva));
 		// Find the target_rva in the coderefs
 		vrefs.binary_search(&target_rva).ok()
 	}).collect();
