@@ -1,7 +1,7 @@
 [package]
 name = "pelite"
-version = "0.3.0"
-authors = ["CasualX <CasualX@GitHub.com>"]
+version = "0.4.0"
+authors = ["Casper <CasualX@users.noreply.github.com>"]
 
 description = "Lightweight, memory-safe, zero-allocation library for reading and navigating PE binaries."
 
@@ -23,7 +23,7 @@ appveyor = { repository = "CasualX/pelite", branch = "master", service = "github
 
 [profile.release]
 lto = true
-opt-level = 3
+opt-level = 2
 
 [target.'cfg(unix)'.dependencies]
 libc = "0.2"

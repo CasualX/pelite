@@ -1,7 +1,7 @@
 PeLite
 ======
 
-[![MIT license](https://img.shields.io/crates/l/pelite.svg)](https://opensource.org/licenses/MIT)
+[![MIT License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![crates.io](https://img.shields.io/crates/v/pelite.svg)](https://crates.io/crates/pelite)
 [![docs.rs](https://docs.rs/pelite/badge.svg)](https://docs.rs/pelite)
 [![Build status](https://ci.appveyor.com/api/projects/status/6obf6w6awf4b540r/branch/master?svg=true)](https://ci.appveyor.com/project/CasualX/pelite/branch/master)
@@ -41,7 +41,7 @@ In your Cargo.toml, put
 
 ```
 [dependencies]
-pelite = "0.3"
+pelite = "0.4"
 ```
 
 Examples
