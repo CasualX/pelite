@@ -60,6 +60,22 @@ pub enum Export<'a> {
 	/// For more information see this [blog post](https://blogs.msdn.microsoft.com/oldnewthing/20060719-24/?p=30473) by Raymond Chen.
 	Forward(&'a CStr),
 }
+impl<'a> Export<'a> {
+	/// Returns some if the symbol is exported.
+	pub fn symbol(self) -> Option<Rva> {
+		match self {
+			Export::Symbol(&rva) => Some(rva),
+			_ => None,
+		}
+	}
+	/// Returns some if the symbol is forwarded.
+	pub fn forward(self) -> Option<&'a CStr> {
+		match self {
+			Export::Forward(name) => Some(name),
+			_ => None,
+		}
+	}
+}
 
 //----------------------------------------------------------------
 
