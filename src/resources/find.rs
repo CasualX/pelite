@@ -21,7 +21,7 @@ pub enum FindError {
 	/// For this to work the given path must be valid unicode for the path comparison to make sense.
 	///
 	/// This error means the given path contained non-unicode parts.
-	Utf8Path,
+	Bad8Path,
 	/// The requested data entry or directory doesn't exist.
 	NotFound,
 	/// Paths from the resources root must start with a `/` or `\`.
@@ -47,7 +47,7 @@ impl error::Error for FindError {
 	fn description(&self) -> &str {
 		match *self {
 			FindError::Pe(ref e) => e.description(),
-			FindError::Utf8Path => "invalid utf8 path",
+			FindError::Bad8Path => "invalid utf8 path",
 			FindError::NotFound => "entry not found",
 			FindError::NoRootPath => "missing '/' root",
 			FindError::UnDataEntry => "unexpected data entry",
@@ -67,7 +67,7 @@ impl error::Error for FindError {
 impl<'a> Resources<'a> {
 	/// Finds a file or directory by its path.
 	pub fn find<P: AsRef<Path> + ?Sized>(&self, path: &P) -> Result<Entry<'a>, FindError> {
-		self.find_(path.as_ref())
+		self.find_internal(path.as_ref())
 	}
 	/// Finds a file by its path.
 	pub fn find_data<P: AsRef<Path> + ?Sized>(&self, path: &P) -> Result<DataEntry<'a>, FindError> {
@@ -77,7 +77,7 @@ impl<'a> Resources<'a> {
 	pub fn find_dir<P: AsRef<Path> + ?Sized>(&self, path: &P) -> Result<Directory<'a>, FindError> {
 		self.find(path).and_then(|e| e.dir().ok_or(FindError::UnDataEntry))
 	}
-	fn find_(&self, path: &Path) -> Result<Entry<'a>, FindError> {
+	fn find_internal(&self, path: &Path) -> Result<Entry<'a>, FindError> {
 		let mut iter = path.iter();
 		if let Some(slash) = iter.next() {
 			// Not an absolute path
@@ -86,7 +86,7 @@ impl<'a> Resources<'a> {
 			}
 			// Find the path in the root
 			else {
-				(*self).root()?.find_(iter.as_path(), &::strings::RSRC_TYPES)
+				(*self).root()?.find_internal(iter.as_path(), &::strings::RSRC_TYPES)
 			}
 		}
 		else {
@@ -99,7 +99,7 @@ impl<'a> Resources<'a> {
 impl<'a> Directory<'a> {
 	/// Finds a file or directory by its path.
 	pub fn find<P: AsRef<Path> + ?Sized>(&self, path: &P) -> Result<Entry<'a>, FindError> {
-		self.find_(path.as_ref(), &[])
+		self.find_internal(path.as_ref(), &[])
 	}
 	/// Finds a file by its path.
 	pub fn find_data<P: AsRef<Path> + ?Sized>(&self, path: &P) -> Result<DataEntry<'a>, FindError> {
@@ -109,11 +109,11 @@ impl<'a> Directory<'a> {
 	pub fn find_dir<P: AsRef<Path> + ?Sized>(&self, path: &P) -> Result<Directory<'a>, FindError> {
 		self.find(path).and_then(|e| e.dir().ok_or(FindError::UnDataEntry))
 	}
-	fn find_(&self, path: &Path, id_names: &[Option<&str>]) -> Result<Entry<'a>, FindError> {
+	fn find_internal(&self, path: &Path, id_names: &[Option<&str>]) -> Result<Entry<'a>, FindError> {
 		let mut e = Entry::Directory(*self);
 		'parts: for part in path {
 			// The names of resources are UTF16
-			let part_name = part.to_str().ok_or(FindError::Utf8Path)?;
+			let part_name = part.to_str().ok_or(FindError::Bad8Path)?;
 			// For comparison with resource ids
 			let part_id = part_name.parse::<u32>().ok();
 			match e {
@@ -126,7 +126,7 @@ impl<'a> Directory<'a> {
 								if Some(id) == part_id {
 									equal = true;
 								}
-								else if let Some(id_name) = id_names.get(id as usize).and_then(|&a| a) {
+								else if let Some(&Some(id_name)) = id_names.get(id as usize) {
 									if id_name == part_name {
 										equal = true;
 									}
