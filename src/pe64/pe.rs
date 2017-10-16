@@ -323,18 +323,18 @@ pub unsafe trait Pe<'a> {
 	}
 
 	#[doc(hidden)]
-	fn finder_image<F, T>(&self, mut f: F) -> Option<T> where Self: Sized, F: FnMut(Rva, &'a [u8]) -> Option<T> {
+	fn finder_image<F>(&self, mut f: F) -> bool where Self: Sized, F: FnMut(Rva, &'a [u8]) -> bool {
 		let image = self.image();
 		for section in self.section_headers() {
 			let start = section.PointerToRawData as usize;
 			let end = section.PointerToRawData as usize + section.SizeOfRawData as usize;
 			if let Some(slice) = image.get(start..end) {
-				if let Some(result) = f(section.VirtualAddress, slice) {
-					return Some(result);
+				if f(section.VirtualAddress, slice) {
+					return true;
 				}
 			}
 		}
-		return None;
+		return false;
 	}
 }
 

@@ -57,7 +57,7 @@ impl<'a, P: Pe<'a> + Copy> Scanner<P> {
 	/// Returns `None` if multiple matches are found to prevent subtle bugs where a pattern goes stale by not being unique any more.
 	///
 	/// Use `matches(pat, range).next()` if just the first match is desired.
-	pub fn find(self, pat: &[self::pat::Atom], range: Range<Rva>) -> Option<pat::Match> {
+	pub fn find(self, pat: &[pat::Atom], range: Range<Rva>) -> Option<pat::Match> {
 		let mut matches = self.matches(pat, range);
 		if let Some(found) = matches.next() {
 			// Disallow more than one match as it indicates the signature isn't unique enough
@@ -73,25 +73,25 @@ impl<'a, P: Pe<'a> + Copy> Scanner<P> {
 	/// Finds the unique code match for the pattern.
 	///
 	/// Restricts the range to the code section. See [`find`](#find) for more information.
-	pub fn find_code(self, pat: &[self::pat::Atom]) -> Option<pat::Match> {
+	pub fn find_code(self, pat: &[pat::Atom]) -> Option<pat::Match> {
 		let optional_header = self.pe.optional_header();
 		let range = optional_header.BaseOfCode..optional_header.BaseOfCode + optional_header.SizeOfCode;
 		self.find(pat, range)
 	}
 	/// Returns an iterator over the matches of a pattern within the given range.
-	pub fn matches(self, pat: &[self::pat::Atom], range: Range<Rva>) -> Matches<P> {
+	pub fn matches(self, pat: &[pat::Atom], range: Range<Rva>) -> Matches<P> {
 		Matches { scanner: self, pat, range, hits: 0 }
 	}
 	/// Returns an iterator over the code matches of a pattern.
 	///
 	/// Restricts the range to the code section. See [`matches`](#matches) for more information.
-	pub fn matches_code(self, pat: &[self::pat::Atom]) -> Matches<P> {
+	pub fn matches_code(self, pat: &[pat::Atom]) -> Matches<P> {
 		let optional_header = self.pe.optional_header();
 		let range = optional_header.BaseOfCode..optional_header.BaseOfCode + optional_header.SizeOfCode;
 		self.matches(pat, range)
 	}
 	/// Returns if the pattern matches the binary image at the given rva.
-	pub fn exec(self, cursor: Rva, pat: &[self::pat::Atom], save: &mut [Rva]) -> bool {
+	pub fn exec(self, cursor: Rva, pat: &[pat::Atom], save: &mut [Rva]) -> bool {
 		let state = Exec {
 			pe: self.pe,
 			iter: pat.iter(),
@@ -102,21 +102,21 @@ impl<'a, P: Pe<'a> + Copy> Scanner<P> {
 		};
 		state.exec(save)
 	}
-	fn map_sections<F>(self, range: Range<Rva>, mut f: F) -> Option<pat::Match>
-		where F: FnMut(Rva, &'a [u8]) -> Option<pat::Match>
+	fn map_sections<F>(self, range: Range<Rva>, mut f: F) -> bool
+		where F: FnMut(Rva, &'a [u8]) -> bool
 	{
 		self.pe.finder_image(|rva, bytes| {
 			if range.start < rva + bytes.len() as Rva && range.end >= rva {
 				let start = cmp::max(range.start, rva);
 				let end = cmp::min(range.end, rva + bytes.len() as Rva);
 				if let Some(slice) = bytes.get((start - rva) as usize..(end - rva) as usize) {
-					let m = f(start, slice);
-					if m.is_some() {
-						return m;
+					let result = f(start, slice);
+					if result {
+						return result;
 					}
 				}
 			}
-			return None;
+			return false;
 		})
 	}
 }
@@ -255,48 +255,46 @@ impl<'a, 'u, P: Pe<'a> + Copy> Matches<'u, P> {
 	// Strategy:
 	//  Cannot optimize the search, just brute-force it.
 	//  Note that this is (relatively) slow...
-	fn strategy0(&mut self, _qsbuf: &[u8]) -> Option<pat::Match> {
+	fn strategy0(&mut self, _qsbuf: &[u8], save: &mut [Rva]) -> bool {
 		let scanner = self.scanner;
-		let mut result = pat::Match::default();
 		scanner.map_sections(self.range.clone(), |mut it, slice| {
 			let end = it + slice.len() as Rva;
 			while it < end {
 				self.hits += 1;
-				if scanner.exec(it, self.pat, result.as_mut()) {
+				if scanner.exec(it, self.pat, save) {
 					self.range.start = it + 1;
-					return Some(result);
+					return true;
 				}
 				it += 1;
 			}
 			self.range.start = it;
-			None
+			false
 		})
 	}
 	// Strategy:
 	//  Prefix is too small for full blown quicksearch.
 	//  Memchr for the first byte and only eval pattern on potential matches.
-	fn strategy1(&mut self, qsbuf: &[u8]) -> Option<pat::Match> {
+	fn strategy1(&mut self, qsbuf: &[u8], save: &mut [Rva]) -> bool {
 		let byte = qsbuf[0];
 		let scanner = self.scanner;
-		let mut result = pat::Match::default();
 		scanner.map_sections(self.range.clone(), |it, slice| {
 			// Find all places with matching byte
 			// TODO! Replace with actual memchr
 			for cursor in slice.iter().enumerate().filter_map(|(i, &a)| if a == byte { Some(it + i as Rva) } else { None }) {
 				self.hits += 1;
-				if scanner.exec(cursor, self.pat, result.as_mut()) {
+				if scanner.exec(cursor, self.pat, save) {
 					self.range.start = cursor + 1;
-					return Some(result);
+					return true;
 				}
 			}
 			self.range.start = it + slice.len() as Rva;
-			None
+			false
 		})
 	}
 	// Strategy:
 	//  Full blown quicksearch for the prefix.
 	//  Most likely completely unnecessary but oh well... it was fun to write!
-	fn strategy2(&mut self, qsbuf: &[u8]) -> Option<pat::Match> {
+	fn strategy2(&mut self, qsbuf: &[u8], save: &mut [Rva]) -> bool {
 		// Initialize jump table for quicksearch
 		let qslen = qsbuf.len();
 		let mut jumps = [qslen as u8; 256];
@@ -305,7 +303,6 @@ impl<'a, 'u, P: Pe<'a> + Copy> Matches<'u, P> {
 		}
 		let jumps = jumps;
 		let scanner = self.scanner;
-		let mut result = pat::Match::default();
 		scanner.map_sections(self.range.clone(), |it, slice| {
 			// Quicksearch baby!
 			let mut i = 0;
@@ -316,9 +313,9 @@ impl<'a, 'u, P: Pe<'a> + Copy> Matches<'u, P> {
 				if qsbuf[qslen - 1] == last && tbuf == qsbuf {
 					self.hits += 1;
 					let cursor = it + i as Rva;
-					if scanner.exec(cursor, self.pat, result.as_mut()) {
+					if scanner.exec(cursor, self.pat, save) {
 						self.range.start = cursor + jump;
-						return Some(result);
+						return true;
 					}
 				}
 				i += jump as usize;
@@ -328,13 +325,11 @@ impl<'a, 'u, P: Pe<'a> + Copy> Matches<'u, P> {
 			// Even though there clearly can since the scan range can be artificially limited
 			// For now let's ignore this edge case...
 			self.range.start = it + slice.len() as Rva;
-			None
+			false
 		})
 	}
-}
-impl<'a, 'u, P: Pe<'a> + Copy> Iterator for Matches<'u, P> {
-	type Item = pat::Match;
-	fn next(&mut self) -> Option<pat::Match> {
+	/// Finds the next match with the given save array.
+	pub fn next_match(&mut self, save: &mut [Rva]) -> bool {
 		// Build the quicksearch buffer
 		let mut qsbuf = [0u8; QS_BUF_LEN];
 		let qsbuf = self.setup(&mut qsbuf);
@@ -342,13 +337,25 @@ impl<'a, 'u, P: Pe<'a> + Copy> Iterator for Matches<'u, P> {
 		// Select search strategy
 		// FIXME! Profile the performance!
 		if qsbuf.len() == 0 {
-			self.strategy0(qsbuf)
+			self.strategy0(qsbuf, save)
 		}
 		else if qsbuf.len() < 4 {
-			self.strategy1(qsbuf)
+			self.strategy1(qsbuf, save)
 		}
 		else {
-			self.strategy2(qsbuf)
+			self.strategy2(qsbuf, save)
+		}
+	}
+}
+impl<'a, 'u, P: Pe<'a> + Copy> Iterator for Matches<'u, P> {
+	type Item = pat::Match;
+	fn next(&mut self) -> Option<pat::Match> {
+		let mut result = pat::Match::default();
+		if self.next_match(result.as_mut()) {
+			Some(result)
+		}
+		else {
+			None
 		}
 	}
 }
