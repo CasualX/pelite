@@ -54,6 +54,31 @@ impl<'a, P: Pe<'a> + Copy> Scanner<P> {
 	}
 	/// Finds the unique match for the pattern in the given range.
 	///
+	/// Returns `false` if no match is found or multiple matches are found
+	/// to prevent subtle bugs where a pattern goes stale by not being unique any more.
+	///
+	/// Use `matches(pat, range).next_match(save)` if just the first match is desired.
+	pub fn finds(self, pat: &[pat::Atom], range: Range<Rva>, save: &mut [Rva]) -> bool {
+		let mut matches = self.matches(pat, range);
+		if matches.next_match(save) {
+			// Disallow more than one match as it indicates the signature isn't unique enough
+			let cursor = matches.cursor;
+			!matches.next_match(save) && matches.scanner.exec(cursor, pat, save)
+		}
+		else {
+			false
+		}
+	}
+	/// Finds the unique code match for the pattern.
+	///
+	/// Restricts the range to the code section. See [`finds`](#finds) for more information.
+	pub fn finds_code(self, pat: &[pat::Atom], save: &mut [Rva]) -> bool {
+		let optional_header = self.pe.optional_header();
+		let range = optional_header.BaseOfCode..optional_header.BaseOfCode + optional_header.SizeOfCode;
+		self.finds(pat, range, save)
+	}
+	/// Finds the unique match for the pattern in the given range.
+	///
 	/// Returns `None` if multiple matches are found to prevent subtle bugs where a pattern goes stale by not being unique any more.
 	///
 	/// Use `matches(pat, range).next()` if just the first match is desired.
@@ -80,7 +105,8 @@ impl<'a, P: Pe<'a> + Copy> Scanner<P> {
 	}
 	/// Returns an iterator over the matches of a pattern within the given range.
 	pub fn matches(self, pat: &[pat::Atom], range: Range<Rva>) -> Matches<P> {
-		Matches { scanner: self, pat, range, hits: 0 }
+		let cursor = range.start;
+		Matches { scanner: self, pat, range, cursor, hits: 0 }
 	}
 	/// Returns an iterator over the code matches of a pattern.
 	///
@@ -197,10 +223,12 @@ impl<'a, 'u, P: Pe<'a> + Copy> Exec<'u, P> {
 					}
 				},
 				pat::Atom::Ptr => {
-					self.cursor = match self.pe.derva_copy(self.cursor).and_then(|va| self.pe.va_to_rva(va)) {
-						Ok(cursor) => cursor,
-						Err(_) => return false,
-					};
+					if let Ok(rva) = self.pe.derva_copy(self.cursor).and_then(|va| self.pe.va_to_rva(va)) {
+						self.cursor = rva;
+					}
+					else {
+						return false;
+					}
 				},
 				pat::Atom::Pir(slot) => {
 					if let Ok(sdword) = self.pe.derva_copy::<i32>(self.cursor) {
@@ -227,13 +255,33 @@ pub struct Matches<'u, P> {
 	scanner: Scanner<P>,
 	pat: &'u [pat::Atom],
 	range: Range<Rva>,
-	/// Performance.
-	///
-	/// Number of times the slow [`exec`](struct.Scanner.html#method.exec) was invoked.
-	pub hits: u32,
+	cursor: Rva,
+	hits: u32,
 }
 
 impl<'a, 'u, P: Pe<'a> + Copy> Matches<'u, P> {
+	/// Gets the scanner instance.
+	pub fn scanner(&self) -> Scanner<P> {
+		self.scanner
+	}
+	/// Gets the pattern.
+	pub fn pattern(&self) -> &'u [pat::Atom] {
+		self.pat
+	}
+	/// Gets the remaining RVA range to scan.
+	pub fn range(&self) -> Range<Rva> {
+		self.range.clone()
+	}
+	/// The RVA where the last match was found.
+	pub fn cursor(&self) -> Rva {
+		self.cursor
+	}
+	/// Performance.
+	///
+	/// Number of times the slow [`exec`](struct.Scanner.html#method.exec) was invoked.
+	pub fn hits(&self) -> u32 {
+		self.hits
+	}
 	// Extract the prefix of bytes for optimizing the search
 	fn setup<'b>(&self, qsbuf: &'b mut [u8; QS_BUF_LEN]) -> &'b [u8] {
 		let mut qslen = 0usize;
@@ -255,46 +303,47 @@ impl<'a, 'u, P: Pe<'a> + Copy> Matches<'u, P> {
 	// Strategy:
 	//  Cannot optimize the search, just brute-force it.
 	//  Note that this is (relatively) slow...
-	fn strategy0(&mut self, _qsbuf: &[u8], save: &mut [Rva]) -> bool {
-		let scanner = self.scanner;
-		scanner.map_sections(self.range.clone(), |mut it, slice| {
-			let end = it + slice.len() as Rva;
-			while it < end {
-				self.hits += 1;
-				if scanner.exec(it, self.pat, save) {
-					self.range.start = it + 1;
-					return true;
-				}
-				it += 1;
+	fn strategy0(&mut self, _qsbuf: &[u8], slice: &'a [u8], save: &mut [Rva]) -> bool {
+		let mut it = self.cursor;
+		let end = it + slice.len() as Rva;
+		while it < end {
+			self.hits += 1;
+			if self.scanner.exec(it, self.pat, save) {
+				self.cursor = it;
+				self.range.start = it + 1;
+				return true;
 			}
-			self.range.start = it;
-			false
-		})
+			it += 1;
+		}
+		self.cursor = it;
+		self.range.start = it;
+		false
 	}
 	// Strategy:
 	//  Prefix is too small for full blown quicksearch.
 	//  Memchr for the first byte and only eval pattern on potential matches.
-	fn strategy1(&mut self, qsbuf: &[u8], save: &mut [Rva]) -> bool {
+	fn strategy1(&mut self, qsbuf: &[u8], slice: &'a [u8], save: &mut [Rva]) -> bool {
 		let byte = qsbuf[0];
-		let scanner = self.scanner;
-		scanner.map_sections(self.range.clone(), |it, slice| {
-			// Find all places with matching byte
-			// TODO! Replace with actual memchr
-			for cursor in slice.iter().enumerate().filter_map(|(i, &a)| if a == byte { Some(it + i as Rva) } else { None }) {
-				self.hits += 1;
-				if scanner.exec(cursor, self.pat, save) {
-					self.range.start = cursor + 1;
-					return true;
-				}
+		let it = self.cursor;
+		// Find all places with matching byte
+		// TODO! Replace with actual memchr
+		for cursor in slice.iter().enumerate().filter_map(|(i, &a)| if a == byte { Some(it + i as Rva) } else { None }) {
+			self.hits += 1;
+			if self.scanner.exec(cursor, self.pat, save) {
+				self.cursor = cursor;
+				self.range.start = cursor + 1;
+				return true;
 			}
-			self.range.start = it + slice.len() as Rva;
-			false
-		})
+		}
+		let end = it + slice.len() as Rva;
+		self.cursor = end;
+		self.range.start = end;
+		false
 	}
 	// Strategy:
 	//  Full blown quicksearch for the prefix.
 	//  Most likely completely unnecessary but oh well... it was fun to write!
-	fn strategy2(&mut self, qsbuf: &[u8], save: &mut [Rva]) -> bool {
+	fn strategy2(&mut self, qsbuf: &[u8], slice: &'a [u8], save: &mut [Rva]) -> bool {
 		// Initialize jump table for quicksearch
 		let qslen = qsbuf.len();
 		let mut jumps = [qslen as u8; 256];
@@ -302,31 +351,31 @@ impl<'a, 'u, P: Pe<'a> + Copy> Matches<'u, P> {
 			jumps[qsbuf[i] as usize] = qslen as u8 - i as u8 - 1;
 		}
 		let jumps = jumps;
-		let scanner = self.scanner;
-		scanner.map_sections(self.range.clone(), |it, slice| {
-			// Quicksearch baby!
-			let mut i = 0;
-			while i + qslen <= slice.len() {
-				let tbuf = &slice[i..i + qslen];
-				let last = tbuf[qslen - 1];
-				let jump = jumps[last as usize] as Rva;
-				if qsbuf[qslen - 1] == last && tbuf == qsbuf {
-					self.hits += 1;
-					let cursor = it + i as Rva;
-					if scanner.exec(cursor, self.pat, save) {
-						self.range.start = cursor + jump;
-						return true;
-					}
+		// Quicksearch baby!
+		let mut i = 0;
+		while i + qslen <= slice.len() {
+			let tbuf = &slice[i..i + qslen];
+			let last = tbuf[qslen - 1];
+			let jump = jumps[last as usize] as Rva;
+			if qsbuf[qslen - 1] == last && tbuf == qsbuf {
+				self.hits += 1;
+				let cursor = self.cursor + i as Rva;
+				if self.scanner.exec(cursor, self.pat, save) {
+					self.cursor = cursor;
+					self.range.start = cursor + jump;
+					return true;
 				}
-				i += jump as usize;
 			}
-			// FIXME! Quicksearch stops too soon!
-			// It assumes there can't be another match in the last `qsbuf.len()` bytes
-			// Even though there clearly can since the scan range can be artificially limited
-			// For now let's ignore this edge case...
-			self.range.start = it + slice.len() as Rva;
-			false
-		})
+			i += jump as usize;
+		}
+		// FIXME! Quicksearch stops too soon!
+		// It assumes there can't be another match in the last `qsbuf.len()` bytes
+		// Even though there clearly can since the scan range can be artificially limited
+		// For now let's ignore this edge case...
+		let end = self.cursor + slice.len() as Rva;
+		self.cursor = end;
+		self.range.start = end;
+		false
 	}
 	/// Finds the next match with the given save array.
 	pub fn next_match(&mut self, save: &mut [Rva]) -> bool {
@@ -334,17 +383,22 @@ impl<'a, 'u, P: Pe<'a> + Copy> Matches<'u, P> {
 		let mut qsbuf = [0u8; QS_BUF_LEN];
 		let qsbuf = self.setup(&mut qsbuf);
 
-		// Select search strategy
-		// FIXME! Profile the performance!
-		if qsbuf.len() == 0 {
-			self.strategy0(qsbuf, save)
-		}
-		else if qsbuf.len() < 4 {
-			self.strategy1(qsbuf, save)
-		}
-		else {
-			self.strategy2(qsbuf, save)
-		}
+		// Take care of unmapped PE files.
+		// Their sections aren't continous and need to be scanned separately.
+		self.scanner.map_sections(self.range.clone(), |it, slice| {
+			self.cursor = it;
+			// Select search strategy
+			// FIXME! Profile the performance!
+			if qsbuf.len() == 0 {
+				self.strategy0(qsbuf, slice, save)
+			}
+			else if qsbuf.len() < 4 {
+				self.strategy1(qsbuf, slice, save)
+			}
+			else {
+				self.strategy2(qsbuf, slice, save)
+			}
+		})
 	}
 }
 impl<'a, 'u, P: Pe<'a> + Copy> Iterator for Matches<'u, P> {
