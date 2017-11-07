@@ -8,20 +8,20 @@ A pattern is a sequence of atoms. An atom describes either a specific byte or a 
 In this regard a pattern looks a lot like a simple [regular expression](https://en.wikipedia.org/wiki/Regular_expression).
 But whereas regular expressions are designed to work with text, patterns are designed to work with executable code and binary data.
 
-Patterns can encode more than just _match exact byte_ and _skip X bytes_ such as _follow this 1 byte signed jump, _follow this 4 byte signed jump
+Patterns can encode more than just _match exact byte_ and _skip X bytes_ such as _follow this 1 byte signed jump_, _follow this 4 byte signed jump_
 and _follow this pointer_ including the ability to continue matching after returning from following a relative jump or pointer.
 
 # Why use patterns?
 
-Reverse engineering is hard, when you've found an interesting address (such as a function or global variable)
+Reverse engineering is hard. When you've found an interesting address (such as a function or global variable)
 you don't want to spend all that effort again when the program is updated.
 
 Luckily when programs update they usually don't change all that much, some functions and data are changed but the rest has remained the same.
-However this means that the unchanged bits may be shuffled around to a different place.
-
-To find all matches of a pattern, eg. find all locations which call a function or reference some data, automating analysis.
+However this means that the unchanged bits may be shuffled around to a different address.
 
 Patterns let you track interesting parts of a program even as it is updated.
+
+To find all matches of a pattern, eg. find all locations which call a function or reference some data, automating analysis.
 
 # How to use patterns?
 
@@ -118,6 +118,8 @@ pub enum Atom {
 	/// Follows an absolute pointer.
 	///
 	/// Reads the pointer under the cursor, translates it to an RVA, assigns it to the cursor and continues matching.
+	///
+	/// Matching fails immediately when translation to an RVA fails.
 	Ptr,
 	/// Follows a position independent reference.
 	///
@@ -136,23 +138,23 @@ pub type Pattern = Vec<Atom>;
 ///
 /// * `AA`
 ///
-///   Two case-insensitive hexadecimal digits (ie. `[0-9a-fA-F]{2}`).
-///
-///   Matching fails immediately on byte mismatch.
+///   Pair of case-insensitive hexadecimal digits (ie. `[0-9a-fA-F]{2}`).
 ///
 /// * Spaces (codepoint 32) are ignored and can be used for visual grouping.
 ///
 /// * `'`
 ///
-///   Accents save the cursor.
+///   Apostrophe saves the cursor.
 ///
-///   Not always interested in the address where the start of the pattern is found, a backtick saves the cursor.
-///   This is especially helpful when following relative jumps and absolute pointers.
+///   Not always interested in the address where the start of the pattern is found, an apostrophe saves the current location of the matcher.
+///   This is especially helpful after following relative jumps or absolute pointers.
 ///
 ///   A common pattern is `${'}` which follows a relative jump and saves the destination address before returning back to continue matching.
 ///
-///   The saved cursors can be accessed through the `Match` struct starting from `Match.1` for the first backtick limited by the size of [`Match`](struct.Match.html).
-///   `Match.0` is reserved for the address of the start of the pattern match.
+///   The saved cursors are returned in a [`Match`](struct.Match.html) struct.
+///
+///   Each apostrophe writes sequentially to the next slot starting from index 1.
+///   The first slot at index 0 is reserved for the address of the start of the pattern match.
 ///
 /// * `?`
 ///
@@ -167,7 +169,7 @@ pub type Pattern = Vec<Atom>;
 ///   The scanner reads a signed dword and adds it plus 4 to the current address.
 ///   This allows the pattern to seamlessly follow jumps and calls.
 ///
-///   Use a backtick to save the destination, see above for more information.
+///   Use an apostrophe to save the destination, see above for more information.
 ///
 /// * `%`
 ///
@@ -364,10 +366,6 @@ fn parse_pat(pat: &str) -> Result<Pattern, PatError> {
 pub(crate) const MAX_SAVE: usize = 7;
 
 /// Pattern scan result.
-///
-/// The scanner populates the result with `Atom::Save(i)` where the cursor is saved at the tuple index `i`.
-///
-/// Each backtick in a pattern writes to the next slot where the first element is the start of the pattern match.
 #[derive(Copy, Clone, Default, Eq, PartialEq, Debug)]
 pub struct Match(pub u32, pub u32, pub u32, pub u32, pub u32, pub u32, pub u32);
 impl AsRef<[u32; MAX_SAVE]> for Match {
