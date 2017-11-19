@@ -54,8 +54,13 @@ impl<'a, P: Pe<'a> + Copy> Scanner<P> {
 	}
 	/// Finds the unique match for the pattern in the given range.
 	///
-	/// Returns `false` if no match is found or multiple matches are found
-	/// to prevent subtle bugs where a pattern goes stale by not being unique any more.
+	/// The pattern may contain instructions to capture interesting addresses, these are stored in the save array.
+	/// Out of bounds stores are simply ignored, ensure the save array is large enough for the given pattern.
+	///
+	/// In case of mismatch, ie. returns false, the save array is still overwritten with temporary data and should be considered trashed.
+	/// Keep a copy, invoke with a fresh save array or reexecute the pattern at the saved cursor to get around this.
+	///
+	/// Returns `false` if no match is found or multiple matches are found to prevent subtle bugs where a pattern goes stale by not being unique any more.
 	///
 	/// Use `matches(pat, range).next_match(save)` if just the first match is desired.
 	pub fn finds(self, pat: &[pat::Atom], range: Range<Rva>, save: &mut [Rva]) -> bool {
@@ -116,7 +121,15 @@ impl<'a, P: Pe<'a> + Copy> Scanner<P> {
 		let range = optional_header.BaseOfCode..optional_header.BaseOfCode + optional_header.SizeOfCode;
 		self.matches(pat, range)
 	}
+	/// Pattern interpreter.
+	///
 	/// Returns if the pattern matches the binary image at the given rva.
+	///
+	/// The pattern may contain instructions to capture interesting addresses, these are stored in the save array.
+	/// Out of bounds stores are simply ignored, ensure the save array is large enough for the given pattern.
+	///
+	/// In case of mismatch, ie. returns false, the save array is still overwritten with temporary data and should be considered trashed.
+	/// Keep a copy, invoke with a fresh save array or reexecute the pattern at the saved cursor to get around this.
 	pub fn exec(self, cursor: Rva, pat: &[pat::Atom], save: &mut [Rva]) -> bool {
 		let state = Exec {
 			pe: self.pe,

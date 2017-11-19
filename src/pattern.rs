@@ -91,7 +91,7 @@ pub enum Atom {
 	///
 	/// Matching fails immediately on a byte mismatch.
 	Byte(u8),
-	/// Captures the cursor in the [`Match`](struct.Match.html) struct at the specified tuple index.
+	/// Captures the cursor in the [`Match`](struct.Match.html) struct or save array at the specified tuple index.
 	///
 	/// When an out of range tuple index is given the capture is ignored.
 	Save(u8),
@@ -151,7 +151,7 @@ pub type Pattern = Vec<Atom>;
 ///
 ///   A common pattern is `${'}` which follows a relative jump and saves the destination address before returning back to continue matching.
 ///
-///   The saved cursors are returned in a [`Match`](struct.Match.html) struct.
+///   The saved cursors are returned in a [`Match`](struct.Match.html) struct or in the save array argument explicitly passed by the caller.
 ///
 ///   Each apostrophe writes sequentially to the next slot starting from index 1.
 ///   The first slot at index 0 is reserved for the address of the start of the pattern match.
@@ -319,8 +319,8 @@ fn parse_pat(pat: &str) -> Result<Pattern, PatError> {
 			},
 			// Save the cursor
 			b'\'' => {
-				// Limited save space
-				if save >= (MAX_SAVE as u8) {
+				// 'Limited' save space
+				if save >= u8::max_value() {
 					return Err(PatError::SaveOverflow);
 				}
 				result.push(Atom::Save(save));
@@ -367,6 +367,7 @@ pub(crate) const MAX_SAVE: usize = 7;
 
 /// Pattern scan result.
 #[derive(Copy, Clone, Default, Eq, PartialEq, Debug)]
+#[repr(C)]
 pub struct Match(pub u32, pub u32, pub u32, pub u32, pub u32, pub u32, pub u32);
 impl AsRef<[u32; MAX_SAVE]> for Match {
 	fn as_ref(&self) -> &[u32; MAX_SAVE] {
@@ -446,7 +447,6 @@ mod tests {
 		assert_eq!(Err(ParsePatError(UnpairedHexDigit)), parse("123"));
 		assert_eq!(Err(ParsePatError(UnpairedHexDigit)), parse("EE BZ"));
 		assert_eq!(Err(ParsePatError(UnpairedHexDigit)), parse("A?"));
-		assert_eq!(Err(ParsePatError(SaveOverflow)), parse("'?'?'?'?'?'?'?'?"));
 		assert_eq!(Err(ParsePatError(UnknownChar)), parse("@"));
 		assert_eq!(Err(ParsePatError(UnclosedQuote)), parse("\"unbalanced"));
 	}
