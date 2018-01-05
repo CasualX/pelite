@@ -54,7 +54,8 @@ pub fn image_base() -> &'static IMAGE_DOS_HEADER {
 
 pub const IMAGE_DOS_SIGNATURE: u16 = 0x5A4D;
 
-#[repr(C, packed)]
+#[derive(Copy, Clone)]
+#[repr(C)]
 pub struct IMAGE_DOS_HEADER {
 	pub e_magic: u16,
 	pub e_cblp: u16,
@@ -99,7 +100,8 @@ pub const IMAGE_FILE_DLL: u16                     = 0x2000;
 pub const IMAGE_FILE_UP_SYSTEM_ONLY: u16          = 0x4000;
 pub const IMAGE_FILE_BYTES_REVERSED_HI: u16       = 0x8000;
 
-#[repr(C, packed)]
+#[derive(Copy, Clone)]
+#[repr(C)]
 pub struct IMAGE_FILE_HEADER {
 	pub Machine: u16,
 	pub NumberOfSections: u16,
@@ -112,7 +114,8 @@ pub struct IMAGE_FILE_HEADER {
 
 //----------------------------------------------------------------
 
-#[repr(C, packed)]
+#[derive(Copy, Clone)]
+#[repr(C)]
 pub struct IMAGE_DATA_DIRECTORY {
 	pub VirtualAddress: u32,
 	pub Size: u32,
@@ -168,7 +171,8 @@ pub const IMAGE_DLLCHARACTERISTICS_WDM_DRIVER: u16            = 0x2000;
 pub const IMAGE_DLLCHARACTERISTICS_GUARD_CF: u16              = 0x4000;
 pub const IMAGE_DLLCHARACTERISTICS_TERMINAL_SERVER_AWARE: u16 = 0x8000;
 
-#[repr(C, packed)]
+#[derive(Copy, Clone)]
+#[repr(C)]
 pub struct IMAGE_OPTIONAL_HEADER32 {
 	pub Magic: u16,
 	pub MajorLinkerVersion: u8,
@@ -203,7 +207,8 @@ pub struct IMAGE_OPTIONAL_HEADER32 {
 	pub DataDirectory: [IMAGE_DATA_DIRECTORY; IMAGE_NUMBEROF_DIRECTORY_ENTRIES],
 }
 
-#[repr(C, packed)]
+#[derive(Copy, Clone)]
+#[repr(C)]
 pub struct IMAGE_OPTIONAL_HEADER64 {
 	pub Magic: u16,
 	pub MajorLinkerVersion: u8,
@@ -241,14 +246,16 @@ pub struct IMAGE_OPTIONAL_HEADER64 {
 
 pub const IMAGE_NT_HEADERS_SIGNATURE: u32 = 0x00004550;
 
-#[repr(C, packed)]
+#[derive(Copy, Clone)]
+#[repr(C)]
 pub struct IMAGE_NT_HEADERS32 {
 	pub Signature: u32,
 	pub FileHeader: IMAGE_FILE_HEADER,
 	pub OptionalHeader: IMAGE_OPTIONAL_HEADER32,
 }
 
-#[repr(C, packed)]
+#[derive(Copy, Clone)]
+#[repr(C)]
 pub struct IMAGE_NT_HEADERS64 {
 	pub Signature: u32,
 	pub FileHeader: IMAGE_FILE_HEADER,
@@ -295,7 +302,8 @@ pub const IMAGE_SCN_MEM_EXECUTE: u32            = 0x20000000;
 pub const IMAGE_SCN_MEM_READ: u32               = 0x40000000;
 pub const IMAGE_SCN_MEM_WRITE: u32              = 0x80000000;
 
-#[repr(C, packed)]
+#[derive(Copy, Clone)]
+#[repr(C)]
 pub struct IMAGE_SECTION_HEADER {
 	pub Name: [u8; IMAGE_SIZEOF_SHORT_NAME],
 	pub VirtualSize: u32,
@@ -311,7 +319,8 @@ pub struct IMAGE_SECTION_HEADER {
 
 //----------------------------------------------------------------
 
-#[repr(C, packed)]
+#[derive(Copy, Clone)]
+#[repr(C)]
 pub struct IMAGE_EXPORT_DIRECTORY {
 	pub Characteristics: u32,
 	pub TimeDateStamp: u32,
@@ -328,7 +337,8 @@ pub struct IMAGE_EXPORT_DIRECTORY {
 
 //----------------------------------------------------------------
 
-#[repr(C, packed)]
+#[derive(Copy, Clone)]
+#[repr(C)]
 pub struct IMAGE_IMPORT_DESCRIPTOR {
 	pub OriginalFirstThunk: u32,
 	pub TimeDateStamp: u32,
@@ -369,7 +379,8 @@ pub const RT_ANIICON: u16      = 22;
 pub const RT_HTML: u16         = 23;
 pub const RT_MANIFEST: u16     = 24;
 
-#[repr(C, packed)]
+#[derive(Copy, Clone)]
+#[repr(C)]
 pub struct IMAGE_RESOURCE_DIRECTORY {
 	pub Characteristics: u32,
 	pub TimeDateStamp: u32,
@@ -379,7 +390,8 @@ pub struct IMAGE_RESOURCE_DIRECTORY {
 	pub NumberOfIdEntries: u16,
 }
 
-#[repr(C, packed)]
+#[derive(Copy, Clone)]
+#[repr(C)]
 pub struct IMAGE_RESOURCE_DIRECTORY_ENTRY {
 	// High bit set means the lower 31 bits are an RVA to its name string otherwise this is a 16 bit WORD id
 	// Name string is encoded in WORDs and is prefixed with a WORD indicating its length (in WORDs)
@@ -388,7 +400,8 @@ pub struct IMAGE_RESOURCE_DIRECTORY_ENTRY {
 	pub Offset: u32,
 }
 
-#[repr(C, packed)]
+#[derive(Copy, Clone)]
+#[repr(C)]
 pub struct IMAGE_RESOURCE_DATA_ENTRY {
 	pub OffsetToData: u32,
 	pub Size: u32,
@@ -419,7 +432,8 @@ pub const IMAGE_REL_BASED_MIPSJMPADDR16: u8 = 9;
 pub const IMAGE_REL_BASED_ARM_MOV32: u8 = 5;
 pub const IMAGE_REL_BASED_THUMB_MOV32: u8 = 7;
 
-#[repr(C, packed)]
+#[derive(Copy, Clone)]
+#[repr(C)]
 pub struct IMAGE_BASE_RELOCATION {
 	pub VirtualAddress: u32,
 	pub SizeOfBlock: u32,
@@ -429,12 +443,14 @@ pub struct IMAGE_BASE_RELOCATION {
 // It is immediately followed by a number of `WORD`s representing a bit field:
 // |0123|456789ABCDEF|
 // |Type|   Offset   |
-#[repr(C, packed)]
+#[derive(Copy, Clone)]
+#[repr(C)]
 pub struct IMAGE_BASE_RELOC_TYPEOFFSET(pub u16);
 
 //----------------------------------------------------------------
 
-#[repr(C, packed)]
+#[derive(Copy, Clone)]
+#[repr(C)]
 pub struct IMAGE_TLS_DIRECTORY32 {
 	pub StartAddressOfRawData: u32,
 	pub EndAddressOfRawData: u32,
@@ -444,7 +460,8 @@ pub struct IMAGE_TLS_DIRECTORY32 {
 	pub Characteristics: u32,
 }
 
-#[repr(C, packed)]
+#[derive(Copy, Clone)]
+#[repr(C)]
 pub struct IMAGE_TLS_DIRECTORY64 {
 	pub StartAddressOfRawData: u64,
 	pub EndAddressOfRawData: u64,
@@ -457,8 +474,8 @@ pub struct IMAGE_TLS_DIRECTORY64 {
 //----------------------------------------------------------------
 // Sourced from http://www.debuginfo.com/articles/debuginfomatch.html
 
-#[derive(Clone, PartialEq, Eq)]
-#[repr(C, packed)]
+#[derive(Copy, Clone, PartialEq, Eq)]
+#[repr(C)]
 pub struct GUID {
 	pub Data1: u32,
 	pub Data2: u16,
@@ -478,7 +495,8 @@ pub const IMAGE_DEBUG_TYPE_OMAP_FROM_SRC: u32 = 8;
 pub const IMAGE_DEBUG_TYPE_BORLAND: u32 = 9;
 pub const IMAGE_DEBUG_TYPE_CLSID: u32 = 11;
 
-#[repr(C, packed)]
+#[derive(Copy, Clone)]
+#[repr(C)]
 pub struct IMAGE_DEBUG_DIRECTORY {
 	pub Characteristics: u32,
 	pub TimeDateStamp: u32,
@@ -490,7 +508,8 @@ pub struct IMAGE_DEBUG_DIRECTORY {
 	pub PointerToRawData: u32,
 }
 
-#[repr(C, packed)]
+#[derive(Copy, Clone)]
+#[repr(C)]
 pub struct IMAGE_DEBUG_CV_INFO_PDB20 {
 	pub CvSignature: u32,
 	pub Offset: u32,
@@ -499,7 +518,8 @@ pub struct IMAGE_DEBUG_CV_INFO_PDB20 {
 	pub PdbFileName: [u8; 0],
 }
 
-#[repr(C, packed)]
+#[derive(Copy, Clone)]
+#[repr(C)]
 pub struct IMAGE_DEBUG_CV_INFO_PDB70 {
 	pub CvSignature: u32,
 	pub Signature: GUID,
@@ -509,7 +529,8 @@ pub struct IMAGE_DEBUG_CV_INFO_PDB70 {
 
 pub const IMAGE_DEBUG_MISC_EXENAME: u32 = 1;
 
-#[repr(C, packed)]
+#[derive(Copy, Clone)]
+#[repr(C)]
 pub struct IMAGE_DEBUG_MISC {
 	pub DataType: u32,
 	pub Length: u32,
@@ -544,3 +565,32 @@ unsafe impl Pod for IMAGE_DEBUG_DIRECTORY {}
 unsafe impl Pod for IMAGE_DEBUG_CV_INFO_PDB20 {}
 unsafe impl Pod for IMAGE_DEBUG_CV_INFO_PDB70 {}
 unsafe impl Pod for IMAGE_DEBUG_MISC {}
+
+
+//----------------------------------------------------------------
+
+#[test]
+fn sizes() {
+	use std::mem::size_of;
+	assert_eq!(64, size_of::<IMAGE_DOS_HEADER>());
+	assert_eq!(20, size_of::<IMAGE_FILE_HEADER>());
+	assert_eq!(8, size_of::<IMAGE_DATA_DIRECTORY>());
+	assert_eq!(224, size_of::<IMAGE_OPTIONAL_HEADER32>());
+	assert_eq!(240, size_of::<IMAGE_OPTIONAL_HEADER64>());
+	assert_eq!(248, size_of::<IMAGE_NT_HEADERS32>());
+	assert_eq!(264, size_of::<IMAGE_NT_HEADERS64>());
+	assert_eq!(40, size_of::<IMAGE_SECTION_HEADER>());
+	assert_eq!(40, size_of::<IMAGE_EXPORT_DIRECTORY>());
+	assert_eq!(20, size_of::<IMAGE_IMPORT_DESCRIPTOR>());
+	assert_eq!(16, size_of::<IMAGE_RESOURCE_DIRECTORY>());
+	assert_eq!(8, size_of::<IMAGE_RESOURCE_DIRECTORY_ENTRY>());
+	assert_eq!(16, size_of::<IMAGE_RESOURCE_DATA_ENTRY>());
+	assert_eq!(8, size_of::<IMAGE_BASE_RELOCATION>());
+	assert_eq!(24, size_of::<IMAGE_TLS_DIRECTORY32>());
+	assert_eq!(40, size_of::<IMAGE_TLS_DIRECTORY64>());
+	assert_eq!(16, size_of::<GUID>());
+	assert_eq!(28, size_of::<IMAGE_DEBUG_DIRECTORY>());
+	assert_eq!(16, size_of::<IMAGE_DEBUG_CV_INFO_PDB20>()); // Unsized
+	assert_eq!(24, size_of::<IMAGE_DEBUG_CV_INFO_PDB70>()); // Unsized
+	assert_eq!(12, size_of::<IMAGE_DEBUG_MISC>()); // Unsized
+}
