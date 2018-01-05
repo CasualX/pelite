@@ -115,7 +115,7 @@ impl<'a, P: Pe<'a> + Copy> Block<'a, P> {
 	/// Gets the types and offsets.
 	pub fn words(&self) -> &'a [IMAGE_BASE_RELOC_TYPEOFFSET] {
 		unsafe {
-			let p = (self.image as *const _).offset(1) as *const IMAGE_BASE_RELOC_TYPEOFFSET;
+			let p = (self.image as *const IMAGE_BASE_RELOCATION).offset(1) as *const IMAGE_BASE_RELOC_TYPEOFFSET;
 			let len = (self.image.SizeOfBlock as usize - mem::size_of::<IMAGE_BASE_RELOCATION>()) / mem::size_of::<IMAGE_BASE_RELOC_TYPEOFFSET>();
 			slice::from_raw_parts(p, len)
 		}

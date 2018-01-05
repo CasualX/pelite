@@ -80,7 +80,7 @@ impl<'a> Directory<'a> {
 	pub fn entries(&self) -> Entries<'a> {
 		// Validated by constructor
 		let slice = unsafe {
-			let p = (self.image as *const _).offset(1) as *const IMAGE_RESOURCE_DIRECTORY_ENTRY;
+			let p = (self.image as *const IMAGE_RESOURCE_DIRECTORY).offset(1) as *const IMAGE_RESOURCE_DIRECTORY_ENTRY;
 			let len = self.image.NumberOfNamedEntries as usize + self.image.NumberOfIdEntries as usize;
 			slice::from_raw_parts(p, len)
 		};
@@ -93,7 +93,7 @@ impl<'a> Directory<'a> {
 		// Validated by constructor
 		let slice = unsafe {
 			// Named entries come first in the array (see chapter "PE File Resources" in "Peering Inside the PE: A Tour of the Win32 Portable Executable File Format")
-			let p = (self.image as *const _).offset(1) as *const IMAGE_RESOURCE_DIRECTORY_ENTRY;
+			let p = (self.image as *const IMAGE_RESOURCE_DIRECTORY).offset(1) as *const IMAGE_RESOURCE_DIRECTORY_ENTRY;
 			let len = self.image.NumberOfNamedEntries as usize;
 			slice::from_raw_parts(p, len)
 		};
@@ -106,7 +106,7 @@ impl<'a> Directory<'a> {
 		// Validated by the constructor
 		let slice = unsafe {
 			// Id entries come last in the array
-			let p = (self.image as *const _).offset(1 + self.image.NumberOfNamedEntries as isize) as *const IMAGE_RESOURCE_DIRECTORY_ENTRY;
+			let p = (self.image as *const IMAGE_RESOURCE_DIRECTORY).offset(1 + self.image.NumberOfNamedEntries as isize) as *const IMAGE_RESOURCE_DIRECTORY_ENTRY;
 			let len = self.image.NumberOfIdEntries as usize;
 			slice::from_raw_parts(p, len)
 		};
