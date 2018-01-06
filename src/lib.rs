@@ -29,7 +29,7 @@ pub use self::error::{Error, Result};
 
 mod mmap;
 #[cfg(windows)]
-pub use self::mmap::{FileMap, ImageMap};
+pub use self::mmap::{FileMap, ImageMap, ManualMap};
 #[cfg(unix)]
 pub use self::mmap::{FileMap};
 

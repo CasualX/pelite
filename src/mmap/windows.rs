@@ -45,6 +45,12 @@ extern "system" {
 	fn CloseHandle(
 		hObject: RawHandle,
 	) -> i32;
+	fn VirtualAlloc(
+		lpAddress: *const c_void,
+		dwSize: usize,
+		flAllocationType: u32,
+		flProtect: u32,
+	) -> *mut c_void;
 }
 
 macro_rules! close_handle {
@@ -166,4 +172,75 @@ impl Drop for FileMap {
 		UnmapViewOfFile(self.view);
 		close_handle!(self.map);
 	}}
+}
+
+//----------------------------------------------------------------
+
+use pe::{Pe};
+use utils::CStr;
+
+pub trait ManualMap {
+	unsafe fn mmap(self) -> *mut u8;
+}
+impl<'a, P: Pe<'a> + Copy> ManualMap for P {
+	unsafe fn mmap(self) -> *mut u8 {
+		let v = mm_alloc(self);
+		mm_copy(self, v);
+		mm_rebase(self, v, v as usize);
+		mm_deps(self, v);
+		mm_tls(self, v);
+		return v;
+	}
+}
+
+pub unsafe fn mm_alloc<'a, P: Pe<'a> + Copy>(pe: P) -> *mut u8 {
+	let image_size = pe.optional_header().SizeOfImage as usize;
+	let vbase = VirtualAlloc(ptr::null_mut(), image_size, /*MEM_COMMIT|MEM_RESERVE*/0x00003000, /*PAGE_READWRITE*/0x04);
+	vbase as *mut u8
+}
+
+pub unsafe fn mm_copy<'a, P: Pe<'a> + Copy>(pe: P, image: *mut u8) {
+	let src = pe.image().as_ptr();
+
+	// write PE header
+	let size_of_headers = pe.optional_header().SizeOfHeaders as usize;
+	ptr::copy_nonoverlapping(src, image, size_of_headers);
+
+	for sec in pe.section_headers() {
+		// write section data
+		ptr::copy_nonoverlapping(
+			src.offset(sec.PointerToRawData as isize),
+			image.offset(sec.VirtualAddress as isize),
+			sec.SizeOfRawData as usize
+		);
+	}
+}
+
+pub unsafe fn mm_rebase<'a, P: Pe<'a> + Copy>(pe: P, image: *mut u8, virt_base: usize) {
+	let delta = {
+		let image_base = pe.optional_header().ImageBase as usize;
+		virt_base.wrapping_sub(image_base)
+	};
+
+	let base_relocs = pe.base_relocs().unwrap();
+	for rva in base_relocs.into_iter().flat_map(|relocs| relocs) {
+		let p = image.offset(rva as isize) as *mut usize;
+		let fixed_addr = ptr::read_unaligned(p).wrapping_add(delta);
+		ptr::write_unaligned(p, fixed_addr);
+	}
+}
+
+pub fn mm_deps<'a, P: Pe<'a> + Copy>(pe: P, image: *mut u8, f: &FnMut(&'a CStr) ) {
+	let imports = pe.imports().unwrap();
+	for desc in imports {
+		f(desc.dll_name().unwrap());
+	}
+	unimplemented!()
+}
+pub fn mm_deps_import<'a, P: Pe<'a> + Copy>(desc: &::pe::imports::Desc<'a, P>, image: *mut u8) {
+	unimplemented!()
+}
+
+pub unsafe fn mm_tls<'a, P: Pe<'a> + Copy>(pe: P, image: *mut u8) {
+	unimplemented!()
 }
