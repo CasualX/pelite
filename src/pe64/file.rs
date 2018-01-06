@@ -7,7 +7,7 @@ use std::cmp;
 use error::{Error, Result};
 
 use super::image::*;
-use super::pe::{Pe, validate_headers};
+use super::pe::{Align, Pe, validate_headers};
 
 /// View into an unmapped PE file.
 #[derive(Copy, Clone)]
@@ -46,6 +46,9 @@ impl<'a> PeFile<'a> {
 unsafe impl<'a> Pe<'a> for PeFile<'a> {
 	fn image(&self) -> &'a [u8] {
 		self.image
+	}
+	fn align(&self) -> Align {
+		Align::File
 	}
 	#[inline(never)]
 	fn slice(&self, rva: Rva, min_size: usize, align: usize) -> Result<&'a [u8]> {

@@ -12,9 +12,22 @@ use super::ptr::Ptr;
 
 //----------------------------------------------------------------
 
+/// The specific alignment used by the view.
+///
+/// See [the module-level documentation](index.html#getting-started) for more information.
+pub enum Align {
+	/// The view uses file alignment, typically 512 bytes.
+	File,
+	/// The view uses section alignment, typically 4 KiB.
+	Section,
+}
+
 pub unsafe trait Pe<'a> {
 	/// Returns the image as a byte slice.
 	fn image(&self) -> &'a [u8];
+
+	/// Returns whether this image uses file alignment or section alignment.
+	fn align(&self) -> Align;
 
 	/// Returns the DOS header.
 	fn dos_header(self) -> &'a IMAGE_DOS_HEADER where Self: Copy {
@@ -344,6 +357,9 @@ pub unsafe trait Pe<'a> {
 unsafe impl<'s, 'a, P: Pe<'a> + ?Sized> Pe<'a> for &'s P {
 	fn image(&self) -> &'a [u8] {
 		P::image(*self)
+	}
+	fn align(&self) -> Align {
+		P::align(*self)
 	}
 	fn slice(&self, rva: Rva, min_size: usize, align: usize) -> Result<&'a [u8]> {
 		P::slice(*self, rva, min_size, align)
