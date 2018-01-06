@@ -3,6 +3,9 @@ Utilities and other tidbits.
 */
 
 #[macro_use]
+mod offset_of;
+
+#[macro_use]
 mod iter;
 
 mod c_str;

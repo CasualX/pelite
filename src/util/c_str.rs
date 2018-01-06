@@ -2,7 +2,7 @@
 Nul-terminated C string.
 */
 
-use std::{cmp, fmt, mem, ops, str};
+use std::{cmp, ffi, fmt, mem, ops, str};
 
 use util::split_f;
 use error::Error;
@@ -52,6 +52,14 @@ impl CStr {
 	/// Casts the C string to an UTF8 validated `str`.
 	pub fn to_str(&self) -> Result<&str, str::Utf8Error> {
 		str::from_utf8(self.as_ref())
+	}
+	/// Casts the C string to an OsStr, includes the final nul terminator.
+	pub fn to_os_str(&self) -> &ffi::OsStr {
+		unsafe { mem::transmute(&self.bytes) }
+	}
+	/// Casts the C string to the std lib CStr.
+	pub fn to_c_str(&self) -> &ffi::CStr {
+		unsafe { ffi::CStr::from_bytes_with_nul_unchecked(&self.bytes) }
 	}
 }
 

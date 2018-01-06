@@ -51,6 +51,9 @@ extern "system" {
 		flAllocationType: u32,
 		flProtect: u32,
 	) -> *mut c_void;
+	fn LoadLibraryW(
+		lpFileName: *const u16,
+	) -> *const c_void;
 }
 
 macro_rules! close_handle {
@@ -176,8 +179,9 @@ impl Drop for FileMap {
 
 //----------------------------------------------------------------
 
-use pe::{Pe};
-use utils::CStr;
+use pe::{Pe, PeView, Va};
+use pe::imports::Desc;
+use pe::exports::Export;
 
 pub trait ManualMap {
 	unsafe fn mmap(self) -> *mut u8;
@@ -187,8 +191,9 @@ impl<'a, P: Pe<'a> + Copy> ManualMap for P {
 		let v = mm_alloc(self);
 		mm_copy(self, v);
 		mm_rebase(self, v, v as usize);
-		mm_deps(self, v);
+		mm_deps(self, v, mm_deps_load);
 		mm_tls(self, v);
+		mm_protect(self, v);
 		return v;
 	}
 }
@@ -230,17 +235,48 @@ pub unsafe fn mm_rebase<'a, P: Pe<'a> + Copy>(pe: P, image: *mut u8, virt_base: 
 	}
 }
 
-pub fn mm_deps<'a, P: Pe<'a> + Copy>(pe: P, image: *mut u8, f: &FnMut(&'a CStr) ) {
+pub unsafe fn mm_deps<'a, P: Pe<'a> + Copy, F: FnMut(&Desc<'a, P>, *mut u8)>(pe: P, image: *mut u8, mut f: F) {
+	// Resolve all dependent modules
 	let imports = pe.imports().unwrap();
 	for desc in imports {
-		f(desc.dll_name().unwrap());
+		f(&desc, image);
 	}
-	unimplemented!()
 }
-pub fn mm_deps_import<'a, P: Pe<'a> + Copy>(desc: &::pe::imports::Desc<'a, P>, image: *mut u8) {
-	unimplemented!()
+pub fn mm_deps_load<'a, P: Pe<'a> + Copy>(desc: &Desc<'a, P>, image: *mut u8) {
+	// Load dependencies through bog-standard LoadLibrary
+	let dll_name = desc.dll_name().unwrap().to_os_str();
+	let hmod = {
+		let wide_name: Vec<u16> = dll_name.encode_wide().collect();
+		unsafe { LoadLibraryW(wide_name.as_ptr()) as *const u8 }
+	};
+	// Fill in the imports from this loaded module
+	let view = unsafe { PeView::module(hmod) };
+	unsafe { mm_deps_import(desc, image, view) };
+}
+pub unsafe fn mm_deps_import<'a, 'b, P: Pe<'a> + Copy, Q: Pe<'b> + Copy>(desc: &Desc<'a, P>, image: *mut u8, dep: Q) {
+	let int = desc.int().unwrap();
+	let exp_by = dep.exports().unwrap().by().unwrap();
+	// Grab the IAT to write to
+	let iat_ptr = image.offset(desc.image().FirstThunk as isize) as *mut Va;
+	let iat_len = int.as_slice().len();
+	let iat = slice::from_raw_parts_mut(iat_ptr, iat_len);
+	// Loop over name table
+	for (imp, dest) in int.zip(iat) {
+		let imp = imp.unwrap();
+		match exp_by.import(imp).unwrap() {
+			Export::Symbol(&rva) => {
+				// And write the exported VA to the IAT
+				*dest = dep.rva_to_va(rva).unwrap();
+			}
+			_ => unimplemented!(),
+		}
+	}
 }
 
 pub unsafe fn mm_tls<'a, P: Pe<'a> + Copy>(pe: P, image: *mut u8) {
+	unimplemented!()
+}
+
+pub unsafe fn mm_protect<'a, P: Pe<'a> + Copy>(pe: P, image: *mut u8) {
 	unimplemented!()
 }
