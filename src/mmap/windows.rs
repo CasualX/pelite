@@ -51,9 +51,16 @@ extern "system" {
 		flAllocationType: u32,
 		flProtect: u32,
 	) -> *mut c_void;
+	fn VirtualProtect(
+		lpAddress: *const c_void,
+		dwSize: usize,
+		flNewProtect: u32,
+		lpflOldProtect: *mut u32,
+	) -> i32;
 	fn LoadLibraryW(
 		lpFileName: *const u16,
 	) -> *const c_void;
+	fn TlsAlloc() -> u32;
 }
 
 macro_rules! close_handle {
@@ -190,8 +197,8 @@ impl<'a, P: Pe<'a> + Copy> ManualMap for P {
 	unsafe fn mmap(self) -> *mut u8 {
 		let v = mm_alloc(self);
 		mm_copy(self, v);
-		mm_rebase(self, v, v as usize);
-		mm_deps(self, v, mm_deps_load);
+		mm_rebase(self, v);
+		mm_deps(self, v);
 		mm_tls(self, v);
 		mm_protect(self, v);
 		return v;
@@ -221,12 +228,27 @@ pub unsafe fn mm_copy<'a, P: Pe<'a> + Copy>(pe: P, image: *mut u8) {
 	}
 }
 
-pub unsafe fn mm_rebase<'a, P: Pe<'a> + Copy>(pe: P, image: *mut u8, virt_base: usize) {
+pub unsafe fn mm_rebase<'a, P: Pe<'a> + Copy>(pe: P, image: *mut u8) {
+	mm_rebase_ex(pe, image, image as usize)
+}
+pub unsafe fn mm_rebase_ex<'a, P: Pe<'a> + Copy>(pe: P, image: *mut u8, vbase: usize) {
+	// Offset all absolute pointers by this delta to correct them from the old ImageBase to the new vbase
 	let delta = {
 		let image_base = pe.optional_header().ImageBase as usize;
-		virt_base.wrapping_sub(image_base)
+		vbase.wrapping_sub(image_base)
 	};
 
+	// If the module is loaded at its preferred base address then no relocation is necessary
+	if delta == 0 {
+		return;
+	}
+
+	// Write the new vbase to the optional header's ImageBase
+	// I don't know where this behavior is documented, but it's definitely a thing
+	let offset_of_image_base = &pe.optional_header().ImageBase as *const _ as usize - pe.image().as_ptr() as usize;
+	*(image.offset(offset_of_image_base as isize) as *mut usize) = vbase;
+
+	// Correct all base relocations by this delta
 	let base_relocs = pe.base_relocs().unwrap();
 	for rva in base_relocs.into_iter().flat_map(|relocs| relocs) {
 		let p = image.offset(rva as isize) as *mut usize;
@@ -235,31 +257,34 @@ pub unsafe fn mm_rebase<'a, P: Pe<'a> + Copy>(pe: P, image: *mut u8, virt_base: 
 	}
 }
 
-pub unsafe fn mm_deps<'a, P: Pe<'a> + Copy, F: FnMut(&Desc<'a, P>, *mut u8)>(pe: P, image: *mut u8, mut f: F) {
+pub unsafe fn mm_deps<'a, P: Pe<'a> + Copy>(pe: P, image: *mut u8) {
 	// Resolve all dependent modules
 	let imports = pe.imports().unwrap();
 	for desc in imports {
-		f(&desc, image);
+		// Load dependencies through bog-standard LoadLibrary
+		let dll_name = desc.dll_name().unwrap().to_os_str();
+		let hmod = {
+			let wide_name: Vec<u16> = dll_name.encode_wide().collect();
+			LoadLibraryW(wide_name.as_ptr()) as *const u8
+		};
+		// Fill in the imports from this loaded module
+		let view = PeView::module(hmod);
+		mm_deps_import(&desc, image, view);
 	}
 }
-pub fn mm_deps_load<'a, P: Pe<'a> + Copy>(desc: &Desc<'a, P>, image: *mut u8) {
-	// Load dependencies through bog-standard LoadLibrary
-	let dll_name = desc.dll_name().unwrap().to_os_str();
-	let hmod = {
-		let wide_name: Vec<u16> = dll_name.encode_wide().collect();
-		unsafe { LoadLibraryW(wide_name.as_ptr()) as *const u8 }
-	};
-	// Fill in the imports from this loaded module
-	let view = unsafe { PeView::module(hmod) };
-	unsafe { mm_deps_import(desc, image, view) };
-}
-pub unsafe fn mm_deps_import<'a, 'b, P: Pe<'a> + Copy, Q: Pe<'b> + Copy>(desc: &Desc<'a, P>, image: *mut u8, dep: Q) {
+
+pub unsafe fn mm_deps_import<'a, 'b, P, Q>(desc: &Desc<'a, P>, image: *mut u8, dep: Q)
+	where P: Pe<'a> + Copy, Q: Pe<'b> + Copy
+{
+	// Grab the import name table for the desired imports and the export table from the dependency
 	let int = desc.int().unwrap();
 	let exp_by = dep.exports().unwrap().by().unwrap();
-	// Grab the IAT to write to
+
+	// Grab the IAT to write the pointers to
 	let iat_ptr = image.offset(desc.image().FirstThunk as isize) as *mut Va;
 	let iat_len = int.as_slice().len();
 	let iat = slice::from_raw_parts_mut(iat_ptr, iat_len);
+
 	// Loop over name table
 	for (imp, dest) in int.zip(iat) {
 		let imp = imp.unwrap();
@@ -274,9 +299,38 @@ pub unsafe fn mm_deps_import<'a, 'b, P: Pe<'a> + Copy, Q: Pe<'b> + Copy>(desc: &
 }
 
 pub unsafe fn mm_tls<'a, P: Pe<'a> + Copy>(pe: P, image: *mut u8) {
-	unimplemented!()
+	// If this library requires TLS support
+	if let Ok(tls) = pe.tls() {
+		let rva = pe.va_to_rva(tls.image().AddressOfIndex).unwrap();
+		let pindex = image.offset(rva as isize) as *mut u32;
+		*pindex = TlsAlloc();
+	}
 }
 
-pub unsafe fn mm_protect<'a, P: Pe<'a> + Copy>(pe: P, image: *mut u8) {
-	unimplemented!()
+pub unsafe fn mm_protect<'a, P: Pe<'a> + Copy>(pe: P, image: *mut u8) -> bool {
+	// Mark the headers read-only
+	let size_of_headers = pe.optional_header().SizeOfHeaders as usize;
+	let mut success = VirtualProtect(image as *const c_void, size_of_headers, /*PAGE_READONLY*/0x02, ptr::null_mut()) != 0;
+
+	// Eight entries, bit 0: eXecute, bit 1: Read, bit 2: Write
+	let table = [
+		/*PAGE_NOACCESS*/0x01_u8,
+		/*PAGE_EXECUTE*/0x10_u8,
+		/*PAGE_READONLY*/0x02_u8,
+		/*PAGE_EXECUTE_READ*/0x20_u8,
+		/*PAGE_READWRITE*/0x04_u8,
+		/*PAGE_EXECUTE_READWRITE*/0x40_u8,
+		/*PAGE_EXECUTE_READ*/0x20_u8,
+		/*PAGE_EXECUTE_READWRITE*/0x40_u8,
+	];
+
+	// Protect the sections
+	for section in pe.section_headers() {
+		let index = ((section.Characteristics >> 29) & 0b111) as usize;
+		let protect = table[index] as u32;
+		let address = image.offset(section.VirtualAddress as isize) as *const c_void;
+		let size = section.VirtualSize as usize;
+		success &= VirtualProtect(address, size, protect, ptr::null_mut()) != 0;
+	}
+	return success;
 }
