@@ -330,6 +330,13 @@ pub unsafe trait Pe<'a> {
 		super::scanner::Scanner::new(self)
 	}
 
+	current_target! {
+		/// Access manual mapping tools.
+		fn mmap(self) -> ::ManualMap<Self> where Self: Copy {
+			::ManualMap::new(self)
+		}
+	}
+
 	#[doc(hidden)]
 	fn finder_image<F>(&self, mut f: F) -> bool where Self: Sized, F: FnMut(Rva, &'a [u8]) -> bool {
 		let image = self.image();

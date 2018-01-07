@@ -214,21 +214,38 @@ pub enum MMError {
 	Exports(PeError),
 }
 
-pub trait ManualMap {
-	unsafe fn mmap(self) -> Result<*mut u8, MMError>;
+#[derive(Copy, Clone)]
+pub struct ManualMap<P> {
+	pe: P,
 }
-impl<'a, P: Pe<'a> + Copy> ManualMap for P {
-	unsafe fn mmap(self) -> Result<*mut u8, MMError> {
-		let v = mm_alloc(self)?;
-		mm_copy(self, v);
-		mm_rebase(self, v)?;
-		mm_deps(self, v)?;
-		mm_tls(self, v);
-		mm_protect(self, v);
+impl<'a, P: Pe<'a> + Copy> ManualMap<P> {
+	pub(crate) fn new(pe: P) -> ManualMap<P> {
+		ManualMap { pe }
+	}
+	/// Manually maps the given PE image without going through the system's LoadLibrary.
+	///
+	/// Dependencies are loaded through LoadLibrary. When loading fails the dependencies are not cleaned up.
+	///
+	/// # Safety
+	///
+	/// The assumption is that if this function is called, the input PE image is trusted as it's intended to executed code from.
+	/// Therefore the bare minimum is validated and the rest is assumed to be correct. If this is not the case, here be dragons!
+	///
+	/// Errors from eg. system calls are still checked.
+	pub unsafe fn load(self) -> Result<*mut u8, MMError> {
+		let v = mm_alloc(self.pe)?;
+		mm_copy(self.pe, v);
+		mm_rebase(self.pe, v)?;
+		mm_deps(self.pe, v)?;
+		mm_safeseh(self.pe, v);
+		mm_tls(self.pe, v);
+		mm_protect(self.pe, v);
 		Ok(v)
 	}
 }
 
+
+/// Allocates enough virtual memory to map this PE image.
 pub unsafe fn mm_alloc<'a, P: Pe<'a> + Copy>(pe: P) -> Result<*mut u8, MMError> {
 	let image_size = pe.optional_header().SizeOfImage as usize;
 	let vbase = VirtualAlloc(ptr::null_mut(), image_size, /*MEM_COMMIT|MEM_RESERVE*/0x00003000, /*PAGE_READWRITE*/0x04);
@@ -240,8 +257,8 @@ pub unsafe fn mm_alloc<'a, P: Pe<'a> + Copy>(pe: P) -> Result<*mut u8, MMError> 
 	}
 }
 
-/// Copies the headers and section raw data from the given PE image to the destination image.
-pub unsafe fn mm_copy<'a, P: Pe<'a> + Copy>(pe: P, image: *mut u8) {
+/// Copies the headers and raw section data from to the destination image.
+unsafe fn mm_copy<'a, P: Pe<'a> + Copy>(pe: P, image: *mut u8) {
 	let src = pe.image().as_ptr();
 
 	// Write PE header
@@ -264,11 +281,11 @@ pub unsafe fn mm_copy<'a, P: Pe<'a> + Copy>(pe: P, image: *mut u8) {
 }
 
 /// Rebase the image.
-pub unsafe fn mm_rebase<'a, P: Pe<'a> + Copy>(pe: P, image: *mut u8) -> Result<(), MMError> {
+unsafe fn mm_rebase<'a, P: Pe<'a> + Copy>(pe: P, image: *mut u8) -> Result<(), MMError> {
 	mm_rebase_ex(pe, image, image as usize)
 }
 /// Rebase the image to the given virtual base address.
-pub unsafe fn mm_rebase_ex<'a, P: Pe<'a> + Copy>(pe: P, image: *mut u8, vbase: usize) -> Result<(), MMError> {
+unsafe fn mm_rebase_ex<'a, P: Pe<'a> + Copy>(pe: P, image: *mut u8, vbase: usize) -> Result<(), MMError> {
 	// Offset all absolute pointers by this delta to correct them from the old ImageBase to the new vbase
 	let delta = {
 		let image_base = pe.optional_header().ImageBase as usize;
@@ -294,7 +311,7 @@ pub unsafe fn mm_rebase_ex<'a, P: Pe<'a> + Copy>(pe: P, image: *mut u8, vbase: u
 }
 
 /// Resolve dependencies by loading them with LoadLibrary.
-pub unsafe fn mm_deps<'a, P: Pe<'a> + Copy>(pe: P, image: *mut u8) -> Result<(), MMError> {
+unsafe fn mm_deps<'a, P: Pe<'a> + Copy>(pe: P, image: *mut u8) -> Result<(), MMError> {
 	if let Ok(imports) = pe.imports() {
 		// Resolve all dependent modules
 		for desc in imports {
@@ -316,7 +333,7 @@ pub unsafe fn mm_deps<'a, P: Pe<'a> + Copy>(pe: P, image: *mut u8) -> Result<(),
 }
 
 /// Resolve the imports for a specific dependency.
-pub unsafe fn mm_deps_import<'a, 'b, P, Q>(desc: &Desc<'a, P>, image: *mut u8, dep: Q) -> Result<(), MMError>
+unsafe fn mm_deps_import<'a, 'b, P, Q>(desc: &Desc<'a, P>, image: *mut u8, dep: Q) -> Result<(), MMError>
 	where P: Pe<'a> + Copy, Q: Pe<'b> + Copy
 {
 	// Grab the import name table for the desired imports and the export table from the dependency
@@ -350,7 +367,7 @@ pub unsafe fn mm_deps_import<'a, 'b, P, Q>(desc: &Desc<'a, P>, image: *mut u8, d
 	}
 	Ok(())
 }
-pub unsafe fn mm_deps_import_fwd(name: &CStr) -> Va {
+unsafe fn mm_deps_import_fwd(name: &CStr) -> Va {
 	// Split the name in the module name (before the first `.`) and the import name (after the first `.`)
 	// Just abort and return zero if no `.` was found...
 	let index = match name.as_ref().iter().enumerate().find(|&(_i, &byte)| byte == b'.') {
@@ -380,8 +397,14 @@ pub unsafe fn mm_deps_import_fwd(name: &CStr) -> Va {
 	GetProcAddress(hmod, name[index..].as_ptr()) as Va
 }
 
+/// Registers the image for exception handling.
+unsafe fn mm_safeseh<'a, P: Pe<'a> + Copy>(pe: P, image: *mut u8) {
+	// For x64 use RtlAddFunctionTable and RtlDeleteFunctionTable
+	// For x86 use the non exported RtlInsertInvertedFunctionTable and RtlRemoveInvertedFunctionTable
+}
+
 /// Initialize TLS support if needed.
-pub unsafe fn mm_tls<'a, P: Pe<'a> + Copy>(pe: P, image: *mut u8) {
+unsafe fn mm_tls<'a, P: Pe<'a> + Copy>(pe: P, image: *mut u8) {
 	// If this library requires TLS support
 	if let Ok(tls) = pe.tls() {
 		// Start by allocating a TLS slot
@@ -403,7 +426,7 @@ pub unsafe fn mm_tls<'a, P: Pe<'a> + Copy>(pe: P, image: *mut u8) {
 }
 
 /// Apply page protections to the image sections.
-pub unsafe fn mm_protect<'a, P: Pe<'a> + Copy>(pe: P, image: *mut u8) -> bool {
+unsafe fn mm_protect<'a, P: Pe<'a> + Copy>(pe: P, image: *mut u8) -> bool {
 	let mut old_protect = mem::uninitialized();
 
 	// Mark the headers read-only

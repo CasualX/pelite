@@ -5,14 +5,13 @@ use std::mem;
 #[cfg(all(windows, target_pointer_width = "64"))]
 #[test]
 fn mmap_x64() {
-	use pelite::pe;
-	use pelite::ManualMap;
+	use pelite::pe64::{Pe, PeFile};
 
 	let fmap = pelite::FileMap::open("demo/Demo64.dll").unwrap();
-	let pf = pe::PeFile::from_bytes(&fmap).unwrap();
+	let pf = PeFile::from_bytes(&fmap).unwrap();
 	unsafe {
 		// ManualMap the module
-		let module = pf.mmap().unwrap();
+		let module = pf.mmap().load().unwrap();
 		println!("mapped module at {:?}", module);
 
 		// Call an exported function as a very basic test
@@ -24,14 +23,13 @@ fn mmap_x64() {
 #[cfg(all(windows, target_pointer_width = "32"))]
 #[test]
 fn mmap_x86() {
-	use pelite::pe;
-	use pelite::ManualMap;
+	use pelite::pe32::{Pe, PeFile};
 
 	let fmap = pelite::FileMap::open("demo/Demo.dll").unwrap();
-	let pf = pe::PeFile::from_bytes(&fmap).unwrap();
+	let pf = PeFile::from_bytes(&fmap).unwrap();
 	unsafe {
 		// ManualMap the module
-		let module = pf.mmap().unwrap();
+		let module = pf.mmap().load().unwrap();
 		println!("mapped module at {:?}", module);
 
 		// Call an exported function as a very basic test
