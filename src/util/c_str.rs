@@ -84,6 +84,12 @@ impl ops::Deref for CStr {
 		self.as_ref()
 	}
 }
+impl ops::Index<ops::RangeFrom<usize>> for CStr {
+	type Output = CStr;
+	fn index(&self, index: ops::RangeFrom<usize>) -> &CStr {
+		unsafe { mem::transmute(&self.bytes[index]) }
+	}
+}
 impl AsRef<[u8]> for CStr {
 	fn as_ref(&self) -> &[u8] {
 		// Strip the nul byte
