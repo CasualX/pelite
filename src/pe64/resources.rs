@@ -11,7 +11,7 @@ use pelite::pe64::{Pe, PeFile};
 use pelite::resources::FindError;
 
 # #[allow(dead_code)]
-fn example<'a>(file: PeFile<'a>) -> Result<Option<&'a [u8]>, FindError> {
+fn example<'a>(file: PeFile<'a>) -> Result<&'a [u8], FindError> {
 	// Access the resources
 	let resources = file.resources()?;
 
@@ -19,7 +19,7 @@ fn example<'a>(file: PeFile<'a>) -> Result<Option<&'a [u8]>, FindError> {
 	let entry = resources.find_data("/Manifest/2/1033")?;
 	let manifest = entry.data()?;
 
-	Ok(Some(manifest))
+	Ok(manifest)
 }
 ```
 */
