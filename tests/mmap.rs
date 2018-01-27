@@ -12,7 +12,7 @@ fn mmap_x64() {
 	unsafe {
 		// ManualMap the module
 		let module = pf.mmap().load().unwrap();
-		println!("mapped module at {:?}", module);
+		println!("mapped Demo64.dll at {:?}", module);
 
 		// Call an exported function as a very basic test
 		let f: unsafe fn() = mem::transmute(module.offset(0x1230));
@@ -30,7 +30,7 @@ fn mmap_x86() {
 	unsafe {
 		// ManualMap the module
 		let module = pf.mmap().load().unwrap();
-		println!("mapped module at {:?}", module);
+		println!("mapped Demo.dll at {:?}", module);
 
 		// Call an exported function as a very basic test
 		let f: unsafe fn() = mem::transmute(module.offset(0x1220));
