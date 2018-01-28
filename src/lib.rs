@@ -13,7 +13,7 @@ Due to small but incompatible differences the two formats are not unified.
 */
 
 #![recursion_limit = "128"]
-#![cfg_attr(nightly, feature(asm))]
+#![feature(asm)]
 
 pub mod image;
 

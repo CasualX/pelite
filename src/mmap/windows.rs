@@ -425,7 +425,7 @@ unsafe fn mm_tls<'a, P: Pe<'a> + Copy>(pe: P, image: *mut u8) {
 	}
 }
 
-#[cfg(all(nightly, target_arch = "x86_64"))]
+#[cfg(target_arch = "x86_64")]
 unsafe fn mm_set_tls(index: u32, data: *const c_void) {
 	let index = index as u64;
 	asm!("
@@ -436,7 +436,7 @@ unsafe fn mm_set_tls(index: u32, data: *const c_void) {
 		: "rax"
 		: "intel");
 }
-#[cfg(all(nightly, target_arch = "x86"))]
+#[cfg(target_arch = "x86")]
 unsafe fn mm_set_tls(index: u32, data: *const c_void) {
 	asm!("
 		mov eax, gs:2Ch
@@ -446,7 +446,7 @@ unsafe fn mm_set_tls(index: u32, data: *const c_void) {
 		: "eax"
 		: "intel");
 }
-#[cfg(not(all(nightly, any(target_arch = "x86", target_arch = "x86_64")))]
+#[cfg(not(any(target_arch = "x86", target_arch = "x86_64")))]
 unsafe fn mm_set_tls(index: u32, data: *const c_void) {
 	unimplemented!()
 }
