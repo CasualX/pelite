@@ -61,10 +61,10 @@ extern "system" {
 		lpFileName: *const u16,
 	) -> *const c_void;
 	fn TlsAlloc() -> u32;
-	fn TlsSetValue(
-		dwTlsIndex: u32,
-		lpTlsValue: *const c_void,
-	) -> i32;
+	// fn TlsSetValue(
+	// 	dwTlsIndex: u32,
+	// 	lpTlsValue: *const c_void,
+	// ) -> i32;
 	fn GetLastError() -> i32;
 	fn GetModuleHandleW(
 		lpModuleName: *const u16,
@@ -421,8 +421,34 @@ unsafe fn mm_tls<'a, P: Pe<'a> + Copy>(pe: P, image: *mut u8) {
 			tls_data as *mut u8,
 			raw_data.len(),
 		);
-		TlsSetValue(*pindex, tls_data);
+		mm_set_tls(*pindex, tls_data);
 	}
+}
+
+#[cfg(all(nightly, target_arch = "x86_64"))]
+unsafe fn mm_set_tls(index: u32, data: *const c_void) {
+	let index = index as u64;
+	asm!("
+		mov rax, gs:58h
+		mov qword ptr [rax + $0*8], $1"
+		:
+		: "r"(index), "r"(data)
+		: "rax"
+		: "intel");
+}
+#[cfg(all(nightly, target_arch = "x86"))]
+unsafe fn mm_set_tls(index: u32, data: *const c_void) {
+	asm!("
+		mov eax, gs:2Ch
+		mov dword ptr [eax + $0*4], $1"
+		:
+		: "r"(index), "r"(data)
+		: "eax"
+		: "intel");
+}
+#[cfg(not(all(nightly, any(target_arch = "x86", target_arch = "x86_64")))]
+unsafe fn mm_set_tls(index: u32, data: *const c_void) {
+	unimplemented!()
 }
 
 /// Apply page protections to the image sections.
