@@ -25,8 +25,19 @@ fn example(file: PeFile) -> pelite::Result<()> {
 	// For example: query an export by ordinal
 	by.ordinal(6)?;
 
-	// Iterate over all the exports.
-	for export in (0..by.functions().len()).map(|i| by.index(i)) {}
+	// For example: iterate over all the exports.
+	for export_result in by.iter() {
+		if let Ok(export) = export_result {
+			println!("export: {:?}", export);
+		}
+	}
+
+	// For example: iterate over the named exports
+	for result in by.iter_names() {
+		if let (Ok(export), Ok(name)) = result {
+			println!("export {}: {:?}", name, export);
+		}
+	}
 
 	Ok(())
 }
@@ -34,7 +45,7 @@ fn example(file: PeFile) -> pelite::Result<()> {
 
 */
 
-use std::{fmt, ops};
+use std::{fmt, ops, slice};
 
 use error::{Error, Result};
 use util::CStr;
@@ -265,6 +276,8 @@ impl<'a, P: Pe<'a> + Copy> By<'a, P> {
 	///
 	/// Note that this does a linear scan to find its name,
 	/// if this is called in a loop over all the exported functions you are accidentally quadratic.
+	///
+	/// See [`iter_names`](#iter_names) to iterate over the exported names in linear time.
 	pub fn name_lookup(&self, index: usize) -> Result<Import<'a>> {
 		// Lookup the name index, accidentally quadratic :)
 		match self.name_indices.iter().position(|&i| i as usize == index) {
@@ -281,7 +294,96 @@ impl<'a, P: Pe<'a> + Copy> By<'a, P> {
 			},
 		}
 	}
+	/// Iterate over exported functions.
+	///
+	/// Not every exported function has a name, some are exported by ordinal.
+	/// Looking up the exported function's name with [`name_lookup`](#name_lookup) results in quadratic performance.
+	/// If the exported function's name is important consider building a cache or using [`iter_names`](#iter_names) instead.
+	pub fn iter<'s>(&'s self) -> IterByFn<'s, 'a, P> {
+		IterByFn { by: self, fns: self.functions().iter() }
+	}
+	/// Iterate over functions exported by name.
+	pub fn iter_names<'s>(&'s self) -> IterByName<'s, 'a, P> {
+		IterByName { by: self, hints: 0..self.image.NumberOfNames }
+	}
 }
+
+//----------------------------------------------------------------
+// Export iteration
+
+/// Exported functions iterator.
+///
+/// Created with [`By::iter`](struct.By.html#method.iter).
+#[derive(Clone)]
+pub struct IterByFn<'s, 'a: 's, P: 'a> {
+	by: &'s By<'a, P>,
+	fns: slice::Iter<'a, Rva>,
+}
+impl<'s, 'a: 's, P: Pe<'a> + Copy> Iterator for IterByFn<'s, 'a, P> {
+	type Item = Result<Export<'a>>;
+	fn next(&mut self) -> Option<Self::Item> {
+		let by = self.by;
+		self.fns.next().map(|rva| by.symbol_from_rva(rva))
+	}
+	fn size_hint(&self) -> (usize, Option<usize>) {
+		self.fns.size_hint()
+	}
+	fn count(self) -> usize {
+		self.fns.count()
+	}
+	fn nth(&mut self, n: usize) -> Option<Self::Item> {
+		let by = self.by;
+		self.fns.nth(n).map(|rva| by.symbol_from_rva(rva))
+	}
+	fn last(self) -> Option<Self::Item> {
+		let by = self.by;
+		self.fns.last().map(|rva| by.symbol_from_rva(rva))
+	}
+}
+impl<'s, 'a: 's, P: Pe<'a> + Copy> DoubleEndedIterator for IterByFn<'s, 'a, P> {
+	fn next_back(&mut self) -> Option<Self::Item> {
+		let by = self.by;
+		self.fns.next_back().map(|rva| by.symbol_from_rva(rva))
+	}
+}
+impl<'s, 'a: 's, P: Pe<'a> + Copy> ExactSizeIterator for IterByFn<'s, 'a, P> {}
+
+/// Exported names iterator.
+///
+/// Created with [`By::iter_names`](struct.By.html#method.iter_names).
+#[derive(Clone)]
+pub struct IterByName<'s, 'a: 's, P: 'a> {
+	by: &'s By<'a, P>,
+	hints: ops::Range<u32>,
+}
+impl<'s, 'a: 's, P: Pe<'a> + Copy> Iterator for IterByName<'s, 'a, P> {
+	type Item = (Result<Export<'a>>, Result<&'a CStr>);
+	fn next(&mut self) -> Option<Self::Item> {
+		let by = self.by;
+		self.hints.next().map(|hint| (by.hint(hint as usize), by.hint_name(hint as usize)))
+	}
+	fn size_hint(&self) -> (usize, Option<usize>) {
+		self.hints.size_hint()
+	}
+	fn count(self) -> usize {
+		self.hints.count()
+	}
+	fn nth(&mut self, n: usize) -> Option<Self::Item> {
+		let by = self.by;
+		self.hints.nth(n).map(|hint| (by.hint(hint as usize), by.hint_name(hint as usize)))
+	}
+	fn last(self) -> Option<Self::Item> {
+		let by = self.by;
+		self.hints.last().map(|hint| (by.hint(hint as usize), by.hint_name(hint as usize)))
+	}
+}
+impl<'s, 'a: 's, P: Pe<'a> + Copy> DoubleEndedIterator for IterByName<'s, 'a, P> {
+	fn next_back(&mut self) -> Option<Self::Item> {
+		let by = self.by;
+		self.hints.next_back().map(|hint| (by.hint(hint as usize), by.hint_name(hint as usize)))
+	}
+}
+impl<'s, 'a: 's, P: Pe<'a> + Copy> ExactSizeIterator for IterByName<'s, 'a, P> {}
 
 //----------------------------------------------------------------
 // Formatting
