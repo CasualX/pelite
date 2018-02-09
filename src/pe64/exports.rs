@@ -26,8 +26,8 @@ fn example(file: PeFile) -> pelite::Result<()> {
 	by.ordinal(6)?;
 
 	// For example: iterate over all the exports.
-	for export_result in by.iter() {
-		if let Ok(export) = export_result {
+	for result in by.iter() {
+		if let Ok(export) = result {
 			println!("export: {:?}", export);
 		}
 	}
@@ -116,8 +116,6 @@ impl<'a, P: Pe<'a> + Copy> Exports<'a, P> {
 		self.pe.derva_str(self.image.Name)
 	}
 	/// Gets the ordinal base for the exported functions.
-	///
-	/// Indices in the functions array are hints. A hint is the export's ordinal + `self.ordinal_base()`.
 	pub fn ordinal_base(&self) -> Ordinal {
 		self.image.Base as Ordinal
 	}
@@ -277,7 +275,7 @@ impl<'a, P: Pe<'a> + Copy> By<'a, P> {
 	/// Note that this does a linear scan to find its name,
 	/// if this is called in a loop over all the exported functions you are accidentally quadratic.
 	///
-	/// See [`iter_names`](#iter_names) to iterate over the exported names in linear time.
+	/// See [`iter_names`](#method.iter_names) to iterate over the exported names in linear time.
 	pub fn name_lookup(&self, index: usize) -> Result<Import<'a>> {
 		// Lookup the name index, accidentally quadratic :)
 		match self.name_indices.iter().position(|&i| i as usize == index) {
@@ -297,8 +295,8 @@ impl<'a, P: Pe<'a> + Copy> By<'a, P> {
 	/// Iterate over exported functions.
 	///
 	/// Not every exported function has a name, some are exported by ordinal.
-	/// Looking up the exported function's name with [`name_lookup`](#name_lookup) results in quadratic performance.
-	/// If the exported function's name is important consider building a cache or using [`iter_names`](#iter_names) instead.
+	/// Looking up the exported function's name with [`name_lookup`](#method.name_lookup) results in quadratic performance.
+	/// If the exported function's name is important consider building a cache or using [`iter_names`](#method.iter_names) instead.
 	pub fn iter<'s>(&'s self) -> IterByFn<'s, 'a, P> {
 		IterByFn { by: self, fns: self.functions().iter() }
 	}
