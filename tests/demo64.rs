@@ -38,6 +38,9 @@ fn exports() {
 	assert_eq!(exports_by.hint_name(11), Ok(s_export_name));
 
 	assert_eq!(exports_by.name_lookup(11), Ok(good_hint));
+
+	assert_eq!(exports_by.iter().count(), 20);
+	assert_eq!(exports_by.iter_names().count(), 20);
 }
 
 //----------------------------------------------------------------
