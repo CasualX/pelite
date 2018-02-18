@@ -1,21 +1,23 @@
+/*!
+Find patterns utility.
+*/
+
 extern crate pelite;
 
 use std::env;
 use std::path::Path;
-use std::io::{self, BufRead};
+use std::io::{self, Write};
 
 use pelite::{pe32, pe64};
 use pelite::pattern as pat;
 
-const HELP_TEXT: &'static str = "\
-Example signature scanner; https://github.com/CasualX/scanner-rs
-
-FINDSIG <FILE> [SIG]...
+const HELP_TEXT: &'static str = r"\
+FINDSIG <FILE> [PAT]...
 
   FILE - Path to the input binary to scan.
-  SIG  - Any number of signatures to find.
+  PAT  - Any number of patterns to find.
 
-If no signatures are provided, they are read line by line from stdin.
+If no patterns are provided, they are interactively read line by line from stdin.
 ";
 
 fn main() {
@@ -70,9 +72,21 @@ fn process_patterns<F: FnMut(&[pat::Atom], &mut [u32])>(args: env::ArgsOs, f: &m
 	}
 	// Read from standard input if no patterns were provided on command line
 	if stdin {
-		let stdin = io::stdin();
-		for pattern_string in stdin.lock().lines().filter_map(|line| line.ok()) {
-			process_pattern(&pattern_string, f);
+		print!("Interactive REPL, enter any pattern to find its matches.\nPress Ctrl-C to quit.\n");
+		loop {
+			// Print a nice REPL
+			print!(">>> ");
+			let _ = io::stdout().flush();
+			// Read input from stdin, handle any kind of abort by detecting the lack of newline (?)
+			let mut line = String::new();
+			if io::stdin().read_line(&mut line).is_err() || line.len() == 0 {
+				break;
+			}
+			// Only process non-empty lines, otherwise ask the user again
+			let line = line.trim();
+			if line.len() > 0 {
+				process_pattern(&line, f);
+			}
 		}
 	}
 }
@@ -93,9 +107,9 @@ fn process_pattern<F: FnMut(&[pat::Atom], &mut [u32])>(pattern_str: &str, f: &mu
 fn print_match(file_name: &str, save: &[u32]) {
 	print!("  {}!{:08x}", file_name, save[0]);
 	if save[1] != 0 {
-		print!("  [");
-		for i in (1..save.len()).take_while(|&i| save[i] != 0) {
-			print!("{}/{:08x} ", i, save[i]);
+		print!("  [1/{:08x}", save[1]);
+		for i in (2..save.len()).take_while(|&i| save[i] != 0) {
+			print!(" {}/{:08x}", i, save[i]);
 		}
 		print!("]");
 	}
