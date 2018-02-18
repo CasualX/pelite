@@ -11,13 +11,16 @@ use std::io::{self, Write};
 use pelite::{pe32, pe64};
 use pelite::pattern as pat;
 
-const HELP_TEXT: &'static str = r"\
+const HELP_TEXT: &'static str = "\
 FINDSIG <FILE> [PAT]...
 
   FILE - Path to the input binary to scan.
   PAT  - Any number of patterns to find.
 
 If no patterns are provided, they are interactively read line by line from stdin.
+
+Find documentation about the pattern syntax here:
+https://docs.rs/pelite/*/pelite/pattern/fn.parse.html
 ";
 
 fn main() {
