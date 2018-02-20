@@ -68,13 +68,14 @@ fn main() {
 }
 
 fn process_patterns(args: env::ArgsOs, f: &mut FnMut(&[pat::Atom], &mut [u32])) {
-	let mut stdin = true;
-	for pattern_string in args.filter_map(|pattern_string| pattern_string.into_string().ok()) {
-		process_pattern(&pattern_string, f);
-		stdin = false;
+	if args.len() > 0 {
+		// Read from the command line args if available
+		for pattern_string in args.filter_map(|pattern_string| pattern_string.into_string().ok()) {
+			process_pattern(&pattern_string, f);
+		}
 	}
-	// Read from standard input if no patterns were provided on command line
-	if stdin {
+	else {
+		// Read from standard input if no patterns were provided on command line
 		print!("Interactive REPL, enter any pattern to find its matches.\nPress Ctrl-C to quit.\n");
 		loop {
 			// Print a nice REPL
