@@ -32,10 +32,10 @@ fn main() {
 	if let Some(file_path) = args.next() {
 		// Path and filename of the input file
 		let file_path = Path::new(&file_path);
-		let file_name = file_path.file_name().unwrap().to_str().unwrap();
+		let file_name = file_path.file_name().expect("path does not have a file name").to_str().unwrap();
 
 		// Map the file into memory
-		let file_map = pelite::FileMap::open(&file_path).expect("Cannot open the input file.");
+		let file_map = pelite::FileMap::open(&file_path).expect("cannot open the input file");
 
 		// Try reading as PE32
 		if let Ok(pe) = pe32::PeFile::from_bytes(&file_map) {
@@ -59,7 +59,7 @@ fn main() {
 		}
 		// Must be a valid PE binary
 		else {
-			panic!("File not a valid PE binary.");
+			panic!("file is not a valid PE binary");
 		}
 	}
 	else {
