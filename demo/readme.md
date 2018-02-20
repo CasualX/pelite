@@ -33,8 +33,8 @@ Generate PE Module-Definition file
 Writes a [Module-Defintion](https://msdn.microsoft.com/en-us/library/28d6s79h.aspx) file for the given input DLL.
 
 ```bat
-cargo run --bin pemoddef -- "demo\Demo64.dll" > "demo\Demo64.def"
-cargo run --bin pemoddef -- "demo\Demo.dll" > "demo\Demo.def"
+cargo run --bin module-def -- "demo\Demo64.dll" > "demo\Demo64.def"
+cargo run --bin module-def -- "demo\Demo.dll" > "demo\Demo.def"
 ```
 
 An Import Library can be created from the Module-Definition file.
