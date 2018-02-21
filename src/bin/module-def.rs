@@ -1,5 +1,5 @@
 /*!
-Writes a [Module-Defintion](https://msdn.microsoft.com/en-us/library/28d6s79h.aspx) file for the given input DLL.
+Prints a [Module-Defintion](https://msdn.microsoft.com/en-us/library/28d6s79h.aspx) file for the given input DLL.
 
 ```bat
 cargo run --bin module-def -- "demo\Demo64.dll" > "demo\Demo64.DEF"

@@ -30,11 +30,11 @@ The result can be seen [here](Demo64-pe.txt).
 Generate PE Module-Definition file
 ----------------------------------
 
-Writes a [Module-Defintion](https://msdn.microsoft.com/en-us/library/28d6s79h.aspx) file for the given input DLL.
+Prints a [Module-Defintion](https://msdn.microsoft.com/en-us/library/28d6s79h.aspx) file for the given input DLL.
 
 ```bat
-cargo run --bin module-def -- "demo\Demo64.dll" > "demo\Demo64.def"
-cargo run --bin module-def -- "demo\Demo.dll" > "demo\Demo.def"
+cargo run --bin module-def -- "demo\Demo64.dll" > "demo\Demo64.DEF"
+cargo run --bin module-def -- "demo\Demo.dll" > "demo\Demo.DEF"
 ```
 
 An Import Library can be created from the Module-Definition file.
@@ -42,14 +42,14 @@ Note that this needs access the VC build tools.
 
 ```bat
 vcvarsall x64
-lib /def:"demo\Demo64.def" /out:"demo\Demo64.lib" /machine:x64
+lib /def:"demo\Demo64.DEF" /out:"demo\Demo64.LIB" /machine:x64
 ```
 
 Also works for 32-bit binaries using the 32-bit VC build tools and commands.
 
 ```bat
 vcvarsall x86
-lib /def:"demo\Demo.def" /out:"demo\Demo.lib" /machine:x86
+lib /def:"demo\Demo.DEF" /out:"demo\Demo.LIB" /machine:x86
 ```
 
 The result can be seen [here](Demo64.def) for x64 and [here](Demo.def) for x86.
