@@ -24,6 +24,12 @@ impl<'a> PeFile<'a> {
 		let _ = validate_headers(image)?;
 		Ok(PeFile { image, _phantom: PhantomData })
 	}
+	/// Try to read the given bytes as an unmapped PE file.
+	///
+	/// Acquire unique lock on the image bytes allowing safe mutation.
+	pub fn from_bytes_mut<T: AsMut<[u8]> + ?Sized>(image: &'a mut T) -> Result<PeFile<'a>> {
+		Self::from_bytes(image.as_mut())
+	}
 	fn range_to_slice(&self, rva: Rva, min_size: usize) -> Result<&'a [u8]> {
 		// Cannot reuse `self.rva_to_file_offset` because it doesn't return the size of the section
 		// FIXME! What to do about all the potential overflows?

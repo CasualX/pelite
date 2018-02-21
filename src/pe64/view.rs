@@ -38,6 +38,12 @@ impl<'a> PeView<'a> {
 		}
 		Ok(PeView { image, _phantom: PhantomData })
 	}
+	/// Try to read the given bytes as a mapped PE image.
+	///
+	/// Acquire unique lock on the image bytes allowing safe mutation.
+	pub fn from_bytes_mut<T: AsMut<[u8]> + ?Sized>(image: &'a mut T) -> Result<PeView<'a>> {
+		Self::from_bytes(image.as_mut())
+	}
 	/// Creates a new instance of `PeView` of a mapped image.
 	///
 	/// # Safety
