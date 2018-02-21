@@ -41,7 +41,7 @@ In your Cargo.toml, put
 
 ```
 [dependencies]
-pelite = "0.4"
+pelite = "0.5"
 ```
 
 Examples
