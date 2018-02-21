@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Improved pattern scanner by optimizing it for `PeView`.
 - Intent to deprecate `Match` and all related methods.
 - Renamed specific resources find error to `FindError::Bad8Path`.
+- Renamed pemoddef binary to module-def.
 
 ## [0.4.0] 2017-09-06
 
