@@ -1,9 +1,9 @@
 /*!
-Writes a [Module-Defintion](https://msdn.microsoft.com/en-us/library/28d6s79h.aspx) file for the given input DLL.
+Prints a [Module-Defintion](https://msdn.microsoft.com/en-us/library/28d6s79h.aspx) file for the given input DLL.
 
 ```bat
-cargo run --bin pemoddef -- "demo\Demo64.dll" > "demo\Demo64.DEF"
-cargo run --bin pemoddef -- "demo\Demo.dll" > "demo\Demo.DEF"
+cargo run --bin module-def -- "demo\Demo64.dll" > "demo\Demo64.DEF"
+cargo run --bin module-def -- "demo\Demo.dll" > "demo\Demo.DEF"
 ```
 
 An Import Library can be created from the Module-Definition file.
@@ -35,7 +35,7 @@ To create an import library run the following command afterwards:
     lib /def:"MODULE.DEF" /out:"MODULE.LIB" /machine:[x86|x64]
 
 Usage:
-    pemoddef "MODULE.DLL" > "MODULE.DEF"
+    module-def "MODULE.DLL" > "MODULE.DEF"
 "#;
 
 fn main() {
@@ -48,11 +48,11 @@ fn main() {
 					.or_else(|_| pelite::pe64::PeFile::from_bytes(&map).map(lib_pe64));
 				// Display errors
 				if let Err(err) = result {
-					eprintln!("pemoddef: {}", err);
+					eprintln!("module-def: {}", err);
 				}
 			},
 			Err(err) => {
-				eprintln!("pemoddef: {}", err);
+				eprintln!("module-def: {}", err);
 			},
 		};
 	}
@@ -68,9 +68,9 @@ fn lib_pe32(file: pelite::pe32::PeFile) -> pelite::Result<()> {
 
 	let exp = file.exports()?.by()?;
 	let dll_name = exp.dll_name()?;
-	let names =
-		(0..exp.names().len())
-		.map(|hint| exp.hint_name(hint))
+	let names = exp
+		.iter_names()
+		.map(|(_, name)| name)
 		.collect::<pelite::Result<Vec<_>>>()?;
 
 	println!("LIBRARY {}\nEXPORTS", dll_name);
@@ -86,9 +86,9 @@ fn lib_pe64(file: pelite::pe64::PeFile) -> pelite::Result<()> {
 
 	let exp = file.exports()?.by()?;
 	let dll_name = exp.dll_name()?;
-	let names =
-		(0..exp.names().len())
-		.map(|hint| exp.hint_name(hint))
+	let names = exp
+		.iter_names()
+		.map(|(_, name)| name)
 		.collect::<pelite::Result<Vec<_>>>()?;
 
 	println!("LIBRARY {}\nEXPORTS", dll_name);
