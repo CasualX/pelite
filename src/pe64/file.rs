@@ -2,6 +2,8 @@
 PE file.
 */
 
+use std::cmp;
+
 use error::{Error, Result};
 
 use super::image::*;
@@ -25,26 +27,21 @@ impl<'a> PeFile<'a> {
 		// FIXME! What to do about all the potential overflows?
 		for it in self.section_headers() {
 			#[allow(non_snake_case)]
-			let VirtualEnd = it.VirtualAddress + it.VirtualSize;
+			let VirtualEnd = it.VirtualAddress + cmp::max(it.VirtualSize, it.SizeOfRawData);
 			// Rva is contained within the virtual space of a section
 			if rva >= it.VirtualAddress && rva <= VirtualEnd {
-				// Rva is contained in the physical space of the section
-				if rva <= it.VirtualAddress + it.SizeOfRawData {
-					let start = (rva - it.VirtualAddress + it.PointerToRawData) as usize;
-					let end = (it.PointerToRawData + it.SizeOfRawData) as usize;
-					return match self.image.get(start..end) {
-						Some(bytes) if bytes.len() >= min_size => Ok(bytes),
-						// Identify the reason the slice fails
-						_ => if start + min_size > VirtualEnd as usize {
-							Err(Error::OOB)
-						}
-						else {
-							Err(Error::ZeroFill)
-						},
-					};
-				}
-				// Rva is inside the virtual space but outside the physical space
-				return Err(Error::ZeroFill);
+				let start = (rva - it.VirtualAddress + it.PointerToRawData) as usize;
+				let end = (it.PointerToRawData + it.SizeOfRawData) as usize;
+				return match self.image.get(start..end) {
+					Some(bytes) if bytes.len() >= min_size => Ok(bytes),
+					// Identify the reason the slice fails
+					_ => if start + min_size > VirtualEnd as usize {
+						Err(Error::OOB)
+					}
+					else {
+						Err(Error::ZeroFill)
+					},
+				};
 			}
 		}
 		Err(Error::OOB)
