@@ -2,8 +2,9 @@
 use std::{io, ptr, slice};
 use std::ffi::OsStr;
 use std::path::Path;
+use std::ops::Range;
 use std::os::windows::ffi::OsStrExt;
-use std::os::windows::io::RawHandle;
+use std::os::windows::io::{AsRawHandle, RawHandle};
 use std::os::raw::c_void;
 
 const INVALID_HANDLE_VALUE: RawHandle = !0 as RawHandle;
@@ -45,6 +46,12 @@ extern "system" {
 	fn CloseHandle(
 		hObject: RawHandle,
 	) -> i32;
+	fn VirtualProtect(
+		lpAddress: *const c_void,
+		dwSize: usize,
+		flNewProtect: u32,
+		lpflOldProtect: *mut u32,
+	) -> i32;
 }
 
 macro_rules! close_handle {
@@ -54,11 +61,32 @@ macro_rules! close_handle {
 	}
 }
 
+/// Memory protection values.
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash)]
+#[repr(u8)]
+pub enum Protect {
+	ReadOnly,
+	ReadWrite,
+	ExecuteRead,
+	ExecuteReadWrite,
+}
+impl Protect {
+	fn to_os_protect(self) -> u32 {
+		const VALUES: [u8; 4] = [
+			/*PAGE_READONLY*/0x02,
+			/*PAGE_READWRITE*/0x04,
+			/*PAGE_EXECUTE_READ*/0x20,
+			/*PAGE_EXECUTE_READWRITE*/0x40,
+		];
+		VALUES[self as u8 as usize] as u32
+	}
+}
+
 //----------------------------------------------------------------
 
 /// Memory-mapped image.
 pub struct ImageMap {
-	map: RawHandle,
+	handle: RawHandle,
 	bytes: *mut [u8],
 }
 impl ImageMap {
@@ -81,7 +109,7 @@ impl ImageMap {
 			close_handle!(file);
 			if map != NULL {
 				// Map view of the file
-				let view = MapViewOfFile(map, /*FILE_MAP_READ*/0x0004, 0, 0, 0);
+				let view = MapViewOfFile(map, /*FILE_MAP_COPY*/0x0001, 0, 0, 0);
 				if view != ptr::null() {
 					// Trust the OS with correctly mapping the image.
 					// Trust me to have read and understood the documentation.
@@ -91,7 +119,7 @@ impl ImageMap {
 					let nt_header = (view as usize + (*dos_header).e_lfanew as usize) as *const IMAGE_NT_HEADERS64;
 					let size_of = (*nt_header).OptionalHeader.SizeOfImage;
 					let bytes = slice::from_raw_parts_mut(view as *mut u8, size_of as usize);
-					return Ok(ImageMap { map, bytes });
+					return Ok(ImageMap { handle: map, bytes });
 				}
 				let err = io::Error::last_os_error();
 				close_handle!(map);
@@ -99,6 +127,19 @@ impl ImageMap {
 			}
 		}
 		Err(io::Error::last_os_error())
+	}
+	// Change the memory protection of a range of this image.
+	pub fn protect<U: Into<usize>>(&self, address: Range<U>, protect: Protect) -> bool {
+		unsafe {
+			let bytes = &(*self.bytes)[address.start.into()..address.end.into()];
+			let mut old_protect = 0;
+			VirtualProtect(bytes.as_ptr() as *const c_void, bytes.len(), protect.to_os_protect(), &mut old_protect) != 0
+		}
+	}
+}
+impl AsRawHandle for ImageMap {
+	fn as_raw_handle(&self) -> RawHandle {
+		self.handle
 	}
 }
 impl AsRef<[u8]> for ImageMap {
@@ -110,7 +151,7 @@ impl Drop for ImageMap {
 	fn drop(&mut self) {
 		unsafe {
 			UnmapViewOfFile((*self.bytes).as_ptr() as *const c_void);
-			close_handle!(self.map);
+			close_handle!(self.handle);
 		}
 	}
 }
@@ -119,7 +160,7 @@ impl Drop for ImageMap {
 
 /// Memory-mapped file.
 pub struct FileMap {
-	map: RawHandle,
+	handle: RawHandle,
 	bytes: *mut [u8],
 }
 impl FileMap {
@@ -162,7 +203,12 @@ impl FileMap {
 			return Err(err);
 		}
 		let bytes = slice::from_raw_parts_mut(view as *mut u8, size);
-		Ok(FileMap { map, bytes })
+		Ok(FileMap { handle: map, bytes })
+	}
+}
+impl AsRawHandle for FileMap {
+	fn as_raw_handle(&self) -> RawHandle {
+		self.handle
 	}
 }
 impl AsRef<[u8]> for FileMap {
@@ -174,7 +220,7 @@ impl Drop for FileMap {
 	fn drop(&mut self) {
 		unsafe {
 			UnmapViewOfFile((*self.bytes).as_ptr() as *const c_void);
-			close_handle!(self.map);
+			close_handle!(self.handle);
 		}
 	}
 }
