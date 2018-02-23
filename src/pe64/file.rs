@@ -27,21 +27,19 @@ impl<'a> PeFile<'a> {
 			#[allow(non_snake_case)]
 			let VirtualEnd = it.VirtualAddress + it.VirtualSize;
 			// Rva is contained within the virtual space of a section
-			if rva >= it.VirtualAddress && rva < VirtualEnd {
+			if rva >= it.VirtualAddress && rva <= VirtualEnd {
 				// Rva is contained in the physical space of the section
-				if rva < it.VirtualAddress + it.SizeOfRawData {
-					let start = (rva - it.VirtualAddress + it.PointerToRawData) as FileOffset;
-					let end = (it.PointerToRawData + it.SizeOfRawData) as FileOffset;
+				if rva <= it.VirtualAddress + it.SizeOfRawData {
+					let start = (rva - it.VirtualAddress + it.PointerToRawData) as usize;
+					let end = (it.PointerToRawData + it.SizeOfRawData) as usize;
 					return match self.image.get(start..end) {
 						Some(bytes) if bytes.len() >= min_size => Ok(bytes),
-						_ => {
-							// Identify the reason the slice fails
-							if start + min_size > VirtualEnd as FileOffset {
-								Err(Error::OOB)
-							}
-							else {
-								Err(Error::ZeroFill)
-							}
+						// Identify the reason the slice fails
+						_ => if start + min_size > VirtualEnd as usize {
+							Err(Error::OOB)
+						}
+						else {
+							Err(Error::ZeroFill)
 						},
 					};
 				}
@@ -62,7 +60,7 @@ unsafe impl<'a> Pe<'a> for PeFile<'a> {
 		if rva == BADRVA {
 			Err(Error::Null)
 		}
-		else if rva as FileOffset & (align - 1) != 0 {
+		else if rva as usize & (align - 1) != 0 {
 			Err(Error::Misalign)
 		}
 		else {
@@ -83,7 +81,7 @@ unsafe impl<'a> Pe<'a> for PeFile<'a> {
 		}
 		else {
 			let rva = (va - image_base) as Rva;
-			if rva as FileOffset & (align - 1) != 0 {
+			if rva as usize & (align - 1) != 0 {
 				Err(Error::Misalign)
 			}
 			else {

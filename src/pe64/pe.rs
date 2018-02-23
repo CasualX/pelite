@@ -55,7 +55,7 @@ pub unsafe trait Pe<'a> {
 
 	//----------------------------------------------------------------
 
-	/// Converts an `Rva` to `FileOffset`.
+	/// Converts an `Rva` to file offset.
 	///
 	/// # Errors
 	///
@@ -63,27 +63,27 @@ pub unsafe trait Pe<'a> {
 	///   This happens when the size of raw data is shorter than the virtual size. Windows fills the remaining of the section with zeroes.
 	///
 	/// * [`Err(OOB)`](../enum.Error.html#variant.OOB) if the rva does not point within any section. This includes the headers.
-	fn rva_to_file_offset(self, rva: Rva) -> Result<FileOffset> where Self: Copy {
+	fn rva_to_file_offset(self, rva: Rva) -> Result<usize> where Self: Copy {
 		for it in self.section_headers() {
 			if rva >= it.VirtualAddress && rva < (it.VirtualAddress + it.VirtualSize) {
 				if rva < (it.VirtualAddress + it.SizeOfRawData) {
-					return Ok((rva - it.VirtualAddress + it.PointerToRawData) as FileOffset);
+					return Ok((rva - it.VirtualAddress + it.PointerToRawData) as usize);
 				}
 				return Err(Error::ZeroFill);
 			}
 		}
 		Err(Error::OOB)
 	}
-	/// Converts a `FileOffset` to `Rva`.
+	/// Converts a file offset to `Rva`.
 	///
 	/// # Errors
 	///
 	/// * [`Err(OOB)`](../enum.Error.html#variant.OOB) if the file offset points within the headers or part of a section which isn't mapped.
 	///   This happens when the virtual size is shorter than the size of raw data.
-	fn file_offset_to_rva(self, file_offset: FileOffset) -> Result<Rva> where Self: Copy {
+	fn file_offset_to_rva(self, file_offset: usize) -> Result<Rva> where Self: Copy {
 		for it in self.section_headers() {
-			if file_offset >= it.PointerToRawData as FileOffset && file_offset < (it.PointerToRawData as FileOffset + it.SizeOfRawData as FileOffset) {
-				if file_offset < (it.PointerToRawData as FileOffset + it.VirtualSize as FileOffset) {
+			if file_offset >= it.PointerToRawData as usize && file_offset < (it.PointerToRawData as usize + it.SizeOfRawData as usize) {
+				if file_offset < (it.PointerToRawData as usize + it.VirtualSize as usize) {
 					return Ok(file_offset as Rva - it.PointerToRawData + it.VirtualAddress);
 				}
 				return Err(Error::OOB);
