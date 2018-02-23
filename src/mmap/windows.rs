@@ -59,14 +59,14 @@ macro_rules! close_handle {
 /// Memory-mapped image.
 pub struct ImageMap {
 	map: RawHandle,
-	view: *const c_void,
+	bytes: *mut [u8],
 }
 impl ImageMap {
 	/// Maps the executable image into memory with correctly aligned sections.
 	pub fn open<P: AsRef<Path> + ?Sized>(path: &P) -> io::Result<ImageMap> {
-		Self::_open(path.as_ref())
+		unsafe { Self::_open(path.as_ref()) }
 	}
-	fn _open(path: &Path) -> io::Result<ImageMap> { unsafe {
+	unsafe fn _open(path: &Path) -> io::Result<ImageMap> {
 		// Get its file handle
 		let file = {
 			// Get the path as a nul terminated wide string
@@ -83,8 +83,15 @@ impl ImageMap {
 				// Map view of the file
 				let view = MapViewOfFile(map, /*FILE_MAP_READ*/0x0004, 0, 0, 0);
 				if view != ptr::null() {
-					// All good! Trust the OS with correctly mapping the image...
-					return Ok(ImageMap { map, view });
+					// Trust the OS with correctly mapping the image.
+					// Trust me to have read and understood the documentation.
+					// There is no validation and 64bit headers are used because the offsets are the same for PE32.
+					use image::{IMAGE_DOS_HEADER, IMAGE_NT_HEADERS64};
+					let dos_header = view as *const IMAGE_DOS_HEADER;
+					let nt_header = (view as usize + (*dos_header).e_lfanew as usize) as *const IMAGE_NT_HEADERS64;
+					let size_of = (*nt_header).OptionalHeader.SizeOfImage;
+					let bytes = slice::from_raw_parts_mut(view as *mut u8, size_of as usize);
+					return Ok(ImageMap { map, bytes });
 				}
 				let err = io::Error::last_os_error();
 				close_handle!(map);
@@ -92,18 +99,20 @@ impl ImageMap {
 			}
 		}
 		Err(io::Error::last_os_error())
-	}}
+	}
 }
 impl AsRef<[u8]> for ImageMap {
 	fn as_ref(&self) -> &[u8] {
-		unimplemented!()
+		unsafe { &*self.bytes }
 	}
 }
 impl Drop for ImageMap {
-	fn drop(&mut self) { unsafe {
-		UnmapViewOfFile(self.view);
-		close_handle!(self.map);
-	}}
+	fn drop(&mut self) {
+		unsafe {
+			UnmapViewOfFile((*self.bytes).as_ptr() as *const c_void);
+			close_handle!(self.map);
+		}
+	}
 }
 
 //----------------------------------------------------------------
@@ -111,15 +120,14 @@ impl Drop for ImageMap {
 /// Memory-mapped file.
 pub struct FileMap {
 	map: RawHandle,
-	view: *const c_void,
-	size: usize,
+	bytes: *mut [u8],
 }
 impl FileMap {
 	/// Maps the whole file into memory.
 	pub fn open<P: AsRef<Path> + ?Sized>(path: &P) -> io::Result<FileMap> {
-		Self::_open(path.as_ref())
+		unsafe { Self::_open(path.as_ref()) }
 	}
-	fn _open(path: &Path) -> io::Result<FileMap> { unsafe {
+	unsafe fn _open(path: &Path) -> io::Result<FileMap> {
 		// Get its file handle
 		let file = {
 			// Get the path as a nul terminated wide string
@@ -153,17 +161,20 @@ impl FileMap {
 			close_handle!(map);
 			return Err(err);
 		}
-		Ok(FileMap { map, view, size })
-	}}
+		let bytes = slice::from_raw_parts_mut(view as *mut u8, size);
+		Ok(FileMap { map, bytes })
+	}
 }
 impl AsRef<[u8]> for FileMap {
-	fn as_ref(&self) -> &[u8] { unsafe {
-		slice::from_raw_parts(self.view as *const u8, self.size)
-	}}
+	fn as_ref(&self) -> &[u8] {
+		unsafe { &*self.bytes }
+	}
 }
 impl Drop for FileMap {
-	fn drop(&mut self) { unsafe {
-		UnmapViewOfFile(self.view);
-		close_handle!(self.map);
-	}}
+	fn drop(&mut self) {
+		unsafe {
+			UnmapViewOfFile((*self.bytes).as_ptr() as *const c_void);
+			close_handle!(self.map);
+		}
+	}
 }

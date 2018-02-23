@@ -1,7 +1,7 @@
 extern crate pelite;
 
-use pelite::FileMap;
-use pelite::pe64::{Rva, Pe, PeFile};
+use pelite::{FileMap, ImageMap};
+use pelite::pe64::{Rva, Pe, PeFile, PeView};
 use pelite::pe64::exports::Export;
 use pelite::pe64::imports::Import;
 use pelite::pe64::debug::Info;
@@ -177,4 +177,12 @@ fn scanner() {
 	assert_eq!(save[0], 0x1490);
 
 	assert!(!file.scanner().finds(&pat, 0x1490..0x149F, &mut save));
+}
+
+//----------------------------------------------------------------
+
+#[test]
+fn imagemap() {
+	let image_map = ImageMap::open(FILE_NAME).unwrap();
+	let view = PeView::from_bytes(&image_map).unwrap();
 }
