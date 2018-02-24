@@ -29,7 +29,7 @@ Import the [`Pe`](trait.Pe.html) trait to continue from here.
 
 ## Executable images in memory
 
-To simulate the system loading and mapping images with virtual memory alignment use the [`ImageMap`](../struct.ImageMap.html) loader.
+To simulate the system loading and mapping images with virtual memory alignment use the [`ImageMap`](../mmap/struct.ImageMap.html) loader.
 Note however that this is only available on Windows targets as this maps the image using Windows file mapping facilities.
 
 Take a byte slice of the entire image and construct it with [`PeView::from_bytes`](struct.PeView.html#method.from_bytes).
@@ -112,7 +112,7 @@ fn file_map<P: AsRef<Path> + ?Sized>(path: &P) -> Result<(), Error> {
 
 #[cfg(windows)]
 fn image_map<P: AsRef<Path> + ?Sized>(path: &P) -> Result<(), Error> {
-	use pelite::ImageMap;
+	use pelite::mmap::ImageMap;
 	use pelite::pe32::{Pe, PeView};
 
 	let path = path.as_ref();
