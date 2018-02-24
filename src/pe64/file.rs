@@ -49,6 +49,7 @@ unsafe impl<'a> Pe<'a> for PeFile<'a> {
 	}
 	#[inline(never)]
 	fn slice(&self, rva: Rva, min_size: usize, align: usize) -> Result<&'a [u8]> {
+		debug_assert!(align != 0 && align & (align - 1) == 0);
 		if rva == BADRVA {
 			Err(Error::Null)
 		}
@@ -61,6 +62,7 @@ unsafe impl<'a> Pe<'a> for PeFile<'a> {
 	}
 	#[inline(never)]
 	fn read(&self, va: Va, min_size: usize, align: usize) -> Result<&'a [u8]> {
+		debug_assert!(align != 0 && align & (align - 1) == 0);
 		let (image_base, size_of_image) = {
 			let optional_header = self.optional_header();
 			(optional_header.ImageBase, optional_header.SizeOfImage)
