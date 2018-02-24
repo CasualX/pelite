@@ -1,13 +1,38 @@
 extern crate pelite;
 
 use pelite::FileMap;
-use pelite::pe64::{Pe, PeFile};
+use pelite::pe64::{Rva, Pe, PeFile};
 use pelite::pe64::exports::Export;
 use pelite::pe64::imports::Import;
 use pelite::pe64::debug::Info;
 use pelite::util::CStr;
 
 const FILE_NAME: &str = "demo/Demo64.dll";
+
+//----------------------------------------------------------------
+
+#[test]
+fn slice_edges() {
+	let file_map = FileMap::open(FILE_NAME).unwrap();
+	let file = PeFile::from_bytes(&file_map).unwrap();
+
+	let assert_edges = |rva: Rva, len: usize| {
+		assert_eq!(file.slice_bytes(rva).unwrap().len(), len);
+		assert_eq!(file.slice_bytes(rva + len as Rva).unwrap().len(), 0);
+		assert_eq!(file.slice(rva, len, 1).unwrap().len(), len);
+	};
+
+	assert_edges(0x1000, 0x1200);
+	assert_edges(0x3000, 0x1200);
+	assert_edges(0x5000, 0x0200);
+	assert_edges(0x6000, 0x0200);
+	assert_edges(0x7000, 0x0200);
+	assert_edges(0x8000, 0x4200);
+	assert_edges(0xD000, 0x0200);
+
+	assert_eq!(file.slice(0x5000, 0x710, 1), Err(pelite::Error::ZeroFill));
+	assert_eq!(file.slice(0x5000, 0x711, 1), Err(pelite::Error::OOB));
+}
 
 //----------------------------------------------------------------
 

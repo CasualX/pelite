@@ -16,8 +16,6 @@ pub type IMAGE_TLS_DIRECTORY = IMAGE_TLS_DIRECTORY64;
 pub type Rva = u32;
 /// Virtual address type, absolute address as known by the image. Not always the same as a pointer.
 pub type Va = u64;
-/// FileOffset type, when dealing with file offsets.
-pub type FileOffset = usize;
 
 /// Invalid Rva value.
 pub const BADRVA: Rva = 0;

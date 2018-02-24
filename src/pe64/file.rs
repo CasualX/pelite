@@ -2,6 +2,8 @@
 PE file.
 */
 
+use std::cmp;
+
 use error::{Error, Result};
 
 use super::image::*;
@@ -20,33 +22,21 @@ impl<'a> PeFile<'a> {
 		let _ = validate_headers(image)?;
 		Ok(PeFile { image })
 	}
-	fn section_get(&self, rva: Rva, min_size: usize) -> Result<&'a [u8]> {
+	fn range_to_slice(&self, rva: Rva, min_size: usize) -> Result<&'a [u8]> {
 		// Cannot reuse `self.rva_to_file_offset` because it doesn't return the size of the section
 		// FIXME! What to do about all the potential overflows?
 		for it in self.section_headers() {
 			#[allow(non_snake_case)]
-			let VirtualEnd = it.VirtualAddress + it.VirtualSize;
+			let VirtualEnd = it.VirtualAddress + cmp::max(it.VirtualSize, it.SizeOfRawData);
 			// Rva is contained within the virtual space of a section
-			if rva >= it.VirtualAddress && rva < VirtualEnd {
-				// Rva is contained in the physical space of the section
-				if rva < it.VirtualAddress + it.SizeOfRawData {
-					let start = (rva - it.VirtualAddress + it.PointerToRawData) as FileOffset;
-					let end = (it.PointerToRawData + it.SizeOfRawData) as FileOffset;
-					return match self.image.get(start..end) {
-						Some(bytes) if bytes.len() >= min_size => Ok(bytes),
-						_ => {
-							// Identify the reason the slice fails
-							if start + min_size > VirtualEnd as FileOffset {
-								Err(Error::OOB)
-							}
-							else {
-								Err(Error::ZeroFill)
-							}
-						},
-					};
-				}
-				// Rva is inside the virtual space but outside the physical space
-				return Err(Error::ZeroFill);
+			if rva >= it.VirtualAddress && rva <= VirtualEnd {
+				let start = (rva - it.VirtualAddress + it.PointerToRawData) as usize;
+				let end = (it.PointerToRawData + it.SizeOfRawData) as usize;
+				return match self.image.get(start..end) {
+					Some(bytes) if bytes.len() >= min_size => Ok(bytes),
+					// Identify the reason the slice fails
+					_ => Err(if rva + min_size as Rva > VirtualEnd { Error::OOB } else { Error::ZeroFill }),
+				};
 			}
 		}
 		Err(Error::OOB)
@@ -62,11 +52,11 @@ unsafe impl<'a> Pe<'a> for PeFile<'a> {
 		if rva == BADRVA {
 			Err(Error::Null)
 		}
-		else if rva as FileOffset & (align - 1) != 0 {
+		else if rva as usize & (align - 1) != 0 {
 			Err(Error::Misalign)
 		}
 		else {
-			self.section_get(rva, min_size)
+			self.range_to_slice(rva, min_size)
 		}
 	}
 	#[inline(never)]
@@ -83,11 +73,11 @@ unsafe impl<'a> Pe<'a> for PeFile<'a> {
 		}
 		else {
 			let rva = (va - image_base) as Rva;
-			if rva as FileOffset & (align - 1) != 0 {
+			if rva as usize & (align - 1) != 0 {
 				Err(Error::Misalign)
 			}
 			else {
-				self.section_get(rva, min_size)
+				self.range_to_slice(rva, min_size)
 			}
 		}
 	}

@@ -59,7 +59,7 @@ unsafe impl<'a> Pe<'a> for PeView<'a> {
 		self.image
 	}
 	fn slice(&self, rva: Rva, min_size: usize, align: usize) -> Result<&'a [u8]> {
-		let start = rva as FileOffset;
+		let start = rva as usize;
 		if rva == BADRVA {
 			Err(Error::Null)
 		}
@@ -85,7 +85,7 @@ unsafe impl<'a> Pe<'a> for PeView<'a> {
 			Err(Error::OOB)
 		}
 		else {
-			let start = (va - image_base) as FileOffset;
+			let start = (va - image_base) as usize;
 			if start & (align - 1) != 0 {
 				Err(Error::Misalign)
 			}
