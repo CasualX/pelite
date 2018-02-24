@@ -9,19 +9,26 @@ use std::ops::Range;
 use std::os::windows::ffi::OsStrExt;
 use std::os::windows::io::{AsRawHandle, RawHandle};
 
-use self::winapi::um::fileapi::{CreateFileW, GetFileSizeEx};
-use self::winapi::um::memoryapi::{CreateFileMappingW, MapViewOfFile, UnmapViewOfFile, VirtualProtect};
+use self::winapi::um::fileapi::{CreateFileW, GetFileSizeEx, OPEN_EXISTING};
+use self::winapi::um::memoryapi::{
+	CreateFileMappingW, MapViewOfFile, UnmapViewOfFile, VirtualProtect,
+	FILE_MAP_READ, FILE_MAP_COPY,
+};
 use self::winapi::um::handleapi::{CloseHandle, INVALID_HANDLE_VALUE};
 use self::winapi::shared::ntdef::{NULL, HANDLE};
 use self::winapi::shared::minwindef::{FALSE, LPVOID};
+use self::winapi::um::winnt::{
+	PAGE_READONLY, PAGE_READWRITE, PAGE_EXECUTE_READ, PAGE_EXECUTE_READWRITE,
+	SEC_IMAGE, GENERIC_READ, FILE_SHARE_READ, FILE_ATTRIBUTE_NORMAL,
+};
 
 impl Protect {
 	fn to_os_protect(self) -> u32 {
 		const VALUES: [u8; 4] = [
-			/*PAGE_READONLY*/0x02,
-			/*PAGE_READWRITE*/0x04,
-			/*PAGE_EXECUTE_READ*/0x20,
-			/*PAGE_EXECUTE_READWRITE*/0x40,
+			PAGE_READONLY as u8,
+			PAGE_READWRITE as u8,
+			PAGE_EXECUTE_READ as u8,
+			PAGE_EXECUTE_READWRITE as u8,
 		];
 		VALUES[self as u8 as usize] as u32
 	}
@@ -46,15 +53,15 @@ impl ImageMap {
 			let path: &OsStr = path.as_ref();
 			let mut wpath: Vec<u16> = path.encode_wide().collect();
 			wpath.push(0);
-			CreateFileW(wpath.as_ptr(), /*GENERIC_READ*/0x80000000, /*FILE_SHARE_READ*/0x00000001, ptr::null_mut(), /*OPEN_EXISTING*/3, /*FILE_ATTRIBUTE_NORMAL*/0x00000080, NULL)
+			CreateFileW(wpath.as_ptr(), GENERIC_READ, FILE_SHARE_READ, ptr::null_mut(), OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL)
 		};
 		if file != INVALID_HANDLE_VALUE {
 			// Create the image file mapping, `SEC_IMAGE` does its magic thing
-			let map = CreateFileMappingW(file, ptr::null_mut(), /*PAGE_READONLY*/0x02 | /*SEC_IMAGE*/0x1000000, 0, 0, ptr::null());
+			let map = CreateFileMappingW(file, ptr::null_mut(), PAGE_READONLY | SEC_IMAGE, 0, 0, ptr::null());
 			CloseHandle(file);
 			if map != NULL {
 				// Map view of the file
-				let view = MapViewOfFile(map, /*FILE_MAP_COPY*/0x0001, 0, 0, 0);
+				let view = MapViewOfFile(map, FILE_MAP_COPY, 0, 0, 0);
 				if view != ptr::null_mut() {
 					// Trust the OS with correctly mapping the image.
 					// Trust me to have read and understood the documentation.
@@ -125,7 +132,7 @@ impl FileMap {
 			let path: &OsStr = path.as_ref();
 			let mut wpath: Vec<u16> = path.encode_wide().collect();
 			wpath.push(0);
-			CreateFileW(wpath.as_ptr(), /*GENERIC_READ*/0x80000000, /*FILE_SHARE_READ*/0x00000001, ptr::null_mut(), /*OPEN_EXISTING*/3, /*FILE_ATTRIBUTE_NORMAL*/0x00000080, NULL)
+			CreateFileW(wpath.as_ptr(), GENERIC_READ, FILE_SHARE_READ, ptr::null_mut(), OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL)
 		};
 		if file == INVALID_HANDLE_VALUE {
 			return Err(io::Error::last_os_error());
@@ -140,13 +147,13 @@ impl FileMap {
 			return Err(err);
 		}
 		// Create the memory file mapping
-		let map = CreateFileMappingW(file, ptr::null_mut(), /*PAGE_READONLY*/0x02, 0, 0, ptr::null());
+		let map = CreateFileMappingW(file, ptr::null_mut(), PAGE_READONLY, 0, 0, ptr::null());
 		CloseHandle(file);
 		if map == NULL {
 			return Err(io::Error::last_os_error());
 		}
 		// Map view of the file
-		let view = MapViewOfFile(map, /*FILE_MAP_READ*/0x0004, 0, 0, 0);
+		let view = MapViewOfFile(map, FILE_MAP_READ, 0, 0, 0);
 		if view == ptr::null_mut() {
 			let err = io::Error::last_os_error();
 			CloseHandle(map);
