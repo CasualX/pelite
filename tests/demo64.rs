@@ -184,7 +184,5 @@ fn scanner() {
 #[test]
 fn imagemap() {
 	let image = mmap::ImageMap::open(FILE_NAME).unwrap();
-	assert!(image.protect(0u32..0xE000, mmap::Protect::ExecuteReadWrite));
-
 	let _view = PeView::from_bytes(&image).unwrap();
 }

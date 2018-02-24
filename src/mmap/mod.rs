@@ -11,13 +11,3 @@ pub use self::windows::{FileMap, ImageMap};
 mod unix;
 #[cfg(unix)]
 pub use self::unix::{FileMap};
-
-/// Memory protection values.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash)]
-#[repr(u8)]
-pub enum Protect {
-	ReadOnly,
-	ReadWrite,
-	ExecuteRead,
-	ExecuteReadWrite,
-}

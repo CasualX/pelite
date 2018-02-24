@@ -1,38 +1,17 @@
 extern crate winapi;
 
-use super::Protect;
-
 use std::{io, mem, ptr, slice};
 use std::ffi::OsStr;
 use std::path::Path;
-use std::ops::Range;
 use std::os::windows::ffi::OsStrExt;
 use std::os::windows::io::{AsRawHandle, RawHandle};
 
 use self::winapi::um::fileapi::{CreateFileW, GetFileSizeEx, OPEN_EXISTING};
-use self::winapi::um::memoryapi::{
-	CreateFileMappingW, MapViewOfFile, UnmapViewOfFile, VirtualProtect,
-	FILE_MAP_READ, FILE_MAP_COPY,
-};
+use self::winapi::um::memoryapi::{CreateFileMappingW, MapViewOfFile, UnmapViewOfFile, FILE_MAP_READ, FILE_MAP_COPY};
 use self::winapi::um::handleapi::{CloseHandle, INVALID_HANDLE_VALUE};
 use self::winapi::shared::ntdef::{NULL, HANDLE};
 use self::winapi::shared::minwindef::{FALSE, LPVOID};
-use self::winapi::um::winnt::{
-	PAGE_READONLY, PAGE_READWRITE, PAGE_EXECUTE_READ, PAGE_EXECUTE_READWRITE,
-	SEC_IMAGE, GENERIC_READ, FILE_SHARE_READ, FILE_ATTRIBUTE_NORMAL,
-};
-
-impl Protect {
-	fn to_os_protect(self) -> u32 {
-		const VALUES: [u8; 4] = [
-			PAGE_READONLY as u8,
-			PAGE_READWRITE as u8,
-			PAGE_EXECUTE_READ as u8,
-			PAGE_EXECUTE_READWRITE as u8,
-		];
-		VALUES[self as u8 as usize] as u32
-	}
-}
+use self::winapi::um::winnt::{PAGE_READONLY, SEC_IMAGE, GENERIC_READ, FILE_SHARE_READ, FILE_ATTRIBUTE_NORMAL};
 
 //----------------------------------------------------------------
 
@@ -80,14 +59,6 @@ impl ImageMap {
 		}
 		Err(io::Error::last_os_error())
 	}
-	// Change the memory protection of a range of this image.
-	pub fn protect(&self, address: Range<u32>, protect: Protect) -> bool {
-		unsafe {
-			let bytes = &(*self.bytes)[address.start as usize..address.end as usize];
-			let mut old_protect = 0;
-			VirtualProtect(bytes.as_ptr() as LPVOID, bytes.len(), protect.to_os_protect(), &mut old_protect) != 0
-		}
-	}
 }
 impl AsRawHandle for ImageMap {
 	fn as_raw_handle(&self) -> RawHandle {
@@ -97,11 +68,6 @@ impl AsRawHandle for ImageMap {
 impl AsRef<[u8]> for ImageMap {
 	fn as_ref(&self) -> &[u8] {
 		unsafe { &*self.bytes }
-	}
-}
-impl AsMut<[u8]> for ImageMap {
-	fn as_mut(&mut self) -> &mut [u8] {
-		unsafe { &mut *self.bytes }
 	}
 }
 impl Drop for ImageMap {
@@ -171,11 +137,6 @@ impl AsRawHandle for FileMap {
 impl AsRef<[u8]> for FileMap {
 	fn as_ref(&self) -> &[u8] {
 		unsafe { &*self.bytes }
-	}
-}
-impl AsMut<[u8]> for FileMap {
-	fn as_mut(&mut self) -> &mut [u8] {
-		unsafe { &mut *self.bytes }
 	}
 }
 impl Drop for FileMap {
