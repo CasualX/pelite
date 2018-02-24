@@ -6,11 +6,11 @@ use std::path::Path;
 use std::os::windows::ffi::OsStrExt;
 use std::os::windows::io::{AsRawHandle, RawHandle};
 
-use self::winapi::um::fileapi::{CreateFileW, GetFileSizeEx, OPEN_EXISTING};
-use self::winapi::um::memoryapi::{CreateFileMappingW, MapViewOfFile, UnmapViewOfFile, FILE_MAP_READ, FILE_MAP_COPY};
+use self::winapi::um::fileapi::{CreateFileW, OPEN_EXISTING};
+use self::winapi::um::memoryapi::{CreateFileMappingW, MapViewOfFile, UnmapViewOfFile, VirtualQuery, FILE_MAP_READ, FILE_MAP_COPY};
 use self::winapi::um::handleapi::{CloseHandle, INVALID_HANDLE_VALUE};
 use self::winapi::shared::ntdef::{NULL, HANDLE};
-use self::winapi::shared::minwindef::{FALSE, LPVOID};
+use self::winapi::shared::minwindef::{LPVOID};
 use self::winapi::um::winnt::{PAGE_READONLY, SEC_IMAGE, GENERIC_READ, FILE_SHARE_READ, FILE_ATTRIBUTE_NORMAL};
 
 //----------------------------------------------------------------
@@ -103,15 +103,6 @@ impl FileMap {
 		if file == INVALID_HANDLE_VALUE {
 			return Err(io::Error::last_os_error());
 		}
-		// Get the file size as we'll be mapping it wholesome
-		let mut file_size = mem::uninitialized();
-		let e = GetFileSizeEx(file, &mut file_size);
-		let size = mem::transmute::<_, u64>(file_size) as usize;
-		if e == FALSE {
-			let err = io::Error::last_os_error();
-			CloseHandle(file);
-			return Err(err);
-		}
 		// Create the memory file mapping
 		let map = CreateFileMappingW(file, ptr::null_mut(), PAGE_READONLY, 0, 0, ptr::null());
 		CloseHandle(file);
@@ -125,7 +116,12 @@ impl FileMap {
 			CloseHandle(map);
 			return Err(err);
 		}
-		let bytes = slice::from_raw_parts_mut(view as *mut u8, size);
+		// Get the size of the file mapping, shouldn't ever fail...
+		let mut mem_basic_info = mem::zeroed();
+		let vq_result = VirtualQuery(view, &mut mem_basic_info, mem::size_of_val(&mem_basic_info));
+		debug_assert_eq!(vq_result, mem::size_of_val(&mem_basic_info));
+		// Now have enough information to construct the FileMap
+		let bytes = slice::from_raw_parts_mut(view as *mut u8, mem_basic_info.RegionSize as usize);
 		Ok(FileMap { handle: map, bytes })
 	}
 }
