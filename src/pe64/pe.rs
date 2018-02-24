@@ -2,7 +2,7 @@
 Abstract over mapped images and file binaries.
 */
 
-use std::{mem, ptr, slice};
+use std::{cmp, mem, ptr, slice};
 
 use error::{Error, Result};
 use util::{CStr, Pod, SliceLen};
@@ -65,7 +65,9 @@ pub unsafe trait Pe<'a> {
 	/// * [`Err(OOB)`](../enum.Error.html#variant.OOB) if the rva does not point within any section. This includes the headers.
 	fn rva_to_file_offset(self, rva: Rva) -> Result<usize> where Self: Copy {
 		for it in self.section_headers() {
-			if rva >= it.VirtualAddress && rva < (it.VirtualAddress + it.VirtualSize) {
+			#[allow(non_snake_case)]
+			let VirtualEnd = it.VirtualAddress + cmp::max(it.VirtualSize, it.SizeOfRawData);
+			if rva >= it.VirtualAddress && rva < VirtualEnd {
 				if rva < (it.VirtualAddress + it.SizeOfRawData) {
 					return Ok((rva - it.VirtualAddress + it.PointerToRawData) as usize);
 				}

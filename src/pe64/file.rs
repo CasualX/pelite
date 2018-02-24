@@ -22,7 +22,7 @@ impl<'a> PeFile<'a> {
 		let _ = validate_headers(image)?;
 		Ok(PeFile { image })
 	}
-	fn section_get(&self, rva: Rva, min_size: usize) -> Result<&'a [u8]> {
+	fn range_to_slice(&self, rva: Rva, min_size: usize) -> Result<&'a [u8]> {
 		// Cannot reuse `self.rva_to_file_offset` because it doesn't return the size of the section
 		// FIXME! What to do about all the potential overflows?
 		for it in self.section_headers() {
@@ -56,7 +56,7 @@ unsafe impl<'a> Pe<'a> for PeFile<'a> {
 			Err(Error::Misalign)
 		}
 		else {
-			self.section_get(rva, min_size)
+			self.range_to_slice(rva, min_size)
 		}
 	}
 	#[inline(never)]
@@ -77,7 +77,7 @@ unsafe impl<'a> Pe<'a> for PeFile<'a> {
 				Err(Error::Misalign)
 			}
 			else {
-				self.section_get(rva, min_size)
+				self.range_to_slice(rva, min_size)
 			}
 		}
 	}
