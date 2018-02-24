@@ -5,7 +5,7 @@ use std::fs::File;
 use std::path::Path;
 use std::os::unix::io::AsRawFd;
 
-/// Memory-mapped file.
+/// Memory mapped file.
 pub struct FileMap {
 	ptr: *mut libc::c_void,
 	size: usize,
