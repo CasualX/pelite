@@ -1,6 +1,6 @@
 extern crate pelite;
 
-use pelite::{FileMap, ImageMap};
+use pelite::{FileMap, mmap};
 use pelite::pe64::{Rva, Pe, PeFile, PeView};
 use pelite::pe64::exports::Export;
 use pelite::pe64::imports::Import;
@@ -183,6 +183,8 @@ fn scanner() {
 
 #[test]
 fn imagemap() {
-	let image_map = ImageMap::open(FILE_NAME).unwrap();
-	let view = PeView::from_bytes(&image_map).unwrap();
+	let image = mmap::ImageMap::open(FILE_NAME).unwrap();
+	assert!(image.protect(0u32..0xE000, mmap::Protect::ExecuteReadWrite));
+
+	let _view = PeView::from_bytes(&image).unwrap();
 }

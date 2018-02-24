@@ -1,5 +1,7 @@
 extern crate winapi;
 
+use super::Protect;
+
 use std::{io, mem, ptr, slice};
 use std::ffi::OsStr;
 use std::path::Path;
@@ -13,15 +15,6 @@ use self::winapi::um::handleapi::{CloseHandle, INVALID_HANDLE_VALUE};
 use self::winapi::shared::ntdef::{NULL, HANDLE};
 use self::winapi::shared::minwindef::{FALSE, LPVOID};
 
-/// Memory protection values.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash)]
-#[repr(u8)]
-pub enum Protect {
-	ReadOnly,
-	ReadWrite,
-	ExecuteRead,
-	ExecuteReadWrite,
-}
 impl Protect {
 	fn to_os_protect(self) -> u32 {
 		const VALUES: [u8; 4] = [
@@ -81,9 +74,9 @@ impl ImageMap {
 		Err(io::Error::last_os_error())
 	}
 	// Change the memory protection of a range of this image.
-	pub fn protect<U: Into<usize>>(&self, address: Range<U>, protect: Protect) -> bool {
+	pub fn protect(&self, address: Range<u32>, protect: Protect) -> bool {
 		unsafe {
-			let bytes = &(*self.bytes)[address.start.into()..address.end.into()];
+			let bytes = &(*self.bytes)[address.start as usize..address.end as usize];
 			let mut old_protect = 0;
 			VirtualProtect(bytes.as_ptr() as LPVOID, bytes.len(), protect.to_os_protect(), &mut old_protect) != 0
 		}
