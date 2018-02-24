@@ -99,6 +99,11 @@ impl AsRef<[u8]> for ImageMap {
 		unsafe { &*self.bytes }
 	}
 }
+impl AsMut<[u8]> for ImageMap {
+	fn as_mut(&mut self) -> &mut [u8] {
+		unsafe { &mut *self.bytes }
+	}
+}
 impl Drop for ImageMap {
 	fn drop(&mut self) {
 		unsafe {
@@ -166,6 +171,11 @@ impl AsRawHandle for FileMap {
 impl AsRef<[u8]> for FileMap {
 	fn as_ref(&self) -> &[u8] {
 		unsafe { &*self.bytes }
+	}
+}
+impl AsMut<[u8]> for FileMap {
+	fn as_mut(&mut self) -> &mut [u8] {
+		unsafe { &mut *self.bytes }
 	}
 }
 impl Drop for FileMap {
