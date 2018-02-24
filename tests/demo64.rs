@@ -29,6 +29,11 @@ fn slice_edges() {
 	assert_edges(0x7000, 0x0200);
 	assert_edges(0x8000, 0x4200);
 	assert_edges(0xD000, 0x0200);
+
+	println!("----------------------------------------------------------------");
+
+	assert_eq!(file.slice(0x5000, 0x710, 1), Err(pelite::Error::ZeroFill));
+	assert_eq!(file.slice(0x5000, 0x800, 1), Err(pelite::Error::OOB));
 }
 
 //----------------------------------------------------------------

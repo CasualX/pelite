@@ -35,12 +35,7 @@ impl<'a> PeFile<'a> {
 				return match self.image.get(start..end) {
 					Some(bytes) if bytes.len() >= min_size => Ok(bytes),
 					// Identify the reason the slice fails
-					_ => if start + min_size > VirtualEnd as usize {
-						Err(Error::OOB)
-					}
-					else {
-						Err(Error::ZeroFill)
-					},
+					_ => Err(if rva + min_size as Rva > VirtualEnd { Error::OOB } else { Error::ZeroFill }),
 				};
 			}
 		}
