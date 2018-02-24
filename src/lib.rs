@@ -27,8 +27,11 @@ pub mod pattern;
 mod error;
 pub use self::error::{Error, Result};
 
-pub mod mmap;
-pub use self::mmap::FileMap;
+mod mmap;
+#[cfg(windows)]
+pub use self::mmap::{FileMap, ImageMap};
+#[cfg(unix)]
+pub use self::mmap::{FileMap};
 
 pub mod pe64;
 pub mod pe32;

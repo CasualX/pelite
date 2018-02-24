@@ -15,7 +15,7 @@ use self::winapi::um::winnt::{PAGE_READONLY, SEC_IMAGE, GENERIC_READ, FILE_SHARE
 
 //----------------------------------------------------------------
 
-/// Memory-mapped image.
+/// Memory mapped image.
 pub struct ImageMap {
 	handle: HANDLE,
 	bytes: *mut [u8],
@@ -81,7 +81,7 @@ impl Drop for ImageMap {
 
 //----------------------------------------------------------------
 
-/// Memory-mapped file.
+/// Memory mapped file.
 pub struct FileMap {
 	handle: HANDLE,
 	bytes: *mut [u8],
@@ -116,7 +116,7 @@ impl FileMap {
 			CloseHandle(map);
 			return Err(err);
 		}
-		// Get the size of the file mapping, shouldn't ever fail...
+		// Get the size of the file mapping, should never fail...
 		let mut mem_basic_info = mem::zeroed();
 		let vq_result = VirtualQuery(view, &mut mem_basic_info, mem::size_of_val(&mem_basic_info));
 		debug_assert_eq!(vq_result, mem::size_of_val(&mem_basic_info));
