@@ -35,7 +35,7 @@ use std::ops::Range;
 
 use pattern as pat;
 
-use super::{Rva, Pe};
+use super::{Align, Rva, Pe};
 use super::image::*;
 
 /// Size of the prefix buffer for search optimization.
@@ -141,10 +141,28 @@ impl<'a, P: Pe<'a> + Copy> Scanner<P> {
 		};
 		state.exec(save)
 	}
+	fn finder_image<F>(&self, mut f: F) -> bool where Self: Sized, F: FnMut(Rva, &'a [u8]) -> bool {
+		let image = self.pe.image();
+		match self.pe.align() {
+			Align::File => {
+				for section in self.pe.section_headers() {
+					let start = section.PointerToRawData as usize;
+					let end = section.PointerToRawData as usize + section.SizeOfRawData as usize;
+					if let Some(slice) = image.get(start..end) {
+						if f(section.VirtualAddress, slice) {
+							return true;
+						}
+					}
+				}
+				return false;
+			},
+			Align::Section => f(0, image),
+		}
+	}
 	fn map_sections<F>(self, range: Range<Rva>, mut f: F) -> bool
 		where F: FnMut(Rva, &'a [u8]) -> bool
 	{
-		self.pe.finder_image(|rva, bytes| {
+		self.finder_image(|rva, bytes| {
 			if range.start < rva + bytes.len() as Rva && range.end >= rva {
 				let start = cmp::max(range.start, rva);
 				let end = cmp::min(range.end, rva + bytes.len() as Rva);

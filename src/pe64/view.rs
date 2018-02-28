@@ -102,10 +102,6 @@ unsafe impl<'a> Pe<'a> for PeView<'a> {
 			}
 		}
 	}
-	#[doc(hidden)]
-	fn finder_image<F>(&self, mut f: F) -> bool where F: FnMut(Rva, &'a [u8]) -> bool {
-		f(0, self.image)
-	}
 }
 
 //----------------------------------------------------------------
