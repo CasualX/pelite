@@ -158,6 +158,8 @@ pub mod tls;
 pub mod debug;
 mod ptr;
 pub mod scanner;
+#[cfg(windows)]
+pub mod mmap_windows;
 
 pub use self::image::{Va, Rva};
 pub use self::pe::{Align, Pe};

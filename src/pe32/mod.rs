@@ -171,6 +171,9 @@ pub mod debug;
 mod ptr;
 #[path = "../pe64/scanner.rs"]
 pub mod scanner;
+#[cfg(windows)]
+#[path = "../pe64/mmap_windows.rs"]
+pub mod mmap_windows;
 
 pub mod msvc;
 

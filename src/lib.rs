@@ -14,6 +14,9 @@ Due to small but incompatible differences the two formats are not unified.
 
 #![recursion_limit = "128"]
 
+#[cfg(windows)]
+extern crate winapi;
+
 #[macro_use]
 pub mod util;
 
