@@ -7,7 +7,7 @@ use std::slice;
 use error::{Error, Result};
 
 use super::image::*;
-use super::pe::{Pe, validate_headers};
+use super::pe::{Align, Pe, validate_headers};
 
 /// View into a mapped PE image.
 #[derive(Copy, Clone)]
@@ -58,6 +58,9 @@ unsafe impl<'a> Pe<'a> for PeView<'a> {
 	fn image(&self) -> &'a [u8] {
 		self.image
 	}
+	fn align(&self) -> Align {
+		Align::Section
+	}
 	fn slice(&self, rva: Rva, min_size: usize, align: usize) -> Result<&'a [u8]> {
 		debug_assert!(align != 0 && align & (align - 1) == 0);
 		let start = rva as usize;
@@ -98,10 +101,6 @@ unsafe impl<'a> Pe<'a> for PeView<'a> {
 				}
 			}
 		}
-	}
-	#[doc(hidden)]
-	fn finder_image<F>(&self, mut f: F) -> bool where F: FnMut(Rva, &'a [u8]) -> bool {
-		f(0, self.image)
 	}
 }
 

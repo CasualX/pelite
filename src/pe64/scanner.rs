@@ -35,7 +35,7 @@ use std::ops::Range;
 
 use pattern as pat;
 
-use super::{Rva, Pe};
+use super::{Align, Rva, Pe};
 use super::image::*;
 
 /// Size of the prefix buffer for search optimization.
@@ -140,23 +140,6 @@ impl<'a, P: Pe<'a> + Copy> Scanner<P> {
 			mask: 0xFF,
 		};
 		state.exec(save)
-	}
-	fn map_sections<F>(self, range: Range<Rva>, mut f: F) -> bool
-		where F: FnMut(Rva, &'a [u8]) -> bool
-	{
-		self.pe.finder_image(|rva, bytes| {
-			if range.start < rva + bytes.len() as Rva && range.end >= rva {
-				let start = cmp::max(range.start, rva);
-				let end = cmp::min(range.end, rva + bytes.len() as Rva);
-				if let Some(slice) = bytes.get((start - rva) as usize..(end - rva) as usize) {
-					let result = f(start, slice);
-					if result {
-						return result;
-					}
-				}
-			}
-			return false;
-		})
 	}
 }
 
@@ -398,7 +381,10 @@ impl<'a, 'u, P: Pe<'a> + Copy> Matches<'u, P> {
 
 		// Take care of unmapped PE files.
 		// Their sections aren't continous and need to be scanned separately.
-		self.scanner.map_sections(self.range.clone(), |it, slice| {
+		finder_section(
+			self.scanner.pe,
+			self.range.clone(),
+			|it, slice| {
 			self.cursor = it;
 			// Select search strategy
 			// FIXME! Profile the performance!
@@ -425,4 +411,49 @@ impl<'a, 'u, P: Pe<'a> + Copy> Iterator for Matches<'u, P> {
 			None
 		}
 	}
+}
+
+/// Map over continuous pe memory.
+///
+/// For PeFiles this means providing each section separately.
+/// For PeViews this means just provide the whole image at once.
+fn for_each_section<'a, P, F>(pe: P, mut f: F) -> bool where
+	P: Pe<'a> + Copy,
+	F: FnMut(Rva, &'a [u8]) -> bool
+{
+	let image = pe.image();
+	match pe.align() {
+		Align::File => {
+			for section in pe.section_headers() {
+				let start = section.PointerToRawData as usize;
+				let end = section.PointerToRawData as usize + section.SizeOfRawData as usize;
+				if let Some(slice) = image.get(start..end) {
+					if f(section.VirtualAddress, slice) {
+						return true;
+					}
+				}
+			}
+			return false;
+		},
+		Align::Section => f(0, image),
+	}
+}
+/// Map over continuous pe memory in the given range.
+fn finder_section<'a, P, F>(pe: P, range: Range<Rva>, mut f: F) -> bool where
+	P: Pe<'a> + Copy,
+	F: FnMut(Rva, &'a [u8]) -> bool
+{
+	for_each_section(pe, |rva, bytes| {
+		if range.start < rva + bytes.len() as Rva && range.end >= rva {
+			let start = cmp::max(range.start, rva);
+			let end = cmp::min(range.end, rva + bytes.len() as Rva);
+			if let Some(slice) = bytes.get((start - rva) as usize..(end - rva) as usize) {
+				let result = f(start, slice);
+				if result {
+					return result;
+				}
+			}
+		}
+		return false;
+	})
 }
