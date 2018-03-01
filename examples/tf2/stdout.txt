@@ -1,0 +1,1665 @@
+engine.dll!003D7008 IEngineSoundClient003
+engine.dll!003D700C IEngineSoundServer003
+engine.dll!003D8114 VEngineClient013
+engine.dll!003D8114 VEngineClient014
+engine.dll!003D8CA8 VDebugOverlay003
+engine.dll!003D8CAC VPhysicsDebugOverlay001
+engine.dll!005C6508 VEngineModel016
+engine.dll!003D97CC VEngineEffects001
+engine.dll!005EBC20 VEngineShadowMgr002
+engine.dll!003D99A8 VEngineRenderView014
+engine.dll!003D9A74 ISERVERPLUGINHELPERS001
+engine.dll!00632E80 GameServerData001
+engine.dll!003D9AEC ServerUploadGameStats001
+engine.dll!003DAAB8 VEngineServer021
+engine.dll!003DAAB8 VEngineServer022
+engine.dll!003DAAB4 VEngineServer023
+engine.dll!003DAC3C VCvarQuery001
+engine.dll!003DB0D0 DownloadSystem001
+engine.dll!003DB2A8 EngineClientReplay001
+engine.dll!003DB2A4 EngineReplay001
+engine.dll!003DB2CC EngineTraceClient003
+engine.dll!003DB2B8 EngineTraceServer003
+engine.dll!00650CD8 GAMEEVENTSMANAGER002
+engine.dll!003DB308 GAMEEVENTSMANAGER001
+engine.dll!0066C650 VENGINE_MATCHMAKING_VERSION001
+engine.dll!0066EEE8 VModelInfoClient006
+engine.dll!0066EF58 VModelInfoServer003
+engine.dll!0066EF58 VModelInfoServer004
+engine.dll!00670650 VEngineClientStringTable001
+engine.dll!0067068C VEngineServerStringTable001
+engine.dll!003DBFA0 VEngineRandom001
+engine.dll!00671588 ReplayDemoPlayer001
+engine.dll!00671B10 SpatialPartition001
+engine.dll!006722CC StaticPropMgrClient004
+engine.dll!006722D0 StaticPropMgrServer002
+engine.dll!003DC080 VENGINE_HLDS_API_VERSION002
+engine.dll!003DC054 VENGINE_LAUNCHER_API_VERSION004
+engine.dll!003DC08C VENGINE_GAMEUIFUNCS_VERSION005
+engine.dll!003DC144 VoiceServer002
+engine.dll!003DC14C VProfExport001
+engine.dll!003DC174 XboxSystemInterface001
+engine.dll!003DC180 VENGINETOOLFRAMEWORK003
+engine.dll!003DC180 VENGINETOOL003
+engine.dll!003DC3B4 VCLIENTENGINETOOLS001
+engine.dll!003DC3B8 VSERVERENGINETOOLS001
+engine.dll!0068CA70 VTOOLFRAMEWORKVERSION002
+engine.dll!003DC630 VEngineVGui001
+inputsystem.dll!00029B90 InputSystemVersion001
+materialsystem.dll!0012D00C COLORCORRECTION_VERSION_1
+materialsystem.dll!00135398 VMaterialSystem081
+materialsystem.dll!0012D060 VMaterialSystemConfig002
+materialsystem.dll!0012D3C0 VMaterialSystemStub001
+materialsystem.dll!0012D444 ShaderSystem002
+shaderapidx9.dll!000E2008 VBAllocTracker001
+shaderapidx9.dll!000E2010 MaterialSystemHardwareConfig012
+shaderapidx9.dll!000E6C34 DebugTextureInfo001
+shaderapidx9.dll!000E6C30 ShaderApi030
+shaderapidx9.dll!000E6A10 ShaderDevice001
+shaderapidx9.dll!000EA8AC ShaderDeviceMgr001
+shaderapidx9.dll!000E2A38 ShaderShadow010
+vgui2.dll!0005ED68 VGUI_InputInternal001
+vgui2.dll!0005ED68 VGUI_Input005
+vgui2.dll!0005F9F8 VGUI_Localize005
+vgui2.dll!00060B48 VGUI_Scheme010
+vgui2.dll!00060C48 VGUI_Surface030
+vgui2.dll!0005D3B0 VGUI_System010
+vgui2.dll!00060F48 VGUI_ivgui008
+vgui2.dll!0005D630 VGUI_Panel009
+vguimatsurface.dll!00146010 VGUI_Surface030
+vphysics.dll!000D1020 VPhysics031
+vphysics.dll!000D108C VPhysicsCollision007
+vphysics.dll!000D8068 VPhysicsSurfaceProps001
+vstdlib.dll!00032568 VEngineCvar004
+vstdlib.dll!00031020 VProcessUtils001
+client.dll!00C5C07C ClientReplay001
+client.dll!00CD7274 VClientDllSharedAppSystems001
+client.dll!00C60C54 GameClientExports001
+client.dll!00C60C78 VClient017
+client.dll!00CD7948 ClientVirtualReality001
+client.dll!00CE882C VClientEntityList003
+client.dll!00CF0A78 ClientLeafSystem002
+client.dll!00C63644 IEffects001
+client.dll!00C64078 VParticleSystemQuery001
+client.dll!00C68398 VCENTERPRINT002
+client.dll!00C6DB80 IReplayFactory001
+client.dll!00D2CA30 GameMovement001
+client.dll!00D38D30 VClientPrediction001
+client.dll!00C7251C ClientRenderTargets001
+client.dll!00D4C348 VCLIENTTOOLS001
+server.dll!0093207C ServerReplay001
+server.dll!0093CFF8 ServerGameTags001
+server.dll!0094C2E4 IEffects001
+server.dll!009DE024 VServerDllSharedAppSystems001
+server.dll!00954BF0 ServerGameClients003
+server.dll!00954BF0 ServerGameClients004
+server.dll!00954BDC ServerGameDLL010
+server.dll!00954BEC ServerGameEnts001
+server.dll!00954BD4 ServerGameTags001
+server.dll!00956A9C ServerGameTags001
+server.dll!0095B698 ServerGameTags001
+server.dll!009626FC ServerGameTags001
+server.dll!0096413C PlayerInfoManager002
+server.dll!00964144 PlayerInfoManager001
+server.dll!00964140 BotManager001
+server.dll!00964E6C PluginHelpersCheck001
+server.dll!0096DDCC ServerGameTags001
+server.dll!00974824 ServerGameTags001
+server.dll!00976618 ServerGameTags001
+server.dll!00979A98 ServerGameTags001
+server.dll!0097DB14 ServerGameTags001
+server.dll!0097E0F4 ServerGameTags001
+server.dll!0097E0F8 ServerGameTags001
+server.dll!0097E0FC ServerGameTags001
+server.dll!0097FEE4 ServerGameTags001
+server.dll!009805E8 ServerGameTags001
+server.dll!00981FF8 ServerGameTags001
+server.dll!009825D4 ServerGameTags001
+server.dll!009829F4 ServerGameTags001
+server.dll!00A6E630 GameMovement001
+server.dll!009829FC ServerGameTags001
+server.dll!00982F3C ServerGameTags001
+server.dll!00A7FABC HLTVDirector001
+server.dll!009863EC ServerGameTags001
+server.dll!0098698C ServerGameTags001
+server.dll!009869B0 ServerGameTags001
+server.dll!009869C8 ServerGameTags001
+server.dll!00986B18 ServerGameTags001
+server.dll!00987360 ServerGameTags001
+server.dll!00987B90 ServerGameTags001
+server.dll!00987C10 ServerGameTags001
+server.dll!00987F7C ServerGameTags001
+server.dll!00989300 ServerGameTags001
+server.dll!0098992C ServerGameTags001
+server.dll!00989D94 ServerGameTags001
+server.dll!0098A328 ServerGameTags001
+server.dll!0098A32C ServerGameTags001
+server.dll!0098A330 ServerGameTags001
+server.dll!0098A334 ServerGameTags001
+server.dll!0098A338 ServerGameTags001
+server.dll!0098A33C ServerGameTags001
+server.dll!0098A340 ServerGameTags001
+server.dll!0098A344 ServerGameTags001
+server.dll!0098A348 ServerGameTags001
+server.dll!0098A34C ServerGameTags001
+server.dll!0098A350 ServerGameTags001
+server.dll!0098A354 ServerGameTags001
+server.dll!0098A35C ServerGameTags001
+server.dll!0098A364 ServerGameTags001
+server.dll!0098A368 ServerGameTags001
+server.dll!0098A36C ServerGameTags001
+server.dll!0098A370 ServerGameTags001
+server.dll!0098A374 ServerGameTags001
+server.dll!0098A378 ServerGameTags001
+server.dll!0098A37C ServerGameTags001
+server.dll!0098A380 ServerGameTags001
+server.dll!0098A384 ServerGameTags001
+server.dll!0098A388 ServerGameTags001
+server.dll!0098A38C ServerGameTags001
+server.dll!0098A39C ServerGameTags001
+server.dll!0098A3A0 ServerGameTags001
+server.dll!0098A3A4 ServerGameTags001
+server.dll!0098A3A8 ServerGameTags001
+server.dll!0098A3AC ServerGameTags001
+server.dll!0098A3B0 ServerGameTags001
+server.dll!0098A3B4 ServerGameTags001
+server.dll!0098A3B8 ServerGameTags001
+server.dll!0098A3BC ServerGameTags001
+server.dll!0098A3C0 ServerGameTags001
+server.dll!0098A3C4 ServerGameTags001
+server.dll!0098A3C8 ServerGameTags001
+server.dll!0098A3CC ServerGameTags001
+server.dll!0098A3E4 ServerGameTags001
+server.dll!0098A3E8 ServerGameTags001
+server.dll!0098A3EC ServerGameTags001
+server.dll!0098A3F0 ServerGameTags001
+server.dll!0098A3F4 ServerGameTags001
+server.dll!0098A3F8 ServerGameTags001
+server.dll!0098A3FC ServerGameTags001
+server.dll!0098A400 ServerGameTags001
+server.dll!0098A404 ServerGameTags001
+server.dll!0098A418 ServerGameTags001
+server.dll!0098A41C ServerGameTags001
+server.dll!0098A420 ServerGameTags001
+server.dll!0098A424 ServerGameTags001
+server.dll!0098A428 ServerGameTags001
+server.dll!0098A42C ServerGameTags001
+server.dll!0098A430 ServerGameTags001
+server.dll!0098A434 ServerGameTags001
+server.dll!0098A438 ServerGameTags001
+server.dll!0098A43C ServerGameTags001
+server.dll!0098A440 ServerGameTags001
+server.dll!0098A444 ServerGameTags001
+server.dll!0098A448 ServerGameTags001
+server.dll!0098A44C ServerGameTags001
+server.dll!0098A450 ServerGameTags001
+server.dll!0098A454 ServerGameTags001
+server.dll!0098A458 ServerGameTags001
+server.dll!0098A45C ServerGameTags001
+server.dll!0098A460 ServerGameTags001
+server.dll!0098A464 ServerGameTags001
+server.dll!0098A498 ServerGameTags001
+server.dll!0098ABDC ServerGameTags001
+server.dll!0098AE40 ServerGameTags001
+server.dll!0098AF1C ServerGameTags001
+server.dll!0098CD78 ServerGameTags001
+server.dll!0098CE30 ServerGameTags001
+server.dll!0098CEBC ServerGameTags001
+server.dll!0098D594 ServerGameTags001
+server.dll!0098D8EC ServerGameTags001
+server.dll!0098D914 ServerGameTags001
+server.dll!0098DA20 ServerGameTags001
+server.dll!0098DA2C ServerGameTags001
+server.dll!0098DA68 ServerGameTags001
+server.dll!0098DA98 ServerGameTags001
+server.dll!0098DAB4 ServerGameTags001
+server.dll!0098DC1C ServerGameTags001
+server.dll!009905F0 ServerGameTags001
+server.dll!0099081C VSERVERCHOREOTOOLS001
+server.dll!00990818 VSERVERTOOLS001
+server.dll!00990818 VSERVERTOOLS002
+server.dll!00990818 VSERVERTOOLS003
+Class { network_name: "CBaseCombatWeapon", class_id: 0, size_of: 2816 }
+Class { network_name: "CBaseGrenade", class_id: 0, size_of: 2264 }
+Class { network_name: "CBaseParticleEntity", class_id: 0, size_of: 1592 }
+Class { network_name: "CBaseProjectile", class_id: 0, size_of: 2224 }
+Class { network_name: "CBaseViewModel", class_id: 0, size_of: 2288 }
+Class { network_name: "CBeam", class_id: 0, size_of: 1528 }
+Class { network_name: "CAI_BaseNPC", class_id: 0, size_of: 3560 }
+Class { network_name: "CBaseAnimating", class_id: 0, size_of: 2216 }
+Class { network_name: "CBoneFollower", class_id: 0, size_of: 1368 }
+Class { network_name: "CInfoLightingRelative", class_id: 0, size_of: 1368 }
+Class { network_name: "CBaseAnimatingOverlay", class_id: 0, size_of: 2320 }
+Class { network_name: "CBaseCombatCharacter", class_id: 0, size_of: 3528 }
+Class { network_name: "CBaseDoor", class_id: 0, size_of: 1368 }
+Class { network_name: "CBaseEntity", class_id: 0, size_of: 0 }
+Class { network_name: "CBaseFlex", class_id: 0, size_of: 3184 }
+Class { network_name: "CBasePlayer", class_id: 0, size_of: 5208 }
+Class { network_name: "CBreakableProp", class_id: 0, size_of: 2216 }
+Class { network_name: "CColorCorrection", class_id: 0, size_of: 1656 }
+Class { network_name: "CColorCorrectionVolume", class_id: 0, size_of: 1632 }
+Class { network_name: "CDynamicLight", class_id: 0, size_of: 1392 }
+Class { network_name: "CEntityDissolve", class_id: 0, size_of: 1448 }
+Class { network_name: "CEntityParticleTrail", class_id: 0, size_of: 1632 }
+Class { network_name: "CFogController", class_id: 0, size_of: 1432 }
+Class { network_name: "CEnvParticleScript", class_id: 0, size_of: 2456 }
+Class { network_name: "CEnvProjectedTexture", class_id: 0, size_of: 1672 }
+Class { network_name: "CEnvScreenEffect", class_id: 0, size_of: 1368 }
+Class { network_name: "CEnvScreenOverlay", class_id: 0, size_of: 3976 }
+Class { network_name: "CEnvTonemapController", class_id: 0, size_of: 1384 }
+Class { network_name: "CEntityFlame", class_id: 0, size_of: 1376 }
+Class { network_name: "CFireSmoke", class_id: 0, size_of: 13184 }
+Class { network_name: "CFish", class_id: 0, size_of: 2424 }
+Class { network_name: "CFuncAreaPortalWindow", class_id: 0, size_of: 1376 }
+Class { network_name: "CBreakableSurface", class_id: 0, size_of: 2432 }
+Class { network_name: "CFuncConveyor", class_id: 0, size_of: 1368 }
+Class { network_name: "CFunc_Dust", class_id: 0, size_of: 1672 }
+Class { network_name: "CTEDust", class_id: 0, size_of: 0 }
+Class { network_name: "CFunc_LOD", class_id: 0, size_of: 1368 }
+Class { network_name: "CFuncMonitor", class_id: 0, size_of: 1360 }
+Class { network_name: "CFuncOccluder", class_id: 0, size_of: 1368 }
+Class { network_name: "CFuncReflectiveGlass", class_id: 0, size_of: 1368 }
+Class { network_name: "CFuncRotating", class_id: 0, size_of: 1360 }
+Class { network_name: "CFuncSmokeVolume", class_id: 0, size_of: 1976 }
+Class { network_name: "CFuncTrackTrain", class_id: 0, size_of: 1376 }
+Class { network_name: "CInfoOverlayAccessor", class_id: 0, size_of: 1368 }
+Class { network_name: "CLightGlow", class_id: 0, size_of: 1592 }
+Class { network_name: "CMaterialModifyControl", class_id: 0, size_of: 2184 }
+Class { network_name: "CParticleSystem", class_id: 0, size_of: 1688 }
+Class { network_name: "CPhysBox", class_id: 0, size_of: 1368 }
+Class { network_name: "CPhysicsProp", class_id: 0, size_of: 2224 }
+Class { network_name: "CPhysMagnet", class_id: 0, size_of: 2256 }
+Class { network_name: "CPlasma", class_id: 0, size_of: 11768 }
+Class { network_name: "CPlayerResource", class_id: 0, size_of: 2560 }
+Class { network_name: "CPointCamera", class_id: 0, size_of: 1400 }
+Class { network_name: "CPointCommentaryNode", class_id: 0, size_of: 3024 }
+Class { network_name: "CPhysBoxMultiplayer", class_id: 0, size_of: 1384 }
+Class { network_name: "CPhysicsPropMultiplayer", class_id: 0, size_of: 2264 }
+Class { network_name: "CBasePropDoor", class_id: 0, size_of: 2248 }
+Class { network_name: "CDynamicProp", class_id: 0, size_of: 2248 }
+Class { network_name: "CRagdollManager", class_id: 0, size_of: 1368 }
+Class { network_name: "CRopeKeyframe", class_id: 0, size_of: 2248 }
+Class { network_name: "CSceneEntity", class_id: 0, size_of: 1440 }
+Class { network_name: "CShadowControl", class_id: 0, size_of: 1384 }
+Class { network_name: "CSlideshowDisplay", class_id: 0, size_of: 1696 }
+Class { network_name: "CSpotlightEnd", class_id: 0, size_of: 1376 }
+Class { network_name: "CParticlePerformanceMonitor", class_id: 0, size_of: 1368 }
+Class { network_name: "CSun", class_id: 0, size_of: 1736 }
+Class { network_name: "CTeam", class_id: 0, size_of: 1440 }
+Class { network_name: "CBaseTeamObjectiveResource", class_id: 0, size_of: 6688 }
+Class { network_name: "CTeamTrainWatcher", class_id: 0, size_of: 1408 }
+Class { network_name: "CTesla", class_id: 0, size_of: 1720 }
+Class { network_name: "CTest_ProxyToggle_Networkable", class_id: 0, size_of: 1368 }
+Class { network_name: "CPropVehicleChoreoGeneric", class_id: 0, size_of: 2448 }
+Class { network_name: "CPropJeep", class_id: 0, size_of: 2552 }
+Class { network_name: "CVGuiScreen", class_id: 0, size_of: 1512 }
+Class { network_name: "CVoteController", class_id: 0, size_of: 1408 }
+Class { network_name: "CWaterBullet", class_id: 0, size_of: 2232 }
+Class { network_name: "CWaterLODControl", class_id: 0, size_of: 1368 }
+Class { network_name: "CWorld", class_id: 0, size_of: 0 }
+Class { network_name: "CEnvDetailController", class_id: 0, size_of: 1368 }
+Class { network_name: "CFuncLadder", class_id: 0, size_of: 1424 }
+Class { network_name: "CInfoLadderDismount", class_id: 0, size_of: 1360 }
+Class { network_name: "CGameRulesProxy", class_id: 0, size_of: 1360 }
+Class { network_name: "CPoseController", class_id: 0, size_of: 1448 }
+Class { network_name: "CRagdollPropAttached", class_id: 0, size_of: 3064 }
+Class { network_name: "CRagdollProp", class_id: 0, size_of: 3008 }
+Class { network_name: "CSprite", class_id: 0, size_of: 1456 }
+Class { network_name: "CSpriteOriented", class_id: 0, size_of: 1456 }
+Class { network_name: "CSpriteTrail", class_id: 0, size_of: 7704 }
+Class { network_name: "CTeamRoundTimer", class_id: 0, size_of: 1432 }
+Class { network_name: "CTeamplayRoundBasedRulesProxy", class_id: 0, size_of: 1360 }
+Class { network_name: "CHandleTest", class_id: 0, size_of: 1368 }
+Class { network_name: "CBaseAttributableItem", class_id: 0, size_of: 2640 }
+Class { network_name: "CEconEntity", class_id: 0, size_of: 2640 }
+Class { network_name: "CEconWearable", class_id: 0, size_of: 2648 }
+Class { network_name: "CTFWearableItem", class_id: 0, size_of: 2648 }
+Class { network_name: "CTFWearable", class_id: 0, size_of: 2696 }
+Class { network_name: "CTFWearableVM", class_id: 0, size_of: 2696 }
+Class { network_name: "CWeaponIFMBase", class_id: 0, size_of: 3144 }
+Class { network_name: "CWeaponIFMBaseCamera", class_id: 0, size_of: 3232 }
+Class { network_name: "CWeaponIFMSteadyCam", class_id: 0, size_of: 3304 }
+Class { network_name: "CBaseTempEntity", class_id: 0, size_of: 0 }
+Class { network_name: "CPrecipitation", class_id: 0, size_of: 1504 }
+Class { network_name: "CEmbers", class_id: 0, size_of: 1392 }
+Class { network_name: "CEnvWind", class_id: 0, size_of: 1888 }
+Class { network_name: "CEnvQuadraticBeam", class_id: 0, size_of: 1392 }
+Class { network_name: "CTEGaussExplosion", class_id: 0, size_of: 0 }
+Class { network_name: "MovieExplosion", class_id: 0, size_of: 3416 }
+Class { network_name: "CParticleFire", class_id: 0, size_of: 5224 }
+Class { network_name: "ParticleSmokeGrenade", class_id: 0, size_of: 5832 }
+Class { network_name: "CPropVehicleDriveable", class_id: 0, size_of: 2488 }
+Class { network_name: "DustTrail", class_id: 0, size_of: 1752 }
+Class { network_name: "CFireTrail", class_id: 0, size_of: 1672 }
+Class { network_name: "RocketTrail", class_id: 0, size_of: 1720 }
+Class { network_name: "SmokeTrail", class_id: 0, size_of: 1712 }
+Class { network_name: "SporeExplosion", class_id: 0, size_of: 1648 }
+Class { network_name: "SporeTrail", class_id: 0, size_of: 1744 }
+Class { network_name: "CSmokeStack", class_id: 0, size_of: 1856 }
+Class { network_name: "CSteamJet", class_id: 0, size_of: 1744 }
+Class { network_name: "CTEArmorRicochet", class_id: 0, size_of: 0 }
+Class { network_name: "CTEMetalSparks", class_id: 0, size_of: 0 }
+Class { network_name: "CTEBaseBeam", class_id: 0, size_of: 76 }
+Class { network_name: "CTEBeamEntPoint", class_id: 0, size_of: 0 }
+Class { network_name: "CTEBeamEnts", class_id: 0, size_of: 0 }
+Class { network_name: "CTEBeamFollow", class_id: 0, size_of: 0 }
+Class { network_name: "CTEBeamLaser", class_id: 0, size_of: 0 }
+Class { network_name: "CTEBeamPoints", class_id: 0, size_of: 0 }
+Class { network_name: "CTEBeamRing", class_id: 0, size_of: 0 }
+Class { network_name: "CTEBeamRingPoint", class_id: 0, size_of: 0 }
+Class { network_name: "CTEBeamSpline", class_id: 0, size_of: 0 }
+Class { network_name: "CTEBloodSprite", class_id: 0, size_of: 0 }
+Class { network_name: "CTEBloodStream", class_id: 0, size_of: 0 }
+Class { network_name: "CTEBreakModel", class_id: 0, size_of: 0 }
+Class { network_name: "CTEBSPDecal", class_id: 0, size_of: 0 }
+Class { network_name: "CTEBubbles", class_id: 0, size_of: 0 }
+Class { network_name: "CTEBubbleTrail", class_id: 0, size_of: 0 }
+Class { network_name: "CTEClientProjectile", class_id: 0, size_of: 0 }
+Class { network_name: "CTEDecal", class_id: 0, size_of: 0 }
+Class { network_name: "CTEDynamicLight", class_id: 0, size_of: 0 }
+Class { network_name: "CTEEffectDispatch", class_id: 0, size_of: 0 }
+Class { network_name: "CTEEnergySplash", class_id: 0, size_of: 0 }
+Class { network_name: "CTEExplosion", class_id: 0, size_of: 0 }
+Class { network_name: "CTEFizz", class_id: 0, size_of: 0 }
+Class { network_name: "CTEFootprintDecal", class_id: 0, size_of: 0 }
+Class { network_name: "CTEShatterSurface", class_id: 0, size_of: 0 }
+Class { network_name: "CTEGlowSprite", class_id: 0, size_of: 0 }
+Class { network_name: "CTEImpact", class_id: 0, size_of: 0 }
+Class { network_name: "CTEKillPlayerAttachments", class_id: 0, size_of: 0 }
+Class { network_name: "CTELargeFunnel", class_id: 0, size_of: 0 }
+Class { network_name: "CTEMuzzleFlash", class_id: 0, size_of: 0 }
+Class { network_name: "CTEParticleSystem", class_id: 0, size_of: 28 }
+Class { network_name: "CTEPhysicsProp", class_id: 0, size_of: 0 }
+Class { network_name: "CTEPlayerDecal", class_id: 0, size_of: 0 }
+Class { network_name: "CTEProjectedDecal", class_id: 0, size_of: 0 }
+Class { network_name: "CTEShowLine", class_id: 0, size_of: 0 }
+Class { network_name: "CTESmoke", class_id: 0, size_of: 0 }
+Class { network_name: "CTESparks", class_id: 0, size_of: 0 }
+Class { network_name: "CTESprite", class_id: 0, size_of: 0 }
+Class { network_name: "CTESpriteSpray", class_id: 0, size_of: 0 }
+Class { network_name: "CTEWorldDecal", class_id: 0, size_of: 0 }
+Class { network_name: "CTestTraceline", class_id: 0, size_of: 1368 }
+Class { network_name: "CBaseObject", class_id: 0, size_of: 4024 }
+Class { network_name: "CCurrencyPack", class_id: 0, size_of: 2224 }
+Class { network_name: "CCaptureZone", class_id: 0, size_of: 1368 }
+Class { network_name: "CFuncForceField", class_id: 0, size_of: 1360 }
+Class { network_name: "CFuncPasstimeGoal", class_id: 0, size_of: 1376 }
+Class { network_name: "CFuncRespawnRoom", class_id: 0, size_of: 1360 }
+Class { network_name: "CFuncRespawnRoomVisualizer", class_id: 0, size_of: 1360 }
+Class { network_name: "CMonsterResource", class_id: 0, size_of: 1384 }
+Class { network_name: "CObjectCartDispenser", class_id: 0, size_of: 4088 }
+Class { network_name: "CObjectDispenser", class_id: 0, size_of: 4088 }
+Class { network_name: "CObjectSapper", class_id: 0, size_of: 4024 }
+Class { network_name: "CObjectSentrygun", class_id: 0, size_of: 4152 }
+Class { network_name: "CTFProjectile_SentryRocket", class_id: 0, size_of: 2264 }
+Class { network_name: "CObjectTeleporter", class_id: 0, size_of: 4136 }
+Class { network_name: "CTFAmmoPack", class_id: 0, size_of: 2240 }
+Class { network_name: "CTFBuffBanner", class_id: 0, size_of: 2232 }
+Class { network_name: "CTEFireBullets", class_id: 0, size_of: 0 }
+Class { network_name: "CTFGlow", class_id: 0, size_of: 1384 }
+Class { network_name: "CTFObjectiveResource", class_id: 0, size_of: 8744 }
+Class { network_name: "CPasstimeBall", class_id: 0, size_of: 2240 }
+Class { network_name: "CTFPasstimeLogic", class_id: 0, size_of: 1776 }
+Class { network_name: "CTEPlayerAnimEvent", class_id: 0, size_of: 0 }
+Class { network_name: "CTFPlayer", class_id: 0, size_of: 12328 }
+Class { network_name: "CTFRagdoll", class_id: 0, size_of: 3400 }
+Class { network_name: "CTFPlayerResource", class_id: 0, size_of: 6960 }
+Class { network_name: "CTFTauntProp", class_id: 0, size_of: 3528 }
+Class { network_name: "CTFTeam", class_id: 0, size_of: 1544 }
+Class { network_name: "CBonusPack", class_id: 0, size_of: 2224 }
+Class { network_name: "CCaptureFlag", class_id: 0, size_of: 3424 }
+Class { network_name: "CCaptureFlagReturnIcon", class_id: 0, size_of: 2224 }
+Class { network_name: "CBonusDuckPickup", class_id: 0, size_of: 2240 }
+Class { network_name: "CHalloweenGiftPickup", class_id: 0, size_of: 2232 }
+Class { network_name: "CHalloweenPickup", class_id: 0, size_of: 2224 }
+Class { network_name: "CTFFlameManager", class_id: 0, size_of: 1784 }
+Class { network_name: "CTETFBlood", class_id: 0, size_of: 0 }
+Class { network_name: "CTETFExplosion", class_id: 0, size_of: 0 }
+Class { network_name: "CTETFParticleEffect", class_id: 0, size_of: 0 }
+Class { network_name: "CBonusRoundLogic", class_id: 0, size_of: 1656 }
+Class { network_name: "CTFGameRulesProxy", class_id: 0, size_of: 1368 }
+Class { network_name: "CTFGenericBomb", class_id: 0, size_of: 2256 }
+Class { network_name: "CHalloweenSoulPack", class_id: 0, size_of: 1400 }
+Class { network_name: "CTFItem", class_id: 0, size_of: 2248 }
+Class { network_name: "CTFPowerupBottle", class_id: 0, size_of: 2704 }
+Class { network_name: "CTFHalloweenMinigame", class_id: 0, size_of: 1648 }
+Class { network_name: "CTFHalloweenMinigame_FallingPlatforms", class_id: 0, size_of: 1648 }
+Class { network_name: "CTFMiniGame", class_id: 0, size_of: 1648 }
+Class { network_name: "CTFMinigameLogic", class_id: 0, size_of: 1368 }
+Class { network_name: "CPlayerDestructionDispenser", class_id: 0, size_of: 4088 }
+Class { network_name: "CTFPlayerDestructionLogic", class_id: 0, size_of: 1960 }
+Class { network_name: "CTFRobotDestructionLogic", class_id: 0, size_of: 1688 }
+Class { network_name: "CTFRobotDestruction_RobotGroup", class_id: 0, size_of: 1648 }
+Class { network_name: "CTFRobotDestruction_RobotSpawn", class_id: 0, size_of: 1368 }
+Class { network_name: "CBaseObjectUpgrade", class_id: 0, size_of: 4024 }
+Class { network_name: "CTFPointManager", class_id: 0, size_of: 1664 }
+Class { network_name: "CTFBaseProjectile", class_id: 0, size_of: 2256 }
+Class { network_name: "CTFProjectile_BallOfFire", class_id: 0, size_of: 2312 }
+Class { network_name: "CTFPumpkinBomb", class_id: 0, size_of: 2248 }
+Class { network_name: "CTFReviveMarker", class_id: 0, size_of: 2240 }
+Class { network_name: "CRobotDispenser", class_id: 0, size_of: 4088 }
+Class { network_name: "CTFRobotDestruction_Robot", class_id: 0, size_of: 3656 }
+Class { network_name: "CTFViewModel", class_id: 0, size_of: 2384 }
+Class { network_name: "CPasstimeGun", class_id: 0, size_of: 3208 }
+Class { network_name: "CBotNPC", class_id: 0, size_of: 3600 }
+Class { network_name: "CBotNPCMinion", class_id: 0, size_of: 3608 }
+Class { network_name: "CTFBotHintEngineerNest", class_id: 0, size_of: 1368 }
+Class { network_name: "CEyeballBoss", class_id: 0, size_of: 3640 }
+Class { network_name: "CHeadlessHatman", class_id: 0, size_of: 3608 }
+Class { network_name: "CMerasmus", class_id: 0, size_of: 3608 }
+Class { network_name: "CMerasmusDancer", class_id: 0, size_of: 2216 }
+Class { network_name: "CZombie", class_id: 0, size_of: 3576 }
+Class { network_name: "CHightower_TeleportVortex", class_id: 0, size_of: 2248 }
+Class { network_name: "CTeleportVortex", class_id: 0, size_of: 2248 }
+Class { network_name: "CTFHellZap", class_id: 0, size_of: 1360 }
+Class { network_name: "CTFProjectile_SpellBats", class_id: 0, size_of: 2344 }
+Class { network_name: "CTFProjectile_SpellFireball", class_id: 0, size_of: 2272 }
+Class { network_name: "CTFProjectile_SpellKartBats", class_id: 0, size_of: 2344 }
+Class { network_name: "CTFProjectile_SpellKartOrb", class_id: 0, size_of: 2272 }
+Class { network_name: "CTFProjectile_SpellLightningOrb", class_id: 0, size_of: 2280 }
+Class { network_name: "CTFProjectile_SpellMeteorShower", class_id: 0, size_of: 2344 }
+Class { network_name: "CTFProjectile_SpellMirv", class_id: 0, size_of: 2344 }
+Class { network_name: "CTFProjectile_SpellPumpkin", class_id: 0, size_of: 2344 }
+Class { network_name: "CTFProjectile_SpellSpawnBoss", class_id: 0, size_of: 2344 }
+Class { network_name: "CTFProjectile_SpellSpawnHorde", class_id: 0, size_of: 2344 }
+Class { network_name: "CTFProjectile_SpellSpawnZombie", class_id: 0, size_of: 2344 }
+Class { network_name: "CTFProjectile_SpellTransposeTeleport", class_id: 0, size_of: 2344 }
+Class { network_name: "CTFSpellBook", class_id: 0, size_of: 3200 }
+Class { network_name: "NextBotCombatCharacter", class_id: 0, size_of: 3568 }
+Class { network_name: "CBossAlpha", class_id: 0, size_of: 3584 }
+Class { network_name: "CTFBaseBoss", class_id: 0, size_of: 3576 }
+Class { network_name: "CTFTankBoss", class_id: 0, size_of: 3576 }
+Class { network_name: "CMannVsMachineStats", class_id: 0, size_of: 1592 }
+Class { network_name: "CTFProjectile_Arrow", class_id: 0, size_of: 2288 }
+Class { network_name: "CTFProjectile_GrapplingHook", class_id: 0, size_of: 2296 }
+Class { network_name: "CTFProjectile_HealingBolt", class_id: 0, size_of: 2288 }
+Class { network_name: "CTFProjectile_EnergyBall", class_id: 0, size_of: 2288 }
+Class { network_name: "CTFProjectile_Flare", class_id: 0, size_of: 2264 }
+Class { network_name: "CTFProjectile_Rocket", class_id: 0, size_of: 2264 }
+Class { network_name: "CTFWeaponBuilder", class_id: 0, size_of: 3192 }
+Class { network_name: "C_TFWeaponBuilder", class_id: 0, size_of: 3192 }
+Class { network_name: "CTFWeaponSapper", class_id: 0, size_of: 3200 }
+Class { network_name: "CTFDroppedWeapon", class_id: 0, size_of: 2512 }
+Class { network_name: "CTFProjectile_EnergyRing", class_id: 0, size_of: 2296 }
+Class { network_name: "CTFBall_Ornament", class_id: 0, size_of: 2344 }
+Class { network_name: "CTFBat", class_id: 0, size_of: 3160 }
+Class { network_name: "CTFBat_Fish", class_id: 0, size_of: 3160 }
+Class { network_name: "CTFBat_Giftwrap", class_id: 0, size_of: 3168 }
+Class { network_name: "CTFBat_Wood", class_id: 0, size_of: 3168 }
+Class { network_name: "CTFStunBall", class_id: 0, size_of: 2344 }
+Class { network_name: "CTFBonesaw", class_id: 0, size_of: 3168 }
+Class { network_name: "CTFBottle", class_id: 0, size_of: 3168 }
+Class { network_name: "CTFBreakableMelee", class_id: 0, size_of: 3168 }
+Class { network_name: "CTFBreakableSign", class_id: 0, size_of: 3168 }
+Class { network_name: "CTFStickBomb", class_id: 0, size_of: 3176 }
+Class { network_name: "CTFBuffItem", class_id: 0, size_of: 3176 }
+Class { network_name: "CTFClub", class_id: 0, size_of: 3160 }
+Class { network_name: "CTFCompoundBow", class_id: 0, size_of: 3216 }
+Class { network_name: "CTFWeaponFlameBall", class_id: 0, size_of: 3808 }
+Class { network_name: "CTFFireAxe", class_id: 0, size_of: 3160 }
+Class { network_name: "CTFFists", class_id: 0, size_of: 3160 }
+Class { network_name: "CTFFlameRocket", class_id: 0, size_of: 2256 }
+Class { network_name: "CTFFlameThrower", class_id: 0, size_of: 3792 }
+Class { network_name: "CTFFlareGun", class_id: 0, size_of: 3168 }
+Class { network_name: "CTFFlareGun_Revenge", class_id: 0, size_of: 3176 }
+Class { network_name: "CTFGrapplingHook", class_id: 0, size_of: 3192 }
+Class { network_name: "CTFGrenadePipebombProjectile", class_id: 0, size_of: 2344 }
+Class { network_name: "CTFCannon", class_id: 0, size_of: 3208 }
+Class { network_name: "CTFGrenadeLauncher", class_id: 0, size_of: 3208 }
+Class { network_name: "CTFWeaponInvis", class_id: 0, size_of: 3144 }
+Class { network_name: "CTFCleaver", class_id: 0, size_of: 3152 }
+Class { network_name: "CTFJar", class_id: 0, size_of: 3152 }
+Class { network_name: "CTFJarMilk", class_id: 0, size_of: 3152 }
+Class { network_name: "CTFProjectile_Cleaver", class_id: 0, size_of: 2344 }
+Class { network_name: "CTFProjectile_Jar", class_id: 0, size_of: 2344 }
+Class { network_name: "CTFProjectile_JarMilk", class_id: 0, size_of: 2344 }
+Class { network_name: "CTFGasManager", class_id: 0, size_of: 1696 }
+Class { network_name: "CTFJarGas", class_id: 0, size_of: 3152 }
+Class { network_name: "CTFProjectile_JarGas", class_id: 0, size_of: 2344 }
+Class { network_name: "CTFKnife", class_id: 0, size_of: 3192 }
+Class { network_name: "CLaserDot", class_id: 0, size_of: 1400 }
+Class { network_name: "CTFLaserPointer", class_id: 0, size_of: 3160 }
+Class { network_name: "CTFLunchBox", class_id: 0, size_of: 3152 }
+Class { network_name: "CTFLunchBox_Drink", class_id: 0, size_of: 3152 }
+Class { network_name: "CTFMechanicalArm", class_id: 0, size_of: 3176 }
+Class { network_name: "CTFMedigunShield", class_id: 0, size_of: 2224 }
+Class { network_name: "CWeaponMedigun", class_id: 0, size_of: 3320 }
+Class { network_name: "CTFMinigun", class_id: 0, size_of: 3248 }
+Class { network_name: "CTFParachute", class_id: 0, size_of: 3184 }
+Class { network_name: "CTFParachute_Primary", class_id: 0, size_of: 3184 }
+Class { network_name: "CTFParachute_Secondary", class_id: 0, size_of: 3184 }
+Class { network_name: "CTFParticleCannon", class_id: 0, size_of: 3168 }
+Class { network_name: "CTFWeaponPDA", class_id: 0, size_of: 3152 }
+Class { network_name: "CTFWeaponPDAExpansion_Dispenser", class_id: 0, size_of: 2696 }
+Class { network_name: "CTFWeaponPDAExpansion_Teleporter", class_id: 0, size_of: 2696 }
+Class { network_name: "CTFWeaponPDA_Engineer_Build", class_id: 0, size_of: 3152 }
+Class { network_name: "CTFWeaponPDA_Engineer_Destroy", class_id: 0, size_of: 3152 }
+Class { network_name: "CTFWeaponPDA_Spy", class_id: 0, size_of: 3152 }
+Class { network_name: "CTFPipebombLauncher", class_id: 0, size_of: 3192 }
+Class { network_name: "CTFPistol", class_id: 0, size_of: 3144 }
+Class { network_name: "CTFPistol_Scout", class_id: 0, size_of: 3144 }
+Class { network_name: "CTFPistol_ScoutPrimary", class_id: 0, size_of: 3152 }
+Class { network_name: "CTFPistol_ScoutSecondary", class_id: 0, size_of: 3144 }
+Class { network_name: "CTFDRGPomson", class_id: 0, size_of: 3160 }
+Class { network_name: "CTFRaygun", class_id: 0, size_of: 3160 }
+Class { network_name: "CTFRevolver", class_id: 0, size_of: 3152 }
+Class { network_name: "CTFCrossbow", class_id: 0, size_of: 3168 }
+Class { network_name: "CTFRocketLauncher", class_id: 0, size_of: 3152 }
+Class { network_name: "CTFRocketLauncher_AirStrike", class_id: 0, size_of: 3152 }
+Class { network_name: "CTFRocketLauncher_DirectHit", class_id: 0, size_of: 3152 }
+Class { network_name: "CTFRocketLauncher_Mortar", class_id: 0, size_of: 3152 }
+Class { network_name: "CTFRocketPack", class_id: 0, size_of: 3248 }
+Class { network_name: "CTFPEPBrawlerBlaster", class_id: 0, size_of: 3144 }
+Class { network_name: "CTFScatterGun", class_id: 0, size_of: 3144 }
+Class { network_name: "CTFShotgunBuildingRescue", class_id: 0, size_of: 3144 }
+Class { network_name: "CTFShotgun", class_id: 0, size_of: 3144 }
+Class { network_name: "CTFShotgun_HWG", class_id: 0, size_of: 3144 }
+Class { network_name: "CTFShotgun_Pyro", class_id: 0, size_of: 3144 }
+Class { network_name: "CTFShotgun_Revenge", class_id: 0, size_of: 3144 }
+Class { network_name: "CTFShotgun_Soldier", class_id: 0, size_of: 3144 }
+Class { network_name: "CTFSodaPopper", class_id: 0, size_of: 3144 }
+Class { network_name: "CTFShovel", class_id: 0, size_of: 3168 }
+Class { network_name: "CTFSlap", class_id: 0, size_of: 3168 }
+Class { network_name: "CTFChargedSMG", class_id: 0, size_of: 3152 }
+Class { network_name: "CTFSMG", class_id: 0, size_of: 3144 }
+Class { network_name: "CSniperDot", class_id: 0, size_of: 1400 }
+Class { network_name: "CTFSniperRifleClassic", class_id: 0, size_of: 3192 }
+Class { network_name: "CTFSniperRifle", class_id: 0, size_of: 3176 }
+Class { network_name: "CTFSniperRifleDecap", class_id: 0, size_of: 3176 }
+Class { network_name: "CTFKatana", class_id: 0, size_of: 3176 }
+Class { network_name: "CTFSword", class_id: 0, size_of: 3176 }
+Class { network_name: "CTFSyringeGun", class_id: 0, size_of: 3144 }
+Class { network_name: "CTFProjectile_ThrowableBreadMonster", class_id: 0, size_of: 2344 }
+Class { network_name: "CTFProjectile_ThrowableBrick", class_id: 0, size_of: 2344 }
+Class { network_name: "CTFProjectile_Throwable", class_id: 0, size_of: 2344 }
+Class { network_name: "CTFProjectile_ThrowableRepel", class_id: 0, size_of: 2344 }
+Class { network_name: "CTFThrowable", class_id: 0, size_of: 3160 }
+Class { network_name: "CTFRobotArm", class_id: 0, size_of: 3184 }
+Class { network_name: "CTFWearableRobotArm", class_id: 0, size_of: 2696 }
+Class { network_name: "CTFWrench", class_id: 0, size_of: 3168 }
+Class { network_name: "CTFWeaponBase", class_id: 0, size_of: 3144 }
+Class { network_name: "CTFWeaponBaseGrenadeProj", class_id: 0, size_of: 2296 }
+Class { network_name: "CTFWeaponBaseGun", class_id: 0, size_of: 3144 }
+Class { network_name: "CTFWeaponBaseMelee", class_id: 0, size_of: 3160 }
+Class { network_name: "CTFWeaponBaseMerasmusGrenade", class_id: 0, size_of: 2296 }
+Class { network_name: "CTFBaseRocket", class_id: 0, size_of: 2256 }
+Class { network_name: "CTFWearableCampaignItem", class_id: 0, size_of: 2704 }
+Class { network_name: "CTFWearableLevelableItem", class_id: 0, size_of: 2704 }
+Class { network_name: "CTFWearableDemoShield", class_id: 0, size_of: 2696 }
+Class { network_name: "CTFWearableRazorback", class_id: 0, size_of: 2696 }
+engine.dll!003F5868 00004000 snd_show
+engine.dll!003FEF00 00040000 snd_spatialize_roundrobin
+engine.dll!003F58E8 00004000 snd_visualize
+engine.dll!0043A7C8 00040000 snd_cull_duplicates
+engine.dll!0043B3F0 00008000 voice_buffer_ms
+engine.dll!004737D8 00000210 cl_connectmethod
+engine.dll!004736B8 00400202 cl_interpolate
+engine.dll!00473658 20020080 password
+engine.dll!004739C8 00004000 r_DrawBeams
+engine.dll!00473DC8 00004000 demo_recordcommands
+engine.dll!00474D20 00004000 cl_entityreport
+engine.dll!00474D80 00004000 cl_entityreport_sorted
+engine.dll!00482DE8 00004000 cl_flushentitypacket
+engine.dll!0048D4D0 00004000 cl_ignorepackets
+engine.dll!0048F860 00000200 cl_language
+engine.dll!0048D350 01000080 sv_unlockedchapters
+engine.dll!0048D3D0 00000280 tv_nochat
+engine.dll!004BF6D0 00004000 cl_showevents
+engine.dll!004BF7A8 00000080 cl_showpluginmessages
+engine.dll!004C0238 00005000 mat_show_texture_memory_usage
+engine.dll!004C0080 00004000 mat_texture_list
+engine.dll!004C0148 00005000 mat_texture_list_all
+engine.dll!004C01B8 00005000 mat_texture_list_view
+engine.dll!004C0490 00000080 cl_allowdownload
+engine.dll!004C0550 00008000 cl_always_flush_models
+engine.dll!004C04F0 00000080 cl_downloadfilter
+engine.dll!004C03D0 00000080 cl_logofile
+engine.dll!004C0430 00000080 cl_soundfile
+engine.dll!004C0370 00000080 cl_timeout
+engine.dll!004C0C98 00000080 con_enable
+engine.dll!004C0CF8 00800000 con_filter_enable
+engine.dll!004C0D58 00800000 con_filter_text
+engine.dll!004C0DB8 00800000 con_filter_text_out
+engine.dll!004C0B58 00800000 con_notifytime
+engine.dll!004C0BD8 00800000 contimes
+engine.dll!004C0AD8 00800000 con_trace
+engine.dll!004C10A8 00004004 enable_debug_overlays
+engine.dll!005C5330 00004000 r_drawfuncdetail
+engine.dll!005C5270 00004000 r_drawleaf
+engine.dll!005C52D0 00004000 r_drawworld
+engine.dll!005C53F0 00040000 r_fastzreject
+engine.dll!005C6588 00000080 r_ambientboost
+engine.dll!005C66A8 00000080 r_ambientfactor
+engine.dll!005C6648 00004000 r_ambientfraction
+engine.dll!005C65E8 00000080 r_ambientmin
+engine.dll!005C5D28 00004000 r_debugrandomstaticlighting
+engine.dll!005C6768 00004000 r_drawlightcache
+engine.dll!005C6828 00000080 r_drawmodelstatsoverlaymax
+engine.dll!005C67C8 00000080 r_drawmodelstatsoverlaymin
+engine.dll!005C5C08 00004000 r_eyeglintlodpixels
+engine.dll!005C6708 00004000 r_lightcachemodel
+engine.dll!005C5BA8 00004000 r_lightinterp
+engine.dll!005C5D88 00004000 r_proplightingfromdisk
+engine.dll!005C5EA8 00004000 r_proplightingpooling
+engine.dll!005C7D48 00000080 mat_monitorgamma_tv_enabled
+engine.dll!005C7DA8 00004000 r_drawbrushmodels
+engine.dll!005C8200 00008000 mod_offline_hdr_switch
+engine.dll!005C9748 00004000 r_occlusionspew
+engine.dll!005CA790 00004000 r_visocclusion
+engine.dll!005CAD28 00004000 r_portalsopenall
+engine.dll!005EB4F8 00004000 r_drawdecals
+engine.dll!00601670 00002000 sv_maxrate
+engine.dll!00601730 00002000 sv_maxupdaterate
+engine.dll!006016D0 00002000 sv_minrate
+engine.dll!00601790 00002000 sv_minupdaterate
+engine.dll!00601C40 00004002 sv_creationtickcheck
+engine.dll!00605F98 00000080 sv_log_onefile
+engine.dll!00606018 00000080 sv_logbans
+engine.dll!00605F18 00000080 sv_logecho
+engine.dll!00605E18 00000080 sv_logfile
+engine.dll!00606138 00000080 sv_logfilecompress
+engine.dll!006060D8 00000080 sv_logfilename_format
+engine.dll!00605E98 00000080 sv_logflush
+engine.dll!00605D98 00000080 sv_logsdir
+engine.dll!006313F0 00002000 sv_client_cmdrate_difference
+engine.dll!006314B0 00002000 sv_client_max_interp_ratio
+engine.dll!00631450 00002000 sv_client_min_interp_ratio
+engine.dll!00631510 00002000 sv_client_predict
+engine.dll!00631270 00002000 sv_consistency
+engine.dll!00631090 00000100 sv_contact
+engine.dll!006311B0 00002000 sv_downloadurl
+engine.dll!00631390 00002000 sv_maxcmdrate
+engine.dll!00631330 00002000 sv_mincmdrate
+engine.dll!00631030 00000100 sv_pausable
+engine.dll!00606A60 00002000 sv_shutdown_timeout_minutes
+engine.dll!00631AE8 00000080 sv_forcepreload
+engine.dll!00637C30 00002000 sv_allow_color_correction
+engine.dll!00637840 00002000 sv_allow_wait_command
+engine.dll!006378A0 00020120 sv_password
+engine.dll!0063C180 00000080 bugreporter_uploadasync
+engine.dll!0063C438 00000280 rate
+engine.dll!0063C498 00400280 cl_updaterate
+engine.dll!0063C7F8 00004000 cl_clock_correction
+engine.dll!0063C618 00004000 cl_clock_correction_adjustment_max_amount
+engine.dll!0063C678 00004000 cl_clock_correction_adjustment_max_offset
+engine.dll!0063C798 00004000 cl_clock_correction_adjustment_min_offset
+engine.dll!0063C6D8 00004000 cl_clock_correction_force_server_tick
+engine.dll!0063C738 00004000 cl_clock_showdebuginfo
+engine.dll!0063C558 00004000 cl_clockdrift_max_ms
+engine.dll!0063C5B8 00004000 cl_clockdrift_max_ms_threadmode
+engine.dll!00645F98 00004000 r_DrawDisp
+engine.dll!00650C78 00004000 net_showevents
+engine.dll!00650DE8 00020120 tv_relaypassword
+engine.dll!006513D8 00020120 tv_password
+engine.dll!00651178 00002000 tv_transmitall
+engine.dll!00652110 01000280 closecaption
+engine.dll!006523B0 00000100 coop
+engine.dll!00652770 00004000 next
+engine.dll!00652050 00008100 deathmatch
+engine.dll!00651AF8 00004000 host_sleep
+engine.dll!00652530 00002000 host_timescale
+engine.dll!00652590 00004000 singlestep
+engine.dll!00658618 00004000 r_ambientlightingonly
+engine.dll!006585B8 00004000 r_drawlightcache
+engine.dll!00658738 00004000 r_oldlightselection
+engine.dll!006584C8 00004000 r_radiosity
+engine.dll!0066CBD8 00004000 r_lockpvs
+engine.dll!0066CB78 00004000 r_novis
+engine.dll!0066FAF8 00040000 clientport
+engine.dll!0066FA08 00004000 net_droppackets
+engine.dll!0066FC18 00004000 net_fakejitter
+engine.dll!0066F758 00004000 net_fakelag
+engine.dll!0066FDF8 00004000 net_fakeloss
+engine.dll!0066FC78 00040000 tv_port
+engine.dll!0066F8C8 00040000 hostip
+engine.dll!0066F6D8 00040000 hostport
+engine.dll!0066FCD8 00040000 ip
+engine.dll!0066FBB8 00040000 matchmakingport
+engine.dll!0066FA98 00040000 systemlinkport
+engine.dll!006700F8 00002010 sv_use_steam_voice
+engine.dll!006717F8 00000080 cl_allowupload
+engine.dll!00671AA8 00004000 r_partition_level
+engine.dll!006724E0 00004000 r_drawstaticprops
+engine.dll!00672BD0 00008000 mem_max_heapsize
+engine.dll!00672B50 00008000 mem_max_heapsize_dedicated
+engine.dll!00672AF0 00008000 mem_min_heapsize
+engine.dll!0068A9C0 00020010 rpt_vprof_time
+engine.dll!0068CC40 00004000 r_drawvgui
+engine.dll!0068D050 00000080 budget_averages_window
+engine.dll!0068CFF0 00000080 budget_bargraph_background_alpha
+engine.dll!0068CF30 00000080 budget_peaks_window
+engine.dll!0068D0B0 00000080 budget_show_averages
+engine.dll!0068CF90 00000080 budget_show_peaks
+engine.dll!0068D110 00000080 budget_history_numsamplesvisible
+engine.dll!0068D170 00000080 budget_show_history
+engine.dll!0068D288 00000080 budget_background_alpha
+engine.dll!0068D688 00004000 vgui_drawtree
+engine.dll!0068DB48 00004000 showbudget_texture
+engine.dll!0068DE50 00000080 texture_budget_background_alpha
+engine.dll!0068E110 00000080 vprof_unaccounted_limit
+engine.dll!0068E090 00000080 vprof_verbose
+engine.dll!0068E190 00000080 vprof_warningmsec
+engine.dll!006AA680 00004000 panel_test_title_safe
+engine.dll!005C7BC8 00000080 mat_monitorgamma
+engine.dll!0063C4F8 00000280 cl_cmdrate
+engine.dll!0066F660 00000280 net_maxroutable
+engine.dll!0066F9A8 00040000 net_udp_rcvbuf
+client.dll!00CC2E20 00000080 youtube_http_proxy
+client.dll!00CC35A8 00020008 replay_rendersetting_motionblur_can_toggle
+client.dll!00CC3C30 00020088 replay_editor_fov_mousewheel_invert
+client.dll!00CC3BD0 00020088 replay_editor_fov_mousewheel_multiplier
+client.dll!00CC3C90 00020098 replay_replayeditor_rewindmsgcounter
+client.dll!00CC3E60 00020088 replay_enablerenderpreview
+client.dll!00CC3EC0 00000080 youtube_username
+client.dll!00CC40C8 00006000 achievement_debug
+client.dll!00CC4378 00004002 cl_showanimstate
+client.dll!00CC4498 00002002 mp_facefronttime
+client.dll!00CC4438 00002002 mp_feetyawrate
+client.dll!00CC44F8 00002002 mp_ik
+client.dll!00CC43D8 00004002 cl_showanimstate_log
+client.dll!00CC5860 00002000 smoothstairs
+client.dll!00CC57A0 00002000 sv_debug_player_use
+client.dll!00CC6CB0 00008002 cl_threaded_bone_setup
+client.dll!00CC6D30 00004000 r_drawothermodels
+client.dll!00CC8048 00004000 cl_extrapolate
+client.dll!00CC80B8 00000200 cl_interp_npcs
+client.dll!00CCAB80 00020008 demo_fov_override
+client.dll!00CCAAC0 00004000 spec_freeze_distance_max
+client.dll!00CCAA50 00004000 spec_freeze_distance_min
+client.dll!00CCA980 00006000 spec_freeze_time
+client.dll!00CCC320 00400280 cl_flipviewmodels
+client.dll!00CCDFA8 00004000 fish_debug
+client.dll!00CD26E8 00000080 cl_debugrumble
+client.dll!00CD2688 01000080 cl_rumblescale
+client.dll!00CD48C0 00004000 soundscape_fadetime
+client.dll!00CD6FC0 00400280 cl_interp_ratio
+client.dll!00CD6F60 00400200 cl_predict
+client.dll!00CD7218 00000280 cl_class
+client.dll!00CD71B0 00000280 cl_team
+client.dll!00CD7B88 00000080 vr_activate_default
+client.dll!00CD8488 00000080 vr_hud_axis_lock_to_world
+client.dll!00CD8368 00000080 vr_hud_forward
+client.dll!00CD8308 00000080 vr_hud_max_fov
+client.dll!00CD7C08 00000080 vr_moveaim_mode
+client.dll!00CD7C88 00000080 vr_moveaim_mode_zoom
+client.dll!00CD7D68 00000080 vr_moveaim_reticle_pitch_limit
+client.dll!00CD7E28 00000080 vr_moveaim_reticle_pitch_limit_zoom
+client.dll!00CD7D08 00000080 vr_moveaim_reticle_yaw_limit
+client.dll!00CD7DC8 00000080 vr_moveaim_reticle_yaw_limit_zoom
+client.dll!00CD85A8 00000080 vr_zoom_multiplier
+client.dll!00CF0928 00004000 r_PortalTestEnts
+client.dll!00CF0988 00004000 r_portalsopenall
+client.dll!00CF0C88 00004000 cl_drawhud
+client.dll!00CF0D88 00000088 hud_freezecamhide
+client.dll!00CF0D08 00000088 hud_takesshots
+client.dll!00CF1DF8 00004000 cl_detail_multiplier
+client.dll!00CF1E58 00004000 cl_fastdetailsprites
+client.dll!00CF35D8 00000080 r_drawtracers_firstperson
+client.dll!00CF5288 00002100 mp_friendlyfire
+client.dll!00CF5228 00002000 mp_allowspectators
+client.dll!00CF52E8 00002100 mp_fadetoblack
+client.dll!00CF51C8 00002000 mp_forcecamera
+client.dll!00CF53C8 00000080 glow_outline_effect_enable
+client.dll!00CF5428 00004000 glow_outline_width
+client.dll!00CF55D0 00000200 hap_HasDevice
+client.dll!00CF57B0 00000280 cl_showhelp
+client.dll!00CF5860 40000008 spec_autodirector
+client.dll!00CF5EC0 00000080 hud_achievement_count
+client.dll!00CF6120 00000098 cl_chatfilter_version
+client.dll!00CF60C0 00000088 cl_chatfilters
+client.dll!00CF6180 00000080 cl_mute_all_comms
+client.dll!00CF6360 00000080 cc_linger_time
+client.dll!00CF63E0 00000080 cc_predisplay_time
+client.dll!00CF64E0 01000080 cc_subtitles
+client.dll!00CF62F8 01000280 closecaption
+client.dll!00CF6560 00000200 english
+client.dll!00CF6A58 00000088 cl_hudhint_sound
+client.dll!00CF6D08 00000080 g15_update_msec
+client.dll!00CF74A0 00004080 cam_collision
+client.dll!00CF71A0 00004080 cam_idealdelta
+client.dll!00CF7120 00004080 cam_ideallag
+client.dll!00CF7520 00004000 cam_showangles
+client.dll!00CF8358 00000080 joy_autoaimdampen
+client.dll!00CF82F8 00000080 joy_autoaimdampenrange
+client.dll!00CF8478 00000080 joy_diagonalpov
+client.dll!00CF85F8 01000080 joy_inverty
+client.dll!00CF8118 00000080 joy_response_look
+client.dll!00CF8058 00000080 joy_response_move
+client.dll!00CF8538 00000080 joy_wingmanwarrior_turnhack
+client.dll!00CF88F8 00000080 joy_xcontroller_cfg_loaded
+client.dll!00CF9228 00006000 sv_noclipduringpause
+client.dll!00CFA030 00400080 cl_mouselook
+client.dll!00CF9DF0 00000080 m_pitch
+client.dll!00CF9BB0 00000080 m_customaccel
+client.dll!00CF9D90 00000080 m_customaccel_max
+client.dll!00CF9EB0 00000080 m_filter
+client.dll!00CFA0F0 00000080 m_forward
+client.dll!00CF9C10 00000080 m_rawinput
+client.dll!00CF9F70 00000080 m_side
+client.dll!00CF9CD0 00000080 m_yaw
+client.dll!00CFA670 00000080 sc_pitch_sensitivity
+client.dll!00CFA570 00000080 sc_yaw_sensitivity
+client.dll!00CFA7B8 00004000 cl_extrapolate_amount
+client.dll!00CFAA48 00004000 cl_jiggle_bone_debug
+client.dll!00CFA988 00004000 cl_jiggle_bone_debug_pitch_constraints
+client.dll!00CFA9E8 00004000 cl_jiggle_bone_debug_yaw_constraints
+client.dll!00CFBA48 00002082 sv_backspeed
+client.dll!00CFB928 00002102 sv_bounce
+client.dll!00CFB7A8 00002102 sv_footsteps
+client.dll!00CFB8C8 00002102 sv_friction
+client.dll!00CFB328 00002100 sv_gravity
+client.dll!00CFB988 00002002 sv_maxvelocity
+client.dll!00CFB868 00002102 sv_rollangle
+client.dll!00CFBB08 00002080 sv_skyname
+client.dll!00CFB388 00002102 sv_stopspeed
+client.dll!00CFBAA8 00002002 sv_waterdist
+client.dll!00CFBED8 00002100 mp_fraglimit
+client.dll!00CFBF38 00002000 mp_show_voice_icons
+client.dll!00CFBE78 00002100 mp_timelimit
+client.dll!00CFBFA0 00002000 sv_mumble_positionalaudio
+client.dll!00CFC120 00002002 sv_pushaway_clientside
+client.dll!00CFC000 00002002 sv_pushaway_force
+client.dll!00CFC0C0 00002002 sv_pushaway_max_force
+client.dll!00CFC1E0 00006002 sv_pushaway_max_player_force
+client.dll!00CFC060 00002002 sv_pushaway_min_player_speed
+client.dll!00CFC180 00006002 sv_pushaway_player_force
+client.dll!00CFC240 00002000 sv_turbophysics
+client.dll!00CFC640 00004000 cl_particle_show_bbox_cost
+client.dll!00CFC580 00004000 cl_particleeffect_aabb_buffer
+client.dll!00CFC520 00004000 particle_simulateoverflow
+client.dll!00CFC4A0 00004000 r_drawparticles
+client.dll!00CFCCB0 00004000 cl_phys_timescale
+client.dll!00CFCED8 00002000 think_limit
+client.dll!00CFD7B8 00024000 ui_posedebug_fade_in_time
+client.dll!00CFD738 00024000 ui_posedebug_fade_out_time
+client.dll!00CFDA78 00400200 cl_lagcompensation
+client.dll!00CFDBF8 00004000 cl_pdump
+client.dll!00CFDC58 00004000 cl_pclass
+client.dll!00CFDB98 00004000 cl_predictionlist
+client.dll!00CFDA18 00400200 cl_predictweapons
+client.dll!00CFDD28 00004000 pwatchent
+client.dll!00CFDDA8 00004000 pwatchvar
+client.dll!00CFDF80 00002000 props_break_max_pieces_perframe
+client.dll!00CFDEC0 00002002 sv_pushaway_clientside_size
+client.dll!00CFE7D0 00002000 scene_clientflex
+client.dll!00CFE770 00002000 scene_print
+client.dll!00CFE928 00002000 sv_soundemitter_trace
+client.dll!00CFEA48 00002000 soundpatch_captionlength
+client.dll!00CFF590 00004000 r_studio_stats_lock
+client.dll!00CFF5F0 00004000 r_studio_stats_mode
+client.dll!00CFFCE0 00002002 mp_capdeteriorate_time
+client.dll!00CFFBC0 00002002 mp_capstyle
+client.dll!00D00220 00002100 mp_forceautoteam
+client.dll!00CFFE00 00002100 mp_highlander
+client.dll!00CFFC80 00002100 mp_respawnwavetime
+client.dll!00D001C0 00002100 mp_stalemate_meleeonly
+client.dll!00CFFF20 00002100 tf_arena_max_streak
+client.dll!00CFFF80 00002100 tf_arena_use_queue
+client.dll!00D012A0 00040000 cl_showfps
+client.dll!00D015F0 00000080 net_graphmsecs
+client.dll!00D016B0 00000080 net_graphshowinterp
+client.dll!00D01650 00000080 net_graphshowlatency
+client.dll!00D01590 00000080 net_graphtext
+client.dll!00D021E8 00004000 gl_clear_randomcolor
+client.dll!00D02068 00000080 mat_viewportupscale
+client.dll!00D02248 00004000 r_farz
+client.dll!00D02128 00004000 r_mapextents
+client.dll!00D01908 00000080 zoom_sensitivity_ratio
+client.dll!00D023E8 00004000 r_DrawBeams
+client.dll!00D02658 00004000 r_depthoverlay
+client.dll!00D02798 00004000 cl_drawmaterial
+client.dll!00D040F8 00000080 mat_software_aa_blur_one_pixel_lines
+client.dll!00D04098 00000080 mat_software_aa_edge_threshold
+client.dll!00D04038 00000080 mat_software_aa_quality
+client.dll!00D03FD8 00000080 mat_software_aa_strength
+client.dll!00D04218 00000080 mat_software_aa_strength_vgui
+client.dll!00D04158 00000080 mat_software_aa_tap_offset
+client.dll!00D03840 00004000 mat_tonemap_algorithm
+client.dll!00D051D0 00004000 cl_maxrenderable_dist
+client.dll!00D053B0 00004000 r_skybox
+client.dll!00D06200 40000080 voice_modenable
+client.dll!00D08420 00002002 item_quality_chance_common
+client.dll!00D083C0 00002002 item_quality_chance_rare
+client.dll!00D08360 00002002 item_quality_chance_unique
+client.dll!00D08BF0 00000098 store_version
+client.dll!00D0A620 00000080 cl_show_market_data_on_items
+client.dll!00D0A5C0 00000080 cl_showbackpackrarities
+client.dll!00D0A6E0 00000080 tf_backpack_page_button_delay
+client.dll!00D0A680 00000080 tf_explanations_backpackpanel
+client.dll!00D0ED98 00000080 cl_notifications_max_num_visible
+client.dll!00D0EE18 00000080 cl_notifications_move_time
+client.dll!00D0ED30 00000080 cl_notifications_show_ingame
+client.dll!00D0FFB8 00000080 tf_time_loading_item_panels
+client.dll!00D10778 00020098 tf_store_stamp_donation_add_timestamp
+client.dll!00D10DA8 00000080 cl_trading_show_requests_from
+client.dll!00D111B0 00000288 hud_classautokill
+client.dll!00D11458 40000080 overview_alpha
+client.dll!00D11298 40000080 overview_health
+client.dll!00D113F8 40000080 overview_locked
+client.dll!00D11318 40000080 overview_names
+client.dll!00D11398 40000080 overview_tracks
+client.dll!00D11570 10000280 cl_spec_mode
+client.dll!00D11680 00000080 cl_disablehtmlmotd
+client.dll!00D13718 00004000 cl_winddir
+client.dll!00D13788 00004000 cl_windspeed
+client.dll!00D13A60 00004000 r_RainProfile
+client.dll!00D13930 00004000 r_RainSideVel
+client.dll!00D13990 00004000 r_RainSimulate
+client.dll!00D14080 00004000 r_SnowColorBlue
+client.dll!00D14020 00004000 r_SnowColorGreen
+client.dll!00D13FC0 00004000 r_SnowColorRed
+client.dll!00D13DE0 00004000 r_SnowDebugBox
+client.dll!00D13AD0 00004000 r_SnowEnable
+client.dll!00D13F60 00004000 r_SnowEndAlpha
+client.dll!00D14140 00004000 r_SnowEndSize
+client.dll!00D13D20 00004000 r_SnowFallSpeed
+client.dll!00D13BA0 00004000 r_SnowInsideRadius
+client.dll!00D13C00 00004000 r_SnowOutsideRadius
+client.dll!00D13B30 00004000 r_SnowParticles
+client.dll!00D13CC0 00004000 r_SnowPosScale
+client.dll!00D14260 00004000 r_SnowRayEnable
+client.dll!00D141A0 00004000 r_SnowRayLength
+client.dll!00D14200 00004000 r_SnowRayRadius
+client.dll!00D13C60 00004000 r_SnowSpeedScale
+client.dll!00D13F00 00004000 r_SnowStartAlpha
+client.dll!00D140E0 00004000 r_SnowStartSize
+client.dll!00D13D80 00004000 r_SnowWindScale
+client.dll!00D13E40 00004000 r_SnowZoomOffset
+client.dll!00D13EA0 00004000 r_SnowZoomRadius
+client.dll!00D1B208 00000088 cl_playerspraydisable
+client.dll!00D1C5D0 00002002 sv_ignore_hitboxes
+client.dll!00D1C510 00006002 tf_obj_build_rotation_speed
+client.dll!00D208B8 00000280 cl_autoreload
+client.dll!00D20780 00000280 cl_autorezoom
+client.dll!00D20510 00004000 tf_always_deathanim
+client.dll!00D20C60 00000088 tf_medieval_thirdperson
+client.dll!00D20440 00004002 tf_playersgib_force
+client.dll!00D203C8 00004002 tf_playersgib_forceup
+client.dll!00D204B0 00004002 tf_playergib_maxspeed
+client.dll!00D207E8 00000288 tf_remember_activeweapon
+client.dll!00D20850 00000288 tf_remember_lastswitched
+client.dll!00D20920 00000080 tf_respawn_on_loadoutchanges
+client.dll!00D20B90 00000080 tf_romevision_opt_in
+client.dll!00D20BF8 00000080 tf_romevision_skip_prompt
+client.dll!00D23D60 00000080 cl_ask_blacklist_opt_out
+client.dll!00D23C40 00000080 cl_ask_favorite_opt_out
+client.dll!00D262D8 00004000 anim_showmainactivity
+client.dll!00D26338 00006002 anim_showstate
+client.dll!00D26398 00006002 anim_showstatelog
+client.dll!00D263F8 00006002 mp_showgestureslots
+client.dll!00D26458 00002002 mp_slammoveyaw
+client.dll!00D26518 00002100 tf_passtime_ball_damping_scale
+client.dll!00D26578 00002100 tf_passtime_ball_drag_coefficient
+client.dll!00D265D8 00002100 tf_passtime_ball_inertia_scale
+client.dll!00D26638 00002100 tf_passtime_ball_mass
+client.dll!00D26698 00002100 tf_passtime_ball_model
+client.dll!00D267B8 00002100 tf_passtime_ball_reset_time
+client.dll!00D26818 00002100 tf_passtime_ball_rotdamping_scale
+client.dll!00D26878 00002100 tf_passtime_ball_seek_range
+client.dll!00D268D8 00002100 tf_passtime_ball_seek_speed_factor
+client.dll!00D266F8 00002100 tf_passtime_ball_sphere_collision
+client.dll!00D26758 00002100 tf_passtime_ball_sphere_radius
+client.dll!00D26938 00002100 tf_passtime_ball_takedamage
+client.dll!00D26998 00002100 tf_passtime_ball_takedamage_force
+client.dll!00D275F8 00002100 tf_passtime_experiment_autopass
+client.dll!00D27658 00002100 tf_passtime_experiment_instapass
+client.dll!00D27598 00002100 tf_passtime_experiment_instapass_charge
+client.dll!00D27538 00002100 tf_passtime_experiment_telepass
+client.dll!00D269F8 00002100 tf_passtime_flinch_boost
+client.dll!00D26A58 00002100 tf_passtime_mode_homing_lock_sec
+client.dll!00D26AB8 00002100 tf_passtime_mode_homing_speed
+client.dll!00D26B18 00002100 tf_passtime_overtime_idle_sec
+client.dll!00D27A78 00002100 tf_passtime_pack_hp_per_sec
+client.dll!00D279B8 00002100 tf_passtime_pack_range
+client.dll!00D27A18 00002100 tf_passtime_pack_speed
+client.dll!00D26B78 00002100 tf_passtime_player_reticles_enemies
+client.dll!00D26BD8 00002100 tf_passtime_player_reticles_friends
+client.dll!00D27898 00002100 tf_passtime_powerball_airtimebonus
+client.dll!00D27958 00002100 tf_passtime_powerball_decay_delay
+client.dll!00D276B8 00002100 tf_passtime_powerball_decayamount
+client.dll!00D27718 00002100 tf_passtime_powerball_decaysec
+client.dll!00D27778 00002100 tf_passtime_powerball_decaysec_neutral
+client.dll!00D278F8 00002100 tf_passtime_powerball_maxairtimebonus
+client.dll!00D277D8 00002100 tf_passtime_powerball_passpoints
+client.dll!00D27838 00002100 tf_passtime_powerball_threshold
+client.dll!00D274D8 00002100 tf_passtime_save_stats
+client.dll!00D26C38 00002100 tf_passtime_score_crit_sec
+client.dll!00D264B8 00002100 tf_passtime_scores_per_round
+client.dll!00D26C98 00002100 tf_passtime_speedboost_on_get_ball_time
+client.dll!00D26CF8 00002100 tf_passtime_steal_on_melee
+client.dll!00D26D58 00002100 tf_passtime_teammate_steal_time
+client.dll!00D26ED8 00002100 tf_passtime_throwarc_demoman
+client.dll!00D26F98 00002100 tf_passtime_throwarc_engineer
+client.dll!00D26F38 00002100 tf_passtime_throwarc_heavy
+client.dll!00D26FF8 00002100 tf_passtime_throwarc_medic
+client.dll!00D26E78 00002100 tf_passtime_throwarc_pyro
+client.dll!00D26DB8 00002100 tf_passtime_throwarc_scout
+client.dll!00D27058 00002100 tf_passtime_throwarc_sniper
+client.dll!00D26E18 00002100 tf_passtime_throwarc_soldier
+client.dll!00D270B8 00002100 tf_passtime_throwarc_spy
+client.dll!00D27238 00002100 tf_passtime_throwspeed_demoman
+client.dll!00D272F8 00002100 tf_passtime_throwspeed_engineer
+client.dll!00D27298 00002100 tf_passtime_throwspeed_heavy
+client.dll!00D27358 00002100 tf_passtime_throwspeed_medic
+client.dll!00D271D8 00002100 tf_passtime_throwspeed_pyro
+client.dll!00D27118 00002100 tf_passtime_throwspeed_scout
+client.dll!00D273B8 00002100 tf_passtime_throwspeed_sniper
+client.dll!00D27178 00002100 tf_passtime_throwspeed_soldier
+client.dll!00D27418 00002100 tf_passtime_throwspeed_spy
+client.dll!00D27478 00002100 tf_passtime_throwspeed_velocity_scale
+client.dll!00D27C08 00002010 steamworks_sessionid_server
+client.dll!00D2A800 00020088 ds_dir
+client.dll!00D2A880 00020088 ds_prefix
+client.dll!00D2BD98 00002100 tf_use_fixed_weaponspreads
+client.dll!00D2BEF0 00006002 tf_avoidteammates
+client.dll!00D2BF50 00002000 tf_avoidteammates_pushaway
+client.dll!00D2C4F0 00006000 tf_ghost_up_speed
+client.dll!00D2C610 00002000 tf_grapplinghook_use_acceleration
+client.dll!00D2C490 00006000 tf_halloween_kart_aircontrol
+client.dll!00D2C910 00006000 tf_movement_aircurrent_aircontrol_mult
+client.dll!00D2C8B0 00006000 tf_movement_aircurrent_friction_mult
+client.dll!00D2C9D0 00006000 tf_movement_lost_footing_friction
+client.dll!00D2C970 00006000 tf_movement_lost_footing_restick
+client.dll!00D2C3D0 00002002 tf_parachute_aircontrol
+client.dll!00D2C250 00002002 tf_parachute_gravity
+client.dll!00D2C370 00002002 tf_parachute_maxspeed_onfire_z
+client.dll!00D2C2B0 00002002 tf_parachute_maxspeed_xy
+client.dll!00D2C310 00002002 tf_parachute_maxspeed_z
+client.dll!00D2DBD8 00002100 mp_tournament_readymode
+client.dll!00D2DCF8 00002100 mp_tournament_readymode_countdown
+client.dll!00D2DC38 00002100 mp_tournament_readymode_min
+client.dll!00D2DC98 00002100 mp_tournament_readymode_team_size
+client.dll!00D2DB78 00002100 mp_tournament_stopwatch
+client.dll!00D2E5F8 00006102 tf_arena_change_limit
+client.dll!00D2E718 00002100 tf_arena_first_blood
+client.dll!00D2E598 00006102 tf_arena_force_class
+client.dll!00D2E658 00002100 tf_arena_override_cap_enable_time
+client.dll!00D2E6B8 00002000 tf_arena_override_team_size
+client.dll!00D2D998 00002002 tf_caplinear
+client.dll!00D2D868 00002102 tf_force_holidays_off
+client.dll!00D2D798 00002000 tf_forced_holiday
+client.dll!00D2D7F8 00002000 tf_item_based_forced_holiday
+client.dll!00D2E9B8 00002010 tf_mvm_buybacks_per_wave
+client.dll!00D2E7D8 00002100 tf_mvm_min_players_to_start
+client.dll!00D2E8F8 00006000 tf_mvm_respec_credit_goal
+client.dll!00D2E838 00006000 tf_mvm_respec_enabled
+client.dll!00D2E538 00000080 tf_particles_disable_weather
+client.dll!00D2E298 00002000 tf_player_movement_restart_freeze
+client.dll!00D2D738 00002100 tf_spawn_glows_duration
+client.dll!00D2D6C8 00002100 tf_spec_xray
+client.dll!00D2D938 00002100 tf_spells_enabled
+client.dll!00D2D9F8 00002002 tf_stalematechangeclasstime
+client.dll!00D2E4D8 00006002 tf_sticky_airdet_radius
+client.dll!00D2E478 00006002 tf_sticky_radius_ramp_time
+client.dll!00D2E178 00002000 tf_tournament_classchange_allowed
+client.dll!00D2E1D8 00002000 tf_tournament_classchange_ready_allowed
+client.dll!00D2DF38 00002000 tf_tournament_classlimit_demoman
+client.dll!00D2E118 00002000 tf_tournament_classlimit_engineer
+client.dll!00D2DFF8 00002000 tf_tournament_classlimit_heavy
+client.dll!00D2DF98 00002000 tf_tournament_classlimit_medic
+client.dll!00D2E058 00002000 tf_tournament_classlimit_pyro
+client.dll!00D2DE18 00002000 tf_tournament_classlimit_scout
+client.dll!00D2DE78 00002000 tf_tournament_classlimit_sniper
+client.dll!00D2DED8 00002000 tf_tournament_classlimit_soldier
+client.dll!00D2E0B8 00002000 tf_tournament_classlimit_spy
+client.dll!00D2E778 00006000 tf_training_client_message
+client.dll!00D30620 01000280 hud_combattext_batching
+client.dll!00D306E8 00000280 hud_combattext_doesnt_block_overhead_text
+client.dll!00D305B8 01000280 hud_combattext_healing
+client.dll!00D30B68 00004000 hud_damagemeter
+client.dll!00D30748 00000080 tf_dingalingaling
+client.dll!00D30928 00000080 tf_dingalingaling_lasthit
+client.dll!00D30D58 00000080 hud_achievement_count_engineer
+client.dll!00D315C0 00000080 cl_hud_killstreak_display_alpha
+client.dll!00D31558 00000080 cl_hud_killstreak_display_fontsize
+client.dll!00D314F0 00000080 cl_hud_killstreak_display_time
+client.dll!00D31FF0 00000080 cl_ask_bigpicture_controller_opt_out
+client.dll!00D31ED0 00000080 tf_training_has_prompted_for_forums
+client.dll!00D31F90 00000080 tf_training_has_prompted_for_loadout
+client.dll!00D31E70 00000080 tf_training_has_prompted_for_offline_practice
+client.dll!00D31F30 00000080 tf_training_has_prompted_for_options
+client.dll!00D31E10 00000080 tf_training_has_prompted_for_training
+client.dll!00D324A8 00000080 cl_mvm_wave_status_visible_during_wave
+client.dll!00D32798 00000080 tf_build_menu_controller_mode
+client.dll!00D328F0 00000080 tf_disguise_menu_controller_mode
+client.dll!00D32B78 00000080 tf_hud_show_servertimelimit
+client.dll!00D32D08 00000080 cl_hud_playerclass_use_playermodel
+client.dll!00D32F70 00000080 tf_enable_glows_after_respawn
+client.dll!00D32F08 00000080 tf_spec_xray_disable
+client.dll!00D33368 00000080 tf_healthicon_height_offset
+client.dll!00D33248 00000080 tf_hud_target_id_alpha
+client.dll!00D331E8 00000080 tf_hud_target_id_disable_floating_health
+client.dll!00D332A8 00000080 tf_hud_target_id_offset
+client.dll!00D33308 00000080 tf_hud_target_id_show_avatars
+client.dll!00D34158 00000088 tf_weapon_select_demo_start_delay
+client.dll!00D341C0 00000088 tf_weapon_select_demo_time
+client.dll!00D363C8 00002000 tf_allow_taunt_switch
+client.dll!00D35E28 00006000 tf_always_loser
+client.dll!00D36488 00000088 tf_colorblindassist
+client.dll!00D360C8 00002100 tf_damage_disablespread
+client.dll!00D362A8 00002002 tf_demoman_charge_drain_time
+client.dll!00D35A28 00006000 tf_demoman_charge_frametime_scaling
+client.dll!00D36248 00002002 tf_demoman_charge_regen_rate
+client.dll!00D36308 00006002 tf_feign_death_duration
+client.dll!00D36368 00006002 tf_feign_death_speed_duration
+client.dll!00D36548 00004000 tf_impactwatertime
+client.dll!00D364E8 00004000 tf_impactwatertimeenable
+client.dll!00D35DC8 00002002 tf_invuln_time
+client.dll!00D361E8 00002002 tf_scout_energydrink_activation
+client.dll!00D36188 00002002 tf_scout_energydrink_consume_rate
+client.dll!00D36128 00002002 tf_scout_energydrink_regen_rate
+client.dll!00D35F48 00002002 tf_spy_cloak_consume_rate
+client.dll!00D36008 00002002 tf_spy_cloak_no_attack_time
+client.dll!00D35FA8 00002002 tf_spy_cloak_regen_rate
+client.dll!00D36068 00002000 tf_tournament_hide_domination_icons
+client.dll!00D35EE8 00002002 tf_useparticletracers
+client.dll!00D39A60 00006002 tf_cheapobjects
+client.dll!00D3AE20 00004000 tf_viewmodels_offset_override
+client.dll!00D3C020 00006000 tf_test_spellindex
+client.dll!00D3D950 00002000 tf_mm_match_size_ladder_12v12
+client.dll!00D3D9B0 00002000 tf_mm_match_size_ladder_12v12_minimum
+client.dll!00D3D8F0 00002000 tf_mm_match_size_ladder_9v9
+client.dll!00D3D830 00002000 tf_mm_match_size_mvm
+client.dll!00D3E298 00000080 tf_mvm_tabs_discovered
+client.dll!00D3E7A0 00000088 tf_steam_workshop_import_icon_path
+client.dll!00D3E860 00000088 tf_steam_workshop_import_material_path
+client.dll!00D3E800 00000088 tf_steam_workshop_import_model_path
+client.dll!00D3EE28 00000080 tf_explanations_charinfo_armory_panel
+client.dll!00D3EED8 00000080 tf_explanations_charinfopanel
+client.dll!00D3F330 00000080 tf_explanations_craftingpanel
+client.dll!00D3FF30 00020098 replay_replaywelcomedlgcount
+client.dll!00D3FF90 00020098 tf_mvm_classupgradehelpcount
+client.dll!00D40118 00000080 tf_scoreboard_alt_class_icons
+client.dll!00D410C8 00020098 tf_matchmaking_ticket_help
+client.dll!00D41C40 00000080 cl_spec_carrieditems
+client.dll!00D42758 00000080 cl_training_completed_with_classes
+client.dll!00D44C70 00006000 tf_debug_flamethrower
+client.dll!00D44CE0 00006000 tf_flamethrower_boxsize
+client.dll!00D44DB0 00006002 tf_flamethrower_burstammo
+client.dll!00D44E10 00006002 tf_flamethrower_flametime
+client.dll!00D44D40 00004002 tf_flamethrower_new_flame_offset
+client.dll!00D45528 00006000 tf_grapplinghook_max_distance
+client.dll!00D454C8 00006000 tf_grapplinghook_projectile_speed
+client.dll!00D45938 00006002 tf_double_donk_window
+client.dll!00D46BA8 00000288 tf_medigun_autoheal
+client.dll!00D46B48 00006002 tf_vaccinator_uber_charge_rate_modifier
+client.dll!00D46A08 00006002 weapon_medigun_charge_rate
+client.dll!00D46A78 00006002 weapon_medigun_chargerelease_rate
+client.dll!00D469A0 00006002 weapon_medigun_construction_rate
+client.dll!00D46940 00006002 weapon_medigun_damage_modifier
+client.dll!00D46AD8 00006002 weapon_medigun_resist_num_chunks
+client.dll!00D4A9D8 00002100 tf_weapon_criticals
+client.dll!00D4BD00 00000080 tf_explanations_store
+client.dll!00D82808 00004000 panel_test_title_safe
+client.dll!00CF9FD0 00000080 sensitivity
+client.dll!00D00160 00002000 mp_bonusroundtime
+client.dll!00CFFDA0 00002000 mp_tournament_post_match_period
+client.dll!00CFFE60 00002100 tf_arena_preround_time
+client.dll!00D1C668 00004000 cl_obj_test_building_damage
+client.dll!00D23930 00000280 fov_desired
+client.dll!00D30688 01000080 hud_combattext_batching_window
+client.dll!00D35BC8 00002002 tf_spy_invis_time
+client.dll!00D35C38 00002002 tf_spy_invis_unstealth_time
+server.dll!009B7998 00006000 achievement_debug
+server.dll!009B7D08 00000080 scene_showfaceto
+server.dll!009BCF40 00002002 mp_feetyawrate
+server.dll!009BD000 00002002 mp_ik
+server.dll!009BCEE0 00004002 sv_showanimstate_log
+server.dll!009BCE80 00004002 sv_showanimstate
+server.dll!009BD198 00000080 npc_height_adjust
+server.dll!009BD1F8 00000080 sv_pvsskipanimation
+server.dll!009BE108 00004000 nb_last_area_update_tolerance
+server.dll!009BF170 00004000 ent_messages_draw
+server.dll!009BF020 00004002 sv_netvisdist
+server.dll!009C0460 00000080 scene_showmoveto
+server.dll!009C04D0 00000080 scene_showunlock
+server.dll!009C0CC0 00004000 tf_escort_score_rate
+server.dll!009C0E18 00002000 sv_debug_player_use
+server.dll!009DAF90 00006000 fish_dormant
+server.dll!009DDD58 00004002 sv_force_transmit_ents
+server.dll!009E05F8 00002100 mp_friendlyfire
+server.dll!009E0598 00002000 mp_allowspectators
+server.dll!009E0658 00002100 mp_fadetoblack
+server.dll!009E2A10 00002082 sv_backspeed
+server.dll!009E28F0 00002102 sv_bounce
+server.dll!009E2770 00002102 sv_footsteps
+server.dll!009E2890 00002102 sv_friction
+server.dll!009E22F0 00002100 sv_gravity
+server.dll!009E2950 00002002 sv_maxvelocity
+server.dll!009E2830 00002102 sv_rollangle
+server.dll!009E2AD0 00002080 sv_skyname
+server.dll!009E2350 00002102 sv_stopspeed
+server.dll!009E2A70 00002002 sv_waterdist
+server.dll!009E2EF0 00002100 mp_fraglimit
+server.dll!009E3140 00002000 mp_mapcycle_empty_timeout_seconds
+server.dll!009E2F60 00002000 mp_show_voice_icons
+server.dll!009E3320 00000104 nextlevel
+server.dll!009E3708 00002002 sv_pushaway_clientside
+server.dll!009E35E8 00002002 sv_pushaway_force
+server.dll!009E36A8 00002002 sv_pushaway_max_force
+server.dll!009E37C8 00006002 sv_pushaway_max_player_force
+server.dll!009E3648 00002002 sv_pushaway_min_player_speed
+server.dll!009E3768 00006002 sv_pushaway_player_force
+server.dll!009E38C8 00004000 particle_test_attach_mode
+server.dll!009E3848 00004000 particle_test_file
+server.dll!009E4A88 00002000 think_limit
+server.dll!009E6148 00004000 player_debug_print_damage
+server.dll!009E59E0 00006000 spec_freeze_time
+server.dll!009E5AA8 00002000 sv_bonus_challenge
+server.dll!009E5B28 00000100 sv_maxusrcmdprocessticks
+server.dll!009E5E08 00006000 sv_noclipduringpause
+server.dll!009E60E8 00004000 sv_player_display_usercommand_errors
+server.dll!009E6088 00004000 sv_player_usercommand_timeout
+server.dll!009E6268 00004000 sv_usercmd_custom_random_seed
+server.dll!009E73E8 00004000 sv_maxusrcmdprocessticks_holdaim
+server.dll!009E7450 00004002 sv_lagcompensation_teleport_dist
+server.dll!009E75D0 00004000 sv_showlagcompensation
+server.dll!009EECB8 00002000 sv_turbophysics
+server.dll!009EF8B8 00002000 props_break_max_pieces_perframe
+server.dll!009EF7F8 00002002 sv_pushaway_clientside_size
+server.dll!00A0B9C0 00004000 sv_disable_querycache
+server.dll!00A0D750 00002000 scene_clientflex
+server.dll!00A0D6F0 00002000 scene_print
+server.dll!00A0E140 00002000 sv_soundemitter_trace
+server.dll!00A0E328 00002000 soundpatch_captionlength
+server.dll!00A10F00 00000100 tf_overtime_nag
+server.dll!00A115F8 00002002 mp_blockstyle
+server.dll!00A116F8 00002002 mp_capdeteriorate_time
+server.dll!00A11578 00002002 mp_capstyle
+server.dll!00A11D38 00002000 mp_enableroundwaittime
+server.dll!00A11C78 00002100 mp_forceautoteam
+server.dll!00A11858 00002100 mp_highlander
+server.dll!00A11FD8 00000100 mp_holiday_nogifts
+server.dll!00A11F78 00000100 mp_match_end_at_timelimit
+server.dll!00A11678 00002100 mp_respawnwavetime
+server.dll!00A12038 00000100 mp_scrambleteams_auto
+server.dll!00A12098 00000100 mp_scrambleteams_auto_windifference
+server.dll!00A11D98 00004002 mp_showcleanedupents
+server.dll!00A11CD8 00004002 mp_showroundtransitions
+server.dll!00A11F18 00000100 mp_stalemate_enable
+server.dll!00A11C18 00002100 mp_stalemate_meleeonly
+server.dll!00A11E58 00002000 mp_stalemate_timelimit
+server.dll!00A11978 00002100 tf_arena_max_streak
+server.dll!00A119D8 00002100 tf_arena_use_queue
+server.dll!00A13BE0 00004000 showtriggers
+server.dll!00A1BDF0 00002100 sv_alltalk
+server.dll!00A1DEF0 00002002 item_quality_chance_common
+server.dll!00A1DE90 00002002 item_quality_chance_rare
+server.dll!00A1DE10 00002002 item_quality_chance_unique
+server.dll!00A1F538 00004000 nav_area_bgcolor
+server.dll!00A1F598 00004000 nav_corner_adjust_adjacent
+server.dll!00A1F718 00004000 nav_max_view_distance
+server.dll!00A1F6B8 00004000 nav_show_continguous
+server.dll!00A1F838 00004000 nav_show_potentially_visible
+server.dll!00A1F4B8 00004000 nav_split_place_on_ground
+server.dll!00A1F778 00004000 nav_update_visibility_on_edit
+server.dll!00A21C78 00004000 nav_create_area_at_feet
+server.dll!00A21B38 00004000 nav_create_place_on_ground
+server.dll!00A21CD8 00002000 nav_drag_selection_volume_zmax_offset
+server.dll!00A21D38 00002000 nav_drag_selection_volume_zmin_offset
+server.dll!00A21BB8 00004000 nav_draw_limit
+server.dll!00A21A38 00004000 nav_show_area_info
+server.dll!00A21AB8 00004000 nav_snap_to_grid
+server.dll!00A21C18 00004000 nav_solid_props
+server.dll!00A22480 00004000 nav_area_max_size
+server.dll!00A22200 00004000 nav_displacement_test
+server.dll!00A22280 00004000 nav_generate_fencetops
+server.dll!00A22300 00004000 nav_generate_fixup_jump_areas
+server.dll!00A22420 00004000 nav_generate_incremental_tolerance
+server.dll!00A22360 00004000 nav_generate_jump_connections
+server.dll!00A22100 00004000 nav_slope_limit
+server.dll!00A22180 00004000 nav_slope_tolerance
+server.dll!00A22588 00004004 nav_edit
+server.dll!00A22608 00004004 nav_quicksave
+server.dll!00A22688 00004004 nav_show_approach_points
+server.dll!00A22708 00004004 nav_show_danger
+server.dll!00A22808 00004004 nav_show_func_nav_avoid
+server.dll!00A22888 00004004 nav_show_func_nav_prefer
+server.dll!00A22908 00004004 nav_show_func_nav_prerequisite
+server.dll!00A22788 00004004 nav_show_player_counts
+server.dll!00A23918 00006000 nb_stop
+server.dll!00A24080 00004000 nb_debug_history
+server.dll!00A24220 00004000 nb_blind
+server.dll!00A24280 00004000 nb_debug_known_entities
+server.dll!00A248B0 00004000 nb_player_crouch
+server.dll!00A24910 00004000 nb_player_move
+server.dll!00A247F0 00004000 nb_player_stop
+server.dll!00A24850 00004000 nb_player_walk
+server.dll!00A24B00 00004000 nb_head_aim_resettle_angle
+server.dll!00A24B60 00004000 nb_head_aim_resettle_time
+server.dll!00A2E1F8 00002002 sv_ignore_hitboxes
+server.dll!00A2E138 00006002 tf_obj_build_rotation_speed
+server.dll!00A2E540 00002000 tf_flag_return_on_touch
+server.dll!00A2FF18 00006002 anim_showstate
+server.dll!00A2FF78 00006002 anim_showstatelog
+server.dll!00A2FFD8 00006002 mp_showgestureslots
+server.dll!00A30038 00002002 mp_slammoveyaw
+server.dll!00A300F8 00002100 tf_passtime_ball_damping_scale
+server.dll!00A30158 00002100 tf_passtime_ball_drag_coefficient
+server.dll!00A301B8 00002100 tf_passtime_ball_inertia_scale
+server.dll!00A30218 00002100 tf_passtime_ball_mass
+server.dll!00A30278 00002100 tf_passtime_ball_model
+server.dll!00A30398 00002100 tf_passtime_ball_reset_time
+server.dll!00A303F8 00002100 tf_passtime_ball_rotdamping_scale
+server.dll!00A30458 00002100 tf_passtime_ball_seek_range
+server.dll!00A304B8 00002100 tf_passtime_ball_seek_speed_factor
+server.dll!00A302D8 00002100 tf_passtime_ball_sphere_collision
+server.dll!00A30338 00002100 tf_passtime_ball_sphere_radius
+server.dll!00A30518 00002100 tf_passtime_ball_takedamage
+server.dll!00A30578 00002100 tf_passtime_ball_takedamage_force
+server.dll!00A311D8 00002100 tf_passtime_experiment_autopass
+server.dll!00A31238 00002100 tf_passtime_experiment_instapass
+server.dll!00A31178 00002100 tf_passtime_experiment_instapass_charge
+server.dll!00A31118 00002100 tf_passtime_experiment_telepass
+server.dll!00A305D8 00002100 tf_passtime_flinch_boost
+server.dll!00A30638 00002100 tf_passtime_mode_homing_lock_sec
+server.dll!00A30698 00002100 tf_passtime_mode_homing_speed
+server.dll!00A306F8 00002100 tf_passtime_overtime_idle_sec
+server.dll!00A31658 00002100 tf_passtime_pack_hp_per_sec
+server.dll!00A31598 00002100 tf_passtime_pack_range
+server.dll!00A315F8 00002100 tf_passtime_pack_speed
+server.dll!00A30758 00002100 tf_passtime_player_reticles_enemies
+server.dll!00A307B8 00002100 tf_passtime_player_reticles_friends
+server.dll!00A31478 00002100 tf_passtime_powerball_airtimebonus
+server.dll!00A31538 00002100 tf_passtime_powerball_decay_delay
+server.dll!00A31298 00002100 tf_passtime_powerball_decayamount
+server.dll!00A312F8 00002100 tf_passtime_powerball_decaysec
+server.dll!00A31358 00002100 tf_passtime_powerball_decaysec_neutral
+server.dll!00A314D8 00002100 tf_passtime_powerball_maxairtimebonus
+server.dll!00A313B8 00002100 tf_passtime_powerball_passpoints
+server.dll!00A31418 00002100 tf_passtime_powerball_threshold
+server.dll!00A310B8 00002100 tf_passtime_save_stats
+server.dll!00A30818 00002100 tf_passtime_score_crit_sec
+server.dll!00A30098 00002100 tf_passtime_scores_per_round
+server.dll!00A30878 00002100 tf_passtime_speedboost_on_get_ball_time
+server.dll!00A308D8 00002100 tf_passtime_steal_on_melee
+server.dll!00A30938 00002100 tf_passtime_teammate_steal_time
+server.dll!00A30AB8 00002100 tf_passtime_throwarc_demoman
+server.dll!00A30B78 00002100 tf_passtime_throwarc_engineer
+server.dll!00A30B18 00002100 tf_passtime_throwarc_heavy
+server.dll!00A30BD8 00002100 tf_passtime_throwarc_medic
+server.dll!00A30A58 00002100 tf_passtime_throwarc_pyro
+server.dll!00A30998 00002100 tf_passtime_throwarc_scout
+server.dll!00A30C38 00002100 tf_passtime_throwarc_sniper
+server.dll!00A309F8 00002100 tf_passtime_throwarc_soldier
+server.dll!00A30C98 00002100 tf_passtime_throwarc_spy
+server.dll!00A30E18 00002100 tf_passtime_throwspeed_demoman
+server.dll!00A30ED8 00002100 tf_passtime_throwspeed_engineer
+server.dll!00A30E78 00002100 tf_passtime_throwspeed_heavy
+server.dll!00A30F38 00002100 tf_passtime_throwspeed_medic
+server.dll!00A30DB8 00002100 tf_passtime_throwspeed_pyro
+server.dll!00A30CF8 00002100 tf_passtime_throwspeed_scout
+server.dll!00A30F98 00002100 tf_passtime_throwspeed_sniper
+server.dll!00A30D58 00002100 tf_passtime_throwspeed_soldier
+server.dll!00A30FF8 00002100 tf_passtime_throwspeed_spy
+server.dll!00A31058 00002100 tf_passtime_throwspeed_velocity_scale
+server.dll!00A31878 00002010 steamworks_sessionid_server
+server.dll!00A32DC8 00004000 bot_com_meleerange
+server.dll!00A32E88 00004000 bot_com_viewrange
+server.dll!00A32E28 00004000 bot_com_wpnrange
+server.dll!00A32A28 00004000 bot_crouch
+server.dll!00A32428 00004000 bot_debug
+server.dll!00A329A8 00004000 bot_jump
+server.dll!00A32CA8 00004000 bot_nav_offsetpathinset
+server.dll!00A32D68 00004000 bot_nav_recomputetime
+server.dll!00A32BE8 00004000 bot_nav_simplifypaths
+server.dll!00A32AA8 00004000 bot_nav_turnspeed
+server.dll!00A32D08 00004000 bot_nav_usefeelers
+server.dll!00A32C48 00004000 bot_nav_useoffsetpaths
+server.dll!00A32B88 00004000 bot_nav_wpdeceldistance
+server.dll!00A32B28 00004000 bot_nav_wpdistance
+server.dll!00A328A8 00004000 bot_selectweaponslot
+server.dll!00A6D9B0 00002100 tf_use_fixed_weaponspreads
+server.dll!00A6DAF0 00006002 tf_avoidteammates
+server.dll!00A6DB50 00002000 tf_avoidteammates_pushaway
+server.dll!00A6E0F0 00006000 tf_ghost_up_speed
+server.dll!00A6E210 00002000 tf_grapplinghook_use_acceleration
+server.dll!00A6E090 00006000 tf_halloween_kart_aircontrol
+server.dll!00A6E510 00006000 tf_movement_aircurrent_aircontrol_mult
+server.dll!00A6E4B0 00006000 tf_movement_aircurrent_friction_mult
+server.dll!00A6E5D0 00006000 tf_movement_lost_footing_friction
+server.dll!00A6E570 00006000 tf_movement_lost_footing_restick
+server.dll!00A6DFD0 00002002 tf_parachute_aircontrol
+server.dll!00A6DE50 00002002 tf_parachute_gravity
+server.dll!00A6DF70 00002002 tf_parachute_maxspeed_onfire_z
+server.dll!00A6DEB0 00002002 tf_parachute_maxspeed_xy
+server.dll!00A6DF10 00002002 tf_parachute_maxspeed_z
+server.dll!00A70F88 00002000 mp_humans_must_join_team
+server.dll!00A707A8 00002100 mp_tournament_readymode
+server.dll!00A708C8 00002100 mp_tournament_readymode_countdown
+server.dll!00A70808 00002100 mp_tournament_readymode_min
+server.dll!00A70868 00002100 mp_tournament_readymode_team_size
+server.dll!00A711C8 00006102 tf_arena_change_limit
+server.dll!00A712E8 00002100 tf_arena_first_blood
+server.dll!00A71168 00006102 tf_arena_force_class
+server.dll!00A71228 00002100 tf_arena_override_cap_enable_time
+server.dll!00A71288 00002000 tf_arena_override_team_size
+server.dll!00A6FB28 00002000 tf_birthday_ball_chance
+server.dll!00A70568 00002002 tf_caplinear
+server.dll!00A71CA8 00002000 tf_competitive_preround_duration
+server.dll!00A71C48 00000100 tf_ctf_bonus_time
+server.dll!00A720D8 00002000 tf_duck_edict_limit
+server.dll!00A72138 00002000 tf_duck_edict_warning
+server.dll!00A6FF08 00000100 tf_halloween_allow_truce_during_boss_event
+server.dll!00A6FB88 00004000 tf_halloween_boss_spawn_interval
+server.dll!00A6FBE8 00004000 tf_halloween_boss_spawn_interval_variation
+server.dll!00A6FC48 00004000 tf_halloween_eyeball_boss_spawn_interval
+server.dll!00A6FCA8 00004000 tf_halloween_eyeball_boss_spawn_interval_variation
+server.dll!00A6FDD8 00004000 tf_halloween_zombie_mob_enabled
+server.dll!00A6FEA8 00004000 tf_halloween_zombie_mob_spawn_count
+server.dll!00A6FE48 00004000 tf_halloween_zombie_mob_spawn_interval
+server.dll!00A6FD08 00004000 tf_merasmus_spawn_interval
+server.dll!00A6FD78 00004000 tf_merasmus_spawn_interval_variation
+server.dll!00A71588 00002010 tf_mvm_buybacks_per_wave
+server.dll!00A713A8 00002100 tf_mvm_min_players_to_start
+server.dll!00A714C8 00006000 tf_mvm_respec_credit_goal
+server.dll!00A71408 00006000 tf_mvm_respec_enabled
+server.dll!00A6FFC8 00002000 tf_player_drop_bonus_ducks
+server.dll!00A70E68 00002000 tf_player_movement_restart_freeze
+server.dll!00A70028 00000100 tf_player_name_change_time
+server.dll!00A71EE8 00004000 tf_powerup_mode_imbalance_delta
+server.dll!00A71F48 00000080 tf_skillrating_update_interval
+server.dll!00A70328 00002100 tf_spawn_glows_duration
+server.dll!00A702C8 00002100 tf_spec_xray
+server.dll!00A70508 00002100 tf_spells_enabled
+server.dll!00A705C8 00002002 tf_stalematechangeclasstime
+server.dll!00A71108 00006002 tf_sticky_airdet_radius
+server.dll!00A710A8 00006002 tf_sticky_radius_ramp_time
+server.dll!00A70D48 00002000 tf_tournament_classchange_allowed
+server.dll!00A70DA8 00002000 tf_tournament_classchange_ready_allowed
+server.dll!00A70B08 00002000 tf_tournament_classlimit_demoman
+server.dll!00A70CE8 00002000 tf_tournament_classlimit_engineer
+server.dll!00A70BC8 00002000 tf_tournament_classlimit_heavy
+server.dll!00A70B68 00002000 tf_tournament_classlimit_medic
+server.dll!00A70C28 00002000 tf_tournament_classlimit_pyro
+server.dll!00A709E8 00002000 tf_tournament_classlimit_scout
+server.dll!00A70A48 00002000 tf_tournament_classlimit_sniper
+server.dll!00A70AA8 00002000 tf_tournament_classlimit_soldier
+server.dll!00A70C88 00002000 tf_tournament_classlimit_spy
+server.dll!00A71348 00006000 tf_training_client_message
+server.dll!00A70088 00004000 tf_weapon_criticals_distance_falloff
+server.dll!00A700E8 00004000 tf_weapon_minicrits_distance_falloff
+server.dll!00A6F4B0 00002000 training_can_build_dispenser
+server.dll!00A6F440 00002000 training_can_build_sentry
+server.dll!00A6F510 00002000 training_can_build_tele_entrance
+server.dll!00A6F580 00002000 training_can_build_tele_exit
+server.dll!00A6F5F0 00002000 training_can_destroy_buildings
+server.dll!00A6F6B0 00002000 training_can_pickup_dispenser
+server.dll!00A6F650 00002000 training_can_pickup_sentry
+server.dll!00A6F720 00002000 training_can_pickup_tele_entrance
+server.dll!00A6F788 00002000 training_can_pickup_tele_exit
+server.dll!00A6F988 00002000 training_can_select_weapon_building
+server.dll!00A6FA48 00002000 training_can_select_weapon_item1
+server.dll!00A6FAA8 00002000 training_can_select_weapon_item2
+server.dll!00A6F908 00002000 training_can_select_weapon_melee
+server.dll!00A6F9E8 00002000 training_can_select_weapon_pda
+server.dll!00A6F808 00002000 training_can_select_weapon_primary
+server.dll!00A6F888 00002000 training_can_select_weapon_secondary
+server.dll!00A6F3D8 00002000 training_class
+server.dll!00A7F498 00020110 sv_registration_message
+server.dll!00A7F438 00020110 sv_registration_successful
+server.dll!00A7F378 00000080 tf_server_identity_account_id
+server.dll!00A7F3D8 00000180 tf_server_identity_disable_quickplay
+server.dll!00A7F318 000000A0 tf_server_identity_token
+server.dll!00A80060 00004000 tf_fortune_teller_fortune_duration
+server.dll!00A7FFF0 00004000 tf_fortune_teller_interval_time
+server.dll!00A7FF80 00004000 tf_fortune_teller_warning_time
+server.dll!00A800C0 00004000 tf_minigame_suddendeath_time
+server.dll!00A817D8 00004002 obj_damage_factor
+server.dll!00A81758 00004002 object_verbose
+server.dll!00A818F8 00004002 tf_obj_ground_clearance
+server.dll!00A82A30 00004002 tf_mvm_notice_sapped_squadmates_delay
+server.dll!00A84BE0 00000100 tf_allow_player_use
+server.dll!00A84AB0 00004000 tf_damage_multiplier_blue
+server.dll!00A84B10 00004000 tf_damage_multiplier_red
+server.dll!00A84CB8 00004002 tf_deploying_bomb_delay_time
+server.dll!00A84C48 00004002 tf_deploying_bomb_time
+server.dll!00A85348 00004000 tf_halloween_kart_boost_impact_force
+server.dll!00A85288 00004000 tf_halloween_kart_impact_damage
+server.dll!00A85228 00004000 tf_halloween_kart_impact_force
+server.dll!00A852E8 00004000 tf_halloween_kart_impact_rate
+server.dll!00A84EC8 00004002 tf_highfive_height_tolerance
+server.dll!00A84E68 00004002 tf_highfive_max_range
+server.dll!00A84D88 00004002 tf_highfive_separation_forward
+server.dll!00A84E08 00004002 tf_highfive_separation_right
+server.dll!00A84D28 00004102 tf_mvm_death_penalty
+server.dll!00A84770 00004002 tf_playerstatetransitions
+server.dll!00A89450 00002000 tf_allow_taunt_switch
+server.dll!00A88D90 00006000 tf_always_loser
+server.dll!00A89150 00002100 tf_damage_disablespread
+server.dll!00A89330 00002002 tf_demoman_charge_drain_time
+server.dll!00A889A0 00006000 tf_demoman_charge_frametime_scaling
+server.dll!00A892D0 00002002 tf_demoman_charge_regen_rate
+server.dll!00A89390 00006002 tf_feign_death_duration
+server.dll!00A893F0 00006002 tf_feign_death_speed_duration
+server.dll!00A88D30 00002002 tf_invuln_time
+server.dll!00A89270 00002002 tf_scout_energydrink_activation
+server.dll!00A89210 00002002 tf_scout_energydrink_consume_rate
+server.dll!00A891B0 00002002 tf_scout_energydrink_regen_rate
+server.dll!00A88FD0 00002002 tf_spy_cloak_consume_rate
+server.dll!00A89090 00002002 tf_spy_cloak_no_attack_time
+server.dll!00A89030 00002002 tf_spy_cloak_regen_rate
+server.dll!00A890F0 00002000 tf_tournament_hide_domination_icons
+server.dll!00A88F70 00002002 tf_useparticletracers
+server.dll!00A8D418 00006002 tf_cheapobjects
+server.dll!00A8F9B0 00004000 tf_bot_debug_tags
+server.dll!00A8F590 00004000 tf_bot_near_point_travel_distance
+server.dll!00A8F650 00004000 tf_bot_pyro_always_reflect
+server.dll!00A8F5F0 00004000 tf_bot_pyro_shove_away_range
+server.dll!00A8F410 00004000 tf_bot_sniper_personal_space_range
+server.dll!00A8F710 00004000 tf_bot_sniper_spot_max_count
+server.dll!00A8F770 00004000 tf_bot_sniper_spot_search_count
+server.dll!00A8FA10 00004000 tf_bot_spawn_use_preset_roster
+server.dll!00A8F950 00004000 tf_bot_suspect_spy_forget_cooldown
+server.dll!00A8F8F0 00004000 tf_bot_suspect_spy_touch_interval
+server.dll!00A900A0 00004000 tf_bot_choose_target_interval
+server.dll!00A90100 00004000 tf_bot_sniper_choose_target_interval
+server.dll!00A90550 00004000 tf_bot_arrow_elevation_rate
+server.dll!00A905B0 00004000 tf_bot_ballistic_elevation_rate
+server.dll!00A906D0 00004000 tf_bot_fire_weapon_allowed
+server.dll!00A90730 00004000 tf_bot_reevaluate_class_in_spawnroom
+server.dll!00A90958 00004000 tf_bot_ammo_search_range
+server.dll!00A90BF8 00004000 tf_bot_melee_attack_abandon_range
+server.dll!00A90E50 00004000 tf_bot_fetch_lost_flag_time
+server.dll!00A90EB0 00004000 tf_bot_flag_kill_on_touch
+server.dll!00A90F90 00004000 tf_bot_force_jump
+server.dll!00A91020 00004000 tf_bot_stickybomb_density
+server.dll!00A910F0 00004000 tf_bot_sticky_charge_rate
+server.dll!00A911F0 00004000 tf_bot_max_teleport_entrance_travel
+server.dll!00A91250 00004000 tf_bot_teleport_build_surface_normal_limit
+server.dll!00A91328 00004000 tf_bot_engineer_exit_near_sentry_range
+server.dll!00A91388 00004000 tf_bot_engineer_max_sentry_travel_distance_to_point
+server.dll!00A912C8 00004000 tf_bot_engineer_retaliate_range
+server.dll!00A91460 00004000 tf_bot_max_teleport_exit_travel_to_point
+server.dll!00A914C0 00004000 tf_bot_min_teleport_travel
+server.dll!00A91B30 00004000 tf_bot_capture_seek_and_destroy_max_duration
+server.dll!00A91AD0 00004000 tf_bot_capture_seek_and_destroy_min_duration
+server.dll!00A91A70 00004000 tf_bot_offense_must_push_time
+server.dll!00A91BB8 00004000 tf_bot_defense_must_defend_time
+server.dll!00A91C18 00004000 tf_bot_max_point_defend_range
+server.dll!00A91D00 00004000 tf_bot_defend_owned_point_percent
+server.dll!00A92290 00004000 tf_bot_sniper_flee_range
+server.dll!00A92350 00004000 tf_bot_sniper_linger_time
+server.dll!00A922F0 00004000 tf_bot_sniper_melee_range
+server.dll!00A923C0 00004000 tf_bot_sniper_patience_duration
+server.dll!00A92420 00004000 tf_bot_sniper_target_linger_duration
+server.dll!00A924E0 00004002 tf_mvm_bot_sniper_target_by_dps
+server.dll!00A92550 00004000 tf_bot_spy_knife_range
+server.dll!00A92E98 00004000 tf_decoy_lifetime
+server.dll!00A93308 00004000 tf_halloween_bot_speed_recovery_rate
+server.dll!00A94C68 00004000 tf_merasmus_health_regen_rate
+server.dll!00A94BA8 00004000 tf_merasmus_min_props_to_reveal
+server.dll!00A94A28 00004000 tf_merasmus_speed_recovery_rate
+server.dll!00A953F0 00006000 tf_test_spellindex
+server.dll!00A96718 00004000 tf_halloween_zombie_damage
+server.dll!00A974E0 00002000 tf_mm_match_size_ladder_12v12
+server.dll!00A97540 00002000 tf_mm_match_size_ladder_12v12_minimum
+server.dll!00A97480 00002000 tf_mm_match_size_ladder_9v9
+server.dll!00A973C0 00002000 tf_mm_match_size_mvm
+server.dll!00A97748 00004000 tf_nav_combat_build_rate
+server.dll!00A977A8 00004000 tf_nav_combat_decay_rate
+server.dll!00A976E8 00004000 tf_nav_in_combat_duration
+server.dll!00A97628 00004000 tf_nav_show_bomb_target_distance
+server.dll!00A975C8 00004000 tf_nav_show_incursion_distance
+server.dll!00A97688 00004000 tf_nav_show_turf_ownership
+server.dll!00A978C8 00004000 tf_show_incursion_range
+server.dll!00A97988 00004000 tf_show_incursion_range_max
+server.dll!00A97928 00004000 tf_show_incursion_range_min
+server.dll!00A97F20 00004000 tf_bot_max_setup_gate_defend_range
+server.dll!00A97EC0 00004000 tf_bot_min_setup_gate_defend_range
+server.dll!00A97F80 00004000 tf_bot_min_setup_gate_sniper_defend_range
+server.dll!00A97B00 00004000 tf_show_blocked_areas
+server.dll!00A97AA0 00004000 tf_show_enemy_invasion_areas
+server.dll!00A97C20 00004000 tf_show_incursion_flow_gradient
+server.dll!00A97BC0 00004000 tf_show_incursion_flow_range
+server.dll!00A97C80 00004000 tf_show_mesh_decoration
+server.dll!00A97CE0 00004000 tf_show_mesh_decoration_manual
+server.dll!00A97D40 00004000 tf_show_sentry_danger
+server.dll!00A99038 00002000 tf_mvm_disconnect_on_victory
+server.dll!00A99230 00026002 tf_mvm_endless_bomb_reset
+server.dll!00A99290 00026002 tf_mvm_endless_bot_cash
+server.dll!00A99170 00026002 tf_mvm_endless_force_on
+server.dll!00A992F0 00026002 tf_mvm_endless_tank_boost
+server.dll!00A99110 00002000 tf_mvm_victory_disconnect_time
+server.dll!00A990A0 00002000 tf_mvm_victory_reset_time
+server.dll!00A98E58 00004000 tf_populator_active_buffer_range
+server.dll!00A9C410 00004000 tf_airblast_cray
+server.dll!00A9C470 00004000 tf_airblast_cray_debug
+server.dll!00A9C710 00004000 tf_airblast_cray_ground_minz
+server.dll!00A9C6B0 00004000 tf_airblast_cray_ground_reflect
+server.dll!00A9C770 00004000 tf_airblast_cray_lose_footing_duration
+server.dll!00A9C890 00004000 tf_airblast_cray_pitch_control
+server.dll!00A9C4D0 00004000 tf_airblast_cray_power
+server.dll!00A9C530 00004000 tf_airblast_cray_power_relative
+server.dll!00A9C590 00004000 tf_airblast_cray_reflect_coeff
+server.dll!00A9C5F0 00004000 tf_airblast_cray_reflect_cost_coeff
+server.dll!00A9C650 00004000 tf_airblast_cray_reflect_relative
+server.dll!00A9C220 00006000 tf_debug_flamethrower
+server.dll!00A9C280 00006000 tf_flamethrower_boxsize
+server.dll!00A9C350 00006002 tf_flamethrower_burstammo
+server.dll!00A9BED8 00004002 tf_flamethrower_drag
+server.dll!00A9C3B0 00006002 tf_flamethrower_flametime
+server.dll!00A9BF48 00004002 tf_flamethrower_float
+server.dll!00A9C018 00004002 tf_flamethrower_maxdamagedist
+server.dll!00A9C2F0 00004002 tf_flamethrower_new_flame_offset
+server.dll!00A9C078 00004002 tf_flamethrower_shortrangedamagemultiplier
+server.dll!00A9BFA8 00004002 tf_flamethrower_vecrand
+server.dll!00A9BE68 00004002 tf_flamethrower_velocity
+server.dll!00A9C140 00004002 tf_flamethrower_velocityfadeend
+server.dll!00A9C0E0 00004002 tf_flamethrower_velocityfadestart
+server.dll!00A9D170 00006000 tf_grapplinghook_max_distance
+server.dll!00A9D110 00006000 tf_grapplinghook_projectile_speed
+server.dll!00A9D950 00006002 tf_double_donk_window
+server.dll!00A9F028 00006002 tf_vaccinator_uber_charge_rate_modifier
+server.dll!00A9EEE8 00006002 weapon_medigun_charge_rate
+server.dll!00A9EF58 00006002 weapon_medigun_chargerelease_rate
+server.dll!00A9EE78 00006002 weapon_medigun_construction_rate
+server.dll!00A9EE10 00006002 weapon_medigun_damage_modifier
+server.dll!00A9EFB8 00006002 weapon_medigun_resist_num_chunks
+server.dll!00AA3970 00002100 tf_weapon_criticals
+server.dll!00AA4978 00002100 tf_weapon_criticals_melee
+server.dll!00A11BB8 00002000 mp_bonusroundtime
+server.dll!00A117F8 00002000 mp_tournament_post_match_period
+server.dll!00A118B8 00002100 tf_arena_preround_time
+server.dll!00A88B40 00002002 tf_spy_invis_time
+server.dll!00A88BA0 00002002 tf_spy_invis_unstealth_time
