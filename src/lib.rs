@@ -14,13 +14,13 @@ Due to small but incompatible differences the two formats are not unified.
 
 #![recursion_limit = "128"]
 
+#[macro_use]
+pub mod util;
+
 pub mod image;
 
 #[macro_use]
 mod strings;
-
-#[macro_use]
-pub mod util;
 
 pub mod pattern;
 

@@ -401,10 +401,8 @@ mod tests {
 
 	#[test]
 	fn sizes() {
-		use std::mem;
-		// Compile time asserts the sizes of these types.
-		let _ = unsafe { mem::forget::<u16>(mem::transmute(mem::uninitialized::<Atom>())) };
-		let _ = unsafe { mem::forget::<[u32; MAX_SAVE]>(mem::transmute(mem::uninitialized::<Match>())) };
+		assert_size_of!(2, Atom);
+		assert_size_of!(4 * MAX_SAVE, Match);
 	}
 
 	#[test]
