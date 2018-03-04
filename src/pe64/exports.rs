@@ -6,9 +6,13 @@ Export Directory.
 ```
 # #![allow(unused_variables)]
 use pelite::pe64::{Pe, PeFile};
+use pelite::pe64::exports::GetProcAddress;
 
 # #[allow(dead_code)]
 fn example(file: PeFile) -> pelite::Result<()> {
+	// Most convenient way to get the address of an export
+	file.get_proc_address("ThrowException")?;
+
 	// Access the export directory
 	let exports = file.exports()?;
 
@@ -303,6 +307,38 @@ impl<'a, P: Pe<'a> + Copy> By<'a, P> {
 	/// Iterate over functions exported by name.
 	pub fn iter_names<'s>(&'s self) -> IterByName<'s, 'a, P> {
 		IterByName { by: self, hints: 0..self.image.NumberOfNames }
+	}
+}
+
+//----------------------------------------------------------------
+
+/// Convenient way to get an exported address.
+pub trait GetProcAddress<T> {
+	/// Convenience helper to get the address of an exported function.
+	///
+	/// Note that this method does not support forwarded exports and will return `Err(Null)` instead.
+	///
+	/// Note that calling this method many times is less efficient than caching a `By` instance, such is the trade-off for convenience.
+	fn get_proc_address(self, name: T) -> Result<Va>;
+}
+impl<'a, P: Pe<'a> + Copy> GetProcAddress<Ordinal> for P {
+	fn get_proc_address(self, name: Ordinal) -> Result<Va> {
+		self.rva_to_va(self.exports()?.by()?.ordinal(name)?.symbol().ok_or(Error::Null)?)
+	}
+}
+impl<'b, 'a, P: Pe<'a> + Copy> GetProcAddress<Import<'b>> for P {
+	fn get_proc_address(self, name: Import<'b>) -> Result<Va> {
+		self.rva_to_va(self.exports()?.by()?.import(name)?.symbol().ok_or(Error::Null)?)
+	}
+}
+impl<'b, 'a, P: Pe<'a> + Copy> GetProcAddress<&'b str> for P {
+	fn get_proc_address(self, name: &'b str) -> Result<Va> {
+		self.get_proc_address(name.as_bytes())
+	}
+}
+impl<'b, 'a, P: Pe<'a> + Copy> GetProcAddress<&'b [u8]> for P {
+	fn get_proc_address(self, name: &'b [u8]) -> Result<Va> {
+		self.rva_to_va(self.exports()?.by()?.name(name)?.symbol().ok_or(Error::Null)?)
 	}
 }
 

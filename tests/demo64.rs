@@ -2,7 +2,7 @@ extern crate pelite;
 
 use pelite::{FileMap, ImageMap};
 use pelite::pe64::{Rva, Pe, PeFile, PeView};
-use pelite::pe64::exports::Export;
+use pelite::pe64::exports::{Export, GetProcAddress};
 use pelite::pe64::imports::Import;
 use pelite::pe64::debug::Info;
 use pelite::util::CStr;
@@ -66,6 +66,13 @@ fn exports() {
 
 	assert_eq!(exports_by.iter().count(), 20);
 	assert_eq!(exports_by.iter_names().count(), 20);
+
+	assert_eq!(file.get_proc_address("ThrowException"), file.rva_to_va(0x10C0));
+	assert_eq!(file.get_proc_address(b"ThrowException".as_ref()), file.rva_to_va(0x10C0));
+	assert_eq!(file.get_proc_address(0x14), file.rva_to_va(0x10C0));
+
+	assert_eq!(file.get_proc_address(bad_hint), file.rva_to_va(0x1230));
+	assert_eq!(file.get_proc_address(good_hint), file.rva_to_va(0x1230));
 }
 
 //----------------------------------------------------------------
