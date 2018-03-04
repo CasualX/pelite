@@ -313,30 +313,46 @@ impl<'a, P: Pe<'a> + Copy> By<'a, P> {
 //----------------------------------------------------------------
 
 /// Convenient way to get an exported address.
-pub trait GetProcAddress<T> {
-	/// Convenience helper to get the address of an exported function.
+pub trait GetProcAddress<'a, T> {
+	/// Convenient method to get an exported function.
+	///
+	/// Note that calling this method many times is less efficient than caching a `By` instance, such is the trade-off for convenience.
+	fn get_export(self, name: T) -> Result<Export<'a>>;
+	/// Convenient method to get the address of an exported function.
 	///
 	/// Note that this method does not support forwarded exports and will return `Err(Null)` instead.
 	///
 	/// Note that calling this method many times is less efficient than caching a `By` instance, such is the trade-off for convenience.
 	fn get_proc_address(self, name: T) -> Result<Va>;
 }
-impl<'a, P: Pe<'a> + Copy> GetProcAddress<Ordinal> for P {
+impl<'a, P: Pe<'a> + Copy> GetProcAddress<'a, Ordinal> for P {
+	fn get_export(self, name: Ordinal) -> Result<Export<'a>> {
+		self.exports()?.by()?.ordinal(name)
+	}
 	fn get_proc_address(self, name: Ordinal) -> Result<Va> {
 		self.rva_to_va(self.exports()?.by()?.ordinal(name)?.symbol().ok_or(Error::Null)?)
 	}
 }
-impl<'b, 'a, P: Pe<'a> + Copy> GetProcAddress<Import<'b>> for P {
+impl<'b, 'a, P: Pe<'a> + Copy> GetProcAddress<'a, Import<'b>> for P {
+	fn get_export(self, name: Import<'b>) -> Result<Export<'a>> {
+		self.exports()?.by()?.import(name)
+	}
 	fn get_proc_address(self, name: Import<'b>) -> Result<Va> {
 		self.rva_to_va(self.exports()?.by()?.import(name)?.symbol().ok_or(Error::Null)?)
 	}
 }
-impl<'b, 'a, P: Pe<'a> + Copy> GetProcAddress<&'b str> for P {
+impl<'b, 'a, P: Pe<'a> + Copy> GetProcAddress<'a, &'b str> for P {
+	fn get_export(self, name: &'b str) -> Result<Export<'a>> {
+		self.get_export(name.as_bytes())
+	}
 	fn get_proc_address(self, name: &'b str) -> Result<Va> {
 		self.get_proc_address(name.as_bytes())
 	}
 }
-impl<'b, 'a, P: Pe<'a> + Copy> GetProcAddress<&'b [u8]> for P {
+impl<'b, 'a, P: Pe<'a> + Copy> GetProcAddress<'a, &'b [u8]> for P {
+	fn get_export(self, name: &'b [u8]) -> Result<Export<'a>> {
+		self.exports()?.by()?.name(name)
+	}
 	fn get_proc_address(self, name: &'b [u8]) -> Result<Va> {
 		self.rva_to_va(self.exports()?.by()?.name(name)?.symbol().ok_or(Error::Null)?)
 	}
