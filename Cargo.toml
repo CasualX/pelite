@@ -29,7 +29,7 @@ opt-level = 2
 libc = "0.2"
 
 [target.'cfg(windows)'.dependencies]
-winapi = { version = "0.3", features = ["fileapi", "memoryapi", "handleapi"] }
+winapi = { version = "0.3", features = ["fileapi", "memoryapi", "handleapi", "libloaderapi"] }
 
 [dev-dependencies]
 rand = "0.4"

@@ -2,12 +2,16 @@
 */
 
 extern crate pelite;
+extern crate winapi;
+
+mod util;
 
 use std::{env, io, mem};
 use std::path::Path;
 
 use pelite::pe::{Pe, PeView};
 use pelite::ImageMap;
+use pelite::util::CStr;
 
 fn open(base_path: &Path, dll_file: &str) -> io::Result<ImageMap> {
 	ImageMap::open(&base_path.join(dll_file))
@@ -26,16 +30,16 @@ fn main() {
 	};
 
 	// Start by opening relevant tf2 binaries
-	let engine_image        = open(tf2_path, "bin/engine.dll").unwrap();
-	let client_image        = open(tf2_path, "tf/bin/client.dll").unwrap();
+	let engine_image = open(tf2_path, "bin/engine.dll").unwrap();
+	let client_image = open(tf2_path, "tf/bin/client.dll").unwrap();
 
 	// Make the fully accessible
-	engine_image.protect_rwx();
-	client_image.protect_rwx();
+	// engine_image.protect_rwx();
+	// client_image.protect_rwx();
 
 	// Interpret them as 32-bit PeFiles
-	let engine_view         = PeView::from_bytes(&engine_image).unwrap();
-	let client_view         = PeView::from_bytes(&client_image).unwrap();
+	let engine_view = PeView::from_bytes(&engine_image).unwrap();
+	let client_view = PeView::from_bytes(&client_image).unwrap();
 
 	unsafe {
 		// Print the load address of client to debug crashes

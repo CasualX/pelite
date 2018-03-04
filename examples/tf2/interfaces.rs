@@ -49,8 +49,8 @@ pub struct Interface<'a> {
 pub fn interfaces<'a>(file: PeFile<'a>) -> pelite::Result<Vec<Interface<'a>>> {
 	let mut save = [0; 4];
 
-	let exports = file.exports()?.by()?;
-	let dll_name = exports.dll_name()?.to_str().unwrap();
+	// Associate the found interfaces with a dll name
+	let dll_name = file.exports()?.dll_name()?.to_str().unwrap();
 
 	// Of course, this linked list isn't yet initialized!
 	// Search for the code which constructs this linked list to extract their information
