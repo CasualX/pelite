@@ -7,11 +7,11 @@ use std::os::windows::ffi::OsStrExt;
 use std::os::windows::io::{AsRawHandle, RawHandle};
 
 use self::winapi::um::fileapi::{CreateFileW, OPEN_EXISTING};
-use self::winapi::um::memoryapi::{CreateFileMappingW, MapViewOfFile, UnmapViewOfFile, VirtualQuery, FILE_MAP_READ, FILE_MAP_COPY};
+use self::winapi::um::memoryapi::{CreateFileMappingW, MapViewOfFile, UnmapViewOfFile, VirtualQuery, VirtualProtect, FILE_MAP_READ, FILE_MAP_COPY};
 use self::winapi::um::handleapi::{CloseHandle, INVALID_HANDLE_VALUE};
 use self::winapi::shared::ntdef::{NULL, HANDLE};
-use self::winapi::shared::minwindef::{LPVOID};
-use self::winapi::um::winnt::{PAGE_READONLY, SEC_IMAGE, GENERIC_READ, FILE_SHARE_READ, FILE_ATTRIBUTE_NORMAL};
+use self::winapi::shared::minwindef::{LPVOID, FALSE};
+use self::winapi::um::winnt::{PAGE_READONLY, PAGE_EXECUTE_READWRITE, SEC_IMAGE, GENERIC_READ, FILE_SHARE_READ, FILE_ATTRIBUTE_NORMAL};
 
 //----------------------------------------------------------------
 
@@ -58,6 +58,12 @@ impl ImageMap {
 			}
 		}
 		Err(io::Error::last_os_error())
+	}
+	pub fn protect_rwx(&self) -> bool {
+		unsafe {
+			let mut old_protect = mem::uninitialized();
+			VirtualProtect((*self.bytes).as_ptr() as LPVOID, (*self.bytes).len(), PAGE_EXECUTE_READWRITE, &mut old_protect) != FALSE
+		}
 	}
 }
 impl AsRawHandle for ImageMap {
