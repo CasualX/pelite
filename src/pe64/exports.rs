@@ -6,9 +6,13 @@ Export Directory.
 ```
 # #![allow(unused_variables)]
 use pelite::pe64::{Pe, PeFile};
+use pelite::pe64::exports::GetProcAddress;
 
 # #[allow(dead_code)]
 fn example(file: PeFile) -> pelite::Result<()> {
+	// Most convenient way to get the address of an export
+	file.get_proc_address("ThrowException")?;
+
 	// Access the export directory
 	let exports = file.exports()?;
 
@@ -303,6 +307,45 @@ impl<'a, P: Pe<'a> + Copy> By<'a, P> {
 	/// Iterate over functions exported by name.
 	pub fn iter_names<'s>(&'s self) -> IterByName<'s, 'a, P> {
 		IterByName { by: self, hints: 0..self.image.NumberOfNames }
+	}
+}
+
+//----------------------------------------------------------------
+
+/// Convenient way to get an exported address.
+pub trait GetProcAddress<'a, T>: Pe<'a> + Copy {
+	/// Convenient method to get an exported function.
+	///
+	/// Note that calling this method many times is less efficient than caching a [`By`](struct.By.html) instance, such is the trade-off for convenience.
+	fn get_export(self, name: T) -> Result<Export<'a>>;
+	/// Convenient method to get the address of an exported function.
+	///
+	/// Note that this method does not support forwarded exports and will return `Err(Null)` instead.
+	///
+	/// Note that calling this method many times is less efficient than caching a [`By`](struct.By.html) instance, such is the trade-off for convenience.
+	#[inline(never)]
+	fn get_proc_address(self, name: T) -> Result<Va> {
+		self.rva_to_va(self.get_export(name)?.symbol().ok_or(Error::Null)?)
+	}
+}
+impl<'a, P: Pe<'a> + Copy> GetProcAddress<'a, Ordinal> for P {
+	fn get_export(self, name: Ordinal) -> Result<Export<'a>> {
+		self.exports()?.by()?.ordinal(name)
+	}
+}
+impl<'b, 'a, P: Pe<'a> + Copy> GetProcAddress<'a, Import<'b>> for P {
+	fn get_export(self, name: Import<'b>) -> Result<Export<'a>> {
+		self.exports()?.by()?.import(name)
+	}
+}
+impl<'b, 'a, P: Pe<'a> + Copy> GetProcAddress<'a, &'b str> for P {
+	fn get_export(self, name: &'b str) -> Result<Export<'a>> {
+		self.exports()?.by()?.name(name)
+	}
+}
+impl<'b, 'a, P: Pe<'a> + Copy> GetProcAddress<'a, &'b [u8]> for P {
+	fn get_export(self, name: &'b [u8]) -> Result<Export<'a>> {
+		self.exports()?.by()?.name(name)
 	}
 }
 
