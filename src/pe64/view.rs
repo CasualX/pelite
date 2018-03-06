@@ -52,16 +52,7 @@ impl<'a> PeView<'a> {
 			image: slice::from_raw_parts(base, nt.OptionalHeader.SizeOfImage as usize),
 		}
 	}
-}
-
-unsafe impl<'a> Pe<'a> for PeView<'a> {
-	fn image(&self) -> &'a [u8] {
-		self.image
-	}
-	fn align(&self) -> Align {
-		Align::Section
-	}
-	fn slice(&self, rva: Rva, min_size: usize, align: usize) -> Result<&'a [u8]> {
+	fn slice_impl(self, rva: Rva, min_size: usize, align: usize) -> Result<&'a [u8]> {
 		debug_assert!(align != 0 && align & (align - 1) == 0);
 		let start = rva as usize;
 		if rva == BADRVA {
@@ -77,7 +68,7 @@ unsafe impl<'a> Pe<'a> for PeView<'a> {
 			}
 		}
 	}
-	fn read(&self, va: Va, min_size: usize, align: usize) -> Result<&'a [u8]> {
+	fn read_impl(self, va: Va, min_size: usize, align: usize) -> Result<&'a [u8]> {
 		debug_assert!(align != 0 && align & (align - 1) == 0);
 		let (image_base, size_of_image) = {
 			let optional_header = self.optional_header();
@@ -101,6 +92,21 @@ unsafe impl<'a> Pe<'a> for PeView<'a> {
 				}
 			}
 		}
+	}
+}
+
+unsafe impl<'a> Pe<'a> for PeView<'a> {
+	fn image(&self) -> &'a [u8] {
+		self.image
+	}
+	fn align(&self) -> Align {
+		Align::Section
+	}
+	fn slice(&self, rva: Rva, min_size: usize, align: usize) -> Result<&'a [u8]> {
+		self.slice_impl(rva, min_size, align)
+	}
+	fn read(&self, va: Va, min_size: usize, align: usize) -> Result<&'a [u8]> {
+		self.read_impl(va, min_size, align)
 	}
 }
 
