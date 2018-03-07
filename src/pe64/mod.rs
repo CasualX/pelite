@@ -55,75 +55,41 @@ This is mostly safe, but be even more cautious when using it to read from writab
 
 ```
 # #![allow(dead_code)]
-use std::{io, error, fmt};
 use std::path::Path;
+use pelite::Result;
 
-//----------------------------------------------------------------
-// Be a good rustacean and handle errors
-
-#[derive(Debug)]
-enum Error {
-	Pe(pelite::Error),
-	Io(io::Error),
-}
-impl From<pelite::Error> for Error {
-	fn from(err: pelite::Error) -> Error { Error::Pe(err) }
-}
-impl From<io::Error> for Error {
-	fn from(err: io::Error) -> Error { Error::Io(err) }
-}
-impl fmt::Display for Error {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		error::Error::description(self).fmt(f)
-	}
-}
-impl error::Error for Error {
-	fn description(&self) -> &str {
-		match *self {
-			Error::Pe(ref err) => err.description(),
-			Error::Io(ref err) => err.description(),
-		}
-	}
-	fn cause(&self) -> Option<&error::Error> {
-		match *self {
-			Error::Pe(ref err) => Some(err),
-			Error::Io(ref err) => Some(err),
-		}
-	}
-}
-
-//----------------------------------------------------------------
-
-fn file_map<P: AsRef<Path> + ?Sized>(path: &P) -> Result<(), Error> {
+fn file_map<P: AsRef<Path> + ?Sized>(path: &P) -> Result<()> {
 	use pelite::FileMap;
 	use pelite::pe64::{Pe, PeFile};
 
 	let path = path.as_ref();
-	let file_map = FileMap::open(path)?;
-	let file = PeFile::from_bytes(&file_map)?;
+	if let Ok(map) = FileMap::open(path) {
+		let file = PeFile::from_bytes(&map)?;
 
-	// Access the file contents through the Pe trait
-	let image_base = file.optional_header().ImageBase;
-	println!("The preferred load address of {:?} is {}.", path, image_base);
+		// Access the file contents through the Pe trait
+		let image_base = file.optional_header().ImageBase;
+		println!("The preferred load address of {:?} is {}.", path, image_base);
 
-	// See the respective modules to access other parts of the PE file.
+		// See the respective modules to access other parts of the PE file.
+	}
 	Ok(())
 }
 
 #[cfg(windows)]
-fn image_map<P: AsRef<Path> + ?Sized>(path: &P) -> Result<(), Error> {
+fn image_map<P: AsRef<Path> + ?Sized>(path: &P) -> Result<()> {
 	use pelite::ImageMap;
 	use pelite::pe64::{Pe, PeView};
 
 	let path = path.as_ref();
-	let image = ImageMap::open(path)?;
-	let view = PeView::from_bytes(&image)?;
+	if let Ok(image) = ImageMap::open(path) {
+		let view = PeView::from_bytes(&image)?;
 
-	// Access the image contents through the Pe trait
-	let image_size = view.optional_header().SizeOfImage;
-	println!("The size of image in memory of {:?} is {}", path, image_size);
+		// Access the image contents through the Pe trait
+		let image_size = view.optional_header().SizeOfImage;
+		println!("The size of image in memory of {:?} is {}", path, image_size);
 
-	// See the respective modules to access other parts of the PE image.
+		// See the respective modules to access other parts of the PE image.
+	}
 	Ok(())
 }
 
