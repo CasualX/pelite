@@ -1,5 +1,5 @@
 /*!
-Your adventure start with a choice:
+Your adventure starts with a choice:
 
 Do you wish to inspect 64-bit PE binares? ⟶ [continue](pe64/index.html)
 
@@ -7,7 +7,7 @@ Do you wish to inspect 32-bit PE binaries? ⟶ [continue](pe32/index.html)
 
 The `pelite::pe` module is aliased to the target of the compiled crate.
 Use it if you want to work with modules in your own process.
-Evidently only available on Windows targets.
+Evidently this is only available on Windows targets.
 
 Due to small but incompatible differences the two formats are not unified.
 */
