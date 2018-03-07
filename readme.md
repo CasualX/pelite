@@ -23,8 +23,6 @@ This makes it rather awkward to work with both formats together transparently.
 
 Note that while the correct name is PE32+, the name PE64 is used as it is a valid identifier; they are otherwise synonymous.
 
-ELF format is not supported and not planned. There is an [elf library crate](https://crates.io/crates/elf) but its design has a different focus.
-
 Tools
 -----
 

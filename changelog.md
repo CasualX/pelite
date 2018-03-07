@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Pattern scanner accepts a `&mut [Rva]` save array instead of returning a `Match` result of fixed size.
 - Convenience methods for the `Export` enum to make the common case more ergonomic.
 - Implement convenient iteration over exported symbols and names.
-- Introduce convenient get_proc_address to `Pe` trait to easily query exports with a small performance trade-off.
+- Introduce convenient `get_proc_address` to easily query exports with a small performance trade-off.
 - Introduce alignment query to `Pe` trait, allows to know if the image has file alignment or section alignment.
 - Findsig binary tool to interactively scan binaries for patterns using the powerful pattern scanner.
 - Examples
