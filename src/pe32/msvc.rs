@@ -242,3 +242,22 @@ unsafe impl Pod for CatchableType {}
 unsafe impl Pod for RTTICompleteObjectLocator {}
 unsafe impl Pod for RTTIClassHierarchyDescriptor {}
 unsafe impl Pod for RTTIBaseClassDescriptor {}
+
+//----------------------------------------------------------------
+
+#[test]
+fn sizes() {
+	assert_size_of!(8, TypeDescriptor); // Unsized
+	assert_size_of!(12, PMD);
+	assert_size_of!(36, FuncInfo);
+	assert_size_of!(8, UnwindMapEntry);
+	assert_size_of!(20, TryBlockMapEntry);
+	assert_size_of!(16, HandlerType);
+	assert_size_of!(8, ESTypeList);
+	assert_size_of!(16, ThrowInfo);
+	assert_size_of!(4, CatchableTypeArray); // Unsized
+	assert_size_of!(28, CatchableType);
+	assert_size_of!(20, RTTICompleteObjectLocator);
+	assert_size_of!(16, RTTIClassHierarchyDescriptor);
+	assert_size_of!(24, RTTIBaseClassDescriptor);
+}

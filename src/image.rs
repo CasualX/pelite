@@ -571,26 +571,25 @@ unsafe impl Pod for IMAGE_DEBUG_MISC {}
 
 #[test]
 fn sizes() {
-	use std::mem::size_of;
-	assert_eq!(64, size_of::<IMAGE_DOS_HEADER>());
-	assert_eq!(20, size_of::<IMAGE_FILE_HEADER>());
-	assert_eq!(8, size_of::<IMAGE_DATA_DIRECTORY>());
-	assert_eq!(224, size_of::<IMAGE_OPTIONAL_HEADER32>());
-	assert_eq!(240, size_of::<IMAGE_OPTIONAL_HEADER64>());
-	assert_eq!(248, size_of::<IMAGE_NT_HEADERS32>());
-	assert_eq!(264, size_of::<IMAGE_NT_HEADERS64>());
-	assert_eq!(40, size_of::<IMAGE_SECTION_HEADER>());
-	assert_eq!(40, size_of::<IMAGE_EXPORT_DIRECTORY>());
-	assert_eq!(20, size_of::<IMAGE_IMPORT_DESCRIPTOR>());
-	assert_eq!(16, size_of::<IMAGE_RESOURCE_DIRECTORY>());
-	assert_eq!(8, size_of::<IMAGE_RESOURCE_DIRECTORY_ENTRY>());
-	assert_eq!(16, size_of::<IMAGE_RESOURCE_DATA_ENTRY>());
-	assert_eq!(8, size_of::<IMAGE_BASE_RELOCATION>());
-	assert_eq!(24, size_of::<IMAGE_TLS_DIRECTORY32>());
-	assert_eq!(40, size_of::<IMAGE_TLS_DIRECTORY64>());
-	assert_eq!(16, size_of::<GUID>());
-	assert_eq!(28, size_of::<IMAGE_DEBUG_DIRECTORY>());
-	assert_eq!(16, size_of::<IMAGE_DEBUG_CV_INFO_PDB20>()); // Unsized
-	assert_eq!(24, size_of::<IMAGE_DEBUG_CV_INFO_PDB70>()); // Unsized
-	assert_eq!(12, size_of::<IMAGE_DEBUG_MISC>()); // Unsized
+	assert_size_of!(64, IMAGE_DOS_HEADER);
+	assert_size_of!(20, IMAGE_FILE_HEADER);
+	assert_size_of!(8, IMAGE_DATA_DIRECTORY);
+	assert_size_of!(224, IMAGE_OPTIONAL_HEADER32);
+	assert_size_of!(240, IMAGE_OPTIONAL_HEADER64);
+	assert_size_of!(248, IMAGE_NT_HEADERS32);
+	assert_size_of!(264, IMAGE_NT_HEADERS64);
+	assert_size_of!(40, IMAGE_SECTION_HEADER);
+	assert_size_of!(40, IMAGE_EXPORT_DIRECTORY);
+	assert_size_of!(20, IMAGE_IMPORT_DESCRIPTOR);
+	assert_size_of!(16, IMAGE_RESOURCE_DIRECTORY);
+	assert_size_of!(8, IMAGE_RESOURCE_DIRECTORY_ENTRY);
+	assert_size_of!(16, IMAGE_RESOURCE_DATA_ENTRY);
+	assert_size_of!(8, IMAGE_BASE_RELOCATION);
+	assert_size_of!(24, IMAGE_TLS_DIRECTORY32);
+	assert_size_of!(40, IMAGE_TLS_DIRECTORY64);
+	assert_size_of!(16, GUID);
+	assert_size_of!(28, IMAGE_DEBUG_DIRECTORY);
+	assert_size_of!(16, IMAGE_DEBUG_CV_INFO_PDB20); // Unsized
+	assert_size_of!(24, IMAGE_DEBUG_CV_INFO_PDB70); // Unsized
+	assert_size_of!(12, IMAGE_DEBUG_MISC); // Unsized
 }

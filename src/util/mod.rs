@@ -2,6 +2,20 @@
 Utilities and other tidbits.
 */
 
+// For testing, assert that structs have specified ABI size
+#[cfg(test)]
+macro_rules! assert_size_of {
+	($size_of:expr, $ident:ident) => (assert_eq!($size_of, ::std::mem::size_of::<$ident>(),
+		concat!("Unexpected sizeof(", stringify!($ident), ")")));
+}
+
+#[test]
+#[should_panic]
+fn assert_size_of() {
+	struct Foo(i32);
+	assert_size_of!(8, Foo);
+}
+
 #[macro_use]
 mod iter;
 
