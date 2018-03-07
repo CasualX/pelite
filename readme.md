@@ -26,7 +26,7 @@ Note that while the correct name is PE32+, the name PE64 is used as it is a vali
 Tools
 -----
 
-Included are bins showing some uses for the library, try them out on the [demos](demo)!
+Included are bins showing some uses for the library, [try them out on the demos](demo)!
 
 Library
 -------
@@ -45,9 +45,7 @@ pelite = "0.5"
 Examples
 --------
 
-Try this example out with
-
-`cargo run --example readme`
+Try this example out: `cargo run --example readme`.
 
 ```rust
 extern crate pelite;
