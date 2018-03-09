@@ -338,13 +338,8 @@ impl<'b, 'a, P: Pe<'a> + Copy> GetProcAddress<'a, Import<'b>> for P {
 		self.exports()?.by()?.import(name)
 	}
 }
-impl<'b, 'a, P: Pe<'a> + Copy> GetProcAddress<'a, &'b str> for P {
-	fn get_export(self, name: &'b str) -> Result<Export<'a>> {
-		self.exports()?.by()?.name(name)
-	}
-}
-impl<'b, 'a, P: Pe<'a> + Copy> GetProcAddress<'a, &'b [u8]> for P {
-	fn get_export(self, name: &'b [u8]) -> Result<Export<'a>> {
+impl<'b, 'a, P: Pe<'a> + Copy, S: AsRef<[u8]> + ?Sized> GetProcAddress<'a, &'b S> for P {
+	fn get_export(self, name: &'b S) -> Result<Export<'a>> {
 		self.exports()?.by()?.name(name)
 	}
 }
