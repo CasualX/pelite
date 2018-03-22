@@ -23,13 +23,11 @@ mod c_str;
 mod wide_str;
 mod pod;
 mod offset;
-mod slice_len;
 
 pub use self::c_str::CStr;
 pub use self::wide_str::WideStr;
 pub use self::pod::Pod;
 pub use self::offset::Offset;
-pub use self::slice_len::SliceLen;
 
 /// Splits a slice at the point defined by the callback.
 #[inline]

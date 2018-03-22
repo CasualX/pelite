@@ -63,7 +63,7 @@ pub struct Imports<'a, P> {
 impl<'a, P: Pe<'a> + Copy> Imports<'a, P> {
 	pub(crate) fn new(pe: P) -> Result<Imports<'a, P>> {
 		let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_IMPORT).ok_or(Error::OOB)?;
-		let image = pe.derva_slice(datadir.VirtualAddress, |image: &IMAGE_IMPORT_DESCRIPTOR| image.is_null())?;
+		let image = pe.derva_slice_f(datadir.VirtualAddress, |image: &IMAGE_IMPORT_DESCRIPTOR| image.is_null())?;
 		Ok(Imports { pe, image })
 	}
 	/// Gets the PE instance.
@@ -122,11 +122,11 @@ impl<'a, P: Pe<'a> + Copy> Desc<'a, P> {
 	/// Otherwise these contain references to the imported functions.
 	/// See [`import_from_va`](struct.Desc.html#import_from_va) to get their names.
 	pub fn iat(&self) -> Result<slice::Iter<'a, Va>> {
-		self.pe.derva_slice(self.image.FirstThunk, |&va| va == BADVA).map(|iat| iat.iter())
+		self.pe.derva_slice_s(self.image.FirstThunk, BADVA).map(|iat| iat.iter())
 	}
 	/// Gets the import name table.
 	pub fn int(self) -> Result<IntIter<'a, P>> {
-		let slice = self.pe.derva_slice(self.image.OriginalFirstThunk, |&va| va == BADVA)?;
+		let slice = self.pe.derva_slice_s(self.image.OriginalFirstThunk, BADVA)?;
 		Ok(IntIter {
 			pe: self.pe,
 			iter: slice.iter(),
