@@ -5,7 +5,7 @@ Abstract over mapped images and file binaries.
 use std::{cmp, mem, ptr, slice};
 
 use error::{Error, Result};
-use util::{CStr, Pod, SliceLen};
+use util::{CStr, Pod};
 
 use super::image::*;
 use super::ptr::Ptr;
@@ -194,36 +194,68 @@ pub unsafe trait Pe<'a> {
 
 	/// Reads an aligned pod `T`.
 	fn derva<T>(self, rva: Rva) -> Result<&'a T> where Self: Copy, T: Pod {
-		// This is safe as per `Pod` bound
+		let align = if cfg!(feature = "unsafe_alignment") { 1 } else { mem::align_of::<T>() };
+		let bytes = self.slice(rva, mem::size_of::<T>(), align)?;
+		// This is safe as per Pod bound, min_size and align
 		unsafe {
-			let align = if cfg!(feature = "unsafe_alignment") { 1 } else { mem::align_of::<T>() };
-			let bytes = self.slice(rva, mem::size_of::<T>(), align)?;
 			let p = &*(bytes.as_ptr() as *const T);
 			Ok(p)
 		}
 	}
 	/// Reads an unaligned pod `T`.
 	fn derva_copy<T>(self, rva: Rva) -> Result<T> where Self: Copy, T: Copy + Pod {
+		let bytes = self.slice(rva, mem::size_of::<T>(), 1)?;
+		// This is safe as per Pod bound and min_size
 		unsafe {
-			let bytes = self.slice(rva, mem::size_of::<T>(), 1)?;
 			let p = bytes.as_ptr() as *const T;
 			Ok(ptr::read_unaligned(p))
 		}
 	}
-	/// Reads an array of pod `T`.
-	///
-	/// The length of the array can be specified by a known length of type `usize`.
-	///
-	/// Sometimes the length of an array is determined by a [sentinel value](https://en.wikipedia.org/wiki/Sentinel_value), a special value of `T` which marks the end of the array.
-	/// The length of the array is then specified by a callable with parameter `&'a T` returning a `bool` indicating if this value is the sentinel.
-	///
-	/// The returned slice contains all `T` up to but not including the sentinel value.
-	fn derva_slice<T, L>(self, rva: Rva, len: L) -> Result<&'a [T]> where Self: Copy, T: Pod, L: SliceLen<'a, T> {
-		// This is safe as per `Pod` bound
-		let min_size = len.min_size().ok_or(Error::Overflow)?;
+	/// Reads an array of pod `T` with given length.
+	fn derva_slice<T>(self, rva: Rva, len: usize) -> Result<&'a [T]> where Self: Copy, T: Pod {
+		let min_size = mem::size_of::<T>().checked_mul(len).ok_or(Error::Overflow)?;
 		let align = if cfg!(feature = "unsafe_alignment") { 1 } else { mem::align_of::<T>() };
 		let bytes = self.slice(rva, min_size, align)?;
-		unsafe { len.slice_len(bytes).ok_or(Error::OOB) }
+		// This is safe as per Pod bound, min_size and align
+		unsafe {
+			Ok(slice::from_raw_parts(bytes.as_ptr() as *const T, len))
+		}
+	}
+	/// Reads an array of pod `T`.
+	///
+	/// For every element of the array, starting at the given `rva`, the callable `f` is called with that element.
+	/// The length of the array is the index when the callable `f` returns `true`.
+	///
+	/// The returned slice contains all `T` up to but not including the element for which the callable returned `true`.
+	fn derva_slice_f<T, F>(self, rva: Rva, mut f: F) -> Result<&'a [T]> where Self: Copy, T: Pod, F: FnMut(&'a T) -> bool {
+		let align = if cfg!(feature = "unsafe_alignment") { 1 } else { mem::align_of::<T>() };
+		let bytes = self.slice(rva, 0, align)?;
+		let mut len = 0;
+		loop {
+			// Safety critical OOB check
+			// Overflows only if bytes.len() > USIZE_MAX - sizeof(T) which would be ridiculous
+			let offset = len * mem::size_of::<T>();
+			if offset + mem::size_of::<T>() > bytes.len() {
+				return Err(Error::OOB);
+			}
+			// Safe because len is checked above and T is Pod
+			unsafe {
+				let s = bytes.as_ptr().offset(offset as isize) as *const T;
+				if f(&*s) {
+					let p = slice::from_raw_parts(bytes.as_ptr() as *const T, len);
+					return Ok(p);
+				}
+				len += 1;
+			}
+		}
+	}
+	/// Reads an array of pod `T`.
+	///
+	/// The length of the array is determined by a [sentinel value](https://en.wikipedia.org/wiki/Sentinel_value), a special value of `T` which marks the end of the array.
+	///
+	/// The returned slice contains all `T` up to but not including the sentinel value.
+	fn derva_slice_s<T>(self, rva: Rva, sentinel: T) -> Result<&'a [T]> where Self: Copy, T: PartialEq + Pod {
+		self.derva_slice_f(rva, |tee| *tee == sentinel)
 	}
 	/// Reads a nul-terminated C string.
 	fn derva_str(self, rva: Rva) -> Result<&'a CStr> where Self: Copy {
@@ -235,37 +267,68 @@ pub unsafe trait Pe<'a> {
 
 	/// Dereferences the pointer to a pod `T`.
 	fn deref<T, P>(self, ptr: P) -> Result<&'a T> where Self: Copy, T: Pod, P: Into<Ptr<T>> {
-		// This is safe as per `Pod` bound
+		let align = if cfg!(feature = "unsafe_alignment") { 1 } else { mem::align_of::<T>() };
+		let bytes = self.read(ptr.into().into(), mem::size_of::<T>(), align)?;
+		// This is safe as per Pod bound, min_size and align
 		unsafe {
-			let align = if cfg!(feature = "unsafe_alignment") { 1 } else { mem::align_of::<T>() };
-			let bytes = self.read(ptr.into().into(), mem::size_of::<T>(), align)?;
 			let p = &*(bytes.as_ptr() as *const T);
 			Ok(p)
 		}
 	}
 	/// Dereferences the pointer to an unaligned pod `T`.
 	fn deref_copy<T, P>(self, ptr: P) -> Result<T> where Self: Copy, T: Copy + Pod, P: Into<Ptr<T>> {
+		let bytes = self.read(ptr.into().into(), mem::size_of::<T>(), 1)?;
+		// This is safe as per Pod bound and min_size
 		unsafe {
-			let bytes = self.read(ptr.into().into(), mem::size_of::<T>(), 1)?;
 			let p = bytes.as_ptr() as *const T;
 			Ok(ptr::read_unaligned(p))
 		}
 	}
-	/// Dereferences the pointer to an array of pod `T`.
-	///
-	/// The length of the array can be specified by a known length of type `usize`.
-	///
-	/// Sometimes the length of an array is determined by a [sentinel value](https://en.wikipedia.org/wiki/Sentinel_value), a special value of `T` which marks the end of the array.
-	/// The length of the array is then specified by a callable with parameter `&'a T` returning a `bool` indicating if this value is the sentinel.
-	///
-	/// The returned slice contains all `T` up to but not including the sentinel value.
-	fn deref_slice<T, P, L>(self, ptr: P, len: L) -> Result<&'a [T]> where Self: Copy, T: Pod, P: Into<Ptr<[T]>>, L: SliceLen<'a, T> {
-		// This is safe as per `Pod` bound
-		// FIXME! What about alignment?
-		let min_size = len.min_size().ok_or(Error::Overflow)?;
+	/// Reads an array of pod `T` with given length.
+	fn deref_slice<T, P>(self, ptr: P, len: usize) -> Result<&'a [T]> where Self: Copy, T: Pod, P: Into<Ptr<[T]>> {
+		let min_size = mem::size_of::<T>().checked_mul(len).ok_or(Error::Overflow)?;
 		let align = if cfg!(feature = "unsafe_alignment") { 1 } else { mem::align_of::<T>() };
 		let bytes = self.read(ptr.into().into(), min_size, align)?;
-		unsafe { len.slice_len(bytes).ok_or(Error::OOB) }
+		// This is safe as per Pod bound, min_size and align
+		unsafe {
+			Ok(slice::from_raw_parts(bytes.as_ptr() as *const T, len))
+		}
+	}
+	/// Reads an array of pod `T`.
+	///
+	/// For every element of the array, starting at the given `ptr`, the callable `f` is called with that element.
+	/// The length of the array is the index when the callable `f` returns `true`.
+	///
+	/// The returned slice contains all `T` up to but not including the element for which the callable returned `true`.
+	fn deref_slice_f<T, P, F>(self, ptr: P, mut f: F) -> Result<&'a [T]> where Self: Copy, T: Pod, P: Into<Ptr<T>>, F: FnMut(&'a T) -> bool {
+		let align = if cfg!(feature = "unsafe_alignment") { 1 } else { mem::align_of::<T>() };
+		let bytes = self.read(ptr.into().into(), 0, align)?;
+		let mut len = 0;
+		loop {
+			// Safety critical OOB check
+			// Overflows only if bytes.len() > USIZE_MAX - sizeof(T) which would be ridiculous
+			let offset = len * mem::size_of::<T>();
+			if offset + mem::size_of::<T>() > bytes.len() {
+				return Err(Error::OOB);
+			}
+			// Safe because len is checked above and T is Pod
+			unsafe {
+				let s = bytes.as_ptr().offset(offset as isize) as *const T;
+				if f(&*s) {
+					let p = slice::from_raw_parts(bytes.as_ptr() as *const T, len);
+					return Ok(p);
+				}
+				len += 1;
+			}
+		}
+	}
+	/// Reads an array of pod `T`.
+	///
+	/// The length of the array is determined by a [sentinel value](https://en.wikipedia.org/wiki/Sentinel_value), a special value of `T` which marks the end of the array.
+	///
+	/// The returned slice contains all `T` up to but not including the sentinel value.
+	fn deref_slice_s<T, P>(self, ptr: P, sentinel: T) -> Result<&'a [T]> where Self: Copy, T: PartialEq + Pod, P: Into<Ptr<T>> {
+		self.deref_slice_f(ptr, |tee| *tee == sentinel)
 	}
 	/// Dereferences the pointer to a nul-terminated C string.
 	fn deref_str<P>(self, ptr: P) -> Result<&'a CStr> where Self: Copy, P: Into<Ptr<CStr>> {

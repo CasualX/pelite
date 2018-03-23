@@ -126,7 +126,7 @@ pub fn datamaps<'a>(client: PeFile<'a>) -> pelite::Result<Vec<Class<'a>>> {
 	while matches.next_match(&mut save) {
 		let num = client.derva_copy::<i32>(save[1]).unwrap();
 		let datamap = client.derva::<datamap_t>(save[2]);
-		let tydescs = client.derva_slice::<typedescription_t, _>(save[3], num as usize);
+		let tydescs = client.derva_slice::<typedescription_t>(save[3], num as usize);
 
 		// The match isn't perfect and includes some false positives, skip these
 		if let (Ok(datamap), Ok(tydescs)) = (datamap, tydescs) {
