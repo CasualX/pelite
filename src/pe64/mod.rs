@@ -130,6 +130,7 @@ pub mod load_config;
 pub mod resources;
 pub mod tls;
 pub mod security;
+pub mod exception;
 pub mod debug;
 mod ptr;
 pub mod scanner;

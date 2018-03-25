@@ -175,7 +175,6 @@ fn debug() {
 	for debug_dir in debug {
 		if let Ok(cv) = debug_dir.read_cv70() {
 				assert_eq!(cv.pdb_file_name(), r"D:\Projects\pelite\proto\Demo\x64\Release\Demo.pdb");
-
 		}
 	}
 }
@@ -189,6 +188,17 @@ fn security() {
 	let security = file.security();
 
 	assert!(match security { Err(Error::Null) => true, _ => false });
+}
+
+//----------------------------------------------------------------
+
+#[test]
+fn exception() {
+	let file_map = FileMap::open(FILE_NAME).unwrap();
+	let file = PeFile::from_bytes(&file_map).unwrap();
+	let exception = file.exception().unwrap();
+
+	assert_eq!(exception.functions().len(), 38);
 }
 
 //----------------------------------------------------------------

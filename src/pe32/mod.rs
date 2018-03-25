@@ -142,6 +142,8 @@ pub mod resources;
 pub mod tls;
 #[path = "../pe64/security.rs"]
 pub mod security;
+#[path = "../pe64/exception.rs"]
+pub mod exception;
 #[path = "../pe64/debug.rs"]
 pub mod debug;
 #[path = "../pe64/ptr.rs"]

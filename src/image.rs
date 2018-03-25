@@ -646,6 +646,70 @@ pub struct WIN_CERTIFICATE {
 }
 
 //----------------------------------------------------------------
+// References
+// https://docs.microsoft.com/en-gb/cpp/build/unwind-data-definitions-in-c
+// https://www.reactos.org/wiki/Techwiki:SEH64
+// http://www.osronline.com/article.cfm?article=469
+
+pub const UWOP_PUSH_NONVOL: u8     = 0;  // info == register number
+pub const UWOP_ALLOC_LARGE: u8     = 1;  // no info, alloc size in next 2 slots
+pub const UWOP_ALLOC_SMALL: u8     = 2;  // info == size of allocation / 8 - 1
+pub const UWOP_SET_FPREG: u8       = 3;  // no info, FP = RSP + UNWIND_INFO.FPRegOffset*16
+pub const UWOP_SAVE_NONVOL: u8     = 4;  // info == register number, offset in next slot
+pub const UWOP_SAVE_NONVOL_FAR: u8 = 5;  // info == register number, offset in next 2 slots
+pub const UWOP_SAVE_XMM128: u8     = 8;  // info == XMM reg number, offset in next slot
+pub const UWOP_SAVE_XMM128_FAR: u8 = 9;  // info == XMM reg number, offset in next 2 slots
+pub const UWOP_PUSH_MACHFRAME: u8  = 10; // info == 0: no error-code, 1: error-code
+
+#[derive(Copy, Clone, Debug)]
+#[repr(C)]
+pub struct UNWIND_CODE {
+	pub CodeOffset: u8,
+	pub UnwindOpInfo: u8,
+	pub FrameOffset: u16,
+}
+
+pub const UNW_FLAG_NHANDLER: u8  = 0x00;
+pub const UNW_FLAG_EHANDLER: u8  = 0x01;
+pub const UNW_FLAG_UHANDLER: u8  = 0x02;
+pub const UNW_FLAG_FHANDLER: u8  = 0x03; // inofficial
+pub const UNW_FLAG_CHAININFO: u8 = 0x04;
+
+#[derive(Copy, Clone, Debug)]
+#[repr(C)]
+pub struct UNWIND_INFO {
+	pub VersionFlags: u8,
+	pub SizeOfProlog: u8,
+	pub CountOfCodes: u8,
+	pub FrameRegisterOffset: u8,
+	pub UnwindCode: [UNWIND_CODE; 0],
+}
+
+#[derive(Copy, Clone, Debug)]
+#[repr(C)]
+pub struct RUNTIME_FUNCTION {
+	pub BeginAddress: u32,
+	pub EndAddress: u32,
+	pub UnwindData: u32,
+}
+
+#[derive(Copy, Clone, Debug)]
+#[repr(C)]
+pub struct SCOPE_RECORD {
+	pub BeginAddress: u32,
+	pub EndAddress: u32,
+	pub HandlerAddress: u32,
+	pub JumpTarget: u32,
+}
+
+#[derive(Copy, Clone, Debug)]
+#[repr(C)]
+pub struct SCOPE_TABLE {
+	pub Count: u32,
+	pub ScopeRecord: [SCOPE_RECORD; 0],
+}
+
+//----------------------------------------------------------------
 // Sourced from http://www.debuginfo.com/articles/debuginfomatch.html
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
@@ -741,6 +805,11 @@ unsafe impl Pod for IMAGE_GUARDCF32 {}
 unsafe impl Pod for IMAGE_GUARDCF64 {}
 unsafe impl Pod for IMAGE_TLS_DIRECTORY32 {}
 unsafe impl Pod for IMAGE_TLS_DIRECTORY64 {}
+unsafe impl Pod for UNWIND_CODE {}
+unsafe impl Pod for UNWIND_INFO {}
+unsafe impl Pod for RUNTIME_FUNCTION {}
+unsafe impl Pod for SCOPE_TABLE {}
+unsafe impl Pod for SCOPE_RECORD {}
 unsafe impl Pod for GUID {}
 unsafe impl Pod for IMAGE_DEBUG_DIRECTORY {}
 unsafe impl Pod for IMAGE_DEBUG_CV_INFO_PDB20 {}
@@ -776,6 +845,11 @@ fn sizes() {
 	assert_size_of!(36 * 4, IMAGE_GUARDCF64);
 	assert_size_of!(24, IMAGE_TLS_DIRECTORY32);
 	assert_size_of!(40, IMAGE_TLS_DIRECTORY64);
+	assert_size_of!(4, UNWIND_CODE);
+	assert_size_of!(4, UNWIND_INFO); // Unsized
+	assert_size_of!(12, RUNTIME_FUNCTION);
+	assert_size_of!(4, SCOPE_TABLE); // Unsized
+	assert_size_of!(16, SCOPE_RECORD);
 	assert_size_of!(16, GUID);
 	assert_size_of!(28, IMAGE_DEBUG_DIRECTORY);
 	assert_size_of!(16, IMAGE_DEBUG_CV_INFO_PDB20); // Unsized
