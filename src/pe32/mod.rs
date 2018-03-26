@@ -27,6 +27,27 @@ Take a byte slice of the entire file contents and construct it with [`PeFile::fr
 
 Import the [`Pe`](trait.Pe.html) trait to continue from here.
 
+```
+# #![allow(dead_code)]
+use std::path::Path;
+use pelite::{FileMap, Result};
+use pelite::pe32::{Pe, PeFile};
+
+fn file_map<P: AsRef<Path> + ?Sized>(path: &P) -> Result<()> {
+	let path = path.as_ref();
+	if let Ok(map) = FileMap::open(path) {
+		let file = PeFile::from_bytes(&map)?;
+
+		// Access the file contents through the Pe trait
+		let image_base = file.optional_header().ImageBase;
+		println!("The preferred load address of {:?} is {}.", path, image_base);
+
+		// See the respective modules to access other parts of the PE file.
+	}
+	Ok(())
+}
+```
+
 ## Executable images in memory
 
 To simulate the system loading and mapping images with virtual memory alignment use the [`ImageMap`](../struct.ImageMap.html) loader.
@@ -37,6 +58,28 @@ Take a byte slice of the entire image and construct it with [`PeView::from_bytes
 Import the [`Pe`](trait.Pe.html) trait to continue from here.
 
 If you don't know which to choose, go with [`PeFile`](struct.PeFile.html).
+
+```
+# #![allow(dead_code)]
+use std::path::Path;
+use pelite::{ImageMap, Result};
+use pelite::pe32::{Pe, PeView};
+
+#[cfg(windows)]
+fn image_map<P: AsRef<Path> + ?Sized>(path: &P) -> Result<()> {
+	let path = path.as_ref();
+	if let Ok(image) = ImageMap::open(path) {
+		let view = PeView::from_bytes(&image)?;
+
+		// Access the image contents through the Pe trait
+		let image_size = view.optional_header().SizeOfImage;
+		println!("The size of image in memory of {:?} is {}", path, image_size);
+
+		// See the respective modules to access other parts of the PE image.
+	}
+	Ok(())
+}
+```
 
 # Advanced usage
 
@@ -51,52 +94,14 @@ This is mostly safe, but be cautious when using it to read from writable section
 Access other modules in the process with [`PeView::module`](struct.PeView.html#method.module) to construct a view into other images in the process.
 This is mostly safe, but be even more cautious when using it to read from writable sections since other libraries written in other languages such as C/C++ respect rust memory aliasing rules even less.
 
-# Examples
-
 ```
 # #![allow(dead_code)]
 use std::path::Path;
 use pelite::Result;
-
-fn file_map<P: AsRef<Path> + ?Sized>(path: &P) -> Result<()> {
-	use pelite::FileMap;
-	use pelite::pe32::{Pe, PeFile};
-
-	let path = path.as_ref();
-	if let Ok(map) = FileMap::open(path) {
-		let file = PeFile::from_bytes(&map)?;
-
-		// Access the file contents through the Pe trait
-		let image_base = file.optional_header().ImageBase;
-		println!("The preferred load address of {:?} is {}.", path, image_base);
-
-		// See the respective modules to access other parts of the PE file.
-	}
-	Ok(())
-}
-
-#[cfg(windows)]
-fn image_map<P: AsRef<Path> + ?Sized>(path: &P) -> Result<()> {
-	use pelite::ImageMap;
-	use pelite::pe32::{Pe, PeView};
-
-	let path = path.as_ref();
-	if let Ok(image) = ImageMap::open(path) {
-		let view = PeView::from_bytes(&image)?;
-
-		// Access the image contents through the Pe trait
-		let image_size = view.optional_header().SizeOfImage;
-		println!("The size of image in memory of {:?} is {}", path, image_size);
-
-		// See the respective modules to access other parts of the PE image.
-	}
-	Ok(())
-}
+use pelite::pe::{Pe, PeView};
 
 #[cfg(windows)]
 fn image_base() {
-	use pelite::pe::{Pe, PeView};
-
 	let view = unsafe { PeView::new() };
 
 	// Access the image contents through the Pe trait
