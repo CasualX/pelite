@@ -419,6 +419,12 @@ unsafe impl<'s, 'a, P: Pe<'a> + ?Sized> Pe<'a> for &'s P {
 
 //----------------------------------------------------------------
 
+pub unsafe trait PeMut<'a>: Pe<'a> {}
+
+unsafe impl<'s, 'a, P: PeMut<'a> + ?Sized> PeMut<'a> for &'s P {}
+
+//----------------------------------------------------------------
+
 pub(crate) struct VH {
 	pub image_base: Va,
 	pub size_of_image: u32,

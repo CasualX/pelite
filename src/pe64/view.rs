@@ -8,7 +8,51 @@ use std::marker::PhantomData;
 use error::{Error, Result};
 
 use super::image::*;
-use super::pe::{Align, Pe, validate_headers};
+use super::pe::{Align, Pe, PeMut, validate_headers};
+
+fn slice_impl<'a, P: Pe<'a> + Copy>(pe: P, rva: Rva, min_size: usize, align: usize) -> Result<&'a [u8]> {
+	debug_assert!(align != 0 && align & (align - 1) == 0);
+	let start = rva as usize;
+	if rva == BADRVA {
+		Err(Error::Null)
+	}
+	else if start & (align - 1) != 0 {
+		Err(Error::Misalign)
+	}
+	else {
+		match pe.image().get(start..) {
+			Some(bytes) if bytes.len() >= min_size => Ok(bytes),
+			_ => Err(Error::OOB),
+		}
+	}
+}
+fn read_impl<'a, P: Pe<'a> + Copy>(pe: P, va: Va, min_size: usize, align: usize) -> Result<&'a [u8]> {
+	debug_assert!(align != 0 && align & (align - 1) == 0);
+	let (image_base, size_of_image) = {
+		let optional_header = pe.optional_header();
+		(optional_header.ImageBase, optional_header.SizeOfImage)
+	};
+	if va == BADVA {
+		Err(Error::Null)
+	}
+	else if va < image_base || va - image_base > size_of_image as Va {
+		Err(Error::OOB)
+	}
+	else {
+		let start = (va - image_base) as usize;
+		if start & (align - 1) != 0 {
+			Err(Error::Misalign)
+		}
+		else {
+			match pe.image().get(start..) {
+				Some(bytes) if bytes.len() >= min_size => Ok(bytes),
+				_ => Err(Error::OOB),
+			}
+		}
+	}
+}
+
+//----------------------------------------------------------------
 
 /// View into a mapped PE image.
 #[derive(Copy, Clone)]
@@ -38,12 +82,6 @@ impl<'a> PeView<'a> {
 		}
 		Ok(PeView { image, _phantom: PhantomData })
 	}
-	/// Try to read the given bytes as a mapped PE image.
-	///
-	/// Acquire unique lock on the image bytes allowing safe mutation.
-	pub fn from_bytes_mut<T: AsMut<[u8]> + ?Sized>(image: &'a mut T) -> Result<PeView<'a>> {
-		Self::from_bytes(image.as_mut())
-	}
 	/// Creates a new instance of `PeView` of a mapped image.
 	///
 	/// # Safety
@@ -61,47 +99,6 @@ impl<'a> PeView<'a> {
 			_phantom: PhantomData,
 		}
 	}
-	fn slice_impl(self, rva: Rva, min_size: usize, align: usize) -> Result<&'a [u8]> {
-		debug_assert!(align != 0 && align & (align - 1) == 0);
-		let start = rva as usize;
-		if rva == BADRVA {
-			Err(Error::Null)
-		}
-		else if start & (align - 1) != 0 {
-			Err(Error::Misalign)
-		}
-		else {
-			match self.image().get(start..) {
-				Some(bytes) if bytes.len() >= min_size => Ok(bytes),
-				_ => Err(Error::OOB),
-			}
-		}
-	}
-	fn read_impl(self, va: Va, min_size: usize, align: usize) -> Result<&'a [u8]> {
-		debug_assert!(align != 0 && align & (align - 1) == 0);
-		let (image_base, size_of_image) = {
-			let optional_header = self.optional_header();
-			(optional_header.ImageBase, optional_header.SizeOfImage)
-		};
-		if va == BADVA {
-			Err(Error::Null)
-		}
-		else if va < image_base || va - image_base > size_of_image as Va {
-			Err(Error::OOB)
-		}
-		else {
-			let start = (va - image_base) as usize;
-			if start & (align - 1) != 0 {
-				Err(Error::Misalign)
-			}
-			else {
-				match self.image().get(start..) {
-					Some(bytes) if bytes.len() >= min_size => Ok(bytes),
-					_ => Err(Error::OOB),
-				}
-			}
-		}
-	}
 }
 
 unsafe impl<'a> Pe<'a> for PeView<'a> {
@@ -112,12 +109,50 @@ unsafe impl<'a> Pe<'a> for PeView<'a> {
 		Align::Section
 	}
 	fn slice(&self, rva: Rva, min_size: usize, align: usize) -> Result<&'a [u8]> {
-		self.slice_impl(rva, min_size, align)
+		slice_impl(*self, rva, min_size, align)
 	}
 	fn read(&self, va: Va, min_size: usize, align: usize) -> Result<&'a [u8]> {
-		self.read_impl(va, min_size, align)
+		read_impl(*self, va, min_size, align)
 	}
 }
+
+//----------------------------------------------------------------
+
+#[derive(Copy, Clone)]
+pub struct PeViewMut<'a> {
+	image: *mut [u8],
+	_phantom: PhantomData<&'a mut [u8]>,
+}
+impl<'a> PeViewMut<'a> {
+	/// Try to read the given bytes as a mapped PE image.
+	///
+	/// Acquire unique lock on the image bytes allowing safe mutation.
+	pub fn from_bytes_mut<T: AsMut<[u8]> + ?Sized>(image: &'a mut T) -> Result<PeViewMut<'a>> {
+		let image = image.as_mut();
+		let info = validate_headers(image)?;
+		// Sanity check, this values should match.
+		// If they don't, that's not a problem per sé as it would be caught later.
+		if info.size_of_image as usize != image.len() {
+			return Err(Error::Insanity);
+		}
+		Ok(PeViewMut { image, _phantom: PhantomData })
+	}
+}
+unsafe impl<'a> Pe<'a> for PeViewMut<'a> {
+	fn image(&self) -> &'a [u8] {
+		unsafe { &*self.image }
+	}
+	fn align(&self) -> Align {
+		Align::Section
+	}
+	fn slice(&self, rva: Rva, min_size: usize, align: usize) -> Result<&'a [u8]> {
+		slice_impl(*self, rva, min_size, align)
+	}
+	fn read(&self, va: Va, min_size: usize, align: usize) -> Result<&'a [u8]> {
+		read_impl(*self, va, min_size, align)
+	}
+}
+unsafe impl<'a> PeMut<'a> for PeViewMut<'a> {}
 
 //----------------------------------------------------------------
 
