@@ -2,17 +2,16 @@
 Podness.
 */
 
-/// Defines types which can be safely `transmute`d from any byte pattern.
+/// Defines types which can be safely `transmute`d from any bit pattern.
 ///
 /// Types which need to be read from PE files should implement this.
 ///
 /// # Safety
 ///
-/// Various functions rely on `Pod`ness to mean that any byte array of sufficient length can be safely transmuted to this type.
+/// It must be safe to transmute any byte array (with length equal to the size of the type) to this type.
+///
+/// The type should be annotated by `#[repr(C)]`.
 pub unsafe trait Pod: 'static {}
-
-// Autoderive `Pod`ness
-// unsafe impl Pod for .. {}
 
 unsafe impl Pod for i8 {}
 unsafe impl Pod for i16 {}
