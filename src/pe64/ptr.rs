@@ -37,6 +37,7 @@ impl<T: ?Sized> Ptr<T> {
 	/// use pelite::pe64::Ptr;
 	///
 	/// # #[allow(dead_code)]
+	/// #[repr(C)]
 	/// struct Composite {
 	/// 	int: i32,
 	/// 	float: f32,
