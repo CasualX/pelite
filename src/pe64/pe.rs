@@ -300,7 +300,7 @@ pub unsafe trait Pe<'a> {
 	/// The length of the array is the index when the callable `f` returns `true`.
 	///
 	/// The returned slice contains all `T` up to but not including the element for which the callable returned `true`.
-	fn deref_slice_f<T, P, F>(self, ptr: P, mut f: F) -> Result<&'a [T]> where Self: Copy, T: Pod, P: Into<Ptr<T>>, F: FnMut(&'a T) -> bool {
+	fn deref_slice_f<T, P, F>(self, ptr: P, mut f: F) -> Result<&'a [T]> where Self: Copy, T: Pod, P: Into<Ptr<[T]>>, F: FnMut(&'a T) -> bool {
 		let align = if cfg!(feature = "unsafe_alignment") { 1 } else { mem::align_of::<T>() };
 		let bytes = self.read(ptr.into().into(), 0, align)?;
 		let mut len = 0;
@@ -327,7 +327,7 @@ pub unsafe trait Pe<'a> {
 	/// The length of the array is determined by a [sentinel value](https://en.wikipedia.org/wiki/Sentinel_value), a special value of `T` which marks the end of the array.
 	///
 	/// The returned slice contains all `T` up to but not including the sentinel value.
-	fn deref_slice_s<T, P>(self, ptr: P, sentinel: T) -> Result<&'a [T]> where Self: Copy, T: PartialEq + Pod, P: Into<Ptr<T>> {
+	fn deref_slice_s<T, P>(self, ptr: P, sentinel: T) -> Result<&'a [T]> where Self: Copy, T: PartialEq + Pod, P: Into<Ptr<[T]>> {
 		self.deref_slice_f(ptr, |tee| *tee == sentinel)
 	}
 	/// Dereferences the pointer to a nul-terminated C string.
