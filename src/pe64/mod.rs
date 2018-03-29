@@ -63,7 +63,7 @@ If you don't know which to choose, go with [`PeFile`](struct.PeFile.html).
 # #![allow(dead_code)]
 use std::path::Path;
 use pelite::{ImageMap, Result};
-	use pelite::pe64::{Pe, PeView};
+use pelite::pe64::{Pe, PeView};
 
 #[cfg(windows)]
 fn image_map<P: AsRef<Path> + ?Sized>(path: &P) -> Result<()> {
