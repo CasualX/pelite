@@ -464,13 +464,11 @@ mod serde {
 	use util::serde_helper::*;
 	use super::{Pe, Exports, By};
 
-	#[cfg(feature = "serde")]
 	impl<'a, P: 'a + Pe<'a> + Copy> Serialize for Exports<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			self.by().ok().serialize(serializer)
 		}
 	}
-	#[cfg(feature = "serde")]
 	impl<'a, P: 'a + Pe<'a> + Copy> Serialize for By<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			let mut state = serializer.serialize_struct("Exports", 6)?;

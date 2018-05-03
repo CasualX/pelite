@@ -43,6 +43,9 @@ pub use self::mmap::{FileMap};
 pub mod pe64;
 pub mod pe32;
 
+mod pefile;
+pub use self::pefile::PeFile;
+
 /// Defaults to the current platform if it is available.
 #[cfg(all(windows, target_pointer_width = "32"))]
 pub use pe32 as pe;
