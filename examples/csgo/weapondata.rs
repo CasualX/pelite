@@ -7,6 +7,7 @@ Weapon Data.
 use pelite;
 use pelite::pe32::{Rva, Pe, PeFile};
 use pelite::pattern as pat;
+use lde;
 
 //----------------------------------------------------------------
 
@@ -64,8 +65,7 @@ fn analyse<'a>(client: PeFile<'a>, code_rva: Rva) -> pelite::Result<WeaponInfo<'
 	let get_pat = pat::parse("E8$ A1???? A801 75? 83C801 C705????*'").unwrap();
 	let mut get_name = None;
 
-	use lde::{InsnSet, x86};
-	for (opcode, va) in x86::lde(code, code_va) {
+	for (opcode, va) in lde::X86.iter(code, code_va) {
 		// Find functions which call `CEconItemSchema__GetAttributeDefinition`
 		if opcode.starts_with(&[0xE8]) {
 			let mut get_m = [0; 4];
