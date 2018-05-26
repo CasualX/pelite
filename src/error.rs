@@ -36,6 +36,29 @@ pub enum Error {
 	CStr,
 }
 
+impl Error {
+	/// Returns if the error variant is Null.
+	///
+	/// Useful in match guards where `Null` should be handled as a non-error case.
+	///
+	/// ```
+	/// fn with_default(result: pelite::Result<i32>) -> pelite::Result<i32> {
+	/// 	let i = match result {
+	/// 		Ok(i) => i,
+	/// 		// Avoids a more verbose comparison with pelite::Error::Null
+	/// 		Err(err) if err.is_null() => 0,
+	/// 		Err(err) => return Err(err),
+	/// 	};
+	/// 	Ok(i)
+	/// }
+	///
+	/// assert_eq!(with_default(Err(pelite::Error::Null)), Ok(0));
+	/// ```
+	pub fn is_null(self) -> bool {
+		self == Error::Null
+	}
+}
+
 impl fmt::Display for Error {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		f.write_str(error::Error::description(self))
