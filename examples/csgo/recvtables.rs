@@ -10,6 +10,7 @@ use pelite;
 use pelite::pe32::{Rva, Va, Ptr, Pe, PeFile};
 use pelite::util::{CStr, Pod};
 use pelite::pattern as pat;
+use lde;
 
 //----------------------------------------------------------------
 
@@ -131,8 +132,7 @@ fn recvtable<'a>(client: PeFile<'a>, save: &[Rva; 8]) -> pelite::Result<Class<'a
 	let props_ptr = recv_props.as_mut_ptr() as *mut u8;
 
 	// Run through the code virtually executing only the relevant instructions initializing the RecvTable
-	use lde::{InsnSet, x86};
-	for (opcode, _) in x86::lde(code, save[5]) {
+	for (opcode, _) in lde::X86.iter(code, save[5]) {
 		// mov dword ptr addr, imm32
 		if opcode.starts_with(&[0xC7, 0x05]) {
 			let rva = client.va_to_rva(opcode.read::<Va>(2)).unwrap();
