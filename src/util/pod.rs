@@ -2,6 +2,8 @@
 Podness.
 */
 
+use std::cell;
+
 /// Defines types which can be safely `transmute`d from any bit pattern.
 ///
 /// Types which need to be read from PE files should implement this.
@@ -25,6 +27,9 @@ unsafe impl Pod for u64 {}
 
 unsafe impl Pod for f32 {}
 unsafe impl Pod for f64 {}
+
+unsafe impl<T: Pod> Pod for cell::UnsafeCell<T> {}
+unsafe impl<T: Pod> Pod for cell::Cell<T> {}
 
 macro_rules! impl_pod_array {
 	($n:tt $($tail:tt)+) => {
