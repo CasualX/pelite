@@ -2,7 +2,7 @@
 Resources.
 */
 
-use std::{fmt, mem, slice};
+use std::{fmt, iter, mem, slice};
 
 use error::{Error, Result};
 use image::*;
@@ -83,19 +83,20 @@ impl<'a> Directory<'a> {
 		self.image
 	}
 	/// Gets the directory entries.
-	pub fn entries(&self) -> Entries<'a> {
+	pub fn entries(&self) -> Entries<'a, impl Clone + FnMut(&'a IMAGE_RESOURCE_DIRECTORY_ENTRY) -> DirectoryEntry<'a>> {
 		// Validated by constructor
 		let slice = unsafe {
 			let p = (self.image as *const IMAGE_RESOURCE_DIRECTORY).offset(1) as *const IMAGE_RESOURCE_DIRECTORY_ENTRY;
 			let len = self.image.NumberOfNamedEntries as usize + self.image.NumberOfIdEntries as usize;
 			slice::from_raw_parts(p, len)
 		};
-		Entries { resources: self.resources, iter: slice.iter() }
+		let resources = self.resources;
+		slice.iter().map(move |image| DirectoryEntry { resources, image })
 	}
 	/// Gets the named entries in this directory.
 	///
 	/// Note that while it would be a violation of the format spec, there's no strict safety guarantee that these are only named entries.
-	pub fn named_entries(&self) -> Entries<'a> {
+	pub fn named_entries(&self) -> Entries<'a, impl Clone + FnMut(&'a IMAGE_RESOURCE_DIRECTORY_ENTRY) -> DirectoryEntry<'a>> {
 		// Validated by constructor
 		let slice = unsafe {
 			// Named entries come first in the array (see chapter "PE File Resources" in "Peering Inside the PE: A Tour of the Win32 Portable Executable File Format")
@@ -103,12 +104,13 @@ impl<'a> Directory<'a> {
 			let len = self.image.NumberOfNamedEntries as usize;
 			slice::from_raw_parts(p, len)
 		};
-		Entries { resources: self.resources, iter: slice.iter() }
+		let resources = self.resources;
+		slice.iter().map(move |image| DirectoryEntry { resources, image })
 	}
 	/// Gets the id entries in this directory.
 	///
 	/// Note that while it would be a violation of the format spec, there's no strict safety guarantee that these are only id entries.
-	pub fn id_entries(&self) -> Entries<'a> {
+	pub fn id_entries(&self) -> Entries<'a, impl Clone + FnMut(&'a IMAGE_RESOURCE_DIRECTORY_ENTRY) -> DirectoryEntry<'a>> {
 		// Validated by the constructor
 		let slice = unsafe {
 			// Id entries come last in the array
@@ -116,7 +118,8 @@ impl<'a> Directory<'a> {
 			let len = self.image.NumberOfIdEntries as usize;
 			slice::from_raw_parts(p, len)
 		};
-		Entries { resources: self.resources, iter: slice.iter() }
+		let resources = self.resources;
+		slice.iter().map(move |image| DirectoryEntry { resources, image })
 	}
 }
 impl<'a> fmt::Debug for Directory<'a> {
@@ -129,50 +132,8 @@ impl<'a> fmt::Debug for Directory<'a> {
 
 //----------------------------------------------------------------
 
-/// Iterator over directory entries.
-#[derive(Clone)]
-pub struct Entries<'a> {
-	resources: Resources<'a>,
-	iter: slice::Iter<'a, IMAGE_RESOURCE_DIRECTORY_ENTRY>,
-}
-impl<'a> Entries<'a> {
-	/// Gets the underlying resource directory entry images.
-	pub fn image(&self) -> &'a [IMAGE_RESOURCE_DIRECTORY_ENTRY] {
-		self.iter.as_slice()
-	}
-}
-impl<'a> Iterator for Entries<'a> {
-	type Item = DirectoryEntry<'a>;
-	fn next(&mut self) -> Option<DirectoryEntry<'a>> {
-		self.iter.next().map(|image| DirectoryEntry { resources: self.resources, image })
-	}
-	fn size_hint(&self) -> (usize, Option<usize>) {
-		self.iter.size_hint()
-	}
-	fn count(self) -> usize {
-		self.iter.count()
-	}
-	fn nth(&mut self, n: usize) -> Option<DirectoryEntry<'a>> {
-		self.iter.nth(n).map(|image| DirectoryEntry { resources: self.resources, image })
-	}
-	fn last(self) -> Option<DirectoryEntry<'a>> {
-		let resources = self.resources;
-		self.iter.last().map(|image| DirectoryEntry { resources, image })
-	}
-}
-impl<'a> DoubleEndedIterator for Entries<'a> {
-	fn next_back(&mut self) -> Option<DirectoryEntry<'a>> {
-		self.iter.next_back().map(|image| DirectoryEntry { resources: self.resources, image })
-	}
-}
-impl<'a> ExactSizeIterator for Entries<'a> {}
-impl<'a> fmt::Debug for Entries<'a> {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		f.debug_list()
-			.entries(self.clone())
-			.finish()
-	}
-}
+/// Iterator over entries in a directory.
+pub type Entries<'a, F> = iter::Map<slice::Iter<'a, IMAGE_RESOURCE_DIRECTORY_ENTRY>, F>;
 
 //----------------------------------------------------------------
 

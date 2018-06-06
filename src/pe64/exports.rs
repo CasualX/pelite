@@ -49,7 +49,7 @@ fn example(file: PeFile) -> pelite::Result<()> {
 
 */
 
-use std::{fmt, ops, slice};
+use std::{fmt, iter, ops, slice};
 
 use error::{Error, Result};
 use util::CStr;
@@ -328,12 +328,14 @@ impl<'a, P: Pe<'a> + Copy> By<'a, P> {
 	/// Not every exported function has a name, some are exported by ordinal.
 	/// Looking up the exported function's name with [`name_lookup`](#method.name_lookup) results in quadratic performance.
 	/// If the exported function's name is important consider building a cache or using [`iter_names`](#method.iter_names) instead.
-	pub fn iter<'s>(&'s self) -> IterByFn<'s, 'a, P> {
-		IterByFn { by: self, fns: self.functions().iter() }
+	pub fn iter<'s>(&'s self) -> iter::Map<slice::Iter<'a, Rva>, impl 's + Clone + FnMut(&'a Rva) -> Result<Export<'a>>> {
+		self.functions.iter()
+			.map(move |rva| self.symbol_from_rva(rva))
 	}
 	/// Iterate over functions exported by name.
-	pub fn iter_names<'s>(&'s self) -> IterByName<'s, 'a, P> {
-		IterByName { by: self, hints: 0..self.image.NumberOfNames }
+	pub fn iter_names<'s>(&'s self) -> iter::Map<ops::Range<u32>, impl 's + Clone + FnMut(u32) -> (Result<&'a CStr>, Result<Export<'a>>)> {
+		(0..self.image.NumberOfNames)
+			.map(move |hint| (self.name_of_hint(hint as usize), self.hint(hint as usize)))
 	}
 }
 impl<'a, P: 'a + Pe<'a> + Copy> fmt::Debug for By<'a, P> {
@@ -383,80 +385,3 @@ impl<'b, 'a, P: Pe<'a> + Copy, S: AsRef<[u8]> + ?Sized> GetProcAddress<'a, &'b S
 		self.exports()?.by()?.name(name)
 	}
 }
-
-//----------------------------------------------------------------
-// Export iteration
-
-/// Exported functions iterator.
-///
-/// Created with [`By::iter`](struct.By.html#method.iter).
-#[derive(Clone)]
-pub struct IterByFn<'s, 'a: 's, P: 'a> {
-	by: &'s By<'a, P>,
-	fns: slice::Iter<'a, Rva>,
-}
-impl<'s, 'a: 's, P: Pe<'a> + Copy> Iterator for IterByFn<'s, 'a, P> {
-	type Item = Result<Export<'a>>;
-	fn next(&mut self) -> Option<Self::Item> {
-		let by = self.by;
-		self.fns.next().map(|rva| by.symbol_from_rva(rva))
-	}
-	fn size_hint(&self) -> (usize, Option<usize>) {
-		self.fns.size_hint()
-	}
-	fn count(self) -> usize {
-		self.fns.count()
-	}
-	fn nth(&mut self, n: usize) -> Option<Self::Item> {
-		let by = self.by;
-		self.fns.nth(n).map(|rva| by.symbol_from_rva(rva))
-	}
-	fn last(self) -> Option<Self::Item> {
-		let by = self.by;
-		self.fns.last().map(|rva| by.symbol_from_rva(rva))
-	}
-}
-impl<'s, 'a: 's, P: Pe<'a> + Copy> DoubleEndedIterator for IterByFn<'s, 'a, P> {
-	fn next_back(&mut self) -> Option<Self::Item> {
-		let by = self.by;
-		self.fns.next_back().map(|rva| by.symbol_from_rva(rva))
-	}
-}
-impl<'s, 'a: 's, P: Pe<'a> + Copy> ExactSizeIterator for IterByFn<'s, 'a, P> {}
-
-/// Exported names iterator.
-///
-/// Created with [`By::iter_names`](struct.By.html#method.iter_names).
-#[derive(Clone)]
-pub struct IterByName<'s, 'a: 's, P: 'a> {
-	by: &'s By<'a, P>,
-	hints: ops::Range<u32>,
-}
-impl<'s, 'a: 's, P: Pe<'a> + Copy> Iterator for IterByName<'s, 'a, P> {
-	type Item = (Result<&'a CStr>, Result<Export<'a>>);
-	fn next(&mut self) -> Option<Self::Item> {
-		let by = self.by;
-		self.hints.next().map(|hint| (by.name_of_hint(hint as usize), by.hint(hint as usize)))
-	}
-	fn size_hint(&self) -> (usize, Option<usize>) {
-		self.hints.size_hint()
-	}
-	fn count(self) -> usize {
-		self.hints.count()
-	}
-	fn nth(&mut self, n: usize) -> Option<Self::Item> {
-		let by = self.by;
-		self.hints.nth(n).map(|hint| (by.name_of_hint(hint as usize), by.hint(hint as usize)))
-	}
-	fn last(self) -> Option<Self::Item> {
-		let by = self.by;
-		self.hints.last().map(|hint| (by.name_of_hint(hint as usize), by.hint(hint as usize)))
-	}
-}
-impl<'s, 'a: 's, P: Pe<'a> + Copy> DoubleEndedIterator for IterByName<'s, 'a, P> {
-	fn next_back(&mut self) -> Option<Self::Item> {
-		let by = self.by;
-		self.hints.next_back().map(|hint| (by.name_of_hint(hint as usize), by.hint(hint as usize)))
-	}
-}
-impl<'s, 'a: 's, P: Pe<'a> + Copy> ExactSizeIterator for IterByName<'s, 'a, P> {}
