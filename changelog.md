@@ -5,6 +5,39 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [0.6.0] 2018-08-01
+
+### Added
+
+- Add convenient Error is_null.
+- Add stringify module with functions to stringify many PE constants and bitflags.
+- Implement LoadConfig Directory reader.
+- Implement Security Directory reader.
+- Implement Copy and Clone for msvc structs.
+- Implement Send and Sync for Ptr type.
+- Accept and test against curiously valid tiny PE files.
+- Implement generic string reading functions in Pe derva_string and deref_string.
+- Implement imphash example.
+  - Hashes the import functions of a binary.
+
+### Changed
+
+- More generic GetProcAddress.
+- Split overloaded Pe slice_len functions.
+- **BREAKING** Rework the Debug interface completely.
+- **BREAKING** Play with the Exports API.
+  - Rename exports By hint_name to name_of_hint.
+  - Reuse export By hint_name to get an export by its hint with fallback to its name.
+- **BREAKING** Rename reading a C string to Pe derva_c_str and deref_c_str.
+- **BREAKING** Reworked pointer offsetting with signed offsets.
+- **BREAKING** Soft deprecate BADVA and BADRVA.
+  - Their values have changed from all bits clear to all bits set.
+- Rework all debug formatting code to the standard debug format.
+  - This makes pedump output very ugly, but is a necessary step to rework proper serialization.
+- Clean up pe32 and pe64 examples documentation.
+- Fix deref_slice bounds to slice of T.
+- Upgrade dependencies to their latest.
+
 ## [0.5.0] 2018-02-21
 
 ### Added
