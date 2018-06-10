@@ -253,7 +253,7 @@ fn dump_pe64(args: &Parameters, file: &pelite::pe64::PeFile) {
 	if args.tls {
 		print!("{}", SEPARATOR);
 		if let Ok(tls) = file.tls() {
-			print!("{:?}", tls);
+			print!("{:#?}", tls);
 		}
 		else {
 			println!("No TLS Directory found.");
@@ -325,7 +325,7 @@ fn dump_pe32(args: &Parameters, file: &pelite::pe32::PeFile) {
 	if args.tls {
 		print!("{}", SEPARATOR);
 		if let Ok(tls) = file.tls() {
-			print!("{:?}", tls);
+			print!("{:#?}", tls);
 		}
 		else {
 			println!("No TLS Directory found.");

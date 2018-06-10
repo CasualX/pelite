@@ -67,30 +67,11 @@ impl<'a, P: Pe<'a> + Copy> Tls<'a, P> {
 		self.pe.deref_slice_s(self.image.AddressOfCallBacks, BADVA)
 	}
 }
-
-//----------------------------------------------------------------
-// Formatting
-
-use strings::Fmt;
-
 impl<'a, P: Pe<'a> + Copy> fmt::Debug for Tls<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		write!(f,
-			#"{:?}", self.image(),
-			#"TLS Callbacks",
-			#"{}\n", Fmt(|f| {
-				match self.callbacks() {
-					Ok(callbacks) => {
-						for va in callbacks {
-							write!(f, "\n  {:·>16X}", va)?;
-						}
-						Ok(())
-					},
-					e @ Err(_) => {
-						write!(f, ": {:?}", e)
-					}
-				}
-			}),
-		)
+		f.debug_struct("Tls")
+			.field("raw_data.len", &format_args!("{:?}", self.raw_data().map(|raw_data| raw_data.len())))
+			.field("callbacks.len", &format_args!("{:?}", &self.callbacks().map(|cbs| cbs.len())))
+			.finish()
 	}
 }
