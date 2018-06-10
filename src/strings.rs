@@ -19,6 +19,10 @@ pub fn stringify<T>(data: &T) -> Option<&str> {
 	::std::str::from_utf8(strn(bytes)).ok()
 }
 
+pub trait ImageFmt {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result;
+}
+
 //----------------------------------------------------------------
 
 // Intersperse formatting strings with their arguments
@@ -61,7 +65,7 @@ impl<F: Fn(&mut fmt::Formatter) -> fmt::Result> fmt::Display for Fmt<F> {
 
 //----------------------------------------------------------------
 
-impl fmt::Debug for IMAGE_DOS_HEADER {
+impl ImageFmt for IMAGE_DOS_HEADER {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		write!(f,
 			#"MZ Header\n",
@@ -114,7 +118,7 @@ static IMAGE_FILE_CHARS_STRINGS: [Option<&str>; 16] = [
 	/*4000*/Some("UP_SYSTEM_ONLY"),
 	/*8000*/Some("BYTES_REVERSED_HI"),
 ];
-impl fmt::Debug for IMAGE_FILE_HEADER {
+impl ImageFmt for IMAGE_FILE_HEADER {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		write!(f,
 			#"File Header\n",
@@ -206,7 +210,7 @@ fn stringify_datadir_entry(entry: usize) -> Option<&'static str> {
 		_ => None,
 	}
 }
-impl fmt::Debug for IMAGE_OPTIONAL_HEADER32 {
+impl ImageFmt for IMAGE_OPTIONAL_HEADER32 {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		write!(f,
 			#"Optional Header\n",
@@ -267,7 +271,7 @@ impl fmt::Debug for IMAGE_OPTIONAL_HEADER32 {
 		)
 	}
 }
-impl fmt::Debug for IMAGE_OPTIONAL_HEADER64 {
+impl ImageFmt for IMAGE_OPTIONAL_HEADER64 {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		write!(f,
 			#"Optional Header\n",
@@ -325,7 +329,7 @@ impl fmt::Debug for IMAGE_OPTIONAL_HEADER64 {
 
 //----------------------------------------------------------------
 
-impl fmt::Debug for IMAGE_NT_HEADERS32 {
+impl ImageFmt for IMAGE_NT_HEADERS32 {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		write!(f,
 			#"NT Headers\n",
@@ -335,7 +339,7 @@ impl fmt::Debug for IMAGE_NT_HEADERS32 {
 		)
 	}
 }
-impl fmt::Debug for IMAGE_NT_HEADERS64 {
+impl ImageFmt for IMAGE_NT_HEADERS64 {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		write!(f,
 			#"NT Headers\n",
@@ -382,7 +386,7 @@ static IMAGE_SCN_STRINGS: [Option<&str>; 32] = [
 	/*40000000*/Some("MEM_READ"),
 	/*80000000*/Some("MEM_WRITE"),
 ];
-impl fmt::Debug for IMAGE_SECTION_HEADER {
+impl ImageFmt for IMAGE_SECTION_HEADER {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		write!(f,
 			#"Section Header\n",
@@ -426,7 +430,7 @@ impl fmt::Debug for IMAGE_SECTION_HEADER {
 
 //----------------------------------------------------------------
 
-impl fmt::Debug for IMAGE_EXPORT_DIRECTORY {
+impl ImageFmt for IMAGE_EXPORT_DIRECTORY {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		write!(f,
 			#"Export Directory",
@@ -447,7 +451,7 @@ impl fmt::Debug for IMAGE_EXPORT_DIRECTORY {
 
 //----------------------------------------------------------------
 
-impl fmt::Debug for IMAGE_IMPORT_DESCRIPTOR {
+impl ImageFmt for IMAGE_IMPORT_DESCRIPTOR {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		write!(f,
 			#"Import Descriptor",
@@ -470,7 +474,7 @@ pub static RSRC_TYPES: [Option<&str>; 25] = [
 	/*15*/ None, Some("Version"), Some("DlgInclude"), None, Some("Plug and Play"),
 	/*20*/ Some("VXD"), Some("Animated Cursors"), Some("Animated Icons"), Some("HTML"), Some("Manifest"),
 ];
-impl fmt::Debug for IMAGE_RESOURCE_DIRECTORY {
+impl ImageFmt for IMAGE_RESOURCE_DIRECTORY {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		write!(f,
 			#"Resource Directory",
@@ -483,7 +487,7 @@ impl fmt::Debug for IMAGE_RESOURCE_DIRECTORY {
 		)
 	}
 }
-impl fmt::Debug for IMAGE_RESOURCE_DIRECTORY_ENTRY {
+impl ImageFmt for IMAGE_RESOURCE_DIRECTORY_ENTRY {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		write!(f,
 			#"Resource Directory Entry",
@@ -493,7 +497,7 @@ impl fmt::Debug for IMAGE_RESOURCE_DIRECTORY_ENTRY {
 		)
 	}
 }
-impl fmt::Debug for IMAGE_RESOURCE_DATA_ENTRY {
+impl ImageFmt for IMAGE_RESOURCE_DATA_ENTRY {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		write!(f,
 			#"Resource Data Entry",
@@ -522,7 +526,7 @@ pub fn stringify_reloc_type(&tyoff: &IMAGE_BASE_RELOC_TYPEOFFSET) -> Option<&'st
 		_ => None,
 	}
 }
-impl fmt::Debug for IMAGE_BASE_RELOCATION {
+impl ImageFmt for IMAGE_BASE_RELOCATION {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		write!(f,
 			#"Base Relocation",
@@ -535,7 +539,7 @@ impl fmt::Debug for IMAGE_BASE_RELOCATION {
 
 //----------------------------------------------------------------
 
-impl fmt::Debug for IMAGE_TLS_DIRECTORY32 {
+impl ImageFmt for IMAGE_TLS_DIRECTORY32 {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		write!(f,
 			#"TLS Directory",
@@ -549,7 +553,7 @@ impl fmt::Debug for IMAGE_TLS_DIRECTORY32 {
 		)
 	}
 }
-impl fmt::Debug for IMAGE_TLS_DIRECTORY64 {
+impl ImageFmt for IMAGE_TLS_DIRECTORY64 {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		write!(f,
 			#"TLS Directory",
@@ -561,21 +565,6 @@ impl fmt::Debug for IMAGE_TLS_DIRECTORY64 {
 			#"\n  Characteristics:        {:·>8X}", self.Characteristics,
 			#"\n",
 		)
-	}
-}
-
-//----------------------------------------------------------------
-
-impl fmt::Debug for GUID {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		write!(f, "{}", self)
-	}
-}
-impl fmt::Display for GUID {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		let g: &[u8; 16] = unsafe { mem::transmute(self) };
-		write!(f, "{:02X}{:02X}{:02X}{:02X}-{:02X}{:02X}-{:02X}{:02X}-{:02X}{:02X}-{:02X}{:02X}{:02X}{:02X}{:02X}{:02X}",
-			g[0], g[1], g[2], g[3], g[4], g[5], g[6], g[7], g[8], g[9], g[10], g[11], g[12], g[13], g[14], g[15])
 	}
 }
 
@@ -597,7 +586,7 @@ fn stringify_debug_type(ty: u32) -> Option<&'static str> {
 		_ => None,
 	}
 }
-impl fmt::Debug for IMAGE_DEBUG_DIRECTORY {
+impl ImageFmt for IMAGE_DEBUG_DIRECTORY {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		write!(f,
 			#"Debug Directory\n",
@@ -611,7 +600,7 @@ impl fmt::Debug for IMAGE_DEBUG_DIRECTORY {
 		)
 	}
 }
-impl fmt::Debug for IMAGE_DEBUG_CV_INFO_PDB20 {
+impl ImageFmt for IMAGE_DEBUG_CV_INFO_PDB20 {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		write!(f,
 			#"CodeView PDB 2.0\n",
@@ -622,7 +611,7 @@ impl fmt::Debug for IMAGE_DEBUG_CV_INFO_PDB20 {
 		)
 	}
 }
-impl fmt::Debug for IMAGE_DEBUG_CV_INFO_PDB70 {
+impl ImageFmt for IMAGE_DEBUG_CV_INFO_PDB70 {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		write!(f,
 			#"CodeView PDB 7.0\n",
@@ -632,7 +621,7 @@ impl fmt::Debug for IMAGE_DEBUG_CV_INFO_PDB70 {
 		)
 	}
 }
-impl fmt::Debug for IMAGE_DEBUG_MISC {
+impl ImageFmt for IMAGE_DEBUG_MISC {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		write!(f,
 			#"DBG\n",
