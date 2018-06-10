@@ -226,7 +226,7 @@ fn dump_pe64(args: &Parameters, file: &pelite::pe64::PeFile) {
 	if args.imports {
 		print!("{}", SEPARATOR);
 		if let Ok(imports) = file.imports() {
-			print!("{:?}", imports);
+			print!("{:#?}", imports);
 		}
 		else {
 			println!("No Import Directory found.");
@@ -298,7 +298,7 @@ fn dump_pe32(args: &Parameters, file: &pelite::pe32::PeFile) {
 	if args.imports {
 		print!("{}", SEPARATOR);
 		if let Ok(imports) = file.imports() {
-			print!("{:?}", imports);
+			print!("{:#?}", imports);
 		}
 		else {
 			println!("No Import Directory found.");
