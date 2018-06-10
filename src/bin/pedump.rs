@@ -217,7 +217,7 @@ fn dump_pe64(args: &Parameters, file: &pelite::pe64::PeFile) {
 	if args.exports {
 		print!("{}", SEPARATOR);
 		if let Ok(exports) = file.exports() {
-			print!("{:?}", exports);
+			print!("{:#?}", exports);
 		}
 		else {
 			println!("No Export Directory found.");
@@ -289,7 +289,7 @@ fn dump_pe32(args: &Parameters, file: &pelite::pe32::PeFile) {
 	if args.exports {
 		print!("{}", SEPARATOR);
 		if let Ok(exports) = file.exports() {
-			print!("{:?}", exports);
+			print!("{:#?}", exports);
 		}
 		else {
 			println!("No Export Directory found.");
