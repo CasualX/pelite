@@ -508,8 +508,8 @@ impl fmt::Debug for IMAGE_RESOURCE_DATA_ENTRY {
 
 //----------------------------------------------------------------
 
-pub fn stringify_reloc_type(tyoff: &IMAGE_BASE_RELOC_TYPEOFFSET) -> Option<&'static str> {
-	match (tyoff.0 >> 12) as u8 {
+pub fn stringify_reloc_type(&tyoff: &IMAGE_BASE_RELOC_TYPEOFFSET) -> Option<&'static str> {
+	match (tyoff >> 12) as u8 {
 		IMAGE_REL_BASED_ABSOLUTE => Some("ABSOLUTE"),
 		IMAGE_REL_BASED_HIGH => Some("HIGH"),
 		IMAGE_REL_BASED_LOW => Some("LOW"),
@@ -530,15 +530,6 @@ impl fmt::Debug for IMAGE_BASE_RELOCATION {
 			#"\n  SizeOfBlock:    {:·>8X}", self.SizeOfBlock,
 			#"\n",
 		)
-	}
-}
-impl fmt::Debug for IMAGE_BASE_RELOC_TYPEOFFSET {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		write!(f, "    {:·>4X}", self.0)?;
-		if let Some(ty) = stringify_reloc_type(self) {
-			write!(f, ": {}", ty)?;
-		}
-		f.write_str("\n")
 	}
 }
 

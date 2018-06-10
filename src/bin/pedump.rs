@@ -244,7 +244,7 @@ fn dump_pe64(args: &Parameters, file: &pelite::pe64::PeFile) {
 	if args.relocs {
 		print!("{}", SEPARATOR);
 		if let Ok(base_relocs) = file.base_relocs() {
-			print!("{:?}", base_relocs);
+			print!("{:#?}", base_relocs);
 		}
 		else {
 			println!("No BaseRelocation Directory found.");
@@ -316,7 +316,7 @@ fn dump_pe32(args: &Parameters, file: &pelite::pe32::PeFile) {
 	if args.relocs {
 		print!("{}", SEPARATOR);
 		if let Ok(base_relocs) = file.base_relocs() {
-			print!("{:?}", base_relocs);
+			print!("{:#?}", base_relocs);
 		}
 		else {
 			println!("No BaseRelocation Directory found.");

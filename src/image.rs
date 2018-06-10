@@ -439,14 +439,6 @@ pub struct IMAGE_BASE_RELOCATION {
 	pub SizeOfBlock: u32,
 }
 
-// `IMAGE_BASE_RELOCATION::SizeOfBlock` includes its own size.
-// It is immediately followed by a number of `WORD`s representing a bit field:
-// |0123|456789ABCDEF|
-// |Type|   Offset   |
-#[derive(Copy, Clone)]
-#[repr(C)]
-pub struct IMAGE_BASE_RELOC_TYPEOFFSET(pub u16);
-
 //----------------------------------------------------------------
 
 #[derive(Copy, Clone)]
@@ -557,7 +549,6 @@ unsafe impl Pod for IMAGE_RESOURCE_DIRECTORY {}
 unsafe impl Pod for IMAGE_RESOURCE_DIRECTORY_ENTRY {}
 unsafe impl Pod for IMAGE_RESOURCE_DATA_ENTRY {}
 unsafe impl Pod for IMAGE_BASE_RELOCATION {}
-unsafe impl Pod for IMAGE_BASE_RELOC_TYPEOFFSET {}
 unsafe impl Pod for IMAGE_TLS_DIRECTORY32 {}
 unsafe impl Pod for IMAGE_TLS_DIRECTORY64 {}
 unsafe impl Pod for GUID {}
