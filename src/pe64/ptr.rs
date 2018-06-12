@@ -16,6 +16,9 @@ pub struct Ptr<T: ?Sized>(Va, PhantomData<*const T>);
 
 unsafe impl<T: ?Sized + 'static> Pod for Ptr<T> {}
 
+unsafe impl<T: ?Sized> Send for Ptr<T> {}
+unsafe impl<T: ?Sized> Sync for Ptr<T> {}
+
 impl<T: ?Sized> Ptr<T> {
 	/// Creates a null pointer.
 	pub fn null() -> Ptr<T> {
