@@ -27,7 +27,7 @@ pub struct TypeDescriptor {
 }
 
 /// Pointer-to-member displacement info.
-#[derive(Debug)]
+#[derive(Copy, Clone, Debug)]
 #[repr(C)]
 pub struct PMD {
 	/// Member displacement.
@@ -41,7 +41,7 @@ pub struct PMD {
 //----------------------------------------------------------------
 
 /// Fully describes all try/catch blocks and unwindable objects in the function.
-#[derive(Debug)]
+#[derive(Copy, Clone, Debug)]
 #[repr(C)]
 pub struct FuncInfo {
 	/// Compiler version.
@@ -66,7 +66,7 @@ pub struct FuncInfo {
 	pub eh_flags: i32,
 }
 
-#[derive(Debug)]
+#[derive(Copy, Clone, Debug)]
 #[repr(C)]
 pub struct UnwindMapEntry {
 	/// Target state.
@@ -80,7 +80,7 @@ pub struct UnwindMapEntry {
 /// Try block descriptor.
 ///
 /// Describes a try block with associated catches.
-#[derive(Debug)]
+#[derive(Copy, Clone, Debug)]
 #[repr(C)]
 pub struct TryBlockMapEntry {
 	/// This `try {}` covers states ranging from `try_low` to `try_high`.
@@ -97,7 +97,7 @@ pub struct TryBlockMapEntry {
 /// Catch block descriptor.
 ///
 /// Describes a single catch of a try block.
-#[derive(Debug)]
+#[derive(Copy, Clone, Debug)]
 #[repr(C)]
 pub struct HandlerType {
 	/// * `0x01`: const
@@ -115,7 +115,7 @@ pub struct HandlerType {
 }
 
 /// List of expected exceptions.
-#[derive(Debug)]
+#[derive(Copy, Clone, Debug)]
 #[repr(C)]
 pub struct ESTypeList {
 	/// Number of entries in the list.
@@ -126,7 +126,7 @@ pub struct ESTypeList {
 
 //----------------------------------------------------------------
 
-#[derive(Debug)]
+#[derive(Copy, Clone, Debug)]
 #[repr(C)]
 pub struct ThrowInfo {
 	/// * `0x01`: const
@@ -154,7 +154,7 @@ pub struct CatchableTypeArray {
 }
 
 /// Describes a type that can catch this exception.
-#[derive(Debug)]
+#[derive(Copy, Clone, Debug)]
 #[repr(C)]
 pub struct CatchableType {
 	/// * `0x01`: simple type (can be copied by memmove)
@@ -179,7 +179,7 @@ pub struct CatchableType {
 /// The structure is called so because it lets you find the location to the complete object from a specific vftable pointer.
 ///
 /// Every vftable has its own Complete Object Locator.
-#[derive(Debug)]
+#[derive(Copy, Clone, Debug)]
 #[repr(C)]
 pub struct RTTICompleteObjectLocator {
 	/// Always zero?
@@ -197,7 +197,7 @@ pub struct RTTICompleteObjectLocator {
 /// Class Hierarchy Descriptor.
 ///
 /// Describes the inheritance hierarchy of the class, it is shared by all [COL](struct.RTTICompleteObjectLocator.html)s.
-#[derive(Debug)]
+#[derive(Copy, Clone, Debug)]
 #[repr(C)]
 pub struct RTTIClassHierarchyDescriptor {
 	/// Always zero?
@@ -211,7 +211,7 @@ pub struct RTTIClassHierarchyDescriptor {
 }
 
 /// Entry in the [Base Class Array](struct.RTTIClassHierarchyDescriptor.html#base_class_array.v).
-#[derive(Debug)]
+#[derive(Copy, Clone, Debug)]
 #[repr(C)]
 pub struct RTTIBaseClassDescriptor {
 	/// Type descriptor of the class.

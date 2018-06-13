@@ -315,6 +315,20 @@ impl<'a, 'u, P: Pe<'a> + Copy> Matches<'u, P> {
 		self.range.start = it;
 		false
 	}
+	// Select the search strategy and execute the query.
+	fn strategy(&mut self, cursor: u32, qsbuf: &[u8], slice: &'a [u8], save: &mut [Rva]) -> bool {
+		self.cursor = cursor;
+		// FIXME! Profile the performance!
+		if qsbuf.len() == 0 {
+			self.strategy0(qsbuf, slice, save)
+		}
+		else if qsbuf.len() < 4 {
+			self.strategy1(qsbuf, slice, save)
+		}
+		else {
+			self.strategy2(qsbuf, slice, save)
+		}
+	}
 	// Strategy:
 	//  Prefix is too small for full blown quicksearch.
 	//  Memchr for the first byte and only eval pattern on potential matches.
@@ -381,23 +395,7 @@ impl<'a, 'u, P: Pe<'a> + Copy> Matches<'u, P> {
 
 		// Take care of unmapped PE files.
 		// Their sections aren't continous and need to be scanned separately.
-		finder_section(
-			self.scanner.pe,
-			self.range.clone(),
-			|it, slice| {
-			self.cursor = it;
-			// Select search strategy
-			// FIXME! Profile the performance!
-			if qsbuf.len() == 0 {
-				self.strategy0(qsbuf, slice, save)
-			}
-			else if qsbuf.len() < 4 {
-				self.strategy1(qsbuf, slice, save)
-			}
-			else {
-				self.strategy2(qsbuf, slice, save)
-			}
-		})
+		finder_section(self.scanner.pe, self.range.clone(), |it, slice| self.strategy(it, qsbuf, slice, save))
 	}
 }
 impl<'a, 'u, P: Pe<'a> + Copy> Iterator for Matches<'u, P> {
