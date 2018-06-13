@@ -4,7 +4,6 @@ use pelite::{FileMap, ImageMap};
 use pelite::pe64::{Rva, Pe, PeFile, PeView};
 use pelite::pe64::exports::{Export, GetProcAddress};
 use pelite::pe64::imports::Import;
-use pelite::pe64::debug::Info;
 use pelite::util::CStr;
 
 const FILE_NAME: &str = "demo/Demo64.dll";
@@ -154,12 +153,10 @@ fn debug() {
 	let debug = file.debug().unwrap();
 
 	for debug_dir in debug {
-		match debug_dir.info().unwrap() {
-			Info::CvRSDS { pdb_file_name, .. } => {
-				assert_eq!(pdb_file_name, r"D:\Projects\pelite\proto\Demo\x64\Release\Demo.pdb");
-			},
-			_ => (),
-		};
+		if let Ok(cv) = debug_dir.read_cv70() {
+				assert_eq!(cv.file_name(), r"D:\Projects\pelite\proto\Demo\x64\Release\Demo.pdb");
+
+		}
 	}
 }
 

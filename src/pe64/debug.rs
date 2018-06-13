@@ -12,20 +12,9 @@ fn example(file: PeFile) -> pelite::Result<()> {
 	// Access the debug directory
 	let debug = file.debug()?;
 
-	// Iterate over the entries
-	for dir in debug {
-
-		// Interpret this debug info
-		match dir.info()? {
-
-			// And if it matches CodeView RSDS debug format
-			debug::Info::CvRSDS { image, pdb_file_name } => {
-
-				// Print the PDB file name path
-				println!("PDB: {}", pdb_file_name);
-			},
-			_ => (),
-		};
+	// Print the CodeView 7.0 pdb file name
+	if let Some(cv) = debug.read_cv70() {
+		println!("PDB: {}", cv.file_name());
 	}
 
 	Ok(())
@@ -70,6 +59,26 @@ impl<'a, P: Pe<'a> + Copy> Debug<'a, P> {
 	pub fn image(&self) -> &'a [IMAGE_DEBUG_DIRECTORY] {
 		self.image
 	}
+	/// Reads the CodeView 2.0 debug information entry if there is any.
+	pub fn read_cv20(&self) -> Option<CvNB10<'a, P>> {
+		self.find(Dir::read_cv20)
+	}
+	/// Reads the CodeView 7.0 debug information entry if there is any.
+	pub fn read_cv70(&self) -> Option<CvRSDS<'a, P>> {
+		self.find(Dir::read_cv70)
+	}
+	/// Reads the Debug information entry if there is any.
+	pub fn read_dbg(&self) -> Option<Dbg<'a, P>> {
+		self.find(Dir::read_dbg)
+	}
+	fn find<T, F: FnMut(&Dir<'a, P>) -> Result<T>>(&self, mut f: F) -> Option<T> {
+		for dir in *self {
+			if let Ok(item) = f(&dir) {
+				return Some(item);
+			}
+		}
+		None
+	}
 }
 impl<'a, P: Pe<'a> + Copy> IntoIterator for Debug<'a, P> {
 	type Item = Dir<'a, P>;
@@ -108,65 +117,124 @@ impl<'a, P: Pe<'a> + Copy> Dir<'a, P> {
 	pub fn image(&self) -> &'a IMAGE_DEBUG_DIRECTORY {
 		self.image
 	}
-	/// Gets the referenced debug info.
-	pub fn info(&self) -> Result<Info<'a>> {
-		let bytes = self.pe.slice(self.image.AddressOfRawData, self.image.SizeOfData as usize, 4)?;
-		match self.image.Type {
-			IMAGE_DEBUG_TYPE_CODEVIEW => {
-				if bytes.len() >= 4 {
-					let cv_sig = &bytes[..4];
-					// CodeView "NB10"
-					if cv_sig == &[0x4E, 0x42, 0x31, 0x30] {
-						if bytes.len() >= 16 {
-							let image = unsafe { &*(bytes.as_ptr() as *const IMAGE_DEBUG_CV_INFO_PDB20) };
-							let pdb_file_name = CStr::from_bytes(&bytes[16..])?;
-							Ok(Info::CvNB10 { image, pdb_file_name })
-						}
-						else {
-							Err(Error::Corrupt)
-						}
-					}
-					// CodeView "RSDS"
-					else if cv_sig == &[0x52, 0x53, 0x44, 0x53] {
-						if bytes.len() >= 24 {
-							let image = unsafe { &*(bytes.as_ptr() as *const IMAGE_DEBUG_CV_INFO_PDB70) };
-							let pdb_file_name = CStr::from_bytes(&bytes[24..])?;
-							Ok(Info::CvRSDS { image, pdb_file_name })
-						}
-						else {
-							Err(Error::Corrupt)
-						}
-					}
-					else {
-						Ok(Info::Unknown)
-					}
-				}
-				else {
-					Err(Error::Corrupt)
-				}
-			},
-			IMAGE_DEBUG_TYPE_MISC => {
-				if bytes.len() >= 12 {
-					let image = unsafe { &*(bytes.as_ptr() as *const IMAGE_DEBUG_MISC) };
-					Ok(Info::Dbg { image })
-				}
-				else {
-					Err(Error::Corrupt)
-				}
-			},
-			_ => Ok(Info::Unknown),
-		}
+	/// Reads as a CodeView 2.0 debug information entry.
+	pub fn read_cv20(&self) -> Result<CvNB10<'a, P>> {
+		CvNB10::new(self.pe, self.image)
+	}
+	/// Reads as a CodeView 7.0 debug information entry.
+	pub fn read_cv70(&self) -> Result<CvRSDS<'a, P>> {
+		CvRSDS::new(self.pe, self.image)
+	}
+	/// Reads as a Debug information entry.
+	pub fn read_dbg(&self) -> Result<Dbg<'a, P>> {
+		Dbg::new(self.pe, self.image)
 	}
 }
 
 //----------------------------------------------------------------
 
+/// CodeView 2.0 debug information.
 #[derive(Copy, Clone)]
-pub enum Info<'a> {
-	Unknown,
-	CvNB10 { image: &'a IMAGE_DEBUG_CV_INFO_PDB20, pdb_file_name: &'a CStr },
-	CvRSDS { image: &'a IMAGE_DEBUG_CV_INFO_PDB70, pdb_file_name: &'a CStr },
-	Dbg { image: &'a IMAGE_DEBUG_MISC },
+pub struct CvNB10<'a, P> {
+	pe: P,
+	image: &'a IMAGE_DEBUG_CV_INFO_PDB20,
+	file_name: &'a CStr,
+}
+impl<'a, P: Pe<'a> + Copy> CvNB10<'a, P> {
+	pub(crate) fn new(pe: P, dir: &IMAGE_DEBUG_DIRECTORY) -> Result<CvNB10<'a, P>> {
+		if dir.Type != IMAGE_DEBUG_TYPE_CODEVIEW {
+			return Err(Error::BadMagic);
+		}
+		let bytes = pe.slice(dir.AddressOfRawData, dir.SizeOfData as usize, 4)?;
+		if bytes.len() < 16 {
+			return Err(Error::OOB);
+		}
+		let image = unsafe { &*(bytes.as_ptr() as *const IMAGE_DEBUG_CV_INFO_PDB20) };
+		let signature: [u8; 4] = unsafe { mem::transmute(image.CvSignature) };
+		if signature != *b"NB10" {
+			return Err(Error::BadMagic);
+		}
+		let file_name = CStr::from_bytes(&bytes[16..])?;
+		Ok(CvNB10 { pe, image, file_name })
+	}
+	/// Gets the PE instance.
+	pub fn pe(&self) -> P {
+		self.pe
+	}
+	/// Gets the underlying information image.
+	pub fn image(&self) -> &'a IMAGE_DEBUG_CV_INFO_PDB20 {
+		self.image
+	}
+	/// Gets the PDB file name.
+	pub fn file_name(&self) -> &'a CStr {
+		self.file_name
+	}
+}
+
+//----------------------------------------------------------------
+
+/// CodeView 7.0 debug information.
+#[derive(Copy, Clone)]
+pub struct CvRSDS<'a, P> {
+	pe: P,
+	image: &'a IMAGE_DEBUG_CV_INFO_PDB70,
+	file_name: &'a CStr,
+}
+impl<'a, P: Pe<'a> + Copy> CvRSDS<'a, P> {
+	pub(crate) fn new(pe: P, dir: &IMAGE_DEBUG_DIRECTORY) -> Result<CvRSDS<'a, P>> {
+		if dir.Type != IMAGE_DEBUG_TYPE_CODEVIEW {
+			return Err(Error::BadMagic);
+		}
+		let bytes = pe.slice(dir.AddressOfRawData, dir.SizeOfData as usize, 4)?;
+		if bytes.len() < 24 {
+			return Err(Error::OOB);
+		}
+		let image = unsafe { &*(bytes.as_ptr() as *const IMAGE_DEBUG_CV_INFO_PDB70) };
+		let signature: [u8; 4] = unsafe { mem::transmute(image.CvSignature) };
+		if signature != *b"RSDS" {
+			return Err(Error::BadMagic);
+		}
+		let file_name = CStr::from_bytes(&bytes[24..])?;
+		Ok(CvRSDS { pe, image, file_name })
+	}
+	/// Gets the PE instance.
+	pub fn pe(&self) -> P {
+		self.pe
+	}
+	/// Gets the underlying information image.
+	pub fn image(&self) -> &'a IMAGE_DEBUG_CV_INFO_PDB70 {
+		self.image
+	}
+	/// Gets the PDB file name.
+	pub fn file_name(&self) -> &'a CStr {
+		self.file_name
+	}
+}
+
+//----------------------------------------------------------------
+
+/// Debug information.
+#[derive(Copy, Clone)]
+pub struct Dbg<'a, P> {
+	pe: P,
+	image: &'a IMAGE_DEBUG_MISC,
+}
+impl<'a, P: Pe<'a> + Copy> Dbg<'a, P> {
+	pub(crate) fn new(pe: P, dir: &IMAGE_DEBUG_DIRECTORY) -> Result<Dbg<'a, P>> {
+		if dir.Type != IMAGE_DEBUG_TYPE_MISC {
+			return Err(Error::Null);
+		}
+		let image = pe.derva(dir.AddressOfRawData)?;
+		Ok(Dbg { pe, image })
+	}
+	/// Gets the PE instance.
+	pub fn pe(&self) -> P {
+		self.pe
+	}
+	/// Gets the underlying information image.
+	pub fn image(&self) -> &'a IMAGE_DEBUG_MISC {
+		self.image
+	}
 }
 
 //----------------------------------------------------------------
@@ -184,27 +252,36 @@ impl<'a, P: Pe<'a> + Copy> fmt::Debug for Debug<'a, P> {
 impl<'a, P: Pe<'a> + Copy> fmt::Debug for Dir<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		self.image.fmt(f)?;
-		match self.info() {
-			Ok(info) => info.fmt(f)?,
-			e @ Err(_) => e.fmt(f)?,
-		};
+		if let Ok(cv20) = self.read_cv20() {
+			cv20.fmt(f)?;
+		}
+		else if let Ok(cv70) = self.read_cv70() {
+			cv70.fmt(f)?;
+		}
+		else if let Ok(dbg) = self.read_dbg() {
+			dbg.fmt(f)?;
+		}
+		else {
+			write!(f, "Unknown\n")?;
+		}
 		f.write_str("\n")
 	}
 }
 
-impl<'a> fmt::Debug for Info<'a> {
+impl<'a, P: Pe<'a> + Copy> fmt::Debug for CvNB10<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		match *self {
-			Info::Unknown => write!(f, "Unknown\n"),
-			Info::CvNB10 { image, pdb_file_name } => {
-				write!(f, "{:?}  PdbFileName:      {}\n", image, pdb_file_name)
-			},
-			Info::CvRSDS { image, pdb_file_name } => {
-				write!(f, "{:?}  PdbFileName:      {}\n", image, pdb_file_name)
-			},
-			Info::Dbg { image } => {
-				write!(f, "{:?}", image)
-			},
-		}
+		write!(f, "{:?}  PdbFileName:      {}\n", self.image, self.file_name)
+	}
+}
+
+impl<'a, P: Pe<'a> + Copy> fmt::Debug for CvRSDS<'a, P> {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		write!(f, "{:?}  PdbFileName:      {}\n", self.image, self.file_name)
+	}
+}
+
+impl<'a, P: Pe<'a> + Copy> fmt::Debug for Dbg<'a, P> {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		write!(f, "{:?}", self.image)
 	}
 }
