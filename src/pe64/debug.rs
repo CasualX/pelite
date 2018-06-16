@@ -14,7 +14,7 @@ fn example(file: PeFile) -> pelite::Result<()> {
 
 	// Print the CodeView 7.0 pdb file name
 	if let Some(cv) = debug.read_cv70() {
-		println!("PDB: {}", cv.file_name());
+		println!("PDB: {}", cv.pdb_file_name());
 	}
 
 	Ok(())
@@ -90,6 +90,14 @@ impl<'a, P: Pe<'a> + Copy> IntoIterator for Debug<'a, P> {
 		}
 	}
 }
+impl<'a, P: Pe<'a> + Copy> fmt::Debug for Debug<'a, P> {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		for dir in *self {
+			dir.fmt(f)?;
+		}
+		Ok(())
+	}
+}
 
 //----------------------------------------------------------------
 
@@ -130,6 +138,24 @@ impl<'a, P: Pe<'a> + Copy> Dir<'a, P> {
 		Dbg::new(self.pe, self.image)
 	}
 }
+impl<'a, P: Pe<'a> + Copy> fmt::Debug for Dir<'a, P> {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		self.image.fmt(f)?;
+		if let Ok(cv20) = self.read_cv20() {
+			cv20.fmt(f)?;
+		}
+		else if let Ok(cv70) = self.read_cv70() {
+			cv70.fmt(f)?;
+		}
+		else if let Ok(dbg) = self.read_dbg() {
+			dbg.fmt(f)?;
+		}
+		else {
+			write!(f, "Unknown\n")?;
+		}
+		f.write_str("\n")
+	}
+}
 
 //----------------------------------------------------------------
 
@@ -138,7 +164,7 @@ impl<'a, P: Pe<'a> + Copy> Dir<'a, P> {
 pub struct CvNB10<'a, P> {
 	pe: P,
 	image: &'a IMAGE_DEBUG_CV_INFO_PDB20,
-	file_name: &'a CStr,
+	pdb_file_name: &'a CStr,
 }
 impl<'a, P: Pe<'a> + Copy> CvNB10<'a, P> {
 	pub(crate) fn new(pe: P, dir: &IMAGE_DEBUG_DIRECTORY) -> Result<CvNB10<'a, P>> {
@@ -154,8 +180,8 @@ impl<'a, P: Pe<'a> + Copy> CvNB10<'a, P> {
 		if signature != *b"NB10" {
 			return Err(Error::BadMagic);
 		}
-		let file_name = CStr::from_bytes(&bytes[16..])?;
-		Ok(CvNB10 { pe, image, file_name })
+		let pdb_file_name = CStr::from_bytes(&bytes[16..])?;
+		Ok(CvNB10 { pe, image, pdb_file_name })
 	}
 	/// Gets the PE instance.
 	pub fn pe(&self) -> P {
@@ -166,8 +192,15 @@ impl<'a, P: Pe<'a> + Copy> CvNB10<'a, P> {
 		self.image
 	}
 	/// Gets the PDB file name.
-	pub fn file_name(&self) -> &'a CStr {
-		self.file_name
+	pub fn pdb_file_name(&self) -> &'a CStr {
+		self.pdb_file_name
+	}
+}
+impl<'a, P: Pe<'a> + Copy> fmt::Debug for CvNB10<'a, P> {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		f.debug_struct("CvNB10")
+			.field("pdb_file_name", &self.pdb_file_name)
+			.finish()
 	}
 }
 
@@ -178,7 +211,7 @@ impl<'a, P: Pe<'a> + Copy> CvNB10<'a, P> {
 pub struct CvRSDS<'a, P> {
 	pe: P,
 	image: &'a IMAGE_DEBUG_CV_INFO_PDB70,
-	file_name: &'a CStr,
+	pdb_file_name: &'a CStr,
 }
 impl<'a, P: Pe<'a> + Copy> CvRSDS<'a, P> {
 	pub(crate) fn new(pe: P, dir: &IMAGE_DEBUG_DIRECTORY) -> Result<CvRSDS<'a, P>> {
@@ -194,8 +227,8 @@ impl<'a, P: Pe<'a> + Copy> CvRSDS<'a, P> {
 		if signature != *b"RSDS" {
 			return Err(Error::BadMagic);
 		}
-		let file_name = CStr::from_bytes(&bytes[24..])?;
-		Ok(CvRSDS { pe, image, file_name })
+		let pdb_file_name = CStr::from_bytes(&bytes[24..])?;
+		Ok(CvRSDS { pe, image, pdb_file_name })
 	}
 	/// Gets the PE instance.
 	pub fn pe(&self) -> P {
@@ -206,8 +239,15 @@ impl<'a, P: Pe<'a> + Copy> CvRSDS<'a, P> {
 		self.image
 	}
 	/// Gets the PDB file name.
-	pub fn file_name(&self) -> &'a CStr {
-		self.file_name
+	pub fn pdb_file_name(&self) -> &'a CStr {
+		self.pdb_file_name
+	}
+}
+impl<'a, P: Pe<'a> + Copy> fmt::Debug for CvRSDS<'a, P> {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		f.debug_struct("CvRSDS")
+			.field("pdb_file_name", &self.pdb_file_name)
+			.finish()
 	}
 }
 
@@ -236,52 +276,8 @@ impl<'a, P: Pe<'a> + Copy> Dbg<'a, P> {
 		self.image
 	}
 }
-
-//----------------------------------------------------------------
-// Formatting
-
-impl<'a, P: Pe<'a> + Copy> fmt::Debug for Debug<'a, P> {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		for dir in *self {
-			dir.fmt(f)?;
-		}
-		Ok(())
-	}
-}
-
-impl<'a, P: Pe<'a> + Copy> fmt::Debug for Dir<'a, P> {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		self.image.fmt(f)?;
-		if let Ok(cv20) = self.read_cv20() {
-			cv20.fmt(f)?;
-		}
-		else if let Ok(cv70) = self.read_cv70() {
-			cv70.fmt(f)?;
-		}
-		else if let Ok(dbg) = self.read_dbg() {
-			dbg.fmt(f)?;
-		}
-		else {
-			write!(f, "Unknown\n")?;
-		}
-		f.write_str("\n")
-	}
-}
-
-impl<'a, P: Pe<'a> + Copy> fmt::Debug for CvNB10<'a, P> {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		write!(f, "{:?}  PdbFileName:      {}\n", self.image, self.file_name)
-	}
-}
-
-impl<'a, P: Pe<'a> + Copy> fmt::Debug for CvRSDS<'a, P> {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		write!(f, "{:?}  PdbFileName:      {}\n", self.image, self.file_name)
-	}
-}
-
 impl<'a, P: Pe<'a> + Copy> fmt::Debug for Dbg<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		write!(f, "{:?}", self.image)
+		f.debug_struct("Dbg").finish()
 	}
 }

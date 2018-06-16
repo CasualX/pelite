@@ -334,7 +334,7 @@ fn dump_pe32(args: &Parameters, file: &pelite::pe32::PeFile) {
 	if args.debug_info {
 		print!("{}", SEPARATOR);
 		if let Ok(debug) = file.debug() {
-			print!("{:?}", debug);
+			print!("{:#?}", debug);
 		}
 		else {
 			println!("No Debug Directory found.");
