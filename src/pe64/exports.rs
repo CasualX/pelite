@@ -144,11 +144,23 @@ impl<'a, P: Pe<'a> + Copy> Exports<'a, P> {
 	/// Query the exports.
 	///
 	/// This specifically validates whether the functions, names and name indices are valid.
-	pub fn by(self) -> Result<By<'a, P>> {
-		let functions = self.functions().or_else(|e| if e == Error::Null { Ok(&[]) } else { Err(e) })?;
-		let names = self.names().or_else(|e| if e == Error::Null { Ok(&[]) } else { Err(e) })?;
-		let name_indices = self.name_indices().or_else(|e| if e == Error::Null { Ok(&[]) } else { Err(e) })?;
-		Ok(By { exp: self, functions, names, name_indices })
+	pub fn by(&self) -> Result<By<'a, P>> {
+		let functions = match self.functions() {
+			Ok(functions) => functions,
+			Err(Error::Null) => &[],
+			Err(e) => return Err(e),
+		};
+		let names = match self.names() {
+			Ok(names) => names,
+			Err(Error::Null) => &[],
+			Err(e) => return Err(e),
+		};
+		let name_indices = match self.name_indices() {
+			Ok(name_indices) => name_indices,
+			Err(Error::Null) => &[],
+			Err(e) => return Err(e),
+		};
+		Ok(By { exp: *self, functions, names, name_indices })
 	}
 	fn is_forwarded(&self, rva: Rva) -> bool {
 		// An export is forward if its rva points within data directory bounds
@@ -242,17 +254,7 @@ impl<'a, P: Pe<'a> + Copy> By<'a, P> {
 	pub fn import(&self, import: Import) -> Result<Export<'a>> {
 		match import {
 			Import::ByName { hint, name } => {
-				// Try the hint first
-				if let Ok(export) = self.hint(hint) {
-					// Double check that this is the correct export
-					if let Ok(export_name) = self.hint_name(hint) {
-						if export_name == name {
-							return Ok(export);
-						}
-					}
-				}
-				// Otherwise just look up the name
-				self.name(name)
+				self.hint_name_(hint, name)
 			},
 			Import::ByOrdinal { ord } => {
 				self.ordinal(ord)
@@ -269,8 +271,25 @@ impl<'a, P: Pe<'a> + Copy> By<'a, P> {
 		let &index = self.name_indices.get(hint).ok_or(Error::OOB)?;
 		self.index(index as usize)
 	}
+	/// Looks up an export by its hint and falls back to the name if the hint is incorrect.
+	pub fn hint_name<S: AsRef<[u8]> + ?Sized>(&self, hint: usize, name: &S) -> Result<Export<'a>> {
+		self.hint_name_(hint, name.as_ref())
+	}
+	fn hint_name_(&self, hint: usize, name: &[u8]) -> Result<Export<'a>> {
+		// Try the hint first
+		if let Ok(export) = self.hint(hint) {
+			// Double check that this is the correct export
+			if let Ok(export_name) = self.name_of_hint(hint) {
+				if export_name == name {
+					return Ok(export);
+				}
+			}
+		}
+		// Otherwise fallback to the name
+		self.name(name)
+	}
 	/// Looks up the name for a hint.
-	pub fn hint_name(&self, hint: usize) -> Result<&'a CStr> {
+	pub fn name_of_hint(&self, hint: usize) -> Result<&'a CStr> {
 		let &name_rva = self.names.get(hint).ok_or(Error::OOB)?;
 		self.exp.pe.derva_str(name_rva)
 	}
@@ -396,7 +415,7 @@ impl<'s, 'a: 's, P: Pe<'a> + Copy> Iterator for IterByName<'s, 'a, P> {
 	type Item = (Result<Export<'a>>, Result<&'a CStr>);
 	fn next(&mut self) -> Option<Self::Item> {
 		let by = self.by;
-		self.hints.next().map(|hint| (by.hint(hint as usize), by.hint_name(hint as usize)))
+		self.hints.next().map(|hint| (by.hint(hint as usize), by.name_of_hint(hint as usize)))
 	}
 	fn size_hint(&self) -> (usize, Option<usize>) {
 		self.hints.size_hint()
@@ -406,17 +425,17 @@ impl<'s, 'a: 's, P: Pe<'a> + Copy> Iterator for IterByName<'s, 'a, P> {
 	}
 	fn nth(&mut self, n: usize) -> Option<Self::Item> {
 		let by = self.by;
-		self.hints.nth(n).map(|hint| (by.hint(hint as usize), by.hint_name(hint as usize)))
+		self.hints.nth(n).map(|hint| (by.hint(hint as usize), by.name_of_hint(hint as usize)))
 	}
 	fn last(self) -> Option<Self::Item> {
 		let by = self.by;
-		self.hints.last().map(|hint| (by.hint(hint as usize), by.hint_name(hint as usize)))
+		self.hints.last().map(|hint| (by.hint(hint as usize), by.name_of_hint(hint as usize)))
 	}
 }
 impl<'s, 'a: 's, P: Pe<'a> + Copy> DoubleEndedIterator for IterByName<'s, 'a, P> {
 	fn next_back(&mut self) -> Option<Self::Item> {
 		let by = self.by;
-		self.hints.next_back().map(|hint| (by.hint(hint as usize), by.hint_name(hint as usize)))
+		self.hints.next_back().map(|hint| (by.hint(hint as usize), by.name_of_hint(hint as usize)))
 	}
 }
 impl<'s, 'a: 's, P: Pe<'a> + Copy> ExactSizeIterator for IterByName<'s, 'a, P> {}
