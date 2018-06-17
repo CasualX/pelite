@@ -64,6 +64,11 @@ impl<'a, P: Pe<'a> + Copy> IntoIterator for BaseRelocs<'a, P> {
 		Iter { pe: self.pe, iter: self.relocs.iter() }
 	}
 }
+impl<'a, P: Pe<'a> + Copy> fmt::Debug for BaseRelocs<'a, P> {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		f.debug_struct("BaseRelocs").finish()
+	}
+}
 
 //----------------------------------------------------------------
 
@@ -113,21 +118,21 @@ impl<'a, P: Pe<'a> + Copy> Block<'a, P> {
 		self.image.VirtualAddress
 	}
 	/// Gets the types and offsets.
-	pub fn words(&self) -> &'a [IMAGE_BASE_RELOC_TYPEOFFSET] {
+	pub fn words(&self) -> &'a [u16] {
 		unsafe {
-			let p = (self.image as *const IMAGE_BASE_RELOCATION).offset(1) as *const IMAGE_BASE_RELOC_TYPEOFFSET;
-			let len = (self.image.SizeOfBlock as usize - mem::size_of::<IMAGE_BASE_RELOCATION>()) / mem::size_of::<IMAGE_BASE_RELOC_TYPEOFFSET>();
+			let p = (self.image as *const IMAGE_BASE_RELOCATION).offset(1) as *const u16;
+			let len = (self.image.SizeOfBlock as usize - mem::size_of::<IMAGE_BASE_RELOCATION>()) / 2;
 			slice::from_raw_parts(p, len)
 		}
 	}
 	/// Gets the final Rva of a typeoffset.
-	pub fn rva_of(&self, tyoff: &IMAGE_BASE_RELOC_TYPEOFFSET) -> Rva {
-		let offset = (tyoff.0 & 0x0FFF) as Rva;
+	pub fn rva_of(&self, word: &u16) -> Rva {
+		let offset = (word & 0x0FFF) as Rva;
 		self.image.VirtualAddress + offset
 	}
 	/// Gets the type of a typeoffset.
-	pub fn type_of(&self, tyoff: &IMAGE_BASE_RELOC_TYPEOFFSET) -> u8 {
-		((tyoff.0 >> 12) & 0xFF) as u8
+	pub fn type_of(&self, &word: &u16) -> u8 {
+		((word >> 12) & 0xFF) as u8
 	}
 }
 impl<'a, P: Pe<'a> + Copy> IntoIterator for Block<'a, P> {
@@ -140,66 +145,33 @@ impl<'a, P: Pe<'a> + Copy> IntoIterator for Block<'a, P> {
 		}
 	}
 }
+impl<'a, P: Pe<'a> + Copy> fmt::Debug for Block<'a, P> {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		f.debug_struct("Block")
+			.field("words.len", &self.words().len())
+			.finish()
+	}
+}
+
 
 //----------------------------------------------------------------
 
 pub struct BlockIter<'a> {
 	rva: Rva,
-	iter: slice::Iter<'a, IMAGE_BASE_RELOC_TYPEOFFSET>,
+	iter: slice::Iter<'a, u16>,
 }
 impl<'a> Iterator for BlockIter<'a> {
 	type Item = Rva;
 	fn next(&mut self) -> Option<Rva> {
-		self.iter.next().and_then(|tyoff| {
-			let ty = ((tyoff.0 >> 12) & 0xFF) as u8;
+		self.iter.next().and_then(|&word| {
+			let ty = ((word >> 12) & 0xFF) as u8;
 			if ty != IMAGE_REL_BASED_ABSOLUTE {
-				let offset = (tyoff.0 & 0x0FFF) as Rva;
+				let offset = (word & 0x0FFF) as Rva;
 				Some(self.rva + offset)
 			}
 			else {
 				None
 			}
 		})
-	}
-}
-// def_iter!(struct BlockIter -> IMAGE_BASE_RELOC_TYPEOFFSET, (Rva, u8); this |e| {
-// 	let ty = ((e.0 >> 12) & 0xFF) as u8;
-// 	let offset = (e.0 & 0x0FFF) as Rva;
-// 	let rva = this.rva + offset;
-// 	(rva, ty)
-// });
-
-//----------------------------------------------------------------
-// Formatting
-
-use strings::{Fmt, stringify_reloc_type};
-
-impl<'a, P: Pe<'a> + Copy> fmt::Debug for BaseRelocs<'a, P> {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		for it in *self {
-			write!(f, "{:?}", it)?;
-		}
-		Ok(())
-	}
-}
-
-impl<'a, P: Pe<'a> + Copy> fmt::Debug for Block<'a, P> {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		write!(f,
-			#"Base Relocations\n",
-			#"  VirtualAddress: {:·>8X}\n", self.image.VirtualAddress,
-			#"  SizeOfBlock:    {:·>8X}", self.image.SizeOfBlock,
-			#"{}\n", Fmt(|f| {
-				for it in self.words() {
-					let rva = self.rva_of(it);
-					let ty = self.type_of(it);
-					write!(f, "\n    {:X} {:·>8X}", ty, rva)?;
-					if let Some(ty) = stringify_reloc_type(it) {
-						write!(f, ": {}", ty)?;
-					}
-				}
-				Ok(())
-			}),
-		)
 	}
 }

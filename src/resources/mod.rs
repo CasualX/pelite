@@ -13,6 +13,14 @@ use util::WideStr;
 mod find;
 pub use self::find::FindError;
 
+static RSRC_TYPES: [Option<&str>; 25] = [
+	/* 0*/ None, Some("Cursors"), Some("Bitmaps"), Some("Icons"), Some("Menus"),
+	/* 5*/ Some("Dialogs"), Some("Strings"), Some("Font Directory"), Some("Fonts"), Some("Accelerators"),
+	/*10*/ Some("Raw Data"), Some("Message Tables"), Some("Group Cursors"), None, Some("Group Icons"),
+	/*15*/ None, Some("Version"), Some("DlgInclude"), None, Some("Plug and Play"),
+	/*20*/ Some("VXD"), Some("Animated Cursors"), Some("Animated Icons"), Some("HTML"), Some("Manifest"),
+];
+
 //----------------------------------------------------------------
 
 /// Resources filesystem.
@@ -41,6 +49,11 @@ impl<'a> Resources<'a> {
 	/// Gets the root directory.
 	pub fn root(self) -> Result<Directory<'a>> {
 		Directory::from(self, 0)
+	}
+}
+impl<'a> fmt::Debug for Resources<'a> {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		f.write_str("Resources { .. }")
 	}
 }
 
@@ -113,6 +126,13 @@ impl<'a> Directory<'a> {
 		Entries { resources: self.resources, iter: slice.iter() }
 	}
 }
+impl<'a> fmt::Debug for Directory<'a> {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		f.debug_struct("Directory")
+			.field("entries", &self.entries())
+			.finish()
+	}
+}
 
 //----------------------------------------------------------------
 
@@ -153,6 +173,13 @@ impl<'a> DoubleEndedIterator for Entries<'a> {
 	}
 }
 impl<'a> ExactSizeIterator for Entries<'a> {}
+impl<'a> fmt::Debug for Entries<'a> {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		f.debug_list()
+			.entries(self.clone())
+			.finish()
+	}
+}
 
 //----------------------------------------------------------------
 
@@ -246,6 +273,14 @@ impl<'a> DirectoryEntry<'a> {
 		}
 	}
 }
+impl<'a> fmt::Debug for DirectoryEntry<'a> {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		f.debug_struct("DirectoryEntry")
+			.field("name", &format_args!("{:?}", self.name()))
+			.field("entry", &if self.is_dir() { "Directory(..)" } else { "DataEntry(..)" })
+			.finish()
+	}
+}
 
 //----------------------------------------------------------------
 
@@ -277,6 +312,13 @@ impl<'a> DataEntry<'a> {
 		let start = u32::checked_sub(self.image.OffsetToData, self.resources.base).ok_or(Error::Overflow)?;
 		let end = u32::checked_add(start, self.image.Size).ok_or(Error::Overflow)?;
 		self.resources.data.get(start as usize..end as usize).ok_or(Error::OOB)
+	}
+}
+impl<'a> fmt::Debug for DataEntry<'a> {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		f.debug_struct("DataEntry")
+			.field("data.len", &self.image.Size)
+			.finish()
 	}
 }
 
@@ -337,7 +379,6 @@ fn tree_fmt_rec(f: &mut fmt::Formatter, margin: &mut [bool; 32], depth: u32, art
 			Ok(Name::Id(id)) => {
 				// At root level some resource ids have special names
 				let get_rsrc_name = || {
-					use strings::RSRC_TYPES;
 					if root { RSRC_TYPES.get(id as usize).and_then(|&a| a) }
 					else { None }
 				};
@@ -358,49 +399,4 @@ fn tree_fmt_rec(f: &mut fmt::Formatter, margin: &mut [bool; 32], depth: u32, art
 		}
 	}
 	Ok(())
-}
-
-//----------------------------------------------------------------
-// Formatting
-
-impl<'a> fmt::Debug for Resources<'a> {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		f.write_str("Resources\n")?;
-		match self.root() {
-			Ok(dir) => {
-				tree_fmt(f, dir, &TREE_ART_A, true)
-			},
-			e @ Err(_) => {
-				write!(f, "{:?}\n", e)
-			}
-		}
-	}
-}
-
-impl<'a> fmt::Debug for Directory<'a> {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		self.image.fmt(f)?;
-		for entry in self.entries() {
-			write!(f, "{:?}", entry)?;
-			match entry.entry() {
-				Ok(Entry::DataEntry(data_entry)) => write!(f, "{:?}", data_entry),
-				Ok(Entry::Directory(directory)) => write!(f, "{:?}", directory),
-				e @ Err(_) => write!(f, "{:?}", e),
-			}?;
-		}
-		Ok(())
-	}
-}
-
-impl<'a> fmt::Debug for DirectoryEntry<'a> {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		let a = if self.is_dir() { "<DIR>" } else { "<FILE>" };
-		write!(f, "{}: {:?}\n", a, self.name().unwrap())
-	}
-}
-
-impl<'a> fmt::Debug for DataEntry<'a> {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		self.image.fmt(f)
-	}
 }

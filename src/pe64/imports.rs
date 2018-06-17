@@ -85,6 +85,13 @@ impl<'a, P: Pe<'a> + Copy> IntoIterator for Imports<'a, P> {
 		}
 	}
 }
+impl<'a, P: Pe<'a> + Copy> fmt::Debug for Imports<'a, P> {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		f.debug_list()
+			.entries(self.into_iter())
+			.finish()
+	}
+}
 
 //----------------------------------------------------------------
 
@@ -133,6 +140,16 @@ impl<'a, P: Pe<'a> + Copy> Desc<'a, P> {
 		})
 	}
 }
+impl<'a, P: Pe<'a> + Copy> fmt::Debug for Desc<'a, P> {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		f.debug_struct("Imports")
+			.field("dll_name", &format_args!("{:?}", self.dll_name()))
+			.field("time_date_stamp", &self.image.TimeDateStamp)
+			.field("iat.len", &format_args!("{:?}", &self.iat().map(|iter| iter.len())))
+			.field("int.len", &format_args!("{:?}", &self.int().map(|iter| iter.as_slice().len())))
+			.finish()
+	}
+}
 
 //----------------------------------------------------------------
 
@@ -159,52 +176,3 @@ pub struct IntIter<'a, P> {
 	iter: slice::Iter<'a, Va>
 }
 def_iter!(struct IntIter -> Va, Result<Import<'a>>; this |&va| import_from_va(this.pe, va));
-
-//----------------------------------------------------------------
-// Formatting
-
-use strings::Fmt;
-
-impl<'a> fmt::Display for Import<'a> {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		match *self {
-			Import::ByName { hint, name } => {
-				write!(f, "{:>5} {}", hint, name)
-			},
-			Import::ByOrdinal { ord } => {
-				write!(f, "#{:<5}", ord)
-			},
-		}
-	}
-}
-
-impl<'a, P: Pe<'a> + Copy> fmt::Debug for Imports<'a, P> {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		for desc in *self {
-			desc.fmt(f)?;
-		}
-		Ok(())
-	}
-}
-
-impl<'a, P: Pe<'a> + Copy> fmt::Debug for Desc<'a, P> {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		write!(f,
-			#"Imports from {}\n", Fmt(|f| {
-				match self.dll_name() {
-					Ok(name) => name.fmt(f),
-					err @ Err(_) => err.fmt(f),
-				}
-			}),
-			#"  TimeDateStamp:   {}\n", self.image.TimeDateStamp,
-			#"  ForwarderChain:  {:·>8X}\n", self.image.ForwarderChain,
-			#"  FirstThunk:      {:·>8X}", self.image.FirstThunk,
-			#"{}\n", Fmt(|f| {
-				for imp in self.int().unwrap() {
-					write!(f, "\n  {}", imp.unwrap())?;
-				}
-				Ok(())
-			})
-		)
-	}
-}

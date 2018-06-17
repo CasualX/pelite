@@ -157,7 +157,7 @@ fn debug() {
 
 	for debug_dir in debug {
 		if let Ok(cv) = debug_dir.read_cv70() {
-				assert_eq!(cv.file_name(), r"D:\Projects\pelite\proto\Demo\x64\Release\Demo.pdb");
+				assert_eq!(cv.pdb_file_name(), r"D:\Projects\pelite\proto\Demo\x64\Release\Demo.pdb");
 
 		}
 	}

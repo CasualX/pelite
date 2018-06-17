@@ -217,7 +217,7 @@ fn dump_pe64(args: &Parameters, file: &pelite::pe64::PeFile) {
 	if args.exports {
 		print!("{}", SEPARATOR);
 		if let Ok(exports) = file.exports() {
-			print!("{:?}", exports);
+			print!("{:#?}", exports);
 		}
 		else {
 			println!("No Export Directory found.");
@@ -226,7 +226,7 @@ fn dump_pe64(args: &Parameters, file: &pelite::pe64::PeFile) {
 	if args.imports {
 		print!("{}", SEPARATOR);
 		if let Ok(imports) = file.imports() {
-			print!("{:?}", imports);
+			print!("{:#?}", imports);
 		}
 		else {
 			println!("No Import Directory found.");
@@ -235,7 +235,7 @@ fn dump_pe64(args: &Parameters, file: &pelite::pe64::PeFile) {
 	if args.resources {
 		print!("{}", SEPARATOR);
 		if let Ok(res) = file.resources() {
-			print!("{:?}", res);
+			print!("{:#?}", res);
 		}
 		else {
 			println!("No Resources Directory found.");
@@ -244,7 +244,7 @@ fn dump_pe64(args: &Parameters, file: &pelite::pe64::PeFile) {
 	if args.relocs {
 		print!("{}", SEPARATOR);
 		if let Ok(base_relocs) = file.base_relocs() {
-			print!("{:?}", base_relocs);
+			print!("{:#?}", base_relocs);
 		}
 		else {
 			println!("No BaseRelocation Directory found.");
@@ -253,7 +253,7 @@ fn dump_pe64(args: &Parameters, file: &pelite::pe64::PeFile) {
 	if args.tls {
 		print!("{}", SEPARATOR);
 		if let Ok(tls) = file.tls() {
-			print!("{:?}", tls);
+			print!("{:#?}", tls);
 		}
 		else {
 			println!("No TLS Directory found.");
@@ -289,7 +289,7 @@ fn dump_pe32(args: &Parameters, file: &pelite::pe32::PeFile) {
 	if args.exports {
 		print!("{}", SEPARATOR);
 		if let Ok(exports) = file.exports() {
-			print!("{:?}", exports);
+			print!("{:#?}", exports);
 		}
 		else {
 			println!("No Export Directory found.");
@@ -298,7 +298,7 @@ fn dump_pe32(args: &Parameters, file: &pelite::pe32::PeFile) {
 	if args.imports {
 		print!("{}", SEPARATOR);
 		if let Ok(imports) = file.imports() {
-			print!("{:?}", imports);
+			print!("{:#?}", imports);
 		}
 		else {
 			println!("No Import Directory found.");
@@ -307,7 +307,7 @@ fn dump_pe32(args: &Parameters, file: &pelite::pe32::PeFile) {
 	if args.resources {
 		print!("{}", SEPARATOR);
 		if let Ok(res) = file.resources() {
-			print!("{:?}", res);
+			print!("{:#?}", res);
 		}
 		else {
 			println!("No Resources Directory found.");
@@ -316,7 +316,7 @@ fn dump_pe32(args: &Parameters, file: &pelite::pe32::PeFile) {
 	if args.relocs {
 		print!("{}", SEPARATOR);
 		if let Ok(base_relocs) = file.base_relocs() {
-			print!("{:?}", base_relocs);
+			print!("{:#?}", base_relocs);
 		}
 		else {
 			println!("No BaseRelocation Directory found.");
@@ -325,7 +325,7 @@ fn dump_pe32(args: &Parameters, file: &pelite::pe32::PeFile) {
 	if args.tls {
 		print!("{}", SEPARATOR);
 		if let Ok(tls) = file.tls() {
-			print!("{:?}", tls);
+			print!("{:#?}", tls);
 		}
 		else {
 			println!("No TLS Directory found.");
@@ -334,7 +334,7 @@ fn dump_pe32(args: &Parameters, file: &pelite::pe32::PeFile) {
 	if args.debug_info {
 		print!("{}", SEPARATOR);
 		if let Ok(debug) = file.debug() {
-			print!("{:?}", debug);
+			print!("{:#?}", debug);
 		}
 		else {
 			println!("No Debug Directory found.");

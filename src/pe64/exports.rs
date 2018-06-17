@@ -179,6 +179,14 @@ impl<'a, P: Pe<'a> + Copy> Exports<'a, P> {
 		}
 	}
 }
+impl<'a, P: 'a + Pe<'a> + Copy> fmt::Debug for Exports<'a, P> {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		match self.by() {
+			Ok(by) => by.fmt(f),
+			Err(err) => err.fmt(f),
+		}
+	}
+}
 
 //----------------------------------------------------------------
 
@@ -328,6 +336,19 @@ impl<'a, P: Pe<'a> + Copy> By<'a, P> {
 		IterByName { by: self, hints: 0..self.image.NumberOfNames }
 	}
 }
+impl<'a, P: 'a + Pe<'a> + Copy> fmt::Debug for By<'a, P> {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		f.debug_struct("Exports")
+			.field("dll_name", &format_args!("{:?}", self.dll_name()))
+			.field("time_date_stamp", &self.image.TimeDateStamp)
+			.field("version", &format_args!("{}.{}", self.image.MajorVersion, self.image.MinorVersion))
+			.field("ordinal_base", &self.ordinal_base())
+			.field("functions.len", &self.functions().len())
+			.field("names.len", &self.names.len())
+			.finish()
+	}
+}
+
 
 //----------------------------------------------------------------
 
@@ -439,87 +460,3 @@ impl<'s, 'a: 's, P: Pe<'a> + Copy> DoubleEndedIterator for IterByName<'s, 'a, P>
 	}
 }
 impl<'s, 'a: 's, P: Pe<'a> + Copy> ExactSizeIterator for IterByName<'s, 'a, P> {}
-
-//----------------------------------------------------------------
-// Formatting
-
-use strings::Fmt;
-
-impl<'a> fmt::Display for Export<'a> {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		match *self {
-			Export::None => f.write_str("None"),
-			Export::Symbol(rva) => write!(f, "{:·>8X}", rva),
-			Export::Forward(fwd) => write!(f, "{}", fwd),
-		}
-	}
-}
-
-impl<'a, P: Pe<'a> + Copy> fmt::Debug for Exports<'a, P> {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		match self.by() {
-			Ok(by) => by.fmt(f),
-			Err(err) => err.fmt(f),
-		}
-	}
-}
-
-fn export_fmt<'a, P: Pe<'a> + Copy>(f: &mut fmt::Formatter, by: &By<'a, P>, index: usize) -> fmt::Result {
-	match by.index(index) {
-		Ok(Export::None) => Ok(()),
-		Ok(export) => {
-			let ord = (index as u32 + by.image.Base) as Ordinal;
-			write!(f, "\n{:>5} ", ord)?;
-			match export {
-				Export::None => Ok(()),
-				Export::Symbol(rva) => {
-					match by.name_lookup(index) {
-						Ok(Import::ByName { hint, name }) => {
-							write!(f, "{:·>4X} {:·>8X} {}", hint, rva, name)
-						},
-						Ok(Import::ByOrdinal { .. }) => {
-							write!(f, "     {:·>8X}", rva)
-						},
-						err @ Err(_) => write!(f, "{:?}", err),
-					}
-				},
-				Export::Forward(fwd) => {
-					match by.name_lookup(index) {
-						Ok(Import::ByName { hint, name }) => {
-							write!(f, "{:·>4X}          {} (forwarded to {})", hint, name, fwd)
-						},
-						Ok(Import::ByOrdinal { .. }) => {
-							write!(f, "              (forwarded to {})", fwd)
-						},
-						err @ Err(_) => write!(f, "{:?}", err),
-					}
-				}
-			}
-		},
-		err @ Err(_) => write!(f, "{:?}", err),
-	}
-}
-
-impl<'a, P: Pe<'a> + Copy> fmt::Debug for By<'a, P> {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		write!(f,
-			#"Exports for {}\n", Fmt(|f| {
-				match self.dll_name() {
-					Ok(name) => fmt::Display::fmt(name, f),
-					err @ Err(_) => err.fmt(f),
-				}
-			}),
-			#"  TimeDateStamp:   {}\n", self.image.TimeDateStamp,
-			#"  Version:         {}.{}\n", self.image.MajorVersion, self.image.MinorVersion,
-			#"  OrdinalBase:     {}\n", self.image.Base,
-			#"  # of functions:  {}\n", self.functions.len(),
-			#"  # of names:      {}\n\n", self.names.len(),
-			#"  ord hint RVA      name{}\n", Fmt(|f| {
-				for index in 0..self.functions.len() {
-					export_fmt(f, self, index)?;
-				}
-				Ok(())
-			}),
-		)
-	}
-}

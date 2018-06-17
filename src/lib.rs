@@ -19,8 +19,8 @@ pub mod util;
 
 pub mod image;
 
-#[macro_use]
-mod strings;
+// #[macro_use]
+// mod strings;
 
 pub mod pattern;
 
