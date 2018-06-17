@@ -54,8 +54,8 @@ pub unsafe trait Pe<'a> {
 	fn section_headers(self) -> &'a [IMAGE_SECTION_HEADER] where Self: Copy {
 		let nt = self.nt_headers();
 		unsafe {
-			let begin = (&nt.OptionalHeader as *const _ as *const u8).offset(nt.FileHeader.SizeOfOptionalHeader as isize) as *const IMAGE_SECTION_HEADER;
-			slice::from_raw_parts(begin, nt.FileHeader.NumberOfSections as usize)
+			let p = (&nt.OptionalHeader as *const _ as *const u8).offset(nt.FileHeader.SizeOfOptionalHeader as isize) as *const IMAGE_SECTION_HEADER;
+			slice::from_raw_parts(p, nt.FileHeader.NumberOfSections as usize)
 		}
 	}
 	/// Returns the data directory.
@@ -87,7 +87,13 @@ pub unsafe trait Pe<'a> {
 				return Err(Error::ZeroFill);
 			}
 		}
-		Err(Error::OOB)
+		// Consider RVA inside headers to be valid
+		if rva < self.optional_header().SizeOfHeaders {
+			Ok(rva as usize)
+		}
+		else {
+			Err(Error::OOB)
+		}
 	}
 	/// Converts a file offset to `Rva`.
 	///
@@ -104,7 +110,13 @@ pub unsafe trait Pe<'a> {
 				return Err(Error::OOB);
 			}
 		}
-		Err(Error::OOB)
+		// Consider RVA inside headers to be valid
+		if file_offset < self.optional_header().SizeOfHeaders as usize {
+			Ok(file_offset as Rva)
+		}
+		else {
+			Err(Error::OOB)
+		}
 	}
 
 	/// Converts from `Rva` to `Va`.
@@ -435,8 +447,19 @@ pub(crate) fn validate_headers(image: &[u8]) -> Result<VH> {
 	if dos.e_magic != IMAGE_DOS_SIGNATURE {
 		return Err(Error::BadMagic);
 	}
+	// "According to the PE specification, the PE header must be aligned on a 8 byte boundary, but the Windows loader requires only a 4 byte alignment."
+	if dos.e_lfanew % 4 != 0 {
+		return Err(Error::Misalign);
+	}
+	// Prevent overflow the easy way...
+	// When changing, take care of overflow in later offset calculations!
+	if dos.e_lfanew > 0x01000000 {
+		return Err(Error::Insanity);
+	}
+
 	// Grab the NT headers
-	if usize::checked_add(dos.e_lfanew as usize, mem::size_of::<IMAGE_NT_HEADERS>()).ok_or(Error::Overflow)? > image.len() {
+	let nt_end = dos.e_lfanew as usize + mem::size_of::<IMAGE_NT_HEADERS>();
+	if nt_end > image.len() {
 		return Err(Error::OOB);
 	}
 	let nt = unsafe { &*(image.as_ptr().offset(dos.e_lfanew as isize) as *const IMAGE_NT_HEADERS) };
@@ -444,22 +467,27 @@ pub(crate) fn validate_headers(image: &[u8]) -> Result<VH> {
 	if nt.Signature != IMAGE_NT_HEADERS_SIGNATURE || nt.OptionalHeader.Magic != IMAGE_NT_OPTIONAL_HDR_MAGIC {
 		return Err(Error::BadMagic);
 	}
-	if nt.OptionalHeader.SizeOfHeaders as usize > image.len() {
-		return Err(Error::Corrupt);
+	let size_of_headers = nt.OptionalHeader.SizeOfHeaders as usize;
+	if size_of_headers > image.len() {
+		return Err(Error::OOB);
 	}
-	// Verify the data directory with some arbtirary chosen limits
-	if nt.OptionalHeader.NumberOfRvaAndSizes < IMAGE_NUMBEROF_DIRECTORY_ENTRIES as u32 || nt.OptionalHeader.NumberOfRvaAndSizes > 100 {
+
+	// Verify the data directory
+	if nt.OptionalHeader.NumberOfRvaAndSizes > 127 {
 		return Err(Error::Insanity);
 	}
-	let size_of_data_dir = mem::size_of::<IMAGE_DATA_DIRECTORY>() * nt.OptionalHeader.NumberOfRvaAndSizes as usize;
-	let size_of_opt_header = mem::size_of::<IMAGE_OPTIONAL_HEADER>() - mem::size_of::<[IMAGE_DATA_DIRECTORY; IMAGE_NUMBEROF_DIRECTORY_ENTRIES]>() + size_of_data_dir;
-	if size_of_opt_header > nt.FileHeader.SizeOfOptionalHeader as usize {
+	let size_of_data_dir = nt.OptionalHeader.NumberOfRvaAndSizes as usize * mem::size_of::<IMAGE_DATA_DIRECTORY>();
+	if nt_end + size_of_data_dir > size_of_headers {
 		return Err(Error::Corrupt);
 	}
+
 	// Verify the section headers
-	let sec_begin = dos.e_lfanew as usize + (mem::size_of::<IMAGE_NT_HEADERS>() - mem::size_of::<IMAGE_OPTIONAL_HEADER>()) + nt.FileHeader.SizeOfOptionalHeader as usize;
-	let sec_end = sec_begin + nt.FileHeader.NumberOfSections as usize * mem::size_of::<IMAGE_SECTION_HEADER>();
-	if sec_end > nt.OptionalHeader.SizeOfHeaders as usize {
+	if nt.FileHeader.NumberOfSections > 127 {
+		return Err(Error::Insanity);
+	}
+	let size_of_sections = nt.FileHeader.NumberOfSections as usize * mem::size_of::<IMAGE_SECTION_HEADER>();
+	let start_of_sections = dos.e_lfanew as usize + (mem::size_of::<IMAGE_NT_HEADERS>() - mem::size_of::<IMAGE_OPTIONAL_HEADER>()) + nt.FileHeader.SizeOfOptionalHeader as usize;
+	if size_of_sections + start_of_sections > size_of_headers {
 		return Err(Error::Corrupt);
 	}
 	Ok(VH {

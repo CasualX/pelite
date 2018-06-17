@@ -204,7 +204,7 @@ pub struct IMAGE_OPTIONAL_HEADER32 {
 	pub SizeOfHeapCommit: u32,
 	pub LoaderFlags: u32,
 	pub NumberOfRvaAndSizes: u32,
-	pub DataDirectory: [IMAGE_DATA_DIRECTORY; IMAGE_NUMBEROF_DIRECTORY_ENTRIES],
+	pub DataDirectory: [IMAGE_DATA_DIRECTORY; 0],
 }
 
 #[derive(Copy, Clone, Debug)]
@@ -239,7 +239,7 @@ pub struct IMAGE_OPTIONAL_HEADER64 {
 	pub SizeOfHeapCommit: u64,
 	pub LoaderFlags: u32,
 	pub NumberOfRvaAndSizes: u32,
-	pub DataDirectory: [IMAGE_DATA_DIRECTORY; IMAGE_NUMBEROF_DIRECTORY_ENTRIES],
+	pub DataDirectory: [IMAGE_DATA_DIRECTORY; 0],
 }
 
 //----------------------------------------------------------------
@@ -348,7 +348,8 @@ pub struct IMAGE_IMPORT_DESCRIPTOR {
 }
 impl IMAGE_IMPORT_DESCRIPTOR {
 	pub fn is_null(&self) -> bool {
-		self.OriginalFirstThunk == 0 && self.TimeDateStamp == 0 && self.ForwarderChain == 0 && self.Name == 0 && self.FirstThunk == 0
+		// This is all that really marks an empty import descriptor
+		self.FirstThunk == 0
 	}
 }
 
@@ -565,10 +566,10 @@ fn sizes() {
 	assert_size_of!(64, IMAGE_DOS_HEADER);
 	assert_size_of!(20, IMAGE_FILE_HEADER);
 	assert_size_of!(8, IMAGE_DATA_DIRECTORY);
-	assert_size_of!(224, IMAGE_OPTIONAL_HEADER32);
-	assert_size_of!(240, IMAGE_OPTIONAL_HEADER64);
-	assert_size_of!(248, IMAGE_NT_HEADERS32);
-	assert_size_of!(264, IMAGE_NT_HEADERS64);
+	assert_size_of!(96, IMAGE_OPTIONAL_HEADER32); // Unsized
+	assert_size_of!(112, IMAGE_OPTIONAL_HEADER64); // Unsized
+	assert_size_of!(120, IMAGE_NT_HEADERS32); // Unsized
+	assert_size_of!(136, IMAGE_NT_HEADERS64); // Unsized
 	assert_size_of!(40, IMAGE_SECTION_HEADER);
 	assert_size_of!(40, IMAGE_EXPORT_DIRECTORY);
 	assert_size_of!(20, IMAGE_IMPORT_DESCRIPTOR);

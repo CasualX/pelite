@@ -190,7 +190,7 @@ static IMAGE_DLLCHARS_STRINGS: [Option<&str>; 16] = [
 	/*4000*/Some("Guard CF"),
 	/*8000*/Some("Terminal Server Aware"),
 ];
-fn stringify_datadir_entry(entry: usize) -> Option<&'static str> {
+fn stringify_data_dir_entry(entry: usize) -> Option<&'static str> {
 	match entry {
 		IMAGE_DIRECTORY_ENTRY_EXPORT => Some("Export"),
 		IMAGE_DIRECTORY_ENTRY_IMPORT => Some("Import"),
@@ -208,6 +208,22 @@ fn stringify_datadir_entry(entry: usize) -> Option<&'static str> {
 		IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT => Some("Delay Import"),
 		IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR => Some("COM Descriptor"),
 		_ => None,
+	}
+}
+fn fmt_data_dirs(data_dirs: &[IMAGE_DATA_DIRECTORY], f: &mut fmt::Formatter) -> fmt::Result {
+	for (i, data_dir) in data_dirs.iter().enumerate() {
+		if data_dir.VirtualAddress != 0 && data_dir.Size != 0 {
+			write!(f, "\n    {:>2} {:?}", i, data_dir)?;
+			if let Some(entry) = stringify_data_dir_entry(i as usize) {
+				write!(f, ": {}", entry)?;
+			}
+		}
+	}
+	Ok(())
+}
+impl ImageFmt for IMAGE_DATA_DIRECTORY {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		write!(f, "[{:·>8X} +{:·>8X}]", self.VirtualAddress, self.Size)
 	}
 }
 impl ImageFmt for IMAGE_OPTIONAL_HEADER32 {
@@ -255,18 +271,11 @@ impl ImageFmt for IMAGE_OPTIONAL_HEADER32 {
 			#"  SizeOfHeapReserve:       {:·>8X}\n", self.SizeOfHeapReserve,
 			#"  SizeOfHeapCommit:        {:·>8X}\n", self.SizeOfHeapCommit,
 			#"  LoaderFlags:             {:·>8X}\n", self.LoaderFlags,
-			#"  NumberOfRvaAndSizes:     {:·>8X}", self.NumberOfRvaAndSizes,
+			#"  NumberOfRvaAndSizes:     {:·>8X}\n", self.NumberOfRvaAndSizes,
 			#"{}\n", Fmt(|f| {
-				for i in 0u32..::std::cmp::min(self.NumberOfRvaAndSizes, IMAGE_NUMBEROF_DIRECTORY_ENTRIES as u32) {
-					let datadir = &self.DataDirectory[i as usize];
-					if datadir.VirtualAddress != 0 && datadir.Size != 0 {
-						write!(f, "\n    {:>2} [{:·>8X} +{:·>8X}]", i, datadir.VirtualAddress, datadir.Size)?;
-						if let Some(entry) = stringify_datadir_entry(i as usize) {
-							write!(f, ": {}", entry)?;
-						}
-					}
-				}
-				Ok(())
+				// Fuck me, figure out a better way to print this...
+				let data_dirs = unsafe { slice::from_raw_parts(self.DataDirectory.as_ptr(), self.NumberOfRvaAndSizes as usize) };
+				fmt_data_dirs(data_dirs, f)
 			}),
 		)
 	}
@@ -312,16 +321,9 @@ impl ImageFmt for IMAGE_OPTIONAL_HEADER64 {
 			#"  LoaderFlags:             {:·>8X}\n", self.LoaderFlags,
 			#"  NumberOfRvaAndSizes:     {:·>8X}", self.NumberOfRvaAndSizes,
 			#"{}\n", Fmt(|f| {
-				for i in 0u32..::std::cmp::min(self.NumberOfRvaAndSizes, IMAGE_NUMBEROF_DIRECTORY_ENTRIES as u32) {
-					let datadir = &self.DataDirectory[i as usize];
-					if datadir.VirtualAddress != 0 && datadir.Size != 0 {
-						write!(f, "\n    {:>2} [RVA:{:·>8X} Size:{:·>8X}]", i, datadir.VirtualAddress, datadir.Size)?;
-						if let Some(entry) = stringify_datadir_entry(i as usize) {
-							write!(f, " of {} Directory", entry)?;
-						}
-					}
-				}
-				Ok(())
+				// Fuck me, figure out a better way to print this...
+				let data_dirs = unsafe { slice::from_raw_parts(self.DataDirectory.as_ptr(), self.NumberOfRvaAndSizes as usize) };
+				fmt_data_dirs(data_dirs, f)
 			}),
 		)
 	}
