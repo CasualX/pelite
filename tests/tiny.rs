@@ -13,9 +13,9 @@ use pelite::FileMap;
 
 fn assert_memcmp<T: std::fmt::Debug>(lhs: &T, rhs: &T) {
 	let size_of = std::mem::size_of::<T>();
-	let lhs = unsafe { std::slice::from_raw_parts(lhs as *const _ as *const u8, size_of) };
-	let rhs = unsafe { std::slice::from_raw_parts(rhs as *const _ as *const u8, size_of) };
-	assert_eq!(lhs, rhs, "lhs: {:?} rhs: {:?}", lhs, rhs);
+	let lhs_bytes = unsafe { std::slice::from_raw_parts(lhs as *const _ as *const u8, size_of) };
+	let rhs_bytes = unsafe { std::slice::from_raw_parts(rhs as *const _ as *const u8, size_of) };
+	assert_eq!(lhs_bytes, rhs_bytes, "lhs: {:?} rhs: {:?}", lhs, rhs);
 }
 
 /*
@@ -262,12 +262,43 @@ Abuse file mapping padding with zeroes to fill the virtual memory page
 #[test]
 fn tiny_97() {
 	let file_map = FileMap::open("tests/tiny/tiny.97").unwrap();
-	let file = PeFile::from_bytes(&file_map);
+	let file = PeFile::from_bytes(&file_map).unwrap();
 
-	// This PE relies on zero filled area to initialize some of the PE header fields
-	// However SizeOfHeaders is set to a value less than the size of the nt headers struct as declared
-	// Thus validation of NumberOfRvaAndSizes fails by default
-	assert!(match file { Err(e) if e == pelite::Error::Corrupt => true, _ => false });
+	let optional_header = image::IMAGE_OPTIONAL_HEADER {
+		Magic: image::IMAGE_NT_OPTIONAL_HDR_MAGIC,
+		MajorLinkerVersion: 8,
+		MinorLinkerVersion: 0,
+		SizeOfCode: 4,
+		SizeOfInitializedData: 0,
+		SizeOfUninitializedData: 4,
+		AddressOfEntryPoint: 0xC,
+		BaseOfCode: 4,
+		BaseOfData: 0xC,
+		ImageBase: 0x400000,
+		SectionAlignment: 4,
+		FileAlignment: 4,
+		MajorOperatingSystemVersion: 4,
+		MinorOperatingSystemVersion: 0,
+		MajorImageVersion: 0,
+		MinorImageVersion: 0,
+		MajorSubsystemVersion: 4,
+		MinorSubsystemVersion: 0,
+		Win32VersionValue: 0,
+		SizeOfImage: 0x68,
+		SizeOfHeaders: 0x64,
+		CheckSum: 0,
+		Subsystem: 2,
+		DllCharacteristics: 0,
+		SizeOfStackReserve: 0,
+		SizeOfStackCommit: 0,
+		SizeOfHeapReserve: 0,
+		SizeOfHeapCommit: 0,
+		LoaderFlags: 0,
+		NumberOfRvaAndSizes: 0,
+		DataDirectory: [],
+	};
+
+	assert_memcmp(file.optional_header(), &optional_header);
 }
 
 /*
@@ -305,7 +336,7 @@ fn tiny_import_161() {
 
 	assert_eq!(kernel32.dll_name().unwrap(), "KERNEL32.dll");
 	assert_eq!(kernel32.iat().unwrap().len(), 1);
-	assert!(match kernel32.int() { Err(pelite::Error::OOB) => true, _ => false });
+	assert!(kernel32.int().is_err());
 }
 
 /*
@@ -315,11 +346,12 @@ Merge the imports even further with the PE headers
 #[test]
 fn tiny_import_133() {
 	let file_map = FileMap::open("tests/tiny/tiny.import.133").unwrap();
-	let file = PeFile::from_bytes(&file_map);
+	let file = PeFile::from_bytes(&file_map).unwrap();
 
-	// Imports overlap the NumberOfRvaAndSizes field in the optional header
-	// As a consequence validation of the data directories fails
-	assert!(match file { Err(pelite::Error::Insanity) => true, _ => false });
+	let imports = file.imports().unwrap();
+	let kernel32 = imports.into_iter().next().unwrap();
+	assert_eq!(kernel32.dll_name().unwrap(), "KERNEL32.dll");
+	assert_eq!(kernel32.iat().unwrap().len(), 1);
 }
 
 /*
@@ -329,9 +361,10 @@ Smallest PE file that downloads a file from the Internet and executes it
 #[test]
 fn tiny_webdav_133() {
 	let file_map = FileMap::open("tests/tiny/tiny.webdav.133").unwrap();
-	let file = PeFile::from_bytes(&file_map);
+	let file = PeFile::from_bytes(&file_map).unwrap();
 
-	// Imports overlap the NumberOfRvaAndSizes field in the optional header
-	// As a consequence validation of the data directories fails
-	assert!(match file { Err(pelite::Error::Insanity) => true, _ => false });
+	let imports = file.imports().unwrap();
+	let unc = imports.into_iter().next().unwrap();
+	assert_eq!(unc.dll_name().unwrap(), r"\\66.93.68.6\z");
+	assert_eq!(unc.iat().unwrap().len(), 1);
 }

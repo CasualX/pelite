@@ -28,10 +28,10 @@ impl<'a> PeView<'a> {
 	/// Try to read the given bytes as a mapped PE image.
 	pub fn from_bytes<T: AsRef<[u8]> + ?Sized>(image: &'a T) -> Result<PeView<'a>> {
 		let image = image.as_ref();
-		let info = validate_headers(image)?;
+		let size_of_image = validate_headers(image)?;
 		// Sanity check, this values should match.
 		// If they don't, that's not a problem per sé as it would be caught later.
-		if info.size_of_image as usize != image.len() {
+		if size_of_image as usize != image.len() {
 			return Err(Error::Insanity);
 		}
 		Ok(PeView { image })
