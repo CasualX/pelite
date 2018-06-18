@@ -54,8 +54,8 @@ pub unsafe trait Pe<'a> {
 	fn section_headers(self) -> &'a [IMAGE_SECTION_HEADER] where Self: Copy {
 		let nt = self.nt_headers();
 		unsafe {
-			let p = (&nt.OptionalHeader as *const _ as *const u8).offset(nt.FileHeader.SizeOfOptionalHeader as isize) as *const IMAGE_SECTION_HEADER;
-			slice::from_raw_parts(p, nt.FileHeader.NumberOfSections as usize)
+			let begin = (&nt.OptionalHeader as *const _ as *const u8).offset(nt.FileHeader.SizeOfOptionalHeader as isize) as *const IMAGE_SECTION_HEADER;
+			slice::from_raw_parts(begin, nt.FileHeader.NumberOfSections as usize)
 		}
 	}
 	/// Returns the data directory.
@@ -464,8 +464,8 @@ pub(crate) fn validate_headers(image: &[u8]) -> Result<u32> {
 	if nt.Signature != IMAGE_NT_HEADERS_SIGNATURE || nt.OptionalHeader.Magic != IMAGE_NT_OPTIONAL_HDR_MAGIC {
 		return Err(Error::BadMagic);
 	}
-	if nt.OptionalHeader.SizeOfHeaders as usize > image.len() {
-		return Err(Error::OOB);
+	if nt.OptionalHeader.SizeOfHeaders > nt.OptionalHeader.SizeOfImage {
+		return Err(Error::Insanity);
 	}
 
 	// Verify the data directory
@@ -481,10 +481,13 @@ pub(crate) fn validate_headers(image: &[u8]) -> Result<u32> {
 	if nt.FileHeader.NumberOfSections > 96 {
 		return Err(Error::Insanity);
 	}
+	// u16 * sizeof(T) casted to usize, cannot reasonably overflow
 	let size_of_sections = nt.FileHeader.NumberOfSections as usize * mem::size_of::<IMAGE_SECTION_HEADER>();
+	// e_lfanew is checked for reasonable values, the others then cannot reasonably cause overflow
 	let start_of_sections = dos.e_lfanew as usize
 		+ (mem::size_of::<IMAGE_NT_HEADERS>() - mem::size_of::<IMAGE_OPTIONAL_HEADER>())
 		+ nt.FileHeader.SizeOfOptionalHeader as usize;
+	// then the sum of these cannot reasonably overflow
 	if size_of_sections + start_of_sections > image.len() {
 		return Err(Error::OOB);
 	}
