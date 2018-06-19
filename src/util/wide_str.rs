@@ -2,7 +2,9 @@
 Length word prefixed wide string.
 */
 
-use std::{char, fmt, mem, ops};
+use std::{char, fmt, mem, slice, ops};
+
+use util::FromBytes;
 
 //----------------------------------------------------------------
 
@@ -26,6 +28,19 @@ impl WideStr {
 	/// Encodes the string as an UTF8 validated `String`.
 	pub fn to_string(&self) -> Result<String, char::DecodeUtf16Error> {
 		char::decode_utf16(self.as_ref().iter().cloned()).collect()
+	}
+}
+
+impl FromBytes for WideStr {
+	const MIN_SIZE_OF: usize = 2;
+	const ALIGN_OF: usize = 2;
+	unsafe fn from_bytes(bytes: &[u8]) -> ::Result<&WideStr> {
+		let p = bytes.as_ptr() as *const u16;
+		let len = *p as usize;
+		if len * 2 > bytes.len() {
+			return Err(::Error::CStr);
+		}
+		Ok(WideStr::from_words_unchecked(slice::from_raw_parts(p, len)))
 	}
 }
 

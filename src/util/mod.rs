@@ -29,6 +29,20 @@ pub use self::wide_str::WideStr;
 pub use self::pod::Pod;
 pub use self::offset::Offset;
 
+/// Converts from a byte slice to a string.
+pub trait FromBytes {
+	/// Minimum size argument.
+	const MIN_SIZE_OF: usize;
+	/// Alignment argument.
+	const ALIGN_OF: usize;
+	/// Converts from a byte slice to a string.
+	///
+	/// # Safety
+	///
+	/// The given byte slice must have the minimum size and alignment as specified.
+	unsafe fn from_bytes(bytes: &[u8]) -> ::Result<&Self>;
+}
+
 /// Splits a slice at the point defined by the callback.
 #[inline]
 pub(crate) fn split_f<T, F: FnMut(&T) -> bool>(slice: &[T], f: F) -> (&[T], &[T]) {

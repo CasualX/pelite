@@ -5,7 +5,7 @@ Abstract over mapped images and file binaries.
 use std::{cmp, mem, ptr, slice};
 
 use error::{Error, Result};
-use util::{CStr, Pod};
+use util::{CStr, Pod, FromBytes};
 
 use super::image::*;
 use super::ptr::Ptr;
@@ -272,7 +272,14 @@ pub unsafe trait Pe<'a> {
 	}
 	/// Reads a nul-terminated C string.
 	fn derva_str(self, rva: Rva) -> Result<&'a CStr> where Self: Copy {
-		self.slice_bytes(rva).and_then(CStr::from_bytes)
+		self.derva_string(rva)
+	}
+	/// Reads a string.
+	fn derva_string<T>(self, rva: Rva) -> Result<&'a T> where Self: Copy, T: FromBytes + ?Sized {
+		let bytes = self.slice(rva, T::MIN_SIZE_OF, T::ALIGN_OF)?;
+		unsafe {
+			T::from_bytes(bytes)
+		}
 	}
 
 	//----------------------------------------------------------------
@@ -345,7 +352,14 @@ pub unsafe trait Pe<'a> {
 	}
 	/// Dereferences the pointer to a nul-terminated C string.
 	fn deref_str<P>(self, ptr: P) -> Result<&'a CStr> where Self: Copy, P: Into<Ptr<CStr>> {
-		self.read_bytes(ptr.into().into()).and_then(CStr::from_bytes)
+		self.deref_string(ptr)
+	}
+	/// Dereferences the pointer to a string.
+	fn deref_string<T, P>(self, ptr: P) -> Result<&'a T> where Self: Copy, P: Into<Ptr<T>>, T: FromBytes + ?Sized {
+		let bytes = self.read(ptr.into().into(), T::MIN_SIZE_OF, T::ALIGN_OF)?;
+		unsafe {
+			T::from_bytes(bytes)
+		}
 	}
 
 	//----------------------------------------------------------------

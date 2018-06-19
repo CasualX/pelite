@@ -4,7 +4,7 @@ Nul-terminated C string.
 
 use std::{cmp, fmt, mem, ops, str};
 
-use util::split_f;
+use util::{split_f, FromBytes};
 use error::Error;
 
 //----------------------------------------------------------------
@@ -52,6 +52,14 @@ impl CStr {
 	/// Casts the C string to an UTF8 validated `str`.
 	pub fn to_str(&self) -> Result<&str, str::Utf8Error> {
 		str::from_utf8(self.as_ref())
+	}
+}
+
+impl FromBytes for CStr {
+	const MIN_SIZE_OF: usize = 0;
+	const ALIGN_OF: usize = 1;
+	unsafe fn from_bytes(bytes: &[u8]) -> ::Result<&CStr> {
+		CStr::from_bytes(bytes)
 	}
 }
 
