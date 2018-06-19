@@ -104,7 +104,7 @@ pub fn interfaces<'a>(file: PeFile<'a>) -> pelite::Result<Vec<Interface<'a>>> {
 
 		// Extract the interface information
 		let offset = save[3];
-		let name = file.derva_str(save[4]).unwrap().to_str().unwrap();
+		let name = file.derva_c_str(save[4]).unwrap().to_str().unwrap();
 		list.push(Interface { dll_name, name, offset });
 	}
 

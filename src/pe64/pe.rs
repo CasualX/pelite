@@ -271,7 +271,7 @@ pub unsafe trait Pe<'a> {
 		self.derva_slice_f(rva, |tee| *tee == sentinel)
 	}
 	/// Reads a nul-terminated C string.
-	fn derva_str(self, rva: Rva) -> Result<&'a CStr> where Self: Copy {
+	fn derva_c_str(self, rva: Rva) -> Result<&'a CStr> where Self: Copy {
 		self.derva_string(rva)
 	}
 	/// Reads a string.
@@ -351,7 +351,7 @@ pub unsafe trait Pe<'a> {
 		self.deref_slice_f(ptr, |tee| *tee == sentinel)
 	}
 	/// Dereferences the pointer to a nul-terminated C string.
-	fn deref_str<P>(self, ptr: P) -> Result<&'a CStr> where Self: Copy, P: Into<Ptr<CStr>> {
+	fn deref_c_str<P>(self, ptr: P) -> Result<&'a CStr> where Self: Copy, P: Into<Ptr<CStr>> {
 		self.deref_string(ptr)
 	}
 	/// Dereferences the pointer to a string.
