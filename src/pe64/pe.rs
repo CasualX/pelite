@@ -277,9 +277,7 @@ pub unsafe trait Pe<'a> {
 	/// Reads a string.
 	fn derva_string<T>(self, rva: Rva) -> Result<&'a T> where Self: Copy, T: FromBytes + ?Sized {
 		let bytes = self.slice(rva, T::MIN_SIZE_OF, T::ALIGN_OF)?;
-		unsafe {
-			T::from_bytes(bytes)
-		}
+		unsafe { T::from_bytes(bytes).ok_or(Error::CStr) }
 	}
 
 	//----------------------------------------------------------------
@@ -357,9 +355,7 @@ pub unsafe trait Pe<'a> {
 	/// Dereferences the pointer to a string.
 	fn deref_string<T, P>(self, ptr: P) -> Result<&'a T> where Self: Copy, P: Into<Ptr<T>>, T: FromBytes + ?Sized {
 		let bytes = self.read(ptr.into().into(), T::MIN_SIZE_OF, T::ALIGN_OF)?;
-		unsafe {
-			T::from_bytes(bytes)
-		}
+		unsafe { T::from_bytes(bytes).ok_or(Error::CStr) }
 	}
 
 	//----------------------------------------------------------------

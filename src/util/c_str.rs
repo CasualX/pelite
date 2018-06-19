@@ -5,7 +5,6 @@ Nul-terminated C string.
 use std::{cmp, fmt, mem, ops, str};
 
 use util::{split_f, FromBytes};
-use error::Error;
 
 //----------------------------------------------------------------
 
@@ -18,7 +17,7 @@ pub struct CStr {
 impl CStr {
 	/// Scans the byte slice for a nul-terminated C string.
 	///
-	/// Errors with `Error::CStr` if there is no nul byte.
+	/// Returns `None` if no nul byte was found.
 	///
 	/// # Examples
 	///
@@ -31,11 +30,11 @@ impl CStr {
 	/// assert_eq!(c_str.len(), 5);
 	///
 	/// let no_nul = CStr::from_bytes(b"not nul terminated");
-	/// assert_eq!(no_nul, Err(pelite::Error::CStr));
+	/// assert_eq!(no_nul, None);
 	/// ```
-	pub fn from_bytes(bytes: &[u8]) -> ::Result<&CStr> {
-		let len = bytes.iter().position(|&byte| byte == 0).ok_or(Error::CStr)?;
-		Ok(unsafe { CStr::from_bytes_unchecked(bytes.get_unchecked(..len + 1)) })
+	pub fn from_bytes(bytes: &[u8]) -> Option<&CStr> {
+		let len = bytes.iter().position(|&byte| byte == 0)?;
+		Some(unsafe { CStr::from_bytes_unchecked(bytes.get_unchecked(..len + 1)) })
 	}
 	/// Interprets a byte slice as a C string.
 	///
@@ -58,7 +57,7 @@ impl CStr {
 impl FromBytes for CStr {
 	const MIN_SIZE_OF: usize = 0;
 	const ALIGN_OF: usize = 1;
-	unsafe fn from_bytes(bytes: &[u8]) -> ::Result<&CStr> {
+	unsafe fn from_bytes(bytes: &[u8]) -> Option<&CStr> {
 		CStr::from_bytes(bytes)
 	}
 }
@@ -173,16 +172,15 @@ impl fmt::Display for CStr {
 
 #[cfg(test)]
 mod tests {
-	use error::Error;
 	use super::CStr;
 
 	#[test]
-	fn units() {
-		assert_eq!(CStr::from_bytes(b"this is a c str\0").map(CStr::c_str), Ok(&b"this is a c str\0"[..]));
-		assert_eq!(CStr::from_bytes(b"no nul terminator"), Err(Error::CStr));
-		assert_eq!(CStr::from_bytes(b"valid utf8\0").map(CStr::to_str), Ok(Ok("valid utf8")));
-		assert_eq!(CStr::from_bytes(b"length is eighteen\0").map(|c_str| c_str.len()), Ok(18));
-		assert_eq!(CStr::from_bytes(b"length is eighteen\0").map(|c_str| c_str.as_ref().len()), Ok(18));
+	fn from_bytes() {
+		assert_eq!(CStr::from_bytes(b"this is a c str\0").unwrap().c_str(), b"this is a c str\0");
+		assert_eq!(CStr::from_bytes(b"no nul terminator"), None);
+		assert_eq!(CStr::from_bytes(b"valid utf8\0").unwrap().to_str(), Ok("valid utf8"));
+		assert_eq!(CStr::from_bytes(b"length is eighteen\0").unwrap().len(), 18);
+		assert_eq!(CStr::from_bytes(b"length is eighteen\0").unwrap().len(), 18);
 	}
 
 	#[test]

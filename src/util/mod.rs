@@ -40,7 +40,7 @@ pub trait FromBytes {
 	/// # Safety
 	///
 	/// The given byte slice must have the minimum size and alignment as specified.
-	unsafe fn from_bytes(bytes: &[u8]) -> ::Result<&Self>;
+	unsafe fn from_bytes(bytes: &[u8]) -> Option<&Self>;
 }
 
 /// Splits a slice at the point defined by the callback.

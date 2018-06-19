@@ -180,7 +180,7 @@ impl<'a, P: Pe<'a> + Copy> CvNB10<'a, P> {
 		if signature != *b"NB10" {
 			return Err(Error::BadMagic);
 		}
-		let pdb_file_name = CStr::from_bytes(&bytes[16..])?;
+		let pdb_file_name = CStr::from_bytes(&bytes[16..]).ok_or(Error::CStr)?;
 		Ok(CvNB10 { pe, image, pdb_file_name })
 	}
 	/// Gets the PE instance.
@@ -227,7 +227,7 @@ impl<'a, P: Pe<'a> + Copy> CvRSDS<'a, P> {
 		if signature != *b"RSDS" {
 			return Err(Error::BadMagic);
 		}
-		let pdb_file_name = CStr::from_bytes(&bytes[24..])?;
+		let pdb_file_name = CStr::from_bytes(&bytes[24..]).ok_or(Error::CStr)?;
 		Ok(CvRSDS { pe, image, pdb_file_name })
 	}
 	/// Gets the PE instance.
