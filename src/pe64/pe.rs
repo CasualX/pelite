@@ -61,8 +61,9 @@ pub unsafe trait Pe<'a> {
 	/// Returns the data directory.
 	fn data_directory(self) -> &'a [IMAGE_DATA_DIRECTORY] where Self: Copy {
 		let opt = self.optional_header();
+		let len = cmp::min(opt.NumberOfRvaAndSizes as usize, IMAGE_NUMBEROF_DIRECTORY_ENTRIES);
 		unsafe {
-			slice::from_raw_parts(opt.DataDirectory.as_ptr(), opt.NumberOfRvaAndSizes as usize)
+			slice::from_raw_parts(opt.DataDirectory.as_ptr(), len)
 		}
 	}
 
@@ -87,7 +88,13 @@ pub unsafe trait Pe<'a> {
 				return Err(Error::ZeroFill);
 			}
 		}
-		Err(Error::OOB)
+		// Consider RVA inside headers to be valid
+		if rva < self.optional_header().SizeOfHeaders {
+			Ok(rva as usize)
+		}
+		else {
+			Err(Error::OOB)
+		}
 	}
 	/// Converts a file offset to `Rva`.
 	///
@@ -104,7 +111,13 @@ pub unsafe trait Pe<'a> {
 				return Err(Error::OOB);
 			}
 		}
-		Err(Error::OOB)
+		// Consider RVA inside headers to be valid
+		if file_offset < self.optional_header().SizeOfHeaders as usize {
+			Ok(file_offset as Rva)
+		}
+		else {
+			Err(Error::OOB)
+		}
 	}
 
 	/// Converts from `Rva` to `Va`.
@@ -419,13 +432,9 @@ unsafe impl<'s, 'a, P: Pe<'a> + ?Sized> Pe<'a> for &'s P {
 
 //----------------------------------------------------------------
 
-pub(crate) struct VH {
-	pub image_base: Va,
-	pub size_of_image: u32,
-}
 // TODO: This code needs to be audited...
 // The safety of `Pe` relies on it.
-pub(crate) fn validate_headers(image: &[u8]) -> Result<VH> {
+pub(crate) fn validate_headers(image: &[u8]) -> Result<u32> {
 	// Grab the DOS header
 	if mem::size_of::<IMAGE_DOS_HEADER>() > image.len() {
 		return Err(Error::OOB);
@@ -435,8 +444,19 @@ pub(crate) fn validate_headers(image: &[u8]) -> Result<VH> {
 	if dos.e_magic != IMAGE_DOS_SIGNATURE {
 		return Err(Error::BadMagic);
 	}
+	// "According to the PE specification, the PE header must be aligned on a 8 byte boundary, but the Windows loader requires only a 4 byte alignment."
+	if dos.e_lfanew % 4 != 0 {
+		return Err(Error::Misalign);
+	}
+	// Prevent overflow the easy way...
+	// When changing, take care of overflow in later offset calculations!
+	if dos.e_lfanew > 0x01000000 {
+		return Err(Error::Insanity);
+	}
+
 	// Grab the NT headers
-	if usize::checked_add(dos.e_lfanew as usize, mem::size_of::<IMAGE_NT_HEADERS>()).ok_or(Error::Overflow)? > image.len() {
+	let nt_end = dos.e_lfanew as usize + mem::size_of::<IMAGE_NT_HEADERS>();
+	if nt_end > image.len() {
 		return Err(Error::OOB);
 	}
 	let nt = unsafe { &*(image.as_ptr().offset(dos.e_lfanew as isize) as *const IMAGE_NT_HEADERS) };
@@ -444,26 +464,32 @@ pub(crate) fn validate_headers(image: &[u8]) -> Result<VH> {
 	if nt.Signature != IMAGE_NT_HEADERS_SIGNATURE || nt.OptionalHeader.Magic != IMAGE_NT_OPTIONAL_HDR_MAGIC {
 		return Err(Error::BadMagic);
 	}
-	if nt.OptionalHeader.SizeOfHeaders as usize > image.len() {
-		return Err(Error::Corrupt);
-	}
-	// Verify the data directory with some arbtirary chosen limits
-	if nt.OptionalHeader.NumberOfRvaAndSizes < IMAGE_NUMBEROF_DIRECTORY_ENTRIES as u32 || nt.OptionalHeader.NumberOfRvaAndSizes > 100 {
+	if nt.OptionalHeader.SizeOfHeaders > nt.OptionalHeader.SizeOfImage {
 		return Err(Error::Insanity);
 	}
-	let size_of_data_dir = mem::size_of::<IMAGE_DATA_DIRECTORY>() * nt.OptionalHeader.NumberOfRvaAndSizes as usize;
-	let size_of_opt_header = mem::size_of::<IMAGE_OPTIONAL_HEADER>() - mem::size_of::<[IMAGE_DATA_DIRECTORY; IMAGE_NUMBEROF_DIRECTORY_ENTRIES]>() + size_of_data_dir;
-	if size_of_opt_header > nt.FileHeader.SizeOfOptionalHeader as usize {
-		return Err(Error::Corrupt);
+
+	// Verify the data directory
+	let num_rva_sizes = cmp::min(
+		nt.OptionalHeader.NumberOfRvaAndSizes as usize,
+		IMAGE_NUMBEROF_DIRECTORY_ENTRIES);
+	let size_of_data_dir = num_rva_sizes * mem::size_of::<IMAGE_DATA_DIRECTORY>();
+	if nt_end + size_of_data_dir > image.len() {
+		return Err(Error::OOB);
 	}
+
 	// Verify the section headers
-	let sec_begin = dos.e_lfanew as usize + (mem::size_of::<IMAGE_NT_HEADERS>() - mem::size_of::<IMAGE_OPTIONAL_HEADER>()) + nt.FileHeader.SizeOfOptionalHeader as usize;
-	let sec_end = sec_begin + nt.FileHeader.NumberOfSections as usize * mem::size_of::<IMAGE_SECTION_HEADER>();
-	if sec_end > nt.OptionalHeader.SizeOfHeaders as usize {
-		return Err(Error::Corrupt);
+	if nt.FileHeader.NumberOfSections > 96 {
+		return Err(Error::Insanity);
 	}
-	Ok(VH {
-		image_base: nt.OptionalHeader.ImageBase,
-		size_of_image: nt.OptionalHeader.SizeOfImage,
-	})
+	// u16 * sizeof(T) casted to usize, cannot reasonably overflow
+	let size_of_sections = nt.FileHeader.NumberOfSections as usize * mem::size_of::<IMAGE_SECTION_HEADER>();
+	// e_lfanew is checked for reasonable values, the others then cannot reasonably cause overflow
+	let start_of_sections = dos.e_lfanew as usize
+		+ (mem::size_of::<IMAGE_NT_HEADERS>() - mem::size_of::<IMAGE_OPTIONAL_HEADER>())
+		+ nt.FileHeader.SizeOfOptionalHeader as usize;
+	// then the sum of these cannot reasonably overflow
+	if size_of_sections + start_of_sections > image.len() {
+		return Err(Error::OOB);
+	}
+	Ok(nt.OptionalHeader.SizeOfImage)
 }
