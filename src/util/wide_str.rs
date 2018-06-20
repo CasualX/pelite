@@ -2,7 +2,9 @@
 Length word prefixed wide string.
 */
 
-use std::{char, fmt, mem, ops};
+use std::{char, fmt, mem, slice, ops};
+
+use util::FromBytes;
 
 //----------------------------------------------------------------
 
@@ -15,6 +17,12 @@ pub struct WideStr {
 }
 
 impl WideStr {
+	/// Constructs the wide string from a length word prefixed word slice.
+	pub fn from_words(words: &[u16]) -> Option<&WideStr> {
+		let len = *words.get(0)? as usize + 1;
+		let words = words.get(0..len)?;
+		Some(unsafe { WideStr::from_words_unchecked(words) })
+	}
 	/// Interprets a word slice as a length word prefixed wide string.
 	///
 	/// # Safety
@@ -26,6 +34,19 @@ impl WideStr {
 	/// Encodes the string as an UTF8 validated `String`.
 	pub fn to_string(&self) -> Result<String, char::DecodeUtf16Error> {
 		char::decode_utf16(self.as_ref().iter().cloned()).collect()
+	}
+}
+
+impl FromBytes for WideStr {
+	const MIN_SIZE_OF: usize = 2;
+	const ALIGN_OF: usize = 2;
+	unsafe fn from_bytes(bytes: &[u8]) -> Option<&WideStr> {
+		let p = bytes.as_ptr() as *const u16;
+		let len = *p as usize + 1;
+		if len * 2 > bytes.len() {
+			return None;
+		}
+		Some(WideStr::from_words_unchecked(slice::from_raw_parts(p, len)))
 	}
 }
 
@@ -41,7 +62,7 @@ impl ops::Deref for WideStr {
 	type Target = [u16];
 	#[inline]
 	fn deref(&self) -> &[u16] {
-		self.as_ref()
+		unsafe { self.words.get_unchecked(1..) }
 	}
 }
 impl AsRef<[u16]> for WideStr {
@@ -91,7 +112,9 @@ impl fmt::Debug for WideStr {
 
 #[cfg(test)]
 mod tests {
+	use std::slice;
 	use super::WideStr;
+	use util::FromBytes;
 
 	#[test]
 	fn units() {
@@ -100,5 +123,13 @@ mod tests {
 		assert_eq!(wide_str.to_string(), Ok(String::from("STRING")));
 		assert_eq!(wide_str.len(), 6);
 		assert_eq!(wide_str.as_ref(), &WIDE_STR[1..]);
+	}
+
+	#[test]
+	fn from_bytes() {
+		static WIDE_STR: [u16; 7] = [6, 83, 84, 82, 73, 78, 71];
+		let bytes = unsafe { slice::from_raw_parts(WIDE_STR.as_ptr() as *const u8, WIDE_STR.len() * 2) };
+		let wide_str = unsafe { WideStr::from_bytes(bytes).unwrap() };
+		assert_eq!(wide_str, unsafe { WideStr::from_words_unchecked(&WIDE_STR) });
 	}
 }

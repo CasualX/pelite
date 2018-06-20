@@ -70,7 +70,7 @@ fn analyse<'a>(client: PeFile<'a>, code_rva: Rva) -> pelite::Result<WeaponInfo<'
 		if opcode.starts_with(&[0xE8]) {
 			let mut get_m = [0; 4];
 			if client.scanner().exec(client.va_to_rva(va).unwrap(), &get_pat, &mut get_m) {
-				let name = client.derva_str(get_m[1])?.to_str().unwrap();
+				let name = client.derva_c_str(get_m[1])?.to_str().unwrap();
 				if let Some(previous_name) = get_name {
 					eprintln!("missing offset \"{}\"", previous_name);
 				}

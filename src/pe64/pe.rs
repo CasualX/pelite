@@ -5,7 +5,7 @@ Abstract over mapped images and file binaries.
 use std::{cmp, mem, ptr, slice};
 
 use error::{Error, Result};
-use util::{CStr, Pod};
+use util::{CStr, Pod, FromBytes};
 
 use super::image::*;
 use super::ptr::Ptr;
@@ -180,7 +180,7 @@ pub unsafe trait Pe<'a> {
 	/// In case the of PE files on disk, this is limited to the section's size of raw data.
 	///
 	/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) given a null rva.
-	fn slice(&self, rva: Rva, min_size: usize, align: usize) -> Result<&'a [u8]>;
+	fn slice(&self, rva: Rva, min_size_of: usize, align: usize) -> Result<&'a [u8]>;
 
 	/// Slices the image at the specified rva returning a byte slice with no alignment or minimum size.
 	fn slice_bytes(self, rva: Rva) -> Result<&'a [u8]> where Self: Sized {
@@ -196,7 +196,7 @@ pub unsafe trait Pe<'a> {
 	/// In case the of PE files on disk, this is limited to the section's size of raw data.
 	///
 	/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) given a null va.
-	fn read(&self, va: Va, min_size: usize, align: usize) -> Result<&'a [u8]>;
+	fn read(&self, va: Va, min_size_of: usize, align: usize) -> Result<&'a [u8]>;
 
 	/// Reads the image at the specified va returning a byte slice with no alignment or minimum size.
 	fn read_bytes(self, va: Va) -> Result<&'a [u8]> where Self: Sized {
@@ -209,7 +209,7 @@ pub unsafe trait Pe<'a> {
 	fn derva<T>(self, rva: Rva) -> Result<&'a T> where Self: Copy, T: Pod {
 		let align = if cfg!(feature = "unsafe_alignment") { 1 } else { mem::align_of::<T>() };
 		let bytes = self.slice(rva, mem::size_of::<T>(), align)?;
-		// This is safe as per Pod bound, min_size and align
+		// This is safe as per Pod bound, min_size_of and align
 		unsafe {
 			let p = &*(bytes.as_ptr() as *const T);
 			Ok(p)
@@ -218,7 +218,7 @@ pub unsafe trait Pe<'a> {
 	/// Reads an unaligned pod `T`.
 	fn derva_copy<T>(self, rva: Rva) -> Result<T> where Self: Copy, T: Copy + Pod {
 		let bytes = self.slice(rva, mem::size_of::<T>(), 1)?;
-		// This is safe as per Pod bound and min_size
+		// This is safe as per Pod bound and min_size_of
 		unsafe {
 			let p = bytes.as_ptr() as *const T;
 			Ok(ptr::read_unaligned(p))
@@ -226,10 +226,10 @@ pub unsafe trait Pe<'a> {
 	}
 	/// Reads an array of pod `T` with given length.
 	fn derva_slice<T>(self, rva: Rva, len: usize) -> Result<&'a [T]> where Self: Copy, T: Pod {
-		let min_size = mem::size_of::<T>().checked_mul(len).ok_or(Error::Overflow)?;
+		let min_size_of = mem::size_of::<T>().checked_mul(len).ok_or(Error::Overflow)?;
 		let align = if cfg!(feature = "unsafe_alignment") { 1 } else { mem::align_of::<T>() };
-		let bytes = self.slice(rva, min_size, align)?;
-		// This is safe as per Pod bound, min_size and align
+		let bytes = self.slice(rva, min_size_of, align)?;
+		// This is safe as per Pod bound, min_size_of and align
 		unsafe {
 			Ok(slice::from_raw_parts(bytes.as_ptr() as *const T, len))
 		}
@@ -271,8 +271,13 @@ pub unsafe trait Pe<'a> {
 		self.derva_slice_f(rva, |tee| *tee == sentinel)
 	}
 	/// Reads a nul-terminated C string.
-	fn derva_str(self, rva: Rva) -> Result<&'a CStr> where Self: Copy {
-		self.slice_bytes(rva).and_then(CStr::from_bytes)
+	fn derva_c_str(self, rva: Rva) -> Result<&'a CStr> where Self: Copy {
+		self.derva_string(rva)
+	}
+	/// Reads a string.
+	fn derva_string<T>(self, rva: Rva) -> Result<&'a T> where Self: Copy, T: FromBytes + ?Sized {
+		let bytes = self.slice(rva, T::MIN_SIZE_OF, T::ALIGN_OF)?;
+		unsafe { T::from_bytes(bytes).ok_or(Error::CStr) }
 	}
 
 	//----------------------------------------------------------------
@@ -282,7 +287,7 @@ pub unsafe trait Pe<'a> {
 	fn deref<T, P>(self, ptr: P) -> Result<&'a T> where Self: Copy, T: Pod, P: Into<Ptr<T>> {
 		let align = if cfg!(feature = "unsafe_alignment") { 1 } else { mem::align_of::<T>() };
 		let bytes = self.read(ptr.into().into(), mem::size_of::<T>(), align)?;
-		// This is safe as per Pod bound, min_size and align
+		// This is safe as per Pod bound, min_size_of and align
 		unsafe {
 			let p = &*(bytes.as_ptr() as *const T);
 			Ok(p)
@@ -291,7 +296,7 @@ pub unsafe trait Pe<'a> {
 	/// Dereferences the pointer to an unaligned pod `T`.
 	fn deref_copy<T, P>(self, ptr: P) -> Result<T> where Self: Copy, T: Copy + Pod, P: Into<Ptr<T>> {
 		let bytes = self.read(ptr.into().into(), mem::size_of::<T>(), 1)?;
-		// This is safe as per Pod bound and min_size
+		// This is safe as per Pod bound and min_size_of
 		unsafe {
 			let p = bytes.as_ptr() as *const T;
 			Ok(ptr::read_unaligned(p))
@@ -299,10 +304,10 @@ pub unsafe trait Pe<'a> {
 	}
 	/// Reads an array of pod `T` with given length.
 	fn deref_slice<T, P>(self, ptr: P, len: usize) -> Result<&'a [T]> where Self: Copy, T: Pod, P: Into<Ptr<[T]>> {
-		let min_size = mem::size_of::<T>().checked_mul(len).ok_or(Error::Overflow)?;
+		let min_size_of = mem::size_of::<T>().checked_mul(len).ok_or(Error::Overflow)?;
 		let align = if cfg!(feature = "unsafe_alignment") { 1 } else { mem::align_of::<T>() };
-		let bytes = self.read(ptr.into().into(), min_size, align)?;
-		// This is safe as per Pod bound, min_size and align
+		let bytes = self.read(ptr.into().into(), min_size_of, align)?;
+		// This is safe as per Pod bound, min_size_of and align
 		unsafe {
 			Ok(slice::from_raw_parts(bytes.as_ptr() as *const T, len))
 		}
@@ -344,8 +349,13 @@ pub unsafe trait Pe<'a> {
 		self.deref_slice_f(ptr, |tee| *tee == sentinel)
 	}
 	/// Dereferences the pointer to a nul-terminated C string.
-	fn deref_str<P>(self, ptr: P) -> Result<&'a CStr> where Self: Copy, P: Into<Ptr<CStr>> {
-		self.read_bytes(ptr.into().into()).and_then(CStr::from_bytes)
+	fn deref_c_str<P>(self, ptr: P) -> Result<&'a CStr> where Self: Copy, P: Into<Ptr<CStr>> {
+		self.deref_string(ptr)
+	}
+	/// Dereferences the pointer to a string.
+	fn deref_string<T, P>(self, ptr: P) -> Result<&'a T> where Self: Copy, P: Into<Ptr<T>>, T: FromBytes + ?Sized {
+		let bytes = self.read(ptr.into().into(), T::MIN_SIZE_OF, T::ALIGN_OF)?;
+		unsafe { T::from_bytes(bytes).ok_or(Error::CStr) }
 	}
 
 	//----------------------------------------------------------------
@@ -422,11 +432,11 @@ unsafe impl<'s, 'a, P: Pe<'a> + ?Sized> Pe<'a> for &'s P {
 	fn align(&self) -> Align {
 		P::align(*self)
 	}
-	fn slice(&self, rva: Rva, min_size: usize, align: usize) -> Result<&'a [u8]> {
-		P::slice(*self, rva, min_size, align)
+	fn slice(&self, rva: Rva, min_size_of: usize, align: usize) -> Result<&'a [u8]> {
+		P::slice(*self, rva, min_size_of, align)
 	}
-	fn read(&self, va: Va, min_size: usize, align: usize) -> Result<&'a [u8]> {
-		P::read(*self, va, min_size, align)
+	fn read(&self, va: Va, min_size_of: usize, align: usize) -> Result<&'a [u8]> {
+		P::read(*self, va, min_size_of, align)
 	}
 }
 

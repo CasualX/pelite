@@ -74,7 +74,7 @@ pub fn interfaces<'a>(file: PeFile<'a>) -> pelite::Result<Vec<Interface<'a>>> {
 	let mut matches = file.scanner().matches_code(&pat);
 	while matches.next_match(&mut save) {
 		// Extract the interface information
-		let name = file.derva_str(save[1]).unwrap().to_str().unwrap();
+		let name = file.derva_c_str(save[1]).unwrap().to_str().unwrap();
 		let offset = save[2];
 		list.push(Interface { dll_name, name, offset });
 	}

@@ -53,10 +53,10 @@ pub fn cvars<'a>(file: PeFile<'a>) -> pelite::Result<Vec<ConVar<'a>>> {
 	while matches1.next_match(&mut save) {
 		let (min_value, max_value) = get_min_max_value(&save);
 		let offset = save[1];
-		let desc = Some(file.derva_str(save[2]).unwrap().to_str().unwrap());
+		let desc = Some(file.derva_c_str(save[2]).unwrap().to_str().unwrap());
 		let flags = file.derva_copy(save[3]).unwrap();
-		let default_string = file.derva_str(save[4]).unwrap().to_str().unwrap();
-		let name = file.derva_str(save[5]).unwrap().to_str().unwrap();
+		let default_string = file.derva_c_str(save[4]).unwrap().to_str().unwrap();
+		let name = file.derva_c_str(save[5]).unwrap().to_str().unwrap();
 		cvars.push(ConVar { dll_name, name, desc, default_string, offset, flags, min_value, max_value });
 	}
 
@@ -68,8 +68,8 @@ pub fn cvars<'a>(file: PeFile<'a>) -> pelite::Result<Vec<ConVar<'a>>> {
 		let offset = save[1];
 		let desc = None;
 		let flags = file.derva_copy(save[2]).unwrap();
-		let default_string = file.derva_str(save[3]).unwrap().to_str().unwrap();
-		let name = file.derva_str(save[4]).unwrap().to_str().unwrap();
+		let default_string = file.derva_c_str(save[3]).unwrap().to_str().unwrap();
+		let name = file.derva_c_str(save[4]).unwrap().to_str().unwrap();
 		cvars.push(ConVar { dll_name, name, desc, default_string, offset, flags, min_value, max_value });
 	}
 

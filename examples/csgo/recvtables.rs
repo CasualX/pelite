@@ -124,7 +124,7 @@ fn recvtable<'a>(client: PeFile<'a>, save: &[Rva; 8]) -> pelite::Result<Class<'a
 	let props_rva = save[2];
 	let code: &[u8] = client.derva_slice(save[5], (save[1] - save[5]) as usize)?;
 	let &n_props: &i32 = client.derva(save[3])?;
-	let net_table_name = client.derva_str(save[4])?.to_str().unwrap();
+	let net_table_name = client.derva_c_str(save[4])?.to_str().unwrap();
 
 	// Allocate memory to initialize the props
 	let mut recv_props = vec![unsafe { mem::zeroed::<RecvProp>() }; n_props as usize];
@@ -153,7 +153,7 @@ fn recvtable<'a>(client: PeFile<'a>, save: &[Rva; 8]) -> pelite::Result<Class<'a
 
 	let mut props = Vec::new();
 	for recv_prop in &recv_props {
-		if let Ok(name) = client.deref_str(recv_prop.pVarName).and_then(|s| s.to_str().map_err(|_| pelite::Error::CStr)) {
+		if let Ok(name) = client.deref_c_str(recv_prop.pVarName).and_then(|s| s.to_str().map_err(|_| pelite::Error::CStr)) {
 			let ty = *PROP_TYPES.get(recv_prop.RecvType as usize).unwrap_or(&"?");
 			let offset = recv_prop.Offset;
 			props.push(Prop { name, ty, offset });

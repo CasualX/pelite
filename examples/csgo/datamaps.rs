@@ -142,9 +142,9 @@ pub fn datamaps<'a>(client: PeFile<'a>) -> pelite::Result<Vec<Class<'a>>> {
 fn dataclass<'a>(client: PeFile<'a>, datamap: &datamap_t, tydescs: &[typedescription_t]) -> pelite::Result<Class<'a>> {
 	let mut fields = Vec::new();
 	for tydesc in tydescs {
-		if let Ok(field_name) = client.deref_str(tydesc.fieldName) {
+		if let Ok(field_name) = client.deref_c_str(tydesc.fieldName) {
 			let ty = client.deref(tydesc.td)
-				.and_then(|td| client.deref_str(td.dataClassName))
+				.and_then(|td| client.deref_c_str(td.dataClassName))
 				.map(|name| name.to_str().unwrap())
 				.unwrap_or(*FIELD_TYPES.get(tydesc.fieldType as usize).unwrap_or(&"?"));
 			fields.push(Field {
@@ -156,9 +156,9 @@ fn dataclass<'a>(client: PeFile<'a>, datamap: &datamap_t, tydescs: &[typedescrip
 	}
 	fields.sort_by_key(|field| field.offset);
 
-	let class_name = client.deref_str(datamap.dataClassName)?.to_str().unwrap();
+	let class_name = client.deref_c_str(datamap.dataClassName)?.to_str().unwrap();
 	let base_class = client.deref(datamap.baseMap).and_then(|basemap| {
-		Ok(client.deref_str(basemap.dataClassName)?.to_str().unwrap())
+		Ok(client.deref_c_str(basemap.dataClassName)?.to_str().unwrap())
 	}).ok();
 
 	Ok(Class {
