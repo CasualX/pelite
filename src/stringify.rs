@@ -1,9 +1,15 @@
 /*!
-Stringifying image values.
+Stringify image constants.
 */
 
 use image::*;
 
+/// Stringifies the `IMAGE_FILE_MACHINE_*` constants for [`IMAGE_FILE_HEADER::Machine`](../image/struct.IMAGE_FILE_HEADER.html#Machine.v).
+///
+/// ```
+/// let machine = pelite::image::IMAGE_FILE_MACHINE_AMD64;
+/// assert_eq!(pelite::stringify::machine(machine), Some("AMD64"));
+/// ```
 pub fn machine(machine: u16) -> Option<&'static str> {
 	match machine {
 		IMAGE_FILE_MACHINE_I386 => Some("i386"),
@@ -31,11 +37,31 @@ static IMAGE_FILE_CHARS_STRINGS: [Option<&str>; 16] = [
 	/*4000*/Some("UP_SYSTEM_ONLY"),
 	/*8000*/Some("BYTES_REVERSED_HI"),
 ];
+/// Stringifies the `IMAGE_FILE_*` flag indices for [`IMAGE_FILE_HEADER::Characteristics`](../image/struct.IMAGE_FILE_HEADER.html#Characteristics.v).
+///
+/// ```
+/// let chars = 0;
+/// for i in 0..16 {
+/// 	let flag = 1 << i;
+/// 	if chars & flag != 0 {
+/// 		print!("\n    {:>4x}", flag);
+/// 		if let Some(s) = pelite::stringify::file_chars(i) {
+/// 			print!(": {}", s);
+/// 		}
+/// 	}
+/// }
+/// ```
 pub fn file_chars(index: u32) -> Option<&'static str> {
 	IMAGE_FILE_CHARS_STRINGS.get(index as usize).and_then(Clone::clone)
 }
 
-pub fn stringify_optional_magic(magic: u16) -> Option<&'static str> {
+/// Stringifies the optional header's `Magic` value.
+///
+/// ```
+/// let magic = pelite::image::IMAGE_NT_OPTIONAL_HDR64_MAGIC;
+/// assert_eq!(pelite::stringify::optional_magic(magic), Some("PE32+"));
+/// ```
+pub fn optional_magic(magic: u16) -> Option<&'static str> {
 	match magic {
 		IMAGE_NT_OPTIONAL_HDR32_MAGIC => Some("PE32"),
 		IMAGE_NT_OPTIONAL_HDR64_MAGIC => Some("PE32+"),
@@ -44,6 +70,12 @@ pub fn stringify_optional_magic(magic: u16) -> Option<&'static str> {
 	}
 }
 
+/// Stringifies the `IMAGE_SUBSYSTEM_*` constants for [`IMAGE_OPTIONAL_HEADER::Subsystem`](../image/struct.IMAGE_OPTIONAL_HEADER64.html#Subsystem.v).
+///
+/// ```
+/// let subsystem = pelite::image::IMAGE_SUBSYSTEM_WINDOWS_GUI;
+/// assert_eq!(pelite::stringify::subsystem(subsystem), Some("Windows GUI"));
+/// ```
 pub fn subsystem(subsystem: u16) -> Option<&'static str> {
 	match subsystem {
 		IMAGE_SUBSYSTEM_UNKNOWN => Some("Unknown"),
@@ -81,11 +113,31 @@ static IMAGE_DLLCHARS_STRINGS: [Option<&str>; 16] = [
 	/*4000*/Some("Guard CF"),
 	/*8000*/Some("Terminal Server Aware"),
 ];
+/// Stringifies the `IMAGE_DLLCHARACTERISTICS_*` flag indices for [`IMAGE_OPTIONAL_HEADER::DllCharacteristics`](../image/struct.IMAGE_OPTIONAL_HEADER64.html#DllCharacteristics.v).
+///
+/// ```
+/// let dll_chars = 0;
+/// for i in 0..16 {
+/// 	let flag = 1 << i;
+/// 	if dll_chars & flag != 0 {
+/// 		print!("\n    {:>4}", flag);
+/// 		if let Some(s) = pelite::stringify::dll_chars(i) {
+/// 			print!(": {}", s);
+/// 		}
+/// 	}
+/// }
+/// ```
 pub fn dll_chars(index: u32) -> Option<&'static str> {
 	IMAGE_DLLCHARS_STRINGS.get(index as usize).and_then(Clone::clone)
 }
 
-pub fn data_directory(entry: usize) -> Option<&'static str> {
+/// Stringifies the `IMAGE_DIRECTORY_ENTRY_*` constants for [`IMAGE_OPTIONAL_HEADER::DataDirectory`](../image/struct.IMAGE_OPTIONAL_HEADER64.html#DataDirectory.v).
+///
+/// ```
+/// let directory_entry = pelite::image::IMAGE_DIRECTORY_ENTRY_IMPORT;
+/// assert_eq!(pelite::stringify::directory_entry(directory_entry), Some("Import"));
+/// ```
+pub fn directory_entry(entry: usize) -> Option<&'static str> {
 	match entry {
 		IMAGE_DIRECTORY_ENTRY_EXPORT => Some("Export"),
 		IMAGE_DIRECTORY_ENTRY_IMPORT => Some("Import"),
@@ -140,6 +192,20 @@ static IMAGE_SCN_STRINGS: [Option<&str>; 32] = [
 	/*40000000*/Some("MEM_READ"),
 	/*80000000*/Some("MEM_WRITE"),
 ];
+/// Stringifies the `IMAGE_SCN_*` flag indices for [`IMAGE_SECTION_HEADER::Characteristics`](../image/struct.IMAGE_SECTION_HEADER.html#Characteristics.v).
+///
+/// ```
+/// let section_chars = 0;
+/// for i in 0..32 {
+/// 	let flag = 1 << i;
+/// 	if section_chars & flag != 0 {
+/// 		print!("\n    {:>8}", flag);
+/// 		if let Some(s) = pelite::stringify::section_chars(i) {
+/// 			print!(": {}", s);
+/// 		}
+/// 	}
+/// }
+/// ```
 pub fn section_chars(index: u32) -> Option<&'static str> {
 	IMAGE_SCN_STRINGS.get(index as usize).and_then(Clone::clone)
 }
@@ -151,12 +217,24 @@ pub(crate) static RSRC_TYPES: [Option<&str>; 25] = [
 	/*15*/ None, Some("Version"), Some("DlgInclude"), None, Some("Plug and Play"),
 	/*20*/ Some("VXD"), Some("Animated Cursors"), Some("Animated Icons"), Some("HTML"), Some("Manifest"),
 ];
-pub fn rsrc_type(index: u32) -> Option<&'static str> {
-	RSRC_TYPES.get(index as usize).and_then(Clone::clone)
+/// Stringifies the `RT_*` constants for [`IMAGE_RESOURCE_DIRECTORY_ENTRY::Name`](../image/struct.IMAGE_RESOURCE_DIRECTORY_ENTRY.html#Name.v).
+///
+/// ```
+/// let name = pelite::image::RT_MANIFEST;
+/// assert_eq!(pelite::stringify::rsrc_name(name), Some("Manifest"));
+/// ```
+pub fn rsrc_name(name: u16) -> Option<&'static str> {
+	RSRC_TYPES.get(name as usize).and_then(Clone::clone)
 }
 
-pub fn reloc_type(ty: u8) -> Option<&'static str> {
-	match ty {
+/// Stringifies the `IMAGE_REL_BASED_*` constants for [`IMAGE_BASE_RELOCATION` types](../image/struct.IMAGE_BASE_RELOCATION.html).
+///
+/// ```
+/// let reloc_type = pelite::image::IMAGE_REL_BASED_HIGHLOW;
+/// assert_eq!(pelite::stringify::reloc_type(reloc_type), Some("HIGHLOW"));
+/// ```
+pub fn reloc_type(reloc_type: u8) -> Option<&'static str> {
+	match reloc_type {
 		IMAGE_REL_BASED_ABSOLUTE => Some("ABSOLUTE"),
 		IMAGE_REL_BASED_HIGH => Some("HIGH"),
 		IMAGE_REL_BASED_LOW => Some("LOW"),
@@ -170,8 +248,14 @@ pub fn reloc_type(ty: u8) -> Option<&'static str> {
 	}
 }
 
-pub fn debug_type(ty: u32) -> Option<&'static str> {
-	match ty {
+/// Stringifies the `IMAGE_DEBUG_TYPE_*` constants for [`IMAGE_DEBUG_DIRECTORY::Type`](../image/struct.IMAGE_DEBUG_DIRECTORY.html#Type.v).
+///
+/// ```
+/// let debug_type = pelite::image::IMAGE_DEBUG_TYPE_CODEVIEW;
+/// assert_eq!(pelite::stringify::debug_type(debug_type), Some("CodeView"));
+/// ```
+pub fn debug_type(debug_type: u32) -> Option<&'static str> {
+	match debug_type {
 		IMAGE_DEBUG_TYPE_UNKNOWN => Some("Unknown"),
 		IMAGE_DEBUG_TYPE_COFF => Some("COFF"),
 		IMAGE_DEBUG_TYPE_CODEVIEW => Some("CodeView"),
