@@ -52,24 +52,24 @@ impl<'a> PeView<'a> {
 			image: slice::from_raw_parts(base, nt.OptionalHeader.SizeOfImage as usize),
 		}
 	}
-	fn slice_impl(self, rva: Rva, min_size: usize, align: usize) -> Result<&'a [u8]> {
-		debug_assert!(align != 0 && align & (align - 1) == 0);
+	fn slice_impl(self, rva: Rva, min_size_of: usize, align_of: usize) -> Result<&'a [u8]> {
+		debug_assert!(align_of != 0 && align_of & (align_of - 1) == 0);
 		let start = rva as usize;
 		if rva == BADRVA {
 			Err(Error::Null)
 		}
-		else if start & (align - 1) != 0 {
+		else if start & (align_of - 1) != 0 {
 			Err(Error::Misalign)
 		}
 		else {
 			match self.image.get(start..) {
-				Some(bytes) if bytes.len() >= min_size => Ok(bytes),
+				Some(bytes) if bytes.len() >= min_size_of => Ok(bytes),
 				_ => Err(Error::OOB),
 			}
 		}
 	}
-	fn read_impl(self, va: Va, min_size: usize, align: usize) -> Result<&'a [u8]> {
-		debug_assert!(align != 0 && align & (align - 1) == 0);
+	fn read_impl(self, va: Va, min_size_of: usize, align_of: usize) -> Result<&'a [u8]> {
+		debug_assert!(align_of != 0 && align_of & (align_of - 1) == 0);
 		let (image_base, size_of_image) = {
 			let optional_header = self.optional_header();
 			(optional_header.ImageBase, optional_header.SizeOfImage)
@@ -82,12 +82,12 @@ impl<'a> PeView<'a> {
 		}
 		else {
 			let start = (va - image_base) as usize;
-			if start & (align - 1) != 0 {
+			if start & (align_of - 1) != 0 {
 				Err(Error::Misalign)
 			}
 			else {
 				match self.image.get(start..) {
-					Some(bytes) if bytes.len() >= min_size => Ok(bytes),
+					Some(bytes) if bytes.len() >= min_size_of => Ok(bytes),
 					_ => Err(Error::OOB),
 				}
 			}
@@ -102,11 +102,11 @@ unsafe impl<'a> Pe<'a> for PeView<'a> {
 	fn align(&self) -> Align {
 		Align::Section
 	}
-	fn slice(&self, rva: Rva, min_size: usize, align: usize) -> Result<&'a [u8]> {
-		self.slice_impl(rva, min_size, align)
+	fn slice(&self, rva: Rva, min_size_of: usize, align_of: usize) -> Result<&'a [u8]> {
+		self.slice_impl(rva, min_size_of, align_of)
 	}
-	fn read(&self, va: Va, min_size: usize, align: usize) -> Result<&'a [u8]> {
-		self.read_impl(va, min_size, align)
+	fn read(&self, va: Va, min_size_of: usize, align_of: usize) -> Result<&'a [u8]> {
+		self.read_impl(va, min_size_of, align_of)
 	}
 }
 

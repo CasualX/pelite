@@ -22,7 +22,7 @@ impl<'a> PeFile<'a> {
 		let _ = validate_headers(image)?;
 		Ok(PeFile { image })
 	}
-	fn range_to_slice(&self, rva: Rva, min_size: usize) -> Result<&'a [u8]> {
+	fn range_to_slice(&self, rva: Rva, min_size_of: usize) -> Result<&'a [u8]> {
 		// Cannot reuse `self.rva_to_file_offset` because it doesn't return the size of the section
 		// FIXME! What to do about all the potential overflows?
 		for it in self.section_headers() {
@@ -33,30 +33,30 @@ impl<'a> PeFile<'a> {
 				let start = (rva - it.VirtualAddress + it.PointerToRawData) as usize;
 				let end = (it.PointerToRawData + it.SizeOfRawData) as usize;
 				return match self.image.get(start..end) {
-					Some(bytes) if bytes.len() >= min_size => Ok(bytes),
+					Some(bytes) if bytes.len() >= min_size_of => Ok(bytes),
 					// Identify the reason the slice fails
-					_ => Err(if rva + min_size as Rva > VirtualEnd { Error::OOB } else { Error::ZeroFill }),
+					_ => Err(if rva + min_size_of as Rva > VirtualEnd { Error::OOB } else { Error::ZeroFill }),
 				};
 			}
 		}
 		Err(Error::OOB)
 	}
 	#[inline(never)]
-	fn slice_impl(self, rva: Rva, min_size: usize, align: usize) -> Result<&'a [u8]> {
-		debug_assert!(align != 0 && align & (align - 1) == 0);
+	fn slice_impl(self, rva: Rva, min_size_of: usize, align_of: usize) -> Result<&'a [u8]> {
+		debug_assert!(align_of != 0 && align_of & (align_of - 1) == 0);
 		if rva == BADRVA {
 			Err(Error::Null)
 		}
-		else if rva as usize & (align - 1) != 0 {
+		else if rva as usize & (align_of - 1) != 0 {
 			Err(Error::Misalign)
 		}
 		else {
-			self.range_to_slice(rva, min_size)
+			self.range_to_slice(rva, min_size_of)
 		}
 	}
 	#[inline(never)]
-	fn read_impl(self, va: Va, min_size: usize, align: usize) -> Result<&'a [u8]> {
-		debug_assert!(align != 0 && align & (align - 1) == 0);
+	fn read_impl(self, va: Va, min_size_of: usize, align_of: usize) -> Result<&'a [u8]> {
+		debug_assert!(align_of != 0 && align_of & (align_of - 1) == 0);
 		let (image_base, size_of_image) = {
 			let optional_header = self.optional_header();
 			(optional_header.ImageBase, optional_header.SizeOfImage)
@@ -69,11 +69,11 @@ impl<'a> PeFile<'a> {
 		}
 		else {
 			let rva = (va - image_base) as Rva;
-			if rva as usize & (align - 1) != 0 {
+			if rva as usize & (align_of - 1) != 0 {
 				Err(Error::Misalign)
 			}
 			else {
-				self.range_to_slice(rva, min_size)
+				self.range_to_slice(rva, min_size_of)
 			}
 		}
 	}
@@ -86,11 +86,11 @@ unsafe impl<'a> Pe<'a> for PeFile<'a> {
 	fn align(&self) -> Align {
 		Align::File
 	}
-	fn slice(&self, rva: Rva, min_size: usize, align: usize) -> Result<&'a [u8]> {
-		self.slice_impl(rva, min_size, align)
+	fn slice(&self, rva: Rva, min_size_of: usize, align_of: usize) -> Result<&'a [u8]> {
+		self.slice_impl(rva, min_size_of, align_of)
 	}
-	fn read(&self, va: Va, min_size: usize, align: usize) -> Result<&'a [u8]> {
-		self.read_impl(va, min_size, align)
+	fn read(&self, va: Va, min_size_of: usize, align_of: usize) -> Result<&'a [u8]> {
+		self.read_impl(va, min_size_of, align_of)
 	}
 }
 
