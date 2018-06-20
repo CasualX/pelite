@@ -144,7 +144,7 @@ pub fn section_chars(index: u32) -> Option<&'static str> {
 	IMAGE_SCN_STRINGS.get(index as usize).and_then(Clone::clone)
 }
 
-static RSRC_TYPES: [Option<&str>; 25] = [
+pub(crate) static RSRC_TYPES: [Option<&str>; 25] = [
 	/* 0*/ None, Some("Cursors"), Some("Bitmaps"), Some("Icons"), Some("Menus"),
 	/* 5*/ Some("Dialogs"), Some("Strings"), Some("Font Directory"), Some("Fonts"), Some("Accelerators"),
 	/*10*/ Some("Raw Data"), Some("Message Tables"), Some("Group Cursors"), None, Some("Group Icons"),
