@@ -80,9 +80,38 @@ pub struct IMAGE_DOS_HEADER {
 
 //----------------------------------------------------------------
 
-pub const IMAGE_FILE_MACHINE_I386: u16  = 0x014c;
-pub const IMAGE_FILE_MACHINE_IA64: u16  = 0x0200;
-pub const IMAGE_FILE_MACHINE_AMD64: u16 = 0x8664;
+pub const IMAGE_FILE_MACHINE_UNKNOWN: u16     = 0x0000;
+pub const IMAGE_FILE_MACHINE_TARGET_HOST: u16 = 0x0001;
+pub const IMAGE_FILE_MACHINE_I386: u16        = 0x014c;
+pub const IMAGE_FILE_MACHINE_R3000: u16       = 0x0162;
+pub const IMAGE_FILE_MACHINE_R4000: u16       = 0x0166;
+pub const IMAGE_FILE_MACHINE_R10000: u16      = 0x0168;
+pub const IMAGE_FILE_MACHINE_WCEMIPSV2: u16   = 0x0169;
+pub const IMAGE_FILE_MACHINE_ALPHA: u16       = 0x0184;
+pub const IMAGE_FILE_MACHINE_SH3: u16         = 0x01a2;
+pub const IMAGE_FILE_MACHINE_SH3DSP: u16      = 0x01a3;
+pub const IMAGE_FILE_MACHINE_SH3E: u16        = 0x01a4;
+pub const IMAGE_FILE_MACHINE_SH4: u16         = 0x01a6;
+pub const IMAGE_FILE_MACHINE_SH5: u16         = 0x01a8;
+pub const IMAGE_FILE_MACHINE_ARM: u16         = 0x01c0;
+pub const IMAGE_FILE_MACHINE_THUMB: u16       = 0x01c2;
+pub const IMAGE_FILE_MACHINE_ARMNT: u16       = 0x01c4;
+pub const IMAGE_FILE_MACHINE_AM33: u16        = 0x01d3;
+pub const IMAGE_FILE_MACHINE_POWERPC: u16     = 0x01F0;
+pub const IMAGE_FILE_MACHINE_POWERPCFP: u16   = 0x01f1;
+pub const IMAGE_FILE_MACHINE_IA64: u16        = 0x0200;
+pub const IMAGE_FILE_MACHINE_MIPS16: u16      = 0x0266;
+pub const IMAGE_FILE_MACHINE_ALPHA64: u16     = 0x0284;
+pub const IMAGE_FILE_MACHINE_MIPSFPU: u16     = 0x0366;
+pub const IMAGE_FILE_MACHINE_MIPSFPU16: u16   = 0x0466;
+pub const IMAGE_FILE_MACHINE_AXP64: u16       = 0x0284;
+pub const IMAGE_FILE_MACHINE_TRICORE: u16     = 0x0520;
+pub const IMAGE_FILE_MACHINE_CEF: u16         = 0x0CEF;
+pub const IMAGE_FILE_MACHINE_EBC: u16         = 0x0EBC;
+pub const IMAGE_FILE_MACHINE_AMD64: u16       = 0x8664;
+pub const IMAGE_FILE_MACHINE_M32R: u16        = 0x9041;
+pub const IMAGE_FILE_MACHINE_ARM64: u16       = 0xAA64;
+pub const IMAGE_FILE_MACHINE_CEE: u16         = 0xC0EE;
 
 pub const IMAGE_FILE_RELOCS_STRIPPED: u16         = 0x0001;
 pub const IMAGE_FILE_EXECUTABLE_IMAGE: u16        = 0x0002;
