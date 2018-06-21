@@ -7,19 +7,12 @@ use std::{fmt, mem, slice};
 use error::{Error, Result};
 use image::*;
 use util::WideStr;
+use stringify::RSRC_TYPES;
 
 //----------------------------------------------------------------
 
 mod find;
 pub use self::find::FindError;
-
-static RSRC_TYPES: [Option<&str>; 25] = [
-	/* 0*/ None, Some("Cursors"), Some("Bitmaps"), Some("Icons"), Some("Menus"),
-	/* 5*/ Some("Dialogs"), Some("Strings"), Some("Font Directory"), Some("Fonts"), Some("Accelerators"),
-	/*10*/ Some("Raw Data"), Some("Message Tables"), Some("Group Cursors"), None, Some("Group Icons"),
-	/*15*/ None, Some("Version"), Some("DlgInclude"), None, Some("Plug and Play"),
-	/*20*/ Some("VXD"), Some("Animated Cursors"), Some("Animated Icons"), Some("HTML"), Some("Manifest"),
-];
 
 //----------------------------------------------------------------
 
