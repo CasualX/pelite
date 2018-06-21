@@ -8,6 +8,7 @@ use image::*;
 ///
 /// ```
 /// let machine = pelite::image::IMAGE_FILE_MACHINE_AMD64;
+///
 /// assert_eq!(pelite::stringify::machine(machine), Some("AMD64"));
 /// ```
 pub fn machine(machine: u16) -> Option<&'static str> {
@@ -19,6 +20,26 @@ pub fn machine(machine: u16) -> Option<&'static str> {
 	}
 }
 
+/// Stringifies the `IMAGE_FILE_*` flag indices for [`IMAGE_FILE_HEADER::Characteristics`](../image/struct.IMAGE_FILE_HEADER.html#Characteristics.v).
+///
+/// ```
+/// let file_chars =
+/// 	pelite::image::IMAGE_FILE_DLL |
+/// 	pelite::image::IMAGE_FILE_LARGE_ADDRESS_AWARE;
+///
+/// let flags = (0..16)
+/// 	.filter(|&index| file_chars & (1 << index) != 0)
+/// 	.map(pelite::stringify::file_chars)
+/// 	.collect::<Vec<Option<&str>>>();
+///
+/// assert_eq!(flags, &[
+/// 	Some("LARGE_ADDRESS_AWARE"),
+/// 	Some("DLL"),
+/// ]);
+/// ```
+pub fn file_chars(index: u32) -> Option<&'static str> {
+	IMAGE_FILE_CHARS_STRINGS.get(index as usize).and_then(Clone::clone)
+}
 static IMAGE_FILE_CHARS_STRINGS: [Option<&str>; 16] = [
 	/*0001*/Some("RELOCS_STRIPPED"),
 	/*0002*/Some("EXECUTABLE_IMAGE"),
@@ -37,28 +58,12 @@ static IMAGE_FILE_CHARS_STRINGS: [Option<&str>; 16] = [
 	/*4000*/Some("UP_SYSTEM_ONLY"),
 	/*8000*/Some("BYTES_REVERSED_HI"),
 ];
-/// Stringifies the `IMAGE_FILE_*` flag indices for [`IMAGE_FILE_HEADER::Characteristics`](../image/struct.IMAGE_FILE_HEADER.html#Characteristics.v).
-///
-/// ```
-/// let chars = 0;
-/// for i in 0..16 {
-/// 	let flag = 1 << i;
-/// 	if chars & flag != 0 {
-/// 		print!("\n    {:>4x}", flag);
-/// 		if let Some(s) = pelite::stringify::file_chars(i) {
-/// 			print!(": {}", s);
-/// 		}
-/// 	}
-/// }
-/// ```
-pub fn file_chars(index: u32) -> Option<&'static str> {
-	IMAGE_FILE_CHARS_STRINGS.get(index as usize).and_then(Clone::clone)
-}
 
 /// Stringifies the optional header's `Magic` value.
 ///
 /// ```
 /// let magic = pelite::image::IMAGE_NT_OPTIONAL_HDR64_MAGIC;
+///
 /// assert_eq!(pelite::stringify::optional_magic(magic), Some("PE32+"));
 /// ```
 pub fn optional_magic(magic: u16) -> Option<&'static str> {
@@ -74,6 +79,7 @@ pub fn optional_magic(magic: u16) -> Option<&'static str> {
 ///
 /// ```
 /// let subsystem = pelite::image::IMAGE_SUBSYSTEM_WINDOWS_GUI;
+///
 /// assert_eq!(pelite::stringify::subsystem(subsystem), Some("Windows GUI"));
 /// ```
 pub fn subsystem(subsystem: u16) -> Option<&'static str> {
@@ -95,6 +101,28 @@ pub fn subsystem(subsystem: u16) -> Option<&'static str> {
 	}
 }
 
+/// Stringifies the `IMAGE_DLLCHARACTERISTICS_*` flag indices for [`IMAGE_OPTIONAL_HEADER::DllCharacteristics`](../image/struct.IMAGE_OPTIONAL_HEADER64.html#DllCharacteristics.v).
+///
+/// ```
+/// let dll_chars =
+/// 	pelite::image::IMAGE_DLLCHARACTERISTICS_DYNAMIC_BASE |
+/// 	pelite::image::IMAGE_DLLCHARACTERISTICS_NX_COMPAT |
+/// 	pelite::image::IMAGE_DLLCHARACTERISTICS_TERMINAL_SERVER_AWARE;
+///
+/// let flags = (0..16)
+/// 	.filter(|&index| dll_chars & (1 << index) != 0)
+/// 	.map(pelite::stringify::dll_chars)
+/// 	.collect::<Vec<Option<&str>>>();
+///
+/// assert_eq!(flags, &[
+/// 	Some("Dynamic Base"),
+/// 	Some("NX Compat"),
+/// 	Some("Terminal Server Aware"),
+/// ]);
+/// ```
+pub fn dll_chars(index: u32) -> Option<&'static str> {
+	IMAGE_DLLCHARS_STRINGS.get(index as usize).and_then(Clone::clone)
+}
 static IMAGE_DLLCHARS_STRINGS: [Option<&str>; 16] = [
 	/*0001*/None,
 	/*0002*/None,
@@ -113,28 +141,12 @@ static IMAGE_DLLCHARS_STRINGS: [Option<&str>; 16] = [
 	/*4000*/Some("Guard CF"),
 	/*8000*/Some("Terminal Server Aware"),
 ];
-/// Stringifies the `IMAGE_DLLCHARACTERISTICS_*` flag indices for [`IMAGE_OPTIONAL_HEADER::DllCharacteristics`](../image/struct.IMAGE_OPTIONAL_HEADER64.html#DllCharacteristics.v).
-///
-/// ```
-/// let dll_chars = 0;
-/// for i in 0..16 {
-/// 	let flag = 1 << i;
-/// 	if dll_chars & flag != 0 {
-/// 		print!("\n    {:>4}", flag);
-/// 		if let Some(s) = pelite::stringify::dll_chars(i) {
-/// 			print!(": {}", s);
-/// 		}
-/// 	}
-/// }
-/// ```
-pub fn dll_chars(index: u32) -> Option<&'static str> {
-	IMAGE_DLLCHARS_STRINGS.get(index as usize).and_then(Clone::clone)
-}
 
 /// Stringifies the `IMAGE_DIRECTORY_ENTRY_*` constants for [`IMAGE_OPTIONAL_HEADER::DataDirectory`](../image/struct.IMAGE_OPTIONAL_HEADER64.html#DataDirectory.v).
 ///
 /// ```
 /// let directory_entry = pelite::image::IMAGE_DIRECTORY_ENTRY_IMPORT;
+///
 /// assert_eq!(pelite::stringify::directory_entry(directory_entry), Some("Import"));
 /// ```
 pub fn directory_entry(entry: usize) -> Option<&'static str> {
@@ -158,6 +170,28 @@ pub fn directory_entry(entry: usize) -> Option<&'static str> {
 	}
 }
 
+/// Stringifies the `IMAGE_SCN_*` flag indices for [`IMAGE_SECTION_HEADER::Characteristics`](../image/struct.IMAGE_SECTION_HEADER.html#Characteristics.v).
+///
+/// ```
+/// let section_chars =
+/// 	pelite::image::IMAGE_SCN_CNT_CODE |
+/// 	pelite::image::IMAGE_SCN_MEM_EXECUTE |
+/// 	pelite::image::IMAGE_SCN_MEM_READ;
+///
+/// let flags = (0..32)
+/// 	.filter(|&index| section_chars & (1 << index) != 0)
+/// 	.map(pelite::stringify::section_chars)
+/// 	.collect::<Vec<Option<&str>>>();
+///
+/// assert_eq!(flags, &[
+/// 	Some("CNT_CODE"),
+/// 	Some("MEM_EXECUTE"),
+/// 	Some("MEM_READ"),
+/// ]);
+/// ```
+pub fn section_chars(index: u32) -> Option<&'static str> {
+	IMAGE_SCN_STRINGS.get(index as usize).and_then(Clone::clone)
+}
 static IMAGE_SCN_STRINGS: [Option<&str>; 32] = [
 	/*00000001*/None,
 	/*00000002*/None,
@@ -192,24 +226,17 @@ static IMAGE_SCN_STRINGS: [Option<&str>; 32] = [
 	/*40000000*/Some("MEM_READ"),
 	/*80000000*/Some("MEM_WRITE"),
 ];
-/// Stringifies the `IMAGE_SCN_*` flag indices for [`IMAGE_SECTION_HEADER::Characteristics`](../image/struct.IMAGE_SECTION_HEADER.html#Characteristics.v).
+
+/// Stringifies the `RT_*` constants for [`IMAGE_RESOURCE_DIRECTORY_ENTRY::Name`](../image/struct.IMAGE_RESOURCE_DIRECTORY_ENTRY.html#Name.v).
 ///
 /// ```
-/// let section_chars = 0;
-/// for i in 0..32 {
-/// 	let flag = 1 << i;
-/// 	if section_chars & flag != 0 {
-/// 		print!("\n    {:>8}", flag);
-/// 		if let Some(s) = pelite::stringify::section_chars(i) {
-/// 			print!(": {}", s);
-/// 		}
-/// 	}
-/// }
+/// let name = pelite::image::RT_MANIFEST;
+///
+/// assert_eq!(pelite::stringify::rsrc_name(name), Some("Manifest"));
 /// ```
-pub fn section_chars(index: u32) -> Option<&'static str> {
-	IMAGE_SCN_STRINGS.get(index as usize).and_then(Clone::clone)
+pub fn rsrc_name(name: u16) -> Option<&'static str> {
+	RSRC_TYPES.get(name as usize).and_then(Clone::clone)
 }
-
 pub(crate) static RSRC_TYPES: [Option<&str>; 25] = [
 	/* 0*/ None, Some("Cursors"), Some("Bitmaps"), Some("Icons"), Some("Menus"),
 	/* 5*/ Some("Dialogs"), Some("Strings"), Some("Font Directory"), Some("Fonts"), Some("Accelerators"),
@@ -217,20 +244,12 @@ pub(crate) static RSRC_TYPES: [Option<&str>; 25] = [
 	/*15*/ None, Some("Version"), Some("DlgInclude"), None, Some("Plug and Play"),
 	/*20*/ Some("VXD"), Some("Animated Cursors"), Some("Animated Icons"), Some("HTML"), Some("Manifest"),
 ];
-/// Stringifies the `RT_*` constants for [`IMAGE_RESOURCE_DIRECTORY_ENTRY::Name`](../image/struct.IMAGE_RESOURCE_DIRECTORY_ENTRY.html#Name.v).
-///
-/// ```
-/// let name = pelite::image::RT_MANIFEST;
-/// assert_eq!(pelite::stringify::rsrc_name(name), Some("Manifest"));
-/// ```
-pub fn rsrc_name(name: u16) -> Option<&'static str> {
-	RSRC_TYPES.get(name as usize).and_then(Clone::clone)
-}
 
 /// Stringifies the `IMAGE_REL_BASED_*` constants for [`IMAGE_BASE_RELOCATION` types](../image/struct.IMAGE_BASE_RELOCATION.html).
 ///
 /// ```
 /// let reloc_type = pelite::image::IMAGE_REL_BASED_HIGHLOW;
+///
 /// assert_eq!(pelite::stringify::reloc_type(reloc_type), Some("HIGHLOW"));
 /// ```
 pub fn reloc_type(reloc_type: u8) -> Option<&'static str> {
@@ -252,6 +271,7 @@ pub fn reloc_type(reloc_type: u8) -> Option<&'static str> {
 ///
 /// ```
 /// let debug_type = pelite::image::IMAGE_DEBUG_TYPE_CODEVIEW;
+///
 /// assert_eq!(pelite::stringify::debug_type(debug_type), Some("CodeView"));
 /// ```
 pub fn debug_type(debug_type: u32) -> Option<&'static str> {
