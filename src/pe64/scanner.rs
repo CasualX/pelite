@@ -296,6 +296,20 @@ impl<'a, 'u, P: Pe<'a> + Copy> Matches<'u, P> {
 		}
 		&qsbuf[..qslen]
 	}
+	// Select the search strategy and execute the query.
+	fn strategy(&mut self, cursor: u32, qsbuf: &[u8], slice: &'a [u8], save: &mut [Rva]) -> bool {
+		self.cursor = cursor;
+		// FIXME! Profile the performance!
+		if qsbuf.len() == 0 {
+			self.strategy0(qsbuf, slice, save)
+		}
+		else if qsbuf.len() < 4 {
+			self.strategy1(qsbuf, slice, save)
+		}
+		else {
+			self.strategy2(qsbuf, slice, save)
+		}
+	}
 	// Strategy:
 	//  Cannot optimize the search, just brute-force it.
 	//  Note that this is (relatively) slow...
@@ -314,20 +328,6 @@ impl<'a, 'u, P: Pe<'a> + Copy> Matches<'u, P> {
 		self.cursor = it;
 		self.range.start = it;
 		false
-	}
-	// Select the search strategy and execute the query.
-	fn strategy(&mut self, cursor: u32, qsbuf: &[u8], slice: &'a [u8], save: &mut [Rva]) -> bool {
-		self.cursor = cursor;
-		// FIXME! Profile the performance!
-		if qsbuf.len() == 0 {
-			self.strategy0(qsbuf, slice, save)
-		}
-		else if qsbuf.len() < 4 {
-			self.strategy1(qsbuf, slice, save)
-		}
-		else {
-			self.strategy2(qsbuf, slice, save)
-		}
 	}
 	// Strategy:
 	//  Prefix is too small for full blown quicksearch.
