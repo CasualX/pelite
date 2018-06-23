@@ -2,7 +2,7 @@
 Typed virtual address.
 */
 
-use std::{cmp, fmt, mem, ops};
+use std::{cmp, fmt, mem, ops, str};
 use std::marker::PhantomData;
 
 use util::{Pod};
@@ -27,6 +27,10 @@ impl<T: ?Sized> Ptr<T> {
 	/// Returns true if the pointer is null.
 	pub fn is_null(self) -> bool {
 		self.0 == 0
+	}
+	/// Casts the pointer to a different type keeping the pointer address fixed.
+	pub fn cast<U: ?Sized>(self) -> Ptr<U> {
+		Ptr(self.0, PhantomData)
 	}
 	/// Offset and cast the pointer.
 	///
@@ -53,6 +57,34 @@ impl<T: ?Sized> Ptr<T> {
 	/// ```
 	pub fn shift<U: ?Sized>(self, offset: Va) -> Ptr<U> {
 		Ptr(self.0 + offset, PhantomData)
+	}
+	/// Simply formats the pointer.
+	///
+	/// # Examples
+	///
+	/// ```
+	/// use std::str;
+	/// use pelite::pe32::Ptr;
+	///
+	/// let p: Ptr<i32> = Ptr::from(0x1f00);
+	/// let fmts = p.fmt();
+	///
+	/// // Guaranteed to be safe
+	/// let s = unsafe { str::from_utf8_unchecked(&fmts) };
+	/// assert_eq!(s, "0x00001f00");
+	/// ```
+	pub fn fmt(self) -> [u8; mem::size_of::<Va>() * 2 + 2] {
+		let mut s = [0; mem::size_of::<Va>() * 2 + 2];
+		s[0] = b'0';
+		s[1] = b'x';
+		let mut va = self.0;
+		for i in 0..mem::size_of::<Va>() * 2 {
+			va = va.rotate_left(4);
+			let digit = (va & 0xf) as u8;
+			let chr = if digit < 10 { b'0' + digit } else { b'a' + (digit - 10) };
+			s[i + 2] = chr;
+		}
+		return s;
 	}
 }
 
@@ -108,6 +140,7 @@ impl<T: ?Sized> AsMut<Va> for Ptr<T> {
 		&mut self.0
 	}
 }
+
 impl<T> ops::Add<Va> for Ptr<T> {
 	type Output = Ptr<T>;
 	fn add(self, rhs: Va) -> Ptr<T> {
@@ -120,19 +153,16 @@ impl<T> ops::Add<Va> for Ptr<[T]> {
 		Ptr(self.0 + rhs * mem::size_of::<T>() as Va, PhantomData)
 	}
 }
+
 impl<T: ?Sized> fmt::Debug for Ptr<T> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		branch! {
-			pe32 { write!(f, "{:#010X}", self.0) }
-			pe64 { write!(f, "{:#018X}", self.0) }
-		}
+		let buf = Ptr::fmt(*self);
+		f.write_str(unsafe { str::from_utf8_unchecked(&buf) })
 	}
 }
 impl<T: ?Sized> fmt::Display for Ptr<T> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		branch! {
-			pe32 { write!(f, "{:#010X}", self.0) }
-			pe64 { write!(f, "{:#018X}", self.0) }
-		}
+		let buf = Ptr::fmt(*self);
+		f.write_str(unsafe { str::from_utf8_unchecked(&buf) })
 	}
 }
