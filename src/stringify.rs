@@ -6,6 +6,8 @@ use image::*;
 
 /// Stringifies the `IMAGE_FILE_MACHINE_*` constants for [`IMAGE_FILE_HEADER::Machine`](../image/struct.IMAGE_FILE_HEADER.html#Machine.v).
 ///
+/// # Examples
+///
 /// ```
 /// let machine = pelite::image::IMAGE_FILE_MACHINE_AMD64;
 ///
@@ -21,6 +23,8 @@ pub fn machine(machine: u16) -> Option<&'static str> {
 }
 
 /// Stringifies the `IMAGE_FILE_*` flag indices for [`IMAGE_FILE_HEADER::Characteristics`](../image/struct.IMAGE_FILE_HEADER.html#Characteristics.v).
+///
+/// # Examples
 ///
 /// ```
 /// let file_chars =
@@ -61,6 +65,8 @@ static IMAGE_FILE_CHARS_STRINGS: [Option<&str>; 16] = [
 
 /// Stringifies the optional header's `Magic` value.
 ///
+/// # Examples
+///
 /// ```
 /// let magic = pelite::image::IMAGE_NT_OPTIONAL_HDR64_MAGIC;
 ///
@@ -76,6 +82,8 @@ pub fn optional_magic(magic: u16) -> Option<&'static str> {
 }
 
 /// Stringifies the `IMAGE_SUBSYSTEM_*` constants for [`IMAGE_OPTIONAL_HEADER::Subsystem`](../image/struct.IMAGE_OPTIONAL_HEADER64.html#Subsystem.v).
+///
+/// # Examples
 ///
 /// ```
 /// let subsystem = pelite::image::IMAGE_SUBSYSTEM_WINDOWS_GUI;
@@ -102,6 +110,8 @@ pub fn subsystem(subsystem: u16) -> Option<&'static str> {
 }
 
 /// Stringifies the `IMAGE_DLLCHARACTERISTICS_*` flag indices for [`IMAGE_OPTIONAL_HEADER::DllCharacteristics`](../image/struct.IMAGE_OPTIONAL_HEADER64.html#DllCharacteristics.v).
+///
+/// # Examples
 ///
 /// ```
 /// let dll_chars =
@@ -144,6 +154,8 @@ static IMAGE_DLLCHARS_STRINGS: [Option<&str>; 16] = [
 
 /// Stringifies the `IMAGE_DIRECTORY_ENTRY_*` constants for [`IMAGE_OPTIONAL_HEADER::DataDirectory`](../image/struct.IMAGE_OPTIONAL_HEADER64.html#DataDirectory.v).
 ///
+/// # Examples
+///
 /// ```
 /// let directory_entry = pelite::image::IMAGE_DIRECTORY_ENTRY_IMPORT;
 ///
@@ -171,6 +183,8 @@ pub fn directory_entry(entry: usize) -> Option<&'static str> {
 }
 
 /// Stringifies the `IMAGE_SCN_*` flag indices for [`IMAGE_SECTION_HEADER::Characteristics`](../image/struct.IMAGE_SECTION_HEADER.html#Characteristics.v).
+///
+/// # Examples
 ///
 /// ```
 /// let section_chars =
@@ -229,6 +243,8 @@ static IMAGE_SCN_STRINGS: [Option<&str>; 32] = [
 
 /// Stringifies the `RT_*` constants for [`IMAGE_RESOURCE_DIRECTORY_ENTRY::Name`](../image/struct.IMAGE_RESOURCE_DIRECTORY_ENTRY.html#Name.v).
 ///
+/// # Examples
+///
 /// ```
 /// let name = pelite::image::RT_MANIFEST;
 ///
@@ -246,6 +262,8 @@ pub(crate) static RSRC_TYPES: [Option<&str>; 25] = [
 ];
 
 /// Stringifies the `IMAGE_REL_BASED_*` constants for [`IMAGE_BASE_RELOCATION` types](../image/struct.IMAGE_BASE_RELOCATION.html).
+///
+/// # Examples
 ///
 /// ```
 /// let reloc_type = pelite::image::IMAGE_REL_BASED_HIGHLOW;
@@ -268,6 +286,8 @@ pub fn reloc_type(reloc_type: u8) -> Option<&'static str> {
 }
 
 /// Stringifies the `IMAGE_DEBUG_TYPE_*` constants for [`IMAGE_DEBUG_DIRECTORY::Type`](../image/struct.IMAGE_DEBUG_DIRECTORY.html#Type.v).
+///
+/// # Examples
 ///
 /// ```
 /// let debug_type = pelite::image::IMAGE_DEBUG_TYPE_CODEVIEW;
