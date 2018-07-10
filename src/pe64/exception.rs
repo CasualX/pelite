@@ -5,7 +5,7 @@ Exception Directory.
 use std::{fmt, iter, mem, slice};
 use std::cmp::Ordering;
 
-use {Error, Result};
+use crate::{Error, Result};
 
 use super::image::*;
 use super::Pe;

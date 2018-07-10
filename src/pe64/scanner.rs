@@ -35,8 +35,8 @@ fn example(file: PeFile<'_>, pat: &[pat::Atom]) {
 use std::{cmp, mem, ptr};
 use std::ops::Range;
 
-use pattern as pat;
-use util::Pod;
+use crate::pattern as pat;
+use crate::util::Pod;
 
 use super::{Align, Rva, Pe};
 use super::image::*;
@@ -568,8 +568,8 @@ fn finder_section<'a, P, F>(pe: P, range: Range<Rva>, mut f: F) -> bool where
 //----------------------------------------------------------------
 
 #[cfg(test)]
-pub(crate) fn test<'a, P: Pe<'a>>(pe: P) -> ::Result<()> {
-	use pattern::Atom::*;
+pub(crate) fn test<'a, P: Pe<'a>>(pe: P) -> crate::Result<()> {
+	use crate::pattern::Atom::*;
 	let scanner = pe.scanner();
 	let mut save = [0; 4];
 
@@ -589,7 +589,7 @@ pub(crate) fn test<'a, P: Pe<'a>>(pe: P) -> ::Result<()> {
 // Test the core scanner engine
 #[test]
 fn exec_tests_parse_docs() {
-	use pattern::{Atom, parse};
+	use crate::pattern::{Atom, parse};
 
 	fn exec(bytes: &[u8], pat: &[Atom], save: &mut [Rva]) -> bool {
 		Exec { pe: bytes, pat, cursor: 0, pc: 0 }.exec(save)

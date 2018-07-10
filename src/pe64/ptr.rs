@@ -5,7 +5,7 @@ Typed virtual address.
 use std::{cmp, fmt, mem, ops, str};
 use std::marker::PhantomData;
 
-use util::{Pod};
+use crate::util::{Pod};
 
 use super::image::{Va, SignedVa};
 

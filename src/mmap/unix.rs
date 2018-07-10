@@ -1,5 +1,3 @@
-extern crate libc;
-
 use std::{io, mem, ptr, slice};
 use std::fs::File;
 use std::path::Path;

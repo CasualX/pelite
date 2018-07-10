@@ -5,7 +5,7 @@ Formatting as far as the eye can see...
 use std::fmt;
 
 use image::*;
-use util::*;
+use crate::util::*;
 
 //----------------------------------------------------------------
 

@@ -31,7 +31,7 @@ fn example(file: PeFile<'_>) -> pelite::Result<()> {
 
 use std::{cmp, fmt, iter, mem, slice};
 
-use {Error, Result};
+use crate::{Error, Result};
 
 use super::image::*;
 use super::Pe;
@@ -185,7 +185,7 @@ impl<'a> fmt::Debug for Block<'a> {
 
 #[cfg(feature = "serde")]
 mod serde {
-	use util::serde_helper::*;
+	use crate::util::serde_helper::*;
 	use super::{Pe, BaseRelocs};
 
 	impl<'a, P: Pe<'a>> Serialize for BaseRelocs<'a, P> {

@@ -1,4 +1,3 @@
-extern crate winapi;
 
 use std::{io, mem, ptr, slice};
 use std::ffi::OsStr;
@@ -6,12 +5,12 @@ use std::path::Path;
 use std::os::windows::ffi::OsStrExt;
 use std::os::windows::io::{AsRawHandle, RawHandle};
 
-use self::winapi::um::fileapi::{CreateFileW, OPEN_EXISTING};
-use self::winapi::um::memoryapi::{CreateFileMappingW, MapViewOfFile, UnmapViewOfFile, VirtualQuery, FILE_MAP_READ, FILE_MAP_COPY};
-use self::winapi::um::handleapi::{CloseHandle, INVALID_HANDLE_VALUE};
-use self::winapi::shared::ntdef::{NULL, HANDLE};
-use self::winapi::shared::minwindef::{LPVOID};
-use self::winapi::um::winnt::{PAGE_READONLY, SEC_IMAGE, GENERIC_READ, FILE_SHARE_READ, FILE_ATTRIBUTE_NORMAL};
+use winapi::um::fileapi::{CreateFileW, OPEN_EXISTING};
+use winapi::um::memoryapi::{CreateFileMappingW, MapViewOfFile, UnmapViewOfFile, VirtualQuery, FILE_MAP_READ, FILE_MAP_COPY};
+use winapi::um::handleapi::{CloseHandle, INVALID_HANDLE_VALUE};
+use winapi::shared::ntdef::{NULL, HANDLE};
+use winapi::shared::minwindef::{LPVOID};
+use winapi::um::winnt::{PAGE_READONLY, SEC_IMAGE, GENERIC_READ, FILE_SHARE_READ, FILE_ATTRIBUTE_NORMAL};
 
 //----------------------------------------------------------------
 
@@ -45,7 +44,7 @@ impl ImageMap {
 					// Trust the OS with correctly mapping the image.
 					// Trust me to have read and understood the documentation.
 					// There is no validation and 64bit headers are used because the offsets are the same for PE32.
-					use image::{IMAGE_DOS_HEADER, IMAGE_NT_HEADERS64};
+					use crate::image::{IMAGE_DOS_HEADER, IMAGE_NT_HEADERS64};
 					let dos_header = view as *const IMAGE_DOS_HEADER;
 					let nt_header = (view as usize + (*dos_header).e_lfanew as usize) as *const IMAGE_NT_HEADERS64;
 					let size_of = (*nt_header).OptionalHeader.SizeOfImage;

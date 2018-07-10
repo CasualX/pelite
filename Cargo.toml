@@ -1,10 +1,8 @@
-cargo-features = ["edition"]
-
 [package]
-edition = "2018"
 name = "pelite"
 version = "0.7.1"
 authors = ["Casper <CasualX@users.noreply.github.com>"]
+edition = "2018"
 
 description = "Lightweight, memory-safe, zero-allocation library for reading and navigating PE binaries."
 

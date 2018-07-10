@@ -1,4 +1,4 @@
-use *;
+use crate::*;
 
 /// View into an unmapped PE32 or PE32+ file.
 #[derive(Copy, Clone)]

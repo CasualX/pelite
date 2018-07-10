@@ -4,9 +4,9 @@ Resources.
 
 use std::{fmt, iter, mem, slice};
 
-use {Error, Result};
-use image::*;
-use util::{Pod, WideStr};
+use crate::{Error, Result};
+use crate::image::*;
+use crate::util::{Pod, WideStr};
 
 //----------------------------------------------------------------
 
@@ -379,7 +379,7 @@ impl<'a> fmt::Debug for DataEntry<'a> {
 
 #[cfg(feature = "serde")]
 mod serde {
-	use util::serde_helper::*;
+	use crate::util::serde_helper::*;
 	use super::{Resources, Directory, DirectoryEntry, DataEntry};
 
 	impl<'a> Serialize for Resources<'a> {

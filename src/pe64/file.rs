@@ -2,7 +2,7 @@
 PE file.
 */
 
-use {Result};
+use crate::{Result};
 
 use super::pe::validate_headers;
 use super::{Align, Pe, PeObject};
@@ -98,13 +98,7 @@ impl<'a> serde::Serialize for PeFile<'a> {
 
 //----------------------------------------------------------------
 
-#[cfg(test)]
-mod tests {
-	use Error;
-	use super::PeFile;
-
-	#[test]
-	fn from_byte_slice() {
-		assert!(match PeFile::from_bytes(&[]) { Err(Error::Bounds) => true, _ => false });
-	}
+#[test]
+fn from_byte_slice() {
+	assert!(match PeFile::from_bytes(&[]) { Err(crate::Error::Bounds) => true, _ => false });
 }

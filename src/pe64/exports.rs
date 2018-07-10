@@ -55,8 +55,8 @@ fn example(file: PeFile<'_>) -> pelite::Result<()> {
 
 use std::{fmt, iter, ops, slice};
 
-use {Error, Result};
-use util::CStr;
+use crate::{Error, Result};
+use crate::util::CStr;
 
 use super::image::*;
 use super::imports::Import;
@@ -461,7 +461,7 @@ impl<'b, 'a, P: Pe<'a>, S: AsRef<[u8]> + ?Sized> GetProcAddress<'a, &'b S> for P
 
 #[cfg(feature = "serde")]
 mod serde {
-	use util::serde_helper::*;
+	use crate::util::serde_helper::*;
 	use super::{Pe, Exports, By};
 
 	impl<'a, P: Pe<'a>> Serialize for Exports<'a, P> {
