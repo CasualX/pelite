@@ -30,7 +30,7 @@ fn example(file: PeFile) -> pelite::Result<()> {
 ```
 */
 
-use std::{fmt, slice};
+use std::{fmt, iter, slice};
 
 use error::{Error, Result};
 use util::CStr;
@@ -122,6 +122,22 @@ impl<'a, P: Pe<'a> + Copy> Desc<'a, P> {
 	pub fn dll_name(&self) -> Result<&'a CStr> {
 		self.pe.derva_c_str(self.image.Name)
 	}
+	/// Gets the import from the import name table.
+	///
+	/// These aren't actually virtual addresses.
+	/// This function will decode them to get the import.
+	fn import_from_va(&self, va: Va) -> Result<Import<'a>> {
+		if va & IMAGE_ORDINAL_FLAG == 0 {
+			// TODO! Validate that this really is an Rva in PE32+?
+			let rva = va as Rva;
+			let hint = self.pe.derva::<u16>(rva)?;
+			let name = self.pe.derva_c_str(rva + 2)?;
+			Ok(Import::ByName { hint: *hint as usize, name })
+		}
+		else {
+			Ok(Import::ByOrdinal { ord: va as Ordinal })
+		}
+	}
 	/// Gets the import address table.
 	///
 	/// After being loaded as a library their values are resolved to the addresses of the imported functions.
@@ -129,15 +145,13 @@ impl<'a, P: Pe<'a> + Copy> Desc<'a, P> {
 	/// Otherwise these contain references to the imported functions.
 	/// See [`import_from_va`](struct.Desc.html#import_from_va) to get their names.
 	pub fn iat(&self) -> Result<slice::Iter<'a, Va>> {
-		self.pe.derva_slice_s(self.image.FirstThunk, BADVA).map(|iat| iat.iter())
+		let slice = self.pe.derva_slice_s(self.image.FirstThunk, BADVA)?;
+		Ok(slice.iter())
 	}
 	/// Gets the import name table.
-	pub fn int(self) -> Result<IntIter<'a, P>> {
+	pub fn int(self) -> Result<iter::Map<slice::Iter<'a, Va>, impl Clone + FnMut(&'a Va) -> Result<Import<'a>>>> {
 		let slice = self.pe.derva_slice_s(self.image.OriginalFirstThunk, BADVA)?;
-		Ok(IntIter {
-			pe: self.pe,
-			iter: slice.iter(),
-		})
+		Ok(slice.iter().map(move |&va| self.import_from_va(va)))
 	}
 }
 impl<'a, P: Pe<'a> + Copy> fmt::Debug for Desc<'a, P> {
@@ -146,33 +160,7 @@ impl<'a, P: Pe<'a> + Copy> fmt::Debug for Desc<'a, P> {
 			.field("dll_name", &format_args!("{:?}", self.dll_name()))
 			.field("time_date_stamp", &self.image.TimeDateStamp)
 			.field("iat.len", &format_args!("{:?}", &self.iat().map(|iter| iter.len())))
-			.field("int.len", &format_args!("{:?}", &self.int().map(|iter| iter.as_slice().len())))
+			.field("int.len", &format_args!("{:?}", &self.int().map(|iter| iter.len())))
 			.finish()
 	}
 }
-
-//----------------------------------------------------------------
-
-/// Gets the import from the import name table.
-///
-/// These aren't actually virtual addresses.
-/// This function will decode them to get the import.
-fn import_from_va<'a, P: Pe<'a> + Copy>(pe: P, va: Va) -> Result<Import<'a>> {
-	if va & IMAGE_ORDINAL_FLAG == 0 {
-		// TODO! Validate that this really is an Rva in PE32+?
-		let rva = va as Rva;
-		let hint = pe.derva::<u16>(rva)?;
-		let name = pe.derva_c_str(rva + 2)?;
-		Ok(Import::ByName { hint: *hint as usize, name })
-	}
-	else {
-		Ok(Import::ByOrdinal { ord: va as Ordinal })
-	}
-}
-
-#[derive(Clone)]
-pub struct IntIter<'a, P> {
-	pe: P,
-	iter: slice::Iter<'a, Va>
-}
-def_iter!(struct IntIter -> Va, Result<Import<'a>>; this |&va| import_from_va(this.pe, va));
