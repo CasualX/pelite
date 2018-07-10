@@ -1,4 +1,7 @@
+cargo-features = ["edition"]
+
 [package]
+edition = "2018"
 name = "pelite"
 version = "0.7.1"
 authors = ["Casper <CasualX@users.noreply.github.com>"]

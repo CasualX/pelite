@@ -12,6 +12,7 @@ Evidently this is only available on Windows targets.
 Due to small but incompatible differences the two formats are not unified.
 */
 
+#![feature(rust_2018_preview)]
 #![recursion_limit = "128"]
 
 #[cfg(feature = "serde")]
