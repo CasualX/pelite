@@ -712,7 +712,7 @@ pub struct SCOPE_TABLE {
 //----------------------------------------------------------------
 // Sourced from http://www.debuginfo.com/articles/debuginfomatch.html
 
-#[derive(Copy, Clone, Debug, PartialEq, Eq)]
+#[derive(Copy, Clone, PartialEq, Eq)]
 #[repr(C)]
 pub struct GUID {
 	pub Data1: u32,

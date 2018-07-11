@@ -19,6 +19,7 @@ fn assert_size_of() {
 mod c_str;
 mod wide_str;
 mod pod;
+mod guid;
 
 pub use self::c_str::CStr;
 pub use self::wide_str::WideStr;
