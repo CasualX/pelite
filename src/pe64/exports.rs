@@ -66,6 +66,7 @@ use super::Pe;
 
 /// Exported symbol.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[cfg_attr(feature = "serde", derive(Serialize))]
 pub enum Export<'a> {
 	/// Symbol does not exist.
 	///
@@ -344,8 +345,21 @@ impl<'a, P: Pe<'a> + Copy> By<'a, P> {
 	pub fn iter_names<'s>(&'s self)
 		-> iter::Map<ops::Range<u32>, impl 's + Clone + FnMut(u32) -> (Result<&'a CStr>, Result<Export<'a>>)>
 	{
-		(0..self.image.NumberOfNames)
-			.map(move |hint| (self.name_of_hint(hint as usize), self.hint(hint as usize)))
+		(0..self.names().len() as u32)
+			.map(move |hint| (
+				self.name_of_hint(hint as usize),
+				self.hint(hint as usize),
+			))
+	}
+	/// Iterate over functions exported by name, returning their name and index in the functions table.
+	pub fn iter_name_indices<'s>(&'s self)
+		-> iter::Map<ops::Range<u32>, impl 's + Clone + FnMut(u32) -> (Result<&'a CStr>, usize)>
+	{
+		(0..self.names().len() as u32)
+			.map(move |hint| (
+				self.name_of_hint(hint as usize),
+				self.name_indices[hint as usize] as usize,
+			))
 	}
 }
 impl<'a, P: 'a + Pe<'a> + Copy> fmt::Debug for By<'a, P> {
@@ -360,7 +374,6 @@ impl<'a, P: 'a + Pe<'a> + Copy> fmt::Debug for By<'a, P> {
 			.finish()
 	}
 }
-
 
 //----------------------------------------------------------------
 
@@ -393,5 +406,50 @@ impl<'b, 'a, P: Pe<'a> + Copy> GetProcAddress<'a, Import<'b>> for P {
 impl<'b, 'a, P: Pe<'a> + Copy, S: AsRef<[u8]> + ?Sized> GetProcAddress<'a, &'b S> for P {
 	fn get_export(self, name: &'b S) -> Result<Export<'a>> {
 		self.exports()?.by()?.name(name)
+	}
+}
+
+//----------------------------------------------------------------
+
+/*
+	"exports": {
+		"dll_name": "Demo.dll",
+		"time_date_stamp": 0,
+		"version": "0.0",
+		"ordinal_base": 1,
+		"functions": [ .. ],
+		"names": {
+			"__autoclassinit": 5,
+			..
+		}
+	}
+*/
+
+#[cfg(feature = "serde")]
+mod serde {
+	use util::serde_helper::*;
+	use super::{Pe, Exports, By};
+
+	#[cfg(feature = "serde")]
+	impl<'a, P: 'a + Pe<'a> + Copy> Serialize for Exports<'a, P> {
+		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+			self.by().ok().serialize(serializer)
+		}
+	}
+	#[cfg(feature = "serde")]
+	impl<'a, P: 'a + Pe<'a> + Copy> Serialize for By<'a, P> {
+		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+			let mut state = serializer.serialize_struct("Exports", 6)?;
+			state.serialize_field("dll_name", &self.dll_name().ok())?;
+			state.serialize_field("time_date_stamp", &self.image.TimeDateStamp)?;
+			state.serialize_field("version", &format_args!("{}.{}", self.image.MajorVersion, self.image.MinorVersion))?;
+			state.serialize_field("ordinal_base", &self.ordinal_base())?;
+			state.serialize_field("functions", &self.functions())?;
+			let names = self.iter_name_indices().filter_map(|(name, index)| {
+				name.ok().and_then(|name| name.to_str().ok()).map(|name| (name, index))
+			});
+			state.serialize_field("names", &SerdeKV(names))?;
+			state.end()
+		}
 	}
 }

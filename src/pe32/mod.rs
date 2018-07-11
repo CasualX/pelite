@@ -128,6 +128,8 @@ mod pe;
 mod view;
 #[path = "../pe64/file.rs"]
 mod file;
+#[path = "../pe64/headers.rs"]
+pub mod headers;
 #[path = "../pe64/exports.rs"]
 pub mod exports;
 #[path = "../pe64/imports.rs"]

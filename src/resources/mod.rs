@@ -354,3 +354,69 @@ fn tree_fmt_rec(f: &mut fmt::Formatter, margin: &mut [bool; 32], depth: u32, art
 	}
 	Ok(())
 }
+
+//----------------------------------------------------------------
+
+/*
+	"resources": [
+		{
+			"name": 12,
+			"directory": [
+				{
+					"name": "IMPORTANT",
+					"data": {
+						size: 1234,
+					}
+				}
+			]
+		}
+	]
+*/
+
+#[cfg(feature = "serde")]
+mod serde {
+	use util::serde_helper::*;
+	use super::{Resources, Directory, DirectoryEntry, Entry, Name, DataEntry};
+
+	impl<'a> Serialize for Resources<'a> {
+		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+			self.root().ok().serialize(serializer)
+		}
+	}
+	impl<'a> Serialize for Directory<'a> {
+		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+			serializer.collect_seq(self.entries())
+		}
+	}
+	impl<'a> Serialize for DirectoryEntry<'a> {
+		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+			let mut state = serializer.serialize_struct("DirectoryEntry", 2)?;
+			state.serialize_field("name", &self.name().ok())?;
+			state.serialize_field(if self.is_dir() { "directory" } else { "data" }, &self.entry().ok())?;
+			state.end()
+		}
+	}
+	impl<'a> Serialize for Entry<'a> {
+		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+			match self {
+				Entry::Directory(directory) => directory.serialize(serializer),
+				Entry::DataEntry(data) => data.serialize(serializer),
+			}
+		}
+	}
+	impl<'a> Serialize for Name<'a> {
+		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+			match self {
+				Name::Id(id) => serializer.serialize_u32(*id),
+				Name::Str(s) => serializer.collect_str(s),
+			}
+		}
+	}
+	impl<'a> Serialize for DataEntry<'a> {
+		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+			let mut state = serializer.serialize_struct("DataEntry", 1)?;
+			state.serialize_field("size", &self.image.Size)?;
+			state.end()
+		}
+	}
+}

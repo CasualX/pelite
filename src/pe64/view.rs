@@ -109,6 +109,17 @@ unsafe impl<'a> Pe<'a> for PeView<'a> {
 	fn read(&self, va: Va, min_size_of: usize, align_of: usize) -> Result<&'a [u8]> {
 		self.read_impl(va, min_size_of, align_of)
 	}
+	#[cfg(feature = "serde")]
+	const SERDE_NAME: &'static str = "PeView";
+}
+
+//----------------------------------------------------------------
+
+#[cfg(feature = "serde")]
+impl<'a> ::serde::Serialize for PeView<'a> {
+	fn serialize<S: ::serde::Serializer>(&self, serializer: S) -> ::std::result::Result<S::Ok, S::Error> {
+		super::pe::serialize_pe(self, serializer)
+	}
 }
 
 //----------------------------------------------------------------

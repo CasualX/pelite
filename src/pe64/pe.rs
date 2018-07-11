@@ -9,6 +9,7 @@ use util::{CStr, Pod, FromBytes};
 
 use super::image::*;
 use super::Ptr;
+use super::headers::Headers;
 
 //----------------------------------------------------------------
 
@@ -51,14 +52,6 @@ pub unsafe trait Pe<'a> {
 	fn optional_header(self) -> &'a IMAGE_OPTIONAL_HEADER where Self: Copy {
 		&self.nt_headers().OptionalHeader
 	}
-	/// Returns the section headers.
-	fn section_headers(self) -> &'a [IMAGE_SECTION_HEADER] where Self: Copy {
-		let nt = self.nt_headers();
-		unsafe {
-			let begin = (&nt.OptionalHeader as *const _ as *const u8).offset(nt.FileHeader.SizeOfOptionalHeader as isize) as *const IMAGE_SECTION_HEADER;
-			slice::from_raw_parts(begin, nt.FileHeader.NumberOfSections as usize)
-		}
-	}
 	/// Returns the data directory.
 	fn data_directory(self) -> &'a [IMAGE_DATA_DIRECTORY] where Self: Copy {
 		let opt = self.optional_header();
@@ -67,6 +60,28 @@ pub unsafe trait Pe<'a> {
 			slice::from_raw_parts(opt.DataDirectory.as_ptr(), len)
 		}
 	}
+	/// Returns the section headers.
+	fn section_headers(self) -> &'a [IMAGE_SECTION_HEADER] where Self: Copy {
+		let nt = self.nt_headers();
+		unsafe {
+			let begin = (&nt.OptionalHeader as *const _ as *const u8).offset(nt.FileHeader.SizeOfOptionalHeader as isize) as *const IMAGE_SECTION_HEADER;
+			slice::from_raw_parts(begin, nt.FileHeader.NumberOfSections as usize)
+		}
+	}
+	/// Returns the pe headers together in a single struct.
+	fn headers(self) -> Headers<'a> where Self: Copy {
+		Headers {
+			DosHeader: self.dos_header(),
+			NtHeaders: self.nt_headers(),
+			DataDirectory: self.data_directory(),
+			SectionHeaders: self.section_headers()
+		}
+	}
+
+	// Give a struct name in Serialize implementation
+	#[cfg(feature = "serde")]
+	#[doc(hidden)]
+	const SERDE_NAME: &'static str;
 
 	//----------------------------------------------------------------
 
@@ -466,6 +481,26 @@ unsafe impl<'s, 'a, P: Pe<'a> + ?Sized> Pe<'a> for &'s P {
 	fn read(&self, va: Va, min_size_of: usize, align: usize) -> Result<&'a [u8]> {
 		P::read(*self, va, min_size_of, align)
 	}
+	#[cfg(feature = "serde")]
+	const SERDE_NAME: &'static str = P::SERDE_NAME;
+}
+
+//----------------------------------------------------------------
+
+#[cfg(feature = "serde")]
+pub(crate) fn serialize_pe<'a, P: 'a + Pe<'a> + Copy, S: ::serde::Serializer>(pe: P, serializer: S) -> ::std::result::Result<S::Ok, S::Error> {
+	use util::serde_helper::*;
+
+	let mut state = serializer.serialize_struct(P::SERDE_NAME, 8)?;
+	state.serialize_field("headers", &pe.headers())?;
+	state.serialize_field("exports", &pe.exports().ok())?;
+	state.serialize_field("imports", &pe.imports().ok())?;
+	state.serialize_field("base_relocs", &pe.base_relocs().ok())?;
+	state.serialize_field("tls", &pe.tls().ok())?;
+	state.serialize_field("load_config", &pe.load_config().ok())?;
+	state.serialize_field("security", &pe.security().ok())?;
+	state.serialize_field("resources", &pe.resources().ok())?;
+	state.end()
 }
 
 //----------------------------------------------------------------

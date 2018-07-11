@@ -242,3 +242,23 @@ impl<'a, P: Pe<'a> + Copy> fmt::Debug for Block<'a, P> {
 			.finish()
 	}
 }
+
+//----------------------------------------------------------------
+
+/*
+	"base_relocs": [
+		1000, 1002, 1018, 2048, 2498,
+	],
+*/
+
+#[cfg(feature = "serde")]
+mod serde {
+	use util::serde_helper::*;
+	use super::{Pe, BaseRelocs};
+
+	impl<'a, P: Pe<'a> + Copy> Serialize for BaseRelocs<'a, P> {
+		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+			serializer.collect_seq(self.into_iter())
+		}
+	}
+}

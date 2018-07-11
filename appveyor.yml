@@ -65,5 +65,4 @@ install:
 build: false
 
 test_script:
-  - cargo test --verbose --no-fail-fast -- --nocapture
-  - cargo test --release --verbose --no-fail-fast -- --nocapture
+  - cargo test --verbose --no-fail-fast --all-features -- --nocapture
