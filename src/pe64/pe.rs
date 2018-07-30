@@ -387,6 +387,15 @@ pub unsafe trait Pe<'a> {
 		super::base_relocs::BaseRelocs::new(self)
 	}
 
+	/// Gets the Load Config Directory.
+	///
+	/// See the [load config](load_config/index.html) module for more information.
+	///
+	/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) if the image has no load config. Any other error indicates some form of corruption.
+	fn load_config(self) -> Result<super::load_config::LoadConfig<'a, Self>> where Self: Copy {
+		super::load_config::LoadConfig::new(self)
+	}
+
 	/// Gets the TLS Directory.
 	///
 	/// See the [tls](tls/index.html) module for more information.

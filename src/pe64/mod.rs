@@ -124,6 +124,7 @@ mod file;
 pub mod exports;
 pub mod imports;
 pub mod base_relocs;
+pub mod load_config;
 pub mod resources;
 pub mod tls;
 pub mod debug;
