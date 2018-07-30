@@ -51,6 +51,9 @@ OPTIONS:
   -r, --relocs
       Print the relocation table.
 
+  -l, --load-config
+      Prints the load config.
+
   -t, --tls
       Print the TLS directory.
 
@@ -78,6 +81,7 @@ struct Parameters {
 	imports: bool,
 	exports: bool,
 	relocs: bool,
+	load_config: bool,
 	tls: bool,
 	resources: bool,
 	debug_info: bool,
@@ -95,6 +99,7 @@ impl Default for Parameters {
 			imports: false,
 			exports: false,
 			relocs: false,
+			load_config: false,
 			tls: false,
 			resources: false,
 			debug_info: false,
@@ -126,6 +131,7 @@ impl Default for Parameters {
 					"--imports" => vars.imports = true,
 					"--exports" => vars.exports = true,
 					"--relocs" => vars.relocs = true,
+					"--load-config" => vars.load_config = true,
 					"--tls" => vars.tls = true,
 					"--resources" => vars.resources = true,
 					"--debug-info" => vars.debug_info = true,
@@ -142,6 +148,7 @@ impl Default for Parameters {
 						'i' => vars.imports = true,
 						'e' => vars.exports = true,
 						'r' => vars.relocs = true,
+						'l' => vars.load_config = true,
 						't' => vars.tls = true,
 						'x' => vars.resources = true,
 						'g' => vars.debug_info = true,
@@ -250,6 +257,15 @@ fn dump_pe64(args: &Parameters, file: &pelite::pe64::PeFile) {
 			println!("No BaseRelocation Directory found.");
 		}
 	}
+	if args.load_config {
+		print!("{}", SEPARATOR);
+		if let Ok(load_config) = file.load_config() {
+			print!("{:#?}", load_config);
+		}
+		else {
+			println!("No Load Config Directory found.");
+		}
+	}
 	if args.tls {
 		print!("{}", SEPARATOR);
 		if let Ok(tls) = file.tls() {
@@ -320,6 +336,15 @@ fn dump_pe32(args: &Parameters, file: &pelite::pe32::PeFile) {
 		}
 		else {
 			println!("No BaseRelocation Directory found.");
+		}
+	}
+	if args.load_config {
+		print!("{}", SEPARATOR);
+		if let Ok(load_config) = file.load_config() {
+			print!("{:#?}", load_config);
+		}
+		else {
+			println!("No Load Config Directory found.");
 		}
 	}
 	if args.tls {
