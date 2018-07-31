@@ -167,7 +167,7 @@ impl<'a, P: Pe<'a> + Copy> Exports<'a, P> {
 		rva >= self.datadir.VirtualAddress && rva < self.datadir.VirtualAddress + self.datadir.Size
 	}
 	fn symbol_from_rva(&self, rva: &'a Rva) -> Result<Export<'a>> {
-		if *rva == BADRVA {
+		if *rva == 0 {
 			Ok(Export::None)
 		}
 		else if self.is_forwarded(*rva) {

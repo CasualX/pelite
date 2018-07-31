@@ -128,7 +128,7 @@ pub unsafe trait Pe<'a> {
 	///
 	/// * [`Err(OOB)`](../enum.Error.html#variant.OOB) if the rva is out of bounds.
 	fn rva_to_va(self, rva: Rva) -> Result<Va> where Self: Copy {
-		if rva == BADRVA {
+		if rva == 0 {
 			Err(Error::Null)
 		}
 		else {
@@ -152,7 +152,7 @@ pub unsafe trait Pe<'a> {
 	///
 	/// * [`Err(OOB)`](../enum.Error.html#variant.OOB) if the va is out of bounds.
 	fn va_to_rva(self, va: Va) -> Result<Rva> where Self: Copy {
-		if va == BADVA {
+		if va == 0 {
 			Err(Error::Null)
 		}
 		else {
