@@ -628,6 +628,24 @@ pub struct IMAGE_TLS_DIRECTORY64 {
 }
 
 //----------------------------------------------------------------
+
+pub const WIN_CERT_REVISION_1_0: u16 = 0x0100;
+
+pub const WIN_CERT_TYPE_X509: u16             = 0x0001;
+pub const WIN_CERT_TYPE_PKCS_SIGNED_DATA: u16 = 0x0002;
+pub const WIN_CERT_TYPE_RESERVED_1: u16       = 0x0003;
+pub const WIN_CERT_TYPE_PKCS1_SIGN: u16       = 0x0009;
+
+#[derive(Copy, Clone, Debug)]
+#[repr(C)]
+pub struct WIN_CERTIFICATE {
+	pub dwLength: u32,
+	pub wRevision: u16,
+	pub wCertificateType: u16,
+	pub bCertificate: [u8; 0],
+}
+
+//----------------------------------------------------------------
 // Sourced from http://www.debuginfo.com/articles/debuginfomatch.html
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]

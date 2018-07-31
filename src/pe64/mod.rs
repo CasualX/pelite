@@ -127,6 +127,7 @@ pub mod base_relocs;
 pub mod load_config;
 pub mod resources;
 pub mod tls;
+pub mod security;
 pub mod debug;
 mod ptr;
 pub mod scanner;

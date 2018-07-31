@@ -16,6 +16,8 @@ pub enum Error {
 	///
 	/// This error happens when attempting to get a reference to such zero filled data when working with `PeFile` contents.
 	ZeroFill,
+	/// Data is not mapped.
+	Unmapped,
 	/// Address is misaligned.
 	Misalign,
 	/// Magic number does not match the expected value.
@@ -67,10 +69,11 @@ impl fmt::Display for Error {
 
 impl error::Error for Error {
 	fn description(&self) -> &str {
-		match *self {
+		match self {
 			Error::Null => "null",
 			Error::OOB => "out of bounds",
 			Error::ZeroFill => "zero fill",
+			Error::Unmapped => "unmapped",
 			Error::Misalign => "misalign",
 			Error::BadMagic => "bad magic",
 			Error::Insanity => "insanity",

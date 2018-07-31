@@ -15,6 +15,7 @@ use super::ptr::Ptr;
 /// The specific alignment used by the view.
 ///
 /// See [the module-level documentation](index.html#getting-started) for more information.
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum Align {
 	/// The view uses file alignment, typically 512 bytes.
 	File,
@@ -403,6 +404,15 @@ pub unsafe trait Pe<'a> {
 	/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) if the image has no tls. Any other error indicates some form of corruption.
 	fn tls(self) -> Result<super::tls::Tls<'a, Self>> where Self: Copy {
 		super::tls::Tls::new(self)
+	}
+
+	/// Gets the Security Directory.
+	///
+	/// See the [security](security/index.html) module for more information.
+	///
+	/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) if the image has no security info. Any other error indicates some form of corruption.
+	fn security(self) -> Result<super::security::Security<'a, Self>> where Self: Copy {
+		super::security::Security::new(self)
 	}
 
 	/// Gets the Debug Directory.
