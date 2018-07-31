@@ -44,7 +44,7 @@ impl<'a> PeFile<'a> {
 	#[inline(never)]
 	fn slice_impl(self, rva: Rva, min_size_of: usize, align_of: usize) -> Result<&'a [u8]> {
 		debug_assert!(align_of != 0 && align_of & (align_of - 1) == 0);
-		if rva == BADRVA {
+		if rva == 0 {
 			Err(Error::Null)
 		}
 		else if rva as usize & (align_of - 1) != 0 {
@@ -61,7 +61,7 @@ impl<'a> PeFile<'a> {
 			let optional_header = self.optional_header();
 			(optional_header.ImageBase, optional_header.SizeOfImage)
 		};
-		if va == BADVA {
+		if va == 0 {
 			Err(Error::Null)
 		}
 		else if va < image_base || va - image_base > size_of_image as Va {

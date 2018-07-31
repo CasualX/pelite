@@ -64,7 +64,7 @@ impl<'a, P: Pe<'a> + Copy> Tls<'a, P> {
 		self.pe.deref(self.image.AddressOfIndex)
 	}
 	pub fn callbacks(&self) -> Result<&'a [Va]> {
-		self.pe.deref_slice_s(self.image.AddressOfCallBacks, BADVA)
+		self.pe.deref_slice_s(self.image.AddressOfCallBacks, 0)
 	}
 }
 impl<'a, P: Pe<'a> + Copy> fmt::Debug for Tls<'a, P> {

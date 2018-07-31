@@ -129,11 +129,11 @@ impl<'a, P: Pe<'a> + Copy> Desc<'a, P> {
 	/// Otherwise these contain references to the imported functions.
 	/// See [`import_from_va`](struct.Desc.html#import_from_va) to get their names.
 	pub fn iat(&self) -> Result<slice::Iter<'a, Va>> {
-		self.pe.derva_slice_s(self.image.FirstThunk, BADVA).map(|iat| iat.iter())
+		self.pe.derva_slice_s(self.image.FirstThunk, 0).map(|iat| iat.iter())
 	}
 	/// Gets the import name table.
 	pub fn int(self) -> Result<IntIter<'a, P>> {
-		let slice = self.pe.derva_slice_s(self.image.OriginalFirstThunk, BADVA)?;
+		let slice = self.pe.derva_slice_s(self.image.OriginalFirstThunk, 0)?;
 		Ok(IntIter {
 			pe: self.pe,
 			iter: slice.iter(),

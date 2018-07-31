@@ -23,9 +23,9 @@ pub type Va = u64;
 pub type SignedVa = i64;
 
 /// Invalid Rva value.
-pub const BADRVA: Rva = 0;
+pub const BADRVA: Rva = !0;
 /// Invalid Va value.
-pub const BADVA: Va = 0;
+pub const BADVA: Va = !0;
 
 /// Ordinal type for imports and exports.
 pub type Ordinal = u16;
