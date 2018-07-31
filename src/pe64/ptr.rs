@@ -7,7 +7,7 @@ use std::marker::PhantomData;
 
 use util::{Pod};
 
-use super::image::Va;
+use super::image::{Va, SignedVa};
 
 //----------------------------------------------------------------
 
@@ -141,16 +141,28 @@ impl<T: ?Sized> AsMut<Va> for Ptr<T> {
 	}
 }
 
-impl<T> ops::Add<Va> for Ptr<T> {
+impl<T> ops::Add<SignedVa> for Ptr<T> {
 	type Output = Ptr<T>;
-	fn add(self, rhs: Va) -> Ptr<T> {
-		Ptr(self.0 + rhs * mem::size_of::<T>() as Va, PhantomData)
+	fn add(self, rhs: SignedVa) -> Ptr<T> {
+		Ptr(self.0.wrapping_add((rhs * mem::size_of::<T>() as SignedVa) as Va), PhantomData)
 	}
 }
-impl<T> ops::Add<Va> for Ptr<[T]> {
+impl<T> ops::Add<SignedVa> for Ptr<[T]> {
 	type Output = Ptr<T>;
-	fn add(self, rhs: Va) -> Ptr<T> {
-		Ptr(self.0 + rhs * mem::size_of::<T>() as Va, PhantomData)
+	fn add(self, rhs: SignedVa) -> Ptr<T> {
+		Ptr(self.0.wrapping_add((rhs * mem::size_of::<T>() as SignedVa) as Va), PhantomData)
+	}
+}
+impl<T> ops::Sub<SignedVa> for Ptr<T> {
+	type Output = Ptr<T>;
+	fn sub(self, rhs: SignedVa) -> Ptr<T> {
+		Ptr(self.0.wrapping_sub((rhs * mem::size_of::<T>() as SignedVa) as Va), PhantomData)
+	}
+}
+impl<T> ops::Sub<SignedVa> for Ptr<[T]> {
+	type Output = Ptr<T>;
+	fn sub(self, rhs: SignedVa) -> Ptr<T> {
+		Ptr(self.0.wrapping_sub((rhs * mem::size_of::<T>() as SignedVa) as Va), PhantomData)
 	}
 }
 
