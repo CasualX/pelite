@@ -138,6 +138,8 @@ pub mod load_config;
 pub mod resources;
 #[path = "../pe64/tls.rs"]
 pub mod tls;
+#[path = "../pe64/security.rs"]
+pub mod security;
 #[path = "../pe64/debug.rs"]
 pub mod debug;
 #[path = "../pe64/ptr.rs"]
