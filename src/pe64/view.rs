@@ -7,7 +7,8 @@ use std::slice;
 use error::{Error, Result};
 
 use super::image::*;
-use super::pe::{Align, Pe, validate_headers};
+use super::pe::validate_headers;
+use super::{Align, Pe};
 
 /// View into a mapped PE image.
 #[derive(Copy, Clone)]

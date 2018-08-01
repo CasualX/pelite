@@ -9,8 +9,7 @@ References:
 
 use util::Pod;
 
-use super::image::Va;
-use super::ptr::Ptr;
+use super::{Ptr, Va};
 
 //----------------------------------------------------------------
 
