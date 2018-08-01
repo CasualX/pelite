@@ -47,7 +47,7 @@ use crate::{Error, Result};
 use crate::util::CStr;
 
 use super::image::*;
-use super::Pe;
+use super::{Pe, Ref};
 
 //----------------------------------------------------------------
 
@@ -59,7 +59,7 @@ pub enum Import<'a> {
 	///
 	/// The hint is an index in the export names table that may contain the desired symbol.
 	/// For more information see this [blog post](https://blogs.msdn.microsoft.com/oldnewthing/20100317-00/?p=14573) by Raymond Chen.
-	ByName { hint: usize, name: &'a CStr },
+	ByName { hint: usize, name: Ref<'a, CStr> },
 	/// Imported by ordinal.
 	ByOrdinal { ord: Ordinal }
 }
@@ -89,7 +89,7 @@ fn import_from_va<'a, P: Pe<'a>>(pe: P, &va: &'a Va) -> Result<Import<'a>> {
 #[derive(Copy, Clone)]
 pub struct Imports<'a, P> {
 	pe: P,
-	image: &'a [IMAGE_IMPORT_DESCRIPTOR],
+	image: Ref<'a, [IMAGE_IMPORT_DESCRIPTOR]>,
 }
 impl<'a, P: Pe<'a>> Imports<'a, P> {
 	pub(crate) fn try_from(pe: P) -> Result<Imports<'a, P>> {
@@ -102,7 +102,7 @@ impl<'a, P: Pe<'a>> Imports<'a, P> {
 		self.pe
 	}
 	/// Returns the underlying import directory image array.
-	pub fn image(&self) -> &'a [IMAGE_IMPORT_DESCRIPTOR] {
+	pub fn image(&self) -> Ref<'a, [IMAGE_IMPORT_DESCRIPTOR]> {
 		self.image
 	}
 }
@@ -132,7 +132,7 @@ impl<'a, P: Pe<'a>> fmt::Debug for Imports<'a, P> {
 #[derive(Copy, Clone)]
 pub struct IAT<'a, P> {
 	pe: P,
-	image: &'a [Va],
+	image: Ref<'a, [Va]>,
 }
 impl<'a, P: Pe<'a>> IAT<'a, P> {
 	pub(crate) fn try_from(pe: P) -> Result<IAT<'a, P>> {
@@ -146,13 +146,13 @@ impl<'a, P: Pe<'a>> IAT<'a, P> {
 		self.pe
 	}
 	/// Returns the underlying iat array.
-	pub fn image(&self) -> &'a [Va] {
+	pub fn image(&self) -> Ref<'a, [Va]> {
 		self.image
 	}
 	/// Iterate over the IAT.
 	///
 	/// When the imports aren't resolved yet the IAT is an alias for the import name table.
-	pub fn iter(&self) -> iter::Map<slice::Iter<'a, Va>, impl Clone + FnMut(&'a Va) -> (&'a Va, Result<Import<'a>>)> {
+	pub fn iter(&self) -> iter::Map<slice::Iter<'a, Va>, impl Clone + FnMut(Ref<'a, Va>) -> (Ref<'a, Va>, Result<Import<'a>>)> {
 		let pe = self.pe;
 		self.image.iter().map(move |va| (va, import_from_va(pe, va)))
 	}
@@ -206,7 +206,7 @@ impl<'a, P: Pe<'a>> iter::FusedIterator for Iter<'a, P> {}
 #[derive(Copy, Clone)]
 pub struct Desc<'a, P> {
 	pe: P,
-	image: &'a IMAGE_IMPORT_DESCRIPTOR,
+	image: Ref<'a, IMAGE_IMPORT_DESCRIPTOR>,
 }
 impl<'a, P: Pe<'a>> Desc<'a, P> {
 	/// Gets the PE instance.
@@ -214,11 +214,11 @@ impl<'a, P: Pe<'a>> Desc<'a, P> {
 		self.pe
 	}
 	/// Returns the underlying import descriptor image.
-	pub fn image(&self) -> &'a IMAGE_IMPORT_DESCRIPTOR {
+	pub fn image(&self) -> Ref<'a, IMAGE_IMPORT_DESCRIPTOR> {
 		self.image
 	}
 	/// Gets the name of the DLL imported from.
-	pub fn dll_name(&self) -> Result<&'a CStr> {
+	pub fn dll_name(&self) -> Result<Ref<'a, CStr>> {
 		self.pe.derva_c_str(self.image.Name)
 	}
 	/// Gets the import address table.
@@ -232,7 +232,7 @@ impl<'a, P: Pe<'a>> Desc<'a, P> {
 		Ok(slice.iter())
 	}
 	/// Gets the import name table.
-	pub fn int(&self) -> Result<iter::Map<slice::Iter<'a, Va>, impl Clone + FnMut(&'a Va) -> Result<Import<'a>>>> {
+	pub fn int(&self) -> Result<iter::Map<slice::Iter<'a, Va>, impl Clone + FnMut(Ref<'a, Va>) -> Result<Import<'a>>>> {
 		let slice = self.pe.derva_slice_s(self.image.OriginalFirstThunk, 0)?;
 		let pe = self.pe;
 		Ok(slice.iter().map(move |va| import_from_va(pe, va)))

@@ -28,14 +28,14 @@ use std::{fmt};
 use crate::{Error, Result};
 
 use super::image::*;
-use super::{Align, Pe};
+use super::{Align, Pe, Ref};
 
 /// Security Directory.
 ///
 /// For more information see the [module-level documentation](index.html).
 pub struct Security<'a, P> {
 	pe: P,
-	security: &'a [u8],
+	security: Ref<'a, [u8]>,
 }
 impl<'a, P: Pe<'a>> Security<'a, P> {
 	pub(crate) fn try_from(pe: P) -> Result<Security<'a, P>> {
@@ -65,7 +65,7 @@ impl<'a, P: Pe<'a>> Security<'a, P> {
 		self.pe
 	}
 	/// Returns the underlying security directory image.
-	pub fn image(&self) -> &'a WIN_CERTIFICATE {
+	pub fn image(&self) -> Ref<'a, WIN_CERTIFICATE> {
 		// Safety checked by new
 		unsafe {
 			&*(self.security.as_ptr() as *const _)
@@ -92,7 +92,7 @@ impl<'a, P: Pe<'a>> Security<'a, P> {
 	/// ```sh
 	/// openssl pkcs7 -inform DER -print_certs -text -in pe_certificate
 	/// ```
-	pub fn certificate_data(&self) -> &'a [u8] {
+	pub fn certificate_data(&self) -> Ref<'a, [u8]> {
 		// Safety checked by new
 		unsafe {
 			self.security.get_unchecked(8..)

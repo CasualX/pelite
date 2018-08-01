@@ -26,7 +26,7 @@ use std::fmt;
 use crate::{Error, Result};
 
 use super::image::*;
-use super::Pe;
+use super::{Pe, Ref};
 
 /// Load Config Directory.
 ///
@@ -34,7 +34,7 @@ use super::Pe;
 #[derive(Copy, Clone)]
 pub struct LoadConfig<'a, P> {
 	pe: P,
-	image: &'a IMAGE_LOAD_CONFIG_DIRECTORY,
+	image: Ref<'a, IMAGE_LOAD_CONFIG_DIRECTORY>,
 }
 impl<'a, P: Pe<'a>> LoadConfig<'a, P> {
 	pub(crate) fn try_from(pe: P) -> Result<LoadConfig<'a, P>> {
@@ -47,7 +47,7 @@ impl<'a, P: Pe<'a>> LoadConfig<'a, P> {
 		self.pe
 	}
 	/// Returns the underlying load config directory image.
-	pub fn image(&self) -> &'a IMAGE_LOAD_CONFIG_DIRECTORY {
+	pub fn image(&self) -> Ref<'a, IMAGE_LOAD_CONFIG_DIRECTORY> {
 		self.image
 	}
 	/// Gets the default security cookie for the image.

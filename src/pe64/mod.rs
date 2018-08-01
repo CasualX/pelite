@@ -142,3 +142,4 @@ pub use self::pe::{Align, Pe, PeObject};
 pub use self::view::{PeView};
 pub use self::file::{PeFile};
 pub use self::ptr::Ptr;
+pub use util::Ref;

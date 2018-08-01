@@ -34,6 +34,9 @@ pub use self::c_str::CStr;
 pub use self::wide_str::WideStr;
 pub use self::pod::Pod;
 
+/// Reference into the PE image.
+pub type Ref<'a, T> = &'a T;
+
 /// Converts from a byte slice to a string.
 pub trait FromBytes {
 	/// Minimum size argument.

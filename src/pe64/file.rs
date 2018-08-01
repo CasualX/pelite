@@ -10,7 +10,7 @@ use super::{Align, Pe, PeObject};
 /// View into an unmapped PE file.
 #[derive(Copy, Clone)]
 pub struct PeFile<'a> {
-	image: &'a [u8],
+	image: Ref<'a, [u8]>,
 }
 
 impl<'a> PeFile<'a> {

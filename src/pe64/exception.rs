@@ -18,7 +18,7 @@ use super::Pe;
 #[derive(Copy, Clone)]
 pub struct Exception<'a, P> {
 	pe: P,
-	image: &'a [RUNTIME_FUNCTION],
+	image: Ref<'a, [RUNTIME_FUNCTION]>,
 }
 impl<'a, P: Pe<'a>> Exception<'a, P> {
 	pub(crate) fn try_from(pe: P) -> Result<Exception<'a, P>> {
@@ -38,7 +38,7 @@ impl<'a, P: Pe<'a>> Exception<'a, P> {
 		self.pe
 	}
 	/// Returns the functions slice.
-	pub fn image(&self) -> &'a [RUNTIME_FUNCTION] {
+	pub fn image(&self) -> Ref<'a, [RUNTIME_FUNCTION]> {
 		self.image
 	}
 	/// Checks if the function table is sorted.
@@ -54,7 +54,7 @@ impl<'a, P: Pe<'a>> Exception<'a, P> {
 	}
 	/// Gets an iterator over the function records.
 	pub fn functions(&self)
-		-> iter::Map<slice::Iter<'a, RUNTIME_FUNCTION>, impl Clone + FnMut(&'a RUNTIME_FUNCTION) -> Function<'a, P>>
+		-> iter::Map<slice::Iter<'a, RUNTIME_FUNCTION>, impl Clone + FnMut(Ref<'a, RUNTIME_FUNCTION>) -> Function<'a, P>>
 	{
 		let pe = self.pe;
 		self.image.iter()
@@ -98,7 +98,7 @@ impl<'a, P: Pe<'a>> fmt::Debug for Exception<'a, P> {
 #[derive(Copy, Clone)]
 pub struct Function<'a, P> {
 	pe: P,
-	image: &'a RUNTIME_FUNCTION,
+	image: Ref<'a, RUNTIME_FUNCTION>,
 }
 impl<'a, P: Pe<'a>> Function<'a, P> {
 	/// Gets the PE instance.
@@ -106,11 +106,11 @@ impl<'a, P: Pe<'a>> Function<'a, P> {
 		self.pe
 	}
 	/// Returns the underlying runtime function image.
-	pub fn image(&self) -> &'a RUNTIME_FUNCTION {
+	pub fn image(&self) -> Ref<'a, RUNTIME_FUNCTION> {
 		self.image
 	}
 	/// Gets the function bytes.
-	pub fn bytes(&self) -> Result<&'a [u8]> {
+	pub fn bytes(&self) -> Result<Ref<'a, [u8]>> {
 		let len = if self.image.BeginAddress > self.image.EndAddress { return Err(Error::Overflow); }
 		else { (self.image.EndAddress - self.image.BeginAddress) as usize };
 		self.pe.derva_slice(self.image.BeginAddress, len)
@@ -148,7 +148,7 @@ impl<'a, P: Pe<'a>> fmt::Debug for Function<'a, P> {
 #[derive(Copy, Clone)]
 pub struct UnwindInfo<'a, P> {
 	pe: P,
-	image: &'a UNWIND_INFO,
+	image: Ref<'a, UNWIND_INFO>,
 }
 impl<'a, P: Pe<'a>> UnwindInfo<'a, P> {
 	/// Gets the PE instance.
@@ -156,7 +156,7 @@ impl<'a, P: Pe<'a>> UnwindInfo<'a, P> {
 		self.pe
 	}
 	/// Returns the underlying unwind info image.
-	pub fn image(&self) -> &'a UNWIND_INFO {
+	pub fn image(&self) -> Ref<'a, UNWIND_INFO> {
 		self.image
 	}
 	pub fn version(&self) -> u8 {
@@ -174,7 +174,7 @@ impl<'a, P: Pe<'a>> UnwindInfo<'a, P> {
 	pub fn frame_offset(&self) -> u8 {
 		self.image.FrameRegisterOffset >> 4
 	}
-	pub fn unwind_codes(&self) -> &'a [UNWIND_CODE] {
+	pub fn unwind_codes(&self) -> Ref<'a, [UNWIND_CODE]> {
 		let len = self.image.CountOfCodes as usize;
 		unsafe {
 			slice::from_raw_parts(self.image.UnwindCode.as_ptr(), len)

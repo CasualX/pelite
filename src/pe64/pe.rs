@@ -25,7 +25,7 @@ pub enum Align {
 
 pub unsafe trait PeObject<'a> {
 	/// Returns the image as a byte slice.
-	fn image(&self) -> &'a [u8];
+	fn image(&self) -> Ref<'a, [u8]>;
 
 	/// Returns whether this image uses file alignment or section alignment.
 	fn align(&self) -> Align;

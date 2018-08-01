@@ -38,7 +38,7 @@ use std::ops::Range;
 use crate::pattern as pat;
 use crate::util::Pod;
 
-use super::{Align, Rva, Pe};
+use super::{Align, Rva, Pe, Ref};
 use super::image::*;
 
 /// Size of the prefix buffer for search optimization.
@@ -418,7 +418,7 @@ impl<'a, 'u, P: Pe<'a>> Matches<'u, P> {
 		&qsbuf[..qslen]
 	}
 	// Select the search strategy and execute the query.
-	fn strategy(&mut self, cursor: u32, qsbuf: &[u8], slice: &'a [u8], save: &mut [Rva]) -> bool {
+	fn strategy(&mut self, cursor: u32, qsbuf: &[u8], slice: Ref<'a, [u8]>, save: &mut [Rva]) -> bool {
 		self.cursor = cursor;
 		// FIXME! Profile the performance!
 		if qsbuf.len() == 0 {
@@ -434,7 +434,7 @@ impl<'a, 'u, P: Pe<'a>> Matches<'u, P> {
 	// Strategy:
 	//  Cannot optimize the search, just brute-force it.
 	//  Note that this is (relatively) slow...
-	fn strategy0(&mut self, _qsbuf: &[u8], slice: &'a [u8], save: &mut [Rva]) -> bool {
+	fn strategy0(&mut self, _qsbuf: &[u8], slice: Ref<'a, [u8]>, save: &mut [Rva]) -> bool {
 		let mut it = self.cursor;
 		let end = it + slice.len() as Rva;
 		while it < end {
@@ -453,7 +453,7 @@ impl<'a, 'u, P: Pe<'a>> Matches<'u, P> {
 	// Strategy:
 	//  Prefix is too small for full blown quicksearch.
 	//  Memchr for the first byte and only eval pattern on potential matches.
-	fn strategy1(&mut self, qsbuf: &[u8], slice: &'a [u8], save: &mut [Rva]) -> bool {
+	fn strategy1(&mut self, qsbuf: &[u8], slice: Ref<'a, [u8]>, save: &mut [Rva]) -> bool {
 		let byte = qsbuf[0];
 		let it = self.cursor;
 		// Find all places with matching byte
@@ -474,7 +474,7 @@ impl<'a, 'u, P: Pe<'a>> Matches<'u, P> {
 	// Strategy:
 	//  Full blown quicksearch for the prefix.
 	//  Most likely completely unnecessary but oh well... it was fun to write!
-	fn strategy2(&mut self, qsbuf: &[u8], slice: &'a [u8], save: &mut [Rva]) -> bool {
+	fn strategy2(&mut self, qsbuf: &[u8], slice: Ref<'a, [u8]>, save: &mut [Rva]) -> bool {
 		// Initialize jump table for quicksearch
 		let qslen = qsbuf.len();
 		let mut jumps = [qslen as u8; 256];

@@ -38,7 +38,7 @@ use super::{Align, Pe};
 #[derive(Copy, Clone)]
 pub struct Debug<'a, P> {
 	pe: P,
-	image: &'a [IMAGE_DEBUG_DIRECTORY],
+	image: Ref<'a, [IMAGE_DEBUG_DIRECTORY]>,
 }
 impl<'a, P: Pe<'a>> Debug<'a, P> {
 	pub(crate) fn try_from(pe: P) -> Result<Debug<'a, P>> {
@@ -58,7 +58,7 @@ impl<'a, P: Pe<'a>> Debug<'a, P> {
 		self.pe
 	}
 	/// Returns the underlying debug directories image.
-	pub fn image(&self) -> &'a [IMAGE_DEBUG_DIRECTORY] {
+	pub fn image(&self) -> Ref<'a, [IMAGE_DEBUG_DIRECTORY]> {
 		self.image
 	}
 	/// Gets the CodeView PDB file name.
@@ -126,7 +126,7 @@ impl<'a, P: Pe<'a>> iter::FusedIterator for Iter<'a, P> {}
 #[derive(Copy, Clone)]
 pub struct Dir<'a, P> {
 	pe: P,
-	image: &'a IMAGE_DEBUG_DIRECTORY,
+	image: Ref<'a, IMAGE_DEBUG_DIRECTORY>,
 }
 impl<'a, P: Pe<'a>> Dir<'a, P> {
 	/// Gets the PE instance.
@@ -134,7 +134,7 @@ impl<'a, P: Pe<'a>> Dir<'a, P> {
 		self.pe
 	}
 	/// Gets the underlying debug directory image.
-	pub fn image(&self) -> &'a IMAGE_DEBUG_DIRECTORY {
+	pub fn image(&self) -> Ref<'a, IMAGE_DEBUG_DIRECTORY> {
 		self.image
 	}
 	/// Gets the raw data of this debug directory entry.

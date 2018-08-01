@@ -34,7 +34,7 @@ use std::{cmp, fmt, iter, mem, slice};
 use crate::{Error, Result};
 
 use super::image::*;
-use super::Pe;
+use super::{Pe, Ref};
 
 //----------------------------------------------------------------
 
@@ -44,7 +44,7 @@ use super::Pe;
 #[derive(Copy, Clone)]
 pub struct BaseRelocs<'a, P> {
 	pe: P,
-	relocs: &'a [u8],
+	relocs: Ref<'a, [u8]>,
 }
 impl<'a, P: Pe<'a>> BaseRelocs<'a, P> {
 	pub(crate) fn try_from(pe: P) -> Result<BaseRelocs<'a, P>> {
@@ -148,7 +148,7 @@ pub struct Block<'a> {
 }
 impl<'a> Block<'a> {
 	/// Returns the underlying base relocation block image.
-	pub fn image(&self) -> &'a IMAGE_BASE_RELOCATION {
+	pub fn image(&self) -> Ref<'a, IMAGE_BASE_RELOCATION> {
 		self.image
 	}
 	/// Gets the types and offsets.

@@ -102,7 +102,7 @@ impl<'a> fmt::Debug for Resources<'a> {
 #[derive(Copy, Clone)]
 pub struct Directory<'a> {
 	resources: Resources<'a>,
-	image: &'a IMAGE_RESOURCE_DIRECTORY,
+	image: Ref<'a, IMAGE_RESOURCE_DIRECTORY>,
 }
 impl<'a> Directory<'a> {
 	fn try_from(resources: Resources<'a>, offset: u32) -> Result<Directory<'a>> {
@@ -122,11 +122,11 @@ impl<'a> Directory<'a> {
 		self.resources
 	}
 	/// Gets the underlying resource directory image.
-	pub fn image(&self) -> &'a IMAGE_RESOURCE_DIRECTORY {
+	pub fn image(&self) -> Ref<'a, IMAGE_RESOURCE_DIRECTORY> {
 		self.image
 	}
 	/// Gets the directory entries.
-	pub fn entries(&self) -> Entries<'a, impl Clone + FnMut(&'a IMAGE_RESOURCE_DIRECTORY_ENTRY) -> DirectoryEntry<'a>> {
+	pub fn entries(&self) -> Entries<'a, impl Clone + FnMut(Ref<'a, IMAGE_RESOURCE_DIRECTORY_ENTRY>) -> DirectoryEntry<'a>> {
 		// Validated by constructor
 		let slice = unsafe {
 			let p = (self.image as *const IMAGE_RESOURCE_DIRECTORY).offset(1) as *const IMAGE_RESOURCE_DIRECTORY_ENTRY;
@@ -139,7 +139,7 @@ impl<'a> Directory<'a> {
 	/// Gets the named entries in this directory.
 	///
 	/// Note that while it would be a violation of the format spec, there's no strict safety guarantee that these are only named entries.
-	pub fn named_entries(&self) -> Entries<'a, impl Clone + FnMut(&'a IMAGE_RESOURCE_DIRECTORY_ENTRY) -> DirectoryEntry<'a>> {
+	pub fn named_entries(&self) -> Entries<'a, impl Clone + FnMut(Ref<'a, IMAGE_RESOURCE_DIRECTORY_ENTRY>) -> DirectoryEntry<'a>> {
 		// Validated by constructor
 		let slice = unsafe {
 			// Named entries come first in the array (see chapter "PE File Resources" in "Peering Inside the PE: A Tour of the Win32 Portable Executable File Format")
@@ -153,7 +153,7 @@ impl<'a> Directory<'a> {
 	/// Gets the id entries in this directory.
 	///
 	/// Note that while it would be a violation of the format spec, there's no strict safety guarantee that these are only id entries.
-	pub fn id_entries(&self) -> Entries<'a, impl Clone + FnMut(&'a IMAGE_RESOURCE_DIRECTORY_ENTRY) -> DirectoryEntry<'a>> {
+	pub fn id_entries(&self) -> Entries<'a, impl Clone + FnMut(Ref<'a, IMAGE_RESOURCE_DIRECTORY_ENTRY>) -> DirectoryEntry<'a>> {
 		// Validated by the constructor
 		let slice = unsafe {
 			// Id entries come last in the array
@@ -196,7 +196,7 @@ pub enum Name<'a> {
 	/// Technically allows `u32` ids, but some Windows APIs will be unable to use resources with an id which isn't `u16`.
 	Id(u32),
 	/// UTF-16 named resource.
-	Str(&'a WideStr),
+	Str(Ref<'a, WideStr>),
 }
 impl<'a> From<u16> for Name<'a> {
 	fn from(id: u16) -> Name<'a> {
@@ -244,7 +244,7 @@ impl<'a> Entry<'a> {
 #[derive(Copy, Clone)]
 pub struct DirectoryEntry<'a> {
 	resources: Resources<'a>,
-	image: &'a IMAGE_RESOURCE_DIRECTORY_ENTRY,
+	image: Ref<'a, IMAGE_RESOURCE_DIRECTORY_ENTRY>,
 }
 impl<'a> DirectoryEntry<'a> {
 	/// Gets the resources.
@@ -252,7 +252,7 @@ impl<'a> DirectoryEntry<'a> {
 		self.resources
 	}
 	/// Gets the underlying resource directory entry image.
-	pub fn image(&self) -> &'a IMAGE_RESOURCE_DIRECTORY_ENTRY {
+	pub fn image(&self) -> Ref<'a, IMAGE_RESOURCE_DIRECTORY_ENTRY> {
 		self.image
 	}
 	/// Gets the name for this entry.
@@ -308,7 +308,7 @@ impl<'a> fmt::Debug for DirectoryEntry<'a> {
 #[derive(Copy, Clone)]
 pub struct DataEntry<'a> {
 	resources: Resources<'a>,
-	image: &'a IMAGE_RESOURCE_DATA_ENTRY,
+	image: Ref<'a, IMAGE_RESOURCE_DATA_ENTRY>,
 }
 impl<'a> DataEntry<'a> {
 	fn try_from(resources: Resources<'a>, offset: u32) -> Result<DataEntry<'a>> {
@@ -320,7 +320,7 @@ impl<'a> DataEntry<'a> {
 		self.resources
 	}
 	/// Gets the underlying resource data entry image.
-	pub fn image(&self) -> &'a IMAGE_RESOURCE_DATA_ENTRY {
+	pub fn image(&self) -> Ref<'a, IMAGE_RESOURCE_DATA_ENTRY> {
 		self.image
 	}
 	/// Gets the actual data.

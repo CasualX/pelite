@@ -31,7 +31,7 @@ use std::fmt;
 use crate::{Error, Result};
 
 use super::image::*;
-use super::Pe;
+use super::{Pe, Ref};
 
 //----------------------------------------------------------------
 
@@ -41,7 +41,7 @@ use super::Pe;
 #[derive(Copy, Clone)]
 pub struct Tls<'a, P> {
 	pe: P,
-	image: &'a IMAGE_TLS_DIRECTORY,
+	image: Ref<'a, IMAGE_TLS_DIRECTORY>,
 }
 impl<'a, P: Pe<'a>> Tls<'a, P> {
 	pub(crate) fn try_from(pe: P) -> Result<Tls<'a, P>> {
@@ -52,10 +52,10 @@ impl<'a, P: Pe<'a>> Tls<'a, P> {
 	pub fn pe(&self) -> P {
 		self.pe
 	}
-	pub fn image(&self) -> &'a IMAGE_TLS_DIRECTORY {
+	pub fn image(&self) -> Ref<'a, IMAGE_TLS_DIRECTORY> {
 		self.image
 	}
-	pub fn raw_data(&self) -> Result<&'a [u8]> {
+	pub fn raw_data(&self) -> Result<Ref<'a, [u8]>> {
 		if self.image.StartAddressOfRawData > self.image.EndAddressOfRawData {
 			return Err(Error::Invalid);
 		}

@@ -60,7 +60,7 @@ use crate::util::CStr;
 
 use super::image::*;
 use super::imports::Import;
-use super::Pe;
+use super::{Pe, Ref};
 
 //----------------------------------------------------------------
 
@@ -69,12 +69,12 @@ use super::Pe;
 #[cfg_attr(feature = "serde", derive(::serde::Serialize))]
 pub enum Export<'a> {
 	/// Standard exported symbol.
-	Symbol(&'a Rva),
+	Symbol(Ref<'a, Rva>),
 	/// This export is forwarded to another dll.
 	///
 	/// Format of the string is `"DllName.ExportName"`.
 	/// For more information see this [blog post](https://blogs.msdn.microsoft.com/oldnewthing/20060719-24/?p=30473) by Raymond Chen.
-	Forward(&'a CStr),
+	Forward(Ref<'a, CStr>),
 }
 impl<'a> Export<'a> {
 	/// Returns some if the symbol is exported.
@@ -85,7 +85,7 @@ impl<'a> Export<'a> {
 		}
 	}
 	/// Returns some if the symbol is forwarded.
-	pub fn forward(self) -> Option<&'a CStr> {
+	pub fn forward(self) -> Option<Ref<'a, CStr>> {
 		match self {
 			Export::Forward(name) => Some(name),
 			_ => None,
@@ -101,8 +101,8 @@ impl<'a> Export<'a> {
 #[derive(Copy, Clone)]
 pub struct Exports<'a, P> {
 	pe: P,
-	datadir: &'a IMAGE_DATA_DIRECTORY,
-	image: &'a IMAGE_EXPORT_DIRECTORY,
+	datadir: Ref<'a, IMAGE_DATA_DIRECTORY>,
+	image: Ref<'a, IMAGE_EXPORT_DIRECTORY>,
 }
 impl<'a, P: Pe<'a>> Exports<'a, P> {
 	pub(crate) fn try_from(pe: P) -> Result<Exports<'a, P>> {
@@ -115,11 +115,11 @@ impl<'a, P: Pe<'a>> Exports<'a, P> {
 		self.pe
 	}
 	/// Returns the underlying export directory image.
-	pub fn image(&self) -> &'a IMAGE_EXPORT_DIRECTORY {
+	pub fn image(&self) -> Ref<'a, IMAGE_EXPORT_DIRECTORY> {
 		self.image
 	}
 	/// Gets the export directory's name for this library.
-	pub fn dll_name(&self) -> Result<&'a CStr> {
+	pub fn dll_name(&self) -> Result<Ref<'a, CStr>> {
 		self.pe.derva_c_str(self.image.Name)
 	}
 	/// Gets the ordinal base for the exported functions.
@@ -127,7 +127,7 @@ impl<'a, P: Pe<'a>> Exports<'a, P> {
 		self.image.Base as Ordinal
 	}
 	/// Gets the export address table.
-	pub fn functions(&self) -> Result<&'a [Rva]> {
+	pub fn functions(&self) -> Result<Ref<'a, [Rva]>> {
 		self.pe.derva_slice(self.image.AddressOfFunctions, self.image.NumberOfFunctions as usize)
 	}
 	/// Gets the name address table.
@@ -135,13 +135,13 @@ impl<'a, P: Pe<'a>> Exports<'a, P> {
 	/// The values are RVAs to the exported function's name, to find its export look at the name index table with the same index.
 	///
 	/// The names are sorted allowing binary search lookup.
-	pub fn names(&self) -> Result<&'a [Rva]> {
+	pub fn names(&self) -> Result<Ref<'a, [Rva]>> {
 		self.pe.derva_slice(self.image.AddressOfNames, self.image.NumberOfNames as usize)
 	}
 	/// Gets the name index table.
 	///
 	/// The values are indices (not ordinals!) into the export address table matching name with the same index in the name address table.
-	pub fn name_indices(&self) -> Result<&'a [u16]> {
+	pub fn name_indices(&self) -> Result<Ref<'a, [u16]>> {
 		self.pe.derva_slice(self.image.AddressOfNameOrdinals, self.image.NumberOfNames as usize)
 	}
 	/// Query the exports.
@@ -169,7 +169,7 @@ impl<'a, P: Pe<'a>> Exports<'a, P> {
 		// An export is forward if its rva points within data directory bounds
 		rva >= self.datadir.VirtualAddress && rva < self.datadir.VirtualAddress + self.datadir.Size
 	}
-	fn symbol_from_rva(&self, rva: &'a Rva) -> Result<Export<'a>> {
+	fn symbol_from_rva(&self, rva: Ref<'a, Rva>) -> Result<Export<'a>> {
 		if *rva == 0 {
 			Err(Error::Null)
 		}
@@ -197,9 +197,9 @@ impl<'a, P: Pe<'a>> fmt::Debug for Exports<'a, P> {
 #[derive(Copy, Clone)]
 pub struct By<'a, P> {
 	exp: Exports<'a, P>,
-	functions: &'a [Rva],
-	names: &'a [Rva],
-	name_indices: &'a [u16],
+	functions: Ref<'a, [Rva]>,
+	names: Ref<'a, [Rva]>,
+	name_indices: Ref<'a, [u16]>,
 }
 impl<'a, P: Pe<'a>> ops::Deref for By<'a, P> {
 	type Target = Exports<'a, P>;
@@ -209,7 +209,7 @@ impl<'a, P: Pe<'a>> ops::Deref for By<'a, P> {
 }
 impl<'a, P: Pe<'a>> By<'a, P> {
 	/// Gets the export address table.
-	pub fn functions(&self) -> &'a [Rva] {
+	pub fn functions(&self) -> Ref<'a, [Rva]> {
 		self.functions
 	}
 	/// Gets the name address table.
@@ -217,13 +217,13 @@ impl<'a, P: Pe<'a>> By<'a, P> {
 	/// The values are RVAs to the exported function's name, to find its export look at the name index table with the same index.
 	///
 	/// The names are sorted allowing binary search lookup.
-	pub fn names(&self) -> &'a [Rva] {
+	pub fn names(&self) -> Ref<'a, [Rva]> {
 		self.names
 	}
 	/// Gets the name index table.
 	///
 	/// The values are indices (not ordinals!) into the export address table matching name with the same index in the name address table.
-	pub fn name_indices(&self) -> &'a [u16] {
+	pub fn name_indices(&self) -> Ref<'a, [u16]> {
 		self.name_indices
 	}
 	/// Validates and checks if the name table is sorted.

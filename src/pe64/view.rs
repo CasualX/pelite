@@ -13,7 +13,7 @@ use super::{Align, Pe, PeObject};
 /// View into a mapped PE image.
 #[derive(Copy, Clone)]
 pub struct PeView<'a> {
-	image: &'a [u8],
+	image: Ref<'a, [u8]>,
 }
 
 current_target! {

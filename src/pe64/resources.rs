@@ -7,11 +7,11 @@ See [here](../../resources/index.html) for the API docs.
 
 ```
 # #![allow(unused_variables)]
-use pelite::pe64::{Pe, PeFile};
+use pelite::pe64::{Pe, Ref, PeFile};
 use pelite::resources::FindError;
 
 # #[allow(dead_code)]
-fn example<'a>(file: PeFile<'a>) -> Result<&'a [u8], FindError> {
+fn example<'a>(file: PeFile<'a>) -> Result<Ref<'a, [u8]>, FindError> {
 	// Access the resources
 	let resources = file.resources()?;
 
