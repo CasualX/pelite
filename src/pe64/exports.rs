@@ -38,7 +38,7 @@ fn example(file: PeFile) -> pelite::Result<()> {
 
 	// For example: iterate over the named exports
 	for result in by.iter_names() {
-		if let (Ok(export), Ok(name)) = result {
+		if let (Ok(name), Ok(export)) = result {
 			println!("export {}: {:?}", name, export);
 		}
 	}
@@ -433,10 +433,10 @@ pub struct IterByName<'s, 'a: 's, P: 'a> {
 	hints: ops::Range<u32>,
 }
 impl<'s, 'a: 's, P: Pe<'a> + Copy> Iterator for IterByName<'s, 'a, P> {
-	type Item = (Result<Export<'a>>, Result<&'a CStr>);
+	type Item = (Result<&'a CStr>, Result<Export<'a>>);
 	fn next(&mut self) -> Option<Self::Item> {
 		let by = self.by;
-		self.hints.next().map(|hint| (by.hint(hint as usize), by.name_of_hint(hint as usize)))
+		self.hints.next().map(|hint| (by.name_of_hint(hint as usize), by.hint(hint as usize)))
 	}
 	fn size_hint(&self) -> (usize, Option<usize>) {
 		self.hints.size_hint()
@@ -446,17 +446,17 @@ impl<'s, 'a: 's, P: Pe<'a> + Copy> Iterator for IterByName<'s, 'a, P> {
 	}
 	fn nth(&mut self, n: usize) -> Option<Self::Item> {
 		let by = self.by;
-		self.hints.nth(n).map(|hint| (by.hint(hint as usize), by.name_of_hint(hint as usize)))
+		self.hints.nth(n).map(|hint| (by.name_of_hint(hint as usize), by.hint(hint as usize)))
 	}
 	fn last(self) -> Option<Self::Item> {
 		let by = self.by;
-		self.hints.last().map(|hint| (by.hint(hint as usize), by.name_of_hint(hint as usize)))
+		self.hints.last().map(|hint| (by.name_of_hint(hint as usize), by.hint(hint as usize)))
 	}
 }
 impl<'s, 'a: 's, P: Pe<'a> + Copy> DoubleEndedIterator for IterByName<'s, 'a, P> {
 	fn next_back(&mut self) -> Option<Self::Item> {
 		let by = self.by;
-		self.hints.next_back().map(|hint| (by.hint(hint as usize), by.name_of_hint(hint as usize)))
+		self.hints.next_back().map(|hint| (by.name_of_hint(hint as usize), by.hint(hint as usize)))
 	}
 }
 impl<'s, 'a: 's, P: Pe<'a> + Copy> ExactSizeIterator for IterByName<'s, 'a, P> {}
