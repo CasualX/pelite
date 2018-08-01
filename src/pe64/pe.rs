@@ -8,7 +8,7 @@ use error::{Error, Result};
 use util::{CStr, Pod, FromBytes};
 
 use super::image::*;
-use super::ptr::Ptr;
+use super::Ptr;
 
 //----------------------------------------------------------------
 
