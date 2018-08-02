@@ -70,7 +70,7 @@ fn lib_pe32(file: pelite::pe32::PeFile) -> pelite::Result<()> {
 	let dll_name = exp.dll_name()?;
 	let names = exp
 		.iter_names()
-		.map(|(_, name)| name)
+		.map(|(name, _)| name)
 		.collect::<pelite::Result<Vec<_>>>()?;
 
 	println!("LIBRARY {}\nEXPORTS", dll_name);
@@ -88,7 +88,7 @@ fn lib_pe64(file: pelite::pe64::PeFile) -> pelite::Result<()> {
 	let dll_name = exp.dll_name()?;
 	let names = exp
 		.iter_names()
-		.map(|(_, name)| name)
+		.map(|(name, _)| name)
 		.collect::<pelite::Result<Vec<_>>>()?;
 
 	println!("LIBRARY {}\nEXPORTS", dll_name);
