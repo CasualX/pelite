@@ -1,6 +1,6 @@
 extern crate pelite;
 
-use pelite::{FileMap, ImageMap};
+use pelite::{FileMap, ImageMap, Error};
 use pelite::pe64::{Rva, Pe, PeFile, PeView};
 use pelite::pe64::exports::{Export, GetProcAddress};
 use pelite::pe64::imports::Import;
@@ -161,6 +161,17 @@ fn debug() {
 
 		}
 	}
+}
+
+//----------------------------------------------------------------
+
+#[test]
+fn security() {
+	let file_map = FileMap::open(FILE_NAME).unwrap();
+	let file = PeFile::from_bytes(&file_map).unwrap();
+	let security = file.security();
+
+	assert!(match security { Err(Error::Null) => true, _ => false });
 }
 
 //----------------------------------------------------------------

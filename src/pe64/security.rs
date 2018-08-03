@@ -16,13 +16,16 @@ pub struct Security<'a, P> {
 }
 impl<'a, P: Pe<'a> + Copy> Security<'a, P> {
 	pub(crate) fn new(pe: P) -> Result<Security<'a, P>> {
-		let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG).ok_or(Error::OOB)?;
 		// The security info is part of the mapped image
 		if pe.align() != Align::File {
 			return Err(Error::Unmapped);
 		}
 		// Manual alignment and size check
-		if datadir.VirtualAddress % 16 != 0 || datadir.Size % 16 != 0 {
+		let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_SECURITY).ok_or(Error::OOB)?;
+		if datadir.VirtualAddress == 0 {
+			return Err(Error::Null);
+		}
+		if datadir.VirtualAddress % 8 != 0 || datadir.Size % 8 != 0 {
 			return Err(Error::Misalign);
 		}
 		if datadir.Size == 0 {
