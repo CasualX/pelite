@@ -108,7 +108,7 @@ fn base_relocs() {
 	let file = PeFile::from_bytes(&file_map).unwrap();
 	let base_relocs = file.base_relocs().unwrap();
 
-	let mut blocks = base_relocs.into_iter();
+	let mut blocks = base_relocs.iter_blocks();
 
 	let block1 = blocks.next().unwrap();
 	assert_eq!(block1.va(), 0x3000);
@@ -119,6 +119,23 @@ fn base_relocs() {
 	assert_eq!(block2.words().len(), 12);
 
 	assert_eq!(blocks.count(), 0);
+
+	// Test all the iterator impls against this baseline
+	let mut baseline = base_relocs
+		.iter_blocks()
+		.flat_map(move |block| {
+			block.words()
+				.iter()
+				.filter(move |&word| block.type_of(word) != 0)
+				.map(move |word| block.rva_of(word))
+		});
+	let mut iter = base_relocs.into_iter();
+	base_relocs.into_iter().for_each(|rva| {
+		assert_eq!(baseline.next(), Some(rva));
+		assert_eq!(iter.next(), Some(rva));
+	});
+	assert_eq!(baseline.next(), None);
+	assert_eq!(iter.next(), None);
 }
 
 //----------------------------------------------------------------

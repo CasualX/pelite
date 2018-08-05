@@ -59,7 +59,7 @@ fn main() {
 	// I'm sure this can all be done with more heuristics without requiring all the above informatoin
 
 	// Collect all xrefs from rdata to text
-	let mut vrefs: Vec<Rva> = base_relocs.into_iter().flat_map(|relocs| relocs).filter_map(|rva| {
+	let mut vrefs: Vec<Rva> = base_relocs.into_iter().filter_map(|rva| {
 		// Look for xrefs from rdata (the virtual function pointers)
 		if rva < rdata.VirtualAddress || rva >= (rdata.VirtualAddress + rdata.VirtualSize) {
 			return None;
@@ -79,7 +79,7 @@ fn main() {
 
 	// The vtables themselves will be referenced from other places (such as the RTTI data, constructors and dynamic_casts)
 	// By collecting all xrefs to the previously collected pointers, we can find the start of the vtable
-	let mut xrefs: Vec<usize> = base_relocs.into_iter().flat_map(|relocs| relocs).filter_map(|rva| {
+	let mut xrefs: Vec<usize> = base_relocs.into_iter().filter_map(|rva| {
 		// Read the pointer being relocated
 		let target_va = file.derva_copy(rva).expect(&format!("msrtti: corrupt reloc at {:08X}", rva));
 		let target_rva = file.va_to_rva(target_va).expect(&format!("msrtti: corrupt xref at {:08X}", rva));
