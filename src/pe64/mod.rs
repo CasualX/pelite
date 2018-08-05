@@ -60,12 +60,12 @@ Import the [`Pe`](trait.Pe.html) trait to continue from here.
 If you don't know which to choose, go with [`PeFile`](struct.PeFile.html).
 
 ```
+# #[cfg(windows)] {
 # #![allow(dead_code)]
 use std::path::Path;
 use pelite::{ImageMap, Result};
 use pelite::pe64::{Pe, PeView};
 
-#[cfg(windows)]
 fn image_map<P: AsRef<Path> + ?Sized>(path: &P) -> Result<()> {
 	let path = path.as_ref();
 	if let Ok(image) = ImageMap::open(path) {
@@ -79,6 +79,7 @@ fn image_map<P: AsRef<Path> + ?Sized>(path: &P) -> Result<()> {
 	}
 	Ok(())
 }
+# }
 ```
 
 # Advanced usage
@@ -95,12 +96,12 @@ Access other modules in the process with [`PeView::module`](struct.PeView.html#m
 This is mostly safe, but be even more cautious when using it to read from writable sections since other libraries written in other languages such as C/C++ respect rust memory aliasing rules even less.
 
 ```
+# #[cfg(windows)] {
 # #![allow(dead_code)]
 use std::path::Path;
 use pelite::Result;
 use pelite::pe::{Pe, PeView};
 
-#[cfg(windows)]
 fn image_base() {
 	let view = unsafe { PeView::new() };
 
@@ -110,6 +111,7 @@ fn image_base() {
 
 	// See the respective modules to access other parts of the PE image.
 }
+# }
 ```
 */
 

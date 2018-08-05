@@ -20,13 +20,15 @@ impl FileMap {
 		let file = File::open(path)?;
 		let fd = file.as_raw_fd();
 
-		// Find its file size
+		// Find its file size aligned to page boundary
 		let size = unsafe {
 			let mut stat = mem::uninitialized();
 			if libc::fstat(fd, &mut stat) < 0 {
 				return Err(io::Error::last_os_error());
 			}
-			stat.st_size as usize
+			// Round up to nearest multiple of page_size
+			let page_size = libc::sysconf(libc::_SC_PAGE_SIZE) as usize;
+			(stat.st_size as usize + page_size - 1) & !(page_size - 1)
 		};
 
 		// Mmap the file
@@ -35,7 +37,7 @@ impl FileMap {
 				ptr::null_mut(),
 				size as libc::size_t,
 				libc::PROT_READ,
-				libc::MAP_SHARED,
+				libc::MAP_PRIVATE,
 				fd,
 				0
 			);
