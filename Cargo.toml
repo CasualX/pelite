@@ -16,7 +16,9 @@ categories = ["parsing", "command-line-utilities"]
 license = "MIT"
 
 [features]
+default = ["mmap"]
 unsafe_alignment = []
+mmap = ["libc", "winapi"]
 
 [badges]
 appveyor = { repository = "CasualX/pelite", branch = "master", service = "github" }
@@ -26,10 +28,10 @@ lto = true
 opt-level = 2
 
 [target.'cfg(unix)'.dependencies]
-libc = "0.2"
+libc = { version = "0.2", optional = true }
 
 [target.'cfg(windows)'.dependencies]
-winapi = { version = "0.3", features = ["fileapi", "memoryapi", "handleapi"] }
+winapi = { version = "0.3", optional = true, features = ["fileapi", "memoryapi", "handleapi"] }
 
 [dev-dependencies]
 rand = "0.5"

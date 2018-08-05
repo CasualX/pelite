@@ -26,10 +26,11 @@ pub mod pattern;
 mod error;
 pub use self::error::{Error, Result};
 
+#[cfg(feature = "mmap")]
 mod mmap;
-#[cfg(windows)]
+#[cfg(all(feature = "mmap", windows))]
 pub use self::mmap::{FileMap, ImageMap};
-#[cfg(unix)]
+#[cfg(all(feature = "mmap", unix))]
 pub use self::mmap::{FileMap};
 
 pub mod pe64;
