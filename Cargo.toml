@@ -22,6 +22,7 @@ mmap = ["libc", "winapi"]
 
 [badges]
 appveyor = { repository = "CasualX/pelite", branch = "master", service = "github" }
+travis-ci = { repository = "CasualX/pelite", branch = "master", service = "github" }
 
 [profile.release]
 lto = true

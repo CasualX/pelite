@@ -1,7 +1,7 @@
 extern crate pelite;
 
-use pelite::{FileMap, ImageMap, Error};
-use pelite::pe64::{Rva, Pe, PeFile, PeView};
+use pelite::{FileMap, Error};
+use pelite::pe64::{Rva, Pe, PeFile};
 use pelite::pe64::exports::{Export, GetProcAddress};
 use pelite::pe64::imports::Import;
 use pelite::util::CStr;
@@ -199,8 +199,12 @@ fn scanner() {
 
 //----------------------------------------------------------------
 
+#[cfg(windows)]
 #[test]
 fn imagemap() {
+	use pelite::ImageMap;
+	use pelite::pe64::PeView;
+
 	let image = ImageMap::open(FILE_NAME).unwrap();
 	let _view = PeView::from_bytes(&image).unwrap();
 }
