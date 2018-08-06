@@ -285,6 +285,34 @@ pub fn reloc_type(reloc_type: u8) -> Option<&'static str> {
 	}
 }
 
+/// Stringifies the `UWOP_*` constants for [`UNWIND_CODE` operations](../image/struct.UNWIND_CODE.html).
+pub fn unwind_op(unwind_op: u8) -> Option<&'static str> {
+	match unwind_op {
+		UWOP_PUSH_NONVOL => Some("push nonvol"),
+		UWOP_ALLOC_LARGE => Some("alloc large"),
+		UWOP_ALLOC_SMALL => Some("alloc small"),
+		UWOP_SET_FPREG => Some("set fpreg"),
+		UWOP_SAVE_NONVOL => Some("save nonvol"),
+		UWOP_SAVE_NONVOL_FAR => Some("save nonvol large"),
+		UWOP_SAVE_XMM128 => Some("save xmm128"),
+		UWOP_SAVE_XMM128_FAR => Some("save xmm128 far"),
+		UWOP_PUSH_MACHFRAME => Some("push machframe"),
+		_ => None,
+	}
+}
+
+/// Stringifies the `UNW_FLAG_*` constants for [`UNWIND_INFO` flags](..image/struct.UNWIND_INFO.html).
+pub fn unwind_flag(unwind_flag: u8) -> Option<&'static str> {
+	match unwind_flag {
+		UNW_FLAG_NHANDLER => Some("NHANDLER"),
+		UNW_FLAG_EHANDLER => Some("EHANDLER"),
+		UNW_FLAG_UHANDLER => Some("UHANDLER"),
+		UNW_FLAG_FHANDLER => Some("FHANDLER"),
+		UNW_FLAG_CHAININFO => Some("CHAININFO"),
+		_ => None,
+	}
+}
+
 /// Stringifies the `IMAGE_DEBUG_TYPE_*` constants for [`IMAGE_DEBUG_DIRECTORY::Type`](../image/struct.IMAGE_DEBUG_DIRECTORY.html#Type.v).
 ///
 /// # Examples

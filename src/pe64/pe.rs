@@ -415,6 +415,15 @@ pub unsafe trait Pe<'a> {
 		super::security::Security::new(self)
 	}
 
+	/// Gets the Exception Directory.
+	///
+	/// See the [exception](exception/index.html) module for more information.
+	///
+	/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) if the image has no exception directory. Any other error indicates some form of corruption.
+	fn exception(self) -> Result<super::exception::Exception<'a, Self>> where Self: Copy {
+		super::exception::Exception::new(self)
+	}
+
 	/// Gets the Debug Directory.
 	///
 	/// See the [debug](debug/index.html) module for more information.
