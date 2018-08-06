@@ -13,6 +13,8 @@ use super::Pe;
 //----------------------------------------------------------------
 
 /// Exception Directory.
+///
+/// For more information see the [module-level documentation](index.html).
 #[derive(Copy, Clone)]
 pub struct Exception<'a, P> {
 	pe: P,

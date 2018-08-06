@@ -1,6 +1,11 @@
 /*!
 Base Relocations Directory.
 
+The base relocations directory describes a list of addresses to pointer values within its module which need to be patched when the module is located at a different address than its preferred load address.
+When the module contains pointers to itself these pointers need to be fixed when the module is loaded at a different address than its preferred load address.
+
+For a quick and easy overview of how the base relocations are laid out, see this helpful [stackoverflow answer](https://stackoverflow.com/a/22513813).
+
 # Examples
 
 ```
@@ -8,12 +13,15 @@ Base Relocations Directory.
 use pelite::pe64::{Pe, PeFile};
 
 # #[allow(dead_code)]
-fn example(file: PeFile) -> pelite::Result<()> {
+fn example(file: PeFile<'_>) -> pelite::Result<()> {
 	// Access the base relocations
 	let base_relocs = file.base_relocs()?;
 
 	// Iterate over the rva which need relocation
 	for rva in base_relocs {}
+
+	// Iterate over the relocation blocks
+	for block in base_relocs.iter_blocks() {}
 
 	Ok(())
 }
@@ -30,6 +38,8 @@ use super::Pe;
 //----------------------------------------------------------------
 
 /// Base Relocations Directory.
+///
+/// For more information see the [module-level documentation](index.html).
 #[derive(Copy, Clone)]
 pub struct BaseRelocs<'a, P> {
 	pe: P,
@@ -85,7 +95,7 @@ impl<'a, P: Pe<'a> + Copy> fmt::Debug for BaseRelocs<'a, P> {
 
 //----------------------------------------------------------------
 
-/// Iterator over the rva which need relocation in the image.
+/// Iterator over the addresses of pointer values which need relocation in the image.
 #[derive(Clone)]
 pub struct Iter<'a> {
 	iter: slice::Iter<'a, u8>,
@@ -186,7 +196,7 @@ impl<'a, P: Pe<'a> + Copy> iter::FusedIterator for IterBlocks<'a, P> {}
 
 //----------------------------------------------------------------
 
-/// Base Relocations Block.
+/// Base Relocation Block.
 #[derive(Copy, Clone)]
 pub struct Block<'a, P> {
 	pe: P,
@@ -197,12 +207,12 @@ impl<'a, P: Pe<'a> + Copy> Block<'a, P> {
 	pub fn pe(&self) -> P {
 		self.pe
 	}
-	/// Returns the underlying base relocations image.
+	/// Returns the underlying base relocation block image.
 	pub fn image(&self) -> &'a IMAGE_BASE_RELOCATION {
 		self.image
 	}
-	/// Rva starting from.
-	pub fn va(&self) -> Rva {
+	/// Base rva of rva_of calculations.
+	pub fn rva(&self) -> Rva {
 		self.image.VirtualAddress
 	}
 	/// Gets the types and offsets.
@@ -214,12 +224,12 @@ impl<'a, P: Pe<'a> + Copy> Block<'a, P> {
 			slice::from_raw_parts(p, len)
 		}
 	}
-	/// Gets the final Rva of a typeoffset.
+	/// Gets the final Rva of a type-offset word.
 	pub fn rva_of(&self, word: &u16) -> Rva {
 		let offset = (word & 0x0FFF) as Rva;
 		self.image.VirtualAddress + offset
 	}
-	/// Gets the type of a typeoffset.
+	/// Gets the type of a type-offset word.
 	pub fn type_of(&self, word: &u16) -> u8 {
 		(word >> 12) as u8
 	}
@@ -227,6 +237,7 @@ impl<'a, P: Pe<'a> + Copy> Block<'a, P> {
 impl<'a, P: Pe<'a> + Copy> fmt::Debug for Block<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		f.debug_struct("Block")
+			.field("rva", &self.rva())
 			.field("words.len", &self.words().len())
 			.finish()
 	}

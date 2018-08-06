@@ -1,6 +1,11 @@
 /*!
 Export Directory.
 
+The export directory contains a list of symbols, well, exported by this module.
+A symbol can refer to a function, static data or a forwarded reference to an exported symbol in another module.
+
+Symbols can be exported by name or by their ordinal number. The ordinal number of an exported function is its index in the exported function list plus the ordinal base.
+
 # Examples
 
 ```
@@ -9,7 +14,7 @@ use pelite::pe64::{Pe, PeFile};
 use pelite::pe64::exports::GetProcAddress;
 
 # #[allow(dead_code)]
-fn example(file: PeFile) -> pelite::Result<()> {
+fn example(file: PeFile<'_>) -> pelite::Result<()> {
 	// Most convenient way to get the address of an export
 	file.get_proc_address("ThrowException")?;
 
@@ -46,7 +51,6 @@ fn example(file: PeFile) -> pelite::Result<()> {
 	Ok(())
 }
 ```
-
 */
 
 use std::{fmt, iter, ops, slice};
@@ -95,6 +99,8 @@ impl<'a> Export<'a> {
 //----------------------------------------------------------------
 
 /// Export directory.
+///
+/// For more information see the [module-level documentation](index.html).
 #[derive(Copy, Clone)]
 pub struct Exports<'a, P> {
 	pe: P,

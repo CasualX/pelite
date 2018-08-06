@@ -1,5 +1,24 @@
 /*!
 Load Config Directory.
+
+# Examples
+
+```
+# #![allow(unused_variables)]
+use pelite::pe64::{Pe, PeFile};
+
+# #[allow(dead_code)]
+fn example(file: PeFile<'_>) -> pelite::Result<()> {
+	// Access the load config directory
+	let load_config = file.load_config()?;
+
+	// The only bits of interest here
+	let security_cookie = load_config.security_cookie()?;
+	let se_handler_table = load_config.se_handler_table()?;
+
+	Ok(())
+}
+```
 */
 
 use std::fmt;
@@ -10,6 +29,8 @@ use super::image::*;
 use super::Pe;
 
 /// Load Config Directory.
+///
+/// For more information see the [module-level documentation](index.html).
 #[derive(Copy, Clone)]
 pub struct LoadConfig<'a, P> {
 	pe: P,

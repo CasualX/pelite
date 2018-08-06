@@ -1,6 +1,8 @@
 /*!
 Import Directory.
 
+The import directory lists all the module dependencies and their imported symbols by this module.
+
 # Examples
 
 ```
@@ -8,7 +10,7 @@ Import Directory.
 use pelite::pe64::{Pe, PeFile};
 
 # #[allow(dead_code)]
-fn example(file: PeFile) -> pelite::Result<()> {
+fn example(file: PeFile<'_>) -> pelite::Result<()> {
 	// Access the import directory
 	let imports = file.imports()?;
 
@@ -55,6 +57,8 @@ pub enum Import<'a> {
 //----------------------------------------------------------------
 
 /// Import directory.
+///
+/// For more information see the [module-level documentation](index.html).
 #[derive(Copy, Clone)]
 pub struct Imports<'a, P> {
 	pe: P,
