@@ -43,7 +43,7 @@ impl<'a, P: Pe<'a> + Copy> BaseRelocs<'a, P> {
 		// All unsafe blocks in this module rely on this being correct, no pressure there.
 		// FIXME! I know this broken in subtle ways, please fix it.
 		let mut it = relocs;
-		while it.len() > 0 {
+		while it.len() != 0 {
 			if it.len() < mem::size_of::<IMAGE_BASE_RELOCATION>() {
 				return Err(Error::Corrupt);
 			}
@@ -86,6 +86,7 @@ impl<'a, P: Pe<'a> + Copy> fmt::Debug for BaseRelocs<'a, P> {
 //----------------------------------------------------------------
 
 /// Iterator over the rva which need relocation in the image.
+#[derive(Clone)]
 pub struct Iter<'a> {
 	iter: slice::Iter<'a, u8>,
 	offset: usize,
@@ -170,9 +171,9 @@ impl<'a, P: Pe<'a> + Copy> Iterator for IterBlocks<'a, P> {
 		if self.iter.len() != 0 {
 			// Safety checked by new
 			unsafe {
-				let slice = self.iter.as_slice();
-				let image = &*(slice.as_ptr() as *const IMAGE_BASE_RELOCATION);
-				self.iter = slice.get_unchecked(image.SizeOfBlock as usize..).iter();
+				let bytes = self.iter.as_slice();
+				let image = &*(bytes.as_ptr() as *const IMAGE_BASE_RELOCATION);
+				self.iter = bytes.get_unchecked(image.SizeOfBlock as usize..).iter();
 				Some(Block { pe: self.pe, image })
 			}
 		}
@@ -181,6 +182,7 @@ impl<'a, P: Pe<'a> + Copy> Iterator for IterBlocks<'a, P> {
 		}
 	}
 }
+impl<'a, P: Pe<'a> + Copy> iter::FusedIterator for IterBlocks<'a, P> {}
 
 //----------------------------------------------------------------
 

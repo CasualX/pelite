@@ -16,9 +16,6 @@ fn assert_size_of() {
 	assert_size_of!(8, Foo);
 }
 
-#[macro_use]
-mod iter;
-
 mod c_str;
 mod wide_str;
 mod pod;
