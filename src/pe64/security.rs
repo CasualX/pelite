@@ -1,5 +1,26 @@
 /*!
 Security Directory.
+
+The security directory contains the digital signature if the module is signed.
+The security directory is only available on disk images and isn't mapped to memory.
+
+# Examples
+
+```
+# #![allow(unused_variables)]
+use pelite::pe64::{Pe, PeFile};
+
+# #[allow(dead_code)]
+fn example(file: PeFile<'_>) -> pelite::Result<()> {
+	// Access the security directory
+	let security = file.security()?;
+
+	// The raw certificate data bytes
+	let certificate_data = security.certificate_data();
+
+	Ok(())
+}
+```
 */
 
 use std::{fmt};
@@ -10,6 +31,8 @@ use super::image::*;
 use super::{Align, Pe};
 
 /// Security Directory.
+///
+/// For more information see the [module-level documentation](index.html).
 pub struct Security<'a, P> {
 	pe: P,
 	security: &'a [u8],

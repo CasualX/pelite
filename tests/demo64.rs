@@ -111,11 +111,11 @@ fn base_relocs() {
 	let mut blocks = base_relocs.iter_blocks();
 
 	let block1 = blocks.next().unwrap();
-	assert_eq!(block1.va(), 0x3000);
+	assert_eq!(block1.rva(), 0x3000);
 	assert_eq!(block1.words().len(), 28);
 
 	let block2 = blocks.next().unwrap();
-	assert_eq!(block2.va(), 0x5000);
+	assert_eq!(block2.rva(), 0x5000);
 	assert_eq!(block2.words().len(), 12);
 
 	assert_eq!(blocks.count(), 0);

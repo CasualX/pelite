@@ -8,7 +8,7 @@ Debug Directory.
 use pelite::pe64::{Pe, PeFile, debug};
 
 # #[allow(dead_code)]
-fn example(file: PeFile) -> pelite::Result<()> {
+fn example(file: PeFile<'_>) -> pelite::Result<()> {
 	// Access the debug directory
 	let debug = file.debug()?;
 
@@ -33,6 +33,8 @@ use super::Pe;
 //----------------------------------------------------------------
 
 /// Debug directory.
+///
+/// For more information see the [module-level documentation](index.html).
 #[derive(Copy, Clone)]
 pub struct Debug<'a, P> {
 	pe: P,

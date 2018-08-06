@@ -8,7 +8,7 @@ TLS Directory.
 use pelite::pe64::{Pe, PeFile};
 
 # #[allow(dead_code)]
-fn example(file: PeFile) -> pelite::Result<()> {
+fn example(file: PeFile<'_>) -> pelite::Result<()> {
 	// Access the TLS directory
 	let tls = file.tls()?;
 
@@ -35,6 +35,9 @@ use super::Pe;
 
 //----------------------------------------------------------------
 
+/// TLS Directory.
+///
+/// For more information see the [module-level documentation](index.html).
 #[derive(Copy, Clone)]
 pub struct Tls<'a, P> {
 	pe: P,

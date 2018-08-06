@@ -11,7 +11,7 @@ use pelite::pe64::{Pe, PeFile};
 use pelite::pattern::{Atom, Match};
 
 # #[allow(dead_code)]
-fn example(file: PeFile, pat: &[Atom]) -> Option<Match> {
+fn example(file: PeFile<'_>, pat: &[Atom]) -> Option<Match> {
 	// Get the pattern scanner interface
 	let scanner = file.scanner();
 
@@ -44,6 +44,8 @@ const QS_BUF_LEN: usize = 16;
 //----------------------------------------------------------------
 
 /// Pattern scanner.
+///
+/// For more information see the [module-level documentation](index.html).
 #[derive(Copy, Clone)]
 pub struct Scanner<P> {
 	pe: P,
