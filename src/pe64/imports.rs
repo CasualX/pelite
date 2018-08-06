@@ -77,9 +77,9 @@ impl<'a, P: Pe<'a> + Copy> Imports<'a, P> {
 }
 impl<'a, P: Pe<'a> + Copy> IntoIterator for Imports<'a, P> {
 	type Item = Desc<'a, P>;
-	type IntoIter = DescIter<'a, P>;
-	fn into_iter(self) -> DescIter<'a, P> {
-		DescIter {
+	type IntoIter = Iter<'a, P>;
+	fn into_iter(self) -> Iter<'a, P> {
+		Iter {
 			pe: self.pe,
 			iter: self.image.iter(),
 		}
@@ -96,14 +96,41 @@ impl<'a, P: Pe<'a> + Copy> fmt::Debug for Imports<'a, P> {
 //----------------------------------------------------------------
 
 #[derive(Clone)]
-pub struct DescIter<'a, P> {
+pub struct Iter<'a, P> {
 	pe: P,
 	iter: slice::Iter<'a, IMAGE_IMPORT_DESCRIPTOR>,
 }
-def_iter!(struct DescIter -> IMAGE_IMPORT_DESCRIPTOR, Desc<'a, P>; this |image| Desc { pe: this.pe, image });
+impl<'a, P: Pe<'a> + Copy> Iter<'a, P> {
+	pub fn image(&self) -> &'a [IMAGE_IMPORT_DESCRIPTOR] {
+		self.iter.as_slice()
+	}
+}
+impl<'a, P: Pe<'a> + Copy> Iterator for Iter<'a, P> {
+	type Item = Desc<'a, P>;
+	fn next(&mut self) -> Option<Desc<'a, P>> {
+		self.iter.next().map(|image| Desc { pe: self.pe, image })
+	}
+	fn size_hint(&self) -> (usize, Option<usize>) {
+		self.iter.size_hint()
+	}
+	fn count(self) -> usize {
+		self.iter.count()
+	}
+	fn nth(&mut self, n: usize) -> Option<Desc<'a, P>> {
+		self.iter.nth(n).map(|image| Desc { pe: self.pe, image })
+	}
+}
+impl<'a, P: Pe<'a> + Copy> DoubleEndedIterator for Iter<'a, P> {
+	fn next_back(&mut self) -> Option<Desc<'a, P>> {
+		self.iter.next_back().map(|image| Desc { pe: self.pe, image })
+	}
+}
+impl<'a, P: Pe<'a> + Copy> ExactSizeIterator for Iter<'a, P> {}
+impl<'a, P: Pe<'a> + Copy> iter::FusedIterator for Iter<'a, P> {}
 
 //----------------------------------------------------------------
 
+/// Import library descriptor.
 #[derive(Copy, Clone)]
 pub struct Desc<'a, P> {
 	pe: P,
@@ -158,7 +185,6 @@ impl<'a, P: Pe<'a> + Copy> fmt::Debug for Desc<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		f.debug_struct("Imports")
 			.field("dll_name", &format_args!("{:?}", self.dll_name()))
-			.field("time_date_stamp", &self.image.TimeDateStamp)
 			.field("iat.len", &format_args!("{:?}", &self.iat().map(|iter| iter.len())))
 			.field("int.len", &format_args!("{:?}", &self.int().map(|iter| iter.len())))
 			.finish()

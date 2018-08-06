@@ -22,7 +22,7 @@ fn example(file: PeFile) -> pelite::Result<()> {
 ```
 */
 
-use std::{fmt, mem, slice};
+use std::{fmt, iter, mem, slice};
 
 use error::{Error, Result};
 use util::CStr;
@@ -106,7 +106,33 @@ pub struct Iter<'a, P> {
 	pe: P,
 	iter: slice::Iter<'a, IMAGE_DEBUG_DIRECTORY>,
 }
-def_iter!(struct Iter -> IMAGE_DEBUG_DIRECTORY, Dir<'a, P>; this |image| Dir { pe: this.pe, image });
+impl<'a, P: Pe<'a> + Copy> Iter<'a, P> {
+	pub fn image(&self) -> &'a [IMAGE_DEBUG_DIRECTORY] {
+		self.iter.as_slice()
+	}
+}
+impl<'a, P: Pe<'a> + Copy> Iterator for Iter<'a, P> {
+	type Item = Dir<'a, P>;
+	fn next(&mut self) -> Option<Dir<'a, P>> {
+		self.iter.next().map(|image| Dir { pe: self.pe, image })
+	}
+	fn size_hint(&self) -> (usize, Option<usize>) {
+		self.iter.size_hint()
+	}
+	fn count(self) -> usize {
+		self.iter.count()
+	}
+	fn nth(&mut self, n: usize) -> Option<Dir<'a, P>> {
+		self.iter.nth(n).map(|image| Dir { pe: self.pe, image })
+	}
+}
+impl<'a, P: Pe<'a> + Copy> DoubleEndedIterator for Iter<'a, P> {
+	fn next_back(&mut self) -> Option<Dir<'a, P>> {
+		self.iter.next_back().map(|image| Dir { pe: self.pe, image })
+	}
+}
+impl<'a, P: Pe<'a> + Copy> ExactSizeIterator for Iter<'a, P> {}
+impl<'a, P: Pe<'a> + Copy> iter::FusedIterator for Iter<'a, P> {}
 
 //----------------------------------------------------------------
 

@@ -2,7 +2,7 @@
 Exception Directory.
 */
 
-use std::{fmt, mem, slice};
+use std::{fmt, iter, mem, slice};
 use std::cmp::Ordering;
 
 use error::{Error, Result};
@@ -40,11 +40,12 @@ impl<'a, P: Pe<'a> + Copy> Exception<'a, P> {
 		self.image
 	}
 	/// Gets an iterator over the function records.
-	pub fn functions(&self) -> Functions<'a, P> {
-		Functions {
-			pe: self.pe,
-			iter: self.image.iter()
-		}
+	pub fn functions(&self)
+		-> iter::Map<slice::Iter<'a, RUNTIME_FUNCTION>, impl Clone + FnMut(&'a RUNTIME_FUNCTION) -> Function<'a, P>>
+	{
+		let pe = self.pe;
+		self.image.iter()
+			.map(move |image| Function { pe, image })
 	}
 	/// Finds the index of the function for the given program counter.
 	pub fn index_of(&self, pc: Rva) -> ::std::result::Result<usize, usize> {
@@ -70,16 +71,6 @@ impl<'a, P: Pe<'a> + Copy> Exception<'a, P> {
 		}).ok()
 	}
 }
-impl<'a, P: Pe<'a> + Copy> IntoIterator for Exception<'a, P> {
-	type Item = Function<'a, P>;
-	type IntoIter = Functions<'a, P>;
-	fn into_iter(self) -> Functions<'a, P> {
-		Functions {
-			pe: self.pe,
-			iter: self.image.iter()
-		}
-	}
-}
 impl<'a, P: Pe<'a> + Copy> fmt::Debug for Exception<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		f.debug_struct("Exception")
@@ -87,15 +78,6 @@ impl<'a, P: Pe<'a> + Copy> fmt::Debug for Exception<'a, P> {
 			.finish()
 	}
 }
-
-//----------------------------------------------------------------
-
-#[derive(Clone)]
-pub struct Functions<'a, P> {
-	pe: P,
-	iter: slice::Iter<'a, RUNTIME_FUNCTION>,
-}
-def_iter!(struct Functions -> RUNTIME_FUNCTION, Function<'a, P>; this |image| Function { pe: this.pe, image });
 
 //----------------------------------------------------------------
 

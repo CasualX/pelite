@@ -328,12 +328,16 @@ impl<'a, P: Pe<'a> + Copy> By<'a, P> {
 	/// Not every exported function has a name, some are exported by ordinal.
 	/// Looking up the exported function's name with [`name_lookup`](#method.name_lookup) results in quadratic performance.
 	/// If the exported function's name is important consider building a cache or using [`iter_names`](#method.iter_names) instead.
-	pub fn iter<'s>(&'s self) -> iter::Map<slice::Iter<'a, Rva>, impl 's + Clone + FnMut(&'a Rva) -> Result<Export<'a>>> {
+	pub fn iter<'s>(&'s self)
+		-> iter::Map<slice::Iter<'a, Rva>, impl 's + Clone + FnMut(&'a Rva) -> Result<Export<'a>>>
+	{
 		self.functions.iter()
 			.map(move |rva| self.symbol_from_rva(rva))
 	}
 	/// Iterate over functions exported by name.
-	pub fn iter_names<'s>(&'s self) -> iter::Map<ops::Range<u32>, impl 's + Clone + FnMut(u32) -> (Result<&'a CStr>, Result<Export<'a>>)> {
+	pub fn iter_names<'s>(&'s self)
+		-> iter::Map<ops::Range<u32>, impl 's + Clone + FnMut(u32) -> (Result<&'a CStr>, Result<Export<'a>>)>
+	{
 		(0..self.image.NumberOfNames)
 			.map(move |hint| (self.name_of_hint(hint as usize), self.hint(hint as usize)))
 	}
