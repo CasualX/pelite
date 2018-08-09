@@ -68,10 +68,6 @@ use super::Pe;
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "serde", derive(Serialize))]
 pub enum Export<'a> {
-	/// Symbol does not exist.
-	///
-	/// When symbols exported by ordinal are obseleted and removed, they may leave gaps in the Export Address Table.
-	None,
 	/// Standard exported symbol.
 	Symbol(&'a Rva),
 	/// This export is forwarded to another dll.
@@ -175,7 +171,7 @@ impl<'a, P: Pe<'a> + Copy> Exports<'a, P> {
 	}
 	fn symbol_from_rva(&self, rva: &'a Rva) -> Result<Export<'a>> {
 		if *rva == 0 {
-			Ok(Export::None)
+			Err(Error::Null)
 		}
 		else if self.is_forwarded(*rva) {
 			let fwd = self.pe.derva_c_str(*rva)?;
@@ -263,7 +259,8 @@ impl<'a, P: Pe<'a> + Copy> By<'a, P> {
 				},
 			};
 		}
-		Ok(Export::None)
+		// Name not found, return null
+		Err(Error::Null)
 	}
 	/// Looks up an `Export` by its import.
 	pub fn import(&self, import: Import) -> Result<Export<'a>> {
