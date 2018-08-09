@@ -98,6 +98,13 @@ fn imports() {
 	assert_eq!(msvcr120_dll.dll_name().unwrap(), "MSVCR120.dll");
 	assert_eq!(msvcr120_dll.iat().unwrap().len(), 31);
 	assert_eq!(msvcr120_dll.int().unwrap().len(), 31);
+
+	let iat = file.iat().unwrap();
+	assert_eq!(iat.image().len(), 8 + 31 + 2);
+
+	let lhs = iat.iter().filter_map(|(_, import)| import.ok()).map(Ok);
+	let rhs = kernel32_dll.int().unwrap().chain(msvcr120_dll.int().unwrap());
+	assert!(Iterator::eq(lhs, rhs));
 }
 
 //----------------------------------------------------------------

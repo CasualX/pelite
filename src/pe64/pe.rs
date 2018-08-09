@@ -394,6 +394,15 @@ pub unsafe trait Pe<'a> {
 		super::imports::Imports::new(self)
 	}
 
+	/// Gets the Import Address Table.
+	///
+	/// See the [imports](imports/index.html) module for more information.
+	///
+	/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) if the image has no iat. Any other error indicates some form of corruption.
+	fn iat(self) -> Result<super::imports::IAT<'a, Self>> where Self: Copy {
+		super::imports::IAT::new(self)
+	}
+
 	/// Gets the Base Relocations Directory.
 	///
 	/// See the [base relocations](base_relocs/index.html) module for more information.

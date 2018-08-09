@@ -32,7 +32,7 @@ fn example(file: PeFile<'_>) -> pelite::Result<()> {
 ```
 */
 
-use std::{fmt, iter, slice};
+use std::{fmt, iter, mem, slice};
 
 use error::{Error, Result};
 use util::CStr;
@@ -53,6 +53,23 @@ pub enum Import<'a> {
 	ByName { hint: usize, name: &'a CStr },
 	/// Imported by ordinal.
 	ByOrdinal { ord: Ordinal }
+}
+
+// Gets the import from the import name table.
+//
+// These aren't actually virtual addresses.
+// This function will decode them to get the import.
+fn import_from_va<'a, P: Pe<'a> + Copy>(pe: P, &va: &'a Va) -> Result<Import<'a>> {
+	if va & IMAGE_ORDINAL_FLAG == 0 {
+		// TODO! Validate that this really is an Rva in PE32+?
+		let rva = va as Rva;
+		let hint = pe.derva::<u16>(rva)?;
+		let name = pe.derva_c_str(rva + 2)?;
+		Ok(Import::ByName { hint: *hint as usize, name })
+	}
+	else {
+		Ok(Import::ByOrdinal { ord: va as Ordinal })
+	}
 }
 
 //----------------------------------------------------------------
@@ -94,6 +111,45 @@ impl<'a, P: Pe<'a> + Copy> fmt::Debug for Imports<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		f.debug_list()
 			.entries(self.into_iter())
+			.finish()
+	}
+}
+
+//----------------------------------------------------------------
+
+/// Import Address Table.
+#[derive(Copy, Clone)]
+pub struct IAT<'a, P> {
+	pe: P,
+	image: &'a [Va],
+}
+impl<'a, P: Pe<'a> + Copy> IAT<'a, P> {
+	pub(crate) fn new(pe: P) -> Result<IAT<'a, P>> {
+		let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_IAT).ok_or(Error::OOB)?;
+		// Ignore datadir.Size not being a multiple of sizeof(Va), not that big of a deal...
+		let image = pe.derva_slice(datadir.VirtualAddress, datadir.Size as usize / mem::size_of::<Va>())?;
+		Ok(IAT { pe, image })
+	}
+	/// Gets the PE instance.
+	pub fn pe(&self) -> P {
+		self.pe
+	}
+	/// Returns the underlying iat array.
+	pub fn image(&self) -> &'a [Va] {
+		self.image
+	}
+	/// Iterate over the IAT.
+	///
+	/// When the imports aren't resolved yet the IAT is an alias for the import name table.
+	pub fn iter(&self) -> iter::Map<slice::Iter<'a, Va>, impl Clone + FnMut(&'a Va) -> (&'a Va, Result<Import<'a>>)> {
+		let pe = self.pe;
+		self.image.iter().map(move |va| (va, import_from_va(pe, va)))
+	}
+}
+impl<'a, P: Pe<'a> + Copy> fmt::Debug for IAT<'a, P> {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		f.debug_struct("IAT")
+			.field("iat.len", &self.image.len())
 			.finish()
 	}
 }
@@ -154,22 +210,6 @@ impl<'a, P: Pe<'a> + Copy> Desc<'a, P> {
 	pub fn dll_name(&self) -> Result<&'a CStr> {
 		self.pe.derva_c_str(self.image.Name)
 	}
-	/// Gets the import from the import name table.
-	///
-	/// These aren't actually virtual addresses.
-	/// This function will decode them to get the import.
-	fn import_from_va(&self, va: Va) -> Result<Import<'a>> {
-		if va & IMAGE_ORDINAL_FLAG == 0 {
-			// TODO! Validate that this really is an Rva in PE32+?
-			let rva = va as Rva;
-			let hint = self.pe.derva::<u16>(rva)?;
-			let name = self.pe.derva_c_str(rva + 2)?;
-			Ok(Import::ByName { hint: *hint as usize, name })
-		}
-		else {
-			Ok(Import::ByOrdinal { ord: va as Ordinal })
-		}
-	}
 	/// Gets the import address table.
 	///
 	/// After being loaded as a library their values are resolved to the addresses of the imported functions.
@@ -181,9 +221,10 @@ impl<'a, P: Pe<'a> + Copy> Desc<'a, P> {
 		Ok(slice.iter())
 	}
 	/// Gets the import name table.
-	pub fn int(self) -> Result<iter::Map<slice::Iter<'a, Va>, impl Clone + FnMut(&'a Va) -> Result<Import<'a>>>> {
+	pub fn int(&self) -> Result<iter::Map<slice::Iter<'a, Va>, impl Clone + FnMut(&'a Va) -> Result<Import<'a>>>> {
 		let slice = self.pe.derva_slice_s(self.image.OriginalFirstThunk, 0)?;
-		Ok(slice.iter().map(move |&va| self.import_from_va(va)))
+		let pe = self.pe;
+		Ok(slice.iter().map(move |va| import_from_va(pe, va)))
 	}
 }
 impl<'a, P: Pe<'a> + Copy> fmt::Debug for Desc<'a, P> {
