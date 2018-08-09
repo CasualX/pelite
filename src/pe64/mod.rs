@@ -123,6 +123,7 @@ pub mod image;
 mod pe;
 mod view;
 mod file;
+pub mod headers;
 pub mod exports;
 pub mod imports;
 pub mod base_relocs;

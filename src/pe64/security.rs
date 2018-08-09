@@ -107,3 +107,18 @@ impl<'a, P: Pe<'a> + Copy> fmt::Debug for Security<'a, P> {
 			.finish()
 	}
 }
+
+#[cfg(feature = "serde")]
+mod serde {
+	use util::serde_helper::*;
+	use super::{Pe, Security};
+
+	impl<'a, P: Pe<'a> + Copy> Serialize for Security<'a, P> {
+		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+			let mut state = serializer.serialize_struct("Security", 2)?;
+			state.serialize_field("certificate_type", &self.certificate_type())?;
+			state.serialize_field("certificate_data", &self.certificate_data())?;
+			state.end()
+		}
+	}
+}

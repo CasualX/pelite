@@ -67,3 +67,18 @@ impl<'a, P: Pe<'a> + Copy> fmt::Debug for LoadConfig<'a, P> {
 			.finish()
 	}
 }
+
+#[cfg(feature = "serde")]
+mod serde {
+	use util::serde_helper::*;
+	use super::{Pe, LoadConfig};
+
+	impl<'a, P: Pe<'a> + Copy> Serialize for LoadConfig<'a, P> {
+		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+			let mut state = serializer.serialize_struct("LoadConfig", 2)?;
+			state.serialize_field("security_cookie", &self.security_cookie().ok())?;
+			state.serialize_field("se_handler_table", &self.se_handler_table().ok())?;
+			state.end()
+		}
+	}
+}

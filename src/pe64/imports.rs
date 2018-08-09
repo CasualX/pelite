@@ -44,6 +44,7 @@ use super::Pe;
 
 /// Imported symbol.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[cfg_attr(feature = "serde", derive(Serialize))]
 pub enum Import<'a> {
 	/// Imported by name.
 	///
@@ -192,5 +193,48 @@ impl<'a, P: Pe<'a> + Copy> fmt::Debug for Desc<'a, P> {
 			.field("iat.len", &format_args!("{:?}", &self.iat().map(|iter| iter.len())))
 			.field("int.len", &format_args!("{:?}", &self.int().map(|iter| iter.len())))
 			.finish()
+	}
+}
+
+//----------------------------------------------------------------
+
+/*
+	imports: [
+		{
+			"dll_name": "KERNEL32.dll",
+			"int": [
+				{
+					"ByName": { .. }
+				},
+				{
+					"ByOrdinal": { .. }
+				}
+			]
+		}
+	]
+*/
+
+#[cfg(feature = "serde")]
+mod serde {
+	use util::serde_helper::*;
+	use super::{Pe, Imports, Desc};
+
+	impl<'a, P: Pe<'a> + Copy> Serialize for Imports<'a, P> {
+		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+			serializer.collect_seq(self.into_iter())
+		}
+	}
+	impl<'a, P: Pe<'a> + Copy> Serialize for Desc<'a, P> {
+		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+			let mut state = serializer.serialize_struct("Desc", 2)?;
+			state.serialize_field("dll_name", &self.dll_name().ok())?;
+			let int = self.int().map(|int| {
+				SerdeIter(int.filter_map(|import| {
+					import.ok()
+				}))
+			});
+			state.serialize_field("int", &int.ok())?;
+			state.end()
+		}
 	}
 }

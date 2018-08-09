@@ -178,3 +178,13 @@ impl<T: ?Sized> fmt::Display for Ptr<T> {
 		f.write_str(unsafe { str::from_utf8_unchecked(&buf) })
 	}
 }
+
+#[cfg(feature = "serde")]
+impl<T: ?Sized> ::serde::Serialize for Ptr<T> {
+	fn serialize<S: ::serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+		branch! {
+			pe32 { serializer.serialize_u32(self.0) }
+			pe64 { serializer.serialize_u64(self.0) }
+		}
+	}
+}

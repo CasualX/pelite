@@ -21,6 +21,9 @@ mod wide_str;
 mod pod;
 mod guid;
 
+#[cfg(feature = "serde")]
+pub(crate) mod serde_helper;
+
 pub use self::c_str::CStr;
 pub use self::wide_str::WideStr;
 pub use self::pod::Pod;

@@ -28,11 +28,18 @@ travis-ci = { repository = "CasualX/pelite", branch = "master", service = "githu
 lto = true
 opt-level = 2
 
+[dependencies]
+serde = { version = "1.0", optional = true, features = ["derive"] }
+
 [target.'cfg(unix)'.dependencies]
 libc = { version = "0.2", optional = true }
 
 [target.'cfg(windows)'.dependencies]
 winapi = { version = "0.3", optional = true, features = ["fileapi", "memoryapi", "handleapi"] }
+
+[package.metadata.docs.rs]
+all-features = true
+default-target = "x86_64-pc-windows-msvc"
 
 [dev-dependencies]
 rand = "0.5"

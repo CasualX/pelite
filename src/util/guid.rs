@@ -59,3 +59,10 @@ impl fmt::UpperHex for GUID {
 		upper_hex(self, f)
 	}
 }
+
+#[cfg(feature = "serde")]
+impl ::serde::Serialize for GUID {
+	fn serialize<S: ::serde::Serializer>(&self, serializer: S) -> ::std::result::Result<S::Ok, S::Error> {
+		serializer.collect_str(self)
+	}
+}

@@ -78,3 +78,20 @@ impl<'a, P: Pe<'a> + Copy> fmt::Debug for Tls<'a, P> {
 			.finish()
 	}
 }
+
+//----------------------------------------------------------------
+
+#[cfg(feature = "serde")]
+mod serde {
+	use util::serde_helper::*;
+	use super::{Pe, Tls};
+
+	impl<'a, P: Pe<'a> + Copy> Serialize for Tls<'a, P> {
+		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+			let mut state = serializer.serialize_struct("Tls", 2)?;
+			state.serialize_field("raw_data", &self.raw_data().ok())?;
+			state.serialize_field("callbacks", &self.callbacks().ok())?;
+			state.end()
+		}
+	}
+}
