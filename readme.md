@@ -6,6 +6,7 @@ PeLite
 [![docs.rs](https://docs.rs/pelite/badge.svg)](https://docs.rs/pelite)
 [![Build status](https://ci.appveyor.com/api/projects/status/6obf6w6awf4b540r/branch/master?svg=true)](https://ci.appveyor.com/project/CasualX/pelite/branch/master)
 [![Build Status](https://travis-ci.org/CasualX/pelite.svg?branch=master)](https://travis-ci.org/CasualX/pelite)
+[![Coverage Status](https://coveralls.io/repos/github/CasualX/pelite/badge.svg?branch=master)](https://coveralls.io/github/CasualX/pelite?branch=master)
 
 Lightweight, memory-safe, zero-allocation library for reading and navigating PE binaries.
 
