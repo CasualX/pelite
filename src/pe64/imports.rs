@@ -1,7 +1,10 @@
 /*!
-Import Directory.
+Import Directory and the IAT.
 
 The import directory lists all the module dependencies and their imported symbols by this module.
+
+The Import Address Table (IAT) lists all the imported symbols for all the modules in one big list.
+When the imports are resolved the IAT is overwritten with pointers to the resolved functions.
 
 # Examples
 
@@ -19,12 +22,18 @@ fn example(file: PeFile<'_>) -> pelite::Result<()> {
 		// DLL being imported from
 		let dll_name = desc.dll_name()?;
 
-		// Import Address Table
+		// Import Address Table and Import Name Table for this imported DLL
 		let iat = desc.iat()?;
+		let int = desc.int()?;
 
 		// Iterate over the imported functions from this DLL
-		let int = desc.int()?;
 		for (va, import) in Iterator::zip(iat, int) {}
+	}
+
+	// Iterate over the IAT
+	for (va, import) in file.iat()?.iter() {
+		// The IAT may contains Null entries where the IAT of imported modules join
+		if let Ok(import) = import {}
 	}
 
 	Ok(())
@@ -118,6 +127,8 @@ impl<'a, P: Pe<'a> + Copy> fmt::Debug for Imports<'a, P> {
 //----------------------------------------------------------------
 
 /// Import Address Table.
+///
+/// For more information see the [module-level documentation](index.html).
 #[derive(Copy, Clone)]
 pub struct IAT<'a, P> {
 	pe: P,
@@ -258,11 +269,17 @@ impl<'a, P: Pe<'a> + Copy> fmt::Debug for Desc<'a, P> {
 #[cfg(feature = "serde")]
 mod serde {
 	use util::serde_helper::*;
-	use super::{Pe, Imports, Desc};
+	use super::{Pe, Imports, IAT, Desc};
 
 	impl<'a, P: Pe<'a> + Copy> Serialize for Imports<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			serializer.collect_seq(self.into_iter())
+		}
+	}
+	impl<'a, P: Pe<'a> + Copy> Serialize for IAT<'a, P> {
+		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+			let iat = self.iter().filter_map(|(_va, import)| import.ok());
+			serializer.collect_seq(iat)
 		}
 	}
 	impl<'a, P: Pe<'a> + Copy> Serialize for Desc<'a, P> {
