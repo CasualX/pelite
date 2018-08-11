@@ -96,21 +96,28 @@ pub unsafe trait Pe<'a> {
 	///
 	/// * [`Err(OOB)`](../enum.Error.html#variant.OOB) if the rva falls outside any valid section or headers.
 	fn rva_to_file_offset(self, rva: Rva) -> Result<usize> where Self: Copy {
-		// Consider RVA inside headers to be valid
+		// Consider rva inside headers to be valid
 		if rva < self.optional_header().SizeOfHeaders {
 			return Ok(rva as usize);
 		}
+		// This code has been carefully designed to avoid panicking on overflow
 		for it in self.section_headers() {
+			// Compare if rva is contained within the virtual address space of a section
+			// If the calculating the section end address overflows the corrupt section will be skipped
 			#[allow(non_snake_case)]
 			let VirtualEnd = it.VirtualAddress.wrapping_add(cmp::max(it.VirtualSize, it.SizeOfRawData));
-			if it.VirtualAddress <= rva && rva < VirtualEnd {
-				if let None = it.PointerToRawData.checked_add(it.SizeOfRawData) {
+			if it.VirtualAddress <= rva && rva < VirtualEnd { // $1
+				// Check if the raw data reference is sane
+				if let None = it.PointerToRawData.checked_add(it.SizeOfRawData) { // $2
 					return Err(Error::Overflow);
 				}
-				let section_offset = rva - it.VirtualSize;
-				if section_offset < it.SizeOfRawData {
+				// Calculate the offset in the section. cannot underflow, see $1
+				let section_offset = rva - it.VirtualAddress;
+				if section_offset < it.SizeOfRawData { // $3
+					// Calculate the final offset in the file. cannot overflow, see $2 and $3
 					return Ok((section_offset + it.PointerToRawData) as usize);
 				}
+				// Identify the reason the conversion fails
 				return Err(if section_offset < it.VirtualSize { Error::ZeroFill } else { Error::OOB });
 			}
 		}
@@ -126,21 +133,28 @@ pub unsafe trait Pe<'a> {
 	///
 	/// * [`Err(OOB)`](../enum.Error.html#variant.OOB) if the file offset falls outside any valid section or headers.
 	fn file_offset_to_rva(self, file_offset: usize) -> Result<Rva> where Self: Copy {
-		// Consider RVA inside headers to be valid
+		// Consider rva inside headers to be valid
 		if file_offset < self.optional_header().SizeOfHeaders as usize {
 			return Ok(file_offset as Rva);
 		}
+		// This code has been carefully designed to avoid panicking on overflow
 		for it in self.section_headers() {
+			// Compare if file_offset is contained within the raw data of a section
+			// If the calculating the section end address overflows the corrupt section will be skipped
 			#[allow(non_snake_case)]
 			let EndOfRawData = it.PointerToRawData.wrapping_add(it.SizeOfRawData);
-			if it.PointerToRawData as usize <= file_offset && file_offset <= EndOfRawData as usize {
-				if let None = it.VirtualAddress.checked_add(it.VirtualSize) {
+			if it.PointerToRawData as usize <= file_offset && file_offset < EndOfRawData as usize { // $1
+				// Check if the virtual reference is sane
+				if let None = it.VirtualAddress.checked_add(it.VirtualSize) { // $2
 					return Err(Error::Overflow);
 				}
+				// Calculate the offset in the section. cannot underflow, see $1
 				let section_offset = file_offset as Rva - it.PointerToRawData;
-				if section_offset < it.VirtualSize {
+				if section_offset < it.VirtualSize { // $3
+					// Calculate the final virtual address. cannot overflow, see $2 and $3
 					return Ok(section_offset + it.VirtualAddress);
 				}
+				// Identify the reason the conversion fails
 				return Err(if section_offset < it.SizeOfRawData { Error::Unmapped } else { Error::OOB });
 			}
 		}
