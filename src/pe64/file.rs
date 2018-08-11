@@ -31,7 +31,7 @@ impl<'a> PeFile<'a> {
 			// If the calculating the section end address overflows the corrupt section will be skipped
 			#[allow(non_snake_case)]
 			let VirtualEnd = it.VirtualAddress.wrapping_add(cmp::max(it.VirtualSize, it.SizeOfRawData));
-			if it.VirtualAddress <= rva && rva <= VirtualEnd { // $1
+			if it.VirtualAddress <= rva && rva < VirtualEnd { // $1
 				// Isolate and range check the pointer and size of raw data
 				// If this fails immediately abort and return overflow error
 				let section_range = it.PointerToRawData as usize..it.PointerToRawData.wrapping_add(it.SizeOfRawData) as usize;

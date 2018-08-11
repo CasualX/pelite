@@ -17,7 +17,8 @@ fn slice_edges() {
 
 	let assert_edges = |rva: Rva, len: usize| {
 		assert_eq!(file.slice_bytes(rva).unwrap().len(), len);
-		assert_eq!(file.slice_bytes(rva + len as Rva).unwrap().len(), 0);
+		// not guaranteed as it may spill over in the next section
+		// assert_eq!(file.slice_bytes(rva + len as Rva).unwrap().len(), 0);
 		assert_eq!(file.slice(rva, len, 1).unwrap().len(), len);
 	};
 
