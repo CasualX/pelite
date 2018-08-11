@@ -25,18 +25,23 @@ impl<'a> PeFile<'a> {
 	}
 	fn range_to_slice(&self, rva: Rva, min_size_of: usize) -> Result<&'a [u8]> {
 		// Cannot reuse `self.rva_to_file_offset` because it doesn't return the size of the section
-		// FIXME! What to do about all the potential overflows?
+		// This code has been carefully designed to avoid panicking on overflow
 		for it in self.section_headers() {
+			// Compare if rva is contained within the virtual address space of a section
+			// If the calculating the section end address overflows the corrupt section will be skipped
 			#[allow(non_snake_case)]
-			let VirtualEnd = it.VirtualAddress + cmp::max(it.VirtualSize, it.SizeOfRawData);
-			// Rva is contained within the virtual space of a section
-			if rva >= it.VirtualAddress && rva <= VirtualEnd {
-				let start = (rva - it.VirtualAddress + it.PointerToRawData) as usize;
-				let end = (it.PointerToRawData + it.SizeOfRawData) as usize;
-				return match self.image.get(start..end) {
+			let VirtualEnd = it.VirtualAddress.wrapping_add(cmp::max(it.VirtualSize, it.SizeOfRawData));
+			if it.VirtualAddress <= rva && rva < VirtualEnd { // $1
+				// Isolate and range check the pointer and size of raw data
+				// If this fails immediately abort and return overflow error
+				let section_range = it.PointerToRawData as usize..it.PointerToRawData.wrapping_add(it.SizeOfRawData) as usize;
+				let section_bytes = self.image.get(section_range).ok_or(Error::Overflow)?;
+				// Calculate the offset in the section requested. cannot underflow, see $1
+				let section_offset = (rva - it.VirtualAddress) as usize;
+				return match section_bytes.get(section_offset..) {
 					Some(bytes) if bytes.len() >= min_size_of => Ok(bytes),
-					// Identify the reason the slice fails
-					_ => Err(if rva + min_size_of as Rva > VirtualEnd { Error::OOB } else { Error::ZeroFill }),
+					// Identify the reason the slice fails. cannot underflow, see $1
+					_ => Err(if min_size_of > (VirtualEnd - rva) as usize { Error::OOB } else { Error::ZeroFill }),
 				};
 			}
 		}
