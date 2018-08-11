@@ -36,11 +36,11 @@ impl<'a> PeFile<'a> {
 				// If this fails immediately abort and return overflow error
 				let section_range = it.PointerToRawData as usize..it.PointerToRawData.wrapping_add(it.SizeOfRawData) as usize;
 				let section_bytes = self.image.get(section_range).ok_or(Error::Overflow)?;
-				// Calculate the offset in the section requested, cannot underflow, see $1
+				// Calculate the offset in the section requested. cannot underflow, see $1
 				let section_offset = (rva - it.VirtualAddress) as usize;
 				return match section_bytes.get(section_offset..) {
 					Some(bytes) if bytes.len() >= min_size_of => Ok(bytes),
-					// Identify the reason the slice fails, cannot underflow, see $1
+					// Identify the reason the slice fails. cannot underflow, see $1
 					_ => Err(if min_size_of > (VirtualEnd - rva) as usize { Error::OOB } else { Error::ZeroFill }),
 				};
 			}

@@ -113,12 +113,17 @@ pub unsafe trait Pe<'a> {
 				}
 				// Calculate the offset in the section. cannot underflow, see $1
 				let section_offset = rva - it.VirtualAddress;
-				if section_offset < it.SizeOfRawData { // $3
+				return if section_offset < it.SizeOfRawData { // $3
 					// Calculate the final offset in the file. cannot overflow, see $2 and $3
-					return Ok((section_offset + it.PointerToRawData) as usize);
+					Ok((section_offset + it.PointerToRawData) as usize)
 				}
 				// Identify the reason the conversion fails
-				return Err(if section_offset < it.VirtualSize { Error::ZeroFill } else { Error::OOB });
+				else if section_offset < it.VirtualSize {
+					Err(Error::ZeroFill)
+				}
+				else {
+					Err(Error::OOB)
+				};
 			}
 		}
 		Err(Error::OOB)
@@ -150,12 +155,17 @@ pub unsafe trait Pe<'a> {
 				}
 				// Calculate the offset in the section. cannot underflow, see $1
 				let section_offset = file_offset as Rva - it.PointerToRawData;
-				if section_offset < it.VirtualSize { // $3
+				return if section_offset < it.VirtualSize { // $3
 					// Calculate the final virtual address. cannot overflow, see $2 and $3
-					return Ok(section_offset + it.VirtualAddress);
+					Ok(section_offset + it.VirtualAddress)
 				}
 				// Identify the reason the conversion fails
-				return Err(if section_offset < it.SizeOfRawData { Error::Unmapped } else { Error::OOB });
+				else if section_offset < it.SizeOfRawData {
+					Err(Error::Unmapped)
+				}
+				else {
+					Err(Error::OOB)
+				};
 			}
 		}
 		Err(Error::OOB)
