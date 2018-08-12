@@ -226,6 +226,23 @@ impl<'a, P: Pe<'a> + Copy> By<'a, P> {
 	pub fn name_indices(&self) -> &'a [u16] {
 		self.name_indices
 	}
+	/// Validates and checks if the name table is sorted.
+	///
+	/// The PE specification says that the list of names should be sorted to allow binary search.
+	/// This function checks if the names table is actually sorted, if not then various name based lookup functions may fail to find certain exports.
+	///
+	/// Returns an error if a name entry cannot be read or is otherwise corrupt.
+	pub fn check_sorted(&self) -> Result<bool> {
+		let mut last = CStr::empty();
+		for (name, _export) in self.iter_names() {
+			let name = name?;
+			if last > name {
+				return Ok(false);
+			}
+			last = name;
+		}
+		Ok(true)
+	}
 	/// Looks up an `Export` by its ordinal.
 	pub fn ordinal(&self, ordinal: Ordinal) -> Result<Export<'a>> {
 		let base = self.exp.image.Base;
@@ -238,6 +255,26 @@ impl<'a, P: Pe<'a> + Copy> By<'a, P> {
 		}
 	}
 	/// Looks up an `Export` by its name.
+	///
+	/// Does a linear scan over the name table.
+	/// If the name table isn't sorted this will still be able to find exported functions by name.
+	///
+	/// Gracefully handles corrupted name entries by ignoring them.
+	pub fn name_linear<S: AsRef<[u8]> + ?Sized>(&self, name: &S) -> Result<Export<'a>> {
+		self.name_linear_(name.as_ref())
+	}
+	fn name_linear_(&self, name: &[u8]) -> Result<Export<'a>> {
+		for hint in 0..self.names.len() {
+			match self.name_of_hint(hint) {
+				Ok(name_it) if name_it == name => return self.hint(hint),
+				_ => (),
+			}
+		}
+		Err(Error::Null)
+	}
+	/// Looks up an `Export` by its name.
+	///
+	/// If the name table isn't sorted, certain exported functions may fail to be found.
 	pub fn name<S: AsRef<[u8]> + ?Sized>(&self, name: &S) -> Result<Export<'a>> {
 		self.name_(name.as_ref())
 	}
@@ -332,15 +369,15 @@ impl<'a, P: Pe<'a> + Copy> By<'a, P> {
 	/// Not every exported function has a name, some are exported by ordinal.
 	/// Looking up the exported function's name with [`name_lookup`](#method.name_lookup) results in quadratic performance.
 	/// If the exported function's name is important consider building a cache or using [`iter_names`](#method.iter_names) instead.
-	pub fn iter<'s>(&'s self)
-		-> iter::Map<slice::Iter<'a, Rva>, impl 's + Clone + FnMut(&'a Rva) -> Result<Export<'a>>>
+	pub fn iter<'s>(&'s self) ->
+		iter::Map<slice::Iter<'a, Rva>, impl 's + Clone + FnMut(&'a Rva) -> Result<Export<'a>>>
 	{
 		self.functions.iter()
 			.map(move |rva| self.symbol_from_rva(rva))
 	}
 	/// Iterate over functions exported by name.
-	pub fn iter_names<'s>(&'s self)
-		-> iter::Map<ops::Range<u32>, impl 's + Clone + FnMut(u32) -> (Result<&'a CStr>, Result<Export<'a>>)>
+	pub fn iter_names<'s>(&'s self) ->
+		iter::Map<ops::Range<u32>, impl 's + Clone + FnMut(u32) -> (Result<&'a CStr>, Result<Export<'a>>)>
 	{
 		(0..self.names().len() as u32)
 			.map(move |hint| (
@@ -349,8 +386,8 @@ impl<'a, P: Pe<'a> + Copy> By<'a, P> {
 			))
 	}
 	/// Iterate over functions exported by name, returning their name and index in the functions table.
-	pub fn iter_name_indices<'s>(&'s self)
-		-> iter::Map<ops::Range<u32>, impl 's + Clone + FnMut(u32) -> (Result<&'a CStr>, usize)>
+	pub fn iter_name_indices<'s>(&'s self) ->
+		iter::Map<ops::Range<u32>, impl 's + Clone + FnMut(u32) -> (Result<&'a CStr>, usize)>
 	{
 		(0..self.names().len() as u32)
 			.map(move |hint| (
