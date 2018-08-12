@@ -15,6 +15,10 @@ pub struct CStr {
 }
 
 impl CStr {
+	/// Returns the empty nul-terminated C string.
+	pub fn empty() -> &'static CStr {
+		unsafe { CStr::from_bytes_unchecked(&[0]) }
+	}
 	/// Scans the byte slice for a nul-terminated C string.
 	///
 	/// Returns `None` if no nul byte was found.
