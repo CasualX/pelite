@@ -487,3 +487,55 @@ mod serde {
 		}
 	}
 }
+
+//----------------------------------------------------------------
+
+#[cfg(test)]
+pub(crate) fn test<'a, P: 'a + Pe<'a> + Copy>(pe: P) -> Result<()> {
+	let by = pe.exports()?.by()?;
+	let _ = format!("{:?}", by);
+
+	let _dll_name = by.dll_name();
+	let _ordinal_base = by.ordinal_base();
+
+	// If the name table isn't sorted, skip some tests
+	let sorted = by.check_sorted()?;
+
+	// Count occurances of each export name
+	use std::collections::HashMap;
+	let mut occurances = HashMap::<_, i32>::new();
+	for (name, _) in by.iter_names() {
+		if let Ok(name) = name {
+			*occurances.entry(name).or_default() += 1;
+		}
+	}
+
+	for (hint, (name, export)) in by.iter_names().enumerate() {
+		// println!("hint:{:?} name:{:?} export:{:?}", hint, name, export);
+
+		assert_eq!(name, by.name_of_hint(hint));
+		assert_eq!(export, by.hint(hint));
+
+		if let Ok(name) = name {
+			// Only do some name lookups if the export is actually unique
+			let unique = occurances[name] == 1;
+
+			// Lookup the export by its name
+			if unique {
+				assert_eq!(export, by.name_linear(name));
+				if sorted {
+					assert_eq!(export, by.name(name));
+				}
+			}
+
+			// Lookup the export by its name and hint
+			assert_eq!(export, by.hint_name(hint, name));
+			assert_eq!(export, by.import(Import::ByName { hint, name }));
+			if sorted && unique {
+				assert_eq!(export, by.hint_name(0, name));
+				assert_eq!(export, by.import(Import::ByName { hint: 0, name }));
+			}
+		}
+	}
+	Ok(())
+}

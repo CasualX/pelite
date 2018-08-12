@@ -23,3 +23,8 @@ fn example<'a>(file: PeFile<'a>) -> Result<&'a [u8], FindError> {
 }
 ```
 */
+
+#[cfg(test)]
+pub(crate) fn test<'a, P: super::Pe<'a> + Copy>(pe: P) -> ::Result<()> {
+	pe.resources().and_then(::resources::test)
+}

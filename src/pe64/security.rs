@@ -122,3 +122,12 @@ mod serde {
 		}
 	}
 }
+
+#[cfg(test)]
+pub(crate) fn test<'a, P: Pe<'a> + Copy>(pe: P) -> Result<()> {
+	let security = pe.security()?;
+	let _ = format!("{:?}", security);
+	let _certificate_type = security.certificate_type();
+	let _certificate_data = security.certificate_data();
+	Ok(())
+}

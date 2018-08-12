@@ -296,3 +296,28 @@ mod serde {
 		}
 	}
 }
+
+//----------------------------------------------------------------
+
+#[cfg(test)]
+pub(crate) fn test<'a, P: Pe<'a> + Copy>(pe: P) -> Result<()> {
+	let imports = pe.imports()?;
+	let _ = format!("{:?}", imports);
+
+	for desc in imports {
+		let _ = format!("{:?}", desc);
+		let _dll_name = desc.dll_name();
+		for _ in desc.iat() {}
+		for _ in desc.int() {}
+	}
+
+	let iat = pe.iat()?;
+	for (va, import) in iat.iter() {
+		let _ = format!("{:?}", import);
+		if import.is_ok() {
+			assert_eq!(import_from_va(pe, va), import);
+		}
+	}
+
+	Ok(())
+}

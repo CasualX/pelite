@@ -101,6 +101,7 @@ pub struct Iter<'a> {
 	iter: slice::Iter<'a, u8>,
 	offset: usize,
 }
+impl<'a> iter::FusedIterator for Iter<'a> {}
 impl<'a> Iterator for Iter<'a> {
 	type Item = Rva;
 	fn next(&mut self) -> Option<Rva> {
@@ -165,7 +166,6 @@ impl<'a> Iterator for Iter<'a> {
 		accum
 	}
 }
-impl<'a> iter::FusedIterator for Iter<'a> {}
 
 //----------------------------------------------------------------
 
@@ -261,4 +261,36 @@ mod serde {
 			serializer.collect_seq(self.into_iter())
 		}
 	}
+}
+
+//----------------------------------------------------------------
+
+#[cfg(test)]
+pub(crate) fn test<'a, P: Pe<'a> + Copy>(pe: P) -> Result<()> {
+	let base_relocs = pe.base_relocs()?;
+	let _ = format!("{:?}", base_relocs);
+
+	let mut baseline = base_relocs
+		.iter_blocks()
+		.flat_map(move |block| {
+			let _ = format!("{:?}", block);
+			block.words()
+				.iter()
+				.filter_map(move |word| {
+					if block.type_of(word) == 0 { None }
+					else { Some(block.rva_of(word)) }
+				})
+		});
+
+	let mut iter = base_relocs.into_iter();
+
+	base_relocs.into_iter().for_each(|rva| {
+		assert_eq!(baseline.next(), Some(rva));
+		assert_eq!(iter.next(), Some(rva));
+	});
+
+	assert_eq!(baseline.next(), None);
+	assert_eq!(iter.next(), None);
+
+	Ok(())
 }
