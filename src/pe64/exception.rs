@@ -117,21 +117,12 @@ impl<'a, P: Pe<'a> + Copy> Function<'a, P> {
 	}
 	/// Gets the unwind info.
 	pub fn unwind_info(&self) -> Result<UnwindInfo<'a, P>> {
-		// Read as many bytes as we can for interpretation
-		let bytes = self.pe.slice(
-			self.image.UnwindData,
-			mem::size_of::<UNWIND_INFO>(),
-			if cfg!(feature = "unsafe_alignment") { 1 } else { mem::align_of::<UNWIND_INFO>() }
-		)?;
-		let image = unsafe { &*(bytes.as_ptr() as *const UNWIND_INFO) };
-		// Calculate actual size including size of unwind codes
-		let min_size_of = mem::size_of::<UNWIND_INFO>() +
-			mem::size_of::<UNWIND_CODE>() * image.CountOfCodes as usize;
-		if bytes.len() < min_size_of {
-			return Err(Error::Bounds);
-		}
-		// Ok
-		Ok(UnwindInfo { pe: self.pe, image })
+		self.pe.derva_dst(self.image.UnwindData, |image: &UNWIND_INFO, _| {
+			// Account for <CountOfCodes> elements of <UNWIND_CODE> structures
+			mem::size_of_val(image) + mem::size_of::<UNWIND_CODE>() * image.CountOfCodes as usize
+		}).map(|(image, _)| {
+			UnwindInfo { pe: self.pe, image }
+		})
 	}
 }
 impl<'a, P: Pe<'a> + Copy> fmt::Debug for Function<'a, P> {
