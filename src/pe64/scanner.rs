@@ -133,13 +133,12 @@ impl<'a, P: Pe<'a> + Copy> Scanner<P> {
 	/// In case of mismatch, ie. returns false, the save array is still overwritten with temporary data and should be considered trashed.
 	/// Keep a copy, invoke with a fresh save array or reexecute the pattern at the saved cursor to get around this.
 	pub fn exec(self, cursor: Rva, pat: &[pat::Atom], save: &mut [Rva]) -> bool {
-		let state = Exec {
+		let mut state = Exec {
 			pe: self.pe,
 			iter: pat.iter(),
 			cursor,
 			stack: [0; pat::STACK_SIZE],
 			sp: 0,
-			mask: 0xFF,
 		};
 		state.exec(save)
 	}
@@ -154,19 +153,19 @@ struct Exec<'u, P> {
 	cursor: Rva,
 	stack: [Rva; pat::STACK_SIZE],
 	sp: usize,
-	mask: u8,
 }
 impl<'a, 'u, P: Pe<'a> + Copy> Exec<'u, P> {
-	fn exec(mut self, save: &mut [Rva]) -> bool {
+	fn exec(&mut self, save: &mut [Rva]) -> bool {
 		let ptr_skip = mem::size_of::<Va>() as i8;
+		let mut mask = 0xff;
 		while let Some(&atom) = self.iter.next() {
 			match atom {
 				pat::Atom::Byte(pat_byte) => {
 					match self.pe.derva_copy::<u8>(self.cursor) {
-						Ok(byte) if byte & self.mask == pat_byte & self.mask => {},
+						Ok(byte) if byte & mask == pat_byte & mask => (),
 						_ => return false,
 					}
-					self.mask = 0xFF;
+					mask = 0xff;
 					self.cursor += 1;
 				},
 				pat::Atom::Save(slot) => {
@@ -188,7 +187,7 @@ impl<'a, 'u, P: Pe<'a> + Copy> Exec<'u, P> {
 					}
 				},
 				pat::Atom::Fuzzy(pat_mask) => {
-					self.mask = pat_mask;
+					mask = pat_mask;
 				},
 				pat::Atom::Skip(skip) => {
 					let skip = if skip == pat::PTR_SKIP { ptr_skip } else { skip };
