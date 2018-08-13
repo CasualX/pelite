@@ -41,6 +41,17 @@ impl<'a, P: Pe<'a> + Copy> Exception<'a, P> {
 	pub fn image(&self) -> &'a [RUNTIME_FUNCTION] {
 		self.image
 	}
+	/// Checks if the function table is sorted.
+	///
+	/// The PE specification says that the list of runtime functions should be sorted to allow binary search.
+	/// This function checks if the runtime functions are actually sorted, if not then lookups may fail unexpectedly.
+	pub fn check_sorted(&self) -> bool {
+		self.image.windows(2).all(|window|
+			window[0].BeginAddress <= window[0].EndAddress &&
+			window[0].EndAddress <= window[1].BeginAddress &&
+			window[1].BeginAddress <= window[1].EndAddress
+		)
+	}
 	/// Gets an iterator over the function records.
 	pub fn functions(&self)
 		-> iter::Map<slice::Iter<'a, RUNTIME_FUNCTION>, impl Clone + FnMut(&'a RUNTIME_FUNCTION) -> Function<'a, P>>
@@ -52,10 +63,10 @@ impl<'a, P: Pe<'a> + Copy> Exception<'a, P> {
 	/// Finds the index of the function for the given program counter.
 	pub fn index_of(&self, pc: Rva) -> ::std::result::Result<usize, usize> {
 		self.image.binary_search_by(|rf| {
-			if rf.BeginAddress < pc {
+			if pc < rf.BeginAddress {
 				Ordering::Less
 			}
-			else if rf.EndAddress > pc {
+			else if pc > rf.EndAddress {
 				Ordering::Greater
 			}
 			else {
@@ -106,8 +117,21 @@ impl<'a, P: Pe<'a> + Copy> Function<'a, P> {
 	}
 	/// Gets the unwind info.
 	pub fn unwind_info(&self) -> Result<UnwindInfo<'a, P>> {
-		// FIXME! Check if CountOfCodes is valid...
-		self.pe.derva(self.image.UnwindData).map(|image| UnwindInfo { pe: self.pe, image })
+		// Read as many bytes as we can for interpretation
+		let bytes = self.pe.slice(
+			self.image.UnwindData,
+			mem::size_of::<UNWIND_INFO>(),
+			if cfg!(feature = "unsafe_alignment") { 1 } else { mem::align_of::<UNWIND_INFO>() }
+		)?;
+		let image = unsafe { &*(bytes.as_ptr() as *const UNWIND_INFO) };
+		// Calculate actual size including size of unwind codes
+		let min_size_of = mem::size_of::<UNWIND_INFO>() +
+			mem::size_of::<UNWIND_CODE>() * image.CountOfCodes as usize;
+		if bytes.len() < min_size_of {
+			return Err(Error::OOB);
+		}
+		// Ok
+		Ok(UnwindInfo { pe: self.pe, image })
 	}
 }
 impl<'a, P: Pe<'a> + Copy> fmt::Debug for Function<'a, P> {
