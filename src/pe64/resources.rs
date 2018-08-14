@@ -16,8 +16,8 @@ fn example<'a>(file: PeFile<'a>) -> Result<&'a [u8], FindError> {
 	let resources = file.resources()?;
 
 	// Find the desired resource by its path
-	let entry = resources.find_data("/Manifest/2/1033")?;
-	let manifest = entry.data()?;
+	let data = resources.find_data("/Manifest/2/1033")?;
+	let manifest = data.bytes()?;
 
 	Ok(manifest)
 }

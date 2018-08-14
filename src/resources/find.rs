@@ -6,6 +6,7 @@ use std::{error, fmt, str};
 use std::path::Path;
 
 use super::{Resources, Directory, Entry, Name, DataEntry};
+use stringify::RSRC_TYPES;
 
 //------------------------------------------------
 
@@ -86,7 +87,7 @@ impl<'a> Resources<'a> {
 			}
 			// Find the path in the root
 			else {
-				(*self).root()?.find_internal(iter.as_path(), &super::RSRC_TYPES)
+				(*self).root()?.find_internal(iter.as_path(), &RSRC_TYPES)
 			}
 		}
 		else {

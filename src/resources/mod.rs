@@ -7,12 +7,13 @@ use std::{fmt, iter, mem, slice};
 use error::{Error, Result};
 use image::*;
 use util::WideStr;
-use stringify::RSRC_TYPES;
 
 //----------------------------------------------------------------
 
 mod find;
 pub use self::find::FindError;
+
+mod art;
 
 //----------------------------------------------------------------
 
@@ -262,7 +263,7 @@ impl<'a> DataEntry<'a> {
 		self.image
 	}
 	/// Gets the actual data.
-	pub fn data(&self) -> Result<&'a [u8]> {
+	pub fn bytes(&self) -> Result<&'a [u8]> {
 		let start = u32::checked_sub(self.image.OffsetToData, self.resources.base).ok_or(Error::Overflow)?;
 		let end = u32::checked_add(start, self.image.Size).ok_or(Error::Overflow)?;
 		self.resources.data.get(start as usize..end as usize).ok_or(Error::OOB)
@@ -274,85 +275,6 @@ impl<'a> fmt::Debug for DataEntry<'a> {
 			.field("data.len", &self.image.Size)
 			.finish()
 	}
-}
-
-//----------------------------------------------------------------
-
-struct Art {
-	margin: &'static str,
-	dir: &'static str,
-	file: &'static str,
-}
-/// Art used to format a directory tree.
-pub struct TreeArt {
-	it: Art,
-	en: Art,
-}
-/// Uses [box-drawing characters](https://en.wikipedia.org/wiki/Box-drawing_character) to draw the tree art.
-pub static TREE_ART_U: TreeArt = TreeArt {
-	it: Art { margin: "│ ", dir: "├─┬ ", file: "│   " },
-	en: Art { margin: "  ", dir: "└─┬ ", file: "╵   " },
-};
-/// Uses ascii to draw the tree art.
-pub static TREE_ART_A: TreeArt = TreeArt {
-	it: Art { margin: "| ", dir: "+-. ", file: "|   " },
-	en: Art { margin: "  ", dir: "`-. ", file: "`   " },
-};
-
-/// Format the directory tree.
-///
-/// For the art use [`&TREE_ART_U`](static.TREE_ART_U.html) or [`&TREE_ART_A`](static.TREE_ART_A.html) for unicode and ascii based tree art respectively.
-///
-/// Specify if this is the root directory to have its children ids printed with their names instead.
-pub fn tree_fmt(f: &mut fmt::Formatter, dir: Directory, art: &TreeArt, root: bool) -> fmt::Result {
-	let mut margin = [false; 32];
-	tree_fmt_rec(f, &mut margin, if root { !0 } else { 0 }, art, dir)
-}
-fn tree_fmt_rec(f: &mut fmt::Formatter, margin: &mut [bool; 32], depth: u32, art: &TreeArt, dir: Directory) -> fmt::Result {
-	// Encode if root in depth
-	let (root, depth) = if depth == !0 { (true, 0) } else { (false, depth) };
-
-	// Quiet failsafe, should never happen
-	if depth as usize >= margin.len() {
-		return Ok(());
-	}
-
-	let mut entries = dir.entries();
-	while let Some(e) = entries.next() {
-		// Print the margin
-		for &is_last in &margin[0..depth as usize] {
-			f.write_str(if is_last { &art.en } else { &art.it }.margin)?;
-		}
-		// Write the prefix
-		let is_last = entries.len() == 0;
-		let strings = if is_last { &art.en } else { &art.it };
-		let prefix = if e.is_dir() { strings.dir } else { strings.file };
-		f.write_str(prefix)?;
-		// Print the file_name
-		match e.name() {
-			Ok(Name::Id(id)) => {
-				// At root level some resource ids have special names
-				let get_rsrc_name = || {
-					if root { RSRC_TYPES.get(id as usize).and_then(|&a| a) }
-					else { None }
-				};
-				if let Some(name) = get_rsrc_name() {
-					write!(f, "{}\n", name)
-				}
-				else {
-					write!(f, "{:?}\n", id)
-				}
-			},
-			Ok(Name::Str(s)) => write!(f, "{:?}\n", s),
-			e @ Err(_) => write!(f, "{:?}\n", e),
-		}?;
-		// If it's a directory, print it recursively
-		if let Ok(Entry::Directory(dir)) = e.entry() {
-			margin[depth as usize] = is_last;
-			tree_fmt_rec(f, margin, depth + 1, art, dir)?;
-		}
-	}
-	Ok(())
 }
 
 //----------------------------------------------------------------
