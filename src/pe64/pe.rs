@@ -500,7 +500,7 @@ pub unsafe trait Pe<'a> {
 	fn resources(self) -> Result<::resources::Resources<'a>> where Self: Copy {
 		let datadir = self.data_directory().get(IMAGE_DIRECTORY_ENTRY_RESOURCE).ok_or(Error::OOB)?;
 		let data = self.derva_slice(datadir.VirtualAddress, datadir.Size as usize)?;
-		Ok(::resources::Resources::new(data, datadir.VirtualAddress))
+		Ok(::resources::Resources::new(data, datadir))
 	}
 
 	/// Gets Scanner access.

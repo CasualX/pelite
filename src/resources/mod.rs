@@ -6,7 +6,7 @@ use std::{fmt, iter, mem, slice};
 
 use error::{Error, Result};
 use image::*;
-use util::WideStr;
+use util::{Pod, WideStr};
 
 //----------------------------------------------------------------
 
@@ -20,29 +20,72 @@ mod art;
 /// Resources filesystem.
 #[derive(Copy, Clone)]
 pub struct Resources<'a> {
-	data: &'a [u8],
-	base: u32,
+	section: &'a [u8],
+	dir: &'a IMAGE_DATA_DIRECTORY,
 }
-
-//----------------------------------------------------------------
-
 impl<'a> Resources<'a> {
-	/// Interprets the given bytes as PE resources.
+	/// Parse the bytes as PE resources.
 	///
-	/// All offsets _except_ the final `IMAGE_RESOURCE_DATA_ENTRY::OffsetToData` are relative to the resource directory.
-	/// `base` is subtracted from `OffsetToData` before being used as an offset in this resource directory.
-	/// Microsoft... Why would you do this?
-	///
-	/// # Remarks
-	///
-	/// No validation is done ahead of time.
-	#[inline]
-	pub fn new(data: &'a [u8], base: u32) -> Resources<'a> {
-		Resources { data, base }
+	/// No validation or integrity checking is done ahead of time.
+	pub fn new(section: &'a [u8], dir: &'a IMAGE_DATA_DIRECTORY) -> Resources<'a> {
+		// All offsets _except_ the data entry offsets are relative to the resource directory.
+		// Data entry offsets are relative virtual addresses from the PE image.
+		// Microsoft... Why would you do this?
+		Resources { section, dir }
 	}
 	/// Gets the root directory.
-	pub fn root(self) -> Result<Directory<'a>> {
-		Directory::from(self, 0)
+	pub fn root(&self) -> Result<Directory<'a>> {
+		Directory::from(*self, 0)
+	}
+	/// Filesystem consistency check.
+	///
+	/// Simply walks the filesystem checking all references are valid.
+	pub fn fsck(&self) -> Result<()> {
+		self.root()?.fsck()
+	}
+
+	#[inline]
+	fn slice<T>(&self, offset: u32) -> Result<&'a T> where T: Pod {
+		let start = offset as usize;
+		let end = mem::size_of::<T>().wrapping_add(start);
+		// Alignment checking
+		if !cfg!(feature = "unsafe_alignment") && start & (mem::align_of::<T>() - 1) != 0 {
+			return Err(Error::Misalign);
+		}
+		// Range checking done by the indexing operator
+		let bytes = self.section.get(start..end).ok_or(Error::OOB)?;
+		// Safe because size and alignment are checked and T is Pod
+		Ok(unsafe { &*(bytes.as_ptr() as *const T) })
+	}
+	#[inline]
+	#[allow(dead_code)] // unused for now...
+	fn slice_len<T>(&self, offset: u32, len: usize) -> Result<&'a [T]> where T: Pod {
+		let start = offset as usize;
+		let size_of = mem::size_of::<T>().checked_mul(len).ok_or(Error::Overflow)?;
+		let end = start.wrapping_add(size_of);
+		// Alignment checking
+		if !cfg!(feature = "unsafe_alignment") && start & (mem::align_of::<T>() - 1) != 0 {
+			return Err(Error::Misalign);
+		}
+		// Range checking done by the indexing operator
+		let bytes = self.section.get(start..end).ok_or(Error::OOB)?;
+		Ok(unsafe { slice::from_raw_parts(bytes.as_ptr() as *const T, len) })
+	}
+	#[inline]
+	fn slice_ws(&self, offset: u32) -> Result<&'a WideStr> {
+		let offset = offset as usize;
+		// Alignment checking
+		if !cfg!(feature = "unsafe_alignment") && offset & 1 != 0 {
+			return Err(Error::Misalign);
+		}
+		// The name is prefixed by its length in words
+		let len = self.section.get(offset..offset + 2).ok_or(Error::OOB)?;
+		let len = unsafe { *(len.as_ptr() as *const u16) } as usize;
+		// Extract the name given its length
+		let name = self.section.get(offset..offset + (len + 1) * 2).ok_or(Error::OOB)?;
+		let name = unsafe { slice::from_raw_parts(name.as_ptr() as *const u16, len + 1) };
+		let name = unsafe { WideStr::from_words_unchecked(name) };
+		Ok(name)
 	}
 }
 impl<'a> fmt::Debug for Resources<'a> {
@@ -60,17 +103,14 @@ pub struct Directory<'a> {
 	image: &'a IMAGE_RESOURCE_DIRECTORY,
 }
 impl<'a> Directory<'a> {
-	fn from(resources: Resources<'a>, offset: usize) -> Result<Directory<'a>> {
-		// Validate the resource directory
-		let entries_offset = usize::checked_add(offset, mem::size_of::<IMAGE_RESOURCE_DIRECTORY>()).ok_or(Error::Overflow)?;
-		if entries_offset > resources.data.len() {
-			return Err(Error::OOB);
-		}
-		let image = unsafe { &*(resources.data.as_ptr().offset(offset as isize) as *const IMAGE_RESOURCE_DIRECTORY) };
-		// Validate number of directory entries
-		let len = image.NumberOfNamedEntries as usize + image.NumberOfIdEntries as usize;
-		let entries_size = usize::checked_mul(mem::size_of::<IMAGE_RESOURCE_DIRECTORY_ENTRY>(), len).ok_or(Error::Overflow)?;
-		if usize::checked_add(entries_offset, entries_size).ok_or(Error::Overflow)? > resources.data.len() {
+	fn from(resources: Resources<'a>, offset: u32) -> Result<Directory<'a>> {
+		let image: &IMAGE_RESOURCE_DIRECTORY = resources.slice(offset)?;
+		// Validate the number of directory entries
+		// This code has been carefully written to avoid panicking on overflow
+		// It also validates the unsafe blocks below cf. size and alignment
+		let entries_size = (image.NumberOfNamedEntries as usize + image.NumberOfIdEntries as usize) * mem::size_of::<IMAGE_RESOURCE_DIRECTORY_ENTRY>();
+		let entries_offset = offset as usize + mem::size_of::<IMAGE_RESOURCE_DIRECTORY>();
+		if entries_size > resources.section.len() - entries_offset {
 			return Err(Error::OOB);
 		}
 		Ok(Directory { resources, image })
@@ -122,6 +162,12 @@ impl<'a> Directory<'a> {
 		let resources = self.resources;
 		slice.iter().map(move |image| DirectoryEntry { resources, image })
 	}
+	/// Filesystem consistency check.
+	///
+	/// Simply walks the filesystem checking all references are valid.
+	pub fn fsck(&self) -> Result<()> {
+		self.entries().try_for_each(|e| e.fsck())
+	}
 }
 impl<'a> fmt::Debug for Directory<'a> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -157,7 +203,6 @@ pub enum Entry<'a> {
 	Directory(Directory<'a>),
 	DataEntry(DataEntry<'a>),
 }
-
 impl<'a> Entry<'a> {
 	/// Returns some if the entry is a directory.
 	pub fn dir(self) -> Option<Directory<'a>> {
@@ -197,14 +242,8 @@ impl<'a> DirectoryEntry<'a> {
 	/// Gets the name for this entry.
 	pub fn name(&self) -> Result<Name<'a>> {
 		if self.image.Name & 0x80000000 != 0 {
-			let offset = (self.image.Name & !0x80000000) as usize;
-			// The name is prefixed by its length in words
-			let len = self.resources.data.get(offset..offset + 2).ok_or(Error::OOB)?;
-			let len = unsafe { *(len.as_ptr() as *const u16) } as usize;
-			// Extract the name given its length
-			let name = self.resources.data.get(offset..offset + (len + 1) * 2).ok_or(Error::OOB)?;
-			let name = unsafe { slice::from_raw_parts(name.as_ptr() as *const u16, len + 1) };
-			let name = unsafe { WideStr::from_words_unchecked(name) };
+			let offset = self.image.Name & !0x80000000;
+			let name = self.resources.slice_ws(offset)?;
 			Ok(Name::Str(name))
 		}
 		else {
@@ -219,12 +258,22 @@ impl<'a> DirectoryEntry<'a> {
 	/// Returns the directory or data entry for this entry.
 	pub fn entry(&self) -> Result<Entry<'a>> {
 		if self.is_dir() {
-			let offset = (self.image.Offset & !0x80000000) as usize;
+			let offset = self.image.Offset & !0x80000000;
 			Directory::from(self.resources, offset).map(Entry::Directory)
 		}
 		else {
-			let offset = self.image.Offset as usize;
+			let offset = self.image.Offset;
 			DataEntry::from(self.resources, offset).map(Entry::DataEntry)
+		}
+	}
+	/// Filesystem consistency check.
+	///
+	/// Simply walks the filesystem checking all references are valid.
+	pub fn fsck(&self) -> Result<()> {
+		self.name()?;
+		match self.entry()? {
+			Entry::Directory(dir) => dir.fsck(),
+			Entry::DataEntry(data) => data.fsck(),
 		}
 	}
 }
@@ -246,12 +295,8 @@ pub struct DataEntry<'a> {
 	image: &'a IMAGE_RESOURCE_DATA_ENTRY,
 }
 impl<'a> DataEntry<'a> {
-	fn from(resources: Resources<'a>, offset: usize) -> Result<DataEntry<'a>> {
-		let end = usize::checked_add(offset, mem::size_of::<IMAGE_RESOURCE_DATA_ENTRY>()).ok_or(Error::Overflow)?;
-		if end > resources.data.len() {
-			return Err(Error::OOB);
-		}
-		let image = unsafe { &*(resources.data.as_ptr().offset(offset as isize) as *const IMAGE_RESOURCE_DATA_ENTRY) };
+	fn from(resources: Resources<'a>, offset: u32) -> Result<DataEntry<'a>> {
+		let image = resources.slice(offset)?;
 		Ok(DataEntry { resources, image })
 	}
 	/// Gets the resources.
@@ -264,9 +309,16 @@ impl<'a> DataEntry<'a> {
 	}
 	/// Gets the actual data.
 	pub fn bytes(&self) -> Result<&'a [u8]> {
-		let start = u32::checked_sub(self.image.OffsetToData, self.resources.base).ok_or(Error::Overflow)?;
+		let start = u32::checked_sub(self.image.OffsetToData, self.resources.dir.VirtualAddress).ok_or(Error::Overflow)?;
 		let end = u32::checked_add(start, self.image.Size).ok_or(Error::Overflow)?;
-		self.resources.data.get(start as usize..end as usize).ok_or(Error::OOB)
+		self.resources.section.get(start as usize..end as usize).ok_or(Error::OOB)
+	}
+	/// Filesystem consistency check.
+	///
+	/// Simply walks the filesystem checking all references are valid.
+	pub fn fsck(&self) -> Result<()> {
+		self.bytes()?;
+		Ok(())
 	}
 }
 impl<'a> fmt::Debug for DataEntry<'a> {
