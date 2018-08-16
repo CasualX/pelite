@@ -37,6 +37,15 @@ pub unsafe trait Pe<'a> {
 			&*(self.image().as_ptr() as *const IMAGE_DOS_HEADER)
 		}
 	}
+	/// Returns the DOS image.
+	///
+	/// This includes the dos header and everything up to the start of the PE headers but is not guaranteed to actually contain anything valid.
+	fn dos_image(self) -> &'a [u8] where Self: Copy {
+		let dos = self.dos_header();
+		unsafe {
+			self.image().get_unchecked(..dos.e_lfanew as usize)
+		}
+	}
 	/// Returns the NT headers.
 	fn nt_headers(self) -> &'a IMAGE_NT_HEADERS where Self: Copy {
 		let dos = self.dos_header();
