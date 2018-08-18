@@ -18,6 +18,9 @@ Due to small but incompatible differences the two formats are not unified.
 #[macro_use]
 extern crate serde;
 
+#[cfg(feature = "data-encoding")]
+extern crate data_encoding;
+
 #[macro_use]
 pub mod util;
 
