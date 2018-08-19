@@ -66,6 +66,28 @@ impl error::Error for FindError {
 //------------------------------------------------
 
 impl<'a> Resources<'a> {
+	/// Finds a resource by its type, name and language.
+	pub fn find_resource<'n>(&self, ty: impl Into<Name<'n>>, name: impl Into<Name<'n>>, lang: impl Into<Name<'n>>) -> Result<&'a [u8], FindError> {
+		self.find_resource_internal(ty.into(), name.into(), lang.into())
+	}
+	/// Gets the Version Information.
+	pub fn version_info(&self) -> Result<super::version_info::VersionInfo<'a>, FindError> {
+		self.find_resource(::image::RT_VERSION, 1, 1033)
+			.and_then(|bytes| super::version_info::VersionInfo::try_from(bytes).map_err(FindError::Pe))
+	}
+	#[inline(never)]
+	fn find_resource_internal(&self, ty: Name<'_>, name: Name<'_>, lang: Name<'_>) -> Result<&'a [u8], FindError> {
+		let path = [ty, name, lang];
+		path.iter().try_fold(Entry::Directory(self.root()?), |e, &name| Ok(
+			e.dir()
+				.ok_or(FindError::UnDataEntry)?
+				.entries()
+				.find(|child| child.name() == Ok(name))
+				.ok_or(FindError::NotFound)?
+				.entry()?
+		)).and_then(|e| Ok(e.data().ok_or(FindError::UnDirectory)?.bytes()?))
+	}
+
 	/// Finds a file or directory by its path.
 	pub fn find<P: AsRef<Path> + ?Sized>(&self, path: &P) -> Result<Entry<'a>, FindError> {
 		self.find_internal(path.as_ref())

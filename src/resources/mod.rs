@@ -15,6 +15,8 @@ pub use self::find::FindError;
 
 mod art;
 
+pub mod version_info;
+
 //----------------------------------------------------------------
 
 /// Resources filesystem.
@@ -193,6 +195,16 @@ pub enum Name<'a> {
 	Id(u32),
 	/// UTF-16 named resource.
 	Str(&'a WideStr),
+}
+impl<'a> From<u16> for Name<'a> {
+	fn from(id: u16) -> Name<'a> {
+		Name::Id(id as u32)
+	}
+}
+impl<'a> From<&'a WideStr> for Name<'a> {
+	fn from(ws: &'a WideStr) -> Name<'a> {
+		Name::Str(ws)
+	}
 }
 
 //----------------------------------------------------------------
@@ -458,5 +470,8 @@ pub(crate) fn test(resources: Resources<'_>) -> Result<()> {
 	}
 	let _ = resources.fsck();
 	println!("{}", resources);
+	if let Ok(version_info) = resources.version_info() {
+		self::version_info::test(version_info)
+	}
 	resources.root().map(test_dir)
 }
