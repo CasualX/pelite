@@ -313,6 +313,14 @@ impl<'a> DataEntry<'a> {
 		let end = u32::checked_add(start, self.image.Size).ok_or(Error::Overflow)?;
 		self.resources.section.get(start as usize..end as usize).ok_or(Error::OOB)
 	}
+	/// Gets the data size.
+	pub fn size(&self) -> usize {
+		self.image.Size as usize
+	}
+	/// Gets the code page.
+	pub fn code_page(&self) -> u32 {
+		self.image.CodePage
+	}
 	/// Filesystem consistency check.
 	///
 	/// Simply walks the filesystem checking all references are valid.
@@ -340,6 +348,8 @@ impl<'a> fmt::Debug for DataEntry<'a> {
 					"name": "IMPORTANT",
 					"data": {
 						size: 1234,
+						code_page: 65001,
+						bytes: "base64encoded=",
 					}
 				}
 			]
@@ -388,8 +398,20 @@ mod serde {
 	}
 	impl<'a> Serialize for DataEntry<'a> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-			let mut state = serializer.serialize_struct("DataEntry", 1)?;
-			state.serialize_field("size", &self.image.Size)?;
+			let is_human_readable = serializer.is_human_readable();
+			let mut state = serializer.serialize_struct("DataEntry", 3)?;
+			state.serialize_field("size", &self.size())?;
+			state.serialize_field("code_page", &self.code_page())?;
+			#[cfg(feature = "data-encoding")]
+			(if is_human_readable {
+				let string = self.bytes().map(|bytes| ::data_encoding::BASE64.encode(bytes));
+				state.serialize_field("bytes", &string.as_ref().ok())?;
+			}
+			else {
+				state.serialize_field("bytes", &self.bytes().ok())?;
+			});
+			#[cfg(not(feature = "data-encoding"))]
+			state.serialize_field("bytes", &self.bytes().ok())?;
 			state.end()
 		}
 	}
