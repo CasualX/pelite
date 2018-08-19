@@ -8,3 +8,7 @@ proto/
 # Cargo
 target/
 Cargo.lock
+
+# Coverage
+CoverageReport*
+LastCoverageResults.log

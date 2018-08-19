@@ -81,7 +81,7 @@ impl<'a, P: Pe<'a> + Copy> Scanner<P> {
 	/// Restricts the range to the code section. See [`finds`](#finds) for more information.
 	pub fn finds_code(self, pat: &[pat::Atom], save: &mut [Rva]) -> bool {
 		let optional_header = self.pe.optional_header();
-		let range = optional_header.BaseOfCode..optional_header.BaseOfCode + optional_header.SizeOfCode;
+		let range = optional_header.BaseOfCode..u32::wrapping_add(optional_header.BaseOfCode, optional_header.SizeOfCode);
 		self.finds(pat, range, save)
 	}
 	/// Finds the unique match for the pattern in the given range.
@@ -107,7 +107,7 @@ impl<'a, P: Pe<'a> + Copy> Scanner<P> {
 	/// Restricts the range to the code section. See [`find`](#find) for more information.
 	pub fn find_code(self, pat: &[pat::Atom]) -> Option<pat::Match> {
 		let optional_header = self.pe.optional_header();
-		let range = optional_header.BaseOfCode..optional_header.BaseOfCode + optional_header.SizeOfCode;
+		let range = optional_header.BaseOfCode..u32::wrapping_add(optional_header.BaseOfCode, optional_header.SizeOfCode);
 		self.find(pat, range)
 	}
 	/// Returns an iterator over the matches of a pattern within the given range.
@@ -120,7 +120,7 @@ impl<'a, P: Pe<'a> + Copy> Scanner<P> {
 	/// Restricts the range to the code section. See [`matches`](#matches) for more information.
 	pub fn matches_code(self, pat: &[pat::Atom]) -> Matches<P> {
 		let optional_header = self.pe.optional_header();
-		let range = optional_header.BaseOfCode..optional_header.BaseOfCode + optional_header.SizeOfCode;
+		let range = optional_header.BaseOfCode..u32::wrapping_add(optional_header.BaseOfCode, optional_header.SizeOfCode);
 		self.matches(pat, range)
 	}
 	/// Pattern interpreter.
@@ -455,4 +455,25 @@ fn finder_section<'a, P, F>(pe: P, range: Range<Rva>, mut f: F) -> bool where
 		}
 		return false;
 	})
+}
+
+//----------------------------------------------------------------
+
+#[cfg(test)]
+pub(crate) fn test<'a, P: Pe<'a> + Copy>(pe: P) -> ::Result<()> {
+	use pattern::Atom::*;
+	let scanner = pe.scanner();
+	let mut save = [0; 4];
+
+	let mut matches = scanner.matches_code(&[Save(0), Byte(0xE8), Push(4), Jump4, Save(1), Pop, Save(2)]);
+	while matches.next_match(&mut save) {
+		assert_eq!(save[0] + 5, save[2]);
+	}
+
+	let mut matches = scanner.matches_code(&[Jump1, Save(1), Byte(0x0F), Byte(0x0D)]);
+	while matches.next_match(&mut save) {}
+
+	scanner.finds_code(&[Byte(0x8B), Byte(0x01), Byte(0x8B), Byte(0x10), Byte(0xFF), Byte(0xD2)], &mut save);
+
+	Ok(())
 }

@@ -51,3 +51,6 @@ pub use pe32 as pe;
 pub use pe64 as pe;
 
 pub mod resources;
+
+#[cfg(test)]
+mod tests;

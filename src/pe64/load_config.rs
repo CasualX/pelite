@@ -82,3 +82,12 @@ mod serde {
 		}
 	}
 }
+
+#[cfg(test)]
+pub(crate) fn test<'a, P: Pe<'a> + Copy>(pe: P) -> Result<()> {
+	let load_config = pe.load_config()?;
+	let _ = format!("{:?}", load_config);
+	let _security_cookie = load_config.security_cookie();
+	let _se_handler_table = load_config.se_handler_table();
+	Ok(())
+}

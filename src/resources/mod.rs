@@ -416,3 +416,47 @@ mod serde {
 		}
 	}
 }
+
+//----------------------------------------------------------------
+
+#[cfg(test)]
+pub(crate) fn test(resources: Resources<'_>) -> Result<()> {
+	fn test_dir(dir: Directory<'_>) {
+		let _ = format!("{}", dir);
+		let _ = format!("{:?}", dir);
+
+		for entry in dir.entries() {
+			let _ = format!("{:?}\n{:?}", entry.name(), entry);
+
+			// Check consistency in id vs named entries
+			if let Ok(name) = entry.name() {
+				let mut id_entries;
+				let mut named_entries;
+				let mut entries: &mut Iterator<Item = _> = match name {
+					Name::Id(_) => { id_entries = dir.id_entries(); &mut id_entries },
+					Name::Str(_) => { named_entries = dir.named_entries(); &mut named_entries },
+				};
+				assert!((&mut entries).any(|entry| entry.name() == Ok(name)));
+			}
+
+			// Inspect the entry recursively
+			match entry.entry() {
+				Ok(Entry::DataEntry(data)) => {
+					assert!(!entry.is_dir());
+					let _ = format!("{:?}", data);
+					let _size = data.size();
+					let _code_page = data.code_page();
+					let _bytes = data.bytes();
+				},
+				Ok(Entry::Directory(dir)) => {
+					assert!(entry.is_dir());
+					let _ = test_dir(dir);
+				},
+				Err(_) => (),
+			}
+		}
+	}
+	let _ = resources.fsck();
+	println!("{}", resources);
+	resources.root().map(test_dir)
+}

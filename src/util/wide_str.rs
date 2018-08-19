@@ -101,7 +101,7 @@ impl fmt::Debug for WideStr {
 						_ => fmt::Write::write_char(f, chr)?,
 					};
 				},
-				Err(e) => write!(f, "\\u{:04X}", e.unpaired_surrogate())?,
+				Err(e) => write!(f, "\\u{:04x}", e.unpaired_surrogate())?,
 			};
 		}
 		f.write_str("\"")
@@ -119,24 +119,44 @@ impl ::serde::Serialize for WideStr {
 
 #[cfg(test)]
 mod tests {
-	use std::slice;
+	use std::{char, slice};
 	use super::WideStr;
 	use util::FromBytes;
 
+	static WIDE_STR: [u16; 7] = [6, 83, 84, 82, 73, 78, 71];
+	static INVALID_STR: [u16; 4] = [3, b'a' as u16, 0xd800, b'b' as u16];
+	static ESCAPED_STR: [u16; 7] = [6, b'\0' as u16, b'\n' as u16, b'\r' as u16, b'\t' as u16, b'"' as u16, b'\\' as u16];
+
 	#[test]
 	fn units() {
-		static WIDE_STR: [u16; 7] = [6, 83, 84, 82, 73, 78, 71];
-		let wide_str = unsafe { WideStr::from_words_unchecked(&WIDE_STR) };
+		let wide_str = WideStr::from_words(&WIDE_STR).unwrap();
 		assert_eq!(wide_str.to_string(), Ok(String::from("STRING")));
 		assert_eq!(wide_str.len(), 6);
 		assert_eq!(wide_str.as_ref(), &WIDE_STR[1..]);
 	}
 
 	#[test]
+	fn equality() {
+		let wide_str = WideStr::from_words(&WIDE_STR).unwrap();
+		assert!(wide_str == "STRING");
+	}
+
+	#[test]
 	fn from_bytes() {
-		static WIDE_STR: [u16; 7] = [6, 83, 84, 82, 73, 78, 71];
 		let bytes = unsafe { slice::from_raw_parts(WIDE_STR.as_ptr() as *const u8, WIDE_STR.len() * 2) };
 		let wide_str = unsafe { WideStr::from_bytes(bytes).unwrap() };
-		assert_eq!(wide_str, unsafe { WideStr::from_words_unchecked(&WIDE_STR) });
+		assert_eq!(wide_str, WideStr::from_words(&WIDE_STR).unwrap());
+	}
+
+	#[test]
+	fn fmt() {
+		let wide_str = WideStr::from_words(&WIDE_STR).unwrap();
+		assert_eq!(format!("{}", wide_str), "STRING");
+		assert_eq!(format!("{:?}", wide_str), r#"L"STRING""#);
+		let invalid_str = WideStr::from_words(&INVALID_STR).unwrap();
+		assert_eq!(format!("{}", invalid_str), format!("a{}b", char::REPLACEMENT_CHARACTER));
+		assert_eq!(format!("{:?}", invalid_str), "L\"a\\ud800b\"");
+		let escaped_str = WideStr::from_words(&ESCAPED_STR).unwrap();
+		assert_eq!(format!("{:?}", escaped_str), "L\"\\0\\n\\r\\t\\\"\\\\\"");
 	}
 }
