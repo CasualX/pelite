@@ -15,6 +15,8 @@ pub use self::find::FindError;
 
 mod art;
 
+pub mod string_table;
+
 //----------------------------------------------------------------
 
 /// Resources filesystem.
