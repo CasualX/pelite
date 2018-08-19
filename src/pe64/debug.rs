@@ -42,13 +42,13 @@ pub struct Debug<'a, P> {
 }
 impl<'a, P: Pe<'a> + Copy> Debug<'a, P> {
 	pub(crate) fn new(pe: P) -> Result<Debug<'a, P>> {
-		let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_DEBUG).ok_or(Error::OOB)?;
+		let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_DEBUG).ok_or(Error::Bounds)?;
 		let (len, rem) = (
 			datadir.Size as usize / mem::size_of::<IMAGE_DEBUG_DIRECTORY>(),
 			datadir.Size as usize % mem::size_of::<IMAGE_DEBUG_DIRECTORY>(),
 		);
 		if rem != 0 {
-			return Err(Error::Corrupt);
+			return Err(Error::Invalid);
 		}
 		let image = pe.derva_slice(datadir.VirtualAddress, len)?;
 		Ok(Debug { pe, image })
@@ -201,14 +201,14 @@ impl<'a, P: Pe<'a> + Copy> CvNB10<'a, P> {
 		}
 		let bytes = pe.slice(dir.AddressOfRawData, dir.SizeOfData as usize, 4)?;
 		if bytes.len() < 16 {
-			return Err(Error::OOB);
+			return Err(Error::Bounds);
 		}
 		let image = unsafe { &*(bytes.as_ptr() as *const IMAGE_DEBUG_CV_INFO_PDB20) };
 		let signature: [u8; 4] = unsafe { mem::transmute(image.CvSignature) };
 		if signature != *b"NB10" {
 			return Err(Error::BadMagic);
 		}
-		let pdb_file_name = CStr::from_bytes(&bytes[16..]).ok_or(Error::CStr)?;
+		let pdb_file_name = CStr::from_bytes(&bytes[16..]).ok_or(Error::Encoding)?;
 		Ok(CvNB10 { pe, image, pdb_file_name })
 	}
 	/// Gets the PE instance.
@@ -248,14 +248,14 @@ impl<'a, P: Pe<'a> + Copy> CvRSDS<'a, P> {
 		}
 		let bytes = pe.slice(dir.AddressOfRawData, dir.SizeOfData as usize, 4)?;
 		if bytes.len() < 24 {
-			return Err(Error::OOB);
+			return Err(Error::Bounds);
 		}
 		let image = unsafe { &*(bytes.as_ptr() as *const IMAGE_DEBUG_CV_INFO_PDB70) };
 		let signature: [u8; 4] = unsafe { mem::transmute(image.CvSignature) };
 		if signature != *b"RSDS" {
 			return Err(Error::BadMagic);
 		}
-		let pdb_file_name = CStr::from_bytes(&bytes[24..]).ok_or(Error::CStr)?;
+		let pdb_file_name = CStr::from_bytes(&bytes[24..]).ok_or(Error::Encoding)?;
 		Ok(CvRSDS { pe, image, pdb_file_name })
 	}
 	/// Gets the PE instance.

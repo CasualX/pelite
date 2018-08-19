@@ -38,7 +38,7 @@ pub struct LoadConfig<'a, P> {
 }
 impl<'a, P: Pe<'a> + Copy> LoadConfig<'a, P> {
 	pub(crate) fn new(pe: P) -> Result<LoadConfig<'a, P>> {
-		let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG).ok_or(Error::OOB)?;
+		let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG).ok_or(Error::Bounds)?;
 		let image = pe.derva(datadir.VirtualAddress)?;
 		Ok(LoadConfig { pe, image })
 	}

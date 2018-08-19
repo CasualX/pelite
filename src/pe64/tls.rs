@@ -45,7 +45,7 @@ pub struct Tls<'a, P> {
 }
 impl<'a, P: Pe<'a> + Copy> Tls<'a, P> {
 	pub(crate) fn new(pe: P) -> Result<Tls<'a, P>> {
-		let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_TLS).ok_or(Error::OOB)?;
+		let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_TLS).ok_or(Error::Bounds)?;
 		let image = pe.derva(datadir.VirtualAddress)?;
 		Ok(Tls { pe, image })
 	}
@@ -57,7 +57,7 @@ impl<'a, P: Pe<'a> + Copy> Tls<'a, P> {
 	}
 	pub fn raw_data(&self) -> Result<&'a [u8]> {
 		if self.image.StartAddressOfRawData > self.image.EndAddressOfRawData {
-			return Err(Error::Corrupt);
+			return Err(Error::Invalid);
 		}
 		// FIXME! truncation warning on 32bit...
 		let len = (self.image.EndAddressOfRawData - self.image.StartAddressOfRawData) as usize;

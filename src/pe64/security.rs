@@ -44,20 +44,20 @@ impl<'a, P: Pe<'a> + Copy> Security<'a, P> {
 			return Err(Error::Unmapped);
 		}
 		// Manual alignment and size check
-		let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_SECURITY).ok_or(Error::OOB)?;
+		let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_SECURITY).ok_or(Error::Bounds)?;
 		if datadir.VirtualAddress == 0 {
 			return Err(Error::Null);
 		}
 		if datadir.VirtualAddress % 8 != 0 || datadir.Size % 8 != 0 {
-			return Err(Error::Misalign);
+			return Err(Error::Misaligned);
 		}
 		if datadir.Size == 0 {
-			return Err(Error::OOB);
+			return Err(Error::Bounds);
 		}
 		// Interpret the bytes
 		let start = datadir.VirtualAddress as usize;
 		let end = (datadir.VirtualAddress + datadir.Size) as usize;
-		let security = pe.image().get(start..end).ok_or(Error::OOB)?;
+		let security = pe.image().get(start..end).ok_or(Error::Bounds)?;
 		Ok(Security { pe, security })
 	}
 	/// Gets the PE instance.

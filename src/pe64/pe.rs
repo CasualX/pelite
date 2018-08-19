@@ -131,11 +131,11 @@ pub unsafe trait Pe<'a> {
 					Err(Error::ZeroFill)
 				}
 				else {
-					Err(Error::OOB)
+					Err(Error::Bounds)
 				};
 			}
 		}
-		Err(Error::OOB)
+		Err(Error::Bounds)
 	}
 	/// Converts a file offset to `Rva`.
 	///
@@ -173,11 +173,11 @@ pub unsafe trait Pe<'a> {
 					Err(Error::Unmapped)
 				}
 				else {
-					Err(Error::OOB)
+					Err(Error::Bounds)
 				};
 			}
 		}
-		Err(Error::OOB)
+		Err(Error::Bounds)
 	}
 
 	/// Converts from `Rva` to `Va`.
@@ -200,7 +200,7 @@ pub unsafe trait Pe<'a> {
 				Ok(image_base + rva as Va)
 			}
 			else {
-				Err(Error::OOB)
+				Err(Error::Bounds)
 			}
 		}
 	}
@@ -221,7 +221,7 @@ pub unsafe trait Pe<'a> {
 				(optional_header.ImageBase, optional_header.SizeOfImage)
 			};
 			if va < image_base || va - image_base > size_of_image as Va {
-				Err(Error::OOB)
+				Err(Error::Bounds)
 			}
 			else {
 				Ok((va - image_base) as Rva)
@@ -309,7 +309,7 @@ pub unsafe trait Pe<'a> {
 			// Overflows only if bytes.len() > USIZE_MAX - sizeof(T) which would be ridiculous
 			let offset = len * mem::size_of::<T>();
 			if offset + mem::size_of::<T>() > bytes.len() {
-				return Err(Error::OOB);
+				return Err(Error::Bounds);
 			}
 			// Safe because len is checked above and T is Pod
 			unsafe {
@@ -337,7 +337,7 @@ pub unsafe trait Pe<'a> {
 	/// Reads a string.
 	fn derva_string<T>(self, rva: Rva) -> Result<&'a T> where Self: Copy, T: FromBytes + ?Sized {
 		let bytes = self.slice(rva, T::MIN_SIZE_OF, T::ALIGN_OF)?;
-		unsafe { T::from_bytes(bytes).ok_or(Error::CStr) }
+		unsafe { T::from_bytes(bytes).ok_or(Error::Encoding) }
 	}
 
 	//----------------------------------------------------------------
@@ -387,7 +387,7 @@ pub unsafe trait Pe<'a> {
 			// Overflows only if bytes.len() > USIZE_MAX - sizeof(T) which would be ridiculous
 			let offset = len * mem::size_of::<T>();
 			if offset + mem::size_of::<T>() > bytes.len() {
-				return Err(Error::OOB);
+				return Err(Error::Bounds);
 			}
 			// Safe because len is checked above and T is Pod
 			unsafe {
@@ -415,7 +415,7 @@ pub unsafe trait Pe<'a> {
 	/// Dereferences the pointer to a string.
 	fn deref_string<T, P>(self, ptr: P) -> Result<&'a T> where Self: Copy, P: Into<Ptr<T>>, T: FromBytes + ?Sized {
 		let bytes = self.read(ptr.into().into(), T::MIN_SIZE_OF, T::ALIGN_OF)?;
-		unsafe { T::from_bytes(bytes).ok_or(Error::CStr) }
+		unsafe { T::from_bytes(bytes).ok_or(Error::Encoding) }
 	}
 
 	//----------------------------------------------------------------
@@ -507,7 +507,7 @@ pub unsafe trait Pe<'a> {
 	///
 	/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) if the image has no resources. Any other error indicates some form of corruption.
 	fn resources(self) -> Result<::resources::Resources<'a>> where Self: Copy {
-		let datadir = self.data_directory().get(IMAGE_DIRECTORY_ENTRY_RESOURCE).ok_or(Error::OOB)?;
+		let datadir = self.data_directory().get(IMAGE_DIRECTORY_ENTRY_RESOURCE).ok_or(Error::Bounds)?;
 		let data = self.derva_slice(datadir.VirtualAddress, datadir.Size as usize)?;
 		Ok(::resources::Resources::new(data, datadir))
 	}
@@ -563,11 +563,11 @@ pub(crate) fn serialize_pe<'a, P: 'a + Pe<'a> + Copy, S: ::serde::Serializer>(pe
 pub(crate) fn validate_headers(image: &[u8]) -> Result<u32> {
 	// Grab the DOS header
 	if mem::size_of::<IMAGE_DOS_HEADER>() > image.len() {
-		return Err(Error::OOB);
+		return Err(Error::Bounds);
 	}
 	// Check basic alignment of the image bytes
 	if image.as_ptr() as usize % mem::size_of::<usize>() != 0 {
-		return Err(Error::Misalign);
+		return Err(Error::Misaligned);
 	}
 	let dos = unsafe { &*(image.as_ptr() as *const IMAGE_DOS_HEADER) };
 	// Verify the DOS header
@@ -576,7 +576,7 @@ pub(crate) fn validate_headers(image: &[u8]) -> Result<u32> {
 	}
 	// "According to the PE specification, the PE header must be aligned on a 8 byte boundary, but the Windows loader requires only a 4 byte alignment."
 	if dos.e_lfanew % 4 != 0 {
-		return Err(Error::Misalign);
+		return Err(Error::Misaligned);
 	}
 	// Prevent overflow the easy way...
 	// When changing, take care of overflow in later offset calculations!
@@ -587,7 +587,7 @@ pub(crate) fn validate_headers(image: &[u8]) -> Result<u32> {
 	// Grab the NT headers
 	let nt_end = dos.e_lfanew as usize + mem::size_of::<IMAGE_NT_HEADERS>();
 	if nt_end > image.len() {
-		return Err(Error::OOB);
+		return Err(Error::Bounds);
 	}
 	let nt = unsafe { &*(image.as_ptr().offset(dos.e_lfanew as isize) as *const IMAGE_NT_HEADERS) };
 	// Verify the NT headers
@@ -604,7 +604,7 @@ pub(crate) fn validate_headers(image: &[u8]) -> Result<u32> {
 		IMAGE_NUMBEROF_DIRECTORY_ENTRIES);
 	let size_of_data_dir = num_rva_sizes * mem::size_of::<IMAGE_DATA_DIRECTORY>();
 	if nt_end + size_of_data_dir > image.len() {
-		return Err(Error::OOB);
+		return Err(Error::Bounds);
 	}
 
 	// Verify the section headers
@@ -619,7 +619,7 @@ pub(crate) fn validate_headers(image: &[u8]) -> Result<u32> {
 		+ nt.FileHeader.SizeOfOptionalHeader as usize;
 	// then the sum of these cannot reasonably overflow
 	if size_of_sections + start_of_sections > image.len() {
-		return Err(Error::OOB);
+		return Err(Error::Bounds);
 	}
 	Ok(nt.OptionalHeader.SizeOfImage)
 }

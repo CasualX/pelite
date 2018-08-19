@@ -50,10 +50,10 @@ impl<'a> Resources<'a> {
 		let end = mem::size_of::<T>().wrapping_add(start);
 		// Alignment checking
 		if !cfg!(feature = "unsafe_alignment") && start & (mem::align_of::<T>() - 1) != 0 {
-			return Err(Error::Misalign);
+			return Err(Error::Misaligned);
 		}
 		// Range checking done by the indexing operator
-		let bytes = self.section.get(start..end).ok_or(Error::OOB)?;
+		let bytes = self.section.get(start..end).ok_or(Error::Bounds)?;
 		// Safe because size and alignment are checked and T is Pod
 		Ok(unsafe { &*(bytes.as_ptr() as *const T) })
 	}
@@ -65,10 +65,10 @@ impl<'a> Resources<'a> {
 		let end = start.wrapping_add(size_of);
 		// Alignment checking
 		if !cfg!(feature = "unsafe_alignment") && start & (mem::align_of::<T>() - 1) != 0 {
-			return Err(Error::Misalign);
+			return Err(Error::Misaligned);
 		}
 		// Range checking done by the indexing operator
-		let bytes = self.section.get(start..end).ok_or(Error::OOB)?;
+		let bytes = self.section.get(start..end).ok_or(Error::Bounds)?;
 		Ok(unsafe { slice::from_raw_parts(bytes.as_ptr() as *const T, len) })
 	}
 	#[inline]
@@ -76,13 +76,13 @@ impl<'a> Resources<'a> {
 		let offset = offset as usize;
 		// Alignment checking
 		if !cfg!(feature = "unsafe_alignment") && offset & 1 != 0 {
-			return Err(Error::Misalign);
+			return Err(Error::Misaligned);
 		}
 		// The name is prefixed by its length in words
-		let len = self.section.get(offset..offset + 2).ok_or(Error::OOB)?;
+		let len = self.section.get(offset..offset + 2).ok_or(Error::Bounds)?;
 		let len = unsafe { *(len.as_ptr() as *const u16) } as usize;
 		// Extract the name given its length
-		let name = self.section.get(offset..offset + (len + 1) * 2).ok_or(Error::OOB)?;
+		let name = self.section.get(offset..offset + (len + 1) * 2).ok_or(Error::Bounds)?;
 		let name = unsafe { slice::from_raw_parts(name.as_ptr() as *const u16, len + 1) };
 		let name = unsafe { WideStr::from_words_unchecked(name) };
 		Ok(name)
@@ -111,7 +111,7 @@ impl<'a> Directory<'a> {
 		let entries_size = (image.NumberOfNamedEntries as usize + image.NumberOfIdEntries as usize) * mem::size_of::<IMAGE_RESOURCE_DIRECTORY_ENTRY>();
 		let entries_offset = offset as usize + mem::size_of::<IMAGE_RESOURCE_DIRECTORY>();
 		if entries_size > resources.section.len() - entries_offset {
-			return Err(Error::OOB);
+			return Err(Error::Bounds);
 		}
 		Ok(Directory { resources, image })
 	}
@@ -311,7 +311,7 @@ impl<'a> DataEntry<'a> {
 	pub fn bytes(&self) -> Result<&'a [u8]> {
 		let start = u32::checked_sub(self.image.OffsetToData, self.resources.dir.VirtualAddress).ok_or(Error::Overflow)?;
 		let end = u32::checked_add(start, self.image.Size).ok_or(Error::Overflow)?;
-		self.resources.section.get(start as usize..end as usize).ok_or(Error::OOB)
+		self.resources.section.get(start as usize..end as usize).ok_or(Error::Bounds)
 	}
 	/// Gets the data size.
 	pub fn size(&self) -> usize {
