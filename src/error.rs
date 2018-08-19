@@ -10,33 +10,50 @@ use std::{error, fmt, result};
 pub enum Error {
 	/// Null address.
 	Null,
-	/// Index was out of bounds.
-	OOB,
+	/// Out of bounds.
+	///
+	/// Catch-all for bounds check errors.
+	Bounds,
+	/// Data is not available.
+	///
+	/// Can happen when referencing data in `PeFile` instances.
+	///
 	/// Sections can be shorter than stored on disk, the remaining bytes will default to zeroes when loaded by the system.
 	/// Since these zeroes would just be a waste of space, they are not present in the binaries on disk.
-	///
-	/// This error happens when attempting to get a reference to such zero filled data when working with `PeFile` contents.
+	/// This error happens when attempting to get a reference to such zero filled data.
 	ZeroFill,
-	/// Data is not mapped.
+	/// Data is not available.
+	///
+	/// Can happen when referencing data in `PeView` instances.
+	///
+	/// Sections can have excess in their raw data which won't be mapped when loaded by the system.
+	/// This error happens when attempting to get a reference to such unmapped raw data.
+	/// Sometimes this kind of excess is called the PE file having an overlay.
 	Unmapped,
 	/// Address is misaligned.
-	Misalign,
+	Misaligned,
 	/// Magic number does not match the expected value.
+	///
+	/// Most commonly indicate non-PE files or trying to load a PE32 file with a PE32+ parsers or vice versa.
 	BadMagic,
 	/// Sanity check failed.
 	///
 	/// Some value was so far outside its typical range, while not technically incorrect, probably indicating something went wrong.
+	/// If this error is encountered legitimately, create an issue or file a PR to relax the artificial restrictions.
 	Insanity,
-	/// Data corruption.
+	/// Invalid data.
 	///
 	/// Structured data was found which simply isn't valid.
+	/// Catch-all for errors which don't fall under other errors.
+	Invalid,
+	/// Overflow error.
 	///
-	/// Catch all for errors which don't fall under other errors.
-	Corrupt,
-	/// Address calculation overflow error.
+	/// Catch-all for overflow and underflow errors.
 	Overflow,
-	/// No nul byte found when reading a C string.
-	CStr,
+	/// Encoding error.
+	///
+	/// Catch-all for string related errors such as lacking a nul terminator.
+	Encoding,
 }
 
 impl Error {
@@ -64,23 +81,34 @@ impl Error {
 
 impl fmt::Display for Error {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		f.write_str(error::Error::description(self))
+		match self {
+			Error::Null => f.write_str("Null address reference"),
+			Error::Bounds => f.write_str("Bounds check failed"),
+			Error::ZeroFill => f.write_str("Zero filled data reference"),
+			Error::Unmapped => f.write_str("Overlay data reference"),
+			Error::Misaligned => f.write_str("Address misaligned"),
+			Error::BadMagic => f.write_str("Unknown magic number"),
+			Error::Insanity => f.write_str("Data insanity"),
+			Error::Invalid => f.write_str("Invalid data"),
+			Error::Overflow => f.write_str("Overflow error"),
+			Error::Encoding => f.write_str("Encoding error"),
+		}
 	}
 }
 
 impl error::Error for Error {
 	fn description(&self) -> &str {
 		match self {
-			Error::Null => "null",
-			Error::OOB => "out of bounds",
+			Error::Null => "null address",
+			Error::Bounds => "out of bounds",
 			Error::ZeroFill => "zero fill",
 			Error::Unmapped => "unmapped",
-			Error::Misalign => "misalign",
+			Error::Misaligned => "misaligned",
 			Error::BadMagic => "bad magic",
 			Error::Insanity => "insanity",
-			Error::Corrupt => "corrupt",
-			Error::Overflow => "overflow",
-			Error::CStr => "c str",
+			Error::Invalid => "invalid data",
+			Error::Overflow => "overflow error",
+			Error::Encoding => "encoding error",
 		}
 	}
 }

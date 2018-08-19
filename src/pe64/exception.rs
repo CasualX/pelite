@@ -22,13 +22,13 @@ pub struct Exception<'a, P> {
 }
 impl<'a, P: Pe<'a> + Copy> Exception<'a, P> {
 	pub(crate) fn new(pe: P) -> Result<Exception<'a, P>> {
-		let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_EXCEPTION).ok_or(Error::OOB)?;
+		let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_EXCEPTION).ok_or(Error::Bounds)?;
 		let (len, rem) = (
 			datadir.Size as usize / mem::size_of::<RUNTIME_FUNCTION>(),
 			datadir.Size as usize % mem::size_of::<RUNTIME_FUNCTION>(),
 		);
 		if rem != 0 {
-			return Err(Error::Corrupt);
+			return Err(Error::Invalid);
 		}
 		let image = pe.derva_slice(datadir.VirtualAddress, len)?;
 		Ok(Exception { pe, image })
@@ -128,7 +128,7 @@ impl<'a, P: Pe<'a> + Copy> Function<'a, P> {
 		let min_size_of = mem::size_of::<UNWIND_INFO>() +
 			mem::size_of::<UNWIND_CODE>() * image.CountOfCodes as usize;
 		if bytes.len() < min_size_of {
-			return Err(Error::OOB);
+			return Err(Error::Bounds);
 		}
 		// Ok
 		Ok(UnwindInfo { pe: self.pe, image })

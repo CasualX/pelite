@@ -131,7 +131,7 @@ fn vtable<'a>(file: PeFile<'a>, types: &mut Vec<Type<'a>>, xref: usize, vrefs: &
 	let index = if let Some(index) = types.iter_mut().position(|ty| ty.type_ptr == col.type_descriptor && ty.class_ptr == col.class_descriptor) { index }
 	else {
 		// First time seeing this type, get its descriptors
-		let ty_name = file.deref_c_str(col.type_descriptor.shift(8))?.to_str().or(Err(pelite::Error::CStr))?;
+		let ty_name = file.deref_c_str(col.type_descriptor.shift(8))?.to_str().or(Err(pelite::Error::Encoding))?;
 		let class_desc = file.deref(col.class_descriptor)?;
 		// And add it to the list of types
 		types.push(Type { type_ptr: col.type_descriptor, class_ptr: col.class_descriptor, ty_name, class_desc, vtables: Vec::new() });
@@ -168,7 +168,7 @@ fn print_vtable<'a>(file: PeFile<'a>, ty: &Type<'a>, vtable: &VTable<'a>) -> pel
 	for &base_class_ptr in base_classes {
 		let base_class = file.deref(base_class_ptr)?;
 		if base_class.pmd.mdisp == vtable.col.offset as i32 {
-			let base_ty_name = file.deref_c_str(base_class.type_descriptor.shift(8))?.to_str().or(Err(pelite::Error::CStr))?;
+			let base_ty_name = file.deref_c_str(base_class.type_descriptor.shift(8))?.to_str().or(Err(pelite::Error::Encoding))?;
 			println!("{:#010X}: ??_7{}6B@ {{for `{}'}} ({} methods)", vtable.rva, &ty.ty_name[4..], base_ty_name, vtable.vtable.len());
 			return Ok(())
 		}
@@ -204,7 +204,7 @@ fn print_class<'a>(file: PeFile<'a>, ty: &Type<'a>) -> pelite::Result<()> {
 			s += prefix;
 		}
 		// Get its type name
-		let base_ty_name = file.deref_c_str(base_class.type_descriptor.shift(8))?.to_str().or(Err(pelite::Error::CStr))?;
+		let base_ty_name = file.deref_c_str(base_class.type_descriptor.shift(8))?.to_str().or(Err(pelite::Error::Encoding))?;
 		s += base_ty_name; s += "\n";
 		// Manage the inheritance stack...
 		stack[depth] -= base_class.num_contained_bases + 1;

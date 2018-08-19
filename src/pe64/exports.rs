@@ -106,7 +106,7 @@ pub struct Exports<'a, P> {
 }
 impl<'a, P: Pe<'a> + Copy> Exports<'a, P> {
 	pub(crate) fn new(pe: P) -> Result<Exports<'a, P>> {
-		let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_EXPORT).ok_or(Error::OOB)?;
+		let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_EXPORT).ok_or(Error::Bounds)?;
 		let image = pe.derva(datadir.VirtualAddress)?;
 		Ok(Exports { pe, datadir, image })
 	}
@@ -247,7 +247,7 @@ impl<'a, P: Pe<'a> + Copy> By<'a, P> {
 	pub fn ordinal(&self, ordinal: Ordinal) -> Result<Export<'a>> {
 		let base = self.exp.image.Base;
 		if (ordinal as u32) < base {
-			Err(Error::OOB)
+			Err(Error::Bounds)
 		}
 		else {
 			let index = (ordinal as u32 - base) as usize;
@@ -291,7 +291,7 @@ impl<'a, P: Pe<'a> + Copy> By<'a, P> {
 				Less => upper_bound = i,
 				Greater => lower_bound = i + 1,
 				Equal => {
-					let &index = self.name_indices.get(i).ok_or(Error::OOB)?;
+					let &index = self.name_indices.get(i).ok_or(Error::Bounds)?;
 					return self.index(index as usize);
 				},
 			};
@@ -312,12 +312,12 @@ impl<'a, P: Pe<'a> + Copy> By<'a, P> {
 	}
 	/// Looks up an export by its index.
 	pub fn index(&self, index: usize) -> Result<Export<'a>> {
-		let rva = self.functions.get(index).ok_or(Error::OOB)?;
+		let rva = self.functions.get(index).ok_or(Error::Bounds)?;
 		self.exp.symbol_from_rva(rva)
 	}
 	/// Looks up an export by its hint.
 	pub fn hint(&self, hint: usize) -> Result<Export<'a>> {
-		let &index = self.name_indices.get(hint).ok_or(Error::OOB)?;
+		let &index = self.name_indices.get(hint).ok_or(Error::Bounds)?;
 		self.index(index as usize)
 	}
 	/// Looks up an export by its hint and falls back to the name if the hint is incorrect.
@@ -339,7 +339,7 @@ impl<'a, P: Pe<'a> + Copy> By<'a, P> {
 	}
 	/// Looks up the name for a hint.
 	pub fn name_of_hint(&self, hint: usize) -> Result<&'a CStr> {
-		let &name_rva = self.names.get(hint).ok_or(Error::OOB)?;
+		let &name_rva = self.names.get(hint).ok_or(Error::Bounds)?;
 		self.exp.pe.derva_c_str(name_rva)
 	}
 	/// Given an index in the functions array, gets the named export.

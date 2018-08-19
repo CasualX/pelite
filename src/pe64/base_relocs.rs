@@ -47,7 +47,7 @@ pub struct BaseRelocs<'a, P> {
 }
 impl<'a, P: Pe<'a> + Copy> BaseRelocs<'a, P> {
 	pub(crate) fn new(pe: P) -> Result<BaseRelocs<'a, P>> {
-		let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_BASERELOC).ok_or(Error::OOB)?;
+		let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_BASERELOC).ok_or(Error::Bounds)?;
 		let relocs = pe.derva_slice(datadir.VirtualAddress, datadir.Size as usize)?;
 		// Validate the relocations...
 		// All unsafe blocks in this module rely on this being correct, no pressure there.
@@ -55,11 +55,11 @@ impl<'a, P: Pe<'a> + Copy> BaseRelocs<'a, P> {
 		let mut it = relocs;
 		while it.len() != 0 {
 			if it.len() < mem::size_of::<IMAGE_BASE_RELOCATION>() {
-				return Err(Error::Corrupt);
+				return Err(Error::Invalid);
 			}
 			let image = unsafe { &*(it.as_ptr() as *const IMAGE_BASE_RELOCATION) };
 			if image.SizeOfBlock % 4 != 0 || image.SizeOfBlock as usize > it.len() {
-				return Err(Error::Corrupt);
+				return Err(Error::Invalid);
 			}
 			it = &it[image.SizeOfBlock as usize..];
 		}

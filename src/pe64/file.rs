@@ -41,11 +41,11 @@ impl<'a> PeFile<'a> {
 				return match section_bytes.get(section_offset..) {
 					Some(bytes) if bytes.len() >= min_size_of => Ok(bytes),
 					// Identify the reason the slice fails. cannot underflow, see $1
-					_ => Err(if min_size_of > (VirtualEnd - rva) as usize { Error::OOB } else { Error::ZeroFill }),
+					_ => Err(if min_size_of > (VirtualEnd - rva) as usize { Error::Bounds } else { Error::ZeroFill }),
 				};
 			}
 		}
-		Err(Error::OOB)
+		Err(Error::Bounds)
 	}
 	#[inline(never)]
 	fn slice_impl(self, rva: Rva, min_size_of: usize, align_of: usize) -> Result<&'a [u8]> {
@@ -54,7 +54,7 @@ impl<'a> PeFile<'a> {
 			Err(Error::Null)
 		}
 		else if usize::wrapping_add(self.image.as_ptr() as usize, rva as usize) & (align_of - 1) != 0 {
-			Err(Error::Misalign)
+			Err(Error::Misaligned)
 		}
 		else {
 			self.range_to_slice(rva, min_size_of)
@@ -71,12 +71,12 @@ impl<'a> PeFile<'a> {
 			Err(Error::Null)
 		}
 		else if va < image_base || va - image_base > size_of_image as Va {
-			Err(Error::OOB)
+			Err(Error::Bounds)
 		}
 		else {
 			let rva = (va - image_base) as Rva;
 			if usize::wrapping_add(self.image.as_ptr() as usize, rva as usize) & (align_of - 1) != 0 {
-				Err(Error::Misalign)
+				Err(Error::Misaligned)
 			}
 			else {
 				self.range_to_slice(rva, min_size_of)
@@ -120,6 +120,6 @@ mod tests {
 
 	#[test]
 	fn from_byte_slice() {
-		assert!(match PeFile::from_bytes(&[]) { Err(Error::OOB) => true, _ => false });
+		assert!(match PeFile::from_bytes(&[]) { Err(Error::Bounds) => true, _ => false });
 	}
 }
