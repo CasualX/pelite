@@ -59,7 +59,7 @@ impl<'a> PeView<'a> {
 		if rva == 0 {
 			Err(Error::Null)
 		}
-		else if start & (align_of - 1) != 0 {
+		else if usize::wrapping_add(self.image.as_ptr() as usize, start) & (align_of - 1) != 0 {
 			Err(Error::Misalign)
 		}
 		else {
@@ -83,7 +83,7 @@ impl<'a> PeView<'a> {
 		}
 		else {
 			let start = (va - image_base) as usize;
-			if start & (align_of - 1) != 0 {
+			if usize::wrapping_add(self.image.as_ptr() as usize, start) & (align_of - 1) != 0 {
 				Err(Error::Misalign)
 			}
 			else {
@@ -131,6 +131,6 @@ mod tests {
 
 	#[test]
 	fn from_byte_slice() {
-		assert!(match PeView::from_bytes(&[][..]) { Err(Error::OOB) => true, _ => false });
+		assert!(match PeView::from_bytes(&[]) { Err(Error::OOB) => true, _ => false });
 	}
 }

@@ -565,6 +565,10 @@ pub(crate) fn validate_headers(image: &[u8]) -> Result<u32> {
 	if mem::size_of::<IMAGE_DOS_HEADER>() > image.len() {
 		return Err(Error::OOB);
 	}
+	// Check basic alignment of the image bytes
+	if image.as_ptr() as usize % mem::size_of::<usize>() != 0 {
+		return Err(Error::Misalign);
+	}
 	let dos = unsafe { &*(image.as_ptr() as *const IMAGE_DOS_HEADER) };
 	// Verify the DOS header
 	if dos.e_magic != IMAGE_DOS_SIGNATURE {
