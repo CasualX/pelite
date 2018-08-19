@@ -53,7 +53,7 @@ impl<'a> PeFile<'a> {
 		if rva == 0 {
 			Err(Error::Null)
 		}
-		else if rva as usize & (align_of - 1) != 0 {
+		else if usize::wrapping_add(self.image.as_ptr() as usize, rva as usize) & (align_of - 1) != 0 {
 			Err(Error::Misalign)
 		}
 		else {
@@ -75,7 +75,7 @@ impl<'a> PeFile<'a> {
 		}
 		else {
 			let rva = (va - image_base) as Rva;
-			if rva as usize & (align_of - 1) != 0 {
+			if usize::wrapping_add(self.image.as_ptr() as usize, rva as usize) & (align_of - 1) != 0 {
 				Err(Error::Misalign)
 			}
 			else {
@@ -120,6 +120,6 @@ mod tests {
 
 	#[test]
 	fn from_byte_slice() {
-		assert!(match PeFile::from_bytes(&[][..]) { Err(Error::OOB) => true, _ => false });
+		assert!(match PeFile::from_bytes(&[]) { Err(Error::OOB) => true, _ => false });
 	}
 }
