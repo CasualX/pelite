@@ -366,6 +366,7 @@ fn parse_pat(pat: &str) -> Result<Pattern, PatError> {
 pub(crate) const MAX_SAVE: usize = 7;
 
 /// Pattern scan result.
+#[deprecated(note = "please use the functions `finds` and `finds_code` instead, which write directly to the user specified save array")]
 #[derive(Copy, Clone, Default, Eq, PartialEq, Debug)]
 #[repr(C)]
 pub struct Match(pub u32, pub u32, pub u32, pub u32, pub u32, pub u32, pub u32);

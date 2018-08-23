@@ -89,6 +89,7 @@ impl<'a, P: Pe<'a> + Copy> Scanner<P> {
 	/// Returns `None` if multiple matches are found to prevent subtle bugs where a pattern goes stale by not being unique any more.
 	///
 	/// Use `matches(pat, range).next()` if just the first match is desired.
+	#[deprecated(note = "please use `finds` instead")]
 	pub fn find(self, pat: &[pat::Atom], range: Range<Rva>) -> Option<pat::Match> {
 		let mut matches = self.matches(pat, range);
 		if let Some(found) = matches.next() {
@@ -105,6 +106,7 @@ impl<'a, P: Pe<'a> + Copy> Scanner<P> {
 	/// Finds the unique code match for the pattern.
 	///
 	/// Restricts the range to the code section. See [`find`](#find) for more information.
+	#[deprecated(note = "please use `finds_code` instead")]
 	pub fn find_code(self, pat: &[pat::Atom]) -> Option<pat::Match> {
 		let optional_header = self.pe.optional_header();
 		let range = optional_header.BaseOfCode..u32::wrapping_add(optional_header.BaseOfCode, optional_header.SizeOfCode);
@@ -399,6 +401,7 @@ impl<'a, 'u, P: Pe<'a> + Copy> Matches<'u, P> {
 		finder_section(self.scanner.pe, self.range.clone(), |it, slice| self.strategy(it, qsbuf, slice, save))
 	}
 }
+#[deprecated(note = "please use the functions `finds` and `finds_code` instead, which write directly to the user specified save array")]
 impl<'a, 'u, P: Pe<'a> + Copy> Iterator for Matches<'u, P> {
 	type Item = pat::Match;
 	fn next(&mut self) -> Option<pat::Match> {
