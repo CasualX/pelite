@@ -401,7 +401,7 @@ impl<'a, P: 'a + Pe<'a> + Copy> fmt::Debug for By<'a, P> {
 		f.debug_struct("Exports")
 			.field("dll_name", &format_args!("{:?}", self.dll_name()))
 			.field("time_date_stamp", &self.image.TimeDateStamp)
-			.field("version", &format_args!("{}.{}", self.image.MajorVersion, self.image.MinorVersion))
+			.field("version", &self.image.Version)
 			.field("ordinal_base", &self.ordinal_base())
 			.field("functions.len", &self.functions().len())
 			.field("names.len", &self.names.len())
@@ -476,7 +476,7 @@ mod serde {
 			let mut state = serializer.serialize_struct("Exports", 6)?;
 			state.serialize_field("dll_name", &self.dll_name().ok())?;
 			state.serialize_field("time_date_stamp", &self.image.TimeDateStamp)?;
-			state.serialize_field("version", &format_args!("{}.{}", self.image.MajorVersion, self.image.MinorVersion))?;
+			state.serialize_field("version", &self.image.Version)?;
 			state.serialize_field("ordinal_base", &self.ordinal_base())?;
 			state.serialize_field("functions", &self.functions())?;
 			let names = self.iter_name_indices().filter_map(|(name, index)| {

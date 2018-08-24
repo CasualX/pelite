@@ -405,11 +405,11 @@ mod serde {
 			#[cfg(feature = "data-encoding")]
 			(if is_human_readable {
 				let string = self.bytes().map(|bytes| ::data_encoding::BASE64.encode(bytes));
-				state.serialize_field("bytes", &string.as_ref().ok())?;
+				state.serialize_field("bytes", &string.as_ref().ok())
 			}
 			else {
-				state.serialize_field("bytes", &self.bytes().ok())?;
-			});
+				state.serialize_field("bytes", &self.bytes().ok())
+			})?;
 			#[cfg(not(feature = "data-encoding"))]
 			state.serialize_field("bytes", &self.bytes().ok())?;
 			state.end()

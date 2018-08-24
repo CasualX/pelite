@@ -9,7 +9,6 @@ use util::{CStr, Pod, FromBytes};
 
 use super::image::*;
 use super::Ptr;
-use super::headers::Headers;
 
 //----------------------------------------------------------------
 
@@ -78,13 +77,8 @@ pub unsafe trait Pe<'a> {
 		}
 	}
 	/// Returns the pe headers together in a single struct.
-	fn headers(self) -> Headers<'a> where Self: Copy {
-		Headers {
-			DosHeader: self.dos_header(),
-			NtHeaders: self.nt_headers(),
-			DataDirectory: self.data_directory(),
-			SectionHeaders: self.section_headers()
-		}
+	fn headers(self) -> super::headers::Headers<Self> where Self: Copy {
+		super::headers::Headers::new(self)
 	}
 
 	// Give a struct name in Serialize implementation

@@ -144,6 +144,22 @@ pub const IMAGE_NUMBEROF_DIRECTORY_ENTRIES: usize   = 16;
 
 //----------------------------------------------------------------
 
+// Helper struct, makes serialization nicer
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
+#[repr(C)]
+pub struct IMAGE_VERSION<T> {
+	pub Major: T,
+	pub Minor: T,
+}
+#[cfg(feature = "serde")]
+impl<T: ::std::fmt::Display> ::serde::Serialize for IMAGE_VERSION<T> {
+	fn serialize<S: ::serde::Serializer>(&self, serializer: S) -> ::std::result::Result<S::Ok, S::Error> {
+		serializer.collect_str(&format_args!("{}.{}", self.Major, self.Minor))
+	}
+}
+
+//----------------------------------------------------------------
+
 pub const IMAGE_NT_OPTIONAL_HDR32_MAGIC: u16 = 0x10b;
 pub const IMAGE_NT_OPTIONAL_HDR64_MAGIC: u16 = 0x20b;
 pub const IMAGE_ROM_OPTIONAL_HDR_MAGIC: u16  = 0x107;
@@ -179,8 +195,7 @@ pub const IMAGE_DLLCHARACTERISTICS_TERMINAL_SERVER_AWARE: u16 = 0x8000;
 #[repr(C)]
 pub struct IMAGE_OPTIONAL_HEADER32 {
 	pub Magic: u16,
-	pub MajorLinkerVersion: u8,
-	pub MinorLinkerVersion: u8,
+	pub LinkerVersion: IMAGE_VERSION<u8>,
 	pub SizeOfCode: u32,
 	pub SizeOfInitializedData: u32,
 	pub SizeOfUninitializedData: u32,
@@ -190,12 +205,9 @@ pub struct IMAGE_OPTIONAL_HEADER32 {
 	pub ImageBase: u32,
 	pub SectionAlignment: u32,
 	pub FileAlignment: u32,
-	pub MajorOperatingSystemVersion: u16,
-	pub MinorOperatingSystemVersion: u16,
-	pub MajorImageVersion: u16,
-	pub MinorImageVersion: u16,
-	pub MajorSubsystemVersion: u16,
-	pub MinorSubsystemVersion: u16,
+	pub OperatingSystemVersion: IMAGE_VERSION<u16>,
+	pub ImageVersion: IMAGE_VERSION<u16>,
+	pub SubsystemVersion: IMAGE_VERSION<u16>,
 	pub Win32VersionValue: u32,
 	pub SizeOfImage: u32,
 	pub SizeOfHeaders: u32,
@@ -217,8 +229,7 @@ pub struct IMAGE_OPTIONAL_HEADER32 {
 #[repr(C)]
 pub struct IMAGE_OPTIONAL_HEADER64 {
 	pub Magic: u16,
-	pub MajorLinkerVersion: u8,
-	pub MinorLinkerVersion: u8,
+	pub LinkerVersion: IMAGE_VERSION<u8>,
 	pub SizeOfCode: u32,
 	pub SizeOfInitializedData: u32,
 	pub SizeOfUninitializedData: u32,
@@ -227,12 +238,9 @@ pub struct IMAGE_OPTIONAL_HEADER64 {
 	pub ImageBase: u64,
 	pub SectionAlignment: u32,
 	pub FileAlignment: u32,
-	pub MajorOperatingSystemVersion: u16,
-	pub MinorOperatingSystemVersion: u16,
-	pub MajorImageVersion: u16,
-	pub MinorImageVersion: u16,
-	pub MajorSubsystemVersion: u16,
-	pub MinorSubsystemVersion: u16,
+	pub OperatingSystemVersion: IMAGE_VERSION<u16>,
+	pub ImageVersion: IMAGE_VERSION<u16>,
+	pub SubsystemVersion: IMAGE_VERSION<u16>,
 	pub Win32VersionValue: u32,
 	pub SizeOfImage: u32,
 	pub SizeOfHeaders: u32,
@@ -336,8 +344,7 @@ pub struct IMAGE_SECTION_HEADER {
 pub struct IMAGE_EXPORT_DIRECTORY {
 	pub Characteristics: u32,
 	pub TimeDateStamp: u32,
-	pub MajorVersion: u16,
-	pub MinorVersion: u16,
+	pub Version: IMAGE_VERSION<u16>,
 	pub Name: u32,
 	pub Base: u32,
 	pub NumberOfFunctions: u32,
@@ -399,8 +406,7 @@ pub const RT_MANIFEST: u16     = 24;
 pub struct IMAGE_RESOURCE_DIRECTORY {
 	pub Characteristics: u32,
 	pub TimeDateStamp: u32,
-	pub MajorVersion: u16,
-	pub MinorVersion: u16,
+	pub Version: IMAGE_VERSION<u16>,
 	pub NumberOfNamedEntries: u16,
 	pub NumberOfIdEntries: u16,
 }
@@ -465,8 +471,7 @@ pub struct IMAGE_BASE_RELOCATION {
 pub struct IMAGE_LOAD_CONFIG_DIRECTORY32 {
 	pub Size: u32,
 	pub TimeDateStamp: u32,
-	pub MajorVersion: u16,
-	pub MinorVersion: u16,
+	pub Version: IMAGE_VERSION<u16>,
 	pub GlobalFlagsClear: u32,
 	pub GlobalFlagsSet: u32,
 	pub CriticalSectionDefaultTimeout: u32,
@@ -491,8 +496,7 @@ pub struct IMAGE_LOAD_CONFIG_DIRECTORY32 {
 pub struct IMAGE_LOAD_CONFIG_DIRECTORY64 {
 	pub Size: u32,
 	pub TimeDateStamp: u32,
-	pub MajorVersion: u16,
-	pub MinorVersion: u16,
+	pub Version: IMAGE_VERSION<u16>,
 	pub GlobalFlagsClear: u32,
 	pub GlobalFlagsSet: u32,
 	pub CriticalSectionDefaultTimeout: u32,
@@ -775,8 +779,7 @@ pub const IMAGE_DEBUG_TYPE_CLSID: u32 = 11;
 pub struct IMAGE_DEBUG_DIRECTORY {
 	pub Characteristics: u32,
 	pub TimeDateStamp: u32,
-	pub MajorVersion: u16,
-	pub MinorVersion: u16,
+	pub Version: IMAGE_VERSION<u16>,
 	pub Type: u32,
 	pub SizeOfData: u32,
 	pub AddressOfRawData: u32,
