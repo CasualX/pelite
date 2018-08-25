@@ -60,16 +60,13 @@ impl<'a, P: Pe<'a> + Copy> Headers<P> {
 		"SectionHeaders": [ .. ]
 		"details": {
 			"DosHeader.e_magic": "MZ",
-			"NtHeaders.Signature": "PE32+",
-			"NtHeaders.FileHeader.Machine": "AMD",
-			"NtHeaders.FileHeader.Characteristics": [],
-			"DataDirectory[0].Name": "Exports",
-			"DataDirectory[0].Section": 1,
-			"DataDirectory[1].Name": "Imports",
-			"DataDirectory[1].Section": 1,
-			"SectionHeaders[0].Characteristics": ["exe", "read", "write"],
-			"SectionHeaders[1].Characteristics": ["exe", "read"],
-			"SectionHeaders[2].Characteristics": ["read", "write"],
+			"NtHeaders.Signature": "PE",
+			"FileHeader.Machine": "AMD",
+			"FileHeader.Characteristics": [],
+			"OptionalHeader.Magic": "PE32+",
+			"DataDirectory.Names": ["Exports", "Imports", ..],
+			"DataDirectory.Sections": [1, 1, ..],
+			"SectionHeaders.Characteristics": [["executable", "read", "write"], ["read"], ["read", "write"]],
 		}
 	}
 */
@@ -106,37 +103,36 @@ mod serde {
 	struct Details<P> { pe: P }
 	impl<'a, P: Pe<'a> + Copy> Serialize for Details<P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-			let mut state = serializer.serialize_map(None)?;
+			let mut state = serializer.serialize_struct("Details", 11)?;
 
-			// let dos_header = self.pe.dos_header();
-			state.serialize_entry("DosHeader.e_magic", "MZ")?;
-			// let nt_headers = self.pe.nt_headers();
-			state.serialize_entry("NtHeaders.Signature", "PE")?;
+			state.serialize_field("DosHeader.e_magic", "MZ")?;
+			state.serialize_field("NtHeaders.Signature", "PE")?;
 
 			let file_header = self.pe.file_header();
-			state.serialize_entry("NtHeaders.FileHeader.Machine", &stringify::machine(file_header.Machine))?;
-			// state.serialize_entry("NtHeaders.FileHeader.TimeDateStamp", "timestamp")?;
+			state.serialize_field("FileHeader.Machine", &stringify::machine(file_header.Machine))?;
 			let file_chars = (0..16).filter(|&i| file_header.Characteristics & (1 << i) != 0).map(stringify::file_chars);
-			state.serialize_entry("NtHeaders.FileHeader.Characteristics", &SerdeIter(file_chars))?;
+			state.serialize_field("FileHeader.Characteristics", &SerdeIter(file_chars))?;
 
 			let optional_header = self.pe.optional_header();
-			state.serialize_entry("NtHeaders.OptionalHeader.Magic", &stringify::optional_magic(optional_header.Magic))?;
-			state.serialize_entry("NtHeaders.OptionalHeader.CheckSum", &Headers { pe: self.pe }.check_sum())?;
-			state.serialize_entry("NtHeaders.OptionalHeader.Subsystem", &stringify::subsystem(optional_header.Subsystem))?;
+			state.serialize_field("OptionalHeader.Magic", &stringify::optional_magic(optional_header.Magic))?;
+			state.serialize_field("OptionalHeader.CheckSum", &Headers { pe: self.pe }.check_sum())?;
+			state.serialize_field("OptionalHeader.Subsystem", &stringify::subsystem(optional_header.Subsystem))?;
 			let dll_chars = (0..16).filter(|&i| optional_header.DllCharacteristics & (1 << i) != 0).map(stringify::dll_chars);
-			state.serialize_entry("NtHeaders.OptionalHeader.DllCharacteristics", &SerdeIter(dll_chars))?;
+			state.serialize_field("OptionalHeader.DllCharacteristics", &SerdeIter(dll_chars))?;
 
-			let sections = self.pe.section_headers();
-			for (i, dd) in self.pe.data_directory().iter().enumerate() {
-				state.serialize_entry(&format_args!("DataDirectory[{}].Name", i), &stringify::directory_entry(i))?;
-				let sect_index = sections.iter().position(|&sect| dd.VirtualAddress >= sect.VirtualAddress && dd.VirtualAddress < sect.VirtualAddress + sect.VirtualSize);
-				state.serialize_entry(&format_args!("DataDirectory[{}].Section", i), &sect_index)?;
-			}
+			let data_directory_names = (0..self.pe.data_directory().len()).map(stringify::directory_entry);
+			state.serialize_field("DataDirectory.Names", &SerdeIter(data_directory_names))?;
 
-			for (i, sect) in self.pe.section_headers().iter().enumerate() {
-				let sect_chars = (0..32).filter(|&i| sect.Characteristics & (1 << i) != 0).map(stringify::section_chars);
-				state.serialize_entry(&format_args!("SectionHeaders[{}].Characteristics", i), &SerdeIter(sect_chars))?;
-			}
+			let data_directory_sects = self.pe.data_directory().iter().map(|dd| {
+				self.pe.section_headers().iter().position(|&sect| dd.VirtualAddress >= sect.VirtualAddress && dd.VirtualAddress < sect.VirtualAddress + sect.VirtualSize)
+			});
+			state.serialize_field("DataDirectory.Sections", &SerdeIter(data_directory_sects))?;
+
+			let sect_chars = self.pe.section_headers().iter().map(|sect| {
+				let chars = sect.Characteristics;
+				SerdeIter((0..32).filter(move |&i| chars & (1 << i) != 0).map(stringify::section_chars))
+			});
+			state.serialize_field("SectionHeaders.Characteristics", &SerdeIter(sect_chars))?;
 
 			state.end()
 		}

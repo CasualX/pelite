@@ -168,7 +168,7 @@ pub fn directory_entry(entry: usize) -> Option<&'static str> {
 		IMAGE_DIRECTORY_ENTRY_RESOURCE => Some("Resource"),
 		IMAGE_DIRECTORY_ENTRY_EXCEPTION => Some("Exception"),
 		IMAGE_DIRECTORY_ENTRY_SECURITY => Some("Security"),
-		IMAGE_DIRECTORY_ENTRY_BASERELOC => Some("BaseReloc"),
+		IMAGE_DIRECTORY_ENTRY_BASERELOC => Some("Base Relocations"),
 		IMAGE_DIRECTORY_ENTRY_DEBUG => Some("Debug"),
 		IMAGE_DIRECTORY_ENTRY_ARCHITECTURE => Some("Architecture"),
 		IMAGE_DIRECTORY_ENTRY_GLOBALPTR => Some("GlobalPtr"),
