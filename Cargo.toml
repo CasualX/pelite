@@ -20,6 +20,7 @@ license = "MIT"
 default = ["mmap"]
 unsafe_alignment = []
 mmap = ["libc", "winapi"]
+apps = []
 
 [badges]
 appveyor = { repository = "CasualX/pelite", branch = "master", service = "github" }

@@ -23,6 +23,9 @@ pub mod stringify;
 
 pub mod pattern;
 
+#[cfg(feature = "apps")]
+pub mod apps;
+
 mod error;
 pub use self::error::{Error, Result};
 
