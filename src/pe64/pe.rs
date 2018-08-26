@@ -585,11 +585,17 @@ pub(crate) fn validate_headers(image: &[u8]) -> Result<u32> {
 	}
 	let nt = unsafe { &*(image.as_ptr().offset(dos.e_lfanew as isize) as *const IMAGE_NT_HEADERS) };
 	// Verify the NT headers
-	if nt.Signature != IMAGE_NT_HEADERS_SIGNATURE || nt.OptionalHeader.Magic != IMAGE_NT_OPTIONAL_HDR_MAGIC {
+	if nt.Signature != IMAGE_NT_HEADERS_SIGNATURE ||
+		!(nt.OptionalHeader.Magic == IMAGE_NT_OPTIONAL_HDR32_MAGIC || nt.OptionalHeader.Magic == IMAGE_NT_OPTIONAL_HDR64_MAGIC)
+	{
 		return Err(Error::BadMagic);
 	}
 	if nt.OptionalHeader.SizeOfHeaders > nt.OptionalHeader.SizeOfImage {
 		return Err(Error::Insanity);
+	}
+	// Give the caller a chance to retry with the correct parser
+	if nt.OptionalHeader.Magic != IMAGE_NT_OPTIONAL_HDR_MAGIC {
+		return Err(Error::PeMagic);
 	}
 
 	// Verify the data directory

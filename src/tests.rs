@@ -2,17 +2,17 @@
 Run tests on a variety of cute binaries.
  */
 
-use {pe32, pe64, Error};
+use {pe32, pe64, PeFile};
 
 #[path = "../tests/pocs/pocs.rs"]
 mod pocs;
 
 macro_rules! test {
 	($image:expr, $module:ident) => {
-		match pe32::PeFile::from_bytes(&$image) {
-			Ok(image) => pe32::$module::test(image),
-			Err(err) if err == Error::BadMagic => pe64::PeFile::from_bytes(&$image).and_then(pe64::$module::test),
-			err => err.map(|_| ()),
+		match PeFile::from_bytes(&$image) {
+			Ok(PeFile::Pe32(pe)) => pe32::$module::test(pe),
+			Ok(PeFile::Pe64(pe)) => pe64::$module::test(pe),
+			Err(err) => Err(err),
 		}
 	};
 }

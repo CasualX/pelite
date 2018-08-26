@@ -32,10 +32,10 @@ pub enum Error {
 	Unmapped,
 	/// Address is misaligned.
 	Misaligned,
-	/// Magic number does not match the expected value.
-	///
-	/// Most commonly indicate non-PE files or trying to load a PE32 file with a PE32+ parsers or vice versa.
+	/// Expected magic number does not match.
 	BadMagic,
+	/// Trying to load a PE32 file with a PE32+ parser or vice versa.
+	PeMagic,
 	/// Sanity check failed.
 	///
 	/// Some value was so far outside its typical range, while not technically incorrect, probably indicating something went wrong.
@@ -88,6 +88,7 @@ impl fmt::Display for Error {
 			Error::Unmapped => f.write_str("Overlay data reference"),
 			Error::Misaligned => f.write_str("Address misaligned"),
 			Error::BadMagic => f.write_str("Unknown magic number"),
+			Error::PeMagic => f.write_str("Retry with the correct parser"),
 			Error::Insanity => f.write_str("Data insanity"),
 			Error::Invalid => f.write_str("Invalid data"),
 			Error::Overflow => f.write_str("Overflow error"),
@@ -105,6 +106,7 @@ impl error::Error for Error {
 			Error::Unmapped => "unmapped",
 			Error::Misaligned => "misaligned",
 			Error::BadMagic => "bad magic",
+			Error::PeMagic => "incorrect bitness",
 			Error::Insanity => "insanity",
 			Error::Invalid => "invalid data",
 			Error::Overflow => "overflow error",
