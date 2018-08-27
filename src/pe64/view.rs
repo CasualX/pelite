@@ -18,7 +18,7 @@ pub struct PeView<'a> {
 
 current_target! {
 	impl PeView<'static> {
-		/// Creates a new instance of PeView of the module this code is executing in.
+		/// Constructs a view of the module this code is executing in.
 		#[inline]
 		pub unsafe fn new() -> PeView<'static> {
 			Self::module(image_base() as *const _ as *const u8)
@@ -26,7 +26,24 @@ current_target! {
 	}
 }
 impl<'a> PeView<'a> {
-	/// Try to read the given bytes as a mapped PE image.
+	/// Constructs a view from a byte slice.
+	///
+	/// # Errors
+	///
+	/// * [`Bounds`](../enum.Error.html#variant.Bounds):
+	///   The byte slice is too small to fit the PE headers.
+	///
+	/// * [`Misaligned`](../enum.Error.html#variant.Misaligned):
+	///   The minimum alignment of 4 is not satisfied.
+	///
+	/// * [`BadMagic`](../enum.Error.html#variant.BadMagic):
+	///   This is not a PE file
+	///
+	/// * [`PeMagic`](../enum.Error.html#variant.PeMagic):
+	///   Trying to parse a PE32 file with the PE32+ parser and vice versa.
+	///
+	/// * [`Insanity`](../enum.Error.html#variant.Insanity):
+	///   Reasonable limits on `e_lfanew`, `SizeOfHeaders` or `NumberOfSections` are exceeded.
 	pub fn from_bytes<T: AsRef<[u8]> + ?Sized>(image: &'a T) -> Result<PeView<'a>> {
 		let image = image.as_ref();
 		let size_of_image = validate_headers(image)?;
@@ -37,11 +54,12 @@ impl<'a> PeView<'a> {
 		}
 		Ok(PeView { image })
 	}
-	/// Creates a new instance of `PeView` of a mapped image.
+	/// Constructs a new view from module handle.
 	///
 	/// # Safety
 	///
-	/// The underlying memory is borrowed and an unbounded lifetime is returned. Make sure it outlives this PeView instance!
+	/// The underlying memory is borrowed and an unbounded lifetime is returned.
+	/// Ensure the lifetime outlives this view instance!
 	///
 	/// No sanity or safety checks are done to make sure this is really PE32(+) image.
 	/// When using this with a `HMODULE` from the system the caller must be sure this is a PE32(+) image.

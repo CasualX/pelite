@@ -560,7 +560,7 @@ pub(crate) fn validate_headers(image: &[u8]) -> Result<u32> {
 		return Err(Error::Bounds);
 	}
 	// Check basic alignment of the image bytes
-	if image.as_ptr() as usize % mem::size_of::<usize>() != 0 {
+	if image.as_ptr() as usize % 4 != 0 {
 		return Err(Error::Misaligned);
 	}
 	let dos = unsafe { &*(image.as_ptr() as *const IMAGE_DOS_HEADER) };

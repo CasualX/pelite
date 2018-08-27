@@ -1,10 +1,12 @@
 use *;
 
+/// View into an unmapped PE32 or PE32+ file.
 pub enum PeFile<'a> {
 	Pe32(pe32::PeFile<'a>),
 	Pe64(pe64::PeFile<'a>),
 }
 impl<'a> PeFile<'a> {
+	/// Constructs a PeFile from byte slice.
 	pub fn from_bytes<T: AsRef<[u8]> + ?Sized>(image: &'a T) -> Result<PeFile<'a>> {
 		match pe64::PeFile::from_bytes(image) {
 			Ok(file) => Ok(PeFile::Pe64(file)),

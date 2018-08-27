@@ -28,7 +28,7 @@ pub enum Error {
 	///
 	/// Sections can have excess in their raw data which won't be mapped when loaded by the system.
 	/// This error happens when attempting to get a reference to such unmapped raw data.
-	/// Sometimes this kind of excess is called the PE file having an overlay.
+	/// Sometimes this kind of excess is called an overlay.
 	Unmapped,
 	/// Address is misaligned.
 	Misaligned,
