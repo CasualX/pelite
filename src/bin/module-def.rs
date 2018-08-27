@@ -44,8 +44,11 @@ fn main() {
 		match pelite::FileMap::open(&dll) {
 			Ok(map) => {
 				// Try PE32 and PE32+
-				let result = pelite::pe32::PeFile::from_bytes(&map).map(lib_pe32)
-					.or_else(|_| pelite::pe64::PeFile::from_bytes(&map).map(lib_pe64));
+				let result = match pelite::PeFile::from_bytes(&map) {
+					Ok(pelite::PeFile::Pe32(pe)) => lib_pe32(pe),
+					Ok(pelite::PeFile::Pe64(pe)) => lib_pe64(pe),
+					Err(err) => Err(err),
+				};
 				// Display errors
 				if let Err(err) = result {
 					eprintln!("module-def: {}", err);

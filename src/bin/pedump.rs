@@ -9,7 +9,7 @@ use std::io::{self, Write};
 use std::path::PathBuf;
 use std::process;
 
-use pelite::FileMap;
+use pelite::{FileMap, PeFile};
 
 //----------------------------------------------------------------
 
@@ -196,16 +196,14 @@ fn main() {
 	let map = FileMap::open(&args.path).unwrap_or_else(|e| {
 		abort(&format!("{:?}", e));
 	});
-	// Try to print as PE32+
-	if let Err(_) = pelite::pe64::PeFile::from_bytes(&map).map(|file| dump_pe64(&args, &file)) {
-		// If that fails try PE32
-		pelite::pe32::PeFile::from_bytes(&map).map(|file| dump_pe32(&args, &file)).unwrap_or_else(|e| {
-			abort(&format!("{:?}", e));
-		});
+	match PeFile::from_bytes(&map) {
+		Ok(PeFile::Pe32(file)) => dump_pe32(&args, file),
+		Ok(PeFile::Pe64(file)) => dump_pe64(&args, file),
+		Err(err) => abort(&format!("{}", err)),
 	}
 }
 
-fn dump_pe64(args: &Parameters, file: &pelite::pe64::PeFile) {
+fn dump_pe64(args: &Parameters, file: pelite::pe64::PeFile) {
 	use pelite::pe64::Pe;
 	if args.dos {
 		let dos = file.dos_header();
@@ -286,7 +284,7 @@ fn dump_pe64(args: &Parameters, file: &pelite::pe64::PeFile) {
 	}
 }
 
-fn dump_pe32(args: &Parameters, file: &pelite::pe32::PeFile) {
+fn dump_pe32(args: &Parameters, file: pelite::pe32::PeFile) {
 	use pelite::pe32::Pe;
 	if args.dos {
 		let dos = file.dos_header();

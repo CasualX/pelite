@@ -40,35 +40,40 @@ fn main() {
 		println!("generating markov data from {:?}...", file);
 		match pelite::FileMap::open(&file) {
 			Ok(file_map) => {
-				// Try to parse as a PE32 file
-				if let Ok(pe) = pelite::pe32::PeFile::from_bytes(&file_map) {
-					use pelite::pe32::Pe;
-					// Find the binary code bytes
-					let code_section = pe.section_headers().iter().find(|&s| s.Characteristics & 0xE0000000 == 0x60000000).unwrap();
-					let bytes = match pe.derva_slice(code_section.VirtualAddress, code_section.VirtualSize as usize) {
-						Ok(bytes) => bytes,
-						Err(e) => {
-							eprintln!("cannot read code from {:?}: {}", file, e);
-							continue;
-						},
-					};
-					// Mix the markov data from this binary
-					analyze(bytes, &mut markov_data);
-				}
-				// Otherwise try to parse as a PE32+ file
-				else if let Ok(pe) = pelite::pe64::PeFile::from_bytes(&file_map) {
-					use pelite::pe64::Pe;
-					// Find the binary code bytes
-					let code_section = pe.section_headers().iter().find(|&s| s.Characteristics & 0xE0000000 == 0x60000000).unwrap();
-					let bytes = match pe.derva_slice(code_section.VirtualAddress, code_section.VirtualSize as usize) {
-						Ok(bytes) => bytes,
-						Err(e) => {
-							eprintln!("cannot read code from {:?}: {}", file, e);
-							continue;
-						},
-					};
-					// Mix the markov data from this binary
-					analyze(bytes, &mut markov_data);
+				match pelite::PeFile::from_bytes(&file_map) {
+					// Try to parse as a PE32 file
+					Ok(pelite::PeFile::Pe32(pe)) => {
+						use pelite::pe32::Pe;
+						// Find the binary code bytes
+						let code_section = pe.section_headers().iter().find(|&s| s.Characteristics & 0xE0000000 == 0x60000000).unwrap();
+						let bytes = match pe.derva_slice(code_section.VirtualAddress, code_section.VirtualSize as usize) {
+							Ok(bytes) => bytes,
+							Err(e) => {
+								eprintln!("cannot read code from {:?}: {}", file, e);
+								continue;
+							},
+						};
+						// Mix the markov data from this binary
+						analyze(bytes, &mut markov_data);
+					},
+					// Otherwise try to parse as a PE32+ file
+					Ok(pelite::PeFile::Pe64(pe)) => {
+						use pelite::pe64::Pe;
+						// Find the binary code bytes
+						let code_section = pe.section_headers().iter().find(|&s| s.Characteristics & 0xE0000000 == 0x60000000).unwrap();
+						let bytes = match pe.derva_slice(code_section.VirtualAddress, code_section.VirtualSize as usize) {
+							Ok(bytes) => bytes,
+							Err(e) => {
+								eprintln!("cannot read code from {:?}: {}", file, e);
+								continue;
+							},
+						};
+						// Mix the markov data from this binary
+						analyze(bytes, &mut markov_data);
+					},
+					Err(err) => {
+						eprintln!("cannot parse file {:?}: {}", file, err);
+					},
 				}
 			},
 			Err(e) => {

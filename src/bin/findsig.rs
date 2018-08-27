@@ -37,29 +37,31 @@ fn main() {
 		// Map the file into memory
 		let file_map = pelite::FileMap::open(&file_path).expect("cannot open the input file");
 
-		// Try reading as PE32
-		if let Ok(pe) = pe32::PeFile::from_bytes(&file_map) {
-			process_patterns(args, &mut |pattern, save| {
-				let scanner = pe32::Pe::scanner(pe);
-				let mut matches = scanner.matches_code(pattern);
-				while matches.next_match(save) {
-					print_match(file_name, save);
-				}
-			});
-		}
-		// Try reading as PE32+
-		else if let Ok(pe) = pe64::PeFile::from_bytes(&file_map) {
-			process_patterns(args, &mut |pattern, save| {
-				let scanner = pe64::Pe::scanner(pe);
-				let mut matches = scanner.matches_code(pattern);
-				while matches.next_match(save) {
-					print_match(file_name, save);
-				}
-			});
-		}
-		// Must be a valid PE binary
-		else {
-			panic!("file is not a valid PE binary");
+		match pelite::PeFile::from_bytes(&file_map) {
+			// Try reading as PE32
+			Ok(pelite::PeFile::Pe32(file)) => {
+				process_patterns(args, &mut |pattern, save| {
+					let scanner = pe32::Pe::scanner(file);
+					let mut matches = scanner.matches_code(pattern);
+					while matches.next_match(save) {
+						print_match(file_name, save);
+					}
+				});
+			},
+			// Try reading as PE32+
+			Ok(pelite::PeFile::Pe64(file)) => {
+				process_patterns(args, &mut |pattern, save| {
+					let scanner = pe64::Pe::scanner(file);
+					let mut matches = scanner.matches_code(pattern);
+					while matches.next_match(save) {
+						print_match(file_name, save);
+					}
+				});
+			},
+			// Must be a valid PE file
+			Err(err) => {
+				panic!("Not a valid PE file: {}", err);
+			},
 		}
 	}
 	else {

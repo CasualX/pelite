@@ -17,7 +17,24 @@ pub struct PeFile<'a> {
 }
 
 impl<'a> PeFile<'a> {
-	/// Try to read the given bytes as an unmapped PE file.
+	/// Constructs a file view from a byte slice.
+	///
+	/// # Errors
+	///
+	/// * [`Bounds`](../enum.Error.html#variant.Bounds):
+	///   The byte slice is too small to fit the PE headers.
+	///
+	/// * [`Misaligned`](../enum.Error.html#variant.Misaligned):
+	///   The minimum alignment of 4 is not satisfied.
+	///
+	/// * [`BadMagic`](../enum.Error.html#variant.BadMagic):
+	///   This is not a PE file.
+	///
+	/// * [`PeMagic`](../enum.Error.html#variant.PeMagic):
+	///   Trying to parse a PE32 file with the PE32+ parser and vice versa.
+	///
+	/// * [`Insanity`](../enum.Error.html#variant.Insanity):
+	///   Reasonable limits on `e_lfanew`, `SizeOfHeaders` or `NumberOfSections` are exceeded.
 	pub fn from_bytes<T: AsRef<[u8]> + ?Sized>(image: &'a T) -> Result<PeFile<'a>> {
 		let image = image.as_ref();
 		let _ = validate_headers(image)?;
@@ -33,9 +50,9 @@ impl<'a> PeFile<'a> {
 			let VirtualEnd = it.VirtualAddress.wrapping_add(cmp::max(it.VirtualSize, it.SizeOfRawData));
 			if it.VirtualAddress <= rva && rva < VirtualEnd { // $1
 				// Isolate and range check the pointer and size of raw data
-				// If this fails immediately abort and return overflow error
+				// If this fails immediately abort and return an error
 				let section_range = it.PointerToRawData as usize..it.PointerToRawData.wrapping_add(it.SizeOfRawData) as usize;
-				let section_bytes = self.image.get(section_range).ok_or(Error::Overflow)?;
+				let section_bytes = self.image.get(section_range).ok_or(Error::Invalid)?;
 				// Calculate the offset in the section requested. cannot underflow, see $1
 				let section_offset = (rva - it.VirtualAddress) as usize;
 				return match section_bytes.get(section_offset..) {
