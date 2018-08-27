@@ -358,9 +358,9 @@ pub unsafe trait Pe<'a> {
 	// Deref impls for `Ptr`s
 
 	/// Dereferences the pointer to a pod `T`.
-	fn deref<T, P>(self, ptr: P) -> Result<&'a T> where Self: Copy, T: Pod, P: Into<Ptr<T>> {
+	fn deref<T>(self, ptr: Ptr<T>) -> Result<&'a T> where Self: Copy, T: Pod {
 		let align = if cfg!(feature = "unsafe_alignment") { 1 } else { mem::align_of::<T>() };
-		let bytes = self.read(ptr.into().into(), mem::size_of::<T>(), align)?;
+		let bytes = self.read(ptr.into(), mem::size_of::<T>(), align)?;
 		// This is safe as per Pod bound, min_size_of and align
 		unsafe {
 			let p = &*(bytes.as_ptr() as *const T);
@@ -368,8 +368,8 @@ pub unsafe trait Pe<'a> {
 		}
 	}
 	/// Dereferences the pointer to an unaligned pod `T`.
-	fn deref_copy<T, P>(self, ptr: P) -> Result<T> where Self: Copy, T: Copy + Pod, P: Into<Ptr<T>> {
-		let bytes = self.read(ptr.into().into(), mem::size_of::<T>(), 1)?;
+	fn deref_copy<T>(self, ptr: Ptr<T>) -> Result<T> where Self: Copy, T: Copy + Pod {
+		let bytes = self.read(ptr.into(), mem::size_of::<T>(), 1)?;
 		// This is safe as per Pod bound and min_size_of
 		unsafe {
 			let p = bytes.as_ptr() as *const T;
@@ -377,10 +377,10 @@ pub unsafe trait Pe<'a> {
 		}
 	}
 	/// Reads an array of pod `T` with given length.
-	fn deref_slice<T, P>(self, ptr: P, len: usize) -> Result<&'a [T]> where Self: Copy, T: Pod, P: Into<Ptr<[T]>> {
+	fn deref_slice<T>(self, ptr: Ptr<[T]>, len: usize) -> Result<&'a [T]> where Self: Copy, T: Pod {
 		let min_size_of = mem::size_of::<T>().checked_mul(len).ok_or(Error::Overflow)?;
 		let align = if cfg!(feature = "unsafe_alignment") { 1 } else { mem::align_of::<T>() };
-		let bytes = self.read(ptr.into().into(), min_size_of, align)?;
+		let bytes = self.read(ptr.into(), min_size_of, align)?;
 		// This is safe as per Pod bound, min_size_of and align
 		unsafe {
 			Ok(slice::from_raw_parts(bytes.as_ptr() as *const T, len))
@@ -392,9 +392,9 @@ pub unsafe trait Pe<'a> {
 	/// The length of the array is the index when the callable `f` returns `true`.
 	///
 	/// The returned slice contains all `T` up to but not including the element for which the callable returned `true`.
-	fn deref_slice_f<T, P, F>(self, ptr: P, mut f: F) -> Result<&'a [T]> where Self: Copy, T: Pod, P: Into<Ptr<[T]>>, F: FnMut(&'a T) -> bool {
+	fn deref_slice_f<T, F>(self, ptr: Ptr<[T]>, mut f: F) -> Result<&'a [T]> where Self: Copy, T: Pod, F: FnMut(&'a T) -> bool {
 		let align = if cfg!(feature = "unsafe_alignment") { 1 } else { mem::align_of::<T>() };
-		let bytes = self.read(ptr.into().into(), 0, align)?;
+		let bytes = self.read(ptr.into(), 0, align)?;
 		let mut len = 0;
 		loop {
 			// Safety critical OOB check
@@ -419,16 +419,16 @@ pub unsafe trait Pe<'a> {
 	/// The length of the array is determined by a [sentinel value](https://en.wikipedia.org/wiki/Sentinel_value), a special value of `T` which marks the end of the array.
 	///
 	/// The returned slice contains all `T` up to but not including the sentinel value.
-	fn deref_slice_s<T, P>(self, ptr: P, sentinel: T) -> Result<&'a [T]> where Self: Copy, T: PartialEq + Pod, P: Into<Ptr<[T]>> {
+	fn deref_slice_s<T>(self, ptr: Ptr<[T]>, sentinel: T) -> Result<&'a [T]> where Self: Copy, T: PartialEq + Pod {
 		self.deref_slice_f(ptr, |tee| *tee == sentinel)
 	}
 	/// Dereferences the pointer to a nul-terminated C string.
-	fn deref_c_str<P>(self, ptr: P) -> Result<&'a CStr> where Self: Copy, P: Into<Ptr<CStr>> {
+	fn deref_c_str(self, ptr: Ptr<CStr>) -> Result<&'a CStr> where Self: Copy {
 		self.deref_string(ptr)
 	}
 	/// Dereferences the pointer to a string.
-	fn deref_string<T, P>(self, ptr: P) -> Result<&'a T> where Self: Copy, P: Into<Ptr<T>>, T: FromBytes + ?Sized {
-		let bytes = self.read(ptr.into().into(), T::MIN_SIZE_OF, T::ALIGN_OF)?;
+	fn deref_string<T>(self, ptr: Ptr<T>) -> Result<&'a T> where Self: Copy, T: FromBytes + ?Sized {
+		let bytes = self.read(ptr.into(), T::MIN_SIZE_OF, T::ALIGN_OF)?;
 		unsafe { T::from_bytes(bytes).ok_or(Error::Encoding) }
 	}
 
