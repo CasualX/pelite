@@ -37,7 +37,7 @@ impl<'a> PeView<'a> {
 	///   The minimum alignment of 4 is not satisfied.
 	///
 	/// * [`BadMagic`](../enum.Error.html#variant.BadMagic):
-	///   This is not a PE file
+	///   This is not a PE file.
 	///
 	/// * [`PeMagic`](../enum.Error.html#variant.PeMagic):
 	///   Trying to parse a PE32 file with the PE32+ parser and vice versa.

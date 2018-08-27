@@ -88,16 +88,18 @@ pub unsafe trait Pe<'a> {
 
 	//----------------------------------------------------------------
 
-	/// Converts an `Rva` to file offset.
+	/// Converts a relative virtual address to file offset.
 	///
 	/// # Errors
 	///
-	/// * [`Err(Overflow)`](../enum.Error.html#variant.Overflow) if calculating the section range bounds overflows, the section headers are corrupt.
+	/// * [`Overflow`](../enum.Error.html#variant.Overflow):
+	///   The rva is contained within a corrupt section where the range bounds overflow.
 	///
-	/// * [`Err(ZeroFill)`](../enum.Error.html#variant.ZeroFill) if the rva points to the part of a section zero filled.
-	///   This happens when the size of raw data is shorter than the virtual size. Windows fills the remaining of the section with zeroes.
+	/// * [`ZeroFill`](../enum.Error.html#variant.ZeroFill):
+	///   The rva points to part of a section zero filled and is not available on disk.
 	///
-	/// * [`Err(OOB)`](../enum.Error.html#variant.OOB) if the rva falls outside any valid section or headers.
+	/// * [`Bounds`](../enum.Error.html#variant.Bounds):
+	///   The rva falls outside any valid section or the PE headers.
 	fn rva_to_file_offset(self, rva: Rva) -> Result<usize> where Self: Copy {
 		// Consider rva inside headers to be valid
 		if rva < self.optional_header().SizeOfHeaders {
@@ -131,15 +133,18 @@ pub unsafe trait Pe<'a> {
 		}
 		Err(Error::Bounds)
 	}
-	/// Converts a file offset to `Rva`.
+	/// Converts a file offset to relative virtual address.
 	///
 	/// # Errors
 	///
-	/// * [`Err(Overflow)`](../enum.Error.html#variant.Overflow) if calculating the section range bounds overflows, the section headers are corrupt.
+	/// * [`Overflow`](../enum.Error.html#variant.Overflow):
+	///   The file offset is contained within a corrupt section where the range bounds overflow.
 	///
-	/// * [`Err(Unmapped)`](../enum.Error.html#variant.Unmapped) if the file offset isn't mapped in the virtual address space.
+	/// * [`Unmapped`](../enum.Error.html#variant.Unmapped):
+	///   The file offset points to part of a section not mapped and is not available in virtual memory.
 	///
-	/// * [`Err(OOB)`](../enum.Error.html#variant.OOB) if the file offset falls outside any valid section or headers.
+	/// * [`Bounds`](../enum.Error.html#variant.Bounds):
+	///   The file offset falls outside any valid section or PE headers.
 	fn file_offset_to_rva(self, file_offset: usize) -> Result<Rva> where Self: Copy {
 		// Consider rva inside headers to be valid
 		if file_offset < self.optional_header().SizeOfHeaders as usize {
@@ -174,13 +179,15 @@ pub unsafe trait Pe<'a> {
 		Err(Error::Bounds)
 	}
 
-	/// Converts from `Rva` to `Va`.
+	/// Converts from relative virtual address to virtual address.
 	///
 	/// # Errors
 	///
-	/// * [`Err(Null)`](../enum.Error.html#variant.Null) given a null rva.
+	/// * [`Null`](../enum.Error.html#variant.Null):
+	///   The rva is zero.
 	///
-	/// * [`Err(OOB)`](../enum.Error.html#variant.OOB) if the rva is out of bounds.
+	/// * [`Bounds`](../enum.Error.html#variant.Bounds):
+	///   The rva does not fall within the virtual image bounds.
 	fn rva_to_va(self, rva: Rva) -> Result<Va> where Self: Copy {
 		if rva == 0 {
 			Err(Error::Null)
@@ -198,13 +205,15 @@ pub unsafe trait Pe<'a> {
 			}
 		}
 	}
-	/// Converts from `Va` to `Rva`.
+	/// Converts from virtual address to relative virtual address.
 	///
 	/// # Errors
 	///
-	/// * [`Err(Null)`](../enum.Error.html#variant.Null) given a null va.
+	/// * [`Null`](../enum.Error.html#variant.Null):
+	///   The va is zero.
 	///
-	/// * [`Err(OOB)`](../enum.Error.html#variant.OOB) if the va is out of bounds.
+	/// * [`Bounds`](../enum.Error.html#variant.Bounds):
+	///   The va does not fall within the virtual image bounds.
 	fn va_to_rva(self, va: Va) -> Result<Rva> where Self: Copy {
 		if va == 0 {
 			Err(Error::Null)
@@ -214,6 +223,7 @@ pub unsafe trait Pe<'a> {
 				let optional_header = self.optional_header();
 				(optional_header.ImageBase, optional_header.SizeOfImage)
 			};
+			// Carefully avoid panicking overflow
 			if va < image_base || va - image_base > size_of_image as Va {
 				Err(Error::Bounds)
 			}
@@ -233,10 +243,15 @@ pub unsafe trait Pe<'a> {
 	/// The length is the largest consecutive number of bytes available until the end.
 	/// In case the of PE files on disk, this is limited to the section's size of raw data.
 	///
-	/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) given a null rva.
+	/// # Errors
+	///
+	/// * [`Null`](../enum.Error.html#variant.Null):
+	///   The rva is zero.
 	fn slice(&self, rva: Rva, min_size_of: usize, align: usize) -> Result<&'a [u8]>;
 
 	/// Slices the image at the specified rva returning a byte slice with no alignment or minimum size.
+	///
+	/// Shorthand to invoke [`slice(rva, 0, 1)`](#tymethod.slice).
 	fn slice_bytes(self, rva: Rva) -> Result<&'a [u8]> where Self: Sized {
 		self.slice(rva, 0, 1)
 	}
@@ -249,10 +264,15 @@ pub unsafe trait Pe<'a> {
 	/// The length is the largest consecutive number of bytes available until the end.
 	/// In case the of PE files on disk, this is limited to the section's size of raw data.
 	///
-	/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) given a null va.
+	/// # Errors
+	///
+	/// * [`Null`](../enum.Error.html#variant.Null):
+	///   The va is zero.
 	fn read(&self, va: Va, min_size_of: usize, align: usize) -> Result<&'a [u8]>;
 
 	/// Reads the image at the specified va returning a byte slice with no alignment or minimum size.
+	///
+	/// Shorthand to invoke [`read(va, 0, 1)`](#tymethod.read).
 	fn read_bytes(self, va: Va) -> Result<&'a [u8]> where Self: Sized {
 		self.read(va, 0, 1)
 	}
