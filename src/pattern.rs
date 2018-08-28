@@ -362,39 +362,6 @@ fn parse_pat(pat: &str) -> Result<Pattern, PatError> {
 
 //----------------------------------------------------------------
 
-/// Max saved cursors.
-pub(crate) const MAX_SAVE: usize = 7;
-
-/// Pattern scan result.
-#[derive(Copy, Clone, Default, Eq, PartialEq, Debug)]
-#[repr(C)]
-pub struct Match(pub u32, pub u32, pub u32, pub u32, pub u32, pub u32, pub u32);
-impl AsRef<[u32; MAX_SAVE]> for Match {
-	fn as_ref(&self) -> &[u32; MAX_SAVE] {
-		unsafe { mem::transmute(self) }
-	}
-}
-impl AsMut<[u32; MAX_SAVE]> for Match {
-	fn as_mut(&mut self) -> &mut [u32; MAX_SAVE] {
-		unsafe { mem::transmute(self) }
-	}
-}
-impl fmt::Display for Match {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		write!(f, "{:08X}", self.0)?;
-		if self.1 != 0 {
-			write!(f, " [{:08X}", self.1)?;
-			for &cursor in self.as_ref()[2..].iter().take_while(|&&cursor| cursor != 0) {
-				write!(f, ", {:08X}", cursor)?;
-			}
-			f.write_str("]")?;
-		}
-		Ok(())
-	}
-}
-
-//----------------------------------------------------------------
-
 #[cfg(test)]
 mod tests {
 	use super::*;
@@ -402,7 +369,6 @@ mod tests {
 	#[test]
 	fn sizes() {
 		assert_size_of!(2, Atom);
-		assert_size_of!(4 * MAX_SAVE, Match);
 	}
 
 	#[test]

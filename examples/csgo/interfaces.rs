@@ -96,7 +96,7 @@ pub fn interfaces<'a>(file: PeFile<'a>) -> pelite::Result<Vec<Interface<'a>>> {
 	// ```
 	let pat = pat::parse("A1*{'} A3???? C705*{'}*{*{B8*'} *'} C3").unwrap();
 	let mut matches = file.scanner().matches_code(&pat);
-	while matches.next_match(&mut save) {
+	while matches.next(&mut save) {
 		// Reject false positive matches for the signature
 		if save[1] != s_pInterfaceRegs || save[2] != s_pInterfaceRegs {
 			continue;

@@ -43,7 +43,7 @@ fn main() {
 				process_patterns(args, &mut |pattern, save| {
 					let scanner = pe32::Pe::scanner(file);
 					let mut matches = scanner.matches_code(pattern);
-					while matches.next_match(save) {
+					while matches.next(save) {
 						print_match(file_name, save);
 					}
 				});
@@ -53,7 +53,7 @@ fn main() {
 				process_patterns(args, &mut |pattern, save| {
 					let scanner = pe64::Pe::scanner(file);
 					let mut matches = scanner.matches_code(pattern);
-					while matches.next_match(save) {
+					while matches.next(save) {
 						print_match(file_name, save);
 					}
 				});
