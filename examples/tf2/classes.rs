@@ -64,8 +64,8 @@ pub fn classes<'a>(client: PeFile<'a>) -> pelite::Result<Vec<Class<'a>>> {
 		// The CreateFn is a function to create instances of this entity type
 		// It allocates memory and thus necessarily must reference its size
 		let size_of = match client.deref_copy(client_class.pCreateFn.shift(4)) {
-			Ok(0x68_u8) => client.deref_copy(client_class.pCreateFn.shift(5)).unwrap_or(0),
-			Ok(0x6A_u8) => client.deref_copy(client_class.pCreateFn.shift(5)).unwrap_or(0) as u32,
+			Ok(0x68_u8) => client.deref_copy::<u32>(client_class.pCreateFn.shift(5)).unwrap_or(0),
+			Ok(0x6A_u8) => client.deref_copy::<u8>(client_class.pCreateFn.shift(5)).unwrap_or(0) as u32,
 			_ => 0,
 		};
 		// Class ids are initialized somewhere else...

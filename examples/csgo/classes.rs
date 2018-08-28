@@ -62,7 +62,7 @@ pub fn classes<'a>(client: PeFile<'a>) -> pelite::Result<Vec<Class<'a>>> {
 		let network_name = client.deref_c_str(client_class.pNetworkName).unwrap().to_str().unwrap();
 		// Figure out the size of the entity type:
 		// The CreateFn is a function to create instances of this entity type, it allocates memory and thus includes its size
-		let size_of = client.deref_copy(client_class.pCreateFn.shift(39)).unwrap_or(0);
+		let size_of = client.deref_copy::<u32>(client_class.pCreateFn.shift(39)).unwrap_or(0);
 		// Class ids are initialized somewhere else...
 		let class_id = 0;
 		list.push(Class { network_name, class_id, size_of })

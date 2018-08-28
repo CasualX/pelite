@@ -7,9 +7,9 @@ References:
 [2]: [Reversing Microsoft Visual C++ Part II: Classes, Methods and RTTI](http://www.openrce.org/articles/full_view/23)  
 */
 
-use util::Pod;
+use util::{CStr, Pod};
 
-use super::{Ptr, Va};
+use super::Ptr;
 
 //----------------------------------------------------------------
 
@@ -19,9 +19,9 @@ use super::{Ptr, Va};
 #[repr(C)]
 pub struct TypeDescriptor {
 	/// Vtable of the `type_info` class.
-	pub vftable: Va,
+	pub vftable: Ptr,
 	/// Used to keep the demangled name returned by `type_info::name()`.
-	pub spare: Va,
+	pub spare: Ptr<CStr>,
 	/// Inlined mangled type name, nul terminated.
 	#[cfg_attr(feature = "serde", serde(skip))]
 	pub name: [u8; 0],
@@ -56,13 +56,13 @@ pub struct FuncInfo {
 	/// Number of entries in the unwind table.
 	pub max_state: i32,
 	/// Table of unwind destructors.
-	pub unwind_map: Va,
+	pub unwind_map: Ptr,
 	/// Number of try blocks in the function.
 	pub try_blocks: u32,
 	/// Mapping of catch blocks to try blocks.
 	pub try_block_map: Ptr<UnwindMapEntry>,
 	pub ip_map_entries: u32,
-	pub ip_to_state_map: Va,
+	pub ip_to_state_map: Ptr,
 	/// VC7+ only, expected exceptions list (function "throw" specifier).
 	pub es_type_list: Ptr<ESTypeList>,
 	/// VC8+ only, bit `0` set if function was compiled with `/EHs`.
@@ -78,7 +78,7 @@ pub struct UnwindMapEntry {
 	/// Action to perform (unwind funclet address).
 	///
 	/// Pointer to function with signature `fn()`.
-	pub action: Va,
+	pub action: Ptr,
 }
 
 /// Try block descriptor.
@@ -117,7 +117,7 @@ pub struct HandlerType {
 	/// Address of the catch handler Code.
 	///
 	/// Returns address where to continues execution (i.e. code after the try block).
-	pub address_of_handler: Va,
+	pub address_of_handler: Ptr,
 }
 
 /// List of expected exceptions.
@@ -143,11 +143,11 @@ pub struct ThrowInfo {
 	/// Exception destructor.
 	///
 	/// Pointer to function with signature `fn()`.
-	pub unwind: Va,
+	pub unwind: Ptr,
 	/// Forward compatibility handler.
 	///
 	/// Pointer to function with signature `fn() -> i32`.
-	pub forward_compat: Va,
+	pub forward_compat: Ptr,
 	/// List of types that can catch this exception; i.e. the actual type and all its ancestors.
 	pub catchable_type_array: Ptr<CatchableTypeArray>,
 }
@@ -179,7 +179,7 @@ pub struct CatchableType {
 	/// Object size.
 	pub size_or_offset: i32,
 	/// Copy constructor address.
-	pub copy_function: Va,
+	pub copy_function: Ptr,
 }
 
 //----------------------------------------------------------------
