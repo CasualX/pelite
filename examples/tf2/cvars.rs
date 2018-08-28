@@ -41,7 +41,7 @@ pub fn cvars<'a>(file: PeFile<'a>) -> pelite::Result<Vec<ConVar<'a>>> {
 	// Variant: ConVar with description and without min/max values
 	let pat3 = pat::parse("CC 68*{'} 68'???? 68*{'} 68*{'} B9*{'} E8$").unwrap();
 	let mut matches = file.scanner().matches_code(&pat3);
-	while matches.next_match(&mut save) {
+	while matches.next(&mut save) {
 		let min_value = None;
 		let max_value = None;
 		let desc = Some(file.derva_c_str(save[1]).unwrap().to_str().unwrap());
@@ -55,7 +55,7 @@ pub fn cvars<'a>(file: PeFile<'a>) -> pelite::Result<Vec<ConVar<'a>>> {
 	// Variant: ConVar with description and with min/max values
 	let pat4 = pat::parse("D905*{'} 51 D91C24 D905*{'} 6A01 51 D91C24 6A01 68*{'} 68'???? 68*{'} 68*{'} B9*{'} E8$").unwrap();
 	let mut matches = file.scanner().matches_code(&pat4);
-	while matches.next_match(&mut save) {
+	while matches.next(&mut save) {
 		let max_value = Some(file.derva_copy(save[1]).unwrap());
 		let min_value = Some(file.derva_copy(save[2]).unwrap());
 		let desc = Some(file.derva_c_str(save[3]).unwrap().to_str().unwrap());

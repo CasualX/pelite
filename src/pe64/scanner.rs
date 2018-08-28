@@ -8,24 +8,26 @@ See the [`pattern`](../../pattern/index.html) module for more information about 
 ```
 # #![allow(unused_variables)]
 use pelite::pe64::{Pe, PeFile};
-use pelite::pattern::{Atom, Match};
+use pelite::pattern as pat;
 
 # #[allow(dead_code)]
-fn example(file: PeFile<'_>, pat: &[Atom]) -> Option<Match> {
-	// Get the pattern scanner interface
+fn example(file: PeFile<'_>, pat: &[pat::Atom]) {
+	// Gets the pattern scanner interface
 	let scanner = file.scanner();
 
-	// Find a singular code match
-	if let Some(m) = scanner.find_code(pat) {
-		return Some(m);
+	// Capture references in the pattern in a save array
+	let mut save = [0; 8];
+
+	// Finds a singular code match
+	if scanner.finds_code(pat, &mut save) {
+		println!("{:x?}", save);
 	}
 
-	// Find all the code matches for the pattern
-	for m in scanner.matches_code(pat) {
-		println!("found: {}", m);
+	// Finds all the code matches for the pattern
+	let mut matches = scanner.matches_code(pat);
+	while matches.next(&mut save) {
+		println!("{:x?}", save);
 	}
-
-	None
 }
 ```
 */
@@ -64,13 +66,13 @@ impl<'a, P: Pe<'a> + Copy> Scanner<P> {
 	///
 	/// Returns `false` if no match is found or multiple matches are found to prevent subtle bugs where a pattern goes stale by not being unique any more.
 	///
-	/// Use `matches(pat, range).next_match(save)` if just the first match is desired.
+	/// Use `matches(pat, range).next(save)` if just the first match is desired.
 	pub fn finds(self, pat: &[pat::Atom], range: Range<Rva>, save: &mut [Rva]) -> bool {
 		let mut matches = self.matches(pat, range);
-		if matches.next_match(save) {
+		if matches.next(save) {
 			// Disallow more than one match as it indicates the signature isn't unique enough
 			let cursor = matches.cursor;
-			!matches.next_match(save) && matches.scanner.exec(cursor, pat, save)
+			!matches.next(save) && matches.scanner.exec(cursor, pat, save)
 		}
 		else {
 			false
@@ -83,32 +85,6 @@ impl<'a, P: Pe<'a> + Copy> Scanner<P> {
 		let optional_header = self.pe.optional_header();
 		let range = optional_header.BaseOfCode..u32::wrapping_add(optional_header.BaseOfCode, optional_header.SizeOfCode);
 		self.finds(pat, range, save)
-	}
-	/// Finds the unique match for the pattern in the given range.
-	///
-	/// Returns `None` if multiple matches are found to prevent subtle bugs where a pattern goes stale by not being unique any more.
-	///
-	/// Use `matches(pat, range).next()` if just the first match is desired.
-	pub fn find(self, pat: &[pat::Atom], range: Range<Rva>) -> Option<pat::Match> {
-		let mut matches = self.matches(pat, range);
-		if let Some(found) = matches.next() {
-			// Disallow more than one match as it indicates the signature isn't unique enough
-			match matches.next() {
-				None => Some(found),
-				Some(_) => None,
-			}
-		}
-		else {
-			None
-		}
-	}
-	/// Finds the unique code match for the pattern.
-	///
-	/// Restricts the range to the code section. See [`find`](#find) for more information.
-	pub fn find_code(self, pat: &[pat::Atom]) -> Option<pat::Match> {
-		let optional_header = self.pe.optional_header();
-		let range = optional_header.BaseOfCode..u32::wrapping_add(optional_header.BaseOfCode, optional_header.SizeOfCode);
-		self.find(pat, range)
 	}
 	/// Returns an iterator over the matches of a pattern within the given range.
 	pub fn matches(self, pat: &[pat::Atom], range: Range<Rva>) -> Matches<P> {
@@ -389,7 +365,7 @@ impl<'a, 'u, P: Pe<'a> + Copy> Matches<'u, P> {
 		false
 	}
 	/// Finds the next match with the given save array.
-	pub fn next_match(&mut self, save: &mut [Rva]) -> bool {
+	pub fn next(&mut self, save: &mut [Rva]) -> bool {
 		// Build the quicksearch buffer
 		let mut qsbuf = [0u8; QS_BUF_LEN];
 		let qsbuf = self.setup(&mut qsbuf);
@@ -397,18 +373,6 @@ impl<'a, 'u, P: Pe<'a> + Copy> Matches<'u, P> {
 		// Take care of unmapped PE files.
 		// Their sections aren't continous and need to be scanned separately.
 		finder_section(self.scanner.pe, self.range.clone(), |it, slice| self.strategy(it, qsbuf, slice, save))
-	}
-}
-impl<'a, 'u, P: Pe<'a> + Copy> Iterator for Matches<'u, P> {
-	type Item = pat::Match;
-	fn next(&mut self) -> Option<pat::Match> {
-		let mut result = pat::Match::default();
-		if self.next_match(result.as_mut()) {
-			Some(result)
-		}
-		else {
-			None
-		}
 	}
 }
 
@@ -466,12 +430,12 @@ pub(crate) fn test<'a, P: Pe<'a> + Copy>(pe: P) -> ::Result<()> {
 	let mut save = [0; 4];
 
 	let mut matches = scanner.matches_code(&[Save(0), Byte(0xE8), Push(4), Jump4, Save(1), Pop, Save(2)]);
-	while matches.next_match(&mut save) {
+	while matches.next(&mut save) {
 		assert_eq!(save[0] + 5, save[2]);
 	}
 
 	let mut matches = scanner.matches_code(&[Jump1, Save(1), Byte(0x0F), Byte(0x0D)]);
-	while matches.next_match(&mut save) {}
+	while matches.next(&mut save) {}
 
 	scanner.finds_code(&[Byte(0x8B), Byte(0x01), Byte(0x8B), Byte(0x10), Byte(0xFF), Byte(0xD2)], &mut save);
 
