@@ -170,6 +170,7 @@ pub const IMAGE_SUBSYSTEM_WINDOWS_GUI: u16              = 2;
 pub const IMAGE_SUBSYSTEM_WINDOWS_CUI: u16              = 3;
 pub const IMAGE_SUBSYSTEM_OS2_CUI: u16                  = 5;
 pub const IMAGE_SUBSYSTEM_POSIX_CUI: u16                = 7;
+pub const IMAGE_SUBSYSTEM_NATIVE_WINDOWS: u16           = 8;
 pub const IMAGE_SUBSYSTEM_WINDOWS_CE_GUI: u16           = 9;
 pub const IMAGE_SUBSYSTEM_EFI_APPLICATION: u16          = 10;
 pub const IMAGE_SUBSYSTEM_EFI_BOOT_SERVICE_DRIVER: u16  = 11;
