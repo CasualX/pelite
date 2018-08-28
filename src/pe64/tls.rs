@@ -61,13 +61,13 @@ impl<'a, P: Pe<'a> + Copy> Tls<'a, P> {
 		}
 		// FIXME! truncation warning on 32bit...
 		let len = (self.image.EndAddressOfRawData - self.image.StartAddressOfRawData) as usize;
-		self.pe.deref_slice(self.image.StartAddressOfRawData, len)
+		self.pe.deref_slice(self.image.StartAddressOfRawData.into(), len)
 	}
 	pub fn slot(&self) -> Result<&'a u32> {
-		self.pe.deref(self.image.AddressOfIndex)
+		self.pe.deref(self.image.AddressOfIndex.into())
 	}
 	pub fn callbacks(&self) -> Result<&'a [Va]> {
-		self.pe.deref_slice_s(self.image.AddressOfCallBacks, 0)
+		self.pe.deref_slice_s(self.image.AddressOfCallBacks.into(), 0)
 	}
 }
 impl<'a, P: Pe<'a> + Copy> fmt::Debug for Tls<'a, P> {

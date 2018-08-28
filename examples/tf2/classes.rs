@@ -21,8 +21,8 @@ pub fn print(client: PeFile) {
 #[derive(Debug)]
 #[repr(C)]
 struct ClientClass {
-	pCreateFn: Va,
-	pCreateEventFn: Va,
+	pCreateFn: Ptr,
+	pCreateEventFn: Ptr,
 	pNetworkName: Ptr<CStr>,
 	pRecvTable: Va,
 	pNext: Ptr<ClientClass>,
@@ -63,9 +63,9 @@ pub fn classes<'a>(client: PeFile<'a>) -> pelite::Result<Vec<Class<'a>>> {
 		// Figure out the size of the entity type:
 		// The CreateFn is a function to create instances of this entity type
 		// It allocates memory and thus necessarily must reference its size
-		let size_of = match client.deref_copy(client_class.pCreateFn + 4) {
-			Ok(0x68_u8) => client.deref_copy(client_class.pCreateFn + 5).unwrap_or(0),
-			Ok(0x6A_u8) => client.deref_copy::<u8, _>(client_class.pCreateFn + 5).unwrap_or(0) as u32,
+		let size_of = match client.deref_copy(client_class.pCreateFn.shift(4)) {
+			Ok(0x68_u8) => client.deref_copy::<u32>(client_class.pCreateFn.shift(5)).unwrap_or(0),
+			Ok(0x6A_u8) => client.deref_copy::<u8>(client_class.pCreateFn.shift(5)).unwrap_or(0) as u32,
 			_ => 0,
 		};
 		// Class ids are initialized somewhere else...
