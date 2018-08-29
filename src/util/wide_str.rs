@@ -17,6 +17,16 @@ pub struct WideStr {
 }
 
 impl WideStr {
+	pub fn from_str<'a>(s: &str, buffer: &'a mut [u16]) -> &'a WideStr {
+		let mut n = 0;
+		buffer[0] = n;
+		for (p, wc) in buffer[1..].iter_mut().zip(s.encode_utf16()) {
+			*p = wc;
+			n += 1;
+		}
+		buffer[0] = n;
+		unsafe { WideStr::from_words_unchecked(buffer) }
+	}
 	/// Constructs the wide string from a length word prefixed word slice.
 	pub fn from_words(words: &[u16]) -> Option<&WideStr> {
 		let len = *words.get(0)? as usize + 1;

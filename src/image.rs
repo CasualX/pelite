@@ -433,6 +433,27 @@ pub struct IMAGE_RESOURCE_DATA_ENTRY {
 }
 
 //----------------------------------------------------------------
+
+#[derive(Copy, Clone, Debug)]
+#[cfg_attr(feature = "serde", derive(Serialize))]
+#[repr(C)]
+pub struct VS_FIXEDFILEINFO {
+	pub dwSignature: u32,
+	pub dwStrucVersion: u32,
+	pub dwFileVersionMS: u32,
+	pub dwFileVersionLS: u32,
+	pub dwProductVersionMS: u32,
+	pub dwProductVersionLS: u32,
+	pub dwFileFlagsMask: u32,
+	pub dwFileFlags: u32,
+	pub dwFileOS: u32,
+	pub dwFileType: u32,
+	pub dwFileSubtype: u32,
+	pub dwFileDateMS: u32,
+	pub dwFileDateLS: u32,
+}
+
+//----------------------------------------------------------------
 // Sourced from <Windows.h>
 
 pub const IMAGE_REL_BASED_ABSOLUTE: u8 = 0;
@@ -841,6 +862,7 @@ unsafe impl Pod for IMAGE_IMPORT_DESCRIPTOR {}
 unsafe impl Pod for IMAGE_RESOURCE_DIRECTORY {}
 unsafe impl Pod for IMAGE_RESOURCE_DIRECTORY_ENTRY {}
 unsafe impl Pod for IMAGE_RESOURCE_DATA_ENTRY {}
+unsafe impl Pod for VS_FIXEDFILEINFO {}
 unsafe impl Pod for IMAGE_BASE_RELOCATION {}
 unsafe impl Pod for IMAGE_LOAD_CONFIG_DIRECTORY32 {}
 unsafe impl Pod for IMAGE_LOAD_CONFIG_DIRECTORY64 {}
