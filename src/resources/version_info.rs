@@ -46,15 +46,11 @@ impl<'a> VersionInfo<'a> {
 		this.value
 	}
 
+	/// Gets the strings in a hash map.
 	pub fn to_hash_map(self) -> HashMap<String, String> {
 		let mut hash_map = HashMap::new();
 		self.visit(&mut hash_map);
 		hash_map
-	}
-	pub fn to_vec(self) -> Vec<(String, String)> {
-		let mut vec = Vec::new();
-		self.visit(&mut vec);
-		vec
 	}
 
 	/// Parse the version information.
@@ -135,14 +131,6 @@ pub trait Visit<'a> {
 	fn var(&mut self, key: &'a [u16], pairs: &'a [u16]) {}
 }
 
-impl<'a> Visit<'a> for Vec<(String, String)> {
-	fn string(&mut self, _encoding: &'a [u16], key: &'a [u16], value: &'a [u16]) {
-		self.push((
-			String::from_utf16_lossy(key),
-			String::from_utf16_lossy(value),
-		));
-	}
-}
 impl<'a> Visit<'a> for HashMap<String, String> {
 	fn string(&mut self, _encoding: &'a [u16], key: &'a [u16], value: &'a [u16]) {
 		self.insert(
@@ -166,6 +154,30 @@ impl<'a, 's> Visit<'a> for QueryValue<'a, 's> {
 	fn string(&mut self, _encoding: &'a [u16], key: &'a [u16], value: &'a [u16]) {
 		if Iterator::eq(self.key.chars().map(Ok), char::decode_utf16(key.iter().cloned())) {
 			self.value = Some(value);
+		}
+	}
+}
+
+//----------------------------------------------------------------
+
+/*
+	"version_info": {
+		"fixed_file_info": { .. },
+		"strings": { .. },
+	},
+*/
+
+#[cfg(feature = "serde")]
+mod serde {
+	use util::serde_helper::*;
+	use super::{VersionInfo};
+
+	impl<'a> Serialize for VersionInfo<'a> {
+		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+			let mut state = serializer.serialize_struct("VersionInfo", 2)?;
+			state.serialize_field("fixed", &self.fixed_file_info())?;
+			state.serialize_field("strings", &self.to_hash_map())?;
+			state.end()
 		}
 	}
 }
@@ -198,15 +210,12 @@ mod strings {
 pub(crate) fn test(version_info: VersionInfo<'_>) {
 	let _fixed_file_info = version_info.fixed_file_info();
 	let _hash_map = version_info.to_hash_map();
-	let _vec = version_info.to_vec();
 }
 
 //----------------------------------------------------------------
 
 /// Fixed file info constants.
 pub mod image {
-pub const VS_SIGNATURE: u32       = 0xFEEF04BD;
-
 pub const VS_FF_DEBUG: u32        = 0x01;
 pub const VS_FF_PRERELEASE: u32   = 0x02;
 pub const VS_FF_PATCHED: u32      = 0x04;
@@ -281,13 +290,13 @@ impl<'a> Iterator for Parser<'a> {
 	}
 }
 impl<'a> Parser<'a> {
-	pub fn new_zero(words: &'a [u16]) -> Parser<'a> {
+	pub(crate) fn new_zero(words: &'a [u16]) -> Parser<'a> {
 		Parser { words, vlt: ValueLengthType::Zero }
 	}
-	pub fn new_bytes(words: &'a [u16]) -> Parser<'a> {
+	pub(crate) fn new_bytes(words: &'a [u16]) -> Parser<'a> {
 		Parser { words, vlt: ValueLengthType::Bytes }
 	}
-	pub fn new_words(words: &'a [u16]) -> Parser<'a> {
+	pub(crate) fn new_words(words: &'a [u16]) -> Parser<'a> {
 		Parser { words, vlt: ValueLengthType::Words }
 	}
 }
