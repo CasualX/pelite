@@ -29,10 +29,10 @@ impl<'a> VersionInfo<'a> {
 	}
 
 	/// Gets the fixed file information if available.
-	pub fn fixed_file_info(self) -> Option<&'a VS_FIXEDFILEINFO> {
-		let mut fixed_file_info = None;
-		self.visit(&mut fixed_file_info);
-		fixed_file_info
+	pub fn fixed(self) -> Option<&'a VS_FIXEDFILEINFO> {
+		let mut fixed = None;
+		self.visit(&mut fixed);
+		fixed
 	}
 	/// Queries a string value by name.
 	///
@@ -64,7 +64,7 @@ impl<'a> VersionInfo<'a> {
 
 		for version_info_r in Parser::new_bytes(words) {
 			if let Ok(version_info) = version_info_r {
-				let fixed_file_info = match mem::size_of_val(version_info.value) {
+				let fixed = match mem::size_of_val(version_info.value) {
 					0 => None,
 					size_of if size_of == mem::size_of::<VS_FIXEDFILEINFO>() => {
 						let value = unsafe { &*(version_info.value.as_ptr() as *const VS_FIXEDFILEINFO) };
@@ -73,7 +73,7 @@ impl<'a> VersionInfo<'a> {
 					_ => None,//return Err(Error::Invalid),
 				};
 
-				if !visit.version_info(version_info.key, fixed_file_info) {
+				if !visit.version_info(version_info.key, fixed) {
 					continue;
 				}
 
@@ -124,7 +124,7 @@ impl<'a> VersionInfo<'a> {
 /// Visitor pattern to view the version information details.
 #[allow(unused_variables)]
 pub trait Visit<'a> {
-	fn version_info(&mut self, key: &'a [u16], fixed_file_info: Option<&'a VS_FIXEDFILEINFO>) -> bool { true }
+	fn version_info(&mut self, key: &'a [u16], fixed: Option<&'a VS_FIXEDFILEINFO>) -> bool { true }
 	fn file_info(&mut self, key: &'a [u16]) -> bool { true }
 	fn string_table(&mut self, encoding: &'a [u16]) -> bool { true }
 	fn string(&mut self, encoding: &'a [u16], key: &'a [u16], value: &'a [u16]) {}
@@ -140,8 +140,8 @@ impl<'a> Visit<'a> for HashMap<String, String> {
 	}
 }
 impl<'a> Visit<'a> for Option<&'a VS_FIXEDFILEINFO> {
-	fn version_info(&mut self, _key: &'a [u16], fixed_file_info: Option<&'a VS_FIXEDFILEINFO>) -> bool {
-		*self = fixed_file_info;
+	fn version_info(&mut self, _key: &'a [u16], fixed: Option<&'a VS_FIXEDFILEINFO>) -> bool {
+		*self = fixed;
 		false
 	}
 }
@@ -162,7 +162,7 @@ impl<'a, 's> Visit<'a> for QueryValue<'a, 's> {
 
 /*
 	"version_info": {
-		"fixed_file_info": { .. },
+		"fixed": { .. },
 		"strings": { .. },
 	},
 */
@@ -175,7 +175,7 @@ mod serde {
 	impl<'a> Serialize for VersionInfo<'a> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			let mut state = serializer.serialize_struct("VersionInfo", 2)?;
-			state.serialize_field("fixed", &self.fixed_file_info())?;
+			state.serialize_field("fixed", &self.fixed())?;
 			state.serialize_field("strings", &self.to_hash_map())?;
 			state.end()
 		}
@@ -208,7 +208,7 @@ mod strings {
 
 #[cfg(test)]
 pub(crate) fn test(version_info: VersionInfo<'_>) {
-	let _fixed_file_info = version_info.fixed_file_info();
+	let _fixed = version_info.fixed();
 	let _hash_map = version_info.to_hash_map();
 }
 
