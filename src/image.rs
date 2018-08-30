@@ -151,6 +151,7 @@ pub struct IMAGE_VERSION<T> {
 	pub Major: T,
 	pub Minor: T,
 }
+unsafe impl<T: Pod> Pod for IMAGE_VERSION<T> {}
 #[cfg(feature = "serde")]
 impl<T: ::std::fmt::Display> ::serde::Serialize for IMAGE_VERSION<T> {
 	fn serialize<S: ::serde::Serializer>(&self, serializer: S) -> ::std::result::Result<S::Ok, S::Error> {
@@ -434,16 +435,39 @@ pub struct IMAGE_RESOURCE_DATA_ENTRY {
 
 //----------------------------------------------------------------
 
+pub const VS_FIXEDFILEINFO_SIGNATURE: u32 = 0xFEEF04BD;
+
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
+#[repr(C)]
+pub struct VS_VERSION {
+	pub Minor: u16,
+	pub Major: u16,
+	pub Build: u16,
+	pub Patch: u16,
+}
+#[cfg(feature = "serde")]
+impl ::serde::Serialize for VS_VERSION {
+	fn serialize<S: ::serde::Serializer>(&self, serializer: S) -> ::std::result::Result<S::Ok, S::Error> {
+		serializer.collect_str(&format_args!("{}.{}.{}.{}", self.Major, self.Minor, self.Patch, self.Build))
+	}
+}
+
+#[cfg(feature = "serde")]
+fn ser_fixed_file_info_struc_version<S: ::serde::Serializer>(&version: &u32, serializer: S) -> ::std::result::Result<S::Ok, S::Error> {
+	let major = version >> 16;
+	let minor = version & 0xffff;
+	serializer.collect_str(&format_args!("{}.{}", major, minor))
+}
+
 #[derive(Copy, Clone, Debug)]
 #[cfg_attr(feature = "serde", derive(Serialize))]
 #[repr(C)]
 pub struct VS_FIXEDFILEINFO {
 	pub dwSignature: u32,
+	#[cfg_attr(feature = "serde", serde(serialize_with = "::image::ser_fixed_file_info_struc_version"))]
 	pub dwStrucVersion: u32,
-	pub dwFileVersionMS: u32,
-	pub dwFileVersionLS: u32,
-	pub dwProductVersionMS: u32,
-	pub dwProductVersionLS: u32,
+	pub dwFileVersion: VS_VERSION,
+	pub dwProductVersion: VS_VERSION,
 	pub dwFileFlagsMask: u32,
 	pub dwFileFlags: u32,
 	pub dwFileOS: u32,
@@ -862,6 +886,7 @@ unsafe impl Pod for IMAGE_IMPORT_DESCRIPTOR {}
 unsafe impl Pod for IMAGE_RESOURCE_DIRECTORY {}
 unsafe impl Pod for IMAGE_RESOURCE_DIRECTORY_ENTRY {}
 unsafe impl Pod for IMAGE_RESOURCE_DATA_ENTRY {}
+unsafe impl Pod for VS_VERSION {}
 unsafe impl Pod for VS_FIXEDFILEINFO {}
 unsafe impl Pod for IMAGE_BASE_RELOCATION {}
 unsafe impl Pod for IMAGE_LOAD_CONFIG_DIRECTORY32 {}

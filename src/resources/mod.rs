@@ -188,6 +188,8 @@ pub type Entries<'a, F> = iter::Map<slice::Iter<'a, IMAGE_RESOURCE_DIRECTORY_ENT
 
 /// Represents a resource name.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[cfg_attr(feature = "serde", serde(untagged))]
+#[cfg_attr(feature = "serde", derive(Serialize))]
 pub enum Name<'a> {
 	/// Resource ID.
 	///
@@ -211,6 +213,8 @@ impl<'a> From<&'a WideStr> for Name<'a> {
 
 /// Data or directory entry.
 #[derive(Copy, Clone, Debug)]
+#[cfg_attr(feature = "serde", serde(untagged))]
+#[cfg_attr(feature = "serde", derive(Serialize))]
 pub enum Entry<'a> {
 	Directory(Directory<'a>),
 	DataEntry(DataEntry<'a>),
@@ -352,31 +356,37 @@ impl<'a> fmt::Debug for DataEntry<'a> {
 //----------------------------------------------------------------
 
 /*
-	"resources": [
-		{
-			"name": 12,
-			"directory": [
-				{
-					"name": "IMPORTANT",
-					"data": {
-						size: 1234,
-						code_page: 65001,
-						bytes: "base64encoded=",
+	"resources": {
+		"version_info": { .. },
+		"root": [
+			{
+				"name": 12,
+				"directory": [
+					{
+						"name": "IMPORTANT",
+						"data": {
+							size: 1234,
+							code_page: 65001,
+							bytes: "base64encoded=",
+						}
 					}
-				}
-			]
-		}
-	]
+				]
+			}
+		]
+	}
 */
 
 #[cfg(feature = "serde")]
 mod serde {
 	use util::serde_helper::*;
-	use super::{Resources, Directory, DirectoryEntry, Entry, Name, DataEntry};
+	use super::{Resources, Directory, DirectoryEntry, DataEntry};
 
 	impl<'a> Serialize for Resources<'a> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-			self.root().ok().serialize(serializer)
+			let mut state = serializer.serialize_struct("Resources", 2)?;
+			state.serialize_field("version_info", &self.version_info().ok())?;
+			state.serialize_field("root", &self.root().ok())?;
+			state.end()
 		}
 	}
 	impl<'a> Serialize for Directory<'a> {
@@ -390,22 +400,6 @@ mod serde {
 			state.serialize_field("name", &self.name().ok())?;
 			state.serialize_field(if self.is_dir() { "directory" } else { "data" }, &self.entry().ok())?;
 			state.end()
-		}
-	}
-	impl<'a> Serialize for Entry<'a> {
-		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-			match self {
-				Entry::Directory(directory) => directory.serialize(serializer),
-				Entry::DataEntry(data) => data.serialize(serializer),
-			}
-		}
-	}
-	impl<'a> Serialize for Name<'a> {
-		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-			match self {
-				Name::Id(id) => serializer.serialize_u32(*id),
-				Name::Str(s) => serializer.collect_str(s),
-			}
 		}
 	}
 	impl<'a> Serialize for DataEntry<'a> {
