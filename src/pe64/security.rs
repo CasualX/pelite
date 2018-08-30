@@ -38,7 +38,7 @@ pub struct Security<'a, P> {
 	security: &'a [u8],
 }
 impl<'a, P: Pe<'a> + Copy> Security<'a, P> {
-	pub(crate) fn new(pe: P) -> Result<Security<'a, P>> {
+	pub(crate) fn try_from(pe: P) -> Result<Security<'a, P>> {
 		// The security info is part of the mapped image
 		if pe.align() != Align::File {
 			return Err(Error::Unmapped);

@@ -105,7 +105,7 @@ pub struct Exports<'a, P> {
 	image: &'a IMAGE_EXPORT_DIRECTORY,
 }
 impl<'a, P: Pe<'a> + Copy> Exports<'a, P> {
-	pub(crate) fn new(pe: P) -> Result<Exports<'a, P>> {
+	pub(crate) fn try_from(pe: P) -> Result<Exports<'a, P>> {
 		let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_EXPORT).ok_or(Error::Bounds)?;
 		let image = pe.derva(datadir.VirtualAddress)?;
 		Ok(Exports { pe, datadir, image })

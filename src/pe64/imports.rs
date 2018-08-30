@@ -92,7 +92,7 @@ pub struct Imports<'a, P> {
 	image: &'a [IMAGE_IMPORT_DESCRIPTOR],
 }
 impl<'a, P: Pe<'a> + Copy> Imports<'a, P> {
-	pub(crate) fn new(pe: P) -> Result<Imports<'a, P>> {
+	pub(crate) fn try_from(pe: P) -> Result<Imports<'a, P>> {
 		let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_IMPORT).ok_or(Error::Bounds)?;
 		let image = pe.derva_slice_f(datadir.VirtualAddress, |image: &IMAGE_IMPORT_DESCRIPTOR| image.is_null())?;
 		Ok(Imports { pe, image })
@@ -135,7 +135,7 @@ pub struct IAT<'a, P> {
 	image: &'a [Va],
 }
 impl<'a, P: Pe<'a> + Copy> IAT<'a, P> {
-	pub(crate) fn new(pe: P) -> Result<IAT<'a, P>> {
+	pub(crate) fn try_from(pe: P) -> Result<IAT<'a, P>> {
 		let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_IAT).ok_or(Error::Bounds)?;
 		// Ignore datadir.Size not being a multiple of sizeof(Va), not that big of a deal...
 		let image = pe.derva_slice(datadir.VirtualAddress, datadir.Size as usize / mem::size_of::<Va>())?;

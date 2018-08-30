@@ -37,7 +37,7 @@ impl<'a> Resources<'a> {
 	}
 	/// Gets the root directory.
 	pub fn root(&self) -> Result<Directory<'a>> {
-		Directory::from(*self, 0)
+		Directory::try_from(*self, 0)
 	}
 	/// Filesystem consistency check.
 	///
@@ -105,7 +105,7 @@ pub struct Directory<'a> {
 	image: &'a IMAGE_RESOURCE_DIRECTORY,
 }
 impl<'a> Directory<'a> {
-	fn from(resources: Resources<'a>, offset: u32) -> Result<Directory<'a>> {
+	fn try_from(resources: Resources<'a>, offset: u32) -> Result<Directory<'a>> {
 		let image: &IMAGE_RESOURCE_DIRECTORY = resources.slice(offset)?;
 		// Validate the number of directory entries
 		// This code has been carefully written to avoid panicking on overflow
@@ -275,11 +275,11 @@ impl<'a> DirectoryEntry<'a> {
 	pub fn entry(&self) -> Result<Entry<'a>> {
 		if self.is_dir() {
 			let offset = self.image.Offset & !0x80000000;
-			Directory::from(self.resources, offset).map(Entry::Directory)
+			Directory::try_from(self.resources, offset).map(Entry::Directory)
 		}
 		else {
 			let offset = self.image.Offset;
-			DataEntry::from(self.resources, offset).map(Entry::DataEntry)
+			DataEntry::try_from(self.resources, offset).map(Entry::DataEntry)
 		}
 	}
 	/// Filesystem consistency check.
@@ -311,7 +311,7 @@ pub struct DataEntry<'a> {
 	image: &'a IMAGE_RESOURCE_DATA_ENTRY,
 }
 impl<'a> DataEntry<'a> {
-	fn from(resources: Resources<'a>, offset: u32) -> Result<DataEntry<'a>> {
+	fn try_from(resources: Resources<'a>, offset: u32) -> Result<DataEntry<'a>> {
 		let image = resources.slice(offset)?;
 		Ok(DataEntry { resources, image })
 	}

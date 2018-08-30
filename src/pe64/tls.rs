@@ -44,7 +44,7 @@ pub struct Tls<'a, P> {
 	image: &'a IMAGE_TLS_DIRECTORY,
 }
 impl<'a, P: Pe<'a> + Copy> Tls<'a, P> {
-	pub(crate) fn new(pe: P) -> Result<Tls<'a, P>> {
+	pub(crate) fn try_from(pe: P) -> Result<Tls<'a, P>> {
 		let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_TLS).ok_or(Error::Bounds)?;
 		let image = pe.derva(datadir.VirtualAddress)?;
 		Ok(Tls { pe, image })
