@@ -358,6 +358,7 @@ impl<'a> fmt::Debug for DataEntry<'a> {
 /*
 	"resources": {
 		"version_info": { .. },
+		"manifest": "<xml>",
 		"root": [
 			{
 				"name": 12,
@@ -383,8 +384,9 @@ mod serde {
 
 	impl<'a> Serialize for Resources<'a> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-			let mut state = serializer.serialize_struct("Resources", 2)?;
+			let mut state = serializer.serialize_struct("Resources", 3)?;
 			state.serialize_field("version_info", &self.version_info().ok())?;
+			state.serialize_field("manifest", &self.manifest().ok())?;
 			state.serialize_field("root", &self.root().ok())?;
 			state.end()
 		}

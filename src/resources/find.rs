@@ -75,6 +75,11 @@ impl<'a> Resources<'a> {
 		self.find_resource(::image::RT_VERSION, 1, 1033)
 			.and_then(|bytes| super::version_info::VersionInfo::try_from(bytes).map_err(FindError::Pe))
 	}
+	/// Gets the Application Manifest.
+	pub fn manifest(&self) -> Result<&'a str, FindError> {
+		self.find_resource(::image::RT_MANIFEST, 2, 1033)
+			.and_then(|bytes| str::from_utf8(bytes).map_err(|_| FindError::Pe(::Error::Encoding)))
+	}
 	#[inline(never)]
 	fn find_resource_internal(&self, ty: Name<'_>, name: Name<'_>, lang: Name<'_>) -> Result<&'a [u8], FindError> {
 		let path = [ty, name, lang];
