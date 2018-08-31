@@ -440,7 +440,7 @@ pub unsafe trait Pe<'a> {
 	///
 	/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) if the image has no exports. Any other error indiciates some form of corruption.
 	fn exports(self) -> Result<super::exports::Exports<'a, Self>> where Self: Copy {
-		super::exports::Exports::new(self)
+		super::exports::Exports::try_from(self)
 	}
 
 	/// Gets the Import Directory.
@@ -449,7 +449,7 @@ pub unsafe trait Pe<'a> {
 	///
 	/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) if the image has no imports. Any other error indicates some form of corruption.
 	fn imports(self) -> Result<super::imports::Imports<'a, Self>> where Self: Copy {
-		super::imports::Imports::new(self)
+		super::imports::Imports::try_from(self)
 	}
 
 	/// Gets the Import Address Table.
@@ -458,7 +458,7 @@ pub unsafe trait Pe<'a> {
 	///
 	/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) if the image has no iat. Any other error indicates some form of corruption.
 	fn iat(self) -> Result<super::imports::IAT<'a, Self>> where Self: Copy {
-		super::imports::IAT::new(self)
+		super::imports::IAT::try_from(self)
 	}
 
 	/// Gets the Base Relocations Directory.
@@ -467,7 +467,7 @@ pub unsafe trait Pe<'a> {
 	///
 	/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) if the image has no base relocations. Any other error indicates some form of corruption.
 	fn base_relocs(self) -> Result<super::base_relocs::BaseRelocs<'a, Self>> where Self: Copy {
-		super::base_relocs::BaseRelocs::new(self)
+		super::base_relocs::BaseRelocs::try_from(self)
 	}
 
 	/// Gets the Load Config Directory.
@@ -476,7 +476,7 @@ pub unsafe trait Pe<'a> {
 	///
 	/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) if the image has no load config. Any other error indicates some form of corruption.
 	fn load_config(self) -> Result<super::load_config::LoadConfig<'a, Self>> where Self: Copy {
-		super::load_config::LoadConfig::new(self)
+		super::load_config::LoadConfig::try_from(self)
 	}
 
 	/// Gets the TLS Directory.
@@ -485,7 +485,7 @@ pub unsafe trait Pe<'a> {
 	///
 	/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) if the image has no tls. Any other error indicates some form of corruption.
 	fn tls(self) -> Result<super::tls::Tls<'a, Self>> where Self: Copy {
-		super::tls::Tls::new(self)
+		super::tls::Tls::try_from(self)
 	}
 
 	/// Gets the Security Directory.
@@ -494,7 +494,7 @@ pub unsafe trait Pe<'a> {
 	///
 	/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) if the image has no security info. Any other error indicates some form of corruption.
 	fn security(self) -> Result<super::security::Security<'a, Self>> where Self: Copy {
-		super::security::Security::new(self)
+		super::security::Security::try_from(self)
 	}
 
 	/// Gets the Exception Directory.
@@ -503,7 +503,7 @@ pub unsafe trait Pe<'a> {
 	///
 	/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) if the image has no exception directory. Any other error indicates some form of corruption.
 	fn exception(self) -> Result<super::exception::Exception<'a, Self>> where Self: Copy {
-		super::exception::Exception::new(self)
+		super::exception::Exception::try_from(self)
 	}
 
 	/// Gets the Debug Directory.
@@ -512,7 +512,7 @@ pub unsafe trait Pe<'a> {
 	///
 	/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) if the image has no debug info. Any other error indicates some form of corruption.
 	fn debug(self) -> Result<super::debug::Debug<'a, Self>> where Self: Copy {
-		super::debug::Debug::new(self)
+		super::debug::Debug::try_from(self)
 	}
 
 	/// Gets the Resources.

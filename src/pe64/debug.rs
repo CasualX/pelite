@@ -41,7 +41,7 @@ pub struct Debug<'a, P> {
 	image: &'a [IMAGE_DEBUG_DIRECTORY],
 }
 impl<'a, P: Pe<'a> + Copy> Debug<'a, P> {
-	pub(crate) fn new(pe: P) -> Result<Debug<'a, P>> {
+	pub(crate) fn try_from(pe: P) -> Result<Debug<'a, P>> {
 		let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_DEBUG).ok_or(Error::Bounds)?;
 		let (len, rem) = (
 			datadir.Size as usize / mem::size_of::<IMAGE_DEBUG_DIRECTORY>(),
