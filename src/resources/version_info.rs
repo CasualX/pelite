@@ -45,7 +45,12 @@ impl<'a> VersionInfo<'a> {
 		self.visit(&mut this);
 		this.value
 	}
-
+	/// Iterates over all the strings.
+	///
+	/// The closure's arguments are the lang, name and value for each string pair in the version information.
+	pub fn for_each_string<F: FnMut(&'a [u16], &'a [u16], &'a [u16])>(self, mut f: F) {
+		self.visit(&mut ForEachString(&mut f));
+	}
 	/// Gets the strings in a hash map.
 	pub fn to_hash_map(self) -> HashMap<String, String> {
 		let mut hash_map = HashMap::new();
@@ -126,13 +131,13 @@ impl<'a> VersionInfo<'a> {
 pub trait Visit<'a> {
 	fn version_info(&mut self, key: &'a [u16], fixed: Option<&'a VS_FIXEDFILEINFO>) -> bool { true }
 	fn file_info(&mut self, key: &'a [u16]) -> bool { true }
-	fn string_table(&mut self, encoding: &'a [u16]) -> bool { true }
-	fn string(&mut self, encoding: &'a [u16], key: &'a [u16], value: &'a [u16]) {}
+	fn string_table(&mut self, lang: &'a [u16]) -> bool { true }
+	fn string(&mut self, lang: &'a [u16], key: &'a [u16], value: &'a [u16]) {}
 	fn var(&mut self, key: &'a [u16], pairs: &'a [u16]) {}
 }
 
 impl<'a> Visit<'a> for HashMap<String, String> {
-	fn string(&mut self, _encoding: &'a [u16], key: &'a [u16], value: &'a [u16]) {
+	fn string(&mut self, _lang: &'a [u16], key: &'a [u16], value: &'a [u16]) {
 		self.insert(
 			String::from_utf16_lossy(key),
 			String::from_utf16_lossy(value),
@@ -146,12 +151,19 @@ impl<'a> Visit<'a> for Option<&'a VS_FIXEDFILEINFO> {
 	}
 }
 
+struct ForEachString<F>(F);
+impl<'a, F: FnMut(&'a [u16], &'a [u16], &'a [u16])> Visit<'a> for ForEachString<F> {
+	fn string(&mut self, lang: &'a [u16], key: &'a [u16], value: &'a [u16]) {
+		(self.0)(lang, key, value);
+	}
+}
+
 struct QueryValue<'a, 's> {
 	key: &'s str,
 	value: Option<&'a [u16]>,
 }
 impl<'a, 's> Visit<'a> for QueryValue<'a, 's> {
-	fn string(&mut self, _encoding: &'a [u16], key: &'a [u16], value: &'a [u16]) {
+	fn string(&mut self, _lang: &'a [u16], key: &'a [u16], value: &'a [u16]) {
 		if Iterator::eq(self.key.chars().map(Ok), char::decode_utf16(key.iter().cloned())) {
 			self.value = Some(value);
 		}
