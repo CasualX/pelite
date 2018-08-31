@@ -96,8 +96,9 @@ pub fn subsystem(subsystem: u16) -> Option<&'static str> {
 		IMAGE_SUBSYSTEM_NATIVE => Some("Native"),
 		IMAGE_SUBSYSTEM_WINDOWS_GUI => Some("Windows GUI"),
 		IMAGE_SUBSYSTEM_WINDOWS_CUI => Some("Windows CUI"),
-		IMAGE_SUBSYSTEM_OS2_CUI => Some("OS2 CUI"),
+		IMAGE_SUBSYSTEM_OS2_CUI => Some("OS/2 CUI"),
 		IMAGE_SUBSYSTEM_POSIX_CUI => Some("POSIX CUI"),
+		IMAGE_SUBSYSTEM_NATIVE_WINDOWS => Some("Native Win9x driver"),
 		IMAGE_SUBSYSTEM_WINDOWS_CE_GUI => Some("Windows CE GUI"),
 		IMAGE_SUBSYSTEM_EFI_APPLICATION => Some("Windows EFI Application"),
 		IMAGE_SUBSYSTEM_EFI_BOOT_SERVICE_DRIVER => Some("Windows EFI Boot Service Driver"),
@@ -125,9 +126,9 @@ pub fn subsystem(subsystem: u16) -> Option<&'static str> {
 /// 	.collect::<Vec<Option<&str>>>();
 ///
 /// assert_eq!(flags, &[
-/// 	Some("Dynamic Base"),
-/// 	Some("NX Compat"),
-/// 	Some("Terminal Server Aware"),
+/// 	Some("Can be relocated at load time"),
+/// 	Some("Image is NX compatible"),
+/// 	Some("Terminal Server aware"),
 /// ]);
 /// ```
 pub fn dll_chars(index: u32) -> Option<&'static str> {
@@ -139,17 +140,17 @@ static IMAGE_DLLCHARS_STRINGS: [Option<&str>; 16] = [
 	/*0004*/None,
 	/*0008*/None,
 	/*0010*/None,
-	/*0020*/Some("High Entropy VA"),
-	/*0040*/Some("Dynamic Base"),
-	/*0080*/Some("Force Integrity"),
-	/*0100*/Some("NX Compat"),
-	/*0200*/Some("No Isolation"),
-	/*0400*/Some("No SEH"),
-	/*0800*/Some("No Bind"),
-	/*1000*/Some("AppContainer"),
-	/*2000*/Some("WDM Driver"),
-	/*4000*/Some("Guard CF"),
-	/*8000*/Some("Terminal Server Aware"),
+	/*0020*/Some("Image can handle a high entropy virtual address space"),
+	/*0040*/Some("Can be relocated at load time"),
+	/*0080*/Some("Code Integrity checks are enforced"),
+	/*0100*/Some("Image is NX compatible"),
+	/*0200*/Some("Isolation aware, but do not isolate the image"),
+	/*0400*/Some("Does not use SEH"),
+	/*0800*/Some("Do not bind the image"),
+	/*1000*/Some("Image must execute in an AppContainer"),
+	/*2000*/Some("A WDM driver"),
+	/*4000*/Some("Image supports Control Flow Guard"),
+	/*8000*/Some("Terminal Server aware"),
 ];
 
 /// Stringifies the `IMAGE_DIRECTORY_ENTRY_*` constants for [`IMAGE_OPTIONAL_HEADER::DataDirectory`](../image/struct.IMAGE_OPTIONAL_HEADER64.html#DataDirectory.v).
@@ -159,25 +160,25 @@ static IMAGE_DLLCHARS_STRINGS: [Option<&str>; 16] = [
 /// ```
 /// let directory_entry = pelite::image::IMAGE_DIRECTORY_ENTRY_IMPORT;
 ///
-/// assert_eq!(pelite::stringify::directory_entry(directory_entry), Some("Import"));
+/// assert_eq!(pelite::stringify::directory_entry(directory_entry), Some("Import Directory"));
 /// ```
 pub fn directory_entry(entry: usize) -> Option<&'static str> {
 	match entry {
-		IMAGE_DIRECTORY_ENTRY_EXPORT => Some("Export"),
-		IMAGE_DIRECTORY_ENTRY_IMPORT => Some("Import"),
-		IMAGE_DIRECTORY_ENTRY_RESOURCE => Some("Resource"),
-		IMAGE_DIRECTORY_ENTRY_EXCEPTION => Some("Exception"),
-		IMAGE_DIRECTORY_ENTRY_SECURITY => Some("Security"),
-		IMAGE_DIRECTORY_ENTRY_BASERELOC => Some("Base Relocations"),
-		IMAGE_DIRECTORY_ENTRY_DEBUG => Some("Debug"),
-		IMAGE_DIRECTORY_ENTRY_ARCHITECTURE => Some("Architecture"),
-		IMAGE_DIRECTORY_ENTRY_GLOBALPTR => Some("GlobalPtr"),
-		IMAGE_DIRECTORY_ENTRY_TLS => Some("TLS"),
-		IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG => Some("Load Config"),
-		IMAGE_DIRECTORY_ENTRY_BOUND_IMPORT => Some("Bound Import"),
-		IMAGE_DIRECTORY_ENTRY_IAT => Some("IAT"),
-		IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT => Some("Delay Import"),
-		IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR => Some("COM Descriptor"),
+		IMAGE_DIRECTORY_ENTRY_EXPORT => Some("Export Directory"),
+		IMAGE_DIRECTORY_ENTRY_IMPORT => Some("Import Directory"),
+		IMAGE_DIRECTORY_ENTRY_RESOURCE => Some("Resource Directory"),
+		IMAGE_DIRECTORY_ENTRY_EXCEPTION => Some("Exception Directory"),
+		IMAGE_DIRECTORY_ENTRY_SECURITY => Some("Security Directory"),
+		IMAGE_DIRECTORY_ENTRY_BASERELOC => Some("Base Relocation Table"),
+		IMAGE_DIRECTORY_ENTRY_DEBUG => Some("Debug Directory"),
+		IMAGE_DIRECTORY_ENTRY_ARCHITECTURE => Some("Architecture Specific Data"),
+		IMAGE_DIRECTORY_ENTRY_GLOBALPTR => Some("RVA of GlobalPtr"),
+		IMAGE_DIRECTORY_ENTRY_TLS => Some("TLS Directory"),
+		IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG => Some("Load Configuration Directory"),
+		IMAGE_DIRECTORY_ENTRY_BOUND_IMPORT => Some("Bound Import Directory"),
+		IMAGE_DIRECTORY_ENTRY_IAT => Some("Import Address Table"),
+		IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT => Some("Delay Load Import Descriptors"),
+		IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR => Some("COM Runtime Descriptor"),
 		_ => None,
 	}
 }
@@ -198,7 +199,7 @@ pub fn directory_entry(entry: usize) -> Option<&'static str> {
 /// 	.collect::<Vec<Option<&str>>>();
 ///
 /// assert_eq!(flags, &[
-/// 	Some("CNT_CODE"),
+/// 	Some("Contains executable code"),
 /// 	Some("MEM_EXECUTE"),
 /// 	Some("MEM_READ"),
 /// ]);
@@ -212,9 +213,9 @@ static IMAGE_SCN_STRINGS: [Option<&str>; 32] = [
 	/*00000004*/None,
 	/*00000008*/Some("TYPE_NO_PAD"),
 	/*00000010*/None,
-	/*00000020*/Some("CNT_CODE"),
-	/*00000040*/Some("CNT_INITIALIZED_DATA"),
-	/*00000080*/Some("CNT_UNINITIALIZED_DATA"),
+	/*00000020*/Some("Contains executable code"),
+	/*00000040*/Some("Contains initialized data"),
+	/*00000080*/Some("Contains uninitialized data"),
 	/*00000100*/Some("LNK_OTHER"),
 	/*00000200*/Some("LNK_INFO"),
 	/*00000400*/None,
