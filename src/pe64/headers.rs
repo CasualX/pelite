@@ -20,6 +20,10 @@ impl<'a, P: Pe<'a> + Copy> Headers<P> {
 	pub fn pe(&self) -> P {
 		self.pe
 	}
+	/// Gets the PE headers as a byte slice.
+	pub fn image(&self) -> &'a [u8] {
+		unsafe { self.pe.image().get_unchecked(..self.pe.optional_header().SizeOfHeaders as usize) }
+	}
 	/// Calculates the optional header's check_sum.
 	pub fn check_sum(&self) -> u32 {
 		let image = self.pe.image();
