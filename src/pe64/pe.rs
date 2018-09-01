@@ -610,6 +610,9 @@ pub(crate) fn validate_headers(image: &[u8]) -> Result<u32> {
 	{
 		return Err(Error::BadMagic);
 	}
+	if nt.OptionalHeader.SizeOfHeaders as usize > image.len() {
+		return Err(Error::Bounds);
+	}
 	if nt.OptionalHeader.SizeOfHeaders > nt.OptionalHeader.SizeOfImage {
 		return Err(Error::Insanity);
 	}

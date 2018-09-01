@@ -40,6 +40,37 @@ impl<'a> PeFile<'a> {
 		let _ = validate_headers(image)?;
 		Ok(PeFile { image })
 	}
+	/// Converts the file to section alignment.
+	pub fn to_view(self) -> Vec<u8> {
+		let (sizeof_headers, sizeof_image) = {
+			let optional_header = self.optional_header();
+			(optional_header.SizeOfHeaders, optional_header.SizeOfImage)
+		};
+
+		// Zero fill the underlying image
+		let mut vec = vec![0u8; sizeof_image as usize];
+
+		// Start by copying the headers
+		let image = self.image();
+		unsafe {
+			// Validated by constructor
+			let dest_headers = vec.get_unchecked_mut(..sizeof_headers as usize);
+			let src_headers = image.get_unchecked(..sizeof_headers as usize);
+			dest_headers.copy_from_slice(src_headers);
+		}
+
+		// Copy the section file data
+		for section in self.section_headers() {
+			let dest = vec.get_mut(section.VirtualAddress as usize..u32::wrapping_add(section.VirtualAddress, section.VirtualSize) as usize);
+			let src = image.get(section.PointerToRawData as usize..u32::wrapping_add(section.PointerToRawData, section.SizeOfRawData) as usize);
+			// Skip invalid sections...
+			if let (Some(dest), Some(src)) = (dest, src) {
+				dest.copy_from_slice(src);
+			}
+		}
+
+		vec
+	}
 	fn range_to_slice(&self, rva: Rva, min_size_of: usize) -> Result<&'a [u8]> {
 		// Cannot reuse `self.rva_to_file_offset` because it doesn't return the size of the section
 		// This code has been carefully designed to avoid panicking on overflow

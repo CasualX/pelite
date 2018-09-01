@@ -2,7 +2,7 @@
 PE view.
 */
 
-use std::slice;
+use std::{cmp, slice};
 
 use error::{Error, Result};
 
@@ -70,6 +70,45 @@ impl<'a> PeView<'a> {
 		PeView {
 			image: slice::from_raw_parts(base, nt.OptionalHeader.SizeOfImage as usize),
 		}
+	}
+	/// Converts the view to file alignment.
+	pub fn to_file(self) -> Vec<u8> {
+		let (sizeof_headers, sizeof_image) = {
+			let optional_header = self.optional_header();
+			(optional_header.SizeOfHeaders, optional_header.SizeOfImage)
+		};
+
+		// Figure out the size of the file image
+		let mut file_size = sizeof_headers;
+		for section in self.section_headers() {
+			file_size = cmp::max(file_size, u32::wrapping_add(section.PointerToRawData, section.SizeOfRawData));
+		}
+		// Clamp to the actual image size...
+		file_size = cmp::min(file_size, sizeof_image);
+
+		// Zero fill the underlying file
+		let mut vec = vec![0u8; file_size as usize];
+
+		// Start by copying the headers
+		let image = self.image();
+		unsafe {
+			// Validated by constructor
+			let dest_headers = vec.get_unchecked_mut(..sizeof_headers as usize);
+			let src_headers = image.get_unchecked(..sizeof_headers as usize);
+			dest_headers.copy_from_slice(src_headers);
+		}
+
+		// Copy the section image data
+		for section in self.section_headers() {
+			let dest = vec.get_mut(section.PointerToRawData as usize..u32::wrapping_add(section.PointerToRawData, section.SizeOfRawData) as usize);
+			let src = image.get(section.VirtualAddress as usize..u32::wrapping_add(section.VirtualAddress, section.VirtualSize) as usize);
+			// Skip invalid sections...
+			if let (Some(dest), Some(src)) = (dest, src) {
+				dest.copy_from_slice(src);
+			}
+		}
+
+		vec
 	}
 	fn slice_impl(self, rva: Rva, min_size_of: usize, align_of: usize) -> Result<&'a [u8]> {
 		debug_assert!(align_of != 0 && align_of & (align_of - 1) == 0);
