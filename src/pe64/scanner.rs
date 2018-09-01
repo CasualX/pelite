@@ -32,7 +32,7 @@ fn example(file: PeFile<'_>, pat: &[pat::Atom]) {
 ```
 */
 
-use std::{cmp, mem, slice};
+use std::{cmp, mem};
 use std::ops::Range;
 
 use pattern as pat;
@@ -109,14 +109,7 @@ impl<'a, P: Pe<'a> + Copy> Scanner<P> {
 	/// In case of mismatch, ie. returns false, the save array is still overwritten with temporary data and should be considered trashed.
 	/// Keep a copy, invoke with a fresh save array or reexecute the pattern at the saved cursor to get around this.
 	pub fn exec(self, cursor: Rva, pat: &[pat::Atom], save: &mut [Rva]) -> bool {
-		let mut state = Exec {
-			pe: self.pe,
-			iter: pat.iter(),
-			cursor,
-			stack: [0; pat::STACK_SIZE],
-			sp: 0,
-		};
-		state.exec(save)
+		Exec { pe: self.pe, pat, cursor, pc: 0 }.exec(save)
 	}
 }
 
@@ -125,16 +118,17 @@ impl<'a, P: Pe<'a> + Copy> Scanner<P> {
 #[derive(Clone)]
 struct Exec<'u, P> {
 	pe: P,
-	iter: slice::Iter<'u, pat::Atom>,
+	pat: &'u [pat::Atom],
 	cursor: Rva,
-	stack: [Rva; pat::STACK_SIZE],
-	sp: usize,
+	pc: usize,
 }
 impl<'a, 'u, P: Pe<'a> + Copy> Exec<'u, P> {
 	fn exec(&mut self, save: &mut [Rva]) -> bool {
-		let ptr_skip = mem::size_of::<Va>() as i8;
 		let mut mask = 0xff;
-		while let Some(&atom) = self.iter.next() {
+		let mut skip_ext = 0i8;
+		let mut many_ext = 0u8;
+		while let Some(atom) = self.pat.get(self.pc).cloned() {
+			self.pc += 1;
 			match atom {
 				pat::Atom::Byte(pat_byte) => {
 					match self.pe.derva_copy::<u8>(self.cursor) {
@@ -145,39 +139,40 @@ impl<'a, 'u, P: Pe<'a> + Copy> Exec<'u, P> {
 					self.cursor += 1;
 				},
 				pat::Atom::Save(slot) => {
-					if (slot as usize) < save.len() {
-						save[slot as usize] = self.cursor;
+					if let Some(slot) = save.get_mut(slot as usize) {
+						*slot = self.cursor;
 					}
 				},
 				pat::Atom::Push(skip) => {
-					if self.sp < pat::STACK_SIZE {
-						let skip = if skip == pat::PTR_SKIP { ptr_skip } else { skip };
-						self.stack[self.sp] = self.cursor.wrapping_add(skip as Rva);
-						self.sp += 1;
+					let skip = calc_skip(skip, skip_ext);
+					let cursor = self.cursor.wrapping_add(skip as u32);
+					skip_ext = 0;
+					if !self.exec(save) {
+						return false;
 					}
+					self.cursor = cursor;
 				},
 				pat::Atom::Pop => {
-					if self.sp > 0 {
-						self.sp -= 1;
-						self.cursor = self.stack[self.sp];
-					}
+					return true;
 				},
 				pat::Atom::Fuzzy(pat_mask) => {
 					mask = pat_mask;
 				},
 				pat::Atom::Skip(skip) => {
-					let skip = if skip == pat::PTR_SKIP { ptr_skip } else { skip };
-					self.cursor = self.cursor.wrapping_add(skip as Rva);
+					let skip = calc_skip(skip, skip_ext);
+					let cursor = self.cursor.wrapping_add(skip as u32);
+					skip_ext = 0;
+					self.cursor = cursor;
+				},
+				pat::Atom::SkipExt(ext) => {
+					skip_ext = ext;
 				},
 				pat::Atom::Many(limit) => {
-					for i in 0..limit as Rva {
-						let mut state = self.clone();
-						state.cursor = state.cursor.wrapping_add(i);
-						if state.exec(save) {
-							return true;
-						}
-					}
-					return false;
+					let limit = limit as u32 + many_ext as u32 * 256;
+					return self.exec_many(save, limit);
+				},
+				pat::Atom::ManyExt(ext) => {
+					many_ext = ext;
 				},
 				pat::Atom::Jump1 => {
 					if let Ok(sbyte) = self.pe.derva_copy::<i8>(self.cursor) {
@@ -196,7 +191,7 @@ impl<'a, 'u, P: Pe<'a> + Copy> Exec<'u, P> {
 					}
 				},
 				pat::Atom::Ptr => {
-					if let Ok(rva) = self.pe.derva_copy(self.cursor).and_then(|va| self.pe.va_to_rva(va)) {
+					if let Ok(rva) = self.pe.derva_copy::<Va>(self.cursor).and_then(|va| self.pe.va_to_rva(va)) {
 						self.cursor = rva;
 					}
 					else {
@@ -205,7 +200,7 @@ impl<'a, 'u, P: Pe<'a> + Copy> Exec<'u, P> {
 				},
 				pat::Atom::Pir(slot) => {
 					if let Ok(sdword) = self.pe.derva_copy::<i32>(self.cursor) {
-						let &base = save.get(slot as usize).unwrap_or(&self.cursor);
+						let base = save.get(slot as usize).cloned().unwrap_or(self.cursor);
 						self.cursor = base.wrapping_add(sdword as Rva);
 					}
 					else {
@@ -215,6 +210,66 @@ impl<'a, 'u, P: Pe<'a> + Copy> Exec<'u, P> {
 			}
 		}
 		return true;
+	}
+	fn exec_many(&mut self, save: &mut [Rva], limit: u32) -> bool {
+		// Capture the current cursor and PC to restore while trying
+		let cursor = self.cursor;
+		let pc = self.pc;
+		// Slice a section of bytes to limit the scan to
+		let bytes = match self.pe.slice_bytes(cursor) {
+			Ok(bytes) if limit == 0 => bytes,
+			Ok(bytes) => &bytes[..cmp::min(limit as usize, bytes.len())],
+			Err(_) => return false,
+		};
+		// Peek at a byte to match on
+		let mut peek = None;
+		for &atom in &self.pat[pc..] {
+			match atom {
+				pat::Atom::Byte(byte) => {
+					peek = Some(byte);
+					break;
+				},
+				pat::Atom::Save(_) => (),
+				_ => break,
+			}
+		}
+		// Optimize the next scan with memchr, happy path
+		if let Some(byte) = peek {
+			for i in 0..bytes.len() as u32 {
+				if bytes[i as usize] == byte {
+					self.cursor = cursor.wrapping_add(i);
+					self.pc = pc;
+					if self.exec(save) {
+						return true;
+					}
+				}
+			}
+		}
+		// Not optimizable, perf cliff!
+		else {
+			for i in 0..bytes.len() as u32 {
+				self.cursor = cursor.wrapping_add(i);
+				self.pc = pc;
+				if self.exec(save) {
+					return true;
+				}
+			}
+		}
+		// No match found, exec fails
+		return false;
+	}
+}
+fn calc_skip(skip: i8, ext: i8) -> i32 {
+	if ext == 0 {
+		if skip == pat::PTR_SKIP {
+			mem::size_of::<Va>() as i32
+		}
+		else {
+			skip as i32
+		}
+	}
+	else {
+		skip as i32 + ext as i32 * 128
 	}
 }
 

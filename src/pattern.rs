@@ -60,8 +60,9 @@ impl error::Error for ParsePatError {
 		match self.0 {
 			PatError::UnpairedHexDigit => "unpaired hex digit",
 			PatError::UnknownChar => "unknown char",
+			PatError::SkipOverflow => "skip overflow",
+			PatError::ManyBounds => "lower bound is greater than the upper bound",
 			PatError::SaveOverflow => "save overflow",
-			PatError::StackOverflow => "stack overflow",
 			PatError::StackError => "stack error",
 			PatError::SyntaxError => "invalid syntax",
 			PatError::UnclosedQuote => "unclosed quote",
@@ -73,8 +74,9 @@ impl error::Error for ParsePatError {
 enum PatError {
 	UnpairedHexDigit,
 	UnknownChar,
+	SkipOverflow,
+	ManyBounds,
 	SaveOverflow,
-	StackOverflow,
 	StackError,
 	SyntaxError,
 	UnclosedQuote,
@@ -82,22 +84,16 @@ enum PatError {
 
 //----------------------------------------------------------------
 
-/// Pattern atom.
+/// Pattern atoms.
 ///
-/// During matching invalid and nonsensical atom arguments are ignored.
+/// The scanner will silently ignore nonsensical arguments.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum Atom {
 	/// Matches a single byte.
-	///
-	/// Matching fails immediately on a byte mismatch.
 	Byte(u8),
-	/// Captures the cursor in the [`Match`](struct.Match.html) struct or save array at the specified tuple index.
-	///
-	/// When an out of range tuple index is given the capture is ignored.
+	/// Captures the cursor in the save array at the specified index.
 	Save(u8),
-	/// Pushes the cursor with the given offset on the stack.
-	///
-	/// The stack size is limited to [`STACK_SIZE`](constant.STACK_SIZE.html) entries.
+	/// After a Pop later continue matching at the current cursor plus the argument.
 	Push(i8),
 	/// Pops the cursor from the stack and continues matching.
 	Pop,
@@ -105,8 +101,12 @@ pub enum Atom {
 	Fuzzy(u8),
 	/// Skips a fixed number of bytes.
 	Skip(i8),
+	/// Extends the skip range by `argument * 128`.
+	SkipExt(i8),
 	/// Looks for the next pattern at most a certain number of bytes ahead.
 	Many(u8),
+	/// Extends the search range of many by `argument * 256`.
+	ManyExt(u8),
 	/// Follows a signed 1 byte jump.
 	///
 	/// Reads the byte under the cursor, sign extends it, adds it plus 1 to the cursor and continues matching.
@@ -130,145 +130,123 @@ pub enum Atom {
 /// Patterns are a vector of [`Atom`](enum.Atom.html)s.
 pub type Pattern = Vec<Atom>;
 
-/// Parses a pattern string.
+/// Pattern parser.
 ///
 /// # Remarks
 ///
-/// The pattern string may contain any of the following characters:
+/// Following are examples of the pattern syntax.
+/// The syntax takes inspiration from [YARA hexadecimal strings](https://yara.readthedocs.io/en/v3.7.0/writingrules.html#hexadecimal-strings).
 ///
-/// * `AA`
-///
-///   Pair of case-insensitive hexadecimal digits (ie. `[0-9a-fA-F]{2}`).
-///
-/// * Spaces (codepoint 32) are ignored and can be used for visual grouping.
-///
-/// * `'`
-///
-///   Apostrophe saves the cursor.
-///
-///   Not always interested in the address where the start of the pattern is found, an apostrophe saves the current location of the matcher.
-///   This is especially helpful after following relative jumps or absolute pointers.
-///
-///   A common pattern is `${'}` which follows a relative jump and saves the destination address before returning back to continue matching.
-///
-///   The saved cursors are returned in a [`Match`](struct.Match.html) struct or in the save array argument explicitly passed by the caller.
-///
-///   Each apostrophe writes sequentially to the next slot starting from index 1.
-///   The first slot at index 0 is reserved for the address of the start of the pattern match.
-///
-/// * `?`
-///
-///   Skips a single byte.
-///
-///   The question mark acts as a wildcard for a single byte.
-///
-/// * `$`
-///
-///   Follow a signed 4 byte relative jump.
-///
-///   The scanner reads a signed dword and adds it plus 4 to the current address.
-///   This allows the pattern to seamlessly follow jumps and calls.
-///
-///   Use an apostrophe to save the destination, see above for more information.
-///
-/// * `%`
-///
-///   Follow a signed 1 byte relative jump.
-///
-///   The scanner reads a signed byte, sign extends and adds it plus 1 to the current address.
-///   Same as `$` but for short jumps.
-///
-/// * `*`
-///
-///   Follow an absolute pointer.
-///
-///   The scanner reads a pointer sized integer, converts it to an RVA and continues matching.
-///
-///   If the pointer cannot be converted to an RVA the matching fails.
-///   This allows the pattern to seamlessly follow data accesses.
-///
-///   A common pattern is eg. `B8*{'STRING'00}` to match against loading constants from `.rdata`.
-///
-/// * `{}`
-///
-///   Following a `$`, `%` or `*`; saves the current address before chasing the jump and on the closing `}` matching resumes where it left off.
-///
-///   Any subpattern goes in between the curly braces. These can be nested up to a depth of [`STACK_SIZE`](constant.STACK_SIZE.html).
-///
-///   The bytes used to jump (1 for `%`, 4 for `$` and 4 or 8 for `*` depending on bitness) are skipped when returning.
-///
-/// * `"literal"`
-///
-///   Match raw bytes in between the quotes. Handy for matching string constants.
-///
-///   Only supports UTF-8. No escape sequences available, specify them as bytes instead.
-///
-/// * Any other characters are invalid and not allowed.
-///
-/// # Examples
-///
+/// ```text
+/// 55 89 e5 83 ec ?
 /// ```
-/// use pelite::pattern::{parse, Atom};
 ///
-/// static MY_PATTERN: [Atom; 7] = [
-/// 	Atom::Save(0),
-/// 	Atom::Byte(0xE9),
-/// 	Atom::Push(4),
-/// 	Atom::Jump4,
-/// 	Atom::Save(1),
-/// 	Atom::Pop,
-/// 	Atom::Byte(0xC3),
-/// ];
+/// Case insensitive hexadecimal characters match the exact byte pattern and question marks serve as placeholders for unknown bytes.
 ///
-/// let pat = parse("E9${'} C3").unwrap();
-/// assert_eq!(pat, &MY_PATTERN);
+/// Note that a single question mark matches a whole byte. The syntax to mask part of a byte is not yet available.
+///
+/// Spaces (code point 32) are completely optional and carry no semantic meaning, their purpose is to visually group things together.
+///
+/// ```text
+/// b9 '37 13 00 00
 /// ```
-#[inline]
-pub fn parse<P: ?Sized + AsRef<str>>(pat: &P) -> Result<Pattern, ParsePatError> {
-	parse_pat(pat.as_ref()).map_err(|e| ParsePatError(e))
-}
-
-fn parse_pat(pat: &str) -> Result<Pattern, PatError> {
+///
+/// Single quotes are used as a bookmarks, to save the current cursor rva in the save array passed to the scanner.
+///
+/// It is no longer necessary to do tedious address calculations to read information out of the byte stream after a match was found.
+/// This power really comes to life with the capability to follow relative and absolute references.
+///
+/// The first entry in the save array is reserved for the rva where the pattern was matched.
+/// The rest of the save array is filled in order of appearance of the quotes. Here the rva of the quote can be found in `save[1]`.
+///
+/// ```text
+/// b8 [16-50] 50
+/// ```
+///
+/// Pairs of numbers separated by a hypen in square brackets indicate the lower and upper bound of number of bytes to skip.
+/// The scanner is non greedy and considers the first match while skipping as little as possible.
+///
+/// The second number must be larger than or equal to the lower bound, if they're equal the upper bound and hypen can be left out to indicate a large fixed skip eg. `[16]`.
+/// This is semantically equivalent to writing that many question marks, but it's more convenient to write it like this.
+///
+/// ```text
+/// 31 c0 74 % 'c3
+/// e8 $ '31 c0 c3
+/// 68 * '31 c0 c3
+/// ```
+///
+/// These symbols are used to follow; a signed 1 byte relative jump (`%`), a signed 4 byte relative jump (`$`) and an absolute pointer (`*`).
+///
+/// They are designed to be able to have the scanner follow short jumps, calls and longer jumps, and absolute pointers.
+///
+/// Composes really well with bookmarks to find the addresses of referenced functions and other data without tedious address calculations.
+///
+/// ```text
+/// b8 * "STRING" 00
+/// ```
+///
+/// String literals appear in double quotes and will be matched as UTF-8.
+///
+/// Escape sequences are not supported, switch back to matching with hex digits instead.
+/// For UTF-16 support, you are welcome to send a PR.
+///
+/// ```text
+/// e8 $ { ' } 83 f0 5c c3
+/// ```
+///
+/// Curly braces indicate a subpattern.
+///
+/// Subpatterns allow to follow jumps and return matching before the jump was taken.
+/// The bytes used to follow the jump are already skipped to allow to seamlessly continue matching.
+///
+/// A subpattern is only valid after a jump indicated by any of `%$*`.
+pub fn parse(pat: &str) -> Result<Pattern, ParsePatError> {
 	let mut result = Vec::with_capacity(pat.len() / 2);
 	result.push(Atom::Save(0));
-	let mut iter = pat.as_bytes().iter();
-	let mut depth = 0;
+	match parse_helper(pat, &mut result) {
+		Ok(()) => {},
+		Err(err) => return Err(ParsePatError(err)),
+	};
+
+	// Remove redundant atoms
+	while match result.last() {
+		Some(Atom::Skip(_)) | Some(Atom::Pop) | Some(Atom::Many(_)) => true,
+		_ => false,
+	} {
+		result.pop();
+	}
+
+	Ok(result)
+}
+fn parse_helper(pat: &str, result: &mut Vec<Atom>) -> Result<(), PatError> {
+	let mut iter = pat.as_bytes().iter().cloned();
 	let mut save = 1;
-	let mut jump = None;
-	while let Some(&chr) = iter.next() {
+	let mut depth = 0;
+	while let Some(chr) = iter.next() {
 		match chr {
 			// Follow signed 1 byte jump
 			b'%' => {
 				result.push(Atom::Jump1);
-				jump = Some(1);
 			},
 			// Follow signed 4 byte jump
 			b'$' => {
 				result.push(Atom::Jump4);
-				jump = Some(4);
 			},
 			// Follow pointer
 			b'*' => {
 				result.push(Atom::Ptr);
-				jump = Some(PTR_SKIP);
 			},
 			// Start recursive operator
 			b'{' => {
-				// Limited recursive depth
-				if depth >= STACK_SIZE {
-					return Err(PatError::StackOverflow);
-				}
 				depth += 1;
-				// Must follow a jump operator
-				if let Some(skip) = jump {
-					// Put the push before the jump operator
-					let atom = mem::replace(result.last_mut().unwrap(), Atom::Push(skip));
-					result.push(atom);
-					jump = None;
-				}
-				else {
-					return Err(PatError::SyntaxError);
-				}
+				// Must follow a jump operator and insert push before the jump
+				let atom = match result.last_mut() {
+					Some(atom @ Atom::Jump1) => mem::replace(atom, Atom::Push(1)),
+					Some(atom @ Atom::Jump4) => mem::replace(atom, Atom::Push(4)),
+					Some(atom @ Atom::Ptr) => mem::replace(atom, Atom::Push(PTR_SKIP)),
+					_ => return Err(PatError::SyntaxError),
+				};
+				result.push(atom);
 			},
 			// End recursive operator
 			b'}' => {
@@ -278,11 +256,68 @@ fn parse_pat(pat: &str) -> Result<Pattern, PatError> {
 				}
 				depth -= 1;
 				result.push(Atom::Pop);
-				jump = None;
+			},
+			// Skip many operator
+			b'[' => {
+				let mut chr;
+				// Parse the lower bound
+				let mut lower_bound = 0u32;
+				loop {
+					chr = iter.next();
+					match chr {
+						Some(b'-') | Some(b']') => break,
+						Some(chr @ b'0'...b'9') => {
+							lower_bound = lower_bound * 10 + (chr - b'0') as u32;
+							if lower_bound > 16384 {
+								return Err(PatError::SkipOverflow);
+							}
+						},
+						Some(_) => return Err(PatError::SyntaxError),
+						None => return Err(PatError::SyntaxError),
+					}
+				}
+				// Turn the lower bound into skip ops
+				if lower_bound >= 128 {
+					result.push(Atom::SkipExt((lower_bound >> 7) as i8));
+				}
+				result.push(Atom::Skip((lower_bound & 0x7f) as i8));
+				// Second many part is optional
+				if chr == Some(b']') {
+					continue;
+				}
+				// Parse the upper bound
+				let mut upper_bound = 0u32;
+				loop {
+					chr = iter.next();
+					match chr {
+						Some(b']') => break,
+						Some(chr @ b'0'...b'9') => {
+							upper_bound = upper_bound * 10 + (chr - b'0') as u32;
+							if upper_bound > 16384 {
+								return Err(PatError::SkipOverflow);
+							}
+						},
+						Some(_) => return Err(PatError::SyntaxError),
+						None => return Err(PatError::SyntaxError),
+					}
+				}
+				if lower_bound == 0 {
+					result.push(Atom::Many(0));
+				}
+				else if lower_bound < upper_bound {
+					let many_skip = upper_bound - lower_bound;
+					if many_skip >= 128 {
+						result.push(Atom::ManyExt((many_skip >> 8) as u8));
+					}
+					result.push(Atom::Many((many_skip & 0xff) as u8));
+				}
+				else if lower_bound != upper_bound {
+					return Err(PatError::ManyBounds);
+				}
 			},
 			// Match a byte
 			b'0'...b'9' | b'A'...b'F' | b'a'...b'f' => {
-				if let Some(&chr2) = iter.next() {
+				if let Some(chr2) = iter.next() {
 					// High nibble of the byte
 					let hi = if chr >= b'a' { chr - b'a' + 0xA }
 						else if chr >= b'A' { chr - b'A' + 0xA }
@@ -294,7 +329,6 @@ fn parse_pat(pat: &str) -> Result<Pattern, PatError> {
 						else { return Err(PatError::UnpairedHexDigit); };
 					// Add byte to the pattern
 					result.push(Atom::Byte((hi << 4) + lo));
-					jump = None;
 				}
 				else {
 					return Err(PatError::UnpairedHexDigit);
@@ -302,9 +336,8 @@ fn parse_pat(pat: &str) -> Result<Pattern, PatError> {
 			},
 			// Match raw bytes
 			b'"' => {
-				jump = None;
 				loop {
-					if let Some(&chr) = iter.next() {
+					if let Some(chr) = iter.next() {
 						if chr != b'"' {
 							result.push(Atom::Byte(chr));
 						}
@@ -325,15 +358,17 @@ fn parse_pat(pat: &str) -> Result<Pattern, PatError> {
 				}
 				result.push(Atom::Save(save));
 				save += 1;
-				jump = None;
 			},
 			// Skip bytes
 			b'?' => {
-				jump = None;
+				// match result.last_mut() {
+				// 	Some(Atom::Skip(skip)) if *skip != PTR_SKIP && *skip < 127i8 => *skip += 1,
+				// 	_ => result.push(Atom::Skip(1)),
+				// };
 				// Coalescence skips together
-				if let Some(&mut Atom::Skip(ref mut s)) = result.last_mut() {
-					if *s != PTR_SKIP && *s < 127i8 {
-						*s += 1;
+				if let Some(Atom::Skip(skip)) = result.last_mut() {
+					if *skip != PTR_SKIP && *skip < 127i8 {
+						*skip += 1;
 						continue;
 					}
 				}
@@ -347,17 +382,12 @@ fn parse_pat(pat: &str) -> Result<Pattern, PatError> {
 			},
 		}
 	}
+	// Check balanced stack operators
 	if depth != 0 {
 		return Err(PatError::StackError);
 	}
-	// Remove redundant atoms
-	while match result.last() {
-		Some(&Atom::Skip(_)) | Some(&Atom::Pop) => true,
-		_ => false,
-	} {
-		result.pop();
-	}
-	Ok(result)
+
+	Ok(())
 }
 
 //----------------------------------------------------------------
@@ -404,7 +434,7 @@ mod tests {
 	#[test]
 	fn errors() {
 		use self::PatError::*;
-		assert_eq!(Err(ParsePatError(StackOverflow)), parse("${%{${%{${%{"));
+		// assert_eq!(Err(ParsePatError(StackOverflow)), parse("${%{${%{${%{"));
 		assert_eq!(Err(ParsePatError(StackError)), parse("${"));
 		assert_eq!(Err(ParsePatError(StackError)), parse("}}"));
 		assert_eq!(Err(ParsePatError(SyntaxError)), parse("AB {}"));
