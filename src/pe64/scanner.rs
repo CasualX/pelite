@@ -146,10 +146,12 @@ impl<'a, 'u, P: Pe<'a> + Copy> Exec<'u, P> {
 				pat::Atom::Push(skip) => {
 					let skip = calc_skip(skip, skip_ext);
 					let cursor = self.cursor.wrapping_add(skip as u32);
-					skip_ext = 0;
 					if !self.exec(save) {
 						return false;
 					}
+					mask = 0xff;
+					skip_ext = 0;
+					many_ext = 0;
 					self.cursor = cursor;
 				},
 				pat::Atom::Pop => {

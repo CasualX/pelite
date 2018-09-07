@@ -36,7 +36,7 @@ This requires knowledge with reverse engineering programs.
 Here's a resource to learn more about signature scanning: [wiki.alliedmods.net](https://wiki.alliedmods.net/Signature_scanning).
 */
 
-use std::{error, fmt, mem};
+use std::{error, fmt, mem, str};
 
 /// Max recursion depth.
 pub const STACK_SIZE: usize = 4;
@@ -47,38 +47,40 @@ pub(crate) const PTR_SKIP: i8 = -128;
 
 /// Pattern parsing error.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub struct ParsePatError(PatError);
-
+pub struct ParsePatError {
+	kind: PatError,
+	position: usize,
+}
 impl fmt::Display for ParsePatError {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		error::Error::description(self).fmt(f)
+		write!(f, "Syntax Error @{}: {}.", self.position, error::Error::description(self))
 	}
 }
-
 impl error::Error for ParsePatError {
 	fn description(&self) -> &str {
-		match self.0 {
-			PatError::UnpairedHexDigit => "unpaired hex digit",
-			PatError::UnknownChar => "unknown char",
-			PatError::SkipOverflow => "skip overflow",
-			PatError::ManyBounds => "lower bound is greater than the upper bound",
-			PatError::SaveOverflow => "save overflow",
-			PatError::StackError => "stack error",
-			PatError::SyntaxError => "invalid syntax",
-			PatError::UnclosedQuote => "unclosed quote",
+		match self.kind {
+			PatError::UnpairedHexDigit => "Unpaired hex digit",
+			PatError::UnknownChar => "Unknown character",
+			PatError::ManyOverflow => "Many range exceeded",
+			PatError::ManyRange => "Many bounds nonsensical",
+			PatError::ManyInvalid => "Many invalid syntax",
+			PatError::SaveOverflow => "Save store overflow",
+			PatError::StackError => "Stack unbalanced",
+			PatError::StackInvalid => "Stack must follow jump",
+			PatError::UnclosedQuote => "String missing end quote",
 		}
 	}
 }
-
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 enum PatError {
 	UnpairedHexDigit,
 	UnknownChar,
-	SkipOverflow,
-	ManyBounds,
+	ManyOverflow,
+	ManyRange,
+	ManyInvalid,
 	SaveOverflow,
 	StackError,
-	SyntaxError,
+	StackInvalid,
 	UnclosedQuote,
 }
 
@@ -160,14 +162,13 @@ pub type Pattern = Vec<Atom>;
 /// The rest of the save array is filled in order of appearance of the quotes. Here the rva of the quote can be found in `save[1]`.
 ///
 /// ```text
-/// b8 [16-50] 50
+/// b8 [16] 50 [13-42] ff
 /// ```
 ///
 /// Pairs of numbers separated by a hypen in square brackets indicate the lower and upper bound of number of bytes to skip.
 /// The scanner is non greedy and considers the first match while skipping as little as possible.
 ///
-/// The second number must be larger than or equal to the lower bound, if they're equal the upper bound and hypen can be left out to indicate a large fixed skip eg. `[16]`.
-/// This is semantically equivalent to writing that many question marks, but it's more convenient to write it like this.
+/// A single number in square brackets without hypens is a fixed size jump, equivalent to writing that number of consecutive question marks.
 ///
 /// ```text
 /// 31 c0 74 % 'c3
@@ -202,40 +203,28 @@ pub type Pattern = Vec<Atom>;
 /// A subpattern is only valid after a jump indicated by any of `%$*`.
 pub fn parse(pat: &str) -> Result<Pattern, ParsePatError> {
 	let mut result = Vec::with_capacity(pat.len() / 2);
-	result.push(Atom::Save(0));
-	match parse_helper(pat, &mut result) {
-		Ok(()) => {},
-		Err(err) => return Err(ParsePatError(err)),
-	};
-
-	// Remove redundant atoms
-	while match result.last() {
-		Some(Atom::Skip(_)) | Some(Atom::Pop) | Some(Atom::Many(_)) => true,
-		_ => false,
-	} {
-		result.pop();
+	let mut pat_end = pat;
+	match parse_helper(&mut pat_end, &mut result) {
+		Ok(()) => Ok(result),
+		Err(kind) => {
+			let position = pat_end.as_ptr() as usize - pat.as_ptr() as usize;
+			Err(ParsePatError { kind, position })
+		},
 	}
-
-	Ok(result)
 }
-fn parse_helper(pat: &str, result: &mut Vec<Atom>) -> Result<(), PatError> {
-	let mut iter = pat.as_bytes().iter().cloned();
+fn parse_helper(pat: &mut &str, result: &mut Vec<Atom>) -> Result<(), PatError> {
+	result.push(Atom::Save(0));
+	let mut iter = pat.as_bytes().iter();
 	let mut save = 1;
 	let mut depth = 0;
-	while let Some(chr) = iter.next() {
+	while let Some(mut chr) = iter.next().cloned() {
 		match chr {
 			// Follow signed 1 byte jump
-			b'%' => {
-				result.push(Atom::Jump1);
-			},
+			b'%' => result.push(Atom::Jump1),
 			// Follow signed 4 byte jump
-			b'$' => {
-				result.push(Atom::Jump4);
-			},
+			b'$' => result.push(Atom::Jump4),
 			// Follow pointer
-			b'*' => {
-				result.push(Atom::Ptr);
-			},
+			b'*' => result.push(Atom::Ptr),
 			// Start recursive operator
 			b'{' => {
 				depth += 1;
@@ -244,7 +233,7 @@ fn parse_helper(pat: &str, result: &mut Vec<Atom>) -> Result<(), PatError> {
 					Some(atom @ Atom::Jump1) => mem::replace(atom, Atom::Push(1)),
 					Some(atom @ Atom::Jump4) => mem::replace(atom, Atom::Push(4)),
 					Some(atom @ Atom::Ptr) => mem::replace(atom, Atom::Push(PTR_SKIP)),
-					_ => return Err(PatError::SyntaxError),
+					_ => return Err(PatError::StackInvalid),
 				};
 				result.push(atom);
 			},
@@ -259,22 +248,25 @@ fn parse_helper(pat: &str, result: &mut Vec<Atom>) -> Result<(), PatError> {
 			},
 			// Skip many operator
 			b'[' => {
-				let mut chr;
 				// Parse the lower bound
 				let mut lower_bound = 0u32;
+				let mut at_least_one_char = false;
 				loop {
-					chr = iter.next();
+					chr = iter.next().cloned().ok_or(PatError::ManyInvalid)?;
 					match chr {
-						Some(b'-') | Some(b']') => break,
-						Some(chr @ b'0'...b'9') => {
+						b'-' | b']' => break,
+						chr @ b'0'...b'9' => {
+							at_least_one_char = true;
 							lower_bound = lower_bound * 10 + (chr - b'0') as u32;
-							if lower_bound > 16384 {
-								return Err(PatError::SkipOverflow);
+							if lower_bound >= 16384 {
+								return Err(PatError::ManyOverflow);
 							}
 						},
-						Some(_) => return Err(PatError::SyntaxError),
-						None => return Err(PatError::SyntaxError),
+						_ => return Err(PatError::ManyInvalid),
 					}
+				}
+				if !at_least_one_char {
+					return Err(PatError::ManyInvalid);
 				}
 				// Turn the lower bound into skip ops
 				if lower_bound >= 128 {
@@ -282,62 +274,55 @@ fn parse_helper(pat: &str, result: &mut Vec<Atom>) -> Result<(), PatError> {
 				}
 				result.push(Atom::Skip((lower_bound & 0x7f) as i8));
 				// Second many part is optional
-				if chr == Some(b']') {
+				if chr == b']' {
 					continue;
 				}
 				// Parse the upper bound
 				let mut upper_bound = 0u32;
 				loop {
-					chr = iter.next();
+					chr = iter.next().cloned().ok_or(PatError::ManyInvalid)?;
 					match chr {
-						Some(b']') => break,
-						Some(chr @ b'0'...b'9') => {
+						b']' => break,
+						chr @ b'0'...b'9' => {
 							upper_bound = upper_bound * 10 + (chr - b'0') as u32;
-							if upper_bound > 16384 {
-								return Err(PatError::SkipOverflow);
+							if upper_bound >= 16384 {
+								return Err(PatError::ManyOverflow);
 							}
 						},
-						Some(_) => return Err(PatError::SyntaxError),
-						None => return Err(PatError::SyntaxError),
+						_ => return Err(PatError::ManyInvalid),
 					}
 				}
-				if lower_bound == 0 {
-					result.push(Atom::Many(0));
-				}
-				else if lower_bound < upper_bound {
+				// Lower bound should be strictly less than the upper bound
+				if lower_bound < upper_bound {
 					let many_skip = upper_bound - lower_bound;
 					if many_skip >= 128 {
 						result.push(Atom::ManyExt((many_skip >> 8) as u8));
 					}
 					result.push(Atom::Many((many_skip & 0xff) as u8));
 				}
-				else if lower_bound != upper_bound {
-					return Err(PatError::ManyBounds);
+				else {
+					return Err(PatError::ManyRange);
 				}
 			},
 			// Match a byte
 			b'0'...b'9' | b'A'...b'F' | b'a'...b'f' => {
-				if let Some(chr2) = iter.next() {
-					// High nibble of the byte
-					let hi = if chr >= b'a' { chr - b'a' + 0xA }
-						else if chr >= b'A' { chr - b'A' + 0xA }
-						else { chr - b'0' };
-					// Low nibble of the byte
-					let lo = if chr2 >= b'a' && chr2 <= b'f' { chr2 - b'a' + 0xA }
-						else if chr2 >= b'A' && chr2 <= b'F' { chr2 - b'A' + 0xA }
-						else if chr2 >= b'0' && chr2 <= b'9' { chr2 - b'0' }
-						else { return Err(PatError::UnpairedHexDigit); };
-					// Add byte to the pattern
-					result.push(Atom::Byte((hi << 4) + lo));
-				}
-				else {
-					return Err(PatError::UnpairedHexDigit);
-				}
+				// High nibble of the byte
+				let hi = if chr >= b'a' { chr - b'a' + 10 }
+					else if chr >= b'A' { chr - b'A' + 10 }
+					else { chr - b'0' };
+				chr = iter.next().cloned().ok_or(PatError::UnpairedHexDigit)?;
+				// Low nibble of the byte
+				let lo = if chr >= b'a' && chr <= b'f' { chr - b'a' + 10 }
+					else if chr >= b'A' && chr <= b'F' { chr - b'A' + 10 }
+					else if chr >= b'0' && chr <= b'9' { chr - b'0' }
+					else { return Err(PatError::UnpairedHexDigit); };
+				// Add byte to the pattern
+				result.push(Atom::Byte((hi << 4) + lo));
 			},
 			// Match raw bytes
 			b'"' => {
 				loop {
-					if let Some(chr) = iter.next() {
+					if let Some(chr) = iter.next().cloned() {
 						if chr != b'"' {
 							result.push(Atom::Byte(chr));
 						}
@@ -381,10 +366,27 @@ fn parse_helper(pat: &str, result: &mut Vec<Atom>) -> Result<(), PatError> {
 				return Err(PatError::UnknownChar);
 			},
 		}
+		// Converted from str originally, should be safe
+		*pat = unsafe { str::from_utf8_unchecked(iter.as_slice()) };
 	}
 	// Check balanced stack operators
 	if depth != 0 {
 		return Err(PatError::StackError);
+	}
+
+	// Remove redundant atoms at the end
+	fn is_redundant(atom: &Atom) -> bool {
+		return match atom {
+			| Atom::Skip(_)
+			| Atom::SkipExt(_)
+			| Atom::Pop
+			| Atom::Many(_)
+			| Atom::ManyExt(_) => true,
+			_ => false,
+		}
+	}
+	while result.last().map(is_redundant).unwrap_or(false) {
+		result.pop();
 	}
 
 	Ok(())
@@ -429,19 +431,30 @@ mod tests {
 		assert_eq!(parse("*{\"hello\"00}"), Ok(vec![
 			Save(0), Push(PTR_SKIP), Ptr, Byte(104), Byte(101), Byte(108), Byte(108), Byte(111), Byte(0)
 		]));
+
+		assert_eq!(parse("b8 [16] 50 [13-42] ff"), Ok(vec![
+			Save(0), Byte(0xb8), Skip(16), Byte(0x50), Skip(13), Many(29), Byte(0xff)
+		]));
 	}
 
 	#[test]
 	fn errors() {
 		use self::PatError::*;
-		// assert_eq!(Err(ParsePatError(StackOverflow)), parse("${%{${%{${%{"));
-		assert_eq!(Err(ParsePatError(StackError)), parse("${"));
-		assert_eq!(Err(ParsePatError(StackError)), parse("}}"));
-		assert_eq!(Err(ParsePatError(SyntaxError)), parse("AB {}"));
-		assert_eq!(Err(ParsePatError(UnpairedHexDigit)), parse("123"));
-		assert_eq!(Err(ParsePatError(UnpairedHexDigit)), parse("EE BZ"));
-		assert_eq!(Err(ParsePatError(UnpairedHexDigit)), parse("A?"));
-		assert_eq!(Err(ParsePatError(UnknownChar)), parse("@"));
-		assert_eq!(Err(ParsePatError(UnclosedQuote)), parse("\"unbalanced"));
+		assert_eq!(Err(ParsePatError { kind: StackError, position: 2 }), parse("${"));
+		assert_eq!(Err(ParsePatError { kind: StackError, position: 0 }), parse("}}"));
+		assert_eq!(Err(ParsePatError { kind: StackInvalid, position: 3 }), parse("AB {}"));
+		assert_eq!(Err(ParsePatError { kind: UnpairedHexDigit, position: 2 }), parse("123"));
+		assert_eq!(Err(ParsePatError { kind: UnpairedHexDigit, position: 3 }), parse("EE BZ"));
+		assert_eq!(Err(ParsePatError { kind: UnpairedHexDigit, position: 0 }), parse("A?"));
+		assert_eq!(Err(ParsePatError { kind: UnknownChar, position: 0 }), parse("@"));
+		assert_eq!(Err(ParsePatError { kind: UnclosedQuote, position: 0 }), parse("\"unbalanced"));
+		assert_eq!(Err(ParsePatError { kind: ManyInvalid, position: 0 }), parse("[-2]"));
+		assert_eq!(Err(ParsePatError { kind: ManyInvalid, position: 0 }), parse("[-]"));
+		assert_eq!(Err(ParsePatError { kind: ManyInvalid, position: 0 }), parse("[]"));
+		assert_eq!(Err(ParsePatError { kind: ManyRange, position: 0 }), parse("[0-]"));
+		assert_eq!(Err(ParsePatError { kind: ManyRange, position: 0 }), parse("[0-0]"));
+		assert_eq!(Err(ParsePatError { kind: ManyRange, position: 0 }), parse("[20-1]"));
+		assert_eq!(Err(ParsePatError { kind: ManyOverflow, position: 0 }), parse("[20000-40000]"));
+
 	}
 }
