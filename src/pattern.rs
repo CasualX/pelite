@@ -36,7 +36,7 @@ This requires knowledge with reverse engineering programs.
 Here's a resource to learn more about signature scanning: [wiki.alliedmods.net](https://wiki.alliedmods.net/Signature_scanning).
 */
 
-use std::{error, fmt, mem, str};
+use std::{cmp, error, fmt, mem, str};
 
 /// Max recursion depth.
 pub const STACK_SIZE: usize = 4;
@@ -69,6 +69,8 @@ impl error::Error for ParsePatError {
 			PatError::StackInvalid => "Stack must follow jump",
 			PatError::UnclosedQuote => "String missing end quote",
 			PatError::ReadOperand => "Read operand error",
+			PatError::SubPattern => "Sub pattern error",
+			PatError::SubOverflow => "Sub pattern too large",
 		}
 	}
 }
@@ -84,6 +86,8 @@ enum PatError {
 	StackInvalid,
 	UnclosedQuote,
 	ReadOperand,
+	SubPattern,
+	SubOverflow,
 }
 
 //----------------------------------------------------------------
@@ -141,6 +145,12 @@ pub enum Atom {
 	ReadI32(u8),
 	/// Reads the dword under the cursor, writes to the given slot and advances the cursor by 4.
 	ReadU32(u8),
+	/// Sets a retry point when matching fails.
+	///
+	/// When matching fails the cursor is restored and matching begins again skipping _N_ atoms.
+	Case(u8),
+	/// Continues matching after a case atom, skipping the next _N_ atoms.
+	Break(u8),
 }
 
 /// Patterns are a vector of [`Atom`](enum.Atom.html)s.
@@ -225,6 +235,14 @@ pub type Pattern = Vec<Atom>;
 /// Operand sizes are 1 (byte), 2 (word) or 4 (dword).
 ///
 /// The cursor is advanced by the size of the operand.
+///
+/// ```text
+/// 83 c0 2a ( 6a ? | 68 ? ? ? ? ) e8
+/// ```
+///
+/// Parentheses indicate alternate subpatterns separated by a pipe character.
+///
+/// The scanner attempts to match the alternate subpatterns from left to right and fails if none of them match.
 pub fn parse(pat: &str) -> Result<Pattern, ParsePatError> {
 	let mut result = Vec::with_capacity(pat.len() / 2);
 	let mut pat_end = pat;
@@ -241,6 +259,15 @@ fn parse_helper(pat: &mut &str, result: &mut Vec<Atom>) -> Result<(), PatError> 
 	let mut iter = pat.as_bytes().iter();
 	let mut save = 1;
 	let mut depth = 0;
+	#[derive(Default)]
+	struct SubPattern {
+		case: usize,
+		brks: Vec<usize>,
+		save: u8,
+		save_next: u8,
+		depth: u8,
+	}
+	let mut subs = Vec::<SubPattern>::new();
 	while let Some(mut chr) = iter.next().cloned() {
 		match chr {
 			// Follow signed 1 byte jump
@@ -269,6 +296,55 @@ fn parse_helper(pat: &mut &str, result: &mut Vec<Atom>) -> Result<(), PatError> 
 				}
 				depth -= 1;
 				result.push(Atom::Pop);
+			},
+			// Start subpattern
+			b'(' => {
+				subs.push(SubPattern::default());
+				let sub = subs.last_mut().unwrap();
+				// Keep the save and depth state
+				sub.save = save;
+				sub.depth = depth;
+				// Add a new case, update the case offset later
+				sub.case = result.len();
+				result.push(Atom::Case(0));
+			},
+			// Case subpattern
+			b'|' => {
+				// Should already have started a subpattern
+				let sub = subs.last_mut().ok_or(PatError::SubPattern)?;
+				// Update the save state
+				sub.save_next = cmp::max(sub.save_next, save);
+				save = sub.save;
+				depth = sub.depth;
+				// Add a break of the previous subpattern
+				sub.brks.push(result.len());
+				result.push(Atom::Break(0));
+				// Add a new case of the next subpattern
+				let case_offset = result.len() - sub.case - 1;
+				if case_offset >= 256 {
+					return Err(PatError::SubOverflow);
+				}
+				result[sub.case] = Atom::Case(case_offset as u8);
+				sub.case = result.len();
+				result.push(Atom::Case(0));
+			},
+			// End subpattern
+			b')' => {
+				// Should already have started a subpattern
+				let sub = subs.pop().ok_or(PatError::SubPattern)?;
+				// Prepare for the next save
+				save = cmp::max(sub.save_next, save);
+				depth = sub.depth;
+				// Neutralize the last case, since there are no more
+				result[sub.case] = Atom::Skip(0);
+				// Fill in the breaks
+				for &brk in &sub.brks {
+					let brk_offset = result.len() - brk - 1;
+					if brk_offset >= 256 {
+						return Err(PatError::SubOverflow);
+					}
+					result[brk] = Atom::Break(brk_offset as u8);
+				}
 			},
 			// Skip many operator
 			b'[' => {
@@ -422,6 +498,10 @@ fn parse_helper(pat: &mut &str, result: &mut Vec<Atom>) -> Result<(), PatError> 
 	// Check balanced stack operators
 	if depth != 0 {
 		return Err(PatError::StackError);
+	}
+	// Check if sub patterns are balanced
+	if subs.len() != 0 {
+		return Err(PatError::SubPattern);
 	}
 
 	// Remove redundant atoms at the end

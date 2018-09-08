@@ -264,6 +264,18 @@ impl<'a, 'u, P: Pe<'a> + Copy> Exec<'u, P> {
 						return false;
 					}
 				},
+				pat::Atom::Case(next) => {
+					let pc = self.pc;
+					let cursor = self.cursor;
+					if !self.exec(save) {
+						self.pc = pc + next as usize;
+						self.cursor = cursor;
+					}
+				},
+				pat::Atom::Break(next) => {
+					self.pc = self.pc + next as usize;
+					return true;
+				},
 			}
 		}
 		return true;
