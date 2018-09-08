@@ -68,6 +68,7 @@ impl error::Error for ParsePatError {
 			PatError::StackError => "Stack unbalanced",
 			PatError::StackInvalid => "Stack must follow jump",
 			PatError::UnclosedQuote => "String missing end quote",
+			PatError::ReadOperand => "Read operand error",
 		}
 	}
 }
@@ -82,6 +83,7 @@ enum PatError {
 	StackError,
 	StackInvalid,
 	UnclosedQuote,
+	ReadOperand,
 }
 
 //----------------------------------------------------------------
@@ -127,6 +129,18 @@ pub enum Atom {
 	///
 	/// Reads the dword under the cursor and adds it to the saved cursor for the given slot and continues matching.
 	Pir(u8),
+	/// Reads and sign-extends the byte under the cursor, writes to the given slot and advances the cursor by 1.
+	ReadI8(u8),
+	/// Reads and zero-extends the byte under the cursor, writes to the given slot and advances the cursor by 1.
+	ReadU8(u8),
+	/// Reads and sign-extends the word under the cursor, writes to the given slot and advances the cursor by 2.
+	ReadI16(u8),
+	/// Reads and zero-extends the word under the cursor, writes to the given slot and advances the cursor by 2.
+	ReadU16(u8),
+	/// Reads the dword under the cursor, writes to the given slot and advances the cursor by 4.
+	ReadI32(u8),
+	/// Reads the dword under the cursor, writes to the given slot and advances the cursor by 4.
+	ReadU32(u8),
 }
 
 /// Patterns are a vector of [`Atom`](enum.Atom.html)s.
@@ -140,7 +154,7 @@ pub type Pattern = Vec<Atom>;
 /// The syntax takes inspiration from [YARA hexadecimal strings](https://yara.readthedocs.io/en/v3.7.0/writingrules.html#hexadecimal-strings).
 ///
 /// ```text
-/// 55 89 e5 83 ec ?
+/// 55 89 e5 83 ? ec
 /// ```
 ///
 /// Case insensitive hexadecimal characters match the exact byte pattern and question marks serve as placeholders for unknown bytes.
@@ -195,12 +209,22 @@ pub type Pattern = Vec<Atom>;
 /// e8 $ { ' } 83 f0 5c c3
 /// ```
 ///
-/// Curly braces indicate a subpattern.
+/// Curly braces indicate a subpattern, must follow after a jump.
 ///
 /// Subpatterns allow to follow jumps and return matching before the jump was taken.
 /// The bytes used to follow the jump are already skipped to allow to seamlessly continue matching.
 ///
-/// A subpattern is only valid after a jump indicated by any of `%$*`.
+/// ```text
+/// e8 i1 a0 u4
+/// ```
+///
+/// An `i` or `u` indicates memory read operations followed by the size of the operand to read.
+///
+/// The read values are stored in the save array alongside the bookmarked addresses (single quotes).
+/// This means the values are sign- or zero- extended respectively before being stored.
+/// Operand sizes are 1 (byte), 2 (word) or 4 (dword).
+///
+/// The cursor is advanced by the size of the operand.
 pub fn parse(pat: &str) -> Result<Pattern, ParsePatError> {
 	let mut result = Vec::with_capacity(pat.len() / 2);
 	let mut pat_end = pat;
@@ -358,6 +382,32 @@ fn parse_helper(pat: &mut &str, result: &mut Vec<Atom>) -> Result<(), PatError> 
 					}
 				}
 				result.push(Atom::Skip(1));
+			},
+			b'i' => {
+				let atom = match iter.next().cloned() {
+					Some(b'1') => Atom::ReadI8(save),
+					Some(b'2') => Atom::ReadI16(save),
+					Some(b'4') => Atom::ReadI32(save),
+					_ => return Err(PatError::ReadOperand),
+				};
+				if save >= u8::max_value() {
+					return Err(PatError::SaveOverflow);
+				}
+				save += 1;
+				result.push(atom);
+			},
+			b'u' => {
+				let atom = match iter.next().cloned() {
+					Some(b'1') => Atom::ReadU8(save),
+					Some(b'2') => Atom::ReadU16(save),
+					Some(b'4') => Atom::ReadU32(save),
+					_ => return Err(PatError::ReadOperand),
+				};
+				if save >= u8::max_value() {
+					return Err(PatError::SaveOverflow);
+				}
+				save += 1;
+				result.push(atom);
 			},
 			// Allow spaces as padding
 			b' ' => {},
