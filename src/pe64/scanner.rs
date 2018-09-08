@@ -209,6 +209,61 @@ impl<'a, 'u, P: Pe<'a> + Copy> Exec<'u, P> {
 						return false;
 					}
 				},
+				pat::Atom::ReadU8(slot) => {
+					if let Ok(byte) = self.pe.derva_copy::<u8>(self.cursor) {
+						if let Some(slot) = save.get_mut(slot as usize) {
+							*slot = byte as Rva;
+						}
+						self.cursor = self.cursor.wrapping_add(1);
+					}
+					else {
+						return false;
+					}
+				},
+				pat::Atom::ReadI8(slot) => {
+					if let Ok(sbyte) = self.pe.derva_copy::<i8>(self.cursor) {
+						if let Some(slot) = save.get_mut(slot as usize) {
+							*slot = sbyte as Rva;
+						}
+						self.cursor = self.cursor.wrapping_add(1);
+					}
+					else {
+						return false;
+					}
+				},
+				pat::Atom::ReadU16(slot) => {
+					if let Ok(word) = self.pe.derva_copy::<u16>(self.cursor) {
+						if let Some(slot) = save.get_mut(slot as usize) {
+							*slot = word as Rva;
+						}
+						self.cursor = self.cursor.wrapping_add(2);
+					}
+					else {
+						return false;
+					}
+				},
+				pat::Atom::ReadI16(slot) => {
+					if let Ok(sword) = self.pe.derva_copy::<i16>(self.cursor) {
+						if let Some(slot) = save.get_mut(slot as usize) {
+							*slot = sword as Rva;
+						}
+						self.cursor = self.cursor.wrapping_add(2);
+					}
+					else {
+						return false;
+					}
+				},
+				pat::Atom::ReadU32(slot) | pat::Atom::ReadI32(slot) => {
+					if let Ok(dword) = self.pe.derva_copy::<Rva>(self.cursor) {
+						if let Some(slot) = save.get_mut(slot as usize) {
+							*slot = dword;
+						}
+						self.cursor = self.cursor.wrapping_add(4);
+					}
+					else {
+						return false;
+					}
+				},
 			}
 		}
 		return true;
