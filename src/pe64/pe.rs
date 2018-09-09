@@ -298,6 +298,15 @@ pub unsafe trait Pe<'a> {
 			Ok(ptr::read_unaligned(p))
 		}
 	}
+	/// Reads and byte-wise copies the content to the given destination.
+	///
+	/// Allows reading of an unaligned array of data.
+	fn derva_into<T>(self, rva: Rva, dest: &mut T) -> Result<()> where Self: Copy, T: ?Sized + Pod {
+		let len = mem::size_of_val(dest);
+		let bytes = self.slice(rva, len, 1)?;
+		dest.as_bytes_mut().copy_from_slice(&bytes[..len]);
+		Ok(())
+	}
 	/// Reads an array of pod `T` with given length.
 	fn derva_slice<T>(self, rva: Rva, len: usize) -> Result<&'a [T]> where Self: Copy, T: Pod {
 		let min_size_of = mem::size_of::<T>().checked_mul(len).ok_or(Error::Overflow)?;
@@ -375,6 +384,15 @@ pub unsafe trait Pe<'a> {
 			let p = bytes.as_ptr() as *const T;
 			Ok(ptr::read_unaligned(p))
 		}
+	}
+	/// Reads and byte-wise copies the content to the given destination.
+	///
+	/// Allows reading of an unaligned array of data.
+	fn deref_into<T>(self, ptr: Ptr<T>, dest: &mut T) -> Result<()> where Self: Copy, T: ?Sized + Pod {
+		let len = mem::size_of_val(dest);
+		let bytes = self.read(ptr.into(), len, 1)?;
+		dest.as_bytes_mut().copy_from_slice(&bytes[..len]);
+		Ok(())
 	}
 	/// Reads an array of pod `T` with given length.
 	fn deref_slice<T>(self, ptr: Ptr<[T]>, len: usize) -> Result<&'a [T]> where Self: Copy, T: Pod {
