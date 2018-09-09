@@ -309,3 +309,82 @@ impl<'a, P: Pe<'a> + Copy> fmt::Debug for Dbg<'a, P> {
 		f.debug_struct("Dbg").finish()
 	}
 }
+
+//----------------------------------------------------------------
+
+/*
+	"debug": [
+		{
+			"type": "CodeView",
+			"time_date_stamp": 0,
+			"version": "1.0",
+			"cv70": {
+				pdb_file_name: "",
+				...
+			},
+		},
+	],
+*/
+
+#[cfg(feature = "serde")]
+mod serde {
+	use util::serde_helper::*;
+	use stringify;
+	use super::{Pe, Debug, Dir, CvNB10, CvRSDS, Dbg};
+
+	impl<'a, P: Pe<'a> + Copy> Serialize for Debug<'a, P> {
+		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+			serializer.collect_seq(self.into_iter())
+		}
+	}
+	impl<'a, P: Pe<'a> + Copy> Serialize for Dir<'a, P> {
+		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+			let is_human_readable = serializer.is_human_readable();
+			let mut state = serializer.serialize_struct("Dir", 4)?;
+			if is_human_readable {
+				state.serialize_field("type", &stringify::debug_type(self.image.Type))?;
+			}
+			else {
+				state.serialize_field("type", &self.image.Type)?;
+			}
+			state.serialize_field("time_date_stamp", &self.image.TimeDateStamp)?;
+			state.serialize_field("version", &self.image.Version)?;
+			if let Ok(cv20) = self.read_cv20() {
+				state.serialize_field("cv20", &cv20)?;
+			}
+			else if let Ok(cv70) = self.read_cv70() {
+				state.serialize_field("cv70", &cv70)?;
+			}
+			else if let Ok(dbg) = self.read_dbg() {
+				state.serialize_field("dbg", &dbg)?;
+			}
+			else {
+				state.serialize_field("unknown", &(None as Option<i32>))?;
+			}
+			state.end()
+		}
+	}
+	impl<'a, P: Pe<'a> + Copy> Serialize for CvNB10<'a, P> {
+		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+			let mut state = serializer.serialize_struct("CvNB10", 3)?;
+			state.serialize_field("time_date_stamp", &self.image.TimeDateStamp)?;
+			state.serialize_field("age", &self.image.Age)?;
+			state.serialize_field("pdb_file_name", &self.pdb_file_name())?;
+			state.end()
+		}
+	}
+	impl<'a, P: Pe<'a> + Copy> Serialize for CvRSDS<'a, P> {
+		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+			let mut state = serializer.serialize_struct("CvNB10", 3)?;
+			state.serialize_field("signature", &self.image.Signature)?;
+			state.serialize_field("age", &self.image.Age)?;
+			state.serialize_field("pdb_file_name", &self.pdb_file_name())?;
+			state.end()
+		}
+	}
+	impl<'a, P: Pe<'a> + Copy> Serialize for Dbg<'a, P> {
+		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+			serializer.serialize_struct("Dbg", 0)?.end()
+		}
+	}
+}
