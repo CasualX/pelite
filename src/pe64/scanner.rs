@@ -32,10 +32,11 @@ fn example(file: PeFile<'_>, pat: &[pat::Atom]) {
 ```
 */
 
-use std::{cmp, mem};
+use std::{cmp, mem, ptr};
 use std::ops::Range;
 
 use pattern as pat;
+use util::Pod;
 
 use super::{Align, Rva, Pe};
 use super::image::*;
@@ -115,6 +116,38 @@ impl<'a, P: Pe<'a> + Copy> Scanner<P> {
 
 //----------------------------------------------------------------
 
+trait Scan<'a>: Copy {
+	fn read<T: Copy + Pod>(self, rva: Rva) -> Option<T>;
+	fn pointer(self, va: Va) -> Option<Rva>;
+	fn slice(self, rva: Rva) -> Option<&'a [u8]>;
+}
+
+impl<'a, P: Pe<'a> + Copy> Scan<'a> for P {
+	fn read<T: Copy + Pod>(self, rva: Rva) -> Option<T> {
+		self.derva_copy(rva).ok()
+	}
+	fn pointer(self, va: Va) -> Option<Rva> {
+		self.va_to_rva(va).ok()
+	}
+	fn slice(self, rva: Rva) -> Option<&'a [u8]> {
+		self.slice_bytes(rva).ok()
+	}
+}
+
+impl<'a> Scan<'a> for &'a [u8] {
+	fn read<T: Copy + Pod>(self, rva: Rva) -> Option<T> {
+		let bytes = self.get(rva as usize..(rva as usize + mem::size_of::<T>()))?;
+		let ptr = bytes.as_ptr() as *const T;
+		Some(unsafe { ptr::read_unaligned(ptr) })
+	}
+	fn pointer(self, va: Va) -> Option<Rva> {
+		Some(va as Rva)
+	}
+	fn slice(self, rva: Rva) -> Option<&'a [u8]> {
+		self.get(rva as usize..)
+	}
+}
+
 #[derive(Clone)]
 struct Exec<'u, P> {
 	pe: P,
@@ -122,7 +155,7 @@ struct Exec<'u, P> {
 	cursor: Rva,
 	pc: usize,
 }
-impl<'a, 'u, P: Pe<'a> + Copy> Exec<'u, P> {
+impl<'a, 'u, P: Scan<'a>> Exec<'u, P> {
 	fn exec(&mut self, save: &mut [Rva]) -> bool {
 		let mut mask = 0xff;
 		let mut skip_ext = 0i8;
@@ -131,8 +164,8 @@ impl<'a, 'u, P: Pe<'a> + Copy> Exec<'u, P> {
 			self.pc += 1;
 			match atom {
 				pat::Atom::Byte(pat_byte) => {
-					match self.pe.derva_copy::<u8>(self.cursor) {
-						Ok(byte) if byte & mask == pat_byte & mask => (),
+					match self.pe.read::<u8>(self.cursor) {
+						Some(byte) if byte & mask == pat_byte & mask => (),
 						_ => return false,
 					}
 					mask = 0xff;
@@ -177,7 +210,7 @@ impl<'a, 'u, P: Pe<'a> + Copy> Exec<'u, P> {
 					many_ext = ext;
 				},
 				pat::Atom::Jump1 => {
-					if let Ok(sbyte) = self.pe.derva_copy::<i8>(self.cursor) {
+					if let Some(sbyte) = self.pe.read::<i8>(self.cursor) {
 						self.cursor = self.cursor.wrapping_add(sbyte as Rva).wrapping_add(1);
 					}
 					else {
@@ -185,7 +218,7 @@ impl<'a, 'u, P: Pe<'a> + Copy> Exec<'u, P> {
 					}
 				},
 				pat::Atom::Jump4 => {
-					if let Ok(sdword) = self.pe.derva_copy::<i32>(self.cursor) {
+					if let Some(sdword) = self.pe.read::<i32>(self.cursor) {
 						self.cursor = self.cursor.wrapping_add(sdword as Rva).wrapping_add(4);
 					}
 					else {
@@ -193,7 +226,7 @@ impl<'a, 'u, P: Pe<'a> + Copy> Exec<'u, P> {
 					}
 				},
 				pat::Atom::Ptr => {
-					if let Ok(rva) = self.pe.derva_copy::<Va>(self.cursor).and_then(|va| self.pe.va_to_rva(va)) {
+					if let Some(rva) = self.pe.read::<Va>(self.cursor).and_then(|va| self.pe.pointer(va)) {
 						self.cursor = rva;
 					}
 					else {
@@ -201,7 +234,7 @@ impl<'a, 'u, P: Pe<'a> + Copy> Exec<'u, P> {
 					}
 				},
 				pat::Atom::Pir(slot) => {
-					if let Ok(sdword) = self.pe.derva_copy::<i32>(self.cursor) {
+					if let Some(sdword) = self.pe.read::<i32>(self.cursor) {
 						let base = save.get(slot as usize).cloned().unwrap_or(self.cursor);
 						self.cursor = base.wrapping_add(sdword as Rva);
 					}
@@ -210,7 +243,7 @@ impl<'a, 'u, P: Pe<'a> + Copy> Exec<'u, P> {
 					}
 				},
 				pat::Atom::ReadU8(slot) => {
-					if let Ok(byte) = self.pe.derva_copy::<u8>(self.cursor) {
+					if let Some(byte) = self.pe.read::<u8>(self.cursor) {
 						if let Some(slot) = save.get_mut(slot as usize) {
 							*slot = byte as Rva;
 						}
@@ -221,7 +254,7 @@ impl<'a, 'u, P: Pe<'a> + Copy> Exec<'u, P> {
 					}
 				},
 				pat::Atom::ReadI8(slot) => {
-					if let Ok(sbyte) = self.pe.derva_copy::<i8>(self.cursor) {
+					if let Some(sbyte) = self.pe.read::<i8>(self.cursor) {
 						if let Some(slot) = save.get_mut(slot as usize) {
 							*slot = sbyte as Rva;
 						}
@@ -232,7 +265,7 @@ impl<'a, 'u, P: Pe<'a> + Copy> Exec<'u, P> {
 					}
 				},
 				pat::Atom::ReadU16(slot) => {
-					if let Ok(word) = self.pe.derva_copy::<u16>(self.cursor) {
+					if let Some(word) = self.pe.read::<u16>(self.cursor) {
 						if let Some(slot) = save.get_mut(slot as usize) {
 							*slot = word as Rva;
 						}
@@ -243,7 +276,7 @@ impl<'a, 'u, P: Pe<'a> + Copy> Exec<'u, P> {
 					}
 				},
 				pat::Atom::ReadI16(slot) => {
-					if let Ok(sword) = self.pe.derva_copy::<i16>(self.cursor) {
+					if let Some(sword) = self.pe.read::<i16>(self.cursor) {
 						if let Some(slot) = save.get_mut(slot as usize) {
 							*slot = sword as Rva;
 						}
@@ -254,7 +287,7 @@ impl<'a, 'u, P: Pe<'a> + Copy> Exec<'u, P> {
 					}
 				},
 				pat::Atom::ReadU32(slot) | pat::Atom::ReadI32(slot) => {
-					if let Ok(dword) = self.pe.derva_copy::<Rva>(self.cursor) {
+					if let Some(dword) = self.pe.read::<Rva>(self.cursor) {
 						if let Some(slot) = save.get_mut(slot as usize) {
 							*slot = dword;
 						}
@@ -285,10 +318,10 @@ impl<'a, 'u, P: Pe<'a> + Copy> Exec<'u, P> {
 		let cursor = self.cursor;
 		let pc = self.pc;
 		// Slice a section of bytes to limit the scan to
-		let bytes = match self.pe.slice_bytes(cursor) {
-			Ok(bytes) if limit == 0 => bytes,
-			Ok(bytes) => &bytes[..cmp::min(limit as usize, bytes.len())],
-			Err(_) => return false,
+		let bytes = match self.pe.slice(cursor) {
+			Some(bytes) if limit == 0 => bytes,
+			Some(bytes) => &bytes[..cmp::min(limit as usize, bytes.len())],
+			None => return false,
 		};
 		// Peek at a byte to match on
 		let mut peek = None;
@@ -564,4 +597,76 @@ pub(crate) fn test<'a, P: Pe<'a> + Copy>(pe: P) -> ::Result<()> {
 	scanner.finds_code(&[Byte(0x8B), Byte(0x01), Byte(0x8B), Byte(0x10), Byte(0xFF), Byte(0xD2)], &mut save);
 
 	Ok(())
+}
+
+// Test the core scanner engine
+#[test]
+fn exec_tests_parse_docs() {
+	use pattern::{Atom, parse};
+
+	fn exec(bytes: &[u8], pat: &[Atom], save: &mut [Rva]) -> bool {
+		Exec { pe: bytes, pat, cursor: 0, pc: 0 }.exec(save)
+	}
+
+	{
+		let bytes = [0x55, 0x89, 0xe5, 0x83, 0xff, 0xec];
+		let pat = parse("55 89 e5 83 ? ec").unwrap();
+		assert!(exec(&bytes, &pat, &mut []));
+	}{
+		let bytes = [0xb9, 0x37, 0x13, 0x00, 0x00];
+		let pat = parse("b9 '37 13 00 00").unwrap();
+		let mut save = [0; 2];
+		assert!(exec(&bytes, &pat, &mut save));
+		assert_eq!(save[1], 1);
+	}{
+		let mut bytes = [0; 64];
+		bytes[0] = 0xb8;
+		bytes[17] = 0x50;
+		bytes[41] = 0xff;
+		let pat = parse("b8 [16] 50 [13-42] 'ff").unwrap();
+		let mut save = [0; 2];
+		assert!(exec(&bytes, &pat, &mut save));
+		assert_eq!(save[1], 41);
+	}{
+		let bytes = [0x31, 0xc0, 0x74, (-3i8) as u8];
+		let pat = parse("31 c0 74 % 'c0").unwrap();
+		let mut save = [0; 2];
+		assert!(exec(&bytes, &pat, &mut save));
+		assert_eq!(save[1], 1);
+	}{
+		let bytes = [0xe8, 10, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0x31, 0xc0, 0xc3];
+		let pat = parse("e8 $ '31 c0 c3").unwrap();
+		let mut save = [0; 2];
+		assert!(exec(&bytes, &pat, &mut save));
+		assert_eq!(save[1], 15);
+	}{
+		let bytes = [0x68, 10, 0, 0, 0, 1, 2, 3, 4, 5, 0x31, 0xc0, 0xc3];
+		let pat = parse("68 * '31 c0 c3").unwrap();
+		let mut save = [0; 2];
+		assert!(exec(&bytes, &pat, &mut save));
+		assert_eq!(save[1], 10);
+	}{
+		let bytes = b"\xb8\x0a\x00\x00\x00\x01\x02\x03\x04\x05STRING\x00";
+		let pat = parse(r#"b8 * "STRING" 00"#).unwrap();
+		assert!(exec(bytes, &pat, &mut []));
+	}{
+		let bytes = [0xe8, 10, 0, 0, 0, 0x83, 0xf0, 0x5c, 0xc3, 5, 6, 7, 8, 9, 10];
+		let pat = parse("e8 $ { ' } 83 f0 5c c3").unwrap();
+		let mut save = [0; 2];
+		assert!(exec(&bytes, &pat, &mut save));
+		assert_eq!(save[1], 15);
+	}{
+		let bytes = [0xe8, 0xff, 0xa0, 0x78, 0x56, 0x34, 0x12];
+		let pat = parse("e8 i1 a0 u4").unwrap();
+		let mut save = [0; 3];
+		assert!(exec(&bytes, &pat, &mut save));
+		assert_eq!(save[1], (-1i8) as u32);
+		assert_eq!(save[2], 0x12345678);
+	}{
+		let bytes1 = [0x83, 0xc0, 0x2a, 0x6a, 0x00, 0xe8];
+		let bytes2 = [0x83, 0xc0, 0x2a, 0x68, 0x00, 0x00, 0x00, 0x10, 0xe8];
+		let pat = parse("83 c0 2a ( 6a ? | 68 ? ? ? ? ) e8").unwrap();
+		assert!(exec(&bytes1, &pat, &mut []));
+		assert!(exec(&bytes2, &pat, &mut []));
+	}
 }
