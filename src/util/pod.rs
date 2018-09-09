@@ -2,6 +2,8 @@
 Podness.
 */
 
+use std::{mem, slice};
+
 /// Defines types which can be safely `transmute`d from any bit pattern.
 ///
 /// Types which need to be read from PE files should implement this.
@@ -11,7 +13,14 @@ Podness.
 /// It must be safe to transmute any byte array (with length equal to the size of the type) to this type.
 ///
 /// The type should be annotated by `#[repr(C)]`.
-pub unsafe trait Pod: 'static {}
+pub unsafe trait Pod: 'static {
+	fn as_bytes(&self) -> &[u8] {
+		unsafe { slice::from_raw_parts(self as *const _ as *const u8, mem::size_of_val(self)) }
+	}
+	fn as_bytes_mut(&mut self) -> &mut [u8] {
+		unsafe { slice::from_raw_parts_mut(self as *mut _ as *mut u8, mem::size_of_val(self)) }
+	}
+}
 
 unsafe impl Pod for i8 {}
 unsafe impl Pod for i16 {}
@@ -25,6 +34,8 @@ unsafe impl Pod for u64 {}
 
 unsafe impl Pod for f32 {}
 unsafe impl Pod for f64 {}
+
+unsafe impl<T: Pod> Pod for [T] {}
 
 macro_rules! impl_pod_array {
 	($n:tt $($tail:tt)+) => {
