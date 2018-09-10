@@ -12,9 +12,9 @@ fn example(file: PeFile<'_>) -> pelite::Result<()> {
 	// Access the debug directory
 	let debug = file.debug()?;
 
-	// Print the CodeView 7.0 pdb file name
-	if let Some(cv) = debug.read_cv70() {
-		println!("PDB: {}", cv.pdb_file_name());
+	// Get the CodeView PDB file name
+	if let Some(pdb_file_name) = debug.pdb_file_name() {
+		println!("PDB: {}", pdb_file_name);
 	}
 
 	Ok(())
@@ -61,7 +61,7 @@ impl<'a, P: Pe<'a> + Copy> Debug<'a, P> {
 	pub fn image(&self) -> &'a [IMAGE_DEBUG_DIRECTORY] {
 		self.image
 	}
-	/// Gets the first pdb file name that can be found.
+	/// Gets the CodeView PDB file name.
 	pub fn pdb_file_name(&self) -> Option<&'a CStr> {
 		self.into_iter()
 			.map(|dir| dir.read_cv70().map(|cv| cv.pdb_file_name))
