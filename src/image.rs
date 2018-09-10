@@ -796,7 +796,8 @@ pub struct SCOPE_TABLE {
 }
 
 //----------------------------------------------------------------
-// Sourced from http://www.debuginfo.com/articles/debuginfomatch.html
+// http://www.debuginfo.com/articles/debuginfomatch.html
+// https://docs.microsoft.com/en-us/windows/desktop/debug/pe-format#the-debug-section
 
 #[derive(Copy, Clone, PartialEq, Eq)]
 #[repr(C)]
@@ -807,17 +808,19 @@ pub struct GUID {
 	pub Data4: [u8; 8],
 }
 
-pub const IMAGE_DEBUG_TYPE_UNKNOWN: u32 = 0;
-pub const IMAGE_DEBUG_TYPE_COFF: u32 = 1;
-pub const IMAGE_DEBUG_TYPE_CODEVIEW: u32 = 2;
-pub const IMAGE_DEBUG_TYPE_FPO: u32 = 3;
-pub const IMAGE_DEBUG_TYPE_MISC: u32 = 4;
-pub const IMAGE_DEBUG_TYPE_EXCEPTION: u32 = 5;
-pub const IMAGE_DEBUG_TYPE_FIXUP: u32 = 6;
-pub const IMAGE_DEBUG_TYPE_OMAP_TO_SRC: u32 = 7;
+pub const IMAGE_DEBUG_TYPE_UNKNOWN: u32       = 0;
+pub const IMAGE_DEBUG_TYPE_COFF: u32          = 1;
+pub const IMAGE_DEBUG_TYPE_CODEVIEW: u32      = 2;
+pub const IMAGE_DEBUG_TYPE_FPO: u32           = 3;
+pub const IMAGE_DEBUG_TYPE_MISC: u32          = 4;
+pub const IMAGE_DEBUG_TYPE_EXCEPTION: u32     = 5;
+pub const IMAGE_DEBUG_TYPE_FIXUP: u32         = 6;
+pub const IMAGE_DEBUG_TYPE_OMAP_TO_SRC: u32   = 7;
 pub const IMAGE_DEBUG_TYPE_OMAP_FROM_SRC: u32 = 8;
-pub const IMAGE_DEBUG_TYPE_BORLAND: u32 = 9;
-pub const IMAGE_DEBUG_TYPE_CLSID: u32 = 11;
+pub const IMAGE_DEBUG_TYPE_BORLAND: u32       = 9;
+pub const IMAGE_DEBUG_TYPE_RESERVED10: u32    = 10;
+pub const IMAGE_DEBUG_TYPE_CLSID: u32         = 11;
+pub const IMAGE_DEBUG_TYPE_REPRO: u32         = 16;
 
 #[derive(Copy, Clone, Debug)]
 #[cfg_attr(feature = "serde", derive(Serialize))]
@@ -868,6 +871,32 @@ pub struct IMAGE_DEBUG_MISC {
 	pub Reserved: [u8; 3],
 	#[cfg_attr(feature = "serde", serde(skip))]
 	pub Name: [u8; 0],
+}
+
+pub const FRAME_FPO: u16 = 0;
+pub const FRAME_TRAP: u16 = 1;
+pub const FRAME_TSS: u16 = 2;
+
+#[derive(Copy, Clone, Debug)]
+#[cfg_attr(feature = "serde", derive(Serialize))]
+#[repr(C)]
+pub struct FPO_DATA {
+	// offset 1st byte of function code
+	pub ulOffStart: u32,
+	// # bytes in function
+	pub cbProcSize: u32,
+	// # bytes in locals/4
+	pub cdwLocals: u16,
+	// # bytes in params/4
+	pub cdwParams: u16,
+	// # bytes in prolog
+	pub cbProlog: u8,
+	// cbRegs   : 3  // # regs saved
+	// fHasSEH  : 1  // TRUE if SEH in func
+	// fUseBP   : 1  // TRUE if EBP has been allocated
+	// reserved : 1  // reserved for future use
+	// cbFrame  : 2  // frame type
+	pub fFlags: u8,
 }
 
 //----------------------------------------------------------------
