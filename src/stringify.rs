@@ -335,7 +335,9 @@ pub fn debug_type(debug_type: u32) -> Option<&'static str> {
 		IMAGE_DEBUG_TYPE_OMAP_TO_SRC => Some("OMAP to src"),
 		IMAGE_DEBUG_TYPE_OMAP_FROM_SRC => Some("OMAP from src"),
 		IMAGE_DEBUG_TYPE_BORLAND => Some("Borland"),
+		IMAGE_DEBUG_TYPE_RESERVED10 => Some("Reserved10"),
 		IMAGE_DEBUG_TYPE_CLSID => Some("CLSID"),
+		IMAGE_DEBUG_TYPE_REPRO => Some("Repro"),
 		_ => None,
 	}
 }

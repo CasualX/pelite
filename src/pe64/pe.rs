@@ -576,11 +576,12 @@ unsafe impl<'s, 'a, P: Pe<'a> + ?Sized> Pe<'a> for &'s P {
 pub(crate) fn serialize_pe<'a, P: 'a + Pe<'a> + Copy, S: ::serde::Serializer>(pe: P, serializer: S) -> ::std::result::Result<S::Ok, S::Error> {
 	use util::serde_helper::*;
 
-	let mut state = serializer.serialize_struct(P::SERDE_NAME, 8)?;
+	let mut state = serializer.serialize_struct(P::SERDE_NAME, 9)?;
 	state.serialize_field("headers", &pe.headers())?;
 	state.serialize_field("exports", &pe.exports().ok())?;
 	state.serialize_field("imports", &pe.imports().ok())?;
 	state.serialize_field("base_relocs", &pe.base_relocs().ok())?;
+	state.serialize_field("debug", &pe.debug().ok())?;
 	state.serialize_field("tls", &pe.tls().ok())?;
 	state.serialize_field("load_config", &pe.load_config().ok())?;
 	state.serialize_field("security", &pe.security().ok())?;
