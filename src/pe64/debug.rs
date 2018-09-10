@@ -94,10 +94,7 @@ impl<'a, P: Pe<'a> + Copy> IntoIterator for Debug<'a, P> {
 }
 impl<'a, P: Pe<'a> + Copy> fmt::Debug for Debug<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		for dir in *self {
-			dir.fmt(f)?;
-		}
-		Ok(())
+		f.debug_list().entries(*self).finish()
 	}
 }
 
@@ -168,20 +165,20 @@ impl<'a, P: Pe<'a> + Copy> Dir<'a, P> {
 }
 impl<'a, P: Pe<'a> + Copy> fmt::Debug for Dir<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		self.image.fmt(f)?;
+		let mut s = f.debug_struct("Dir");
+		s.field("type", &::stringify::debug_type(self.image.Type));
+		s.field("time_date_stamp", &self.image.TimeDateStamp);
+		s.field("version", &self.image.Version);
 		if let Ok(cv20) = self.read_cv20() {
-			cv20.fmt(f)?;
+			s.field("cv20", &cv20);
 		}
 		else if let Ok(cv70) = self.read_cv70() {
-			cv70.fmt(f)?;
+			s.field("cv70", &cv70);
 		}
 		else if let Ok(dbg) = self.read_dbg() {
-			dbg.fmt(f)?;
+			s.field("dbg", &dbg);
 		}
-		else {
-			write!(f, "Unknown\n")?;
-		}
-		f.write_str("\n")
+		s.finish()
 	}
 }
 
@@ -228,6 +225,8 @@ impl<'a, P: Pe<'a> + Copy> fmt::Debug for CvNB10<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		f.debug_struct("CvNB10")
 			.field("pdb_file_name", &self.pdb_file_name)
+			.field("time_date_stamp", &self.image.TimeDateStamp)
+			.field("age", &self.image.Age)
 			.finish()
 	}
 }
@@ -275,6 +274,8 @@ impl<'a, P: Pe<'a> + Copy> fmt::Debug for CvRSDS<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		f.debug_struct("CvRSDS")
 			.field("pdb_file_name", &self.pdb_file_name)
+			.field("signature", &self.image.Signature)
+			.field("age", &self.image.Age)
 			.finish()
 	}
 }
@@ -329,7 +330,6 @@ impl<'a, P: Pe<'a> + Copy> fmt::Debug for Dbg<'a, P> {
 #[cfg(feature = "serde")]
 mod serde {
 	use util::serde_helper::*;
-	use stringify;
 	use super::{Pe, Debug, Dir, CvNB10, CvRSDS, Dbg};
 
 	impl<'a, P: Pe<'a> + Copy> Serialize for Debug<'a, P> {
@@ -342,7 +342,7 @@ mod serde {
 			let is_human_readable = serializer.is_human_readable();
 			let mut state = serializer.serialize_struct("Dir", 4)?;
 			if is_human_readable {
-				state.serialize_field("type", &stringify::debug_type(self.image.Type))?;
+				state.serialize_field("type", &::stringify::debug_type(self.image.Type))?;
 			}
 			else {
 				state.serialize_field("type", &self.image.Type)?;
