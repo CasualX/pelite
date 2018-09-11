@@ -396,6 +396,34 @@ pub const IMAGE_ORDINAL_FLAG32: u32 = 0x80000000;
 pub const IMAGE_ORDINAL_FLAG64: u64 = 0x8000000000000000;
 
 //----------------------------------------------------------------
+// http://www.delphibasics.info/home/delphibasicsarticles/anin-depthlookintothewin32portableexecutablefileformat-part2
+
+#[derive(Copy, Clone, Debug)]
+#[cfg_attr(feature = "serde", derive(Serialize))]
+#[repr(C)]
+pub struct IMAGE_BOUND_IMPORT_DESCRIPTOR {
+	pub TimeDateStamp: u32,
+	pub OffsetModuleName: u16,
+	pub NumberOfModuleForwarderRefs: u16,
+}
+
+pub type IMAGE_BOUND_FORWARDER_REF = IMAGE_BOUND_IMPORT_DESCRIPTOR;
+
+#[derive(Copy, Clone, Debug)]
+#[cfg_attr(feature = "serde", derive(Serialize))]
+#[repr(C)]
+pub struct IMAGE_DELAY_IMPORT_DESCRIPTOR {
+	pub grAttrs: u32,
+	pub szName: u32,
+	pub phmod: u32,
+	pub pIAT: u32,
+	pub pINT: u32,
+	pub pBoundIAT: u32,
+	pub pUnloadIAT: u32,
+	pub dwTimeStamp: u32,
+}
+
+//----------------------------------------------------------------
 
 pub const RT_CURSOR: u16       = 1;
 pub const RT_BITMAP: u16       = 2;
@@ -945,6 +973,8 @@ unsafe impl Pod for IMAGE_NT_HEADERS64 {}
 unsafe impl Pod for IMAGE_SECTION_HEADER {}
 unsafe impl Pod for IMAGE_EXPORT_DIRECTORY {}
 unsafe impl Pod for IMAGE_IMPORT_DESCRIPTOR {}
+unsafe impl Pod for IMAGE_BOUND_IMPORT_DESCRIPTOR {}
+unsafe impl Pod for IMAGE_DELAY_IMPORT_DESCRIPTOR {}
 unsafe impl Pod for IMAGE_RESOURCE_DIRECTORY {}
 unsafe impl Pod for IMAGE_RESOURCE_DIRECTORY_ENTRY {}
 unsafe impl Pod for IMAGE_RESOURCE_DATA_ENTRY {}
@@ -986,6 +1016,8 @@ fn sizes() {
 	assert_size_of!(40, IMAGE_SECTION_HEADER);
 	assert_size_of!(40, IMAGE_EXPORT_DIRECTORY);
 	assert_size_of!(20, IMAGE_IMPORT_DESCRIPTOR);
+	assert_size_of!(8, IMAGE_BOUND_IMPORT_DESCRIPTOR);
+	assert_size_of!(32, IMAGE_DELAY_IMPORT_DESCRIPTOR);
 	assert_size_of!(16, IMAGE_RESOURCE_DIRECTORY);
 	assert_size_of!(8, IMAGE_RESOURCE_DIRECTORY_ENTRY);
 	assert_size_of!(16, IMAGE_RESOURCE_DATA_ENTRY);
