@@ -28,7 +28,7 @@ use error::{Error, Result};
 use util::CStr;
 
 use super::image::*;
-use super::Pe;
+use super::{Align, Pe};
 
 //----------------------------------------------------------------
 
@@ -64,9 +64,8 @@ impl<'a, P: Pe<'a> + Copy> Debug<'a, P> {
 	/// Gets the CodeView PDB file name.
 	pub fn pdb_file_name(&self) -> Option<&'a CStr> {
 		self.into_iter()
-			.map(|dir| dir.read_cv70().map(|cv| cv.pdb_file_name))
-			.find(Result::is_ok)
-			.and_then(Result::ok)
+			.filter_map(|dir| dir.entry().ok().and_then(Entry::as_cv70).map(|cv| cv.pdb_file_name))
+			.next()
 	}
 }
 impl<'a, P: Pe<'a> + Copy> IntoIterator for Debug<'a, P> {
@@ -137,36 +136,80 @@ impl<'a, P: Pe<'a> + Copy> Dir<'a, P> {
 	pub fn image(&self) -> &'a IMAGE_DEBUG_DIRECTORY {
 		self.image
 	}
-	/// Reads as a CodeView 2.0 debug information entry.
-	pub fn read_cv20(&self) -> Result<CvNB10<'a, P>> {
-		CvNB10::new(self.pe, self.image)
+	/// Gets the raw data of this debug directory entry.
+	pub fn data(&self) -> Option<&'a [u8]> {
+		let image = self.pe.image();
+		let size = self.image.SizeOfData as usize;
+		let offset = match self.pe.align() {
+			Align::File => self.image.PointerToRawData,
+			Align::Section => self.image.AddressOfRawData,
+		} as usize;
+		image.get(offset..offset.wrapping_add(size))
 	}
-	/// Reads as a CodeView 7.0 debug information entry.
-	pub fn read_cv70(&self) -> Result<CvRSDS<'a, P>> {
-		CvRSDS::new(self.pe, self.image)
-	}
-	/// Reads as a Debug information entry.
-	pub fn read_dbg(&self) -> Result<Dbg<'a, P>> {
-		Dbg::new(self.pe, self.image)
+	pub fn entry(&self) -> Result<Entry<'a, P>> {
+		match self.image.Type {
+			IMAGE_DEBUG_TYPE_CODEVIEW => {
+				if let Ok(cv20) = CvNB10::new(self.pe, self.image) {
+					Ok(Entry::CvNB10(cv20))
+				}
+				else if let Ok(cv70) = CvRSDS::new(self.pe, self.image) {
+					Ok(Entry::CvRSDS(cv70))
+				}
+				else {
+					Err(Error::Null)
+				}
+			},
+			IMAGE_DEBUG_TYPE_MISC => Ok(Entry::Dbg(Dbg::new(self.pe, self.image)?)),
+			_ => Ok(Entry::Unknown { data: self.data() })
+		}
 	}
 }
 impl<'a, P: Pe<'a> + Copy> fmt::Debug for Dir<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		let mut s = f.debug_struct("Dir");
-		s.field("type", &self.image.Type);
-		s.field("type_name", &::stringify::debug_type(self.image.Type));
-		s.field("time_date_stamp", &self.image.TimeDateStamp);
-		s.field("version", &self.image.Version);
-		if let Ok(cv20) = self.read_cv20() {
-			s.field("cv20", &cv20);
+		f.debug_struct("Dir")
+			.field("type", &self.image.Type)
+			.field("type_name", &::stringify::debug_type(self.image.Type))
+			.field("time_date_stamp", &self.image.TimeDateStamp)
+			.field("version", &self.image.Version)
+			.field("entry", &self.entry())
+			.finish()
+	}
+}
+
+//----------------------------------------------------------------
+
+#[derive(Copy, Clone)]
+pub enum Entry<'a, P> {
+	CvNB10(CvNB10<'a, P>),
+	CvRSDS(CvRSDS<'a, P>),
+	Dbg(Dbg<'a, P>),
+	Unknown { data: Option<&'a [u8]> },
+}
+impl<'a, P> Entry<'a, P> {
+	/// As a CodeView 2.0 debug information entry.
+	pub fn as_cv20(self) -> Option<CvNB10<'a, P>> {
+		match self { Entry::CvNB10(cv20) => Some(cv20), _ => None }
+	}
+	/// As a CodeView 7.0 debug information entry.
+	pub fn as_cv70(self) -> Option<CvRSDS<'a, P>> {
+		match self { Entry::CvRSDS(cv70) => Some(cv70), _ => None }
+	}
+	/// As a Dbg information entry.
+	pub fn as_dbg(self) -> Option<Dbg<'a, P>> {
+		match self { Entry::Dbg(dbg) => Some(dbg), _ => None }
+	}
+	pub fn as_unknown(self) -> Option<&'a [u8]> {
+		match self { Entry::Unknown { data } => data, _ => None }
+	}
+}
+impl<'a, P: Pe<'a> + Copy> fmt::Debug for Entry<'a, P> {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		match self {
+			Entry::CvNB10(cv20) => cv20.fmt(f),
+			Entry::CvRSDS(cv70) => cv70.fmt(f),
+			Entry::Dbg(dbg) => dbg.fmt(f),
+			Entry::Unknown { data } => data.fmt(f),
 		}
-		else if let Ok(cv70) = self.read_cv70() {
-			s.field("cv70", &cv70);
-		}
-		else if let Ok(dbg) = self.read_dbg() {
-			s.field("dbg", &dbg);
-		}
-		s.finish()
 	}
 }
 
