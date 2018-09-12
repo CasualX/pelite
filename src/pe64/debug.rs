@@ -353,10 +353,10 @@ impl<'a> Iterator for PogoIter<'a> {
 	fn next(&mut self) -> Option<PogoSection<'a>> {
 		if self.image.len() >= 3 {
 			let rva = self.image[0];
-			let size = self.image[0];
-			let name = CStr::from_bytes(self.image.as_bytes())?;
+			let size = self.image[1];
+			let name = CStr::from_bytes(self.image[2..].as_bytes())?;
 			let len = name.len() >> 2;
-			self.image = unsafe { self.image.get_unchecked(3 + len..) };
+			self.image = &self.image[2 + len + 1..];
 			Some(PogoSection { rva, size, name })
 		}
 		else {
@@ -418,7 +418,7 @@ mod serde {
 	}
 	impl<'a> Serialize for CodeView<'a> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-			let mut state = serializer.serialize_struct("CvNB10", 4)?;
+			let mut state = serializer.serialize_struct("CodeView", 4)?;
 			state.serialize_field("format", &self.format())?;
 			state.serialize_field("pdb_file_name", &self.pdb_file_name())?;
 			match self {
