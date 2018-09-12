@@ -86,6 +86,7 @@ impl<'a, P: Pe<'a> + Copy> fmt::Debug for Debug<'a, P> {
 
 //----------------------------------------------------------------
 
+/// Iterator over Dir entries.
 #[derive(Clone)]
 pub struct Iter<'a, P> {
 	pe: P,
@@ -152,7 +153,7 @@ impl<'a, P: Pe<'a> + Copy> Dir<'a, P> {
 			IMAGE_DEBUG_TYPE_CODEVIEW => Ok(Entry::CodeView(CodeView::new(&self)?)),
 			IMAGE_DEBUG_TYPE_MISC => Ok(Entry::Dbg(Dbg::new(&self)?)),
 			IMAGE_DEBUG_TYPE_POGO => Ok(Entry::Pogo(Pogo::new(&self)?)),
-			_ => Ok(Entry::Unknown { data: self.data() })
+			_ => Ok(Entry::Unknown(self.data()))
 		}
 	}
 }
@@ -176,7 +177,7 @@ pub enum Entry<'a> {
 	CodeView(CodeView<'a>),
 	Dbg(Dbg<'a>),
 	Pogo(Pogo<'a>),
-	Unknown { data: Option<&'a [u8]> },
+	Unknown(Option<&'a [u8]>),
 }
 impl<'a> Entry<'a> {
 	/// As a CodeView debug information entry.
@@ -187,18 +188,19 @@ impl<'a> Entry<'a> {
 	pub fn as_dbg(self) -> Option<Dbg<'a>> {
 		match self { Entry::Dbg(dbg) => Some(dbg), _ => None }
 	}
-	/// As a LTCG information entry.
+	/// As a PGO information entry.
 	pub fn as_pogo(self) -> Option<Pogo<'a>> {
 		match self { Entry::Pogo(pogo) => Some(pogo), _ => None }
 	}
 	/// Unknown format, return as bytes.
 	pub fn as_unknown(self) -> Option<&'a [u8]> {
-		match self { Entry::Unknown { data } => data, _ => None }
+		match self { Entry::Unknown(data) => data, _ => None }
 	}
 }
 
 //----------------------------------------------------------------
 
+/// CodeView information.
 #[derive(Copy, Clone)]
 pub enum CodeView<'a> {
 	/// CodeView 2.0 debug information.

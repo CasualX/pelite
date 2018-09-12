@@ -903,6 +903,17 @@ pub struct FPO_DATA {
 	pub fFlags: u8,
 }
 
+#[derive(Copy, Clone, Debug)]
+#[cfg_attr(feature = "serde", derive(Serialize))]
+#[repr(C)]
+pub struct IMAGE_DEBUG_VC_FEATURE {
+	pub PreVCPP: u32, // Pre-VC++ 11.00
+	pub CCPP: u32,    // C/C++
+	pub GS: u32,      // /GS
+	pub SDL: u32,     // /sdl
+	pub GuardN: u32,  // guardN
+}
+
 //----------------------------------------------------------------
 
 use util::Pod;
