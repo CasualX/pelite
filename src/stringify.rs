@@ -337,6 +337,10 @@ pub fn debug_type(debug_type: u32) -> Option<&'static str> {
 		IMAGE_DEBUG_TYPE_BORLAND => Some("Borland"),
 		IMAGE_DEBUG_TYPE_RESERVED10 => Some("Reserved10"),
 		IMAGE_DEBUG_TYPE_CLSID => Some("CLSID"),
+		IMAGE_DEBUG_TYPE_VC_FEATURE => Some("VCFeature"),
+		IMAGE_DEBUG_TYPE_POGO => Some("POGO"),
+		IMAGE_DEBUG_TYPE_ILTCG => Some("ILTCG"),
+		IMAGE_DEBUG_TYPE_MPX => Some("MPX"),
 		IMAGE_DEBUG_TYPE_REPRO => Some("Repro"),
 		_ => None,
 	}

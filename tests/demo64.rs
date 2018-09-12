@@ -180,11 +180,7 @@ fn debug() {
 	let file = PeFile::from_bytes(&file_map).unwrap();
 	let debug = file.debug().unwrap();
 
-	for debug_dir in debug {
-		if let Ok(cv) = debug_dir.read_cv70() {
-				assert_eq!(cv.pdb_file_name(), r"D:\Projects\pelite\proto\Demo\x64\Release\Demo.pdb");
-		}
-	}
+	assert_eq!(debug.pdb_file_name().unwrap(), r"D:\Projects\pelite\proto\Demo\x64\Release\Demo.pdb");
 }
 
 //----------------------------------------------------------------

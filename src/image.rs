@@ -820,6 +820,10 @@ pub const IMAGE_DEBUG_TYPE_OMAP_FROM_SRC: u32 = 8;
 pub const IMAGE_DEBUG_TYPE_BORLAND: u32       = 9;
 pub const IMAGE_DEBUG_TYPE_RESERVED10: u32    = 10;
 pub const IMAGE_DEBUG_TYPE_CLSID: u32         = 11;
+pub const IMAGE_DEBUG_TYPE_VC_FEATURE: u32    = 12;
+pub const IMAGE_DEBUG_TYPE_POGO: u32          = 13;
+pub const IMAGE_DEBUG_TYPE_ILTCG: u32         = 14;
+pub const IMAGE_DEBUG_TYPE_MPX: u32           = 15;
 pub const IMAGE_DEBUG_TYPE_REPRO: u32         = 16;
 
 #[derive(Copy, Clone, Debug)]
@@ -897,6 +901,17 @@ pub struct FPO_DATA {
 	// reserved : 1  // reserved for future use
 	// cbFrame  : 2  // frame type
 	pub fFlags: u8,
+}
+
+#[derive(Copy, Clone, Debug)]
+#[cfg_attr(feature = "serde", derive(Serialize))]
+#[repr(C)]
+pub struct IMAGE_DEBUG_VC_FEATURE {
+	pub PreVCPP: u32, // Pre-VC++ 11.00
+	pub CCPP: u32,    // C/C++
+	pub GS: u32,      // /GS
+	pub SDL: u32,     // /sdl
+	pub GuardN: u32,  // guardN
 }
 
 //----------------------------------------------------------------

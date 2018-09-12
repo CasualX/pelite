@@ -22,13 +22,13 @@ fn example(file: PeFile<'_>) -> pelite::Result<()> {
 ```
 */
 
-use std::{fmt, iter, mem, slice};
+use std::{fmt, iter, mem, slice, str};
 
 use error::{Error, Result};
-use util::CStr;
+use util::{CStr, Pod};
 
 use super::image::*;
-use super::Pe;
+use super::{Align, Pe};
 
 //----------------------------------------------------------------
 
@@ -64,9 +64,8 @@ impl<'a, P: Pe<'a> + Copy> Debug<'a, P> {
 	/// Gets the CodeView PDB file name.
 	pub fn pdb_file_name(&self) -> Option<&'a CStr> {
 		self.into_iter()
-			.map(|dir| dir.read_cv70().map(|cv| cv.pdb_file_name))
-			.find(Result::is_ok)
-			.and_then(Result::ok)
+			.filter_map(|dir| dir.entry().ok().and_then(Entry::as_code_view).map(|cv| cv.pdb_file_name()))
+			.next()
 	}
 }
 impl<'a, P: Pe<'a> + Copy> IntoIterator for Debug<'a, P> {
@@ -87,6 +86,7 @@ impl<'a, P: Pe<'a> + Copy> fmt::Debug for Debug<'a, P> {
 
 //----------------------------------------------------------------
 
+/// Iterator over Dir entries.
 #[derive(Clone)]
 pub struct Iter<'a, P> {
 	pe: P,
@@ -137,134 +137,137 @@ impl<'a, P: Pe<'a> + Copy> Dir<'a, P> {
 	pub fn image(&self) -> &'a IMAGE_DEBUG_DIRECTORY {
 		self.image
 	}
-	/// Reads as a CodeView 2.0 debug information entry.
-	pub fn read_cv20(&self) -> Result<CvNB10<'a, P>> {
-		CvNB10::new(self.pe, self.image)
+	/// Gets the raw data of this debug directory entry.
+	pub fn data(&self) -> Option<&'a [u8]> {
+		let image = self.pe.image();
+		let size = self.image.SizeOfData as usize;
+		let offset = match self.pe.align() {
+			Align::File => self.image.PointerToRawData,
+			Align::Section => self.image.AddressOfRawData,
+		} as usize;
+		image.get(offset..offset.wrapping_add(size))
 	}
-	/// Reads as a CodeView 7.0 debug information entry.
-	pub fn read_cv70(&self) -> Result<CvRSDS<'a, P>> {
-		CvRSDS::new(self.pe, self.image)
-	}
-	/// Reads as a Debug information entry.
-	pub fn read_dbg(&self) -> Result<Dbg<'a, P>> {
-		Dbg::new(self.pe, self.image)
+	/// Interprets the directory entry.
+	pub fn entry(&self) -> Result<Entry<'a>> {
+		match self.image.Type {
+			IMAGE_DEBUG_TYPE_CODEVIEW => Ok(Entry::CodeView(CodeView::new(&self)?)),
+			IMAGE_DEBUG_TYPE_MISC => Ok(Entry::Dbg(Dbg::new(&self)?)),
+			IMAGE_DEBUG_TYPE_POGO => Ok(Entry::Pogo(Pogo::new(&self)?)),
+			_ => Ok(Entry::Unknown(self.data()))
+		}
 	}
 }
 impl<'a, P: Pe<'a> + Copy> fmt::Debug for Dir<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		let mut s = f.debug_struct("Dir");
-		s.field("type", &self.image.Type);
-		s.field("type_name", &::stringify::debug_type(self.image.Type));
-		s.field("time_date_stamp", &self.image.TimeDateStamp);
-		s.field("version", &self.image.Version);
-		if let Ok(cv20) = self.read_cv20() {
-			s.field("cv20", &cv20);
-		}
-		else if let Ok(cv70) = self.read_cv70() {
-			s.field("cv70", &cv70);
-		}
-		else if let Ok(dbg) = self.read_dbg() {
-			s.field("dbg", &dbg);
-		}
-		s.finish()
+		f.debug_struct("Dir")
+			.field("type", &::stringify::debug_type(self.image.Type).ok_or(self.image.Type))
+			.field("time_date_stamp", &self.image.TimeDateStamp)
+			.field("version", &self.image.Version)
+			.field("entry", &self.entry())
+			.finish()
 	}
 }
 
 //----------------------------------------------------------------
 
-/// CodeView 2.0 debug information.
-#[derive(Copy, Clone)]
-pub struct CvNB10<'a, P> {
-	pe: P,
-	image: &'a IMAGE_DEBUG_CV_INFO_PDB20,
-	pdb_file_name: &'a CStr,
+#[derive(Copy, Clone, Debug)]
+#[cfg_attr(feature = "serde", derive(Serialize))]
+#[cfg_attr(feature = "serde", serde(untagged))]
+pub enum Entry<'a> {
+	CodeView(CodeView<'a>),
+	Dbg(Dbg<'a>),
+	Pogo(Pogo<'a>),
+	Unknown(Option<&'a [u8]>),
 }
-impl<'a, P: Pe<'a> + Copy> CvNB10<'a, P> {
-	pub(crate) fn new(pe: P, dir: &IMAGE_DEBUG_DIRECTORY) -> Result<CvNB10<'a, P>> {
-		if dir.Type != IMAGE_DEBUG_TYPE_CODEVIEW {
-			return Err(Error::BadMagic);
-		}
-		let bytes = pe.slice(dir.AddressOfRawData, dir.SizeOfData as usize, 4)?;
+impl<'a> Entry<'a> {
+	/// As a CodeView debug information entry.
+	pub fn as_code_view(self) -> Option<CodeView<'a>> {
+		match self { Entry::CodeView(cv) => Some(cv), _ => None }
+	}
+	/// As a Dbg information entry.
+	pub fn as_dbg(self) -> Option<Dbg<'a>> {
+		match self { Entry::Dbg(dbg) => Some(dbg), _ => None }
+	}
+	/// As a PGO information entry.
+	pub fn as_pogo(self) -> Option<Pogo<'a>> {
+		match self { Entry::Pogo(pogo) => Some(pogo), _ => None }
+	}
+	/// Unknown format, return as bytes.
+	pub fn as_unknown(self) -> Option<&'a [u8]> {
+		match self { Entry::Unknown(data) => data, _ => None }
+	}
+}
+
+//----------------------------------------------------------------
+
+/// CodeView information.
+#[derive(Copy, Clone)]
+pub enum CodeView<'a> {
+	/// CodeView 2.0 debug information.
+	Cv20 { image: &'a IMAGE_DEBUG_CV_INFO_PDB20, pdb_file_name: &'a CStr },
+	/// CodeView 7.0 debug information.
+	Cv70 { image: &'a IMAGE_DEBUG_CV_INFO_PDB70, pdb_file_name: &'a CStr },
+}
+impl<'a> CodeView<'a> {
+	pub(crate) fn new<P: Pe<'a> + Copy>(dir: &Dir<'a, P>) -> Result<CodeView<'a>> {
+		let bytes = dir.data().ok_or(Error::Bounds)?;
 		if bytes.len() < 16 {
 			return Err(Error::Bounds);
 		}
-		let image = unsafe { &*(bytes.as_ptr() as *const IMAGE_DEBUG_CV_INFO_PDB20) };
-		let signature: [u8; 4] = unsafe { mem::transmute(image.CvSignature) };
-		if signature != *b"NB10" {
-			return Err(Error::BadMagic);
+		if !(cfg!(feature = "unsafe_alignment") || bytes.as_ptr() as usize % 4 == 0) {
+			return Err(Error::Misaligned);
 		}
-		let pdb_file_name = CStr::from_bytes(&bytes[16..]).ok_or(Error::Encoding)?;
-		Ok(CvNB10 { pe, image, pdb_file_name })
+		let cv_signature = unsafe { &*(bytes.as_ptr() as *const [u8; 4]) };
+		match cv_signature {
+			b"NB10" => {
+				if bytes.len() < 16 {
+					return Err(Error::Bounds);
+				}
+				let image = unsafe { &*(bytes.as_ptr() as *const IMAGE_DEBUG_CV_INFO_PDB20) };
+				let pdb_file_name = CStr::from_bytes(&bytes[16..]).ok_or(Error::Encoding)?;
+				Ok(CodeView::Cv20 { image, pdb_file_name })
+			},
+			b"RSDS" => {
+				if bytes.len() < 24 {
+					return Err(Error::Bounds);
+				}
+				let image = unsafe { &*(bytes.as_ptr() as *const IMAGE_DEBUG_CV_INFO_PDB70) };
+				let pdb_file_name = CStr::from_bytes(&bytes[24..]).ok_or(Error::Encoding)?;
+				Ok(CodeView::Cv70 { image, pdb_file_name })
+			},
+			_ => Err(Error::BadMagic),
+		}
 	}
-	/// Gets the PE instance.
-	pub fn pe(&self) -> P {
-		self.pe
+	pub fn format(&self) -> &'a str {
+		let cv_signature = match self {
+			CodeView::Cv20 { image, .. } => &image.CvSignature,
+			CodeView::Cv70 { image, .. } => &image.CvSignature,
+		};
+		unsafe { str::from_utf8_unchecked(&*(cv_signature as *const _ as *const [u8; 4])) }
 	}
-	/// Gets the underlying information image.
-	pub fn image(&self) -> &'a IMAGE_DEBUG_CV_INFO_PDB20 {
-		self.image
-	}
-	/// Gets the PDB file name.
 	pub fn pdb_file_name(&self) -> &'a CStr {
-		self.pdb_file_name
+		match self {
+			CodeView::Cv20 { pdb_file_name, .. } => pdb_file_name,
+			CodeView::Cv70 { pdb_file_name, .. } => pdb_file_name,
+		}
 	}
 }
-impl<'a, P: Pe<'a> + Copy> fmt::Debug for CvNB10<'a, P> {
+impl<'a> fmt::Debug for CodeView<'a> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		f.debug_struct("CvNB10")
-			.field("pdb_file_name", &self.pdb_file_name)
-			.field("time_date_stamp", &self.image.TimeDateStamp)
-			.field("age", &self.image.Age)
-			.finish()
-	}
-}
-
-//----------------------------------------------------------------
-
-/// CodeView 7.0 debug information.
-#[derive(Copy, Clone)]
-pub struct CvRSDS<'a, P> {
-	pe: P,
-	image: &'a IMAGE_DEBUG_CV_INFO_PDB70,
-	pdb_file_name: &'a CStr,
-}
-impl<'a, P: Pe<'a> + Copy> CvRSDS<'a, P> {
-	pub(crate) fn new(pe: P, dir: &IMAGE_DEBUG_DIRECTORY) -> Result<CvRSDS<'a, P>> {
-		if dir.Type != IMAGE_DEBUG_TYPE_CODEVIEW {
-			return Err(Error::BadMagic);
+		let mut stru = f.debug_struct("CodeView");
+		stru.field("format", &self.format());
+		stru.field("pdb_file_name", &self.pdb_file_name());
+		match self {
+			CodeView::Cv20 { image, .. } => {
+				stru.field("time_date_stamp", &image.TimeDateStamp);
+				stru.field("age", &image.Age);
+			},
+			CodeView::Cv70 { image, .. } => {
+				stru.field("signature", &image.Signature);
+				stru.field("age", &image.Age);
+			},
 		}
-		let bytes = pe.slice(dir.AddressOfRawData, dir.SizeOfData as usize, 4)?;
-		if bytes.len() < 24 {
-			return Err(Error::Bounds);
-		}
-		let image = unsafe { &*(bytes.as_ptr() as *const IMAGE_DEBUG_CV_INFO_PDB70) };
-		let signature: [u8; 4] = unsafe { mem::transmute(image.CvSignature) };
-		if signature != *b"RSDS" {
-			return Err(Error::BadMagic);
-		}
-		let pdb_file_name = CStr::from_bytes(&bytes[24..]).ok_or(Error::Encoding)?;
-		Ok(CvRSDS { pe, image, pdb_file_name })
-	}
-	/// Gets the PE instance.
-	pub fn pe(&self) -> P {
-		self.pe
-	}
-	/// Gets the underlying information image.
-	pub fn image(&self) -> &'a IMAGE_DEBUG_CV_INFO_PDB70 {
-		self.image
-	}
-	/// Gets the PDB file name.
-	pub fn pdb_file_name(&self) -> &'a CStr {
-		self.pdb_file_name
-	}
-}
-impl<'a, P: Pe<'a> + Copy> fmt::Debug for CvRSDS<'a, P> {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		f.debug_struct("CvRSDS")
-			.field("pdb_file_name", &self.pdb_file_name)
-			.field("signature", &self.image.Signature)
-			.field("age", &self.image.Age)
-			.finish()
+		stru.finish()
 	}
 }
 
@@ -272,31 +275,102 @@ impl<'a, P: Pe<'a> + Copy> fmt::Debug for CvRSDS<'a, P> {
 
 /// Debug information.
 #[derive(Copy, Clone)]
-pub struct Dbg<'a, P> {
-	pe: P,
+pub struct Dbg<'a> {
 	image: &'a IMAGE_DEBUG_MISC,
 }
-impl<'a, P: Pe<'a> + Copy> Dbg<'a, P> {
-	pub(crate) fn new(pe: P, dir: &IMAGE_DEBUG_DIRECTORY) -> Result<Dbg<'a, P>> {
-		if dir.Type != IMAGE_DEBUG_TYPE_MISC {
-			return Err(Error::Null);
+impl<'a> Dbg<'a> {
+	pub(crate) fn new<P: Pe<'a> + Copy>(dir: &Dir<'a, P>) -> Result<Dbg<'a>> {
+		let data = dir.data().ok_or(Error::Bounds)?;
+		if data.len() < mem::size_of::<IMAGE_DEBUG_MISC>() {
+			return Err(Error::Bounds);
 		}
-		let image = pe.derva(dir.AddressOfRawData)?;
-		Ok(Dbg { pe, image })
-	}
-	/// Gets the PE instance.
-	pub fn pe(&self) -> P {
-		self.pe
+		if !(cfg!(feature = "unsafe_alignment") || data.as_ptr() as usize % 4 == 0) {
+			return Err(Error::Misaligned);
+		}
+		let image = unsafe { &*(data.as_ptr() as *const IMAGE_DEBUG_MISC) };
+		Ok(Dbg { image })
 	}
 	/// Gets the underlying information image.
 	pub fn image(&self) -> &'a IMAGE_DEBUG_MISC {
 		self.image
 	}
 }
-impl<'a, P: Pe<'a> + Copy> fmt::Debug for Dbg<'a, P> {
+impl<'a> fmt::Debug for Dbg<'a> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		f.debug_struct("Dbg").finish()
 	}
+}
+
+//----------------------------------------------------------------
+
+/// PGO information.
+#[derive(Copy, Clone)]
+pub struct Pogo<'a> {
+	image: &'a [u32],
+}
+impl<'a> Pogo<'a> {
+	pub(crate) fn new<P: Pe<'a> + Copy>(dir: &Dir<'a, P>) -> Result<Pogo<'a>> {
+		let data = dir.data().ok_or(Error::Bounds)?;
+		if data.len() < 4 {
+			return Err(Error::Bounds);
+		}
+		if !(cfg!(feature = "unsafe_alignment") || data.as_ptr() as usize % 4 == 0) {
+			return Err(Error::Misaligned);
+		}
+		let len = data.len() / 4;
+		let image = unsafe { slice::from_raw_parts(data.as_ptr() as *const u32, len) };
+		Ok(Pogo { image })
+	}
+	/// Gets the underlying image.
+	pub fn image(&self) -> &'a [u32] {
+		self.image
+	}
+	/// Iterator over the PGO sections.
+	pub fn iter(&self) -> PogoIter<'a> {
+		let image = if self.image.len() >= 1 { &self.image[1..] } else { self.image };
+		PogoIter { image }
+	}
+}
+impl<'a> IntoIterator for Pogo<'a> {
+	type Item = PogoSection<'a>;
+	type IntoIter = PogoIter<'a>;
+	fn into_iter(self) -> PogoIter<'a> {
+		self.iter()
+	}
+}
+impl<'a> fmt::Debug for Pogo<'a> {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		f.debug_list().entries(self.iter()).finish()
+	}
+}
+/// Iterator over PGO sections.
+#[derive(Clone)]
+pub struct PogoIter<'a> {
+	image: &'a [u32],
+}
+impl<'a> Iterator for PogoIter<'a> {
+	type Item = PogoSection<'a>;
+	fn next(&mut self) -> Option<PogoSection<'a>> {
+		if self.image.len() >= 3 {
+			let rva = self.image[0];
+			let size = self.image[0];
+			let name = CStr::from_bytes(self.image.as_bytes())?;
+			let len = name.len() >> 2;
+			self.image = unsafe { self.image.get_unchecked(3 + len..) };
+			Some(PogoSection { rva, size, name })
+		}
+		else {
+			None
+		}
+	}
+}
+/// Describes a PGO section.
+#[derive(Copy, Clone, Debug)]
+#[cfg_attr(feature = "serde", derive(Serialize))]
+pub struct PogoSection<'a> {
+	pub rva: u32,
+	pub size: u32,
+	pub name: &'a CStr,
 }
 
 //----------------------------------------------------------------
@@ -307,7 +381,8 @@ impl<'a, P: Pe<'a> + Copy> fmt::Debug for Dbg<'a, P> {
 			"type": "CodeView",
 			"time_date_stamp": 0,
 			"version": "1.0",
-			"cv70": {
+			"entry": {
+				format: "RSDS",
 				pdb_file_name: "",
 				...
 			},
@@ -318,7 +393,7 @@ impl<'a, P: Pe<'a> + Copy> fmt::Debug for Dbg<'a, P> {
 #[cfg(feature = "serde")]
 mod serde {
 	use util::serde_helper::*;
-	use super::{Pe, Debug, Dir, CvNB10, CvRSDS, Dbg};
+	use super::{Pe, Debug, Dir, CodeView, Dbg, Pogo};
 
 	impl<'a, P: Pe<'a> + Copy> Serialize for Debug<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
@@ -337,42 +412,36 @@ mod serde {
 			}
 			state.serialize_field("time_date_stamp", &self.image.TimeDateStamp)?;
 			state.serialize_field("version", &self.image.Version)?;
-			if let Ok(cv20) = self.read_cv20() {
-				state.serialize_field("cv20", &cv20)?;
-			}
-			else if let Ok(cv70) = self.read_cv70() {
-				state.serialize_field("cv70", &cv70)?;
-			}
-			else if let Ok(dbg) = self.read_dbg() {
-				state.serialize_field("dbg", &dbg)?;
-			}
-			else {
-				state.serialize_field("unknown", &(None as Option<i32>))?;
-			}
+			state.serialize_field("entry", &self.entry().ok())?;
 			state.end()
 		}
 	}
-	impl<'a, P: Pe<'a> + Copy> Serialize for CvNB10<'a, P> {
+	impl<'a> Serialize for CodeView<'a> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-			let mut state = serializer.serialize_struct("CvNB10", 3)?;
+			let mut state = serializer.serialize_struct("CvNB10", 4)?;
+			state.serialize_field("format", &self.format())?;
 			state.serialize_field("pdb_file_name", &self.pdb_file_name())?;
-			state.serialize_field("time_date_stamp", &self.image.TimeDateStamp)?;
-			state.serialize_field("age", &self.image.Age)?;
+			match self {
+				CodeView::Cv20 { image, .. } => {
+					state.serialize_field("time_date_stamp", &image.TimeDateStamp)?;
+					state.serialize_field("age", &image.Age)?;
+				},
+				CodeView::Cv70 { image, .. } => {
+					state.serialize_field("signature", &image.Signature)?;
+					state.serialize_field("age", &image.Age)?;
+				},
+			}
 			state.end()
 		}
 	}
-	impl<'a, P: Pe<'a> + Copy> Serialize for CvRSDS<'a, P> {
-		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-			let mut state = serializer.serialize_struct("CvNB10", 3)?;
-			state.serialize_field("pdb_file_name", &self.pdb_file_name())?;
-			state.serialize_field("signature", &self.image.Signature)?;
-			state.serialize_field("age", &self.image.Age)?;
-			state.end()
-		}
-	}
-	impl<'a, P: Pe<'a> + Copy> Serialize for Dbg<'a, P> {
+	impl<'a> Serialize for Dbg<'a> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			serializer.serialize_struct("Dbg", 0)?.end()
+		}
+	}
+	impl<'a> Serialize for Pogo<'a> {
+		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+			serializer.collect_seq(self.iter())
 		}
 	}
 }
