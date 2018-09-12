@@ -25,7 +25,7 @@ fn example(file: PeFile<'_>) -> pelite::Result<()> {
 use std::{fmt, iter, mem, slice, str};
 
 use error::{Error, Result};
-use util::CStr;
+use util::{CStr, Pod};
 
 use super::image::*;
 use super::{Align, Pe};
@@ -146,10 +146,12 @@ impl<'a, P: Pe<'a> + Copy> Dir<'a, P> {
 		} as usize;
 		image.get(offset..offset.wrapping_add(size))
 	}
+	/// Interprets the directory entry.
 	pub fn entry(&self) -> Result<Entry<'a>> {
 		match self.image.Type {
 			IMAGE_DEBUG_TYPE_CODEVIEW => Ok(Entry::CodeView(CodeView::new(self.pe, self.image)?)),
 			IMAGE_DEBUG_TYPE_MISC => Ok(Entry::Dbg(Dbg::new(self.pe, self.image)?)),
+			IMAGE_DEBUG_TYPE_POGO => Ok(Entry::Pogo(Pogo::new(self.pe, self.image)?)),
 			_ => Ok(Entry::Unknown { data: self.data() })
 		}
 	}
@@ -173,6 +175,7 @@ impl<'a, P: Pe<'a> + Copy> fmt::Debug for Dir<'a, P> {
 pub enum Entry<'a> {
 	CodeView(CodeView<'a>),
 	Dbg(Dbg<'a>),
+	Pogo(Pogo<'a>),
 	Unknown { data: Option<&'a [u8]> },
 }
 impl<'a> Entry<'a> {
@@ -183,6 +186,10 @@ impl<'a> Entry<'a> {
 	/// As a Dbg information entry.
 	pub fn as_dbg(self) -> Option<Dbg<'a>> {
 		match self { Entry::Dbg(dbg) => Some(dbg), _ => None }
+	}
+	/// As a LTCG information entry.
+	pub fn as_pogo(self) -> Option<Pogo<'a>> {
+		match self { Entry::Pogo(pogo) => Some(pogo), _ => None }
 	}
 	/// Unknown format, return as bytes.
 	pub fn as_unknown(self) -> Option<&'a [u8]> {
@@ -286,6 +293,71 @@ impl<'a> fmt::Debug for Dbg<'a> {
 
 //----------------------------------------------------------------
 
+/// PGO information.
+#[derive(Copy, Clone)]
+pub struct Pogo<'a> {
+	image: &'a [u32],
+}
+impl<'a> Pogo<'a> {
+	pub(crate) fn new<P: Pe<'a> + Copy>(pe: P, dir: &IMAGE_DEBUG_DIRECTORY) -> Result<Pogo<'a>> {
+		let len = (dir.SizeOfData / 4) as usize;
+		let image = pe.derva_slice(dir.AddressOfRawData, len)?;
+		Ok(Pogo { image })
+	}
+	/// Gets the underlying image.
+	pub fn image(&self) -> &'a [u32] {
+		self.image
+	}
+	/// Iterator over the PGO sections.
+	pub fn iter(&self) -> PogoIter<'a> {
+		let image = if self.image.len() >= 1 { &self.image[1..] } else { self.image };
+		PogoIter { image }
+	}
+}
+impl<'a> IntoIterator for Pogo<'a> {
+	type Item = PogoSection<'a>;
+	type IntoIter = PogoIter<'a>;
+	fn into_iter(self) -> PogoIter<'a> {
+		self.iter()
+	}
+}
+impl<'a> fmt::Debug for Pogo<'a> {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		f.debug_list().entries(self.iter()).finish()
+	}
+}
+/// Iterator over PGO sections.
+#[derive(Clone)]
+pub struct PogoIter<'a> {
+	image: &'a [u32],
+}
+impl<'a> Iterator for PogoIter<'a> {
+	type Item = PogoSection<'a>;
+	fn next(&mut self) -> Option<PogoSection<'a>> {
+		if self.image.len() >= 3 {
+			let rva = self.image[0];
+			let size = self.image[0];
+			let name = CStr::from_bytes(self.image.as_bytes())?;
+			let len = name.len() >> 2;
+			self.image = unsafe { self.image.get_unchecked(3 + len..) };
+			Some(PogoSection { rva, size, name })
+		}
+		else {
+			None
+		}
+	}
+}
+/// Describes a PGO section.
+#[derive(Copy, Clone, Debug)]
+#[cfg_attr(feature = "serde", derive(Serialize))]
+pub struct PogoSection<'a> {
+	pub rva: u32,
+	pub size: u32,
+	pub name: &'a CStr,
+}
+
+//----------------------------------------------------------------
+
 /*
 	"debug": [
 		{
@@ -304,7 +376,7 @@ impl<'a> fmt::Debug for Dbg<'a> {
 #[cfg(feature = "serde")]
 mod serde {
 	use util::serde_helper::*;
-	use super::{Pe, Debug, Dir, CodeView, Dbg};
+	use super::{Pe, Debug, Dir, CodeView, Dbg, Pogo};
 
 	impl<'a, P: Pe<'a> + Copy> Serialize for Debug<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
@@ -348,6 +420,11 @@ mod serde {
 	impl<'a> Serialize for Dbg<'a> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			serializer.serialize_struct("Dbg", 0)?.end()
+		}
+	}
+	impl<'a> Serialize for Pogo<'a> {
+		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+			serializer.collect_seq(self.iter())
 		}
 	}
 }
