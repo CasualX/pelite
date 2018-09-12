@@ -149,9 +149,9 @@ impl<'a, P: Pe<'a> + Copy> Dir<'a, P> {
 	/// Interprets the directory entry.
 	pub fn entry(&self) -> Result<Entry<'a>> {
 		match self.image.Type {
-			IMAGE_DEBUG_TYPE_CODEVIEW => Ok(Entry::CodeView(CodeView::new(self.pe, self.image)?)),
-			IMAGE_DEBUG_TYPE_MISC => Ok(Entry::Dbg(Dbg::new(self.pe, self.image)?)),
-			IMAGE_DEBUG_TYPE_POGO => Ok(Entry::Pogo(Pogo::new(self.pe, self.image)?)),
+			IMAGE_DEBUG_TYPE_CODEVIEW => Ok(Entry::CodeView(CodeView::new(&self)?)),
+			IMAGE_DEBUG_TYPE_MISC => Ok(Entry::Dbg(Dbg::new(&self)?)),
+			IMAGE_DEBUG_TYPE_POGO => Ok(Entry::Pogo(Pogo::new(&self)?)),
 			_ => Ok(Entry::Unknown { data: self.data() })
 		}
 	}
@@ -207,12 +207,16 @@ pub enum CodeView<'a> {
 	Cv70 { image: &'a IMAGE_DEBUG_CV_INFO_PDB70, pdb_file_name: &'a CStr },
 }
 impl<'a> CodeView<'a> {
-	pub(crate) fn new<P: Pe<'a> + Copy>(pe: P, dir: &IMAGE_DEBUG_DIRECTORY) -> Result<CodeView<'a>> {
-		if dir.Type != IMAGE_DEBUG_TYPE_CODEVIEW {
-			return Err(Error::Null);
+	pub(crate) fn new<P: Pe<'a> + Copy>(dir: &Dir<'a, P>) -> Result<CodeView<'a>> {
+		let bytes = dir.data().ok_or(Error::Bounds)?;
+		if bytes.len() < 16 {
+			return Err(Error::Bounds);
 		}
-		let bytes = pe.slice(dir.AddressOfRawData, dir.SizeOfData as usize, 4)?;
-		match unsafe { &*(bytes.as_ptr() as *const [u8; 4]) } {
+		if !(cfg!(feature = "unsafe_alignment") || bytes.as_ptr() as usize % 4 == 0) {
+			return Err(Error::Misaligned);
+		}
+		let cv_signature = unsafe { &*(bytes.as_ptr() as *const [u8; 4]) };
+		match cv_signature {
 			b"NB10" => {
 				if bytes.len() < 16 {
 					return Err(Error::Bounds);
@@ -273,11 +277,15 @@ pub struct Dbg<'a> {
 	image: &'a IMAGE_DEBUG_MISC,
 }
 impl<'a> Dbg<'a> {
-	pub(crate) fn new<P: Pe<'a> + Copy>(pe: P, dir: &IMAGE_DEBUG_DIRECTORY) -> Result<Dbg<'a>> {
-		if dir.Type != IMAGE_DEBUG_TYPE_MISC {
-			return Err(Error::Null);
+	pub(crate) fn new<P: Pe<'a> + Copy>(dir: &Dir<'a, P>) -> Result<Dbg<'a>> {
+		let data = dir.data().ok_or(Error::Bounds)?;
+		if data.len() < mem::size_of::<IMAGE_DEBUG_MISC>() {
+			return Err(Error::Bounds);
 		}
-		let image = pe.derva(dir.AddressOfRawData)?;
+		if !(cfg!(feature = "unsafe_alignment") || data.as_ptr() as usize % 4 == 0) {
+			return Err(Error::Misaligned);
+		}
+		let image = unsafe { &*(data.as_ptr() as *const IMAGE_DEBUG_MISC) };
 		Ok(Dbg { image })
 	}
 	/// Gets the underlying information image.
@@ -299,9 +307,16 @@ pub struct Pogo<'a> {
 	image: &'a [u32],
 }
 impl<'a> Pogo<'a> {
-	pub(crate) fn new<P: Pe<'a> + Copy>(pe: P, dir: &IMAGE_DEBUG_DIRECTORY) -> Result<Pogo<'a>> {
-		let len = (dir.SizeOfData / 4) as usize;
-		let image = pe.derva_slice(dir.AddressOfRawData, len)?;
+	pub(crate) fn new<P: Pe<'a> + Copy>(dir: &Dir<'a, P>) -> Result<Pogo<'a>> {
+		let data = dir.data().ok_or(Error::Bounds)?;
+		if data.len() < 4 {
+			return Err(Error::Bounds);
+		}
+		if !(cfg!(feature = "unsafe_alignment") || data.as_ptr() as usize % 4 == 0) {
+			return Err(Error::Misaligned);
+		}
+		let len = data.len() / 4;
+		let image = unsafe { slice::from_raw_parts(data.as_ptr() as *const u32, len) };
 		Ok(Pogo { image })
 	}
 	/// Gets the underlying image.
