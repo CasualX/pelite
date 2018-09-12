@@ -64,7 +64,7 @@ impl<'a, P: Pe<'a> + Copy> Debug<'a, P> {
 	/// Gets the CodeView PDB file name.
 	pub fn pdb_file_name(&self) -> Option<&'a CStr> {
 		self.into_iter()
-			.filter_map(|dir| dir.entry().ok().and_then(Entry::as_cv70).map(|cv| cv.pdb_file_name))
+			.filter_map(|dir| dir.entry().ok().and_then(Entry::as_code_view).map(|cv| cv.pdb_file_name()))
 			.next()
 	}
 }
@@ -148,17 +148,7 @@ impl<'a, P: Pe<'a> + Copy> Dir<'a, P> {
 	}
 	pub fn entry(&self) -> Result<Entry<'a, P>> {
 		match self.image.Type {
-			IMAGE_DEBUG_TYPE_CODEVIEW => {
-				if let Ok(cv20) = CvNB10::new(self.pe, self.image) {
-					Ok(Entry::CvNB10(cv20))
-				}
-				else if let Ok(cv70) = CvRSDS::new(self.pe, self.image) {
-					Ok(Entry::CvRSDS(cv70))
-				}
-				else {
-					Err(Error::Null)
-				}
-			},
+			IMAGE_DEBUG_TYPE_CODEVIEW => Ok(Entry::CodeView(CodeView::new(self.pe, self.image)?)),
 			IMAGE_DEBUG_TYPE_MISC => Ok(Entry::Dbg(Dbg::new(self.pe, self.image)?)),
 			_ => Ok(Entry::Unknown { data: self.data() })
 		}
@@ -180,19 +170,14 @@ impl<'a, P: Pe<'a> + Copy> fmt::Debug for Dir<'a, P> {
 
 #[derive(Copy, Clone)]
 pub enum Entry<'a, P> {
-	CvNB10(CvNB10<'a, P>),
-	CvRSDS(CvRSDS<'a, P>),
+	CodeView(CodeView<'a, P>),
 	Dbg(Dbg<'a, P>),
 	Unknown { data: Option<&'a [u8]> },
 }
 impl<'a, P> Entry<'a, P> {
-	/// As a CodeView 2.0 debug information entry.
-	pub fn as_cv20(self) -> Option<CvNB10<'a, P>> {
-		match self { Entry::CvNB10(cv20) => Some(cv20), _ => None }
-	}
-	/// As a CodeView 7.0 debug information entry.
-	pub fn as_cv70(self) -> Option<CvRSDS<'a, P>> {
-		match self { Entry::CvRSDS(cv70) => Some(cv70), _ => None }
+	/// As a CodeView debug information entry.
+	pub fn as_code_view(self) -> Option<CodeView<'a, P>> {
+		match self { Entry::CodeView(cv) => Some(cv), _ => None }
 	}
 	/// As a Dbg information entry.
 	pub fn as_dbg(self) -> Option<Dbg<'a, P>> {
@@ -202,11 +187,10 @@ impl<'a, P> Entry<'a, P> {
 		match self { Entry::Unknown { data } => data, _ => None }
 	}
 }
-impl<'a, P: Pe<'a> + Copy> fmt::Debug for Entry<'a, P> {
+impl<'a, P> fmt::Debug for Entry<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		match self {
-			Entry::CvNB10(cv20) => cv20.fmt(f),
-			Entry::CvRSDS(cv70) => cv70.fmt(f),
+			Entry::CodeView(cv) => cv.fmt(f),
 			Entry::Dbg(dbg) => dbg.fmt(f),
 			Entry::Unknown { data } => data.fmt(f),
 		}
@@ -215,99 +199,73 @@ impl<'a, P: Pe<'a> + Copy> fmt::Debug for Entry<'a, P> {
 
 //----------------------------------------------------------------
 
-/// CodeView 2.0 debug information.
+#[derive(Copy, Clone, Debug)]
+#[cfg_attr(feature = "serde", derive(Serialize))]
+pub enum CvImage<'a> {
+	/// CodeView 2.0 debug information.
+	V20(&'a IMAGE_DEBUG_CV_INFO_PDB20),
+	/// CodeView 7.0 debug information.
+	V70(&'a IMAGE_DEBUG_CV_INFO_PDB70),
+}
+
+/// CodeView information.
 #[derive(Copy, Clone)]
-pub struct CvNB10<'a, P> {
+pub struct CodeView<'a, P> {
 	pe: P,
-	image: &'a IMAGE_DEBUG_CV_INFO_PDB20,
+	image: CvImage<'a>,
 	pdb_file_name: &'a CStr,
 }
-impl<'a, P: Pe<'a> + Copy> CvNB10<'a, P> {
-	pub(crate) fn new(pe: P, dir: &IMAGE_DEBUG_DIRECTORY) -> Result<CvNB10<'a, P>> {
+impl<'a, P: Pe<'a> + Copy> CodeView<'a, P> {
+	pub(crate) fn new(pe: P, dir: &IMAGE_DEBUG_DIRECTORY) -> Result<CodeView<'a, P>> {
 		if dir.Type != IMAGE_DEBUG_TYPE_CODEVIEW {
 			return Err(Error::BadMagic);
 		}
 		let bytes = pe.slice(dir.AddressOfRawData, dir.SizeOfData as usize, 4)?;
-		if bytes.len() < 16 {
-			return Err(Error::Bounds);
-		}
-		let image = unsafe { &*(bytes.as_ptr() as *const IMAGE_DEBUG_CV_INFO_PDB20) };
-		let signature: [u8; 4] = unsafe { mem::transmute(image.CvSignature) };
-		if signature != *b"NB10" {
-			return Err(Error::BadMagic);
-		}
-		let pdb_file_name = CStr::from_bytes(&bytes[16..]).ok_or(Error::Encoding)?;
-		Ok(CvNB10 { pe, image, pdb_file_name })
+		let (image, tail) = match unsafe { &*(bytes.as_ptr() as *const [u8; 4]) } {
+			b"NB10" => {
+				if bytes.len() < 16 {
+					return Err(Error::Bounds);
+				}
+				let image = unsafe { &*(bytes.as_ptr() as *const IMAGE_DEBUG_CV_INFO_PDB20) };
+				(CvImage::V20(image), &bytes[16..])
+			},
+			b"RSDS" => {
+				if bytes.len() < 24 {
+					return Err(Error::Bounds);
+				}
+				let image = unsafe { &*(bytes.as_ptr() as *const IMAGE_DEBUG_CV_INFO_PDB70) };
+				(CvImage::V70(image), &bytes[24..])
+			},
+			_ => return Err(Error::BadMagic),
+		};
+		let pdb_file_name = CStr::from_bytes(tail).ok_or(Error::Encoding)?;
+		Ok(CodeView { pe, image, pdb_file_name })
 	}
-	/// Gets the PE instance.
 	pub fn pe(&self) -> P {
 		self.pe
 	}
-	/// Gets the underlying information image.
-	pub fn image(&self) -> &'a IMAGE_DEBUG_CV_INFO_PDB20 {
+	pub fn image(&self) -> CvImage<'a> {
 		self.image
 	}
-	/// Gets the PDB file name.
 	pub fn pdb_file_name(&self) -> &'a CStr {
 		self.pdb_file_name
 	}
 }
-impl<'a, P: Pe<'a> + Copy> fmt::Debug for CvNB10<'a, P> {
+impl<'a, P> fmt::Debug for CodeView<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		f.debug_struct("CvNB10")
-			.field("pdb_file_name", &self.pdb_file_name)
-			.field("time_date_stamp", &self.image.TimeDateStamp)
-			.field("age", &self.image.Age)
-			.finish()
-	}
-}
-
-//----------------------------------------------------------------
-
-/// CodeView 7.0 debug information.
-#[derive(Copy, Clone)]
-pub struct CvRSDS<'a, P> {
-	pe: P,
-	image: &'a IMAGE_DEBUG_CV_INFO_PDB70,
-	pdb_file_name: &'a CStr,
-}
-impl<'a, P: Pe<'a> + Copy> CvRSDS<'a, P> {
-	pub(crate) fn new(pe: P, dir: &IMAGE_DEBUG_DIRECTORY) -> Result<CvRSDS<'a, P>> {
-		if dir.Type != IMAGE_DEBUG_TYPE_CODEVIEW {
-			return Err(Error::BadMagic);
+		let mut stru = f.debug_struct("CodeView");
+		stru.field("pdb_file_name", &self.pdb_file_name);
+		match self.image {
+			CvImage::V20(cv20) => {
+				stru.field("time_date_stamp", &cv20.TimeDateStamp);
+				stru.field("age", &cv20.Age);
+			},
+			CvImage::V70(cv70) => {
+				stru.field("signature", &cv70.Signature);
+				stru.field("age", &cv70.Age);
+			}
 		}
-		let bytes = pe.slice(dir.AddressOfRawData, dir.SizeOfData as usize, 4)?;
-		if bytes.len() < 24 {
-			return Err(Error::Bounds);
-		}
-		let image = unsafe { &*(bytes.as_ptr() as *const IMAGE_DEBUG_CV_INFO_PDB70) };
-		let signature: [u8; 4] = unsafe { mem::transmute(image.CvSignature) };
-		if signature != *b"RSDS" {
-			return Err(Error::BadMagic);
-		}
-		let pdb_file_name = CStr::from_bytes(&bytes[24..]).ok_or(Error::Encoding)?;
-		Ok(CvRSDS { pe, image, pdb_file_name })
-	}
-	/// Gets the PE instance.
-	pub fn pe(&self) -> P {
-		self.pe
-	}
-	/// Gets the underlying information image.
-	pub fn image(&self) -> &'a IMAGE_DEBUG_CV_INFO_PDB70 {
-		self.image
-	}
-	/// Gets the PDB file name.
-	pub fn pdb_file_name(&self) -> &'a CStr {
-		self.pdb_file_name
-	}
-}
-impl<'a, P: Pe<'a> + Copy> fmt::Debug for CvRSDS<'a, P> {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		f.debug_struct("CvRSDS")
-			.field("pdb_file_name", &self.pdb_file_name)
-			.field("signature", &self.image.Signature)
-			.field("age", &self.image.Age)
-			.finish()
+		stru.finish()
 	}
 }
 
@@ -336,7 +294,7 @@ impl<'a, P: Pe<'a> + Copy> Dbg<'a, P> {
 		self.image
 	}
 }
-impl<'a, P: Pe<'a> + Copy> fmt::Debug for Dbg<'a, P> {
+impl<'a, P> fmt::Debug for Dbg<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		f.debug_struct("Dbg").finish()
 	}
@@ -350,7 +308,7 @@ impl<'a, P: Pe<'a> + Copy> fmt::Debug for Dbg<'a, P> {
 			"type": "CodeView",
 			"time_date_stamp": 0,
 			"version": "1.0",
-			"cv70": {
+			"code_view": {
 				pdb_file_name: "",
 				...
 			},
@@ -361,7 +319,7 @@ impl<'a, P: Pe<'a> + Copy> fmt::Debug for Dbg<'a, P> {
 #[cfg(feature = "serde")]
 mod serde {
 	use util::serde_helper::*;
-	use super::{Pe, Debug, Dir, CvNB10, CvRSDS, Dbg};
+	use super::{Pe, Debug, Dir, Entry, CodeView, CvImage, Dbg};
 
 	impl<'a, P: Pe<'a> + Copy> Serialize for Debug<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
@@ -380,36 +338,33 @@ mod serde {
 			}
 			state.serialize_field("time_date_stamp", &self.image.TimeDateStamp)?;
 			state.serialize_field("version", &self.image.Version)?;
-			if let Ok(cv20) = self.read_cv20() {
-				state.serialize_field("cv20", &cv20)?;
-			}
-			else if let Ok(cv70) = self.read_cv70() {
-				state.serialize_field("cv70", &cv70)?;
-			}
-			else if let Ok(dbg) = self.read_dbg() {
-				state.serialize_field("dbg", &dbg)?;
-			}
-			else {
-				state.serialize_field("unknown", &(None as Option<i32>))?;
-			}
+			state.serialize_field("entry", &self.entry().ok())?;
 			state.end()
 		}
 	}
-	impl<'a, P: Pe<'a> + Copy> Serialize for CvNB10<'a, P> {
+	impl<'a, P: Pe<'a> + Copy> Serialize for Entry<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-			let mut state = serializer.serialize_struct("CvNB10", 3)?;
-			state.serialize_field("pdb_file_name", &self.pdb_file_name())?;
-			state.serialize_field("time_date_stamp", &self.image.TimeDateStamp)?;
-			state.serialize_field("age", &self.image.Age)?;
-			state.end()
+			match self {
+				Entry::CodeView(cv) => cv.serialize(serializer),
+				Entry::Dbg(dbg) => dbg.serialize(serializer),
+				Entry::Unknown { data } => data.serialize(serializer),
+			}
 		}
 	}
-	impl<'a, P: Pe<'a> + Copy> Serialize for CvRSDS<'a, P> {
+	impl<'a, P: Pe<'a> + Copy> Serialize for CodeView<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			let mut state = serializer.serialize_struct("CvNB10", 3)?;
 			state.serialize_field("pdb_file_name", &self.pdb_file_name())?;
-			state.serialize_field("signature", &self.image.Signature)?;
-			state.serialize_field("age", &self.image.Age)?;
+			match self.image() {
+				CvImage::V20(cv20) => {
+					state.serialize_field("time_date_stamp", &cv20.TimeDateStamp)?;
+					state.serialize_field("age", &cv20.Age)?;
+				},
+				CvImage::V70(cv70) => {
+					state.serialize_field("signature", &cv70.Signature)?;
+					state.serialize_field("age", &cv70.Age)?;
+				},
+			}
 			state.end()
 		}
 	}
