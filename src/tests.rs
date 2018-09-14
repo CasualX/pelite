@@ -27,6 +27,7 @@ fn pocs() {
 		println!("  exception...   {:?}", test!(image, exception));
 		println!("  exports...     {:?}", test!(image, exports));
 		println!("  imports...     {:?}", test!(image, imports));
+		println!("  debug...       {:?}", test!(image, debug));
 		println!("  load_config... {:?}", test!(image, load_config));
 		println!("  security...    {:?}", test!(image, security));
 		println!("  tls...         {:?}", test!(image, tls));
