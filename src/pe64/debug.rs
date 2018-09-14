@@ -445,3 +445,26 @@ mod serde {
 		}
 	}
 }
+
+//----------------------------------------------------------------
+
+#[cfg(test)]
+pub(crate) fn test<'a, P: 'a + Pe<'a> + Copy>(pe: P) -> Result<()> {
+	let debug = pe.debug()?;
+	for dir in debug {
+		let _data = dir.data();
+		match dir.entry() {
+			Ok(Entry::CodeView(cv)) => {
+				let _format = cv.format();
+				let _pdb_file_name = cv.pdb_file_name();
+			},
+			Ok(Entry::Dbg(_dbg)) => (),
+			Ok(Entry::Pogo(pogo)) => {
+				for _sec in pogo.iter() {}
+			},
+			Ok(Entry::Unknown(_data)) => (),
+			Err(_) => (),
+		}
+	}
+	Ok(())
+}
