@@ -1,6 +1,6 @@
 [package]
 name = "pelite"
-version = "0.6.0"
+version = "0.7.0"
 authors = ["Casper <CasualX@users.noreply.github.com>"]
 
 description = "Lightweight, memory-safe, zero-allocation library for reading and navigating PE binaries."
