@@ -119,11 +119,11 @@ fn base_relocs() {
 	let mut blocks = base_relocs.iter_blocks();
 
 	let block1 = blocks.next().unwrap();
-	assert_eq!(block1.rva(), 0x3000);
+	assert_eq!(block1.virtual_address(), 0x3000);
 	assert_eq!(block1.words().len(), 28);
 
 	let block2 = blocks.next().unwrap();
-	assert_eq!(block2.rva(), 0x5000);
+	assert_eq!(block2.virtual_address(), 0x5000);
 	assert_eq!(block2.words().len(), 12);
 
 	assert_eq!(blocks.count(), 0);
@@ -137,13 +137,10 @@ fn base_relocs() {
 				.filter(move |&word| block.type_of(word) != 0)
 				.map(move |word| block.rva_of(word))
 		});
-	let mut iter = base_relocs.into_iter();
-	base_relocs.into_iter().for_each(|rva| {
+	base_relocs.for_each(|rva, _| {
 		assert_eq!(baseline.next(), Some(rva));
-		assert_eq!(iter.next(), Some(rva));
 	});
 	assert_eq!(baseline.next(), None);
-	assert_eq!(iter.next(), None);
 }
 
 //----------------------------------------------------------------

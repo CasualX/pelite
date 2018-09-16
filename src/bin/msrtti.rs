@@ -59,33 +59,37 @@ fn main() {
 	// I'm sure this can all be done with more heuristics without requiring all the above informatoin
 
 	// Collect all xrefs from rdata to text
-	let mut vrefs: Vec<Rva> = base_relocs.into_iter().filter_map(|rva| {
+	let mut vrefs = Vec::new();
+	base_relocs.for_each(|rva, _| {
 		// Look for xrefs from rdata (the virtual function pointers)
 		if rva < rdata.VirtualAddress || rva >= (rdata.VirtualAddress + rdata.VirtualSize) {
-			return None;
+			return;
 		}
 		// Read the pointer being relocated
 		let target_va = file.derva_copy(rva).expect(&format!("msrtti: corrupt reloc at {:08X}", rva));
 		let target_rva = file.va_to_rva(target_va).expect(&format!("msrtti: corrupt xref at {:08X}", rva));
 		// Look for xrefs to text (the virtual functions themselves)
 		if target_rva < text.VirtualAddress || target_rva >= (text.VirtualAddress + text.VirtualSize) {
-			return None;
+			return;
 		}
-		Some(rva)
-	}).collect();
+		vrefs.push(rva);
+	});
 
 	// The vtable length will be detected by a 'run' of relocated pointers so ensure they are sorted
 	vrefs.sort();
 
 	// The vtables themselves will be referenced from other places (such as the RTTI data, constructors and dynamic_casts)
 	// By collecting all xrefs to the previously collected pointers, we can find the start of the vtable
-	let mut xrefs: Vec<usize> = base_relocs.into_iter().filter_map(|rva| {
+	let mut xrefs = Vec::new();
+	base_relocs.for_each(|rva, _| {
 		// Read the pointer being relocated
 		let target_va = file.derva_copy(rva).expect(&format!("msrtti: corrupt reloc at {:08X}", rva));
 		let target_rva = file.va_to_rva(target_va).expect(&format!("msrtti: corrupt xref at {:08X}", rva));
 		// Find the target_rva in the coderefs
-		vrefs.binary_search(&target_rva).ok()
-	}).collect();
+		if let Ok(idx) = vrefs.binary_search(&target_rva) {
+			xrefs.push(idx);
+		}
+	});
 
 	// There may be many references to the same vtable so clean up the data
 	xrefs.sort();
