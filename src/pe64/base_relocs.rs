@@ -18,7 +18,7 @@ fn example(file: PeFile<'_>) -> pelite::Result<()> {
 	let base_relocs = file.base_relocs()?;
 
 	// Iterate over the rva which need relocation
-	for rva in base_relocs {}
+	base_relocs.for_each(|rva, ty| {});
 
 	// Iterate over the relocation blocks
 	for block in base_relocs.iter_blocks() {}
@@ -28,7 +28,7 @@ fn example(file: PeFile<'_>) -> pelite::Result<()> {
 ```
 */
 
-use std::{fmt, iter, mem, slice};
+use std::{cmp, fmt, iter, mem, slice};
 
 use error::{Error, Result};
 
@@ -48,21 +48,8 @@ pub struct BaseRelocs<'a, P> {
 impl<'a, P: Pe<'a> + Copy> BaseRelocs<'a, P> {
 	pub(crate) fn try_from(pe: P) -> Result<BaseRelocs<'a, P>> {
 		let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_BASERELOC).ok_or(Error::Bounds)?;
-		let relocs = pe.derva_slice(datadir.VirtualAddress, datadir.Size as usize)?;
-		// Validate the relocations...
-		// All unsafe blocks in this module rely on this being correct, no pressure there.
-		// FIXME! I know this broken in subtle ways, please fix it.
-		let mut it = relocs;
-		while it.len() != 0 {
-			if it.len() < mem::size_of::<IMAGE_BASE_RELOCATION>() {
-				return Err(Error::Invalid);
-			}
-			let image = unsafe { &*(it.as_ptr() as *const IMAGE_BASE_RELOCATION) };
-			if image.SizeOfBlock % 4 != 0 || image.SizeOfBlock as usize > it.len() {
-				return Err(Error::Invalid);
-			}
-			it = &it[image.SizeOfBlock as usize..];
-		}
+		let relocs = pe.slice(datadir.VirtualAddress, datadir.Size as usize, 4)?; // $1
+		let relocs = unsafe { relocs.get_unchecked(..datadir.Size as usize) };
 		Ok(BaseRelocs { pe, relocs })
 	}
 	/// Gets the PE instance.
@@ -70,21 +57,30 @@ impl<'a, P: Pe<'a> + Copy> BaseRelocs<'a, P> {
 		self.pe
 	}
 	/// Iterates over the base relocation blocks.
-	pub fn iter_blocks(&self) -> IterBlocks<'a, P> {
-		IterBlocks {
-			pe: self.pe,
-			iter: self.relocs.iter()
-		}
+	pub fn iter_blocks(&self) -> IterBlocks<'a> {
+		IterBlocks { data: self.relocs }
 	}
-}
-impl<'a, P: Pe<'a> + Copy> IntoIterator for BaseRelocs<'a, P> {
-	type Item = Rva;
-	type IntoIter = Iter<'a>;
-	fn into_iter(self) -> Iter<'a> {
-		Iter {
-			iter: self.relocs.iter(),
-			offset: mem::size_of::<IMAGE_BASE_RELOCATION>(),
+	/// Iterates over the base relocations with internal iteration.
+	///
+	/// Relocations padding types are skipped.
+	pub fn for_each<F: FnMut(Rva, u8)>(&self, mut f: F) {
+		self.fold((), |(), rva, ty| f(rva, ty))
+	}
+	/// Folds over the base relocations with internal iteration.
+	///
+	/// Relocations padding types are skipped.
+	pub fn fold<T, F>(&self, init: T, mut f: F) -> T where F: FnMut(T, Rva, u8) -> T {
+		let mut accum = init;
+		for block in self.iter_blocks() {
+			for word in block.words() {
+				let ty = block.type_of(word);
+				if ty != IMAGE_REL_BASED_ABSOLUTE {
+					let rva = block.rva_of(word);
+					accum = f(accum, rva, ty);
+				}
+			}
 		}
+		accum
 	}
 }
 impl<'a, P: Pe<'a> + Copy> fmt::Debug for BaseRelocs<'a, P> {
@@ -95,149 +91,87 @@ impl<'a, P: Pe<'a> + Copy> fmt::Debug for BaseRelocs<'a, P> {
 
 //----------------------------------------------------------------
 
-/// Iterator over the addresses of pointer values which need relocation in the image.
-#[derive(Clone)]
-pub struct Iter<'a> {
-	iter: slice::Iter<'a, u8>,
-	offset: usize,
-}
-impl<'a> iter::FusedIterator for Iter<'a> {}
-impl<'a> Iterator for Iter<'a> {
-	type Item = Rva;
-	fn next(&mut self) -> Option<Rva> {
-		while self.iter.len() != 0 {
-			// Safety checked by new
-			unsafe {
-				let bytes = self.iter.as_slice();
-				let image = &*(bytes.as_ptr() as *const IMAGE_BASE_RELOCATION);
-				let word = *(bytes.as_ptr().offset(self.offset as isize) as *const u16);
-
-				let next_offset = self.offset + 2;
-				self.offset = if next_offset >= image.SizeOfBlock as usize {
-					self.iter = bytes.get_unchecked(image.SizeOfBlock as usize..).iter();
-					mem::size_of::<IMAGE_BASE_RELOCATION>()
-				}
-				else {
-					next_offset
-				};
-
-				let ty = (word >> 12) as u8;
-				if ty != IMAGE_REL_BASED_ABSOLUTE {
-					let rva = image.VirtualAddress + (word & 0x0fff) as Rva;
-					return Some(rva);
-				}
-			}
-		}
-		None
-	}
-	fn size_hint(&self) -> (usize, Option<usize>) {
-		// Rough upper bound, ignoring base relocation blocks and padding
-		let upper_bound = self.iter.as_slice().len() / 2;
-		(0, Some(upper_bound))
-	}
-	// Should implement `try_fold` instead but it uses unstable features.
-	fn fold<B, F>(self, init: B, mut f: F) -> B
-		where F: FnMut(B, Self::Item) -> B,
-	{
-		let mut accum = init;
-		// The outer loop iterates over base relocation blocks
-		let mut bytes = self.iter.as_slice();
-		let mut offset = self.offset;
-		while bytes.len() != 0 {
-			// Safety checked by new
-			unsafe {
-				// The inner loop iterates over the relocation words
-				let image = &*(bytes.as_ptr() as *const IMAGE_BASE_RELOCATION);
-				while offset < image.SizeOfBlock as usize {
-					let word = *(bytes.as_ptr().offset(offset as isize) as *const u16);
-					// Filter out padding relocations
-					let ty = (word >> 12) as u8;
-					if ty != IMAGE_REL_BASED_ABSOLUTE {
-						let rva = image.VirtualAddress + (word & 0x0fff) as Rva;
-						accum = f(accum, rva);
-					}
-					offset += 2;
-				}
-				// Advance to the next base relocation block and reset the offset to the first word
-				bytes = bytes.get_unchecked(image.SizeOfBlock as usize..);
-				offset = mem::size_of::<IMAGE_BASE_RELOCATION>();
-			}
-		}
-		accum
-	}
-}
-
-//----------------------------------------------------------------
-
 /// Iterator over the base relocation blocks.
 #[derive(Clone)]
-pub struct IterBlocks<'a, P> {
-	pe: P,
-	iter: slice::Iter<'a, u8>,
+pub struct IterBlocks<'a> {
+	data: &'a [u8],
 }
-impl<'a, P: Pe<'a> + Copy> Iterator for IterBlocks<'a, P> {
-	type Item = Block<'a, P>;
-	fn next(&mut self) -> Option<Block<'a, P>> {
-		if self.iter.len() != 0 {
-			// Safety checked by new
-			unsafe {
-				let bytes = self.iter.as_slice();
-				let image = &*(bytes.as_ptr() as *const IMAGE_BASE_RELOCATION);
-				self.iter = bytes.get_unchecked(image.SizeOfBlock as usize..).iter();
-				Some(Block { pe: self.pe, image })
-			}
+impl<'a> IterBlocks<'a> {
+	fn peek(&self) -> Option<Block<'a>> {
+		if mem::size_of_val(self.data) >= mem::size_of::<IMAGE_BASE_RELOCATION>() { // $2
+			debug_assert_eq!(self.data.as_ptr() as usize % 4, 0); // MUST BE DWORD ALIGNED!
+			let block = unsafe {
+				// The blocks pointer is dword aligned (see $1) and is at least large enough (see $2).
+				let image_p = self.data.as_ptr() as *const IMAGE_BASE_RELOCATION;
+				let image = &*image_p;
+				// Calculate the number of words following the base relocation carefully
+				let len = cmp::min(image.SizeOfBlock as usize, self.data.len()).saturating_sub(mem::size_of::<IMAGE_BASE_RELOCATION>()) / 2;
+				let words = slice::from_raw_parts(image_p.offset(1) as *const u16, len);
+				Block { image, words }
+			};
+			Some(block)
 		}
 		else {
 			None
 		}
 	}
 }
-impl<'a, P: Pe<'a> + Copy> iter::FusedIterator for IterBlocks<'a, P> {}
+impl<'a> Iterator for IterBlocks<'a> {
+	type Item = Block<'a>;
+	fn next(&mut self) -> Option<Block<'a>> {
+		if let Some(block) = self.peek() {
+			let block_size = block.image.SizeOfBlock;
+			// Avoid infinite loop by skipping at least the image base relocation header
+			let block_size = cmp::max(block_size, mem::size_of::<IMAGE_BASE_RELOCATION>() as u32);
+			// Ensure that the data pointer remains dword aligned
+			let block_size = ((block_size - 1) & !3) + 4; // $1
+			// Clamp the length to the data size
+			let block_size = cmp::min(block_size as usize, self.data.len());
+			self.data = &self.data[block_size..];
+			Some(block)
+		}
+		else {
+			None
+		}
+	}
+}
+impl<'a> iter::FusedIterator for IterBlocks<'a> {}
 
 //----------------------------------------------------------------
 
 /// Base Relocation Block.
 #[derive(Copy, Clone)]
-pub struct Block<'a, P> {
-	pe: P,
+pub struct Block<'a> {
 	image: &'a IMAGE_BASE_RELOCATION,
+	words: &'a [u16],
 }
-impl<'a, P: Pe<'a> + Copy> Block<'a, P> {
-	/// Gets the PE instance.
-	pub fn pe(&self) -> P {
-		self.pe
-	}
+impl<'a> Block<'a> {
 	/// Returns the underlying base relocation block image.
 	pub fn image(&self) -> &'a IMAGE_BASE_RELOCATION {
 		self.image
 	}
 	/// Base rva of rva_of calculations.
-	pub fn rva(&self) -> Rva {
+	pub fn virtual_address(&self) -> Rva {
 		self.image.VirtualAddress
 	}
 	/// Gets the types and offsets.
 	pub fn words(&self) -> &'a [u16] {
-		// Safety checked by new
-		unsafe {
-			let p = (self.image as *const IMAGE_BASE_RELOCATION).offset(1) as *const u16;
-			let len = (self.image.SizeOfBlock as usize - mem::size_of::<IMAGE_BASE_RELOCATION>()) / 2;
-			slice::from_raw_parts(p, len)
-		}
+		self.words
 	}
 	/// Gets the final Rva of a type-offset word.
 	pub fn rva_of(&self, word: &u16) -> Rva {
 		let offset = (word & 0x0FFF) as Rva;
-		self.image.VirtualAddress + offset
+		self.image.VirtualAddress.wrapping_add(offset)
 	}
 	/// Gets the type of a type-offset word.
 	pub fn type_of(&self, word: &u16) -> u8 {
 		(word >> 12) as u8
 	}
 }
-impl<'a, P: Pe<'a> + Copy> fmt::Debug for Block<'a, P> {
+impl<'a> fmt::Debug for Block<'a> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		f.debug_struct("Block")
-			.field("rva", &self.rva())
+			.field("virtual_address", &self.virtual_address())
 			.field("words.len", &self.words().len())
 			.finish()
 	}
@@ -246,9 +180,10 @@ impl<'a, P: Pe<'a> + Copy> fmt::Debug for Block<'a, P> {
 //----------------------------------------------------------------
 
 /*
-	"base_relocs": [
-		1000, 1002, 1018, 2048, 2498,
-	],
+	"base_relocs": {
+		"rvas": [1000, 1002, 1018, 2048, 2498],
+		"types": [3, 3, 3, 3, 3, 3]
+	}
 */
 
 #[cfg(feature = "serde")]
@@ -258,7 +193,16 @@ mod serde {
 
 	impl<'a, P: Pe<'a> + Copy> Serialize for BaseRelocs<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-			serializer.collect_seq(self.into_iter())
+			let mut state = serializer.serialize_struct("BaseRelocs", 2)?;
+			let mut rvas = Vec::new();
+			let mut types = Vec::new();
+			self.for_each(|rva, ty| {
+				rvas.push(rva);
+				types.push(ty);
+			});
+			state.serialize_field("rvas", &*rvas)?;
+			state.serialize_field("types", &*types)?;
+			state.end()
 		}
 	}
 }
@@ -276,21 +220,14 @@ pub(crate) fn test<'a, P: Pe<'a> + Copy>(pe: P) -> Result<()> {
 			let _ = format!("{:?}", block);
 			block.words()
 				.iter()
-				.filter_map(move |word| {
-					if block.type_of(word) == 0 { None }
-					else { Some(block.rva_of(word)) }
-				})
+				.filter(move |&word| block.type_of(word) != IMAGE_REL_BASED_ABSOLUTE)
+				.map(move |word| block.rva_of(word))
 		});
 
-	let mut iter = base_relocs.into_iter();
-
-	base_relocs.into_iter().for_each(|rva| {
+	base_relocs.for_each(|rva, _| {
 		assert_eq!(baseline.next(), Some(rva));
-		assert_eq!(iter.next(), Some(rva));
 	});
-
 	assert_eq!(baseline.next(), None);
-	assert_eq!(iter.next(), None);
 
 	Ok(())
 }
