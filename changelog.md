@@ -5,6 +5,79 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [0.7.0] 2018-09-14
+
+### Export and IAT Directory
+
+- **[breaking]** Exports iter_names' iterator Item tuple is has swapped its elements to `(name, export)` to better match (_key_, _value_) semantics.
+- **[breaking]** Exported symbol no longer contains the `None` value, it is returned in the outer result as error `Null`.
+- Added Exports API to query non-sorted name table. The exports name table must be sorted according to the PE specification to allow binary search, an API was added to search by name in a linear fashion.
+- Added IAT Directory support. Access all the imported functions directly through the IAT.
+
+### Base Relocations Directory
+
+- **[breaking]** Streamlined the base relocations API for the common use case, iterating over all base relocations.
+- **[breaking]** Removed the main `Iterator`. Instead internal iterator methods are provided directly on the `BaseRelocations` struct.
+
+### Exception and Security Directory
+
+- **[major]** Implemented basic access to the exception directory!
+- Fixed the Security reading from the wrong Directory index.
+
+### Resources Directory
+
+- **[breaking]** Removed explicit API for printing the resources filesystem, instead visualizing has moved to the `Display` implementation of `Resources` and `Directory` and changed the visualization to be more visually simple and consistent.
+- **[breaking]** Changed the method to get the bytes from a data entry to the name `bytes()`.
+- Added a simple file system consistency check method to the resources, checks that the internal structure of the resources filesystem is not broken.
+- Cleanup use of `unsafe` in the resources code by refactoring them into a few methods in close proximity.
+- **[major]** Added parser for Version Information. Read the parsed version information from the `Resources` struct.
+- Added convenience method to get the Application Manifest directly from the `Resources` struct.
+
+### Debug Directory
+
+- **[breaking]** Redesigned the API, again. I'm almost happy with it now.
+- Added support to parse the PGO debug entry.
+
+### Scanner and Patterns
+
+- **[breaking]** Removed the deprecated `Match` code in favour of passing the save array as a mut reference and removed the `Iterator` support for matches. Renamed the `next_match` method to `next`.
+- Expanded the pattern atoms to support larger and many skips.
+- Added pattern atoms to read data and write directly to the save array instead of only having bookmarks.
+- Added pattern atoms to support alternation subpattern matching. This allows far more flexible patterns that can match slight variations in code.
+- Rewrote the pattern parser syntax documentation with examples.
+- Improve pattern parser error messages and indicate where in the string the parse went wrong.
+- Added pattern string syntax for skipping a large or many number of bytes inspired by the YARA syntax.
+- Added pattern string syntax for reading data and writing directly to the save array.
+- Added pattern string syntax for alternation subpattern matching inspired by the YARA syntax (very similar to regular expressions).
+- Added some basic testing of the scanner execution as things are getting a little more complex.
+
+### Miscellaneous
+
+- Added a top-level `PeFile` parser that works with both PE32 and PE32+ formats. A start to provide a better API to better support a more seamless experience handling both formats at the same time.
+- Added a method to get the entire DOS image, no further inspection of the DOS image is provided.
+- **[major]** Fixed potential overflow panics in address calculations. This is now a good candidate for fuzzing to ensure no further unintentional overflows are possible. When section header data overflows, the corrupt sections are ignored.
+- **[breaking]** Added more strict alignment checks. Before only the offset into the image was checked for alignment, but this didn't work if the image itself wasn't align (it's a byte slice after all). Now the final pointer value is checked for alignment instead, this may result in unexpected `Misaligned` errors.
+- **[breaking]** Renamed and added some `Error` values and write better documentation and error strings. Some APIs also got better documentation about the kinds of errors they return.
+- **[breaking]** Group major and minor version fields in image structs in a separate struct to enable more fancy automatic formatting and serialization.
+- **[breaking]** Deref functions are no longer generic over their pointer parameter. Convert bare `Va` manually by calling `.into()` when passing to the deref APIs.
+- **[breaking]** Changed to use existential Iterators wherever possible, some `Iterator` types no longer exist.
+- Added API to convert between the file view and section view, respectively `to_file` and `to_view`.
+- Improved the text of some of the stringify strings.
+- Added API to read unaligned arrays from the PE image.
+- Improved documentation and examples in general.
+
+### Cargo features
+
+- **[major]** Optional Serde support! Enables serialization of datastructures making exporting PE details really easy. Just enable the `serde` feature, disabled by default.
+- With `serde` support, optionally enable base64 encoding of certain data fields for a more compact and human friendly experience. Enable with the `base64` feature, disabled by default.
+- Convenient OS memory mapping features are now optional (and enabled by default), using the `mmap` feature.
+
+### Continuous integration
+
+- Smarter usage of appveyor resources to reduce CI times to 20-30 minutes.
+- Now supporting Travis-CI! Fixing the unix mmap code and keeping it working.
+- Support coverage with OpenCppCoverage, coverage publishing is pending.
+
 ## [0.6.0] 2018-08-01
 
 ### Added
