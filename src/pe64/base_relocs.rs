@@ -18,6 +18,7 @@ fn example(file: PeFile<'_>) -> pelite::Result<()> {
 	let base_relocs = file.base_relocs()?;
 
 	// Iterate over the rva which need relocation
+	// Padding relocations of type absolute are skipped
 	base_relocs.for_each(|rva, ty| {});
 
 	// Iterate over the relocation blocks
@@ -150,10 +151,6 @@ impl<'a> Block<'a> {
 	pub fn image(&self) -> &'a IMAGE_BASE_RELOCATION {
 		self.image
 	}
-	/// Base rva of rva_of calculations.
-	pub fn virtual_address(&self) -> Rva {
-		self.image.VirtualAddress
-	}
 	/// Gets the types and offsets.
 	pub fn words(&self) -> &'a [u16] {
 		self.words
@@ -171,7 +168,7 @@ impl<'a> Block<'a> {
 impl<'a> fmt::Debug for Block<'a> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		f.debug_struct("Block")
-			.field("virtual_address", &self.virtual_address())
+			.field("virtual_address", &self.image.VirtualAddress)
 			.field("words.len", &self.words().len())
 			.finish()
 	}
