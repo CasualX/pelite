@@ -117,7 +117,12 @@ mod serde {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			let mut state = serializer.serialize_struct("Security", 2)?;
 			state.serialize_field("certificate_type", &self.certificate_type())?;
-			state.serialize_field("certificate_data", &self.certificate_data())?;
+			if cfg!(feature = "data-encoding") {
+				state.serialize_field("certificate_data", &::data_encoding::BASE64.encode(self.certificate_data()))?;
+			}
+			else {
+				state.serialize_field("certificate_data", &self.certificate_data())?;
+			}
 			state.end()
 		}
 	}
