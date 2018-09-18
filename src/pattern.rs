@@ -174,7 +174,7 @@ pub type Pattern = Vec<Atom>;
 /// Spaces (code point 32) are completely optional and carry no semantic meaning, their purpose is to visually group things together.
 ///
 /// ```text
-/// b9 '37 13 00 00
+/// b9 ' 37 13 00 00
 /// ```
 ///
 /// Single quotes are used as a bookmarks, to save the current cursor rva in the save array passed to the scanner.
@@ -189,18 +189,18 @@ pub type Pattern = Vec<Atom>;
 /// b8 [16] 50 [13-42] ff
 /// ```
 ///
-/// Pairs of numbers separated by a hypen in square brackets indicate the lower and upper bound of number of bytes to skip.
+/// Pairs of decimal numbers separated by a hypen in square brackets indicate the lower and upper bound of number of bytes to skip.
 /// The scanner is non greedy and considers the first match while skipping as little as possible.
 ///
-/// A single number in square brackets without hypens is a fixed size jump, equivalent to writing that number of consecutive question marks.
+/// A single decimal number in square brackets without hypens is a fixed size jump, equivalent to writing that number of consecutive question marks.
 ///
 /// ```text
-/// 31 c0 74 % 'c3
-/// e8 $ '31 c0 c3
-/// 68 * '31 c0 c3
+/// 31 c0 74 % ' c3
+/// e8 $ ' 31 c0 c3
+/// 68 * ' 31 c0 c3
 /// ```
 ///
-/// These symbols are used to follow; a signed 1 byte relative jump (`%`), a signed 4 byte relative jump (`$`) and an absolute pointer (`*`).
+/// These symbols are used to follow; a signed 1 byte relative jump: `%`, a signed 4 byte relative jump: `$` and an absolute pointer: `*`.
 ///
 /// They are designed to be able to have the scanner follow short jumps, calls and longer jumps, and absolute pointers.
 ///
@@ -212,17 +212,18 @@ pub type Pattern = Vec<Atom>;
 ///
 /// String literals appear in double quotes and will be matched as UTF-8.
 ///
-/// Escape sequences are not supported, switch back to matching with hex digits instead.
+/// Escape sequences are not supported, switch back to matching with hex digits as needed.
 /// For UTF-16 support, you are welcome to send a PR.
 ///
 /// ```text
 /// e8 $ { ' } 83 f0 5c c3
 /// ```
 ///
-/// Curly braces indicate a subpattern, must follow after a jump.
+/// Curly braces must follow a jump symbol (see above).
 ///
-/// Subpatterns allow to follow jumps and return matching before the jump was taken.
-/// The bytes used to follow the jump are already skipped to allow to seamlessly continue matching.
+/// The sub pattern enclosed within the curly braces is matched at the destination after following the jump.
+/// After the pattern successfully matched, the cursor returns to before the jump was followed.
+/// The bytes defining the jump are skipped and matching continues again from here.
 ///
 /// ```text
 /// e8 i1 a0 u4
