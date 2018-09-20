@@ -115,10 +115,13 @@ mod serde {
 
 	impl<'a, P: Pe<'a> + Copy> Serialize for Security<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+			let is_human_readable = serializer.is_human_readable();
 			let mut state = serializer.serialize_struct("Security", 2)?;
 			state.serialize_field("certificate_type", &self.certificate_type())?;
-			if cfg!(feature = "data-encoding") {
-				state.serialize_field("certificate_data", &::data_encoding::BASE64.encode(self.certificate_data()))?;
+			if cfg!(feature = "data-encoding") && is_human_readable {
+				#[cfg(feature = "data-encoding")]
+				state.serialize_field("certificate_data",
+					&::data_encoding::BASE64.encode(self.certificate_data()))?;
 			}
 			else {
 				state.serialize_field("certificate_data", &self.certificate_data())?;
