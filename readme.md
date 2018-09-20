@@ -4,6 +4,7 @@ PeLite
 [![MIT License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![crates.io](https://img.shields.io/crates/v/pelite.svg)](https://crates.io/crates/pelite)
 [![docs.rs](https://docs.rs/pelite/badge.svg)](https://docs.rs/pelite)
+[![Changelog](https://img.shields.io/badge/docs-changelog-blue.svg)](changelog.md)
 [![Build status](https://ci.appveyor.com/api/projects/status/6obf6w6awf4b540r/branch/master?svg=true)](https://ci.appveyor.com/project/CasualX/pelite/branch/master)
 [![Build Status](https://travis-ci.org/CasualX/pelite.svg?branch=master)](https://travis-ci.org/CasualX/pelite)
 
