@@ -2,258 +2,259 @@
 Stringify image constants.
 */
 
+use std::mem;
+use std::str::FromStr;
+
 use image::*;
 
-/// Stringifies the `IMAGE_FILE_MACHINE_*` constants for [`IMAGE_FILE_HEADER::Machine`](../image/struct.IMAGE_FILE_HEADER.html#Machine.v).
-///
-/// # Examples
-///
-/// ```
-/// let machine = pelite::image::IMAGE_FILE_MACHINE_AMD64;
-///
-/// assert_eq!(pelite::stringify::machine(machine), Some("AMD64"));
-/// ```
-pub fn machine(machine: u16) -> Option<&'static str> {
-	match machine {
-		IMAGE_FILE_MACHINE_I386 => Some("i386"),
-		IMAGE_FILE_MACHINE_AMD64 => Some("AMD64"),
-		IMAGE_FILE_MACHINE_IA64 => Some("IA64"),
-		_ => None,
+//----------------------------------------------------------------
+// Define some reflection macros for enums and flags
+
+macro_rules! enum1 {
+	(
+		$(#[$meta:meta])*
+		$Item:ident($item:ident: $ty:ty),
+		$($name:ident => $desc:expr,)*
+	) => {
+		$(#[$meta])*
+		#[derive(Copy, Clone)]
+		pub struct $Item(pub $ty);
+		impl $Item {
+			/// Gets the code identifier name for the value.
+			pub fn to_str(self) -> Option<&'static str> {
+				match self.0 {
+					$($name => Some(stringify!($name)),)*
+					_ => None,
+				}
+			}
+			/// Gets a longer description for the value.
+			pub fn description(self) -> Option<&'static str> {
+				match self.0 {
+					$($name => Some($desc),)*
+					_ => None,
+				}
+			}
+		}
+		impl FromStr for $Item {
+			type Err = ();
+			fn from_str(s: &str) -> Result<$Item, ()> {
+				match s {
+					$(stringify!($name) => Ok($Item($name)),)*
+					_ => Err(()),
+				}
+			}
+		}
 	}
 }
 
-/// Stringifies the `IMAGE_FILE_*` flag indices for [`IMAGE_FILE_HEADER::Characteristics`](../image/struct.IMAGE_FILE_HEADER.html#Characteristics.v).
-///
-/// # Examples
-///
-/// ```
-/// let file_chars =
-/// 	pelite::image::IMAGE_FILE_DLL |
-/// 	pelite::image::IMAGE_FILE_LARGE_ADDRESS_AWARE;
-///
-/// let flags = (0..16)
-/// 	.filter(|&index| file_chars & (1 << index) != 0)
-/// 	.map(pelite::stringify::file_chars)
-/// 	.collect::<Vec<Option<&str>>>();
-///
-/// assert_eq!(flags, &[
-/// 	Some("LARGE_ADDRESS_AWARE"),
-/// 	Some("DLL"),
-/// ]);
-/// ```
-pub fn file_chars(index: u32) -> Option<&'static str> {
-	IMAGE_FILE_CHARS_STRINGS.get(index as usize).and_then(Clone::clone)
-}
-static IMAGE_FILE_CHARS_STRINGS: [Option<&str>; 16] = [
-	/*0001*/Some("RELOCS_STRIPPED"),
-	/*0002*/Some("EXECUTABLE_IMAGE"),
-	/*0004*/Some("LINE_NUMS_STRIPPED"),
-	/*0008*/Some("LOCAL_SYMS_STRIPPED"),
-	/*0010*/Some("AGGRESIVE_WS_TRIM"),
-	/*0020*/Some("LARGE_ADDRESS_AWARE"),
-	/*0040*/None,
-	/*0080*/Some("BYTES_REVERSED_LO"),
-	/*0100*/Some("32BIT_MACHINE"),
-	/*0200*/Some("DEBUG_STRIPPED"),
-	/*0400*/Some("REMOVABLE_RUN_FROM_SWAP"),
-	/*0800*/Some("NET_RUN_FROM_SWAP"),
-	/*1000*/Some("SYSTEM"),
-	/*2000*/Some("DLL"),
-	/*4000*/Some("UP_SYSTEM_ONLY"),
-	/*8000*/Some("BYTES_REVERSED_HI"),
-];
-
-/// Stringifies the optional header's `Magic` value.
-///
-/// # Examples
-///
-/// ```
-/// let magic = pelite::image::IMAGE_NT_OPTIONAL_HDR64_MAGIC;
-///
-/// assert_eq!(pelite::stringify::optional_magic(magic), Some("PE32+"));
-/// ```
-pub fn optional_magic(magic: u16) -> Option<&'static str> {
-	match magic {
-		IMAGE_NT_OPTIONAL_HDR32_MAGIC => Some("PE32"),
-		IMAGE_NT_OPTIONAL_HDR64_MAGIC => Some("PE32+"),
-		IMAGE_ROM_OPTIONAL_HDR_MAGIC => Some("ROM"),
-		_ => None,
-	}
+macro_rules! flags {
+	(
+		$(#[$meta:meta])*
+		$Item:ident($item:ident: $ty:ty),
+		$($index:expr, $name:expr => $desc:expr,)*
+	) => {
+		$(#[$meta])*
+		#[derive(Copy, Clone)]
+		pub struct $Item(pub $ty);
+		impl $Item {
+			/// Gets the code identifier for a flag value given the bit index.
+			pub fn flag_str(index: u32) -> Option<&'static str> {
+				match index {
+					$($index => Some(stringify!($name)),)*
+					_ => None,
+				}
+			}
+			/// Gets the description for a flag value given the bit index.
+			pub fn flag_desc(index: u32) -> Option<&'static str> {
+				match index {
+					$($index => Some($desc),)*
+					_ => None,
+				}
+			}
+			pub fn parse_flag(s: &str) -> Option<$ty> {
+				match s {
+					$(stringify!($name) => Some($name),)*
+					_ => None,
+				}
+			}
+			/// Returns an Iterator over set flag bits returning their code identifiers.
+			pub fn to_strs(self) -> impl Clone + Iterator<Item = &'static str> {
+				(0..mem::size_of::<$ty>() as u32 * 8)
+					.filter_map(move |i| {
+						if self.0 & (1 << i) != 0 {
+							Self::flag_str(i)
+						}
+						else {
+							None
+						}
+					})
+			}
+		}
+	};
 }
 
-/// Stringifies the `IMAGE_SUBSYSTEM_*` constants for [`IMAGE_OPTIONAL_HEADER::Subsystem`](../image/struct.IMAGE_OPTIONAL_HEADER64.html#Subsystem.v).
-///
-/// # Examples
-///
-/// ```
-/// let subsystem = pelite::image::IMAGE_SUBSYSTEM_WINDOWS_GUI;
-///
-/// assert_eq!(pelite::stringify::subsystem(subsystem), Some("Windows GUI"));
-/// ```
-pub fn subsystem(subsystem: u16) -> Option<&'static str> {
-	match subsystem {
-		IMAGE_SUBSYSTEM_UNKNOWN => Some("Unknown"),
-		IMAGE_SUBSYSTEM_NATIVE => Some("Native"),
-		IMAGE_SUBSYSTEM_WINDOWS_GUI => Some("Windows GUI"),
-		IMAGE_SUBSYSTEM_WINDOWS_CUI => Some("Windows CUI"),
-		IMAGE_SUBSYSTEM_OS2_CUI => Some("OS/2 CUI"),
-		IMAGE_SUBSYSTEM_POSIX_CUI => Some("POSIX CUI"),
-		IMAGE_SUBSYSTEM_NATIVE_WINDOWS => Some("Native Win9x driver"),
-		IMAGE_SUBSYSTEM_WINDOWS_CE_GUI => Some("Windows CE GUI"),
-		IMAGE_SUBSYSTEM_EFI_APPLICATION => Some("Windows EFI Application"),
-		IMAGE_SUBSYSTEM_EFI_BOOT_SERVICE_DRIVER => Some("Windows EFI Boot Service Driver"),
-		IMAGE_SUBSYSTEM_EFI_RUNTIME_DRIVER => Some("Windows EFI Runtime Driver"),
-		IMAGE_SUBSYSTEM_EFI_ROM => Some("Windows EFI ROM"),
-		IMAGE_SUBSYSTEM_XBOX => Some("XBOX"),
-		IMAGE_SUBSYSTEM_WINDOWS_BOOT_APPLICATION => Some("Windows Boot Application"),
-		_ => None,
-	}
+//----------------------------------------------------------------
+
+enum1! {
+	/// Stringifies the `IMAGE_FILE_MACHINE_*` constants for [`IMAGE_FILE_HEADER::Machine`](../image/struct.IMAGE_FILE_HEADER.html#Machine.v).
+	Machine(machine: u16),
+	IMAGE_FILE_MACHINE_I386 => "i386",
+	IMAGE_FILE_MACHINE_AMD64 => "AMD64",
+	IMAGE_FILE_MACHINE_IA64 => "IA64",
 }
 
-/// Stringifies the `IMAGE_DLLCHARACTERISTICS_*` flag indices for [`IMAGE_OPTIONAL_HEADER::DllCharacteristics`](../image/struct.IMAGE_OPTIONAL_HEADER64.html#DllCharacteristics.v).
-///
-/// # Examples
-///
-/// ```
-/// let dll_chars =
-/// 	pelite::image::IMAGE_DLLCHARACTERISTICS_DYNAMIC_BASE |
-/// 	pelite::image::IMAGE_DLLCHARACTERISTICS_NX_COMPAT |
-/// 	pelite::image::IMAGE_DLLCHARACTERISTICS_TERMINAL_SERVER_AWARE;
-///
-/// let flags = (0..16)
-/// 	.filter(|&index| dll_chars & (1 << index) != 0)
-/// 	.map(pelite::stringify::dll_chars)
-/// 	.collect::<Vec<Option<&str>>>();
-///
-/// assert_eq!(flags, &[
-/// 	Some("Can be relocated at load time"),
-/// 	Some("Image is NX compatible"),
-/// 	Some("Terminal Server aware"),
-/// ]);
-/// ```
-pub fn dll_chars(index: u32) -> Option<&'static str> {
-	IMAGE_DLLCHARS_STRINGS.get(index as usize).and_then(Clone::clone)
-}
-static IMAGE_DLLCHARS_STRINGS: [Option<&str>; 16] = [
-	/*0001*/None,
-	/*0002*/None,
-	/*0004*/None,
-	/*0008*/None,
-	/*0010*/None,
-	/*0020*/Some("Image can handle a high entropy virtual address space"),
-	/*0040*/Some("Can be relocated at load time"),
-	/*0080*/Some("Code Integrity checks are enforced"),
-	/*0100*/Some("Image is NX compatible"),
-	/*0200*/Some("Isolation aware, but do not isolate the image"),
-	/*0400*/Some("Does not use SEH"),
-	/*0800*/Some("Do not bind the image"),
-	/*1000*/Some("Image must execute in an AppContainer"),
-	/*2000*/Some("A WDM driver"),
-	/*4000*/Some("Image supports Control Flow Guard"),
-	/*8000*/Some("Terminal Server aware"),
-];
-
-/// Stringifies the `IMAGE_DIRECTORY_ENTRY_*` constants for [`IMAGE_OPTIONAL_HEADER::DataDirectory`](../image/struct.IMAGE_OPTIONAL_HEADER64.html#DataDirectory.v).
-///
-/// # Examples
-///
-/// ```
-/// let directory_entry = pelite::image::IMAGE_DIRECTORY_ENTRY_IMPORT;
-///
-/// assert_eq!(pelite::stringify::directory_entry(directory_entry), Some("Import Directory"));
-/// ```
-pub fn directory_entry(entry: usize) -> Option<&'static str> {
-	match entry {
-		IMAGE_DIRECTORY_ENTRY_EXPORT => Some("Export Directory"),
-		IMAGE_DIRECTORY_ENTRY_IMPORT => Some("Import Directory"),
-		IMAGE_DIRECTORY_ENTRY_RESOURCE => Some("Resource Directory"),
-		IMAGE_DIRECTORY_ENTRY_EXCEPTION => Some("Exception Directory"),
-		IMAGE_DIRECTORY_ENTRY_SECURITY => Some("Security Directory"),
-		IMAGE_DIRECTORY_ENTRY_BASERELOC => Some("Base Relocation Table"),
-		IMAGE_DIRECTORY_ENTRY_DEBUG => Some("Debug Directory"),
-		IMAGE_DIRECTORY_ENTRY_ARCHITECTURE => Some("Architecture Specific Data"),
-		IMAGE_DIRECTORY_ENTRY_GLOBALPTR => Some("RVA of GlobalPtr"),
-		IMAGE_DIRECTORY_ENTRY_TLS => Some("TLS Directory"),
-		IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG => Some("Load Configuration Directory"),
-		IMAGE_DIRECTORY_ENTRY_BOUND_IMPORT => Some("Bound Import Directory"),
-		IMAGE_DIRECTORY_ENTRY_IAT => Some("Import Address Table"),
-		IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT => Some("Delay Load Import Descriptors"),
-		IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR => Some("COM Runtime Descriptor"),
-		_ => None,
-	}
+flags! {
+	/// Stringifies the `IMAGE_FILE_*` flag indices for [`IMAGE_FILE_HEADER::Characteristics`](../image/struct.IMAGE_FILE_HEADER.html#Characteristics.v).
+	FileChars(file_chars: u16),
+	/*0001*/ 0, IMAGE_FILE_RELOCS_STRIPPED => "RELOCS_STRIPPED",
+	/*0002*/ 1, IMAGE_FILE_EXECUTABLE_IMAGE => "EXECUTABLE_IMAGE",
+	/*0004*/ 2, IMAGE_FILE_LINE_NUMS_STRIPPED => "LINE_NUMS_STRIPPED",
+	/*0008*/ 3, IMAGE_FILE_LOCAL_SYMS_STRIPPED => "LOCAL_SYMS_STRIPPED",
+	/*0010*/ 4, IMAGE_FILE_AGGRESIVE_WS_TRIM => "AGGRESIVE_WS_TRIM",
+	/*0020*/ 5, IMAGE_FILE_LARGE_ADDRESS_AWARE => "LARGE_ADDRESS_AWARE",
+	/*0040*/ 6, IMAGE_FILE_6 => "Reserved",
+	/*0080*/ 7, IMAGE_FILE_BYTES_REVERSED_LO => "BYTES_REVERSED_LO",
+	/*0100*/ 8, IMAGE_FILE_32BIT_MACHINE => "32BIT_MACHINE",
+	/*0200*/ 9, IMAGE_FILE_DEBUG_STRIPPED => "DEBUG_STRIPPED",
+	/*0400*/10, IMAGE_FILE_REMOVABLE_RUN_FROM_SWAP => "REMOVABLE_RUN_FROM_SWAP",
+	/*0800*/11, IMAGE_FILE_NET_RUN_FROM_SWAP => "NET_RUN_FROM_SWAP",
+	/*1000*/12, IMAGE_FILE_SYSTEM => "SYSTEM",
+	/*2000*/13, IMAGE_FILE_DLL => "DLL",
+	/*4000*/14, IMAGE_FILE_UP_SYSTEM_ONLY => "UP_SYSTEM_ONLY",
+	/*8000*/15, IMAGE_FILE_BYTES_REVERSED_HI => "BYTES_REVERSED_HI",
 }
 
-/// Stringifies the `IMAGE_SCN_*` flag indices for [`IMAGE_SECTION_HEADER::Characteristics`](../image/struct.IMAGE_SECTION_HEADER.html#Characteristics.v).
-///
-/// # Examples
-///
-/// ```
-/// let section_chars =
-/// 	pelite::image::IMAGE_SCN_CNT_CODE |
-/// 	pelite::image::IMAGE_SCN_MEM_EXECUTE |
-/// 	pelite::image::IMAGE_SCN_MEM_READ;
-///
-/// let flags = (0..32)
-/// 	.filter(|&index| section_chars & (1 << index) != 0)
-/// 	.map(pelite::stringify::section_chars)
-/// 	.collect::<Vec<Option<&str>>>();
-///
-/// assert_eq!(flags, &[
-/// 	Some("Contains executable code"),
-/// 	Some("MEM_EXECUTE"),
-/// 	Some("MEM_READ"),
-/// ]);
-/// ```
-pub fn section_chars(index: u32) -> Option<&'static str> {
-	IMAGE_SCN_STRINGS.get(index as usize).and_then(Clone::clone)
+enum1! {
+	/// Stringifies the optional header's `Magic` value.
+	OptionalMagic(magic: u16),
+	IMAGE_NT_OPTIONAL_HDR32_MAGIC => "PE32",
+	IMAGE_NT_OPTIONAL_HDR64_MAGIC => "PE32+",
+	IMAGE_ROM_OPTIONAL_HDR_MAGIC => "ROM",
 }
-static IMAGE_SCN_STRINGS: [Option<&str>; 32] = [
-	/*00000001*/None,
-	/*00000002*/None,
-	/*00000004*/None,
-	/*00000008*/Some("TYPE_NO_PAD"),
-	/*00000010*/None,
-	/*00000020*/Some("Contains executable code"),
-	/*00000040*/Some("Contains initialized data"),
-	/*00000080*/Some("Contains uninitialized data"),
-	/*00000100*/Some("LNK_OTHER"),
-	/*00000200*/Some("LNK_INFO"),
-	/*00000400*/None,
-	/*00000800*/Some("LNK_REMOVE"),
-	/*00001000*/Some("LNK_COMDAT"),
-	/*00002000*/None,
-	/*00004000*/Some("NO_DEFER_SPEC_EXC"),
-	/*00008000*/Some("GPREL"),
-	/*00010000*/None,
-	/*00020000*/Some("MEM_PURGEABLE"),
-	/*00040000*/Some("MEM_LOCKED"),
-	/*00080000*/Some("MEM_PRELOAD"),
-	/*00100000*/None,
-	/*00200000*/None,
-	/*00400000*/None,
-	/*00800000*/None,
-	/*01000000*/Some("LNK_NRELOC_OVFL"),
-	/*02000000*/Some("MEM_DISCARDABLE"),
-	/*04000000*/Some("MEM_NOT_CACHED"),
-	/*08000000*/Some("MEM_NOT_PAGED"),
-	/*10000000*/Some("MEM_SHARED"),
-	/*20000000*/Some("MEM_EXECUTE"),
-	/*40000000*/Some("MEM_READ"),
-	/*80000000*/Some("MEM_WRITE"),
-];
 
-/// Stringifies the `RT_*` constants for [`IMAGE_RESOURCE_DIRECTORY_ENTRY::Name`](../image/struct.IMAGE_RESOURCE_DIRECTORY_ENTRY.html#Name.v).
-///
-/// # Examples
-///
-/// ```
-/// let name = pelite::image::RT_MANIFEST;
-///
-/// assert_eq!(pelite::stringify::rsrc_name(name), Some("Manifest"));
-/// ```
-pub fn rsrc_name(name: u16) -> Option<&'static str> {
-	RSRC_TYPES.get(name as usize).and_then(Clone::clone)
+enum1! {
+	/// Stringifies the `IMAGE_SUBSYSTEM_*` constants for [`IMAGE_OPTIONAL_HEADER::Subsystem`](../image/struct.IMAGE_OPTIONAL_HEADER64.html#Subsystem.v).
+	Subsystem(subsystem: u16),
+	IMAGE_SUBSYSTEM_UNKNOWN => "Unknown",
+	IMAGE_SUBSYSTEM_NATIVE => "Native",
+	IMAGE_SUBSYSTEM_WINDOWS_GUI => "Windows GUI",
+	IMAGE_SUBSYSTEM_WINDOWS_CUI => "Windows CUI",
+	IMAGE_SUBSYSTEM_OS2_CUI => "OS/2 CUI",
+	IMAGE_SUBSYSTEM_POSIX_CUI => "POSIX CUI",
+	IMAGE_SUBSYSTEM_NATIVE_WINDOWS => "Native Win9x driver",
+	IMAGE_SUBSYSTEM_WINDOWS_CE_GUI => "Windows CE GUI",
+	IMAGE_SUBSYSTEM_EFI_APPLICATION => "Windows EFI Application",
+	IMAGE_SUBSYSTEM_EFI_BOOT_SERVICE_DRIVER => "Windows EFI Boot Service Driver",
+	IMAGE_SUBSYSTEM_EFI_RUNTIME_DRIVER => "Windows EFI Runtime Driver",
+	IMAGE_SUBSYSTEM_EFI_ROM => "Windows EFI ROM",
+	IMAGE_SUBSYSTEM_XBOX => "XBOX",
+	IMAGE_SUBSYSTEM_WINDOWS_BOOT_APPLICATION => "Windows Boot Application",
 }
+
+flags! {
+	/// Stringifies the `IMAGE_DLLCHARACTERISTICS_*` flag indices for [`IMAGE_OPTIONAL_HEADER::DllCharacteristics`](../image/struct.IMAGE_OPTIONAL_HEADER64.html#DllCharacteristics.v).
+	DllChars(dll_chars: u16),
+	/*0001*/ 0, IMAGE_DLLCHARACTERISTICS_0 => "Reserved",
+	/*0002*/ 1, IMAGE_DLLCHARACTERISTICS_1 => "Reserved",
+	/*0004*/ 2, IMAGE_DLLCHARACTERISTICS_2 => "Reserved",
+	/*0008*/ 3, IMAGE_DLLCHARACTERISTICS_3 => "Reserved",
+	/*0010*/ 4, IMAGE_DLLCHARACTERISTICS_4 => "Reserved",
+	/*0020*/ 5, IMAGE_DLLCHARACTERISTICS_HIGH_ENTROPY_VA => "Image can handle a high entropy virtual address space",
+	/*0040*/ 6, IMAGE_DLLCHARACTERISTICS_DYNAMIC_BASE => "Can be relocated at load time",
+	/*0080*/ 7, IMAGE_DLLCHARACTERISTICS_FORCE_INTEGRITY => "Code Integrity checks are enforced",
+	/*0100*/ 8, IMAGE_DLLCHARACTERISTICS_NX_COMPAT => "Image is NX compatible",
+	/*0200*/ 9, IMAGE_DLLCHARACTERISTICS_NO_ISOLATION => "Isolation aware, but do not isolate the image",
+	/*0400*/10, IMAGE_DLLCHARACTERISTICS_NO_SEH => "Does not use SEH",
+	/*0800*/11, IMAGE_DLLCHARACTERISTICS_NO_BIND => "Do not bind the image",
+	/*1000*/12, IMAGE_DLLCHARACTERISTICS_APPCONTAINER => "Image must execute in an AppContainer",
+	/*2000*/13, IMAGE_DLLCHARACTERISTICS_WDM_DRIVER => "A WDM driver",
+	/*4000*/14, IMAGE_DLLCHARACTERISTICS_GUARD_CF => "Image supports Control Flow Guard",
+	/*8000*/15, IMAGE_DLLCHARACTERISTICS_TERMINAL_SERVER_AWARE => "Terminal Server aware",
+}
+
+enum1! {
+	/// Stringifies the `IMAGE_DIRECTORY_ENTRY_*` constants for [`IMAGE_OPTIONAL_HEADER::DataDirectory`](../image/struct.IMAGE_OPTIONAL_HEADER64.html#DataDirectory.v).
+	DirectoryEntry(entry: usize),
+	IMAGE_DIRECTORY_ENTRY_EXPORT => "Export Directory",
+	IMAGE_DIRECTORY_ENTRY_IMPORT => "Import Directory",
+	IMAGE_DIRECTORY_ENTRY_RESOURCE => "Resource Directory",
+	IMAGE_DIRECTORY_ENTRY_EXCEPTION => "Exception Directory",
+	IMAGE_DIRECTORY_ENTRY_SECURITY => "Security Directory",
+	IMAGE_DIRECTORY_ENTRY_BASERELOC => "Base Relocation Table",
+	IMAGE_DIRECTORY_ENTRY_DEBUG => "Debug Directory",
+	IMAGE_DIRECTORY_ENTRY_ARCHITECTURE => "Architecture Specific Data",
+	IMAGE_DIRECTORY_ENTRY_GLOBALPTR => "RVA of GlobalPtr",
+	IMAGE_DIRECTORY_ENTRY_TLS => "TLS Directory",
+	IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG => "Load Configuration Directory",
+	IMAGE_DIRECTORY_ENTRY_BOUND_IMPORT => "Bound Import Directory",
+	IMAGE_DIRECTORY_ENTRY_IAT => "Import Address Table",
+	IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT => "Delay Load Import Descriptors",
+	IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR => "COM Runtime Descriptor",
+}
+
+flags! {
+	/// Stringifies the `IMAGE_SCN_*` flag indices for [`IMAGE_SECTION_HEADER::Characteristics`](../image/struct.IMAGE_SECTION_HEADER.html#Characteristics.v).
+	SectionChars(section_chars: u32),
+	/*00000001*/ 0, IMAGE_SCN_0 => "Reserved",
+	/*00000002*/ 1, IMAGE_SCN_1 => "Reserved",
+	/*00000004*/ 2, IMAGE_SCN_2 => "Reserved",
+	/*00000008*/ 3, IMAGE_SCN_TYPE_NO_PAD => "TYPE_NO_PAD",
+	/*00000010*/ 4, IMAGE_SCN_4 => "Reserved",
+	/*00000020*/ 5, IMAGE_SCN_CNT_CODE => "Contains executable code",
+	/*00000040*/ 6, IMAGE_SCN_CNT_INITIALIZED_DATA => "Contains initialized data",
+	/*00000080*/ 7, IMAGE_SCN_CNT_UNINITIALIZED_DATA => "Contains uninitialized data",
+	/*00000100*/ 8, IMAGE_SCN_LNK_OTHER => "LNK_OTHER",
+	/*00000200*/ 9, IMAGE_SCN_LNK_INFO => "LNK_INFO",
+	/*00000400*/10, IMAGE_SCN_10 => "Reserved",
+	/*00000800*/11, IMAGE_SCN_LNK_REMOVE => "LNK_REMOVE",
+	/*00001000*/12, IMAGE_SCN_LNK_COMDAT => "LNK_COMDAT",
+	/*00002000*/13, IMAGE_SCN_13 => "Reserved",
+	/*00004000*/14, IMAGE_SCN_NO_DEFER_SPEC_EXC => "NO_DEFER_SPEC_EXC",
+	/*00008000*/15, IMAGE_SCN_GPREL => "GPREL",
+	/*00010000*/16, IMAGE_SCN_16 => "Reserved",
+	/*00020000*/17, IMAGE_SCN_MEM_PURGEABLE => "MEM_PURGEABLE",
+	/*00040000*/18, IMAGE_SCN_MEM_LOCKED => "MEM_LOCKED",
+	/*00080000*/19, IMAGE_SCN_MEM_PRELOAD => "MEM_PRELOAD",
+	/*00100000*/20, IMAGE_SCN_ALIGN_1 => "",
+	/*00200000*/21, IMAGE_SCN_ALIGN_2 => "",
+	/*00400000*/22, IMAGE_SCN_ALIGN_4 => "",
+	/*00800000*/23, IMAGE_SCN_ALIGN_8 => "",
+	/*01000000*/24, IMAGE_SCN_LNK_NRELOC_OVFL => "LNK_NRELOC_OVFL",
+	/*02000000*/25, IMAGE_SCN_MEM_DISCARDABLE => "MEM_DISCARDABLE",
+	/*04000000*/26, IMAGE_SCN_MEM_NOT_CACHED => "MEM_NOT_CACHED",
+	/*08000000*/27, IMAGE_SCN_MEM_NOT_PAGED => "MEM_NOT_PAGED",
+	/*10000000*/28, IMAGE_SCN_MEM_SHARED => "MEM_SHARED",
+	/*20000000*/29, IMAGE_SCN_MEM_EXECUTE => "MEM_EXECUTE",
+	/*40000000*/30, IMAGE_SCN_MEM_READ => "MEM_READ",
+	/*80000000*/31, IMAGE_SCN_MEM_WRITE => "MEM_WRITE",
+}
+
+enum1! {
+	/// Stringifies the `RT_*` constants for [`IMAGE_RESOURCE_DIRECTORY_ENTRY::Name`](../image/struct.IMAGE_RESOURCE_DIRECTORY_ENTRY.html#Name.v).
+	ResourceName(name: u16),
+	RT_CURSOR => "Cursors",
+	RT_BITMAP => "Bitmaps",
+	RT_ICON => "Icons",
+	RT_MENU => "Menus",
+	RT_DIALOG => "Dialogs",
+	RT_STRING => "Strings",
+	RT_FONTDIR => "Font Directory",
+	RT_FONT => "Fonts",
+	RT_ACCELERATOR => "Accelerators",
+	RT_RCDATA => "Raw Data",
+	RT_MESSAGETABLE => "Message Tables",
+	RT_GROUP_CURSOR => "Group Cursors",
+	RT_GROUP_ICON => "Group Icons",
+	RT_VERSION => "Version",
+	RT_DLGINCLUDE => "DlgInclude",
+	RT_PLUGPLAY => "Plug and Play",
+	RT_VXD => "VXD",
+	RT_ANICURSOR => "Animated Cursors",
+	RT_ANIICON => "Animated Icons",
+	RT_HTML => "HTML",
+	RT_MANIFEST => "Manifest",
+}
+
 pub(crate) static RSRC_TYPES: [Option<&str>; 25] = [
 	/* 0*/ None, Some("Cursors"), Some("Bitmaps"), Some("Icons"), Some("Menus"),
 	/* 5*/ Some("Dialogs"), Some("Strings"), Some("Font Directory"), Some("Fonts"), Some("Accelerators"),
@@ -262,86 +263,62 @@ pub(crate) static RSRC_TYPES: [Option<&str>; 25] = [
 	/*20*/ Some("VXD"), Some("Animated Cursors"), Some("Animated Icons"), Some("HTML"), Some("Manifest"),
 ];
 
-/// Stringifies the `IMAGE_REL_BASED_*` constants for [`IMAGE_BASE_RELOCATION` types](../image/struct.IMAGE_BASE_RELOCATION.html).
-///
-/// # Examples
-///
-/// ```
-/// let reloc_type = pelite::image::IMAGE_REL_BASED_HIGHLOW;
-///
-/// assert_eq!(pelite::stringify::reloc_type(reloc_type), Some("HIGHLOW"));
-/// ```
-pub fn reloc_type(reloc_type: u8) -> Option<&'static str> {
-	match reloc_type {
-		IMAGE_REL_BASED_ABSOLUTE => Some("ABSOLUTE"),
-		IMAGE_REL_BASED_HIGH => Some("HIGH"),
-		IMAGE_REL_BASED_LOW => Some("LOW"),
-		IMAGE_REL_BASED_HIGHLOW => Some("HIGHLOW"),
-		IMAGE_REL_BASED_HIGHADJ => Some("HIGHADJ"),
-		IMAGE_REL_BASED_MACHINE_SPECIFIC_5 => Some("MACHINE_SPECIFIC_5"),
-		IMAGE_REL_BASED_MACHINE_SPECIFIC_7 => Some("MACHINE_SPECIFIC_7"),
-		IMAGE_REL_BASED_MACHINE_SPECIFIC_9 => Some("MACHINE_SPECIFIC_9"),
-		IMAGE_REL_BASED_DIR64 => Some("DIR64"),
-		_ => None,
-	}
+enum1! {
+	/// Stringifies the `IMAGE_REL_BASED_*` constants for [`IMAGE_BASE_RELOCATION` types](../image/struct.IMAGE_BASE_RELOCATION.html).
+	RelocType(reloc_type: u8),
+	IMAGE_REL_BASED_ABSOLUTE => "ABSOLUTE",
+	IMAGE_REL_BASED_HIGH => "HIGH",
+	IMAGE_REL_BASED_LOW => "LOW",
+	IMAGE_REL_BASED_HIGHLOW => "HIGHLOW",
+	IMAGE_REL_BASED_HIGHADJ => "HIGHADJ",
+	IMAGE_REL_BASED_MACHINE_SPECIFIC_5 => "MACHINE_SPECIFIC_5",
+	IMAGE_REL_BASED_MACHINE_SPECIFIC_7 => "MACHINE_SPECIFIC_7",
+	IMAGE_REL_BASED_MACHINE_SPECIFIC_9 => "MACHINE_SPECIFIC_9",
+	IMAGE_REL_BASED_DIR64 => "DIR64",
 }
 
-/// Stringifies the `UWOP_*` constants for [`UNWIND_CODE` operations](../image/struct.UNWIND_CODE.html).
-pub fn unwind_op(unwind_op: u8) -> Option<&'static str> {
-	match unwind_op {
-		UWOP_PUSH_NONVOL => Some("push nonvol"),
-		UWOP_ALLOC_LARGE => Some("alloc large"),
-		UWOP_ALLOC_SMALL => Some("alloc small"),
-		UWOP_SET_FPREG => Some("set fpreg"),
-		UWOP_SAVE_NONVOL => Some("save nonvol"),
-		UWOP_SAVE_NONVOL_FAR => Some("save nonvol large"),
-		UWOP_SAVE_XMM128 => Some("save xmm128"),
-		UWOP_SAVE_XMM128_FAR => Some("save xmm128 far"),
-		UWOP_PUSH_MACHFRAME => Some("push machframe"),
-		_ => None,
-	}
+enum1! {
+	/// Stringifies the `UWOP_*` constants for [`UNWIND_CODE` operations](../image/struct.UNWIND_CODE.html).
+	UnwindOp(unwind_op: u8),
+	UWOP_PUSH_NONVOL => "push nonvol",
+	UWOP_ALLOC_LARGE => "alloc large",
+	UWOP_ALLOC_SMALL => "alloc small",
+	UWOP_SET_FPREG => "set fpreg",
+	UWOP_SAVE_NONVOL => "save nonvol",
+	UWOP_SAVE_NONVOL_FAR => "save nonvol large",
+	UWOP_SAVE_XMM128 => "save xmm128",
+	UWOP_SAVE_XMM128_FAR => "save xmm128 far",
+	UWOP_PUSH_MACHFRAME => "push machframe",
 }
 
-/// Stringifies the `UNW_FLAG_*` constants for [`UNWIND_INFO` flags](..image/struct.UNWIND_INFO.html).
-pub fn unwind_flag(unwind_flag: u8) -> Option<&'static str> {
-	match unwind_flag {
-		UNW_FLAG_NHANDLER => Some("NHANDLER"),
-		UNW_FLAG_EHANDLER => Some("EHANDLER"),
-		UNW_FLAG_UHANDLER => Some("UHANDLER"),
-		UNW_FLAG_FHANDLER => Some("FHANDLER"),
-		UNW_FLAG_CHAININFO => Some("CHAININFO"),
-		_ => None,
-	}
+enum1! {
+	/// Stringifies the `UNW_FLAG_*` constants for [`UNWIND_INFO` flags](..image/struct.UNWIND_INFO.html).
+	UnwindFlag(unwind_flag: u8),
+	UNW_FLAG_NHANDLER => "NHANDLER",
+	UNW_FLAG_EHANDLER => "EHANDLER",
+	UNW_FLAG_UHANDLER => "UHANDLER",
+	UNW_FLAG_FHANDLER => "FHANDLER",
+	UNW_FLAG_CHAININFO => "CHAININFO",
 }
 
-/// Stringifies the `IMAGE_DEBUG_TYPE_*` constants for [`IMAGE_DEBUG_DIRECTORY::Type`](../image/struct.IMAGE_DEBUG_DIRECTORY.html#Type.v).
-///
-/// # Examples
-///
-/// ```
-/// let debug_type = pelite::image::IMAGE_DEBUG_TYPE_CODEVIEW;
-///
-/// assert_eq!(pelite::stringify::debug_type(debug_type), Some("CodeView"));
-/// ```
-pub fn debug_type(debug_type: u32) -> Option<&'static str> {
-	match debug_type {
-		IMAGE_DEBUG_TYPE_UNKNOWN => Some("Unknown"),
-		IMAGE_DEBUG_TYPE_COFF => Some("COFF"),
-		IMAGE_DEBUG_TYPE_CODEVIEW => Some("CodeView"),
-		IMAGE_DEBUG_TYPE_FPO => Some("FPO"),
-		IMAGE_DEBUG_TYPE_MISC => Some("DBG"),
-		IMAGE_DEBUG_TYPE_EXCEPTION => Some("Exception"),
-		IMAGE_DEBUG_TYPE_FIXUP => Some("Fixup"),
-		IMAGE_DEBUG_TYPE_OMAP_TO_SRC => Some("OMAP to src"),
-		IMAGE_DEBUG_TYPE_OMAP_FROM_SRC => Some("OMAP from src"),
-		IMAGE_DEBUG_TYPE_BORLAND => Some("Borland"),
-		IMAGE_DEBUG_TYPE_RESERVED10 => Some("Reserved10"),
-		IMAGE_DEBUG_TYPE_CLSID => Some("CLSID"),
-		IMAGE_DEBUG_TYPE_VC_FEATURE => Some("VCFeature"),
-		IMAGE_DEBUG_TYPE_POGO => Some("POGO"),
-		IMAGE_DEBUG_TYPE_ILTCG => Some("ILTCG"),
-		IMAGE_DEBUG_TYPE_MPX => Some("MPX"),
-		IMAGE_DEBUG_TYPE_REPRO => Some("Repro"),
-		_ => None,
-	}
+enum1! {
+	/// Stringifies the `IMAGE_DEBUG_TYPE_*` constants for [`IMAGE_DEBUG_DIRECTORY::Type`](../image/struct.IMAGE_DEBUG_DIRECTORY.html#Type.v).
+	DebugType(debug_type: u32),
+	IMAGE_DEBUG_TYPE_UNKNOWN => "Unknown",
+	IMAGE_DEBUG_TYPE_COFF => "COFF",
+	IMAGE_DEBUG_TYPE_CODEVIEW => "CodeView",
+	IMAGE_DEBUG_TYPE_FPO => "FPO",
+	IMAGE_DEBUG_TYPE_MISC => "DBG",
+	IMAGE_DEBUG_TYPE_EXCEPTION => "Exception",
+	IMAGE_DEBUG_TYPE_FIXUP => "Fixup",
+	IMAGE_DEBUG_TYPE_OMAP_TO_SRC => "OMAP to src",
+	IMAGE_DEBUG_TYPE_OMAP_FROM_SRC => "OMAP from src",
+	IMAGE_DEBUG_TYPE_BORLAND => "Borland",
+	IMAGE_DEBUG_TYPE_RESERVED10 => "Reserved10",
+	IMAGE_DEBUG_TYPE_CLSID => "CLSID",
+	IMAGE_DEBUG_TYPE_VC_FEATURE => "VCFeature",
+	IMAGE_DEBUG_TYPE_POGO => "POGO",
+	IMAGE_DEBUG_TYPE_ILTCG => "ILTCG",
+	IMAGE_DEBUG_TYPE_MPX => "MPX",
+	IMAGE_DEBUG_TYPE_REPRO => "Repro",
 }

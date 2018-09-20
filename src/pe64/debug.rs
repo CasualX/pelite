@@ -160,7 +160,7 @@ impl<'a, P: Pe<'a> + Copy> Dir<'a, P> {
 impl<'a, P: Pe<'a> + Copy> fmt::Debug for Dir<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		f.debug_struct("Dir")
-			.field("type", &::stringify::debug_type(self.image.Type).ok_or(self.image.Type))
+			.field("type", &::stringify::DebugType(self.image.Type).to_str().ok_or(self.image.Type))
 			.field("time_date_stamp", &self.image.TimeDateStamp)
 			.field("version", &self.image.Version)
 			.field("entry", &self.entry())
@@ -405,7 +405,7 @@ mod serde {
 			let is_human_readable = serializer.is_human_readable();
 			let mut state = serializer.serialize_struct("Dir", 4)?;
 			if is_human_readable {
-				state.serialize_field("type", &::stringify::debug_type(self.image.Type))?;
+				state.serialize_field("type", &::stringify::DebugType(self.image.Type).to_str())?;
 			}
 			else {
 				state.serialize_field("type", &self.image.Type)?;
