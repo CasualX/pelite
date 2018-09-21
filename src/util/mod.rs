@@ -98,3 +98,23 @@ pub fn strn(buf: &[u8]) -> &[u8] {
 pub fn wstrn(buf: &[u16]) -> &[u16] {
 	split_f(buf, |&word| word == 0).0
 }
+
+/// Bits of entropy represented in a given byte slice.
+pub fn shannon_entropy(data: &[u8]) -> f64 {
+	let mut map = [0usize; 256];
+
+	for &byte in data {
+		map[byte as usize] += 1;
+	}
+
+	let mut result = 0.0;
+	let len = data.len() as f64;
+	for &item in &map[..] {
+		if item != 0 {
+			let freq = item as f64 / len;
+			result -= freq * freq.log2();
+		}
+	}
+
+	result
+}
