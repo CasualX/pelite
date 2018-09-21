@@ -124,6 +124,7 @@ mod pe;
 mod view;
 mod file;
 pub mod headers;
+pub mod rich_header;
 pub mod exports;
 pub mod imports;
 pub mod base_relocs;

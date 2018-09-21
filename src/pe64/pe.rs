@@ -80,6 +80,10 @@ pub unsafe trait Pe<'a> {
 	fn headers(self) -> super::headers::Headers<Self> where Self: Copy {
 		super::headers::Headers::new(self)
 	}
+	/// Returns the Rich header.
+	fn rich_header(self) -> Result<super::rich_header::RichHeader<'a>> where Self: Copy {
+		super::rich_header::RichHeader::try_from(self)
+	}
 
 	// Give a struct name in Serialize implementation
 	#[cfg(feature = "serde")]
@@ -576,8 +580,9 @@ unsafe impl<'s, 'a, P: Pe<'a> + ?Sized> Pe<'a> for &'s P {
 pub(crate) fn serialize_pe<'a, P: 'a + Pe<'a> + Copy, S: ::serde::Serializer>(pe: P, serializer: S) -> ::std::result::Result<S::Ok, S::Error> {
 	use util::serde_helper::*;
 
-	let mut state = serializer.serialize_struct(P::SERDE_NAME, 9)?;
+	let mut state = serializer.serialize_struct(P::SERDE_NAME, 10)?;
 	state.serialize_field("headers", &pe.headers())?;
+	state.serialize_field("rich_header", &pe.rich_header().ok())?;
 	state.serialize_field("exports", &pe.exports().ok())?;
 	state.serialize_field("imports", &pe.imports().ok())?;
 	state.serialize_field("base_relocs", &pe.base_relocs().ok())?;
