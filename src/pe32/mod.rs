@@ -130,6 +130,8 @@ mod view;
 mod file;
 #[path = "../pe64/headers.rs"]
 pub mod headers;
+#[path = "../pe64/rich_header.rs"]
+pub mod rich_header;
 #[path = "../pe64/exports.rs"]
 pub mod exports;
 #[path = "../pe64/imports.rs"]

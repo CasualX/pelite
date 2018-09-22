@@ -24,6 +24,7 @@ fn pocs() {
 
 		let image = image.to_vec(); // Fix alignment
 		println!("  base_relocs... {:?}", test!(image, base_relocs));
+		println!("  rich_header... {:?}", test!(image, rich_header));
 		println!("  exception...   {:?}", test!(image, exception));
 		println!("  exports...     {:?}", test!(image, exports));
 		println!("  imports...     {:?}", test!(image, imports));
