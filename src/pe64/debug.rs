@@ -402,14 +402,10 @@ mod serde {
 	}
 	impl<'a, P: Pe<'a>> Serialize for Dir<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-			let is_human_readable = serializer.is_human_readable();
-			let mut state = serializer.serialize_struct("Dir", 4)?;
-			if is_human_readable {
-				state.serialize_field("type", &crate::stringify::DebugType(self.image.Type).to_str())?;
-			}
-			else {
-				state.serialize_field("type", &self.image.Type)?;
-			}
+			let mut state = serializer.serialize_struct("Dir", 6)?;
+			state.serialize_field("type", &self.image.Type)?;
+			state.serialize_field("type_string", &crate::stringify::DebugType(self.image.Type).to_str())?;
+			state.serialize_field("type_desc", &crate::stringify::DebugType(self.image.Type).description())?;
 			state.serialize_field("time_date_stamp", &self.image.TimeDateStamp)?;
 			state.serialize_field("version", &self.image.Version)?;
 			state.serialize_field("entry", &self.entry().ok())?;
