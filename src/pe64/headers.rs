@@ -111,18 +111,16 @@ mod serde {
 			state.serialize_field("NtHeaders.Signature", "PE")?;
 
 			let file_header = self.pe.file_header();
-			state.serialize_field("FileHeader.Machine", &stringify::machine(file_header.Machine))?;
-			let file_chars = (0..16).filter(|&i| file_header.Characteristics & (1 << i) != 0).map(stringify::file_chars);
-			state.serialize_field("FileHeader.Characteristics", &SerdeIter(file_chars))?;
+			state.serialize_field("FileHeader.Machine", &stringify::Machine(file_header.Machine).to_str())?;
+			state.serialize_field("FileHeader.Characteristics", &SerdeIter(stringify::FileChars(file_header.Characteristics).to_strs()))?;
 
 			let optional_header = self.pe.optional_header();
-			state.serialize_field("OptionalHeader.Magic", &stringify::optional_magic(optional_header.Magic))?;
+			state.serialize_field("OptionalHeader.Magic", &stringify::OptionalMagic(optional_header.Magic).to_str())?;
 			state.serialize_field("OptionalHeader.CheckSum", &Headers { pe: self.pe }.check_sum())?;
-			state.serialize_field("OptionalHeader.Subsystem", &stringify::subsystem(optional_header.Subsystem))?;
-			let dll_chars = (0..16).filter(|&i| optional_header.DllCharacteristics & (1 << i) != 0).map(stringify::dll_chars);
-			state.serialize_field("OptionalHeader.DllCharacteristics", &SerdeIter(dll_chars))?;
+			state.serialize_field("OptionalHeader.Subsystem", &stringify::Subsystem(optional_header.Subsystem).to_str())?;
+			state.serialize_field("OptionalHeader.DllCharacteristics", &SerdeIter(stringify::DllChars(optional_header.DllCharacteristics).to_strs()))?;
 
-			let data_directory_names = (0..self.pe.data_directory().len()).map(stringify::directory_entry);
+			let data_directory_names = (0..self.pe.data_directory().len()).map(stringify::DirectoryEntry).map(stringify::DirectoryEntry::to_str);
 			state.serialize_field("DataDirectory.Names", &SerdeIter(data_directory_names))?;
 
 			let data_directory_sects = self.pe.data_directory().iter().map(|dd| {
@@ -130,11 +128,11 @@ mod serde {
 			});
 			state.serialize_field("DataDirectory.Sections", &SerdeIter(data_directory_sects))?;
 
-			let sect_chars = self.pe.section_headers().iter().map(|sect| {
-				let chars = sect.Characteristics;
-				SerdeIter((0..32).filter(move |&i| chars & (1 << i) != 0).map(stringify::section_chars))
+			let sections_chars = self.pe.section_headers().iter().map(|sect| {
+				let section_chars = sect.Characteristics;
+				SerdeIter(stringify::SectionChars(section_chars).to_strs())
 			});
-			state.serialize_field("SectionHeaders.Characteristics", &SerdeIter(sect_chars))?;
+			state.serialize_field("SectionHeaders.Characteristics", &SerdeIter(sections_chars))?;
 
 			state.end()
 		}
