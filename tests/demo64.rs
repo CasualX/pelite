@@ -37,18 +37,18 @@ fn slice_edges() {
 //----------------------------------------------------------------
 
 #[test]
-fn rich_header() {
+fn rich_structure() {
 	let file_map = FileMap::open(FILE_NAME).unwrap();
 	let file = PeFile::from_bytes(&file_map).unwrap();
-	let rich_header = file.rich_header().unwrap();
+	let rich_structure = file.rich_structure().unwrap();
 
-	assert_eq!(rich_header.xor_key(), rich_header.checksum());
+	assert_eq!(rich_structure.xor_key(), rich_structure.checksum());
 
 	// Re-encode the records
-	let records: Vec<_> = rich_header.records().collect();
-	let mut encoded = vec![0; rich_header.image().len()];
-	rich_header.encode(&records, &mut encoded).unwrap();
-	assert_eq!(rich_header.image(), &*encoded);
+	let records: Vec<_> = rich_structure.records().collect();
+	let mut encoded = vec![0; rich_structure.image().len()];
+	rich_structure.encode(&records, &mut encoded).unwrap();
+	assert_eq!(rich_structure.image(), &*encoded);
 }
 
 //----------------------------------------------------------------
