@@ -29,12 +29,12 @@ const RICH_MARKER: u32 = 0x68636952; // "Rich"
 
 /// Rich structure.
 #[derive(Copy, Clone)]
-pub struct RichHeader<'a> {
+pub struct RichStructure<'a> {
 	dos_stub: &'a [u32],
 	image: &'a [u32],
 }
-impl<'a> RichHeader<'a> {
-	pub(crate) fn try_from<P: Pe<'a> + Copy>(pe: P) -> Result<RichHeader<'a>> {
+impl<'a> RichStructure<'a> {
+	pub(crate) fn try_from<P: Pe<'a> + Copy>(pe: P) -> Result<RichStructure<'a>> {
 		let dos_header = pe.dos_header();
 
 		// Read as a slice of dwords up until the PE headers
@@ -78,7 +78,7 @@ impl<'a> RichHeader<'a> {
 		let dos_stub = &image[..start];
 		let image = &image[start..end];
 
-		Ok(RichHeader { dos_stub, image })
+		Ok(RichStructure { dos_stub, image })
 	}
 	/// Returns the Rich image without the padding.
 	pub fn image(&self) -> &'a [u32] {
@@ -160,9 +160,9 @@ impl<'a> RichHeader<'a> {
 		}
 	}
 }
-impl<'a> fmt::Debug for RichHeader<'a> {
+impl<'a> fmt::Debug for RichStructure<'a> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		f.debug_struct("RichHeader")
+		f.debug_struct("RichStructure")
 			.field("xor_key", &self.xor_key())
 			.field("checksum", &self.checksum())
 			.field("records", &self.records())
@@ -263,7 +263,7 @@ impl<'a> fmt::Debug for RichIter<'a> {
 //----------------------------------------------------------------
 
 /*
-	"rich_header": {
+	"rich_structure": {
 		"xor_key": 129284757318,
 		"checksum": 129284757318,
 		"records": [
@@ -279,11 +279,11 @@ impl<'a> fmt::Debug for RichIter<'a> {
 #[cfg(feature = "serde")]
 mod serde {
 	use util::serde_helper::*;
-	use super::RichHeader;
+	use super::RichStructure;
 
-	impl<'a> Serialize for RichHeader<'a> {
+	impl<'a> Serialize for RichStructure<'a> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-			let mut state = serializer.serialize_struct("RichHeader", 3)?;
+			let mut state = serializer.serialize_struct("RichStructure", 3)?;
 			state.serialize_field("xor_key", &self.xor_key())?;
 			state.serialize_field("checksum", &self.checksum())?;
 			state.serialize_field("records", &SerdeIter(self.records()))?;
@@ -296,12 +296,12 @@ mod serde {
 
 #[cfg(test)]
 pub(crate) fn test<'a, P: 'a + Pe<'a> + Copy>(pe: P) -> Result<()> {
-	let rich_header = pe.rich_header()?;
-	let _checksum = rich_header.checksum();
+	let rich_structure = pe.rich_structure()?;
+	let _checksum = rich_structure.checksum();
 
-	let records: Vec<_> = rich_header.records().collect();
-	let mut encoded = vec![0u32; rich_header.image().len()];
-	let _ = rich_header.encode(&records, &mut encoded);
+	let records: Vec<_> = rich_structure.records().collect();
+	let mut encoded = vec![0u32; rich_structure.image().len()];
+	let _ = rich_structure.encode(&records, &mut encoded);
 
 	Ok(())
 }

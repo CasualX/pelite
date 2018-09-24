@@ -23,16 +23,16 @@ fn pocs() {
 		println!("\n{}", file_name);
 
 		let image = image.to_vec(); // Fix alignment
-		println!("  base_relocs... {:?}", test!(image, base_relocs));
-		println!("  rich_header... {:?}", test!(image, rich_header));
-		println!("  exception...   {:?}", test!(image, exception));
-		println!("  exports...     {:?}", test!(image, exports));
-		println!("  imports...     {:?}", test!(image, imports));
-		println!("  debug...       {:?}", test!(image, debug));
-		println!("  load_config... {:?}", test!(image, load_config));
-		println!("  security...    {:?}", test!(image, security));
-		println!("  tls...         {:?}", test!(image, tls));
-		println!("  resources...   {:?}", test!(image, resources));
-		println!("  scanner...     {:?}", test!(image, scanner));
+		println!("  base_relocs...    {:?}", test!(image, base_relocs));
+		println!("  rich_structure... {:?}", test!(image, rich_structure));
+		println!("  exception...      {:?}", test!(image, exception));
+		println!("  exports...        {:?}", test!(image, exports));
+		println!("  imports...        {:?}", test!(image, imports));
+		println!("  debug...          {:?}", test!(image, debug));
+		println!("  load_config...    {:?}", test!(image, load_config));
+		println!("  security...       {:?}", test!(image, security));
+		println!("  tls...            {:?}", test!(image, tls));
+		println!("  resources...      {:?}", test!(image, resources));
+		println!("  scanner...        {:?}", test!(image, scanner));
 	}
 }
