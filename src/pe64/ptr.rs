@@ -12,12 +12,9 @@ use super::image::{Va, SignedVa};
 //----------------------------------------------------------------
 
 /// Typed virtual address.
-pub struct Ptr<T: ?Sized = ()>(Va, PhantomData<*const T>);
+pub struct Ptr<T: ?Sized = ()>(Va, PhantomData<fn() -> T>);
 
 unsafe impl<T: ?Sized + 'static> Pod for Ptr<T> {}
-
-unsafe impl<T: ?Sized> Send for Ptr<T> {}
-unsafe impl<T: ?Sized> Sync for Ptr<T> {}
 
 impl<T: ?Sized> Ptr<T> {
 	/// Creates a null pointer.
@@ -91,7 +88,7 @@ impl<T: ?Sized> Ptr<T> {
 impl<T: ?Sized> Copy for Ptr<T> {}
 impl<T: ?Sized> Clone for Ptr<T> {
 	fn clone(&self) -> Ptr<T> {
-		Ptr(self.0, self.1)
+		*self
 	}
 }
 
@@ -144,25 +141,29 @@ impl<T: ?Sized> AsMut<Va> for Ptr<T> {
 impl<T: Pod> ops::Add<SignedVa> for Ptr<T> {
 	type Output = Ptr<T>;
 	fn add(self, rhs: SignedVa) -> Ptr<T> {
-		Ptr(self.0.wrapping_add((rhs * mem::size_of::<T>() as SignedVa) as Va), PhantomData)
+		let va = self.0.wrapping_add((rhs * mem::size_of::<T>() as SignedVa) as Va);
+		Ptr(va, PhantomData)
 	}
 }
 impl<T: Pod> ops::Add<SignedVa> for Ptr<[T]> {
 	type Output = Ptr<T>;
 	fn add(self, rhs: SignedVa) -> Ptr<T> {
-		Ptr(self.0.wrapping_add((rhs * mem::size_of::<T>() as SignedVa) as Va), PhantomData)
+		let va = self.0.wrapping_add((rhs * mem::size_of::<T>() as SignedVa) as Va);
+		Ptr(va, PhantomData)
 	}
 }
 impl<T: Pod> ops::Sub<SignedVa> for Ptr<T> {
 	type Output = Ptr<T>;
 	fn sub(self, rhs: SignedVa) -> Ptr<T> {
-		Ptr(self.0.wrapping_sub((rhs * mem::size_of::<T>() as SignedVa) as Va), PhantomData)
+		let va = self.0.wrapping_sub((rhs * mem::size_of::<T>() as SignedVa) as Va);
+		Ptr(va, PhantomData)
 	}
 }
 impl<T: Pod> ops::Sub<SignedVa> for Ptr<[T]> {
 	type Output = Ptr<T>;
 	fn sub(self, rhs: SignedVa) -> Ptr<T> {
-		Ptr(self.0.wrapping_sub((rhs * mem::size_of::<T>() as SignedVa) as Va), PhantomData)
+		let va = self.0.wrapping_sub((rhs * mem::size_of::<T>() as SignedVa) as Va);
+		Ptr(va, PhantomData)
 	}
 }
 
