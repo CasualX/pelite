@@ -88,8 +88,16 @@ mod serde {
 
 	impl<'a, P: Pe<'a> + Copy> Serialize for Tls<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+			let is_human_readable = serializer.is_human_readable();
 			let mut state = serializer.serialize_struct("Tls", 2)?;
-			state.serialize_field("raw_data", &self.raw_data().ok())?;
+			if cfg!(feature = "data-encoding") && is_human_readable {
+				#[cfg(feature = "data-encoding")]
+				state.serialize_field("raw_data",
+					&self.raw_data().ok().map(|data| ::data_encoding::BASE64.encode(data)))?;
+			}
+			else {
+				state.serialize_field("raw_data", &self.raw_data().ok())?;
+			}
 			state.serialize_field("callbacks", &self.callbacks().ok())?;
 			state.end()
 		}
