@@ -100,7 +100,7 @@ This is mostly safe, but be even more cautious when using it to read from writab
 # #![allow(dead_code)]
 use std::path::Path;
 use pelite::Result;
-use pelite::pe::{Pe, PeView};
+use pelite::native::{Pe, PeView};
 
 fn image_base() {
 	let view = unsafe { PeView::new() };
