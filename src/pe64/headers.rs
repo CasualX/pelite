@@ -13,7 +13,7 @@ pub struct Headers<P> {
 	pe: P,
 }
 
-impl<'a, P: Pe<'a> + Copy> Headers<P> {
+impl<'a, P: Pe<'a>> Headers<P> {
 	pub(crate) fn new(pe: P) -> Headers<P> {
 		Headers { pe }
 	}
@@ -81,7 +81,7 @@ mod serde {
 	use stringify;
 	use super::{Pe, Headers};
 
-	impl<'a, P: Pe<'a> + Copy> Serialize for Headers<P> {
+	impl<'a, P: Pe<'a>> Serialize for Headers<P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			let is_human_readable = serializer.is_human_readable();
 			let mut state = serializer.serialize_struct("Headers", 6)?;
@@ -103,7 +103,7 @@ mod serde {
 	}
 
 	struct Details<P> { pe: P }
-	impl<'a, P: Pe<'a> + Copy> Serialize for Details<P> {
+	impl<'a, P: Pe<'a>> Serialize for Details<P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			let mut state = serializer.serialize_struct("Details", 11)?;
 

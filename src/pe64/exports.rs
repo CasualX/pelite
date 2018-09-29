@@ -55,7 +55,7 @@ fn example(file: PeFile<'_>) -> pelite::Result<()> {
 
 use std::{fmt, iter, ops, slice};
 
-use error::{Error, Result};
+use {Error, Result};
 use util::CStr;
 
 use super::image::*;
@@ -104,7 +104,7 @@ pub struct Exports<'a, P> {
 	datadir: &'a IMAGE_DATA_DIRECTORY,
 	image: &'a IMAGE_EXPORT_DIRECTORY,
 }
-impl<'a, P: Pe<'a> + Copy> Exports<'a, P> {
+impl<'a, P: Pe<'a>> Exports<'a, P> {
 	pub(crate) fn try_from(pe: P) -> Result<Exports<'a, P>> {
 		let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_EXPORT).ok_or(Error::Bounds)?;
 		let image = pe.derva(datadir.VirtualAddress)?;
@@ -182,7 +182,7 @@ impl<'a, P: Pe<'a> + Copy> Exports<'a, P> {
 		}
 	}
 }
-impl<'a, P: 'a + Pe<'a> + Copy> fmt::Debug for Exports<'a, P> {
+impl<'a, P: Pe<'a>> fmt::Debug for Exports<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		match self.by() {
 			Ok(by) => by.fmt(f),
@@ -207,7 +207,7 @@ impl<'a, P: Pe<'a>> ops::Deref for By<'a, P> {
 		&self.exp
 	}
 }
-impl<'a, P: Pe<'a> + Copy> By<'a, P> {
+impl<'a, P: Pe<'a>> By<'a, P> {
 	/// Gets the export address table.
 	pub fn functions(&self) -> &'a [Rva] {
 		self.functions
@@ -396,7 +396,7 @@ impl<'a, P: Pe<'a> + Copy> By<'a, P> {
 			))
 	}
 }
-impl<'a, P: 'a + Pe<'a> + Copy> fmt::Debug for By<'a, P> {
+impl<'a, P: Pe<'a>> fmt::Debug for By<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		f.debug_struct("Exports")
 			.field("dll_name", &format_args!("{:?}", self.dll_name()))
@@ -412,7 +412,7 @@ impl<'a, P: 'a + Pe<'a> + Copy> fmt::Debug for By<'a, P> {
 //----------------------------------------------------------------
 
 /// Convenient way to get an exported address.
-pub trait GetProcAddress<'a, T>: Pe<'a> + Copy {
+pub trait GetProcAddress<'a, T>: Pe<'a> {
 	/// Convenient method to get an exported function.
 	///
 	/// Note that calling this method many times is less efficient than caching a [`By`](struct.By.html) instance, such is the trade-off for convenience.
@@ -427,17 +427,17 @@ pub trait GetProcAddress<'a, T>: Pe<'a> + Copy {
 		self.rva_to_va(self.get_export(name)?.symbol().ok_or(Error::Null)?)
 	}
 }
-impl<'a, P: Pe<'a> + Copy> GetProcAddress<'a, Ordinal> for P {
+impl<'a, P: Pe<'a>> GetProcAddress<'a, Ordinal> for P {
 	fn get_export(self, name: Ordinal) -> Result<Export<'a>> {
 		self.exports()?.by()?.ordinal(name)
 	}
 }
-impl<'b, 'a, P: Pe<'a> + Copy> GetProcAddress<'a, Import<'b>> for P {
+impl<'b, 'a, P: Pe<'a>> GetProcAddress<'a, Import<'b>> for P {
 	fn get_export(self, name: Import<'b>) -> Result<Export<'a>> {
 		self.exports()?.by()?.import(name)
 	}
 }
-impl<'b, 'a, P: Pe<'a> + Copy, S: AsRef<[u8]> + ?Sized> GetProcAddress<'a, &'b S> for P {
+impl<'b, 'a, P: Pe<'a>, S: AsRef<[u8]> + ?Sized> GetProcAddress<'a, &'b S> for P {
 	fn get_export(self, name: &'b S) -> Result<Export<'a>> {
 		self.exports()?.by()?.name(name)
 	}
@@ -464,12 +464,12 @@ mod serde {
 	use util::serde_helper::*;
 	use super::{Pe, Exports, By};
 
-	impl<'a, P: 'a + Pe<'a> + Copy> Serialize for Exports<'a, P> {
+	impl<'a, P: Pe<'a>> Serialize for Exports<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			self.by().ok().serialize(serializer)
 		}
 	}
-	impl<'a, P: 'a + Pe<'a> + Copy> Serialize for By<'a, P> {
+	impl<'a, P: Pe<'a>> Serialize for By<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			let mut state = serializer.serialize_struct("Exports", 6)?;
 			state.serialize_field("dll_name", &self.dll_name().ok())?;
@@ -489,7 +489,7 @@ mod serde {
 //----------------------------------------------------------------
 
 #[cfg(test)]
-pub(crate) fn test<'a, P: 'a + Pe<'a> + Copy>(pe: P) -> Result<()> {
+pub(crate) fn test<'a, P: Pe<'a>>(pe: P) -> Result<()> {
 	let by = pe.exports()?.by()?;
 	let _ = format!("{:?}", by);
 

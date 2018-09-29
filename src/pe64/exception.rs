@@ -5,7 +5,7 @@ Exception Directory.
 use std::{fmt, iter, mem, slice};
 use std::cmp::Ordering;
 
-use error::{Error, Result};
+use {Error, Result};
 
 use super::image::*;
 use super::Pe;
@@ -20,7 +20,7 @@ pub struct Exception<'a, P> {
 	pe: P,
 	image: &'a [RUNTIME_FUNCTION],
 }
-impl<'a, P: Pe<'a> + Copy> Exception<'a, P> {
+impl<'a, P: Pe<'a>> Exception<'a, P> {
 	pub(crate) fn try_from(pe: P) -> Result<Exception<'a, P>> {
 		let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_EXCEPTION).ok_or(Error::Bounds)?;
 		let (len, rem) = (
@@ -84,7 +84,7 @@ impl<'a, P: Pe<'a> + Copy> Exception<'a, P> {
 		}).ok()
 	}
 }
-impl<'a, P: Pe<'a> + Copy> fmt::Debug for Exception<'a, P> {
+impl<'a, P: Pe<'a>> fmt::Debug for Exception<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		f.debug_struct("Exception")
 			.field("functions.len", &self.image.len())
@@ -100,7 +100,7 @@ pub struct Function<'a, P> {
 	pe: P,
 	image: &'a RUNTIME_FUNCTION,
 }
-impl<'a, P: Pe<'a> + Copy> Function<'a, P> {
+impl<'a, P: Pe<'a>> Function<'a, P> {
 	/// Gets the PE instance.
 	pub fn pe(&self) -> P {
 		self.pe
@@ -134,7 +134,7 @@ impl<'a, P: Pe<'a> + Copy> Function<'a, P> {
 		Ok(UnwindInfo { pe: self.pe, image })
 	}
 }
-impl<'a, P: Pe<'a> + Copy> fmt::Debug for Function<'a, P> {
+impl<'a, P: Pe<'a>> fmt::Debug for Function<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		f.debug_struct("Function")
 			.field("bytes.len", &self.bytes().map(<[_]>::len))
@@ -150,7 +150,7 @@ pub struct UnwindInfo<'a, P> {
 	pe: P,
 	image: &'a UNWIND_INFO,
 }
-impl<'a, P: Pe<'a> + Copy> UnwindInfo<'a, P> {
+impl<'a, P: Pe<'a>> UnwindInfo<'a, P> {
 	/// Gets the PE instance.
 	pub fn pe(&self) -> P {
 		self.pe
@@ -181,7 +181,7 @@ impl<'a, P: Pe<'a> + Copy> UnwindInfo<'a, P> {
 		}
 	}
 }
-impl<'a, P: Pe<'a> + Copy> fmt::Debug for UnwindInfo<'a, P> {
+impl<'a, P: Pe<'a>> fmt::Debug for UnwindInfo<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		f.debug_struct("UnwindInfo")
 			.field("version", &self.version())
@@ -197,7 +197,7 @@ impl<'a, P: Pe<'a> + Copy> fmt::Debug for UnwindInfo<'a, P> {
 //----------------------------------------------------------------
 
 #[cfg(test)]
-pub(crate) fn test<'a, P: Pe<'a> + Copy>(pe: P) -> Result<()> {
+pub(crate) fn test<'a, P: Pe<'a>>(pe: P) -> Result<()> {
 	let exception = pe.exception()?;
 	let _ = format!("{:?}", exception);
 

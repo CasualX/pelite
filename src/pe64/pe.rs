@@ -4,7 +4,7 @@ Abstract over mapped images and file binaries.
 
 use std::{cmp, mem, ptr, slice};
 
-use error::{Error, Result};
+use {Error, Result};
 use util::{CStr, Pod, FromBytes};
 
 use super::image::*;
@@ -23,72 +23,59 @@ pub enum Align {
 	Section,
 }
 
-pub unsafe trait Pe<'a> {
+pub unsafe trait PeObject<'a> {
 	/// Returns the image as a byte slice.
 	fn image(&self) -> &'a [u8];
 
 	/// Returns whether this image uses file alignment or section alignment.
 	fn align(&self) -> Align;
 
+	// Give a struct name in Serialize implementation
+	#[cfg(feature = "serde")]
+	#[doc(hidden)]
+	fn serde_name(&self) -> &'static str;
+}
+
+pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	/// Returns the DOS header.
-	fn dos_header(self) -> &'a IMAGE_DOS_HEADER where Self: Copy {
-		unsafe {
-			&*(self.image().as_ptr() as *const IMAGE_DOS_HEADER)
-		}
+	fn dos_header(self) -> &'a IMAGE_DOS_HEADER {
+		unsafe { dos_header(self.image()) }
 	}
 	/// Returns the DOS image.
 	///
 	/// This includes the dos header and everything up to the start of the PE headers but is not guaranteed to actually contain anything valid.
-	fn dos_image(self) -> &'a [u8] where Self: Copy {
-		let dos = self.dos_header();
-		unsafe {
-			self.image().get_unchecked(..dos.e_lfanew as usize)
-		}
+	fn dos_image(self) -> &'a [u8] {
+		unsafe { dos_image(self.image()) }
 	}
 	/// Returns the NT headers.
-	fn nt_headers(self) -> &'a IMAGE_NT_HEADERS where Self: Copy {
-		let dos = self.dos_header();
-		unsafe {
-			&*((dos as *const _ as *const u8).offset(dos.e_lfanew as isize) as *const IMAGE_NT_HEADERS)
-		}
+	fn nt_headers(self) -> &'a IMAGE_NT_HEADERS {
+		unsafe { nt_headers(self.image()) }
 	}
 	/// Returns the file header.
-	fn file_header(self) -> &'a IMAGE_FILE_HEADER where Self: Copy {
-		&self.nt_headers().FileHeader
+	fn file_header(self) -> &'a IMAGE_FILE_HEADER {
+		unsafe { file_header(self.image()) }
 	}
 	/// Returns the optional header.
-	fn optional_header(self) -> &'a IMAGE_OPTIONAL_HEADER where Self: Copy {
-		&self.nt_headers().OptionalHeader
+	fn optional_header(self) -> &'a IMAGE_OPTIONAL_HEADER {
+		unsafe { optional_header(self.image()) }
 	}
 	/// Returns the data directory.
-	fn data_directory(self) -> &'a [IMAGE_DATA_DIRECTORY] where Self: Copy {
-		let opt = self.optional_header();
-		let len = cmp::min(opt.NumberOfRvaAndSizes as usize, IMAGE_NUMBEROF_DIRECTORY_ENTRIES);
-		unsafe {
-			slice::from_raw_parts(opt.DataDirectory.as_ptr(), len)
-		}
+	fn data_directory(self) -> &'a [IMAGE_DATA_DIRECTORY] {
+		unsafe { data_directory(self.image()) }
 	}
 	/// Returns the section headers.
-	fn section_headers(self) -> &'a [IMAGE_SECTION_HEADER] where Self: Copy {
-		let nt = self.nt_headers();
-		unsafe {
-			let begin = (&nt.OptionalHeader as *const _ as *const u8).offset(nt.FileHeader.SizeOfOptionalHeader as isize) as *const IMAGE_SECTION_HEADER;
-			slice::from_raw_parts(begin, nt.FileHeader.NumberOfSections as usize)
-		}
+	fn section_headers(self) -> &'a [IMAGE_SECTION_HEADER] {
+		unsafe { section_headers(self.image()) }
 	}
+
 	/// Returns the pe headers together in a single struct.
-	fn headers(self) -> super::headers::Headers<Self> where Self: Copy {
+	fn headers(self) -> super::headers::Headers<Self> {
 		super::headers::Headers::new(self)
 	}
 	/// Returns the Rich structure.
-	fn rich_structure(self) -> Result<super::rich_structure::RichStructure<'a>> where Self: Copy {
+	fn rich_structure(self) -> Result<super::rich_structure::RichStructure<'a>> {
 		super::rich_structure::RichStructure::try_from(self)
 	}
-
-	// Give a struct name in Serialize implementation
-	#[cfg(feature = "serde")]
-	#[doc(hidden)]
-	const SERDE_NAME: &'static str;
 
 	//----------------------------------------------------------------
 
@@ -104,7 +91,7 @@ pub unsafe trait Pe<'a> {
 	///
 	/// * [`Bounds`](../enum.Error.html#variant.Bounds):
 	///   The rva falls outside any valid section or the PE headers.
-	fn rva_to_file_offset(self, rva: Rva) -> Result<usize> where Self: Copy {
+	fn rva_to_file_offset(self, rva: Rva) -> Result<usize> {
 		// Consider rva inside headers to be valid
 		if rva < self.optional_header().SizeOfHeaders {
 			return Ok(rva as usize);
@@ -149,7 +136,7 @@ pub unsafe trait Pe<'a> {
 	///
 	/// * [`Bounds`](../enum.Error.html#variant.Bounds):
 	///   The file offset falls outside any valid section or PE headers.
-	fn file_offset_to_rva(self, file_offset: usize) -> Result<Rva> where Self: Copy {
+	fn file_offset_to_rva(self, file_offset: usize) -> Result<Rva> {
 		// Consider rva inside headers to be valid
 		if file_offset < self.optional_header().SizeOfHeaders as usize {
 			return Ok(file_offset as Rva);
@@ -192,7 +179,7 @@ pub unsafe trait Pe<'a> {
 	///
 	/// * [`Bounds`](../enum.Error.html#variant.Bounds):
 	///   The rva does not fall within the virtual image bounds.
-	fn rva_to_va(self, rva: Rva) -> Result<Va> where Self: Copy {
+	fn rva_to_va(self, rva: Rva) -> Result<Va> {
 		if rva == 0 {
 			Err(Error::Null)
 		}
@@ -218,7 +205,7 @@ pub unsafe trait Pe<'a> {
 	///
 	/// * [`Bounds`](../enum.Error.html#variant.Bounds):
 	///   The va does not fall within the virtual image bounds.
-	fn va_to_rva(self, va: Va) -> Result<Rva> where Self: Copy {
+	fn va_to_rva(self, va: Va) -> Result<Rva> {
 		if va == 0 {
 			Err(Error::Null)
 		}
@@ -251,7 +238,14 @@ pub unsafe trait Pe<'a> {
 	///
 	/// * [`Null`](../enum.Error.html#variant.Null):
 	///   The rva is zero.
-	fn slice(&self, rva: Rva, min_size_of: usize, align: usize) -> Result<&'a [u8]>;
+	fn slice(&self, rva: Rva, min_size_of: usize, align: usize) -> Result<&'a [u8]> {
+		unsafe {
+			match (self.align(), self.image()) {
+				(Align::File, image) => slice_file(image, rva, min_size_of, align),
+				(Align::Section, image) => slice_section(image, rva, min_size_of, align),
+			}
+		}
+	}
 
 	/// Slices the image at the specified rva returning a byte slice with no alignment or minimum size.
 	///
@@ -272,7 +266,14 @@ pub unsafe trait Pe<'a> {
 	///
 	/// * [`Null`](../enum.Error.html#variant.Null):
 	///   The va is zero.
-	fn read(&self, va: Va, min_size_of: usize, align: usize) -> Result<&'a [u8]>;
+	fn read(&self, va: Va, min_size_of: usize, align: usize) -> Result<&'a [u8]> {
+		unsafe {
+			match (self.align(), self.image()) {
+				(Align::File, image) => read_file(image, va, min_size_of, align),
+				(Align::Section, image) => read_section(image, va, min_size_of, align),
+			}
+		}
+	}
 
 	/// Reads the image at the specified va returning a byte slice with no alignment or minimum size.
 	///
@@ -284,7 +285,7 @@ pub unsafe trait Pe<'a> {
 	//----------------------------------------------------------------
 
 	/// Reads an aligned pod `T`.
-	fn derva<T>(self, rva: Rva) -> Result<&'a T> where Self: Copy, T: Pod {
+	fn derva<T>(self, rva: Rva) -> Result<&'a T> where T: Pod {
 		let align = if cfg!(feature = "unsafe_alignment") { 1 } else { mem::align_of::<T>() };
 		let bytes = self.slice(rva, mem::size_of::<T>(), align)?;
 		// This is safe as per Pod bound, min_size_of and align
@@ -294,7 +295,7 @@ pub unsafe trait Pe<'a> {
 		}
 	}
 	/// Reads an unaligned pod `T`.
-	fn derva_copy<T>(self, rva: Rva) -> Result<T> where Self: Copy, T: Copy + Pod {
+	fn derva_copy<T>(self, rva: Rva) -> Result<T> where T: Copy + Pod {
 		let bytes = self.slice(rva, mem::size_of::<T>(), 1)?;
 		// This is safe as per Pod bound and min_size_of
 		unsafe {
@@ -305,14 +306,14 @@ pub unsafe trait Pe<'a> {
 	/// Reads and byte-wise copies the content to the given destination.
 	///
 	/// Allows reading of an unaligned array of data.
-	fn derva_into<T>(self, rva: Rva, dest: &mut T) -> Result<()> where Self: Copy, T: ?Sized + Pod {
+	fn derva_into<T>(self, rva: Rva, dest: &mut T) -> Result<()> where T: ?Sized + Pod {
 		let len = mem::size_of_val(dest);
 		let bytes = self.slice(rva, len, 1)?;
 		dest.as_bytes_mut().copy_from_slice(&bytes[..len]);
 		Ok(())
 	}
 	/// Reads an array of pod `T` with given length.
-	fn derva_slice<T>(self, rva: Rva, len: usize) -> Result<&'a [T]> where Self: Copy, T: Pod {
+	fn derva_slice<T>(self, rva: Rva, len: usize) -> Result<&'a [T]> where T: Pod {
 		let min_size_of = mem::size_of::<T>().checked_mul(len).ok_or(Error::Overflow)?;
 		let align = if cfg!(feature = "unsafe_alignment") { 1 } else { mem::align_of::<T>() };
 		let bytes = self.slice(rva, min_size_of, align)?;
@@ -327,7 +328,7 @@ pub unsafe trait Pe<'a> {
 	/// The length of the array is the index when the callable `f` returns `true`.
 	///
 	/// The returned slice contains all `T` up to but not including the element for which the callable returned `true`.
-	fn derva_slice_f<T, F>(self, rva: Rva, mut f: F) -> Result<&'a [T]> where Self: Copy, T: Pod, F: FnMut(&'a T) -> bool {
+	fn derva_slice_f<T, F>(self, rva: Rva, mut f: F) -> Result<&'a [T]> where T: Pod, F: FnMut(&'a T) -> bool {
 		let align = if cfg!(feature = "unsafe_alignment") { 1 } else { mem::align_of::<T>() };
 		let bytes = self.slice(rva, 0, align)?;
 		let mut len = 0;
@@ -354,15 +355,15 @@ pub unsafe trait Pe<'a> {
 	/// The length of the array is determined by a [sentinel value](https://en.wikipedia.org/wiki/Sentinel_value), a special value of `T` which marks the end of the array.
 	///
 	/// The returned slice contains all `T` up to but not including the sentinel value.
-	fn derva_slice_s<T>(self, rva: Rva, sentinel: T) -> Result<&'a [T]> where Self: Copy, T: PartialEq + Pod {
+	fn derva_slice_s<T>(self, rva: Rva, sentinel: T) -> Result<&'a [T]> where T: PartialEq + Pod {
 		self.derva_slice_f(rva, |tee| *tee == sentinel)
 	}
 	/// Reads a nul-terminated C string.
-	fn derva_c_str(self, rva: Rva) -> Result<&'a CStr> where Self: Copy {
+	fn derva_c_str(self, rva: Rva) -> Result<&'a CStr> {
 		self.derva_string(rva)
 	}
 	/// Reads a string.
-	fn derva_string<T>(self, rva: Rva) -> Result<&'a T> where Self: Copy, T: FromBytes + ?Sized {
+	fn derva_string<T>(self, rva: Rva) -> Result<&'a T> where T: FromBytes + ?Sized {
 		let bytes = self.slice(rva, T::MIN_SIZE_OF, T::ALIGN_OF)?;
 		unsafe { T::from_bytes(bytes).ok_or(Error::Encoding) }
 	}
@@ -371,7 +372,7 @@ pub unsafe trait Pe<'a> {
 	// Deref impls for `Ptr`s
 
 	/// Dereferences the pointer to a pod `T`.
-	fn deref<T>(self, ptr: Ptr<T>) -> Result<&'a T> where Self: Copy, T: Pod {
+	fn deref<T>(self, ptr: Ptr<T>) -> Result<&'a T> where T: Pod {
 		let align = if cfg!(feature = "unsafe_alignment") { 1 } else { mem::align_of::<T>() };
 		let bytes = self.read(ptr.into(), mem::size_of::<T>(), align)?;
 		// This is safe as per Pod bound, min_size_of and align
@@ -381,7 +382,7 @@ pub unsafe trait Pe<'a> {
 		}
 	}
 	/// Dereferences the pointer to an unaligned pod `T`.
-	fn deref_copy<T>(self, ptr: Ptr<T>) -> Result<T> where Self: Copy, T: Copy + Pod {
+	fn deref_copy<T>(self, ptr: Ptr<T>) -> Result<T> where T: Copy + Pod {
 		let bytes = self.read(ptr.into(), mem::size_of::<T>(), 1)?;
 		// This is safe as per Pod bound and min_size_of
 		unsafe {
@@ -392,14 +393,14 @@ pub unsafe trait Pe<'a> {
 	/// Reads and byte-wise copies the content to the given destination.
 	///
 	/// Allows reading of an unaligned array of data.
-	fn deref_into<T>(self, ptr: Ptr<T>, dest: &mut T) -> Result<()> where Self: Copy, T: ?Sized + Pod {
+	fn deref_into<T>(self, ptr: Ptr<T>, dest: &mut T) -> Result<()> where T: ?Sized + Pod {
 		let len = mem::size_of_val(dest);
 		let bytes = self.read(ptr.into(), len, 1)?;
 		dest.as_bytes_mut().copy_from_slice(&bytes[..len]);
 		Ok(())
 	}
 	/// Reads an array of pod `T` with given length.
-	fn deref_slice<T>(self, ptr: Ptr<[T]>, len: usize) -> Result<&'a [T]> where Self: Copy, T: Pod {
+	fn deref_slice<T>(self, ptr: Ptr<[T]>, len: usize) -> Result<&'a [T]> where T: Pod {
 		let min_size_of = mem::size_of::<T>().checked_mul(len).ok_or(Error::Overflow)?;
 		let align = if cfg!(feature = "unsafe_alignment") { 1 } else { mem::align_of::<T>() };
 		let bytes = self.read(ptr.into(), min_size_of, align)?;
@@ -414,7 +415,7 @@ pub unsafe trait Pe<'a> {
 	/// The length of the array is the index when the callable `f` returns `true`.
 	///
 	/// The returned slice contains all `T` up to but not including the element for which the callable returned `true`.
-	fn deref_slice_f<T, F>(self, ptr: Ptr<[T]>, mut f: F) -> Result<&'a [T]> where Self: Copy, T: Pod, F: FnMut(&'a T) -> bool {
+	fn deref_slice_f<T, F>(self, ptr: Ptr<[T]>, mut f: F) -> Result<&'a [T]> where T: Pod, F: FnMut(&'a T) -> bool {
 		let align = if cfg!(feature = "unsafe_alignment") { 1 } else { mem::align_of::<T>() };
 		let bytes = self.read(ptr.into(), 0, align)?;
 		let mut len = 0;
@@ -441,15 +442,15 @@ pub unsafe trait Pe<'a> {
 	/// The length of the array is determined by a [sentinel value](https://en.wikipedia.org/wiki/Sentinel_value), a special value of `T` which marks the end of the array.
 	///
 	/// The returned slice contains all `T` up to but not including the sentinel value.
-	fn deref_slice_s<T>(self, ptr: Ptr<[T]>, sentinel: T) -> Result<&'a [T]> where Self: Copy, T: PartialEq + Pod {
+	fn deref_slice_s<T>(self, ptr: Ptr<[T]>, sentinel: T) -> Result<&'a [T]> where T: PartialEq + Pod {
 		self.deref_slice_f(ptr, |tee| *tee == sentinel)
 	}
 	/// Dereferences the pointer to a nul-terminated C string.
-	fn deref_c_str(self, ptr: Ptr<CStr>) -> Result<&'a CStr> where Self: Copy {
+	fn deref_c_str(self, ptr: Ptr<CStr>) -> Result<&'a CStr> {
 		self.deref_string(ptr)
 	}
 	/// Dereferences the pointer to a string.
-	fn deref_string<T>(self, ptr: Ptr<T>) -> Result<&'a T> where Self: Copy, T: FromBytes + ?Sized {
+	fn deref_string<T>(self, ptr: Ptr<T>) -> Result<&'a T> where T: FromBytes + ?Sized {
 		let bytes = self.read(ptr.into(), T::MIN_SIZE_OF, T::ALIGN_OF)?;
 		unsafe { T::from_bytes(bytes).ok_or(Error::Encoding) }
 	}
@@ -461,7 +462,7 @@ pub unsafe trait Pe<'a> {
 	/// See the [exports](exports/index.html) module for more information.
 	///
 	/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) if the image has no exports. Any other error indiciates some form of corruption.
-	fn exports(self) -> Result<super::exports::Exports<'a, Self>> where Self: Copy {
+	fn exports(self) -> Result<super::exports::Exports<'a, Self>> {
 		super::exports::Exports::try_from(self)
 	}
 
@@ -470,7 +471,7 @@ pub unsafe trait Pe<'a> {
 	/// See the [imports](imports/index.html) module for more information.
 	///
 	/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) if the image has no imports. Any other error indicates some form of corruption.
-	fn imports(self) -> Result<super::imports::Imports<'a, Self>> where Self: Copy {
+	fn imports(self) -> Result<super::imports::Imports<'a, Self>> {
 		super::imports::Imports::try_from(self)
 	}
 
@@ -479,7 +480,7 @@ pub unsafe trait Pe<'a> {
 	/// See the [imports](imports/index.html) module for more information.
 	///
 	/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) if the image has no iat. Any other error indicates some form of corruption.
-	fn iat(self) -> Result<super::imports::IAT<'a, Self>> where Self: Copy {
+	fn iat(self) -> Result<super::imports::IAT<'a, Self>> {
 		super::imports::IAT::try_from(self)
 	}
 
@@ -488,7 +489,7 @@ pub unsafe trait Pe<'a> {
 	/// See the [base relocations](base_relocs/index.html) module for more information.
 	///
 	/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) if the image has no base relocations. Any other error indicates some form of corruption.
-	fn base_relocs(self) -> Result<super::base_relocs::BaseRelocs<'a, Self>> where Self: Copy {
+	fn base_relocs(self) -> Result<super::base_relocs::BaseRelocs<'a, Self>> {
 		super::base_relocs::BaseRelocs::try_from(self)
 	}
 
@@ -497,7 +498,7 @@ pub unsafe trait Pe<'a> {
 	/// See the [load config](load_config/index.html) module for more information.
 	///
 	/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) if the image has no load config. Any other error indicates some form of corruption.
-	fn load_config(self) -> Result<super::load_config::LoadConfig<'a, Self>> where Self: Copy {
+	fn load_config(self) -> Result<super::load_config::LoadConfig<'a, Self>> {
 		super::load_config::LoadConfig::try_from(self)
 	}
 
@@ -506,7 +507,7 @@ pub unsafe trait Pe<'a> {
 	/// See the [tls](tls/index.html) module for more information.
 	///
 	/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) if the image has no tls. Any other error indicates some form of corruption.
-	fn tls(self) -> Result<super::tls::Tls<'a, Self>> where Self: Copy {
+	fn tls(self) -> Result<super::tls::Tls<'a, Self>> {
 		super::tls::Tls::try_from(self)
 	}
 
@@ -515,7 +516,7 @@ pub unsafe trait Pe<'a> {
 	/// See the [security](security/index.html) module for more information.
 	///
 	/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) if the image has no security info. Any other error indicates some form of corruption.
-	fn security(self) -> Result<super::security::Security<'a, Self>> where Self: Copy {
+	fn security(self) -> Result<super::security::Security<'a, Self>> {
 		super::security::Security::try_from(self)
 	}
 
@@ -524,7 +525,7 @@ pub unsafe trait Pe<'a> {
 	/// See the [exception](exception/index.html) module for more information.
 	///
 	/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) if the image has no exception directory. Any other error indicates some form of corruption.
-	fn exception(self) -> Result<super::exception::Exception<'a, Self>> where Self: Copy {
+	fn exception(self) -> Result<super::exception::Exception<'a, Self>> {
 		super::exception::Exception::try_from(self)
 	}
 
@@ -533,7 +534,7 @@ pub unsafe trait Pe<'a> {
 	/// See the [debug](debug/index.html) module for more information.
 	///
 	/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) if the image has no debug info. Any other error indicates some form of corruption.
-	fn debug(self) -> Result<super::debug::Debug<'a, Self>> where Self: Copy {
+	fn debug(self) -> Result<super::debug::Debug<'a, Self>> {
 		super::debug::Debug::try_from(self)
 	}
 
@@ -542,7 +543,7 @@ pub unsafe trait Pe<'a> {
 	/// See the [resources](resources/index.html) module for more information.
 	///
 	/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) if the image has no resources. Any other error indicates some form of corruption.
-	fn resources(self) -> Result<::resources::Resources<'a>> where Self: Copy {
+	fn resources(self) -> Result<::resources::Resources<'a>> {
 		let datadir = self.data_directory().get(IMAGE_DIRECTORY_ENTRY_RESOURCE).ok_or(Error::Bounds)?;
 		let data = self.derva_slice(datadir.VirtualAddress, datadir.Size as usize)?;
 		Ok(::resources::Resources::new(data, datadir))
@@ -551,36 +552,36 @@ pub unsafe trait Pe<'a> {
 	/// Gets Scanner access.
 	///
 	/// See the [scanner](scanner/index.html) module for more information.
-	fn scanner(self) -> super::scanner::Scanner<Self> where Self: Copy {
+	fn scanner(self) -> super::scanner::Scanner<Self> {
 		super::scanner::Scanner::new(self)
 	}
 }
 
-// Make `&Pe<'a>` trait objects work seamlessly.
-unsafe impl<'s, 'a, P: Pe<'a> + ?Sized> Pe<'a> for &'s P {
+//----------------------------------------------------------------
+// Make `&PeObject<'a>` trait objects work seamlessly.
+
+unsafe impl<'s, 'a> PeObject<'a> for &'s PeObject<'a> {
 	fn image(&self) -> &'a [u8] {
-		P::image(*self)
+		PeObject::image(*self)
 	}
 	fn align(&self) -> Align {
-		P::align(*self)
-	}
-	fn slice(&self, rva: Rva, min_size_of: usize, align: usize) -> Result<&'a [u8]> {
-		P::slice(*self, rva, min_size_of, align)
-	}
-	fn read(&self, va: Va, min_size_of: usize, align: usize) -> Result<&'a [u8]> {
-		P::read(*self, va, min_size_of, align)
+		PeObject::align(*self)
 	}
 	#[cfg(feature = "serde")]
-	const SERDE_NAME: &'static str = P::SERDE_NAME;
+	fn serde_name(&self) -> &'static str {
+		PeObject::serde_name(*self)
+	}
 }
+
+unsafe impl<'s, 'a> Pe<'a> for &'s PeObject<'a> {}
 
 //----------------------------------------------------------------
 
 #[cfg(feature = "serde")]
-pub(crate) fn serialize_pe<'a, P: 'a + Pe<'a> + Copy, S: ::serde::Serializer>(pe: P, serializer: S) -> ::std::result::Result<S::Ok, S::Error> {
+pub(crate) fn serialize_pe<'a, P: Pe<'a>, S: ::serde::Serializer>(pe: P, serializer: S) -> ::std::result::Result<S::Ok, S::Error> {
 	use util::serde_helper::*;
 
-	let mut state = serializer.serialize_struct(P::SERDE_NAME, 10)?;
+	let mut state = serializer.serialize_struct(pe.serde_name(), 10)?;
 	state.serialize_field("headers", &pe.headers())?;
 	state.serialize_field("rich_structure", &pe.rich_structure().ok())?;
 	state.serialize_field("exports", &pe.exports().ok())?;
@@ -592,6 +593,137 @@ pub(crate) fn serialize_pe<'a, P: 'a + Pe<'a> + Copy, S: ::serde::Serializer>(pe
 	state.serialize_field("security", &pe.security().ok())?;
 	state.serialize_field("resources", &pe.resources().ok())?;
 	state.end()
+}
+
+//----------------------------------------------------------------
+// Implementation helpers
+
+unsafe fn dos_header(image: &[u8]) -> &IMAGE_DOS_HEADER {
+	&*(image.as_ptr() as *const IMAGE_DOS_HEADER)
+}
+unsafe fn dos_image(image: &[u8]) -> &[u8] {
+	image.get_unchecked(..dos_header(image).e_lfanew as usize)
+}
+unsafe fn nt_headers(image: &[u8]) -> &IMAGE_NT_HEADERS {
+	&*(image.as_ptr().offset(dos_header(image).e_lfanew as isize) as *const IMAGE_NT_HEADERS)
+}
+unsafe fn file_header(image: &[u8]) -> &IMAGE_FILE_HEADER {
+	&nt_headers(image).FileHeader
+}
+unsafe fn optional_header(image: &[u8]) -> &IMAGE_OPTIONAL_HEADER {
+	&nt_headers(image).OptionalHeader
+}
+unsafe fn data_directory(image: &[u8]) -> &[IMAGE_DATA_DIRECTORY] {
+	let opt = optional_header(image);
+	let len = cmp::min(opt.NumberOfRvaAndSizes as usize, IMAGE_NUMBEROF_DIRECTORY_ENTRIES);
+	slice::from_raw_parts(opt.DataDirectory.as_ptr(), len)
+}
+unsafe fn section_headers(image: &[u8]) -> &[IMAGE_SECTION_HEADER] {
+	let nt = nt_headers(image);
+	let data = (&nt.OptionalHeader as *const _ as *const u8).offset(nt.FileHeader.SizeOfOptionalHeader as isize) as *const IMAGE_SECTION_HEADER;
+	slice::from_raw_parts(data, nt.FileHeader.NumberOfSections as usize)
+}
+
+unsafe fn slice_section(image: &[u8], rva: Rva, min_size_of: usize, align_of: usize) -> Result<&[u8]> {
+	debug_assert!(align_of != 0 && align_of & (align_of - 1) == 0);
+	let start = rva as usize;
+	if rva == 0 {
+		Err(Error::Null)
+	}
+	else if usize::wrapping_add(image.as_ptr() as usize, start) & (align_of - 1) != 0 {
+		Err(Error::Misaligned)
+	}
+	else {
+		match image.get(start..) {
+			Some(bytes) if bytes.len() >= min_size_of => Ok(bytes),
+			_ => Err(Error::Bounds),
+		}
+	}
+}
+unsafe fn read_section(image: &[u8], va: Va, min_size_of: usize, align_of: usize) -> Result<&[u8]> {
+	debug_assert!(align_of != 0 && align_of & (align_of - 1) == 0);
+	let (image_base, size_of_image) = {
+		let optional_header = optional_header(image);
+		(optional_header.ImageBase, optional_header.SizeOfImage)
+	};
+	if va == 0 {
+		Err(Error::Null)
+	}
+	else if va < image_base || va - image_base > size_of_image as Va {
+		Err(Error::Bounds)
+	}
+	else {
+		let start = (va - image_base) as usize;
+		if usize::wrapping_add(image.as_ptr() as usize, start) & (align_of - 1) != 0 {
+			Err(Error::Misaligned)
+		}
+		else {
+			match image.get(start..) {
+				Some(bytes) if bytes.len() >= min_size_of => Ok(bytes),
+				_ => Err(Error::Bounds),
+			}
+		}
+	}
+}
+
+unsafe fn range_file(image: &[u8], rva: Rva, min_size_of: usize) -> Result<&[u8]> {
+	// This code has been carefully designed to avoid panicking on overflow
+	for it in section_headers(image) {
+		// Compare if rva is contained within the virtual address space of a section
+		// If the calculating the section end address overflows the corrupt section will be skipped
+		#[allow(non_snake_case)]
+		let VirtualEnd = it.VirtualAddress.wrapping_add(cmp::max(it.VirtualSize, it.SizeOfRawData));
+		if it.VirtualAddress <= rva && rva < VirtualEnd { // $1
+			// Isolate and range check the pointer and size of raw data
+			// If this fails immediately abort and return an error
+			let section_range = it.PointerToRawData as usize..it.PointerToRawData.wrapping_add(it.SizeOfRawData) as usize;
+			let section_bytes = image.get(section_range).ok_or(Error::Invalid)?;
+			// Calculate the offset in the section requested. cannot underflow, see $1
+			let section_offset = (rva - it.VirtualAddress) as usize;
+			return match section_bytes.get(section_offset..) {
+				Some(bytes) if bytes.len() >= min_size_of => Ok(bytes),
+				// Identify the reason the slice fails. cannot underflow, see $1
+				_ => Err(if min_size_of > (VirtualEnd - rva) as usize { Error::Bounds } else { Error::ZeroFill }),
+			};
+		}
+	}
+	Err(Error::Bounds)
+}
+#[inline(never)]
+unsafe fn slice_file(image: &[u8], rva: Rva, min_size_of: usize, align_of: usize) -> Result<&[u8]> {
+	debug_assert!(align_of != 0 && align_of & (align_of - 1) == 0);
+	if rva == 0 {
+		Err(Error::Null)
+	}
+	else if usize::wrapping_add(image.as_ptr() as usize, rva as usize) & (align_of - 1) != 0 {
+		Err(Error::Misaligned)
+	}
+	else {
+		range_file(image, rva, min_size_of)
+	}
+}
+#[inline(never)]
+unsafe fn read_file(image: &[u8], va: Va, min_size_of: usize, align_of: usize) -> Result<&[u8]> {
+	debug_assert!(align_of != 0 && align_of & (align_of - 1) == 0);
+	let (image_base, size_of_image) = {
+		let optional_header = optional_header(image);
+		(optional_header.ImageBase, optional_header.SizeOfImage)
+	};
+	if va == 0 {
+		Err(Error::Null)
+	}
+	else if va < image_base || va - image_base > size_of_image as Va {
+		Err(Error::Bounds)
+	}
+	else {
+		let rva = (va - image_base) as Rva;
+		if usize::wrapping_add(image.as_ptr() as usize, rva as usize) & (align_of - 1) != 0 {
+			Err(Error::Misaligned)
+		}
+		else {
+			range_file(image, rva, min_size_of)
+		}
+	}
 }
 
 //----------------------------------------------------------------
