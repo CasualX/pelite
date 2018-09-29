@@ -25,7 +25,7 @@ fn example(file: PeFile<'_>) -> pelite::Result<()> {
 
 use std::{fmt};
 
-use error::{Error, Result};
+use {Error, Result};
 
 use super::image::*;
 use super::{Align, Pe};
@@ -37,7 +37,7 @@ pub struct Security<'a, P> {
 	pe: P,
 	security: &'a [u8],
 }
-impl<'a, P: Pe<'a> + Copy> Security<'a, P> {
+impl<'a, P: Pe<'a>> Security<'a, P> {
 	pub(crate) fn try_from(pe: P) -> Result<Security<'a, P>> {
 		// The security info is part of the mapped image
 		if pe.align() != Align::File {
@@ -99,7 +99,7 @@ impl<'a, P: Pe<'a> + Copy> Security<'a, P> {
 		}
 	}
 }
-impl<'a, P: Pe<'a> + Copy> fmt::Debug for Security<'a, P> {
+impl<'a, P: Pe<'a>> fmt::Debug for Security<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		f.debug_struct("Security")
 			.field("certificate_type", &self.certificate_type())
@@ -113,7 +113,7 @@ mod serde {
 	use util::serde_helper::*;
 	use super::{Pe, Security};
 
-	impl<'a, P: Pe<'a> + Copy> Serialize for Security<'a, P> {
+	impl<'a, P: Pe<'a>> Serialize for Security<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			let is_human_readable = serializer.is_human_readable();
 			let mut state = serializer.serialize_struct("Security", 2)?;
@@ -132,7 +132,7 @@ mod serde {
 }
 
 #[cfg(test)]
-pub(crate) fn test<'a, P: Pe<'a> + Copy>(pe: P) -> Result<()> {
+pub(crate) fn test<'a, P: Pe<'a>>(pe: P) -> Result<()> {
 	let security = pe.security()?;
 	let _ = format!("{:?}", security);
 	let _certificate_type = security.certificate_type();

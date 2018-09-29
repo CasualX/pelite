@@ -43,7 +43,7 @@ fn example(file: PeFile<'_>) -> pelite::Result<()> {
 
 use std::{fmt, iter, mem, slice};
 
-use error::{Error, Result};
+use {Error, Result};
 use util::CStr;
 
 use super::image::*;
@@ -68,7 +68,7 @@ pub enum Import<'a> {
 //
 // These aren't actually virtual addresses.
 // This function will decode them to get the import.
-fn import_from_va<'a, P: Pe<'a> + Copy>(pe: P, &va: &'a Va) -> Result<Import<'a>> {
+fn import_from_va<'a, P: Pe<'a>>(pe: P, &va: &'a Va) -> Result<Import<'a>> {
 	if va & IMAGE_ORDINAL_FLAG == 0 {
 		// TODO! Validate that this really is an Rva in PE32+?
 		let rva = va as Rva;
@@ -91,7 +91,7 @@ pub struct Imports<'a, P> {
 	pe: P,
 	image: &'a [IMAGE_IMPORT_DESCRIPTOR],
 }
-impl<'a, P: Pe<'a> + Copy> Imports<'a, P> {
+impl<'a, P: Pe<'a>> Imports<'a, P> {
 	pub(crate) fn try_from(pe: P) -> Result<Imports<'a, P>> {
 		let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_IMPORT).ok_or(Error::Bounds)?;
 		let image = pe.derva_slice_f(datadir.VirtualAddress, |image: &IMAGE_IMPORT_DESCRIPTOR| image.is_null())?;
@@ -106,7 +106,7 @@ impl<'a, P: Pe<'a> + Copy> Imports<'a, P> {
 		self.image
 	}
 }
-impl<'a, P: Pe<'a> + Copy> IntoIterator for Imports<'a, P> {
+impl<'a, P: Pe<'a>> IntoIterator for Imports<'a, P> {
 	type Item = Desc<'a, P>;
 	type IntoIter = Iter<'a, P>;
 	fn into_iter(self) -> Iter<'a, P> {
@@ -116,7 +116,7 @@ impl<'a, P: Pe<'a> + Copy> IntoIterator for Imports<'a, P> {
 		}
 	}
 }
-impl<'a, P: Pe<'a> + Copy> fmt::Debug for Imports<'a, P> {
+impl<'a, P: Pe<'a>> fmt::Debug for Imports<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		f.debug_list()
 			.entries(self.into_iter())
@@ -134,7 +134,7 @@ pub struct IAT<'a, P> {
 	pe: P,
 	image: &'a [Va],
 }
-impl<'a, P: Pe<'a> + Copy> IAT<'a, P> {
+impl<'a, P: Pe<'a>> IAT<'a, P> {
 	pub(crate) fn try_from(pe: P) -> Result<IAT<'a, P>> {
 		let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_IAT).ok_or(Error::Bounds)?;
 		// Ignore datadir.Size not being a multiple of sizeof(Va), not that big of a deal...
@@ -157,7 +157,7 @@ impl<'a, P: Pe<'a> + Copy> IAT<'a, P> {
 		self.image.iter().map(move |va| (va, import_from_va(pe, va)))
 	}
 }
-impl<'a, P: Pe<'a> + Copy> fmt::Debug for IAT<'a, P> {
+impl<'a, P: Pe<'a>> fmt::Debug for IAT<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		f.debug_struct("IAT")
 			.field("iat.len", &self.image.len())
@@ -172,12 +172,12 @@ pub struct Iter<'a, P> {
 	pe: P,
 	iter: slice::Iter<'a, IMAGE_IMPORT_DESCRIPTOR>,
 }
-impl<'a, P: Pe<'a> + Copy> Iter<'a, P> {
+impl<'a, P: Pe<'a>> Iter<'a, P> {
 	pub fn image(&self) -> &'a [IMAGE_IMPORT_DESCRIPTOR] {
 		self.iter.as_slice()
 	}
 }
-impl<'a, P: Pe<'a> + Copy> Iterator for Iter<'a, P> {
+impl<'a, P: Pe<'a>> Iterator for Iter<'a, P> {
 	type Item = Desc<'a, P>;
 	fn next(&mut self) -> Option<Desc<'a, P>> {
 		self.iter.next().map(|image| Desc { pe: self.pe, image })
@@ -192,13 +192,13 @@ impl<'a, P: Pe<'a> + Copy> Iterator for Iter<'a, P> {
 		self.iter.nth(n).map(|image| Desc { pe: self.pe, image })
 	}
 }
-impl<'a, P: Pe<'a> + Copy> DoubleEndedIterator for Iter<'a, P> {
+impl<'a, P: Pe<'a>> DoubleEndedIterator for Iter<'a, P> {
 	fn next_back(&mut self) -> Option<Desc<'a, P>> {
 		self.iter.next_back().map(|image| Desc { pe: self.pe, image })
 	}
 }
-impl<'a, P: Pe<'a> + Copy> ExactSizeIterator for Iter<'a, P> {}
-impl<'a, P: Pe<'a> + Copy> iter::FusedIterator for Iter<'a, P> {}
+impl<'a, P: Pe<'a>> ExactSizeIterator for Iter<'a, P> {}
+impl<'a, P: Pe<'a>> iter::FusedIterator for Iter<'a, P> {}
 
 //----------------------------------------------------------------
 
@@ -208,7 +208,7 @@ pub struct Desc<'a, P> {
 	pe: P,
 	image: &'a IMAGE_IMPORT_DESCRIPTOR,
 }
-impl<'a, P: Pe<'a> + Copy> Desc<'a, P> {
+impl<'a, P: Pe<'a>> Desc<'a, P> {
 	/// Gets the PE instance.
 	pub fn pe(&self) -> P {
 		self.pe
@@ -238,7 +238,7 @@ impl<'a, P: Pe<'a> + Copy> Desc<'a, P> {
 		Ok(slice.iter().map(move |va| import_from_va(pe, va)))
 	}
 }
-impl<'a, P: Pe<'a> + Copy> fmt::Debug for Desc<'a, P> {
+impl<'a, P: Pe<'a>> fmt::Debug for Desc<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		f.debug_struct("Imports")
 			.field("dll_name", &format_args!("{:?}", self.dll_name()))
@@ -271,18 +271,18 @@ mod serde {
 	use util::serde_helper::*;
 	use super::{Pe, Imports, IAT, Desc};
 
-	impl<'a, P: Pe<'a> + Copy> Serialize for Imports<'a, P> {
+	impl<'a, P: Pe<'a>> Serialize for Imports<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			serializer.collect_seq(self.into_iter())
 		}
 	}
-	impl<'a, P: Pe<'a> + Copy> Serialize for IAT<'a, P> {
+	impl<'a, P: Pe<'a>> Serialize for IAT<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			let iat = self.iter().filter_map(|(_va, import)| import.ok());
 			serializer.collect_seq(iat)
 		}
 	}
-	impl<'a, P: Pe<'a> + Copy> Serialize for Desc<'a, P> {
+	impl<'a, P: Pe<'a>> Serialize for Desc<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			let mut state = serializer.serialize_struct("Desc", 2)?;
 			state.serialize_field("dll_name", &self.dll_name().ok())?;
@@ -300,7 +300,7 @@ mod serde {
 //----------------------------------------------------------------
 
 #[cfg(test)]
-pub(crate) fn test<'a, P: Pe<'a> + Copy>(pe: P) -> Result<()> {
+pub(crate) fn test<'a, P: Pe<'a>>(pe: P) -> Result<()> {
 	let imports = pe.imports()?;
 	let _ = format!("{:?}", imports);
 

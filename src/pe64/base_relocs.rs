@@ -31,7 +31,7 @@ fn example(file: PeFile<'_>) -> pelite::Result<()> {
 
 use std::{cmp, fmt, iter, mem, slice};
 
-use error::{Error, Result};
+use {Error, Result};
 
 use super::image::*;
 use super::Pe;
@@ -46,7 +46,7 @@ pub struct BaseRelocs<'a, P> {
 	pe: P,
 	relocs: &'a [u8],
 }
-impl<'a, P: Pe<'a> + Copy> BaseRelocs<'a, P> {
+impl<'a, P: Pe<'a>> BaseRelocs<'a, P> {
 	pub(crate) fn try_from(pe: P) -> Result<BaseRelocs<'a, P>> {
 		let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_BASERELOC).ok_or(Error::Bounds)?;
 		let relocs = pe.slice(datadir.VirtualAddress, datadir.Size as usize, 4)?; // $1
@@ -84,7 +84,7 @@ impl<'a, P: Pe<'a> + Copy> BaseRelocs<'a, P> {
 		accum
 	}
 }
-impl<'a, P: Pe<'a> + Copy> fmt::Debug for BaseRelocs<'a, P> {
+impl<'a, P: Pe<'a>> fmt::Debug for BaseRelocs<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		f.debug_struct("BaseRelocs").finish()
 	}
@@ -188,7 +188,7 @@ mod serde {
 	use util::serde_helper::*;
 	use super::{Pe, BaseRelocs};
 
-	impl<'a, P: Pe<'a> + Copy> Serialize for BaseRelocs<'a, P> {
+	impl<'a, P: Pe<'a>> Serialize for BaseRelocs<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			let mut state = serializer.serialize_struct("BaseRelocs", 2)?;
 			let mut rvas = Vec::new();
@@ -207,7 +207,7 @@ mod serde {
 //----------------------------------------------------------------
 
 #[cfg(test)]
-pub(crate) fn test<'a, P: Pe<'a> + Copy>(pe: P) -> Result<()> {
+pub(crate) fn test<'a, P: Pe<'a>>(pe: P) -> Result<()> {
 	let base_relocs = pe.base_relocs()?;
 	let _ = format!("{:?}", base_relocs);
 

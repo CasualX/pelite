@@ -53,7 +53,7 @@ const QS_BUF_LEN: usize = 16;
 pub struct Scanner<P> {
 	pe: P,
 }
-impl<'a, P: Pe<'a> + Copy> Scanner<P> {
+impl<'a, P: Pe<'a>> Scanner<P> {
 	pub(crate) fn new(pe: P) -> Scanner<P> {
 		Scanner { pe }
 	}
@@ -122,7 +122,7 @@ trait Scan<'a>: Copy {
 	fn slice(self, rva: Rva) -> Option<&'a [u8]>;
 }
 
-impl<'a, P: Pe<'a> + Copy> Scan<'a> for P {
+impl<'a, P: Pe<'a>> Scan<'a> for P {
 	fn read<T: Copy + Pod>(self, rva: Rva) -> Option<T> {
 		self.derva_copy(rva).ok()
 	}
@@ -389,7 +389,7 @@ pub struct Matches<'u, P> {
 	hits: u32,
 }
 
-impl<'a, 'u, P: Pe<'a> + Copy> Matches<'u, P> {
+impl<'a, 'u, P: Pe<'a>> Matches<'u, P> {
 	/// Gets the scanner instance.
 	pub fn scanner(&self) -> Scanner<P> {
 		self.scanner
@@ -538,7 +538,7 @@ impl<'a, 'u, P: Pe<'a> + Copy> Matches<'u, P> {
 /// For PeFiles this means providing each section separately.
 /// For PeViews this means just provide the whole image at once.
 fn for_each_section<'a, P, F>(pe: P, mut f: F) -> bool where
-	P: Pe<'a> + Copy,
+	P: Pe<'a>,
 	F: FnMut(Rva, &'a [u8]) -> bool
 {
 	let image = pe.image();
@@ -560,7 +560,7 @@ fn for_each_section<'a, P, F>(pe: P, mut f: F) -> bool where
 }
 /// Map over continuous pe memory in the given range.
 fn finder_section<'a, P, F>(pe: P, range: Range<Rva>, mut f: F) -> bool where
-	P: Pe<'a> + Copy,
+	P: Pe<'a>,
 	F: FnMut(Rva, &'a [u8]) -> bool
 {
 	for_each_section(pe, |rva, bytes| {
@@ -581,7 +581,7 @@ fn finder_section<'a, P, F>(pe: P, range: Range<Rva>, mut f: F) -> bool where
 //----------------------------------------------------------------
 
 #[cfg(test)]
-pub(crate) fn test<'a, P: Pe<'a> + Copy>(pe: P) -> ::Result<()> {
+pub(crate) fn test<'a, P: Pe<'a>>(pe: P) -> ::Result<()> {
 	use pattern::Atom::*;
 	let scanner = pe.scanner();
 	let mut save = [0; 4];

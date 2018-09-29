@@ -4,11 +4,11 @@ PE view.
 
 use std::{cmp, slice};
 
-use error::{Error, Result};
+use {Error, Result};
 
 use super::image::*;
 use super::pe::validate_headers;
-use super::{Align, Pe};
+use super::{Align, Pe, PeObject};
 
 /// View into a mapped PE image.
 #[derive(Copy, Clone)]
@@ -110,64 +110,23 @@ impl<'a> PeView<'a> {
 
 		vec
 	}
-	fn slice_impl(self, rva: Rva, min_size_of: usize, align_of: usize) -> Result<&'a [u8]> {
-		debug_assert!(align_of != 0 && align_of & (align_of - 1) == 0);
-		let start = rva as usize;
-		if rva == 0 {
-			Err(Error::Null)
-		}
-		else if usize::wrapping_add(self.image.as_ptr() as usize, start) & (align_of - 1) != 0 {
-			Err(Error::Misaligned)
-		}
-		else {
-			match self.image.get(start..) {
-				Some(bytes) if bytes.len() >= min_size_of => Ok(bytes),
-				_ => Err(Error::Bounds),
-			}
-		}
-	}
-	fn read_impl(self, va: Va, min_size_of: usize, align_of: usize) -> Result<&'a [u8]> {
-		debug_assert!(align_of != 0 && align_of & (align_of - 1) == 0);
-		let (image_base, size_of_image) = {
-			let optional_header = self.optional_header();
-			(optional_header.ImageBase, optional_header.SizeOfImage)
-		};
-		if va == 0 {
-			Err(Error::Null)
-		}
-		else if va < image_base || va - image_base > size_of_image as Va {
-			Err(Error::Bounds)
-		}
-		else {
-			let start = (va - image_base) as usize;
-			if usize::wrapping_add(self.image.as_ptr() as usize, start) & (align_of - 1) != 0 {
-				Err(Error::Misaligned)
-			}
-			else {
-				match self.image.get(start..) {
-					Some(bytes) if bytes.len() >= min_size_of => Ok(bytes),
-					_ => Err(Error::Bounds),
-				}
-			}
-		}
-	}
 }
 
-unsafe impl<'a> Pe<'a> for PeView<'a> {
+//----------------------------------------------------------------
+
+unsafe impl<'a> Pe<'a> for PeView<'a> {}
+
+unsafe impl<'a> PeObject<'a> for PeView<'a> {
 	fn image(&self) -> &'a [u8] {
 		self.image
 	}
 	fn align(&self) -> Align {
 		Align::Section
 	}
-	fn slice(&self, rva: Rva, min_size_of: usize, align_of: usize) -> Result<&'a [u8]> {
-		self.slice_impl(rva, min_size_of, align_of)
-	}
-	fn read(&self, va: Va, min_size_of: usize, align_of: usize) -> Result<&'a [u8]> {
-		self.read_impl(va, min_size_of, align_of)
-	}
 	#[cfg(feature = "serde")]
-	const SERDE_NAME: &'static str = "PeView";
+	fn serde_name(&self) -> &'static str {
+		"PeView"
+	}
 }
 
 //----------------------------------------------------------------
@@ -175,7 +134,7 @@ unsafe impl<'a> Pe<'a> for PeView<'a> {
 #[cfg(feature = "serde")]
 impl<'a> ::serde::Serialize for PeView<'a> {
 	fn serialize<S: ::serde::Serializer>(&self, serializer: S) -> ::std::result::Result<S::Ok, S::Error> {
-		super::pe::serialize_pe(self, serializer)
+		super::pe::serialize_pe(*self, serializer)
 	}
 }
 
@@ -183,7 +142,7 @@ impl<'a> ::serde::Serialize for PeView<'a> {
 
 #[cfg(test)]
 mod tests {
-	use error::Error;
+	use Error;
 	use super::PeView;
 
 	#[test]

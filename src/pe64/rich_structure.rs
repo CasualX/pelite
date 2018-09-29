@@ -34,7 +34,7 @@ pub struct RichStructure<'a> {
 	image: &'a [u32],
 }
 impl<'a> RichStructure<'a> {
-	pub(crate) fn try_from<P: Pe<'a> + Copy>(pe: P) -> Result<RichStructure<'a>> {
+	pub(crate) fn try_from<P: Pe<'a>>(pe: P) -> Result<RichStructure<'a>> {
 		let dos_header = pe.dos_header();
 
 		// Read as a slice of dwords up until the PE headers
@@ -295,7 +295,7 @@ mod serde {
 //----------------------------------------------------------------
 
 #[cfg(test)]
-pub(crate) fn test<'a, P: 'a + Pe<'a> + Copy>(pe: P) -> Result<()> {
+pub(crate) fn test<'a, P: Pe<'a>>(pe: P) -> Result<()> {
 	let rich_structure = pe.rich_structure()?;
 	let _checksum = rich_structure.checksum();
 

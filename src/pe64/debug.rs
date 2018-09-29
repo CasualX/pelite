@@ -24,7 +24,7 @@ fn example(file: PeFile<'_>) -> pelite::Result<()> {
 
 use std::{fmt, iter, mem, slice, str};
 
-use error::{Error, Result};
+use {Error, Result};
 use util::{CStr, Pod};
 
 use super::image::*;
@@ -40,7 +40,7 @@ pub struct Debug<'a, P> {
 	pe: P,
 	image: &'a [IMAGE_DEBUG_DIRECTORY],
 }
-impl<'a, P: Pe<'a> + Copy> Debug<'a, P> {
+impl<'a, P: Pe<'a>> Debug<'a, P> {
 	pub(crate) fn try_from(pe: P) -> Result<Debug<'a, P>> {
 		let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_DEBUG).ok_or(Error::Bounds)?;
 		let (len, rem) = (
@@ -68,7 +68,7 @@ impl<'a, P: Pe<'a> + Copy> Debug<'a, P> {
 			.next()
 	}
 }
-impl<'a, P: Pe<'a> + Copy> IntoIterator for Debug<'a, P> {
+impl<'a, P: Pe<'a>> IntoIterator for Debug<'a, P> {
 	type Item = Dir<'a, P>;
 	type IntoIter = Iter<'a, P>;
 	fn into_iter(self) -> Iter<'a, P> {
@@ -78,7 +78,7 @@ impl<'a, P: Pe<'a> + Copy> IntoIterator for Debug<'a, P> {
 		}
 	}
 }
-impl<'a, P: Pe<'a> + Copy> fmt::Debug for Debug<'a, P> {
+impl<'a, P: Pe<'a>> fmt::Debug for Debug<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		f.debug_list().entries(*self).finish()
 	}
@@ -92,12 +92,12 @@ pub struct Iter<'a, P> {
 	pe: P,
 	iter: slice::Iter<'a, IMAGE_DEBUG_DIRECTORY>,
 }
-impl<'a, P: Pe<'a> + Copy> Iter<'a, P> {
+impl<'a, P: Pe<'a>> Iter<'a, P> {
 	pub fn image(&self) -> &'a [IMAGE_DEBUG_DIRECTORY] {
 		self.iter.as_slice()
 	}
 }
-impl<'a, P: Pe<'a> + Copy> Iterator for Iter<'a, P> {
+impl<'a, P: Pe<'a>> Iterator for Iter<'a, P> {
 	type Item = Dir<'a, P>;
 	fn next(&mut self) -> Option<Dir<'a, P>> {
 		self.iter.next().map(|image| Dir { pe: self.pe, image })
@@ -112,13 +112,13 @@ impl<'a, P: Pe<'a> + Copy> Iterator for Iter<'a, P> {
 		self.iter.nth(n).map(|image| Dir { pe: self.pe, image })
 	}
 }
-impl<'a, P: Pe<'a> + Copy> DoubleEndedIterator for Iter<'a, P> {
+impl<'a, P: Pe<'a>> DoubleEndedIterator for Iter<'a, P> {
 	fn next_back(&mut self) -> Option<Dir<'a, P>> {
 		self.iter.next_back().map(|image| Dir { pe: self.pe, image })
 	}
 }
-impl<'a, P: Pe<'a> + Copy> ExactSizeIterator for Iter<'a, P> {}
-impl<'a, P: Pe<'a> + Copy> iter::FusedIterator for Iter<'a, P> {}
+impl<'a, P: Pe<'a>> ExactSizeIterator for Iter<'a, P> {}
+impl<'a, P: Pe<'a>> iter::FusedIterator for Iter<'a, P> {}
 
 //----------------------------------------------------------------
 
@@ -128,7 +128,7 @@ pub struct Dir<'a, P> {
 	pe: P,
 	image: &'a IMAGE_DEBUG_DIRECTORY,
 }
-impl<'a, P: Pe<'a> + Copy> Dir<'a, P> {
+impl<'a, P: Pe<'a>> Dir<'a, P> {
 	/// Gets the PE instance.
 	pub fn pe(&self) -> P {
 		self.pe
@@ -157,7 +157,7 @@ impl<'a, P: Pe<'a> + Copy> Dir<'a, P> {
 		}
 	}
 }
-impl<'a, P: Pe<'a> + Copy> fmt::Debug for Dir<'a, P> {
+impl<'a, P: Pe<'a>> fmt::Debug for Dir<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		f.debug_struct("Dir")
 			.field("type", &::stringify::DebugType(self.image.Type).to_str().ok_or(self.image.Type))
@@ -209,7 +209,7 @@ pub enum CodeView<'a> {
 	Cv70 { image: &'a IMAGE_DEBUG_CV_INFO_PDB70, pdb_file_name: &'a CStr },
 }
 impl<'a> CodeView<'a> {
-	pub(crate) fn new<P: Pe<'a> + Copy>(dir: &Dir<'a, P>) -> Result<CodeView<'a>> {
+	pub(crate) fn new<P: Pe<'a>>(dir: &Dir<'a, P>) -> Result<CodeView<'a>> {
 		let bytes = dir.data().ok_or(Error::Bounds)?;
 		if bytes.len() < 16 {
 			return Err(Error::Bounds);
@@ -279,7 +279,7 @@ pub struct Dbg<'a> {
 	image: &'a IMAGE_DEBUG_MISC,
 }
 impl<'a> Dbg<'a> {
-	pub(crate) fn new<P: Pe<'a> + Copy>(dir: &Dir<'a, P>) -> Result<Dbg<'a>> {
+	pub(crate) fn new<P: Pe<'a>>(dir: &Dir<'a, P>) -> Result<Dbg<'a>> {
 		let data = dir.data().ok_or(Error::Bounds)?;
 		if data.len() < mem::size_of::<IMAGE_DEBUG_MISC>() {
 			return Err(Error::Bounds);
@@ -309,7 +309,7 @@ pub struct Pogo<'a> {
 	image: &'a [u32],
 }
 impl<'a> Pogo<'a> {
-	pub(crate) fn new<P: Pe<'a> + Copy>(dir: &Dir<'a, P>) -> Result<Pogo<'a>> {
+	pub(crate) fn new<P: Pe<'a>>(dir: &Dir<'a, P>) -> Result<Pogo<'a>> {
 		let data = dir.data().ok_or(Error::Bounds)?;
 		if data.len() < 4 {
 			return Err(Error::Bounds);
@@ -395,12 +395,12 @@ mod serde {
 	use util::serde_helper::*;
 	use super::{Pe, Debug, Dir, CodeView, Dbg, Pogo};
 
-	impl<'a, P: Pe<'a> + Copy> Serialize for Debug<'a, P> {
+	impl<'a, P: Pe<'a>> Serialize for Debug<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			serializer.collect_seq(self.into_iter())
 		}
 	}
-	impl<'a, P: Pe<'a> + Copy> Serialize for Dir<'a, P> {
+	impl<'a, P: Pe<'a>> Serialize for Dir<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			let is_human_readable = serializer.is_human_readable();
 			let mut state = serializer.serialize_struct("Dir", 4)?;
@@ -449,7 +449,7 @@ mod serde {
 //----------------------------------------------------------------
 
 #[cfg(test)]
-pub(crate) fn test<'a, P: 'a + Pe<'a> + Copy>(pe: P) -> Result<()> {
+pub(crate) fn test<'a, P: Pe<'a>>(pe: P) -> Result<()> {
 	let debug = pe.debug()?;
 	for dir in debug {
 		let _data = dir.data();

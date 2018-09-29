@@ -23,7 +23,7 @@ fn example(file: PeFile<'_>) -> pelite::Result<()> {
 
 use std::fmt;
 
-use error::{Error, Result};
+use {Error, Result};
 
 use super::image::*;
 use super::Pe;
@@ -36,7 +36,7 @@ pub struct LoadConfig<'a, P> {
 	pe: P,
 	image: &'a IMAGE_LOAD_CONFIG_DIRECTORY,
 }
-impl<'a, P: Pe<'a> + Copy> LoadConfig<'a, P> {
+impl<'a, P: Pe<'a>> LoadConfig<'a, P> {
 	pub(crate) fn try_from(pe: P) -> Result<LoadConfig<'a, P>> {
 		let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG).ok_or(Error::Bounds)?;
 		let image = pe.derva(datadir.VirtualAddress)?;
@@ -59,7 +59,7 @@ impl<'a, P: Pe<'a> + Copy> LoadConfig<'a, P> {
 		self.pe.deref_slice(self.image.SEHandlerTable.into(), self.image.SEHandlerCount as usize)
 	}
 }
-impl<'a, P: Pe<'a> + Copy> fmt::Debug for LoadConfig<'a, P> {
+impl<'a, P: Pe<'a>> fmt::Debug for LoadConfig<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		f.debug_struct("LoadConfig")
 			.field("security_cookie", &format_args!("{:x?}", self.security_cookie()))
@@ -73,7 +73,7 @@ mod serde {
 	use util::serde_helper::*;
 	use super::{Pe, LoadConfig};
 
-	impl<'a, P: Pe<'a> + Copy> Serialize for LoadConfig<'a, P> {
+	impl<'a, P: Pe<'a>> Serialize for LoadConfig<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			let mut state = serializer.serialize_struct("LoadConfig", 2)?;
 			state.serialize_field("security_cookie", &self.security_cookie().ok())?;
@@ -84,7 +84,7 @@ mod serde {
 }
 
 #[cfg(test)]
-pub(crate) fn test<'a, P: Pe<'a> + Copy>(pe: P) -> Result<()> {
+pub(crate) fn test<'a, P: Pe<'a>>(pe: P) -> Result<()> {
 	let load_config = pe.load_config()?;
 	let _ = format!("{:?}", load_config);
 	let _security_cookie = load_config.security_cookie();

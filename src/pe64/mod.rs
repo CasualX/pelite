@@ -138,7 +138,7 @@ mod ptr;
 pub mod scanner;
 
 pub use self::image::{Va, Rva};
-pub use self::pe::{Align, Pe};
+pub use self::pe::{Align, Pe, PeObject};
 pub use self::view::{PeView};
 pub use self::file::{PeFile};
 pub use self::ptr::Ptr;

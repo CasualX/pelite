@@ -28,7 +28,7 @@ fn example(file: PeFile<'_>) -> pelite::Result<()> {
 
 use std::fmt;
 
-use error::{Error, Result};
+use {Error, Result};
 
 use super::image::*;
 use super::Pe;
@@ -43,7 +43,7 @@ pub struct Tls<'a, P> {
 	pe: P,
 	image: &'a IMAGE_TLS_DIRECTORY,
 }
-impl<'a, P: Pe<'a> + Copy> Tls<'a, P> {
+impl<'a, P: Pe<'a>> Tls<'a, P> {
 	pub(crate) fn try_from(pe: P) -> Result<Tls<'a, P>> {
 		let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_TLS).ok_or(Error::Bounds)?;
 		let image = pe.derva(datadir.VirtualAddress)?;
@@ -70,7 +70,7 @@ impl<'a, P: Pe<'a> + Copy> Tls<'a, P> {
 		self.pe.deref_slice_s(self.image.AddressOfCallBacks.into(), 0)
 	}
 }
-impl<'a, P: Pe<'a> + Copy> fmt::Debug for Tls<'a, P> {
+impl<'a, P: Pe<'a>> fmt::Debug for Tls<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		f.debug_struct("Tls")
 			.field("raw_data.len", &format_args!("{:?}", self.raw_data().map(|raw_data| raw_data.len())))
@@ -86,7 +86,7 @@ mod serde {
 	use util::serde_helper::*;
 	use super::{Pe, Tls};
 
-	impl<'a, P: Pe<'a> + Copy> Serialize for Tls<'a, P> {
+	impl<'a, P: Pe<'a>> Serialize for Tls<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			let is_human_readable = serializer.is_human_readable();
 			let mut state = serializer.serialize_struct("Tls", 2)?;
@@ -107,7 +107,7 @@ mod serde {
 //----------------------------------------------------------------
 
 #[cfg(test)]
-pub(crate) fn test<'a, P: Pe<'a> + Copy>(pe: P) -> Result<()> {
+pub(crate) fn test<'a, P: Pe<'a>>(pe: P) -> Result<()> {
 	let tls = pe.tls()?;
 	let _ = format!("{:?}", tls);
 	let _raw_data = tls.raw_data();
