@@ -48,10 +48,10 @@ pub use self::pefile::PeFile;
 
 /// Defaults to the current platform if it is available.
 #[cfg(all(windows, target_pointer_width = "32"))]
-pub use pe32 as pe;
+pub use pe32 as native;
 /// Defaults to the current platform if it is available.
 #[cfg(all(windows, target_pointer_width = "64"))]
-pub use pe64 as pe;
+pub use pe64 as native;
 
 pub mod resources;
 
