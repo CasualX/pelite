@@ -10,6 +10,7 @@ use std::io::{self, Write};
 
 use pelite::{pe32, pe64};
 use pelite::pattern as pat;
+use pelite::pe::PeFile;
 
 const HELP_TEXT: &'static str = "\
 FINDSIG <FILE> [PAT]...
@@ -37,9 +38,9 @@ fn main() {
 		// Map the file into memory
 		let file_map = pelite::FileMap::open(&file_path).expect("cannot open the input file");
 
-		match pelite::PeFile::from_bytes(&file_map) {
+		match PeFile::from_bytes(&file_map) {
 			// Try reading as PE32
-			Ok(pelite::PeFile::Pe32(file)) => {
+			Ok(PeFile::Pe32(file)) => {
 				process_patterns(args, &mut |pattern, save| {
 					let scanner = pe32::Pe::scanner(file);
 					let mut matches = scanner.matches_code(pattern);
@@ -49,7 +50,7 @@ fn main() {
 				});
 			},
 			// Try reading as PE32+
-			Ok(pelite::PeFile::Pe64(file)) => {
+			Ok(PeFile::Pe64(file)) => {
 				process_patterns(args, &mut |pattern, save| {
 					let scanner = pe64::Pe::scanner(file);
 					let mut matches = scanner.matches_code(pattern);

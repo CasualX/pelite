@@ -5,7 +5,7 @@ Resources.
 use std::{fmt, iter, mem, slice};
 
 use {Error, Result};
-use image::*;
+use pe::image::*;
 use util::{Pod, WideStr};
 
 //----------------------------------------------------------------

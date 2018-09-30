@@ -482,7 +482,7 @@ fn ser_fixed_file_info_struc_version<S: ::serde::Serializer>(&version: &u32, ser
 #[repr(C)]
 pub struct VS_FIXEDFILEINFO {
 	pub dwSignature: u32,
-	#[cfg_attr(feature = "serde", serde(serialize_with = "::image::ser_fixed_file_info_struc_version"))]
+	#[cfg_attr(feature = "serde", serde(serialize_with = "ser_fixed_file_info_struc_version"))]
 	pub dwStrucVersion: u32,
 	pub dwFileVersion: VS_VERSION,
 	pub dwProductVersion: VS_VERSION,

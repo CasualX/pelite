@@ -25,6 +25,7 @@ lib /def:"demo\Demo.DEF" /out:"demo\Demo.LIB" /machine:x86
 extern crate pelite;
 
 use std::env;
+use pelite::pe::PeFile;
 
 //----------------------------------------------------------------
 
@@ -44,9 +45,9 @@ fn main() {
 		match pelite::FileMap::open(&dll) {
 			Ok(map) => {
 				// Try PE32 and PE32+
-				let result = match pelite::PeFile::from_bytes(&map) {
-					Ok(pelite::PeFile::Pe32(pe)) => lib_pe32(pe),
-					Ok(pelite::PeFile::Pe64(pe)) => lib_pe64(pe),
+				let result = match PeFile::from_bytes(&map) {
+					Ok(PeFile::Pe32(pe)) => lib_pe32(pe),
+					Ok(PeFile::Pe64(pe)) => lib_pe64(pe),
 					Err(err) => Err(err),
 				};
 				// Display errors

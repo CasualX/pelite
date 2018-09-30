@@ -9,7 +9,8 @@ use std::io::{self, Write};
 use std::path::PathBuf;
 use std::process;
 
-use pelite::{FileMap, PeFile};
+use pelite::FileMap;
+use pelite::pe::PeFile;
 
 //----------------------------------------------------------------
 
