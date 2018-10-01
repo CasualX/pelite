@@ -12,15 +12,16 @@ extern crate pelite;
 use std::env;
 use std::collections::hash_map::DefaultHasher;
 use std::hash::{Hash, Hasher};
+use pelite::pe::PeFile;
 
 fn main() {
 	let mut args = env::args_os();
 	if let (Some(_), Some(path), None) = (args.next(), args.next(), args.next()) {
 		match pelite::FileMap::open(&path) {
 			Ok(file_map) => {
-				let result = match pelite::PeFile::from_bytes(&file_map) {
-					Ok(pelite::PeFile::Pe32(_)) => imphash32(file_map.as_ref()),
-					Ok(pelite::PeFile::Pe64(_)) => imphash64(file_map.as_ref()),
+				let result = match PeFile::from_bytes(&file_map) {
+					Ok(PeFile::Pe32(_)) => imphash32(file_map.as_ref()),
+					Ok(PeFile::Pe64(_)) => imphash64(file_map.as_ref()),
 					Err(err) => Err(err),
 				};
 				match result {

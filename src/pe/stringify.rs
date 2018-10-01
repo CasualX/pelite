@@ -5,7 +5,7 @@ Stringify image constants.
 use std::mem;
 use std::str::FromStr;
 
-use image::*;
+use pe::image::*;
 
 //----------------------------------------------------------------
 // Define some reflection macros for enums and flags

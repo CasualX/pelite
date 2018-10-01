@@ -8,7 +8,7 @@ See [here](../../resources/index.html) for the API docs.
 ```
 # #![allow(unused_variables)]
 use pelite::pe64::{Pe, PeFile};
-use pelite::resources::FindError;
+use pelite::pe::resources::FindError;
 
 # #[allow(dead_code)]
 fn example<'a>(file: PeFile<'a>) -> Result<&'a [u8], FindError> {
@@ -26,5 +26,5 @@ fn example<'a>(file: PeFile<'a>) -> Result<&'a [u8], FindError> {
 
 #[cfg(test)]
 pub(crate) fn test<'a, P: super::Pe<'a>>(pe: P) -> ::Result<()> {
-	pe.resources().and_then(::resources::test)
+	pe.resources().and_then(super::super::resources::test)
 }

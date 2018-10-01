@@ -2,9 +2,9 @@
 Run tests on a variety of cute binaries.
  */
 
-use {pe32, pe64, PeFile};
+use super::{pe32, pe64, PeFile};
 
-#[path = "../tests/pocs/pocs.rs"]
+#[path = "../../tests/pocs/pocs.rs"]
 mod pocs;
 
 macro_rules! test {
