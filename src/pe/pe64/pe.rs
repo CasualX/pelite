@@ -2,7 +2,7 @@
 Abstract over mapped images and file binaries.
 */
 
-use std::{cmp, mem, ptr, slice};
+use std::{cmp, mem, ops, ptr, slice};
 
 use {Error, Result};
 use util::{CStr, Pod, FromBytes};
@@ -223,6 +223,18 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 			}
 		}
 	}
+
+	fn rva_of_bytes(&self, data: &'a [u8]) -> ops::Range<usize> where Self: Copy;
+	fn va_of_bytes(&self, data: &'a [u8]) -> ops::Range<usize> where Self: Copy;
+
+	// fn span_of_bytes(self, data: &'a [u8]) -> ops::Range<usize> where Self: Copy {
+	// 	let image = self.image();
+
+	// 	let start = data.as_ptr() as usize - image.as_ptr() as usize;
+	// 	let end = start + data.len();
+
+	// 	start..end
+	// }
 
 	//----------------------------------------------------------------
 

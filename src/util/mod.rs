@@ -16,12 +16,7 @@ fn assert_size_of() {
 	assert_size_of!(8, Foo);
 }
 
-macro_rules! offset_of {
-	($ty:ty, $($field_bits:tt)*) => {
-		unsafe { &(*(0 as *const $ty)).$($field_bits)* as *const _ as usize }
-	}
-}
-
+mod annotate;
 mod c_str;
 mod wide_str;
 mod pod;
@@ -29,6 +24,7 @@ mod pod;
 #[cfg(feature = "serde")]
 pub(crate) mod serde_helper;
 
+pub use self::annotate::Annotate;
 pub use self::c_str::CStr;
 pub use self::wide_str::WideStr;
 pub use self::pod::Pod;

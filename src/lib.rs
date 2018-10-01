@@ -14,6 +14,9 @@ Due to small but incompatible differences the two formats are not unified.
 
 #![recursion_limit = "128"]
 
+#[macro_use]
+extern crate memoffset;
+
 #[cfg(feature = "serde")]
 #[macro_use]
 extern crate serde;

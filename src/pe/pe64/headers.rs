@@ -2,10 +2,12 @@
 PE headers.
  */
 
-use std::{slice};
+use std::{mem, slice};
 
 use super::Pe;
 use super::image::*;
+
+use util::Annotate;
 
 /// Describes the PE headers.
 #[derive(Copy, Clone)]
@@ -48,6 +50,22 @@ impl<'a, P: Pe<'a>> Headers<P> {
 		check_sum += image.len() as u64;
 
 		check_sum as u32
+	}
+	pub fn annotate(&self, a: &mut Annotate) {
+		let e_lfanew = self.pe.dos_header().e_lfanew;
+
+		a.a_struct(0..mem::size_of::<IMAGE_DOS_HEADER>() as u32, "IMAGE_DOS_HEADER");
+		a.a_ref(0x3c..0x40, e_lfanew);
+
+		a.a_struct(e_lfanew..e_lfanew + mem::size_of::<IMAGE_NT_HEADERS>() as u32, "IMAGE_NT_HEADERS");
+
+		let file_span = span_of!(IMAGE_NT_HEADERS, FileHeader);
+		a.a_struct(e_lfanew + file_span.start as u32..e_lfanew + file_span.end as u32, "IMAGE_FILE_HEADER");
+		let opt_span = span_of!(IMAGE_NT_HEADERS, OptionalHeader);
+		a.a_struct(e_lfanew + opt_span.start as u32..e_lfanew + opt_span.end as u32, "IMAGE_OPTIONAL_HEADER");
+
+		let dd_offset = offset_of!(IMAGE_NT_HEADERS, OptionalHeader.DataDirectory);
+		// a.annotate_
 	}
 }
 
