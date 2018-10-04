@@ -78,7 +78,7 @@ impl<'a, P: Pe<'a>> Headers<P> {
 #[cfg(feature = "serde")]
 mod serde {
 	use util::serde_helper::*;
-	use pe::stringify;
+	use stringify;
 	use super::{Pe, Headers};
 
 	impl<'a, P: Pe<'a>> Serialize for Headers<P> {

@@ -1,5 +1,4 @@
-use super::{pe32, pe64};
-use {Result, Error};
+use *;
 
 /// View into an unmapped PE32 or PE32+ file.
 #[derive(Copy, Clone)]

@@ -4,7 +4,7 @@ Formatting as far as the eye can see...
 
 use std::{fmt, mem};
 
-use pe::image::*;
+use image::*;
 use util::*;
 
 //----------------------------------------------------------------

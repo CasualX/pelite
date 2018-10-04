@@ -26,7 +26,6 @@ use std::{fmt, iter, mem, slice, str};
 
 use {Error, Result};
 use util::{CStr, Pod};
-use pe::stringify;
 
 use super::image::*;
 use super::{Align, Pe};
@@ -161,7 +160,7 @@ impl<'a, P: Pe<'a>> Dir<'a, P> {
 impl<'a, P: Pe<'a>> fmt::Debug for Dir<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		f.debug_struct("Dir")
-			.field("type", &stringify::DebugType(self.image.Type).to_str().ok_or(self.image.Type))
+			.field("type", &::stringify::DebugType(self.image.Type).to_str().ok_or(self.image.Type))
 			.field("time_date_stamp", &self.image.TimeDateStamp)
 			.field("version", &self.image.Version)
 			.field("entry", &self.entry())
@@ -395,7 +394,6 @@ pub struct PogoSection<'a> {
 mod serde {
 	use util::serde_helper::*;
 	use super::{Pe, Debug, Dir, CodeView, Dbg, Pogo};
-	use pe::stringify;
 
 	impl<'a, P: Pe<'a>> Serialize for Debug<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
@@ -407,7 +405,7 @@ mod serde {
 			let is_human_readable = serializer.is_human_readable();
 			let mut state = serializer.serialize_struct("Dir", 4)?;
 			if is_human_readable {
-				state.serialize_field("type", &stringify::DebugType(self.image.Type).to_str())?;
+				state.serialize_field("type", &::stringify::DebugType(self.image.Type).to_str())?;
 			}
 			else {
 				state.serialize_field("type", &self.image.Type)?;

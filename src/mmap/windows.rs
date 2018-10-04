@@ -45,7 +45,7 @@ impl ImageMap {
 					// Trust the OS with correctly mapping the image.
 					// Trust me to have read and understood the documentation.
 					// There is no validation and 64bit headers are used because the offsets are the same for PE32.
-					use pe::image::{IMAGE_DOS_HEADER, IMAGE_NT_HEADERS64};
+					use image::{IMAGE_DOS_HEADER, IMAGE_NT_HEADERS64};
 					let dos_header = view as *const IMAGE_DOS_HEADER;
 					let nt_header = (view as usize + (*dos_header).e_lfanew as usize) as *const IMAGE_NT_HEADERS64;
 					let size_of = (*nt_header).OptionalHeader.SizeOfImage;

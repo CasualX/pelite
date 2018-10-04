@@ -24,6 +24,10 @@ extern crate data_encoding;
 #[macro_use]
 pub mod util;
 
+pub mod image;
+
+pub mod stringify;
+
 pub mod pattern;
 
 mod error;
@@ -36,13 +40,20 @@ pub use self::mmap::{FileMap, ImageMap};
 #[cfg(all(feature = "mmap", unix))]
 pub use self::mmap::{FileMap};
 
-pub mod pe;
-pub use self::pe::pe32 as pe32;
-pub use self::pe::pe64 as pe64;
+pub mod pe64;
+pub mod pe32;
+
+mod pefile;
+pub use self::pefile::PeFile;
 
 /// Defaults to the current platform if it is available.
 #[cfg(all(windows, target_pointer_width = "32"))]
-pub use self::pe::pe32 as native;
+pub use pe32 as native;
 /// Defaults to the current platform if it is available.
 #[cfg(all(windows, target_pointer_width = "64"))]
-pub use self::pe::pe64 as native;
+pub use pe64 as native;
+
+pub mod resources;
+
+#[cfg(test)]
+mod tests;

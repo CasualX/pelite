@@ -7,7 +7,7 @@ See [Microsoft's documentation](https://docs.microsoft.com/en-us/windows/desktop
 use std::{char, cmp, mem, slice};
 use std::collections::HashMap;
 
-use pe::image::VS_FIXEDFILEINFO;
+use image::VS_FIXEDFILEINFO;
 use {Error, Result};
 use util::wstrn;
 
