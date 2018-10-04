@@ -1,6 +1,9 @@
 use *;
 
 /// View into an unmapped PE32 or PE32+ file.
+#[derive(Copy, Clone)]
+#[cfg_attr(feature = "serde", derive(Serialize))]
+#[cfg_attr(feature = "serde", serde(untagged))]
 pub enum PeFile<'a> {
 	Pe32(pe32::PeFile<'a>),
 	Pe64(pe64::PeFile<'a>),
@@ -12,21 +15,6 @@ impl<'a> PeFile<'a> {
 			Ok(file) => Ok(PeFile::Pe64(file)),
 			Err(Error::PeMagic) => Ok(PeFile::Pe32(pe32::PeFile::from_bytes(image)?)),
 			Err(err) => Err(err),
-		}
-	}
-}
-
-#[cfg(feature = "serde")]
-mod serde {
-	use util::serde_helper::*;
-	use super::{PeFile};
-
-	impl<'a> Serialize for PeFile<'a> {
-		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-			match self {
-				PeFile::Pe32(file) => file.serialize(serializer),
-				PeFile::Pe64(file) => file.serialize(serializer),
-			}
 		}
 	}
 }
