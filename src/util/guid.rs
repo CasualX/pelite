@@ -2,7 +2,7 @@
 // FIXME! Should I keep this GUID implementation or defer to another GUID library?
 
 use std::fmt;
-use pe::image::GUID;
+use image::GUID;
 
 #[inline(always)]
 fn group(guid: &GUID) -> (u32, u16, u16, u16, u64) {

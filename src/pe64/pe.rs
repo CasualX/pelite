@@ -543,10 +543,10 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	/// See the [resources](resources/index.html) module for more information.
 	///
 	/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) if the image has no resources. Any other error indicates some form of corruption.
-	fn resources(self) -> Result<super::super::resources::Resources<'a>> {
+	fn resources(self) -> Result<::resources::Resources<'a>> {
 		let datadir = self.data_directory().get(IMAGE_DIRECTORY_ENTRY_RESOURCE).ok_or(Error::Bounds)?;
 		let data = self.derva_slice(datadir.VirtualAddress, datadir.Size as usize)?;
-		Ok(super::super::resources::Resources::new(data, datadir))
+		Ok(::resources::Resources::new(data, datadir))
 	}
 
 	/// Gets Scanner access.

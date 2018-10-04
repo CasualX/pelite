@@ -4,7 +4,7 @@ PE32+ image structures.
 
 #![allow(non_camel_case_types)]
 
-pub use pe::image::*;
+pub use image::*;
 
 pub const IMAGE_NT_OPTIONAL_HDR_MAGIC: u16 = IMAGE_NT_OPTIONAL_HDR64_MAGIC;
 

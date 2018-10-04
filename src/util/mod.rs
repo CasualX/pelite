@@ -25,6 +25,7 @@ macro_rules! offset_of {
 mod c_str;
 mod wide_str;
 mod pod;
+mod guid;
 
 #[cfg(feature = "serde")]
 pub(crate) mod serde_helper;

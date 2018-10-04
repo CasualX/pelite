@@ -9,7 +9,6 @@ extern crate rand;
 
 use std::env;
 use rand::{Rng, thread_rng};
-use pelite::pe::PeFile;
 
 fn main() {
 	let mut args = env::args_os();
@@ -41,9 +40,9 @@ fn main() {
 		println!("generating markov data from {:?}...", file);
 		match pelite::FileMap::open(&file) {
 			Ok(file_map) => {
-				match PeFile::from_bytes(&file_map) {
+				match pelite::PeFile::from_bytes(&file_map) {
 					// Try to parse as a PE32 file
-					Ok(PeFile::Pe32(pe)) => {
+					Ok(pelite::PeFile::Pe32(pe)) => {
 						use pelite::pe32::Pe;
 						// Find the binary code bytes
 						let code_section = pe.section_headers().iter().find(|&s| s.Characteristics & 0xE0000000 == 0x60000000).unwrap();
@@ -58,7 +57,7 @@ fn main() {
 						analyze(bytes, &mut markov_data);
 					},
 					// Otherwise try to parse as a PE32+ file
-					Ok(PeFile::Pe64(pe)) => {
+					Ok(pelite::PeFile::Pe64(pe)) => {
 						use pelite::pe64::Pe;
 						// Find the binary code bytes
 						let code_section = pe.section_headers().iter().find(|&s| s.Characteristics & 0xE0000000 == 0x60000000).unwrap();

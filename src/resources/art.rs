@@ -1,6 +1,6 @@
 use std::fmt;
 use super::{Resources, Directory, Entry, Name};
-use pe::stringify::RSRC_TYPES;
+use stringify::RSRC_TYPES;
 
 /// Art used to format a directory tree.
 #[derive(Debug)]
