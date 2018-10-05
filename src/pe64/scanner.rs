@@ -157,9 +157,9 @@ struct Exec<'u, P> {
 }
 impl<'a, 'u, P: Scan<'a>> Exec<'u, P> {
 	fn exec(&mut self, save: &mut [Rva]) -> bool {
+		const SKIP_VA: u32 = mem::size_of::<Va>() as u32;
 		let mut mask = 0xff;
-		let mut skip_ext = 0i8;
-		let mut many_ext = 0u8;
+		let mut ext_range = 0u32;
 		while let Some(atom) = self.pat.get(self.pc).cloned() {
 			self.pc += 1;
 			match atom {
@@ -177,14 +177,14 @@ impl<'a, 'u, P: Scan<'a>> Exec<'u, P> {
 					}
 				},
 				pat::Atom::Push(skip) => {
-					let skip = calc_skip(skip, skip_ext);
-					let cursor = self.cursor.wrapping_add(skip as u32);
+					let skip = ext_range + skip as u32;
+					let skip = if skip == 0 { SKIP_VA } else { skip };
+					let cursor = self.cursor.wrapping_add(skip);
 					if !self.exec(save) {
 						return false;
 					}
 					mask = 0xff;
-					skip_ext = 0;
-					many_ext = 0;
+					ext_range = 0;
 					self.cursor = cursor;
 				},
 				pat::Atom::Pop => {
@@ -194,20 +194,18 @@ impl<'a, 'u, P: Scan<'a>> Exec<'u, P> {
 					mask = pat_mask;
 				},
 				pat::Atom::Skip(skip) => {
-					let skip = calc_skip(skip, skip_ext);
-					let cursor = self.cursor.wrapping_add(skip as u32);
-					skip_ext = 0;
+					let skip = ext_range + skip as u32;
+					let skip = if skip == 0 { SKIP_VA } else { skip };
+					let cursor = self.cursor.wrapping_add(skip);
+					ext_range = 0;
 					self.cursor = cursor;
 				},
-				pat::Atom::SkipExt(ext) => {
-					skip_ext = ext;
+				pat::Atom::Rangext(ext) => {
+					ext_range = ext as u32 * 256;
 				},
 				pat::Atom::Many(limit) => {
-					let limit = limit as u32 + many_ext as u32 * 256;
+					let limit = ext_range + limit as u32;
 					return self.exec_many(save, limit);
-				},
-				pat::Atom::ManyExt(ext) => {
-					many_ext = ext;
 				},
 				pat::Atom::Jump1 => {
 					if let Some(sbyte) = self.pe.read::<i8>(self.cursor) {
@@ -309,6 +307,8 @@ impl<'a, 'u, P: Scan<'a>> Exec<'u, P> {
 					self.pc = self.pc + next as usize;
 					return true;
 				},
+				pat::Atom::Nop => {
+				},
 			}
 		}
 		return true;
@@ -359,19 +359,6 @@ impl<'a, 'u, P: Scan<'a>> Exec<'u, P> {
 		}
 		// No match found, exec fails
 		return false;
-	}
-}
-fn calc_skip(skip: i8, ext: i8) -> i32 {
-	if ext == 0 {
-		if skip == pat::PTR_SKIP {
-			mem::size_of::<Va>() as i32
-		}
-		else {
-			skip as i32
-		}
-	}
-	else {
-		skip as i32 + ext as i32 * 128
 	}
 }
 

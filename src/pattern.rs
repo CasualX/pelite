@@ -41,7 +41,7 @@ use std::{cmp, error, fmt, mem, str};
 /// Max recursion depth.
 pub const STACK_SIZE: usize = 4;
 /// Special skip value to indicate to use platform pointer size instead.
-pub(crate) const PTR_SKIP: i8 = -128;
+pub(crate) const PTR_SKIP: u8 = 0;
 
 //----------------------------------------------------------------
 
@@ -102,19 +102,17 @@ pub enum Atom {
 	/// Captures the cursor in the save array at the specified index.
 	Save(u8),
 	/// After a Pop later continue matching at the current cursor plus the argument.
-	Push(i8),
+	Push(u8),
 	/// Pops the cursor from the stack and continues matching.
 	Pop,
 	/// Sets a mask to apply on next byte match.
 	Fuzzy(u8),
 	/// Skips a fixed number of bytes.
-	Skip(i8),
-	/// Extends the skip range by `argument * 128`.
-	SkipExt(i8),
+	Skip(u8),
+	/// Extends the push, skip and many range by `argument * 256`.
+	Rangext(u8),
 	/// Looks for the next pattern at most a certain number of bytes ahead.
 	Many(u8),
-	/// Extends the search range of many by `argument * 256`.
-	ManyExt(u8),
 	/// Follows a signed 1 byte jump.
 	///
 	/// Reads the byte under the cursor, sign extends it, adds it plus 1 to the cursor and continues matching.
@@ -151,6 +149,8 @@ pub enum Atom {
 	Case(u8),
 	/// Continues matching after a case atom, skipping the next _N_ atoms.
 	Break(u8),
+	/// Null instruction, used to make the parser easier to write.
+	Nop,
 }
 
 /// Patterns are a vector of [`Atom`](enum.Atom.html)s.
@@ -337,7 +337,7 @@ fn parse_helper(pat: &mut &str, result: &mut Vec<Atom>) -> Result<(), PatError> 
 				save = cmp::max(sub.save_next, save);
 				depth = sub.depth;
 				// Neutralize the last case, since there are no more
-				result[sub.case] = Atom::Skip(0);
+				result[sub.case] = Atom::Nop;
 				// Fill in the breaks
 				for &brk in &sub.brks {
 					let brk_offset = result.len() - brk - 1;
@@ -370,10 +370,10 @@ fn parse_helper(pat: &mut &str, result: &mut Vec<Atom>) -> Result<(), PatError> 
 					return Err(PatError::ManyInvalid);
 				}
 				// Turn the lower bound into skip ops
-				if lower_bound >= 128 {
-					result.push(Atom::SkipExt((lower_bound >> 7) as i8));
+				if lower_bound >= 256 {
+					result.push(Atom::Rangext((lower_bound >> 8) as u8));
 				}
-				result.push(Atom::Skip((lower_bound & 0x7f) as i8));
+				result.push(Atom::Skip((lower_bound & 0xff) as u8));
 				// Second many part is optional
 				if chr == b']' {
 					continue;
@@ -396,8 +396,8 @@ fn parse_helper(pat: &mut &str, result: &mut Vec<Atom>) -> Result<(), PatError> 
 				// Lower bound should be strictly less than the upper bound
 				if lower_bound < upper_bound {
 					let many_skip = upper_bound - lower_bound;
-					if many_skip >= 128 {
-						result.push(Atom::ManyExt((many_skip >> 8) as u8));
+					if many_skip >= 256 {
+						result.push(Atom::Rangext((many_skip >> 8) as u8));
 					}
 					result.push(Atom::Many((many_skip & 0xff) as u8));
 				}
@@ -453,7 +453,7 @@ fn parse_helper(pat: &mut &str, result: &mut Vec<Atom>) -> Result<(), PatError> 
 				// };
 				// Coalescence skips together
 				if let Some(Atom::Skip(skip)) = result.last_mut() {
-					if *skip != PTR_SKIP && *skip < 127i8 {
+					if *skip != PTR_SKIP && *skip < 255u8 {
 						*skip += 1;
 						continue;
 					}
@@ -509,10 +509,9 @@ fn parse_helper(pat: &mut &str, result: &mut Vec<Atom>) -> Result<(), PatError> 
 	fn is_redundant(atom: &Atom) -> bool {
 		return match atom {
 			| Atom::Skip(_)
-			| Atom::SkipExt(_)
+			| Atom::Rangext(_)
 			| Atom::Pop
-			| Atom::Many(_)
-			| Atom::ManyExt(_) => true,
+			| Atom::Many(_) => true,
 			_ => false,
 		}
 	}
@@ -565,6 +564,12 @@ mod tests {
 
 		assert_eq!(parse("b8 [16] 50 [13-42] ff"), Ok(vec![
 			Save(0), Byte(0xb8), Skip(16), Byte(0x50), Skip(13), Many(29), Byte(0xff)
+		]));
+
+		assert_eq!(parse("83 c0 2a ( 6a ? | 68 ? ? ? ? ) e8"), Ok(vec![
+			Save(0), Byte(0x83), Byte(0xc0), Byte(0x2a),
+			Case(3), Byte(0x6a), Skip(1), Break(3),
+			Nop, Byte(0x68), Skip(4), Byte(0xe8),
 		]));
 	}
 
