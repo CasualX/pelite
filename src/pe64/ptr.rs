@@ -181,8 +181,8 @@ impl<T: ?Sized> fmt::Display for Ptr<T> {
 }
 
 #[cfg(feature = "serde")]
-impl<T: ?Sized> ::serde::Serialize for Ptr<T> {
-	fn serialize<S: ::serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+impl<T: ?Sized> serde::Serialize for Ptr<T> {
+	fn serialize<S: serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 		branch! {
 			pe32 { serializer.serialize_u32(self.0) }
 			pe64 { serializer.serialize_u64(self.0) }

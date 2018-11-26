@@ -61,7 +61,7 @@ impl<'a, P: Pe<'a>> Exception<'a, P> {
 			.map(move |image| Function { pe, image })
 	}
 	/// Finds the index of the function for the given program counter.
-	pub fn index_of(&self, pc: Rva) -> ::std::result::Result<usize, usize> {
+	pub fn index_of(&self, pc: Rva) -> std::result::Result<usize, usize> {
 		self.image.binary_search_by(|rf| {
 			if pc < rf.BeginAddress {
 				Ordering::Less

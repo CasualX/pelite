@@ -154,8 +154,8 @@ pub struct IMAGE_VERSION<T> {
 }
 unsafe impl<T: Pod> Pod for IMAGE_VERSION<T> {}
 #[cfg(feature = "serde")]
-impl<T: ::std::fmt::Display> ::serde::Serialize for IMAGE_VERSION<T> {
-	fn serialize<S: ::serde::Serializer>(&self, serializer: S) -> ::std::result::Result<S::Ok, S::Error> {
+impl<T: std::fmt::Display> serde::Serialize for IMAGE_VERSION<T> {
+	fn serialize<S: serde::Serializer>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error> {
 		serializer.collect_str(&format_args!("{}.{}", self.Major, self.Minor))
 	}
 }
@@ -464,14 +464,14 @@ pub struct VS_VERSION {
 	pub Patch: u16,
 }
 #[cfg(feature = "serde")]
-impl ::serde::Serialize for VS_VERSION {
-	fn serialize<S: ::serde::Serializer>(&self, serializer: S) -> ::std::result::Result<S::Ok, S::Error> {
+impl serde::Serialize for VS_VERSION {
+	fn serialize<S: serde::Serializer>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error> {
 		serializer.collect_str(&format_args!("{}.{}.{}.{}", self.Major, self.Minor, self.Patch, self.Build))
 	}
 }
 
 #[cfg(feature = "serde")]
-fn ser_fixed_file_info_struc_version<S: ::serde::Serializer>(&version: &u32, serializer: S) -> ::std::result::Result<S::Ok, S::Error> {
+fn ser_fixed_file_info_struc_version<S: serde::Serializer>(&version: &u32, serializer: S) -> std::result::Result<S::Ok, S::Error> {
 	let major = version >> 16;
 	let minor = version & 0xffff;
 	serializer.collect_str(&format_args!("{}.{}", major, minor))
