@@ -16,5 +16,5 @@ impl<K: Serialize, V: Serialize, I: Clone + Iterator<Item = (K, V)>> Serialize f
 }
 
 pub(crate) fn serde_strn<S: Serializer>(name: &[u8], serializer: S) -> Result<S::Ok, S::Error> {
-	::std::str::from_utf8(super::strn(name)).ok().serialize(serializer)
+	std::str::from_utf8(super::strn(name)).ok().serialize(serializer)
 }

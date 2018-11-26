@@ -121,7 +121,7 @@ mod serde {
 			if cfg!(feature = "data-encoding") && is_human_readable {
 				#[cfg(feature = "data-encoding")]
 				state.serialize_field("certificate_data",
-					&::data_encoding::BASE64.encode(self.certificate_data()))?;
+					&data_encoding::BASE64.encode(self.certificate_data()))?;
 			}
 			else {
 				state.serialize_field("certificate_data", &self.certificate_data())?;

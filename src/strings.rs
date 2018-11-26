@@ -2,7 +2,7 @@
 Formatting as far as the eye can see...
 */
 
-use std::{fmt, mem};
+use std::fmt;
 
 use image::*;
 use util::*;
@@ -11,12 +11,12 @@ use util::*;
 
 pub fn stringify<T>(data: &T) -> Option<&str> {
 	let bytes = unsafe {
-		::std::slice::from_raw_parts(
+		std::slice::from_raw_parts(
 			data as *const T as *const u8,
-			mem::size_of_val(data),
+			std::mem::size_of_val(data),
 		)
 	};
-	::std::str::from_utf8(strn(bytes)).ok()
+	std::str::from_utf8(strn(bytes)).ok()
 }
 
 pub trait ImageFmt {

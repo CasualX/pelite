@@ -173,8 +173,8 @@ impl fmt::Display for CStr {
 }
 
 #[cfg(feature = "serde")]
-impl ::serde::Serialize for CStr {
-	fn serialize<S: ::serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+impl serde::Serialize for CStr {
+	fn serialize<S: serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 		serializer.collect_str(self)
 	}
 }

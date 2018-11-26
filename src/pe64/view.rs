@@ -132,8 +132,8 @@ unsafe impl<'a> PeObject<'a> for PeView<'a> {
 //----------------------------------------------------------------
 
 #[cfg(feature = "serde")]
-impl<'a> ::serde::Serialize for PeView<'a> {
-	fn serialize<S: ::serde::Serializer>(&self, serializer: S) -> ::std::result::Result<S::Ok, S::Error> {
+impl<'a> serde::Serialize for PeView<'a> {
+	fn serialize<S: serde::Serializer>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error> {
 		super::pe::serialize_pe(*self, serializer)
 	}
 }

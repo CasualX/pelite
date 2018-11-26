@@ -413,7 +413,7 @@ mod serde {
 			if cfg!(feature = "data-encoding") && is_human_readable {
 				#[cfg(feature = "data-encoding")]
 				state.serialize_field("bytes",
-					&self.bytes().map(|bytes| ::data_encoding::BASE64.encode(bytes)).as_ref().ok())?;
+					&self.bytes().map(|bytes| data_encoding::BASE64.encode(bytes)).as_ref().ok())?;
 			}
 			else {
 				state.serialize_field("bytes", &self.bytes().ok())?;

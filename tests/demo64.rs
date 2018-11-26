@@ -169,7 +169,7 @@ fn find_data() {
 	let resources = file.resources().unwrap();
 	let data = resources.find_data("/Manifest/2/1033").unwrap();
 	let bytes = data.bytes().unwrap();
-	let manifest = ::std::str::from_utf8(bytes).unwrap();
+	let manifest = std::str::from_utf8(bytes).unwrap();
 	println!("\n{}", manifest);
 }
 

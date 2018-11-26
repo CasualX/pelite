@@ -578,7 +578,7 @@ unsafe impl<'s, 'a> Pe<'a> for &'s PeObject<'a> {}
 //----------------------------------------------------------------
 
 #[cfg(feature = "serde")]
-pub(crate) fn serialize_pe<'a, P: Pe<'a>, S: ::serde::Serializer>(pe: P, serializer: S) -> ::std::result::Result<S::Ok, S::Error> {
+pub(crate) fn serialize_pe<'a, P: Pe<'a>, S: serde::Serializer>(pe: P, serializer: S) -> std::result::Result<S::Ok, S::Error> {
 	use util::serde_helper::*;
 
 	let mut state = serializer.serialize_struct(pe.serde_name(), 10)?;

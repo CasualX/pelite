@@ -89,7 +89,7 @@ mod serde {
 			if cfg!(feature = "data-encoding") && is_human_readable {
 				#[cfg(feature = "data-encoding")]
 				state.serialize_field("DosImage",
-					&::data_encoding::BASE64.encode(self.pe.dos_image()))?;
+					&data_encoding::BASE64.encode(self.pe.dos_image()))?;
 			}
 			else {
 				state.serialize_field("DosImage", self.pe.dos_image())?;
