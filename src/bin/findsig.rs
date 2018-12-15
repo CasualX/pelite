@@ -1,8 +1,6 @@
 /*!
 Find patterns utility.
-*/
-
-extern crate pelite;
+ */
 
 use std::env;
 use std::path::Path;

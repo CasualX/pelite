@@ -14,12 +14,10 @@ Due to small but incompatible differences the two formats are not unified.
 
 #![recursion_limit = "128"]
 
+// FIXME! How to replace these macros in Rust 2018?
 #[cfg(feature = "serde")]
 #[macro_use]
 extern crate serde;
-
-#[cfg(feature = "data-encoding")]
-extern crate data_encoding;
 
 #[macro_use]
 pub mod util;

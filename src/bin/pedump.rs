@@ -1,8 +1,6 @@
 /*!
 Dumps all PE related headers.
-*/
-
-extern crate pelite;
+ */
 
 use std::env;
 use std::io::{self, Write};

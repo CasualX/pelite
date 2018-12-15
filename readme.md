@@ -50,8 +50,6 @@ Examples
 Try this example out: `cargo run --example readme`.
 
 ```rust
-extern crate pelite;
-
 use pelite::FileMap;
 use pelite::pe64::{Pe, PeFile};
 

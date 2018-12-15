@@ -1,7 +1,6 @@
 use std::ops;
 
 /*
-extern crate pelite;
 use std::fs;
 fn main() {
 	let mut blob = Vec::new();

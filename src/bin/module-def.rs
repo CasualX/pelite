@@ -20,9 +20,7 @@ Also works for 32-bit binaries using the 32-bit VC build tools and commands.
 vcvarsall x86
 lib /def:"demo\Demo.DEF" /out:"demo\Demo.LIB" /machine:x86
 ```
-*/
-
-extern crate pelite;
+ */
 
 use std::env;
 

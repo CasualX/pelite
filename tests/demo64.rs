@@ -1,5 +1,3 @@
-extern crate pelite;
-
 use pelite::{FileMap, Error};
 use pelite::pe64::{Rva, Pe, PeFile};
 use pelite::pe64::exports::{Export, GetProcAddress};

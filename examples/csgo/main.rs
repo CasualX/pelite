@@ -3,9 +3,6 @@ Counter-Strike: Global Offensive
 ================================
 */
 
-extern crate pelite;
-extern crate lde;
-
 mod interfaces;
 mod classes;
 mod datamaps;
