@@ -6,7 +6,7 @@ use std::{error, fmt, str};
 use std::path::Path;
 
 use super::{Resources, Directory, Entry, Name, DataEntry};
-use stringify::RSRC_TYPES;
+use crate::stringify::RSRC_TYPES;
 
 //------------------------------------------------
 
@@ -16,7 +16,7 @@ pub enum FindError {
 	/// An error happened when reading the underlying resources.
 	///
 	/// This error indicates the resources are corrupt.
-	Pe(::Error),
+	Pe(crate::Error),
 	/// The resources work with UTF-16 path names.
 	///
 	/// For this to work the given path must be valid unicode for the path comparison to make sense.
@@ -34,8 +34,8 @@ pub enum FindError {
 	/// Encountered a directory when expecting a data entry.
 	UnDirectory,
 }
-impl From<::Error> for FindError {
-	fn from(err: ::Error) -> FindError {
+impl From<crate::Error> for FindError {
+	fn from(err: crate::Error) -> FindError {
 		FindError::Pe(err)
 	}
 }
@@ -72,13 +72,13 @@ impl<'a> Resources<'a> {
 	}
 	/// Gets the Version Information.
 	pub fn version_info(&self) -> Result<super::version_info::VersionInfo<'a>, FindError> {
-		self.find_resource(::image::RT_VERSION, 1, 1033)
+		self.find_resource(crate::image::RT_VERSION, 1, 1033)
 			.and_then(|bytes| super::version_info::VersionInfo::try_from(bytes).map_err(FindError::Pe))
 	}
 	/// Gets the Application Manifest.
 	pub fn manifest(&self) -> Result<&'a str, FindError> {
-		self.find_resource(::image::RT_MANIFEST, 2, 1033)
-			.and_then(|bytes| str::from_utf8(bytes).map_err(|_| FindError::Pe(::Error::Encoding)))
+		self.find_resource(crate::image::RT_MANIFEST, 2, 1033)
+			.and_then(|bytes| str::from_utf8(bytes).map_err(|_| FindError::Pe(crate::Error::Encoding)))
 	}
 	#[inline(never)]
 	fn find_resource_internal(&self, ty: Name<'_>, name: Name<'_>, lang: Name<'_>) -> Result<&'a [u8], FindError> {

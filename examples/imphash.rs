@@ -7,8 +7,6 @@ References:
 * https://www.fireeye.com/blog/threat-research/2014/01/tracking-malware-import-hashing.html
 */
 
-extern crate pelite;
-
 use std::env;
 use std::collections::hash_map::DefaultHasher;
 use std::hash::{Hash, Hasher};

@@ -1,5 +1,3 @@
-extern crate pelite;
-
 use pelite::pe32::{image, Pe, PeFile};
 use pelite::FileMap;
 
@@ -9,7 +7,6 @@ use pelite::FileMap;
 // https://webserver2.tecgraf.puc-rio.br/~ismael/Cursos/YC++/apostilas/win32_xcoff_pe/tyne-example/Tiny%20PE.htm
 //
 // I used Internet Archive's Wayback Machine to download the samples since the original links 404'd
-
 
 fn assert_memcmp<T: std::fmt::Debug>(lhs: &T, rhs: &T) {
 	let size_of = std::mem::size_of::<T>();

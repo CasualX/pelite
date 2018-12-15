@@ -4,7 +4,7 @@ PE view.
 
 use std::{cmp, slice};
 
-use {Error, Result};
+use crate::{Error, Result};
 
 use super::image::*;
 use super::pe::validate_headers;
@@ -142,7 +142,7 @@ impl<'a> serde::Serialize for PeView<'a> {
 
 #[cfg(test)]
 mod tests {
-	use Error;
+	use crate::Error;
 	use super::PeView;
 
 	#[test]

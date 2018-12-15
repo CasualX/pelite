@@ -28,7 +28,7 @@ fn example(file: PeFile<'_>) -> pelite::Result<()> {
 
 use std::fmt;
 
-use {Error, Result};
+use crate::{Error, Result};
 
 use super::image::*;
 use super::Pe;
@@ -83,7 +83,7 @@ impl<'a, P: Pe<'a>> fmt::Debug for Tls<'a, P> {
 
 #[cfg(feature = "serde")]
 mod serde {
-	use util::serde_helper::*;
+	use crate::util::serde_helper::*;
 	use super::{Pe, Tls};
 
 	impl<'a, P: Pe<'a>> Serialize for Tls<'a, P> {

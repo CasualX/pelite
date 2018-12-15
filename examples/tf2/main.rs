@@ -3,8 +3,6 @@ Team Fortress 2
 ===============
 */
 
-extern crate pelite;
-
 mod interfaces;
 mod classes;
 mod cvars;

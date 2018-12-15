@@ -13,7 +13,7 @@ Rich Structure.
 
 use std::{fmt, iter, mem, result, slice};
 
-use {Error, Result};
+use crate::{Error, Result};
 use super::{Pe};
 
 //----------------------------------------------------------------
@@ -319,7 +319,7 @@ impl<'a> fmt::Debug for RichIter<'a> {
 
 #[cfg(feature = "serde")]
 mod serde {
-	use util::serde_helper::*;
+	use crate::util::serde_helper::*;
 	use super::{RichStructure, RichRecord, ObjectKind};
 
 	impl<'a> Serialize for RichStructure<'a> {

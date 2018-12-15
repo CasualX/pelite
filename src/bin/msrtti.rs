@@ -6,9 +6,7 @@ Limited to PE32 (32bit binaries) only. Pull requests are welcome to support PE32
 ```
 cargo run --bin msrtti -- "demo/Demo.dll" > demo/demo-rtti.txt
 ```
-*/
-
-extern crate pelite;
+ */
 
 use std::env;
 use std::process::exit;

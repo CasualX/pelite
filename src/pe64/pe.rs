@@ -4,8 +4,8 @@ Abstract over mapped images and file binaries.
 
 use std::{cmp, mem, ptr, slice};
 
-use {Error, Result};
-use util::{CStr, Pod, FromBytes};
+use crate::{Error, Result};
+use crate::util::{CStr, Pod, FromBytes};
 
 use super::image::*;
 use super::Ptr;
@@ -543,10 +543,10 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	/// See the [resources](resources/index.html) module for more information.
 	///
 	/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) if the image has no resources. Any other error indicates some form of corruption.
-	fn resources(self) -> Result<::resources::Resources<'a>> {
+	fn resources(self) -> Result<crate::resources::Resources<'a>> where Self: Copy {
 		let datadir = self.data_directory().get(IMAGE_DIRECTORY_ENTRY_RESOURCE).ok_or(Error::Bounds)?;
 		let data = self.derva_slice(datadir.VirtualAddress, datadir.Size as usize)?;
-		Ok(::resources::Resources::new(data, datadir))
+		Ok(crate::resources::Resources::new(data, datadir))
 	}
 
 	/// Gets Scanner access.
@@ -579,7 +579,7 @@ unsafe impl<'s, 'a> Pe<'a> for &'s PeObject<'a> {}
 
 #[cfg(feature = "serde")]
 pub(crate) fn serialize_pe<'a, P: Pe<'a>, S: serde::Serializer>(pe: P, serializer: S) -> std::result::Result<S::Ok, S::Error> {
-	use util::serde_helper::*;
+	use crate::util::serde_helper::*;
 
 	let mut state = serializer.serialize_struct(pe.serde_name(), 10)?;
 	state.serialize_field("headers", &pe.headers())?;

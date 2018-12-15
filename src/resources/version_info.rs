@@ -7,9 +7,9 @@ See [Microsoft's documentation](https://docs.microsoft.com/en-us/windows/desktop
 use std::{char, cmp, mem, slice};
 use std::collections::HashMap;
 
-use image::VS_FIXEDFILEINFO;
-use {Error, Result};
-use util::wstrn;
+use crate::image::VS_FIXEDFILEINFO;
+use crate::{Error, Result};
+use crate::util::wstrn;
 
 //----------------------------------------------------------------
 
@@ -181,7 +181,7 @@ impl<'a, 's> Visit<'a> for QueryValue<'a, 's> {
 
 #[cfg(feature = "serde")]
 mod serde {
-	use util::serde_helper::*;
+	use crate::util::serde_helper::*;
 	use super::{VersionInfo};
 
 	impl<'a> Serialize for VersionInfo<'a> {

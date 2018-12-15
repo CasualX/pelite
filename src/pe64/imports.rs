@@ -43,8 +43,8 @@ fn example(file: PeFile<'_>) -> pelite::Result<()> {
 
 use std::{fmt, iter, mem, slice};
 
-use {Error, Result};
-use util::CStr;
+use crate::{Error, Result};
+use crate::util::CStr;
 
 use super::image::*;
 use super::Pe;
@@ -268,7 +268,7 @@ impl<'a, P: Pe<'a>> fmt::Debug for Desc<'a, P> {
 
 #[cfg(feature = "serde")]
 mod serde {
-	use util::serde_helper::*;
+	use crate::util::serde_helper::*;
 	use super::{Pe, Imports, IAT, Desc};
 
 	impl<'a, P: Pe<'a>> Serialize for Imports<'a, P> {
