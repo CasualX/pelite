@@ -6,7 +6,7 @@ use std::{error, fmt, result};
 
 /// Errors while parsing the PE binary.
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Hash)]
-#[cfg_attr(feature = "serde", derive(serde::Serialize))]
+#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
 pub enum Error {
 	/// Null address.
 	Null,

@@ -206,7 +206,7 @@ impl RichRecord {
 /// Rich records can identify the product used and with it the _'language'_ of the objects.
 /// This allows a mapping of products and the kind of _'language'_ it was generated from.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
-#[cfg_attr(feature = "serde", derive(serde::Serialize))]
+#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
 pub enum ObjectKind {
 	Unknown,
 	Link,
