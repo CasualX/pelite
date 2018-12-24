@@ -171,7 +171,7 @@ impl<'a, P: Pe<'a>> fmt::Debug for Dir<'a, P> {
 //----------------------------------------------------------------
 
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[cfg_attr(feature = "serde", serde(untagged))]
 pub enum Entry<'a> {
 	CodeView(CodeView<'a>),
@@ -366,7 +366,7 @@ impl<'a> Iterator for PogoIter<'a> {
 }
 /// Describes a PGO section.
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 pub struct PogoSection<'a> {
 	pub rva: u32,
 	pub size: u32,

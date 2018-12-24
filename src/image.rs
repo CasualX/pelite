@@ -55,7 +55,7 @@ pub fn image_base() -> &'static IMAGE_DOS_HEADER {
 pub const IMAGE_DOS_SIGNATURE: u16 = 0x5A4D;
 
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct IMAGE_DOS_HEADER {
 	pub e_magic: u16,
@@ -103,7 +103,7 @@ pub const IMAGE_FILE_UP_SYSTEM_ONLY: u16          = 0x4000;
 pub const IMAGE_FILE_BYTES_REVERSED_HI: u16       = 0x8000;
 
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct IMAGE_FILE_HEADER {
 	pub Machine: u16,
@@ -118,7 +118,7 @@ pub struct IMAGE_FILE_HEADER {
 //----------------------------------------------------------------
 
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct IMAGE_DATA_DIRECTORY {
 	pub VirtualAddress: u32,
@@ -199,7 +199,7 @@ pub const IMAGE_DLLCHARACTERISTICS_GUARD_CF: u16              = 0x4000;
 pub const IMAGE_DLLCHARACTERISTICS_TERMINAL_SERVER_AWARE: u16 = 0x8000;
 
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct IMAGE_OPTIONAL_HEADER32 {
 	pub Magic: u16,
@@ -233,7 +233,7 @@ pub struct IMAGE_OPTIONAL_HEADER32 {
 }
 
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct IMAGE_OPTIONAL_HEADER64 {
 	pub Magic: u16,
@@ -270,7 +270,7 @@ pub struct IMAGE_OPTIONAL_HEADER64 {
 pub const IMAGE_NT_HEADERS_SIGNATURE: u32 = 0x00004550;
 
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct IMAGE_NT_HEADERS32 {
 	pub Signature: u32,
@@ -279,7 +279,7 @@ pub struct IMAGE_NT_HEADERS32 {
 }
 
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct IMAGE_NT_HEADERS64 {
 	pub Signature: u32,
@@ -339,7 +339,7 @@ pub const IMAGE_SCN_MEM_READ: u32               = 0x40000000;
 pub const IMAGE_SCN_MEM_WRITE: u32              = 0x80000000;
 
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct IMAGE_SECTION_HEADER {
 	#[cfg_attr(feature = "serde", serde(serialize_with = "crate::util::serde_helper::serde_strn"))]
@@ -358,7 +358,7 @@ pub struct IMAGE_SECTION_HEADER {
 //----------------------------------------------------------------
 
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct IMAGE_EXPORT_DIRECTORY {
 	pub Characteristics: u32,
@@ -376,7 +376,7 @@ pub struct IMAGE_EXPORT_DIRECTORY {
 //----------------------------------------------------------------
 
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct IMAGE_IMPORT_DESCRIPTOR {
 	pub OriginalFirstThunk: u32,
@@ -420,7 +420,7 @@ pub const RT_HTML: u16         = 23;
 pub const RT_MANIFEST: u16     = 24;
 
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct IMAGE_RESOURCE_DIRECTORY {
 	pub Characteristics: u32,
@@ -431,7 +431,7 @@ pub struct IMAGE_RESOURCE_DIRECTORY {
 }
 
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct IMAGE_RESOURCE_DIRECTORY_ENTRY {
 	// High bit set means the lower 31 bits are an RVA to its name string otherwise this is a 16 bit WORD id
@@ -442,7 +442,7 @@ pub struct IMAGE_RESOURCE_DIRECTORY_ENTRY {
 }
 
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct IMAGE_RESOURCE_DATA_ENTRY {
 	pub OffsetToData: u32,
@@ -478,7 +478,7 @@ fn ser_fixed_file_info_struc_version<S: serde::Serializer>(&version: &u32, seria
 }
 
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct VS_FIXEDFILEINFO {
 	pub dwSignature: u32,
@@ -519,7 +519,7 @@ pub const IMAGE_REL_BASED_ARM_MOV32: u8 = 5;
 pub const IMAGE_REL_BASED_THUMB_MOV32: u8 = 7;
 
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct IMAGE_BASE_RELOCATION {
 	pub VirtualAddress: u32,
@@ -529,7 +529,7 @@ pub struct IMAGE_BASE_RELOCATION {
 //----------------------------------------------------------------
 
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct IMAGE_LOAD_CONFIG_DIRECTORY32 {
 	pub Size: u32,
@@ -554,7 +554,7 @@ pub struct IMAGE_LOAD_CONFIG_DIRECTORY32 {
 }
 
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct IMAGE_LOAD_CONFIG_DIRECTORY64 {
 	pub Size: u32,
@@ -590,7 +590,7 @@ pub struct IMAGE_LOAD_CONFIG_DIRECTORY64 {
 // https://lucasg.github.io/2017/02/05/Control-Flow-Guard/
 
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct IMAGE_LOAD_CONFIG_CODE_INTEGRITY {
 	pub Flags: u16,
@@ -603,7 +603,7 @@ pub const IMAGE_DYNAMIC_RELOCATION_GUARD_RF_PROLOGUE: u32 = 0x00000001;
 pub const IMAGE_DYNAMIC_RELOCATION_GUARD_RF_EPILOGUE: u32 = 0x00000002;
 
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct IMAGE_DYNAMIC_RELOCATION_TABLE {
 	pub Version: u32,
@@ -611,7 +611,7 @@ pub struct IMAGE_DYNAMIC_RELOCATION_TABLE {
 }
 
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct IMAGE_DYNAMIC_RELOCATION32 {
 	pub Symbol: u32,
@@ -619,7 +619,7 @@ pub struct IMAGE_DYNAMIC_RELOCATION32 {
 }
 
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct IMAGE_DYNAMIC_RELOCATION64 {
 	pub Symbol: u64,
@@ -642,7 +642,7 @@ pub const IMAGE_GUARD_CF_FUNCTION_TABLE_SIZE_MASK: u32        = 0xF0000000;
 pub const IMAGE_GUARD_CF_FUNCTION_TABLE_SIZE_SHIFT: u32       = 28;
 
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct IMAGE_GUARDCF32 {
 	pub GuardCFCheckFunctionPointer: u32,
@@ -669,7 +669,7 @@ pub struct IMAGE_GUARDCF32 {
 }
 
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct IMAGE_GUARDCF64 {
 	pub GuardCFCheckFunctionPointer: u64,
@@ -698,7 +698,7 @@ pub struct IMAGE_GUARDCF64 {
 //----------------------------------------------------------------
 
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct IMAGE_TLS_DIRECTORY32 {
 	pub StartAddressOfRawData: u32,
@@ -710,7 +710,7 @@ pub struct IMAGE_TLS_DIRECTORY32 {
 }
 
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct IMAGE_TLS_DIRECTORY64 {
 	pub StartAddressOfRawData: u64,
@@ -731,7 +731,7 @@ pub const WIN_CERT_TYPE_RESERVED_1: u16       = 0x0003;
 pub const WIN_CERT_TYPE_PKCS1_SIGN: u16       = 0x0009;
 
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct WIN_CERTIFICATE {
 	pub dwLength: u32,
@@ -758,7 +758,7 @@ pub const UWOP_SAVE_XMM128_FAR: u8 = 9;  // info == XMM reg number, offset in ne
 pub const UWOP_PUSH_MACHFRAME: u8  = 10; // info == 0: no error-code, 1: error-code
 
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct UNWIND_CODE {
 	pub CodeOffset: u8,
@@ -773,7 +773,7 @@ pub const UNW_FLAG_FHANDLER: u8  = 0x03; // inofficial
 pub const UNW_FLAG_CHAININFO: u8 = 0x04;
 
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct UNWIND_INFO {
 	pub VersionFlags: u8,
@@ -785,7 +785,7 @@ pub struct UNWIND_INFO {
 }
 
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct RUNTIME_FUNCTION {
 	pub BeginAddress: u32,
@@ -794,7 +794,7 @@ pub struct RUNTIME_FUNCTION {
 }
 
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct SCOPE_RECORD {
 	pub BeginAddress: u32,
@@ -804,7 +804,7 @@ pub struct SCOPE_RECORD {
 }
 
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct SCOPE_TABLE {
 	pub Count: u32,
@@ -844,7 +844,7 @@ pub const IMAGE_DEBUG_TYPE_MPX: u32           = 15;
 pub const IMAGE_DEBUG_TYPE_REPRO: u32         = 16;
 
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct IMAGE_DEBUG_DIRECTORY {
 	pub Characteristics: u32,
@@ -857,7 +857,7 @@ pub struct IMAGE_DEBUG_DIRECTORY {
 }
 
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct IMAGE_DEBUG_CV_INFO_PDB20 {
 	pub CvSignature: u32,
@@ -869,7 +869,7 @@ pub struct IMAGE_DEBUG_CV_INFO_PDB20 {
 }
 
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct IMAGE_DEBUG_CV_INFO_PDB70 {
 	pub CvSignature: u32,
@@ -882,7 +882,7 @@ pub struct IMAGE_DEBUG_CV_INFO_PDB70 {
 pub const IMAGE_DEBUG_MISC_EXENAME: u32 = 1;
 
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct IMAGE_DEBUG_MISC {
 	pub DataType: u32,
@@ -899,7 +899,7 @@ pub const FRAME_TRAP: u16 = 1;
 pub const FRAME_TSS: u16 = 2;
 
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct FPO_DATA {
 	// offset 1st byte of function code
@@ -921,7 +921,7 @@ pub struct FPO_DATA {
 }
 
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct IMAGE_DEBUG_VC_FEATURE {
 	pub PreVCPP: u32, // Pre-VC++ 11.00
