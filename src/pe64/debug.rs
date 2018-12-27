@@ -152,7 +152,7 @@ impl<'a, P: Pe<'a>> Dir<'a, P> {
 		match self.image.Type {
 			IMAGE_DEBUG_TYPE_CODEVIEW => Ok(Entry::CodeView(CodeView::new(&self)?)),
 			IMAGE_DEBUG_TYPE_MISC => Ok(Entry::Dbg(Dbg::new(&self)?)),
-			IMAGE_DEBUG_TYPE_POGO => Ok(Entry::Pogo(Pogo::new(&self)?)),
+			IMAGE_DEBUG_TYPE_POGO => Ok(Entry::Pgo(Pgo::new(&self)?)),
 			_ => Ok(Entry::Unknown(self.data()))
 		}
 	}
@@ -176,7 +176,7 @@ impl<'a, P: Pe<'a>> fmt::Debug for Dir<'a, P> {
 pub enum Entry<'a> {
 	CodeView(CodeView<'a>),
 	Dbg(Dbg<'a>),
-	Pogo(Pogo<'a>),
+	Pgo(Pgo<'a>),
 	Unknown(Option<&'a [u8]>),
 }
 impl<'a> Entry<'a> {
@@ -189,8 +189,8 @@ impl<'a> Entry<'a> {
 		match self { Entry::Dbg(dbg) => Some(dbg), _ => None }
 	}
 	/// As a PGO information entry.
-	pub fn as_pogo(self) -> Option<Pogo<'a>> {
-		match self { Entry::Pogo(pogo) => Some(pogo), _ => None }
+	pub fn as_pgo(self) -> Option<Pgo<'a>> {
+		match self { Entry::Pgo(pgo) => Some(pgo), _ => None }
 	}
 	/// Unknown format, return as bytes.
 	pub fn as_unknown(self) -> Option<&'a [u8]> {
@@ -242,8 +242,14 @@ impl<'a> CodeView<'a> {
 		let cv_signature = match self {
 			CodeView::Cv20 { image, .. } => &image.CvSignature,
 			CodeView::Cv70 { image, .. } => &image.CvSignature,
-		};
-		unsafe { str::from_utf8_unchecked(&*(cv_signature as *const _ as *const [u8; 4])) }
+		} as *const _ as *const [u8; 4];
+		unsafe { str::from_utf8_unchecked(&*cv_signature) }
+	}
+	pub fn age(&self) -> u32 {
+		match self {
+			CodeView::Cv20 { image, .. } => image.Age,
+			CodeView::Cv70 { image, .. } => image.Age,
+		}
 	}
 	pub fn pdb_file_name(&self) -> &'a CStr {
 		match self {
@@ -305,11 +311,11 @@ impl<'a> fmt::Debug for Dbg<'a> {
 
 /// PGO information.
 #[derive(Copy, Clone)]
-pub struct Pogo<'a> {
+pub struct Pgo<'a> {
 	image: &'a [u32],
 }
-impl<'a> Pogo<'a> {
-	pub(crate) fn new<P: Pe<'a>>(dir: &Dir<'a, P>) -> Result<Pogo<'a>> {
+impl<'a> Pgo<'a> {
+	pub(crate) fn new<P: Pe<'a>>(dir: &Dir<'a, P>) -> Result<Pgo<'a>> {
 		let data = dir.data().ok_or(Error::Bounds)?;
 		if data.len() < 4 {
 			return Err(Error::Bounds);
@@ -319,45 +325,45 @@ impl<'a> Pogo<'a> {
 		}
 		let len = data.len() / 4;
 		let image = unsafe { slice::from_raw_parts(data.as_ptr() as *const u32, len) };
-		Ok(Pogo { image })
+		Ok(Pgo { image })
 	}
 	/// Gets the underlying image.
 	pub fn image(&self) -> &'a [u32] {
 		self.image
 	}
 	/// Iterator over the PGO sections.
-	pub fn iter(&self) -> PogoIter<'a> {
+	pub fn iter(&self) -> PgoIter<'a> {
 		let image = if self.image.len() >= 1 { &self.image[1..] } else { self.image };
-		PogoIter { image }
+		PgoIter { image }
 	}
 }
-impl<'a> IntoIterator for Pogo<'a> {
-	type Item = PogoSection<'a>;
-	type IntoIter = PogoIter<'a>;
-	fn into_iter(self) -> PogoIter<'a> {
+impl<'a> IntoIterator for Pgo<'a> {
+	type Item = PgoItem<'a>;
+	type IntoIter = PgoIter<'a>;
+	fn into_iter(self) -> PgoIter<'a> {
 		self.iter()
 	}
 }
-impl<'a> fmt::Debug for Pogo<'a> {
+impl<'a> fmt::Debug for Pgo<'a> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		f.debug_list().entries(self.iter()).finish()
 	}
 }
 /// Iterator over PGO sections.
 #[derive(Clone)]
-pub struct PogoIter<'a> {
+pub struct PgoIter<'a> {
 	image: &'a [u32],
 }
-impl<'a> Iterator for PogoIter<'a> {
-	type Item = PogoSection<'a>;
-	fn next(&mut self) -> Option<PogoSection<'a>> {
+impl<'a> Iterator for PgoIter<'a> {
+	type Item = PgoItem<'a>;
+	fn next(&mut self) -> Option<PgoItem<'a>> {
 		if self.image.len() >= 3 {
 			let rva = self.image[0];
 			let size = self.image[1];
 			let name = CStr::from_bytes(self.image[2..].as_bytes())?;
 			let len = name.len() >> 2;
 			self.image = &self.image[2 + len + 1..];
-			Some(PogoSection { rva, size, name })
+			Some(PgoItem { rva, size, name })
 		}
 		else {
 			None
@@ -367,7 +373,7 @@ impl<'a> Iterator for PogoIter<'a> {
 /// Describes a PGO section.
 #[derive(Copy, Clone, Debug)]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize))]
-pub struct PogoSection<'a> {
+pub struct PgoItem<'a> {
 	pub rva: u32,
 	pub size: u32,
 	pub name: &'a CStr,
@@ -393,7 +399,7 @@ pub struct PogoSection<'a> {
 #[cfg(feature = "serde")]
 mod serde {
 	use crate::util::serde_helper::*;
-	use super::{Pe, Debug, Dir, CodeView, Dbg, Pogo};
+	use super::{Pe, Debug, Dir, CodeView, Dbg, Pgo};
 
 	impl<'a, P: Pe<'a>> Serialize for Debug<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
@@ -439,7 +445,7 @@ mod serde {
 			serializer.serialize_struct("Dbg", 0)?.end()
 		}
 	}
-	impl<'a> Serialize for Pogo<'a> {
+	impl<'a> Serialize for Pgo<'a> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			serializer.collect_seq(self.iter())
 		}
@@ -459,8 +465,8 @@ pub(crate) fn test<'a, P: Pe<'a>>(pe: P) -> Result<()> {
 				let _pdb_file_name = cv.pdb_file_name();
 			},
 			Ok(Entry::Dbg(_dbg)) => (),
-			Ok(Entry::Pogo(pogo)) => {
-				for _sec in pogo.iter() {}
+			Ok(Entry::Pgo(pgo)) => {
+				for _sec in pgo {}
 			},
 			Ok(Entry::Unknown(_data)) => (),
 			Err(_) => (),
