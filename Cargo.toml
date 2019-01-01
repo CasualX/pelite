@@ -12,7 +12,7 @@ repository = "https://github.com/CasualX/pelite"
 readme = "readme.md"
 
 keywords = ["exe", "dll", "mui", "bin", "pe"]
-categories = ["parsing", "command-line-utilities"]
+categories = ["parser-implementations", "command-line-utilities"]
 
 license = "MIT"
 
