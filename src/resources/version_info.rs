@@ -64,14 +64,15 @@ impl<'a> VersionInfo<'a> {
 	/// Implement the [`Visit` trait](trait.Visit.html) to get the desired information.
 	///
 	/// To keep the API simple all errors are ignored, any invalid or corrupted data is skipped.
-	pub fn visit(self, visit: &mut Visit<'a>) {
+	pub fn visit(self, visit: &mut dyn Visit<'a>) {
 		let words = unsafe { slice::from_raw_parts(self.bytes.as_ptr() as *const u16, self.bytes.len() / 2) };
 
 		for version_info_r in Parser::new_bytes(words) {
 			if let Ok(version_info) = version_info_r {
+				const VS_FIXEDFILEINFO_SIZEOF: usize = mem::size_of::<VS_FIXEDFILEINFO>();
 				let fixed = match mem::size_of_val(version_info.value) {
 					0 => None,
-					size_of if size_of == mem::size_of::<VS_FIXEDFILEINFO>() => {
+					VS_FIXEDFILEINFO_SIZEOF => {
 						let value = unsafe { &*(version_info.value.as_ptr() as *const VS_FIXEDFILEINFO) };
 						Some(value)
 					},
@@ -295,6 +296,7 @@ impl<'a> Iterator for Parser<'a> {
 			return None;
 		}
 		let result = parse_tlv(self);
+		// If the parser errors, ensure the Iterator stops
 		if result.is_err() {
 			self.words = &self.words[self.words.len()..];
 		}
@@ -319,7 +321,10 @@ fn parse_tlv<'a>(state: &mut Parser<'a>) -> Result<TLV<'a>> {
 	if words.len() < 4 {
 		return Err(Error::Invalid);
 	}
-	let length = (cmp::max(4, words[0] as usize / 2) + 1) & !1; // DWORD aligned
+	// This is tricky, the struct contains a fixed and variable length parts
+	// However the length field includes the size of the fixed part
+	// Further complicating things, if the variable length part is absent the total length is set to zero (?!)
+	let length = dwordalign(cmp::max(4, words[0] as usize / 2));
 	// Oh god why, interpret the value_length
 	let value_length = match state.vlt {
 		ValueLengthType::Zero if words[1] == 0 => 0,
@@ -343,14 +348,45 @@ fn parse_tlv<'a>(state: &mut Parser<'a>) -> Result<TLV<'a>> {
 	}
 
 	// Padding for the Value
-	words = &words[(key.len() + 5) & !1..]; // DWORD aligned
+	words = &words[dwordalign(key.len() + 4)..];
 
 	// Split the remaining words between the Value and Children
 	if value_length > words.len() {
 		return Err(Error::Invalid);
 	}
 	let value = &words[..value_length];
-	let children = &words[(value.len() + 1) & !1..]; // DWORD aligned
+	let children = &words[dwordalign(value.len())..];
 
 	Ok(TLV { key, value, children })
+}
+
+// Aligns the input to a multiple of two
+// Note that the input is already aligned to words
+#[inline(always)]
+fn dwordalign(n: usize) -> usize { (n + 1) & !1 }
+
+#[test]
+fn test_parse_tlv_oob()
+{
+	let mut parser;
+
+	// TLV header too short
+	parser = Parser::new_zero(&[0, 0]);
+	assert_eq!(parser.next(), Some(Err(Error::Invalid)));
+	assert_eq!(parser.next(), None);
+
+	// TLV length field larger than the data
+	parser = Parser::new_zero(&[12, 0, 0, 0]);
+	assert_eq!(parser.next(), Some(Err(Error::Invalid)));
+	assert_eq!(parser.next(), None);
+
+	// TLV key not nul terminated
+	parser = Parser::new_zero(&[16, 0, 1, 20, 20, 20, 20, 20]);
+	assert_eq!(parser.next(), Some(Err(Error::Invalid)));
+	assert_eq!(parser.next(), None);
+
+	// TLV value field larger than the data
+	parser = Parser::new_zero(&[8, 10, 0, 0, 0, 0]);
+	assert_eq!(parser.next(), Some(Err(Error::Invalid)));
+	assert_eq!(parser.next(), None);
 }
