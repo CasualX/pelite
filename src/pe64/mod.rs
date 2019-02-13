@@ -136,6 +136,7 @@ pub mod exception;
 pub mod debug;
 mod ptr;
 pub mod scanner;
+pub mod msvc;
 
 pub use self::image::{Va, Rva};
 pub use self::pe::{Align, Pe, PeObject};
