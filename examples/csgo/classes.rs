@@ -18,7 +18,7 @@ pub fn print(client: PeFile) {
 //----------------------------------------------------------------
 
 #[allow(non_snake_case)]
-#[derive(Debug)]
+#[derive(Pod, Debug)]
 #[repr(C)]
 struct ClientClass {
 	pCreateFn: Ptr,
@@ -28,7 +28,6 @@ struct ClientClass {
 	pNext: Ptr<ClientClass>,
 	ClassID: i32,
 }
-unsafe impl Pod for ClientClass {}
 
 //----------------------------------------------------------------
 

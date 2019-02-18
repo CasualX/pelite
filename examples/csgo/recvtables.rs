@@ -31,7 +31,7 @@ pub fn print(client: PeFile) {
 
 //----------------------------------------------------------------
 
-#[derive(Debug)]
+#[derive(Pod, Debug)]
 #[repr(C)]
 struct RecvTable {
 	pProps: Ptr<RecvProp>,
@@ -41,7 +41,7 @@ struct RecvTable {
 	bInitialized: u8,
 	bInMainList: u8,
 }
-#[derive(Debug, Clone)]
+#[derive(Pod, Debug, Clone)]
 #[repr(C)]
 struct RecvProp {
 	pVarName: Ptr<CStr>,
@@ -60,8 +60,6 @@ struct RecvProp {
 	nElements: i32,
 	pParentArrayPropName: Ptr<CStr>,
 }
-unsafe impl Pod for RecvTable {}
-unsafe impl Pod for RecvProp {}
 
 static PROP_TYPES: [&str; 8] = [
 	"Int",

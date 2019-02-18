@@ -12,6 +12,7 @@ use super::image::{Va, SignedVa};
 //----------------------------------------------------------------
 
 /// Typed virtual address.
+#[repr(transparent)]
 pub struct Ptr<T: ?Sized = ()>(Va, PhantomData<fn() -> T>);
 
 unsafe impl<T: ?Sized + 'static> Pod for Ptr<T> {}
@@ -24,6 +25,10 @@ impl<T: ?Sized> Ptr<T> {
 	/// Returns true if the pointer is null.
 	pub fn is_null(self) -> bool {
 		self.0 == 0
+	}
+	/// Constructs a pointer with an offset.
+	pub fn member(va: Va, offset: u32) -> Ptr<T> {
+		Ptr(va + offset as Va, PhantomData)
 	}
 	/// Casts the pointer to a different type keeping the pointer address fixed.
 	pub fn cast<U: ?Sized>(self) -> Ptr<U> {
