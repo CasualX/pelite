@@ -56,6 +56,7 @@ pub struct RawConVar {
 	pub pszDefaultValue: Ptr<CStr>,
 	pub pszString: u64, // Allocated
 	pub StringLength: i32,
+	unk_u32: u32,
 	pub fValue: f32,
 	pub nValue: i32,
 	pub bHasMin: u8,
