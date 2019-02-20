@@ -34,6 +34,36 @@ pub use self::c_str::CStr;
 pub use self::wide_str::WideStr;
 pub use self::pod::Pod;
 
+pub use pelite_macros::Pod;
+
+// Special versions of the derive proc macro for use with pelite itself
+pub(crate) use pelite_macros::_Pod;
+pub(crate) use self::pod::Pod as _Pod;
+
+#[doc(hidden)]
+#[macro_export]
+macro_rules! derive_pod {
+	(
+		$(#[$meta:meta])*
+		$vis:vis struct $name:ident {
+			$(
+				$(#[$field_meta:meta])*
+				$field_vis:vis $field_name:ident: $field_ty:ty,
+			)+
+		}
+	) => {
+		unsafe impl $crate::util::Pod for $name
+			where Self: 'static $(, $field_ty: $crate::util::Pod)+
+		{
+			#[doc(hidden)]
+			fn _static_assert() {
+				// TODO: Is this assertion correct?
+				// use std::mem; let f = mem::transmute::<$name, [u8; 0 $(+ mem::size_of::<$field_ty>())+]>;
+			}
+		}
+	};
+}
+
 /// Converts from a byte slice to a string.
 pub trait FromBytes {
 	/// Minimum size argument.

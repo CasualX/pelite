@@ -29,14 +29,13 @@ pub fn print(file: PeFile) {
 ///
 /// [`class InterfaceReg`](https://github.com/ValveSoftware/source-sdk-2013/blob/master/mp/src/public/tier1/interface.h#L72)
 #[allow(dead_code)]
-#[derive(Debug)]
+#[derive(Pod, Debug)]
 #[repr(C)]
 pub struct InterfaceReg {
 	create_fn: Va,
 	name: Ptr<CStr>,
 	next: Ptr<InterfaceReg>,
 }
-unsafe impl Pod for InterfaceReg {}
 
 //----------------------------------------------------------------
 

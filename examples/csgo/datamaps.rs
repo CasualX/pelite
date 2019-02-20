@@ -30,7 +30,7 @@ pub fn print(client: PeFile) {
 
 const TD_OFFSET_COUNT: usize = 2;
 
-#[derive(Debug)]
+#[derive(Pod, Debug)]
 #[repr(C)]
 struct typedescription_t {
 	fieldType: i32,
@@ -49,20 +49,17 @@ struct typedescription_t {
 }
 // sizeof(typedescription_t) == 60
 
-#[derive(Debug)]
+#[derive(Pod, Debug)]
 #[repr(C)]
 struct datamap_t {
 	dataDesc: Ptr<[typedescription_t]>,
 	dataNumFields: i32,
 	dataClassName: Ptr<CStr>,
 	baseMap: Ptr<datamap_t>,
-	chains_validated: bool,
-	packed_offsets_computed: bool,
+	chains_validated: u8, //bool
+	packed_offsets_computed: u8, //bool
 	packed_size: i32,
 }
-
-unsafe impl Pod for typedescription_t {}
-unsafe impl Pod for datamap_t {}
 
 static FIELD_TYPES: [&str; 29] = [
 	"Void",
