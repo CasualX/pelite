@@ -28,6 +28,10 @@ pub fn interfaces(bin: PeFile<'_>) -> Vec<Interface<'_>> {
 		list.push(Interface { name, offset });
 	}
 
+	if list.is_empty() {
+		eprintln!("unable to find any interfaces!");
+	}
+
 	list.sort_by_key(|item| item.name);
 	list
 }

@@ -21,16 +21,18 @@ fn main() {
 	}
 }
 
-mod classes;
 mod interfaces;
+mod classes;
+mod misc;
 mod cvars;
 mod globals;
 
 fn parse(image: &[u8]) {
 	use pelite::pe64::*;
 	let bin = PeFile::from_bytes(image).unwrap();
-	classes::print(bin);
 	interfaces::print(bin);
+	misc::print(bin);
+	classes::print(bin);
 	cvars::print(bin);
 	globals::print(bin);
 }
