@@ -1,0 +1,21 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master
+
+pool:
+  vmImage: 'Ubuntu-16.04'
+
+steps:
+- script: |
+    curl https://sh.rustup.rs -sSf | sh -s -- -y
+    $HOME/.cargo/bin/rustup component add rustfmt
+  displayName: Install Rust
+
+- script: cargo check --verbose --all-features
+  displayName: 'Cargo check all features'
+- script: cargo test --verbose --no-fail-fast -- --nocapture
+  displayName: 'Cargo test'
