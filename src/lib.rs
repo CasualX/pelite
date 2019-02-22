@@ -42,6 +42,13 @@ pub use self::pefile::PeFile;
 mod pir;
 pub use self::pir::Pir;
 
+mod pod;
+pub use self::pod::Pod;
+pub use pelite_macros::Pod;
+// Special versions of the derive proc macro for use with pelite itself
+pub(crate) use self::pod::Pod as _Pod;
+pub(crate) use pelite_macros::_Pod;
+
 /// Defaults to the current platform if it is available.
 #[cfg(all(windows, target_pointer_width = "32"))]
 pub use self::pe32 as pe;

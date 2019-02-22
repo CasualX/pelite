@@ -13,7 +13,7 @@ use pelite;
 use pelite::pattern as pat;
 use pelite::pe32::{Rva, Va, Ptr, Pe, PeFile};
 use pelite::pe32::exports::Export;
-use pelite::util::{CStr, Pod};
+use pelite::{util::CStr, Pod};
 
 //----------------------------------------------------------------
 

@@ -4,7 +4,7 @@ The ClientClass links client and server entities.
 
 use pelite;
 use pelite::pe32::{Va, Ptr, Pe, PeFile};
-use pelite::util::{CStr, Pod};
+use pelite::{util::CStr, Pod};
 use pelite::pattern as pat;
 
 //----------------------------------------------------------------

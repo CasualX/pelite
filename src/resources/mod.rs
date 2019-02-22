@@ -4,9 +4,9 @@ Resources.
 
 use std::{fmt, iter, mem, slice};
 
-use crate::{Error, Result};
+use crate::{Pod, Error, Result};
 use crate::image::*;
-use crate::util::{Pod, WideStr};
+use crate::util::{WideStr};
 
 //----------------------------------------------------------------
 

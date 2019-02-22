@@ -24,11 +24,10 @@ fn example(file: PeFile<'_>) -> pelite::Result<()> {
 
 use std::{fmt, iter, mem, slice, str};
 
-use crate::util::{CStr, Pod};
+use crate::{util::CStr, Pod};
 use crate::{Error, Result};
 
-use super::image::*;
-use super::{Align, Pe};
+use super::{Align, Pe, image::*};
 
 //----------------------------------------------------------------
 

@@ -7,7 +7,7 @@ References:
 [2]: [Reversing Microsoft Visual C++ Part II: Classes, Methods and RTTI](http://www.openrce.org/articles/full_view/23)  
 */
 
-use crate::util::{CStr, _Pod as Pod};
+use crate::{util::CStr, _Pod as Pod};
 
 use super::Ptr;
 

@@ -1,6 +1,6 @@
 use std::{cmp, fmt, hash, mem, str};
 use std::marker::PhantomData;
-use crate::util::Pod;
+use crate::Pod;
 
 /// Typed relative virtual address.
 #[repr(transparent)]
