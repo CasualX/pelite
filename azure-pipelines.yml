@@ -6,18 +6,6 @@
 trigger:
 - master
 
-pool:
-  vmImage: 'Ubuntu-16.04'
-
-steps:
-- script: |
-    curl https://sh.rustup.rs -sSf | sh -s -- -y
-    $HOME/.cargo/bin/rustup component add rustfmt
-    $HOME/.cargo/bin/rustc -vV
-    $HOME/.cargo/bin/cargo -vV
-  displayName: Install Rust
-
-- script: $HOME/.cargo/bin/cargo check --verbose --all-features
-  displayName: Cargo check all features
-- script: $HOME/.cargo/bin/cargo test --verbose --no-fail-fast -- --nocapture
-  displayName: Cargo test
+jobs:
+- template: ci/azure-pipelines/linux.yml
+- template: ci/azure-pipelines/windows.yml

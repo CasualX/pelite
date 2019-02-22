@@ -1,0 +1,14 @@
+jobs:
+- job: Linux
+  pool:
+    vmImage: 'Ubuntu-16.04'
+  steps:
+  - script: |
+      curl https://sh.rustup.rs -sSf | sh -s -- -y
+      $HOME/.cargo/bin/rustc -vV
+      $HOME/.cargo/bin/cargo -vV
+    displayName: Install Rust
+  - script: $HOME/.cargo/bin/cargo check --verbose --all-features
+    displayName: Cargo check all features
+  - script: $HOME/.cargo/bin/cargo test --verbose --no-fail-fast -- --nocapture
+    displayName: Cargo test
