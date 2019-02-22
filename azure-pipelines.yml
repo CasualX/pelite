@@ -12,7 +12,9 @@ pool:
 steps:
 - script: |
     curl https://sh.rustup.rs -sSf | sh -s -- -y
-    $HOME/.cargo/bin/rustup component add rustfmt
+    export PATH="$HOME/.cargo/bin:$PATH"
+    rustc -vV
+    cargo -vV
   displayName: Install Rust
 
 - script: cargo check --verbose --all-features
