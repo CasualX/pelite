@@ -12,12 +12,12 @@ pool:
 steps:
 - script: |
     curl https://sh.rustup.rs -sSf | sh -s -- -y
-    export PATH="$HOME/.cargo/bin:$PATH"
-    rustc -vV
-    cargo -vV
+    $HOME/.cargo/bin/rustup component add rustfmt
+    $HOME/.cargo/bin/rustc -vV
+    $HOME/.cargo/bin/cargo -vV
   displayName: Install Rust
 
-- script: cargo check --verbose --all-features
-  displayName: 'Cargo check all features'
-- script: cargo test --verbose --no-fail-fast -- --nocapture
-  displayName: 'Cargo test'
+- script: $HOME/.cargo/bin/cargo check --verbose --all-features
+  displayName: Cargo check all features
+- script: $HOME/.cargo/bin/cargo test --verbose --no-fail-fast -- --nocapture
+  displayName: Cargo test
