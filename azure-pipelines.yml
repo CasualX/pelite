@@ -5,7 +5,16 @@
 
 trigger:
 - master
+pr:
+- master
 
 jobs:
-- template: ci/azure-pipelines/linux.yml
+- template: ci/azure-pipelines/generic.yml
+  parameters:
+    name: Linux
+    vmImage: ubuntu-16.04
+- template: ci/azure-pipelines/generic.yml
+  parameters:
+    name: macOS
+    vmImage: macOS-10.13
 - template: ci/azure-pipelines/windows.yml

@@ -1,7 +1,7 @@
 jobs:
-- job: Linux
+- job: ${{ parameters.name }}
   pool:
-    vmImage: 'Ubuntu-16.04'
+    vmImage: ${{ parameters.vmImage }}
   steps:
   - script: |
       curl https://sh.rustup.rs -sSf | sh -s -- -y
