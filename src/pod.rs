@@ -19,7 +19,7 @@ use std::{mem, slice};
 /// To help with safely implementing this trait, a proc-macro is provided to implement the `Pod` trait if the requirements are satisfied.
 ///
 /// ```
-/// #[derive(pelite::util::Pod)]
+/// #[derive(pelite::Pod)]
 /// #[repr(C)]
 /// struct Foo {
 /// 	foo: i32,
@@ -64,3 +64,28 @@ impl_pod_array!(0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15);
 impl_pod_array!(16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31);
 impl_pod_array!(32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47);
 impl_pod_array!(48 56 64 80 100 128 160 192 256 512 768 1024 2048 4096);
+
+/// Pod derive proc-macro implementation helper.
+#[doc(hidden)]
+#[macro_export]
+macro_rules! derive_pod {
+	(
+		$(#[$meta:meta])*
+		$vis:vis struct $name:ident {
+			$(
+				$(#[$field_meta:meta])*
+				$field_vis:vis $field_name:ident: $field_ty:ty,
+			)+
+		}
+	) => {
+		unsafe impl $crate::Pod for $name
+			where Self: 'static $(, $field_ty: $crate::Pod)+
+		{
+			#[doc(hidden)]
+			fn _static_assert() {
+				// TODO: Is this assertion correct?
+				// let _ = std::mem::transmute::<$name, [u8; 0 $(+ mem::size_of::<$field_ty>())+]>;
+			}
+		}
+	};
+}

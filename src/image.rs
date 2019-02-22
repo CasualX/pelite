@@ -14,7 +14,7 @@ Sources:
 #![allow(non_snake_case)]
 #![allow(non_camel_case_types)]
 
-use crate::util::_Pod as Pod;
+use crate::_Pod as Pod;
 
 #[cfg(windows)]
 extern "C" {

@@ -5,10 +5,9 @@ Abstract over mapped images and file binaries.
 use std::{cmp, mem, ptr, slice};
 
 use crate::{Error, Result};
-use crate::util::{CStr, Pod, FromBytes};
+use crate::{util::CStr, util::FromBytes, Pod};
 
-use super::image::*;
-use super::Ptr;
+use super::{Ptr, image::*};
 
 //----------------------------------------------------------------
 

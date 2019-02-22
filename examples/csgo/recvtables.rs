@@ -8,7 +8,7 @@ use std::mem;
 
 use pelite;
 use pelite::pe32::{Rva, Va, Ptr, Pe, PeFile};
-use pelite::util::{CStr, Pod};
+use pelite::{util::CStr, Pod};
 use pelite::pattern as pat;
 use lde;
 

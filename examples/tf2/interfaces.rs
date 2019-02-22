@@ -11,7 +11,7 @@ This only allows you to query interfaces which you know by name and version, thi
 
 use pelite;
 use pelite::pe32::{Rva, Va, Ptr, Pe, PeFile};
-use pelite::util::{CStr, Pod};
+use pelite::{util::CStr, Pod};
 use pelite::pattern as pat;
 
 //----------------------------------------------------------------

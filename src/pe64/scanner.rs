@@ -35,11 +35,9 @@ fn example(file: PeFile<'_>, pat: &[pat::Atom]) {
 use std::{cmp, mem, ptr};
 use std::ops::Range;
 
-use crate::pattern as pat;
-use crate::util::Pod;
+use crate::{Pod, pattern as pat};
 
-use super::{Align, Rva, Pe};
-use super::image::*;
+use super::{Align, Rva, Pe, image::*};
 
 /// Size of the prefix buffer for search optimization.
 const QS_BUF_LEN: usize = 16;
