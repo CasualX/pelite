@@ -39,6 +39,9 @@ pub mod pe32;
 mod pefile;
 pub use self::pefile::PeFile;
 
+mod pir;
+pub use self::pir::Pir;
+
 /// Defaults to the current platform if it is available.
 #[cfg(all(windows, target_pointer_width = "32"))]
 pub use self::pe32 as pe;

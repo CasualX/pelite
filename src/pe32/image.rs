@@ -20,7 +20,7 @@ pub type Rva = u32;
 /// Virtual address type, absolute address as known by the image. Not always the same as a pointer.
 pub type Va = u32;
 /// Signed address offset type used in pointer arithmetic.
-pub type SignedVa = i32;
+pub(super) type SignedVa = i32;
 
 /// Invalid Rva value.
 pub const BADRVA: Rva = !0;
