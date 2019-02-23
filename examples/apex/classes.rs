@@ -1,7 +1,7 @@
 
 use pelite;
 use pelite::pe64::{Va, Ptr, Pe, PeFile};
-use pelite::util::{CStr, Pod};
+use pelite::{util::CStr, Pod};
 use pelite::pattern as pat;
 
 //----------------------------------------------------------------

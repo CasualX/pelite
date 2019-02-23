@@ -1,6 +1,6 @@
 use pelite;
 use pelite::pe64::*;
-use pelite::util::{CStr, Pod};
+use pelite::{util::CStr, Pod};
 use pelite::pattern as pat;
 
 pub fn print(bin: PeFile) {

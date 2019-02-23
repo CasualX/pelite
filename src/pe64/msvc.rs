@@ -1,5 +1,5 @@
 
-use crate::util::{CStr, Pod};
+use crate::{util::CStr, Pod};
 
 use super::Ptr;
 
