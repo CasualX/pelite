@@ -318,7 +318,7 @@ impl<'a> fmt::Debug for RichIter<'a> {
 #[cfg(feature = "serde")]
 mod serde {
 	use crate::util::serde_helper::*;
-	use super::{RichStructure, RichRecord, ObjectKind};
+	use super::{RichStructure, RichRecord};
 
 	impl<'a> Serialize for RichStructure<'a> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
@@ -333,7 +333,7 @@ mod serde {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			let mut state = serializer.serialize_struct("RichRecrod", 4)?;
 			state.serialize_field("product", &self.product)?;
-			state.serialize_field("kind", &ObjectKind::from(self.product))?;
+			// state.serialize_field("kind", &ObjectKind::from(self.product))?;
 			state.serialize_field("build", &self.build)?;
 			state.serialize_field("count", &self.count)?;
 			state.end()

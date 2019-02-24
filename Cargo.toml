@@ -17,7 +17,7 @@ categories = ["parser-implementations", "command-line-utilities"]
 license = "MIT"
 
 [workspace]
-members = [".", "./src/proc-macros"]
+members = [".", "./src/proc-macros", "./wasm"]
 
 [features]
 default = ["mmap"]
