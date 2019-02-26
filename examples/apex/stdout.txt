@@ -1,3 +1,57 @@
+[Interface."ClientRenderTargets001"]
+	address = 0x1730208
+[Interface."EngineTraceClient004"]
+	address = 0x1721b68
+[Interface."EngineTraceClientDecals004"]
+	address = 0x1721b48
+[Interface."EventSystem001"]
+	address = 0x1f47c20
+[Interface."GameUI011"]
+	address = 0x2356770
+[Interface."ISoundC002"]
+	address = 0x1725078
+[Interface."RunGameEngine005"]
+	address = 0x19c4b78
+[Interface."ServerGameClients004"]
+	address = 0x23c45a8
+[Interface."ServerGameDLL005"]
+	address = 0x23d0d90
+[Interface."ServerGameEnts002"]
+	address = 0x23c6e08
+[Interface."ShaderSystem002"]
+	address = 0x19c3dc8
+[Interface."VClient018"]
+	address = 0x1f49b10
+[Interface."VClientEntityList003"]
+	address = 0x21ecb08
+[Interface."VClientPrediction001"]
+	address = 0x23560e0
+[Interface."VCvarQuery001"]
+	address = 0x1725150
+[Interface."VDebugOverlay004"]
+	address = 0x1723cf0
+[Interface."VENGINE_GAMEUIFUNCS_VERSION005"]
+	address = 0x1725678
+[Interface."VENGINE_LAUNCHER_API_VERSION004"]
+	address = 0x18b8110
+[Interface."VEngineModel016"]
+	address = 0x1734050
+[Interface."VEngineRandom001"]
+	address = 0x1724cb8
+[Interface."VEngineRenderView013"]
+	address = 0x17243c8
+[Interface."VGUI_System010"]
+	address = 0x1f43a90
+[Interface."VMaterialSystemConfig004"]
+	address = 0x224ebda8
+[Interface."VPhysicsDebugOverlay001"]
+	address = 0x1723cf8
+[Interface."VServerDllSharedAppSystems001"]
+	address = 0x23c7e28
+[Misc]
+	NUM_ENT_ENTRIES = 0x10000
+	cl_entitylist = 0x1f6cab8
+	LocalEntityHandle = 0x172263b
 [ClientClass."CAI_BaseNPC"]
 	address = 0x1734018
 	size = 6464
@@ -370,56 +424,6 @@
 [ClientClass."Titan_Cockpit"]
 	address = 0x1f3c118
 	size = 5440
-[Interface."ClientRenderTargets001"]
-	address = 0x1730208
-[Interface."EngineTraceClient004"]
-	address = 0x1721b68
-[Interface."EngineTraceClientDecals004"]
-	address = 0x1721b48
-[Interface."EventSystem001"]
-	address = 0x1f47c20
-[Interface."GameUI011"]
-	address = 0x2356770
-[Interface."ISoundC002"]
-	address = 0x1725078
-[Interface."RunGameEngine005"]
-	address = 0x19c4b78
-[Interface."ServerGameClients004"]
-	address = 0x23c45a8
-[Interface."ServerGameDLL005"]
-	address = 0x23d0d90
-[Interface."ServerGameEnts002"]
-	address = 0x23c6e08
-[Interface."ShaderSystem002"]
-	address = 0x19c3dc8
-[Interface."VClient018"]
-	address = 0x1f49b10
-[Interface."VClientEntityList003"]
-	address = 0x21ecb08
-[Interface."VClientPrediction001"]
-	address = 0x23560e0
-[Interface."VCvarQuery001"]
-	address = 0x1725150
-[Interface."VDebugOverlay004"]
-	address = 0x1723cf0
-[Interface."VENGINE_GAMEUIFUNCS_VERSION005"]
-	address = 0x1725678
-[Interface."VENGINE_LAUNCHER_API_VERSION004"]
-	address = 0x18b8110
-[Interface."VEngineModel016"]
-	address = 0x1734050
-[Interface."VEngineRandom001"]
-	address = 0x1724cb8
-[Interface."VEngineRenderView013"]
-	address = 0x17243c8
-[Interface."VGUI_System010"]
-	address = 0x1f43a90
-[Interface."VMaterialSystemConfig004"]
-	address = 0x224ebe68
-[Interface."VPhysicsDebugOverlay001"]
-	address = 0x1723cf8
-[Interface."VServerDllSharedAppSystems001"]
-	address = 0x23c7e28
 [ConVar.""]
 	address = 0x287fab0
 	flags = 0x0
@@ -12561,17 +12565,17 @@
 [ConVar."twitch_check_interval"]
 	address = 0x17fb160
 	description = "how often we ask if this user has a linked twitch prime account if we think they don\'t have one"
-	flags = 0x200
+	flags = 0x0
 	default_value = "3600"
 [ConVar."twitch_prime_linked"]
 	address = 0x17fb340
 	description = "true if this user has a linked twitch prime account"
-	flags = 0x200
+	flags = 0x210
 	default_value = "0"
 [ConVar."twitch_shouldQuery"]
 	address = 0x17fb820
 	description = "true if we should check to see if this user has a linked twitch prime account"
-	flags = 0x200
+	flags = 0x0
 	default_value = "1"
 [ConVar."ui_fadecloud_time"]
 	address = 0x23577f0
@@ -13787,143 +13791,143 @@
 	max_val: 24
 [ConCommand."+ability"]
 	flags = 0x20000
-	callback = 0x77f380
+	callback = 0x77f370
 [ConCommand."+ability_held"]
 	flags = 0x20000
-	callback = 0x77f3a0
+	callback = 0x77f390
 [ConCommand."+attack"]
 	flags = 0x0
-	callback = 0x77e220
+	callback = 0x77e210
 [ConCommand."+backward"]
 	flags = 0x20000
-	callback = 0x77c310
+	callback = 0x77c300
 [ConCommand."+break"]
 	flags = 0x0
-	callback = 0x77bc10
+	callback = 0x77bc00
 [ConCommand."+camdistance"]
 	flags = 0x0
-	callback = 0x777d50
+	callback = 0x777d40
 [ConCommand."+camin"]
 	flags = 0x0
-	callback = 0x779b90
+	callback = 0x779b80
 [ConCommand."+cammousemove"]
 	flags = 0x0
-	callback = 0x777c60
+	callback = 0x777c50
 [ConCommand."+camout"]
 	flags = 0x0
-	callback = 0x779c90
+	callback = 0x779c80
 [ConCommand."+campitchdown"]
 	flags = 0x0
-	callback = 0x779890
+	callback = 0x779880
 [ConCommand."+campitchup"]
 	flags = 0x0
-	callback = 0x779790
+	callback = 0x779780
 [ConCommand."+camyawleft"]
 	flags = 0x0
-	callback = 0x779990
+	callback = 0x779980
 [ConCommand."+camyawright"]
 	flags = 0x0
-	callback = 0x779a90
+	callback = 0x779a80
 [ConCommand."+commandermousemove"]
 	flags = 0x0
-	callback = 0x77bb10
+	callback = 0x77bb00
 [ConCommand."+csm_rot_x_neg"]
 	flags = 0x0
-	callback = 0x6b4d70
+	callback = 0x6b4d60
 [ConCommand."+csm_rot_x_plus"]
 	flags = 0x0
-	callback = 0x6b4d40
+	callback = 0x6b4d30
 [ConCommand."+csm_rot_y_neg"]
 	flags = 0x0
-	callback = 0x6b4dd0
+	callback = 0x6b4dc0
 [ConCommand."+csm_rot_y_plus"]
 	flags = 0x0
-	callback = 0x6b4da0
+	callback = 0x6b4d90
 [ConCommand."+displayFullscreenMap"]
 	flags = 0x0
 	callback = 0x1f0760
 [ConCommand."+dodge"]
 	flags = 0x20000
-	callback = 0x77d910
+	callback = 0x77d900
 [ConCommand."+duck"]
 	flags = 0x20000
-	callback = 0x77cc10
+	callback = 0x77cc00
 [ConCommand."+forward"]
 	flags = 0x20000
-	callback = 0x77c210
+	callback = 0x77c200
 [ConCommand."+graph"]
 	flags = 0x0
-	callback = 0x77d110
+	callback = 0x77d100
 [ConCommand."+jump"]
 	flags = 0x20000
-	callback = 0x77ca10
+	callback = 0x77ca00
 [ConCommand."+klook"]
 	flags = 0x0
-	callback = 0x77bd10
+	callback = 0x77bd00
 [ConCommand."+left"]
 	flags = 0x0
-	callback = 0x77c010
+	callback = 0x77c000
 [ConCommand."+lookdown"]
 	flags = 0x0
-	callback = 0x77c510
+	callback = 0x77c500
 [ConCommand."+lookup"]
 	flags = 0x0
-	callback = 0x77c410
+	callback = 0x77c400
 [ConCommand."+mat_texture_list"]
 	flags = 0x0
-	callback = 0x31f290
+	callback = 0x31f200
 [ConCommand."+melee"]
 	flags = 0x0
-	callback = 0x77dd90
+	callback = 0x77dd80
 [ConCommand."+movedown"]
 	flags = 0x0
-	callback = 0x77bf10
+	callback = 0x77bf00
 [ConCommand."+moveleft"]
 	flags = 0x20000
-	callback = 0x77c610
+	callback = 0x77c600
 [ConCommand."+moveright"]
 	flags = 0x20000
-	callback = 0x77c710
+	callback = 0x77c700
 [ConCommand."+moveup"]
 	flags = 0x0
-	callback = 0x77be10
+	callback = 0x77be00
 [ConCommand."+offhand0"]
 	flags = 0x0
-	callback = 0x77d490
+	callback = 0x77d480
 [ConCommand."+offhand1"]
 	flags = 0x0
-	callback = 0x77d590
+	callback = 0x77d580
 [ConCommand."+offhand2"]
 	flags = 0x0
-	callback = 0x77d690
+	callback = 0x77d680
 [ConCommand."+offhand3"]
 	flags = 0x0
-	callback = 0x77d790
+	callback = 0x77d780
 [ConCommand."+offhand4"]
 	flags = 0x0
-	callback = 0x77d890
+	callback = 0x77d880
 [ConCommand."+pause_menu"]
 	flags = 0x0
-	callback = 0x77f1e0
+	callback = 0x77f1d0
 [ConCommand."+ping"]
 	flags = 0x20000
-	callback = 0x77db10
+	callback = 0x77db00
 [ConCommand."+posedebug"]
 	description = "Turn on pose debugger or add ents to pose debugger UI"
 	flags = 0x4000
-	callback = 0x977100
+	callback = 0x9770f0
 [ConCommand."+pushtotalk"]
 	flags = 0x0
-	callback = 0x2f5c70
+	callback = 0x2f5ba0
 [ConCommand."+reload"]
 	flags = 0x0
-	callback = 0x77e120
+	callback = 0x77e110
 [ConCommand."+right"]
 	flags = 0x0
-	callback = 0x77c110
+	callback = 0x77c100
 [ConCommand."+score"]
 	flags = 0x0
-	callback = 0x77e330
+	callback = 0x77e320
 [ConCommand."+scriptCommand1"]
 	flags = 0x0
 	callback = 0x1f0760
@@ -13953,191 +13957,191 @@
 	callback = 0x1f0760
 [ConCommand."+showscores"]
 	flags = 0x0
-	callback = 0x77e330
+	callback = 0x77e320
 [ConCommand."+speed"]
 	flags = 0x0
-	callback = 0x77c910
+	callback = 0x77c900
 [ConCommand."+strafe"]
 	flags = 0x0
-	callback = 0x77c810
+	callback = 0x77c800
 [ConCommand."+toggle_duck"]
 	flags = 0x20000
-	callback = 0x77cb10
+	callback = 0x77cb00
 [ConCommand."+toggle_zoom"]
 	flags = 0x0
-	callback = 0x77d310
+	callback = 0x77d300
 [ConCommand."+use"]
 	flags = 0x0
-	callback = 0x77cd10
+	callback = 0x77cd00
 [ConCommand."+useAndReload"]
 	flags = 0x0
-	callback = 0x77e020
+	callback = 0x77e010
 [ConCommand."+use_alt"]
 	flags = 0x0
-	callback = 0x77cf10
+	callback = 0x77cf00
 [ConCommand."+use_long"]
 	flags = 0x0
-	callback = 0x77ce10
+	callback = 0x77ce00
 [ConCommand."+variableScopeToggle"]
 	flags = 0x20000
-	callback = 0x77da10
+	callback = 0x77da00
 [ConCommand."+vgui_drawtree"]
 	flags = 0x2
-	callback = 0x2d7b20
+	callback = 0x2d7a50
 [ConCommand."+voicerecord"]
 	flags = 0x0
-	callback = 0x286950
+	callback = 0x286880
 [ConCommand."+walk"]
 	flags = 0x0
-	callback = 0x77dc90
+	callback = 0x77dc80
 [ConCommand."+weaponCycle"]
 	flags = 0x0
-	callback = 0x77f0e0
+	callback = 0x77f0d0
 [ConCommand."+weapon_discard"]
 	flags = 0x0
-	callback = 0x77d010
+	callback = 0x77d000
 [ConCommand."+zoom"]
 	flags = 0x0
-	callback = 0x77d210
+	callback = 0x77d200
 [ConCommand."-ability"]
 	flags = 0x20000
-	callback = 0x77f390
+	callback = 0x77f380
 [ConCommand."-ability_held"]
 	flags = 0x20000
-	callback = 0x77f3b0
+	callback = 0x77f3a0
 [ConCommand."-attack"]
 	flags = 0x0
-	callback = 0x77e2a0
+	callback = 0x77e290
 [ConCommand."-backward"]
 	flags = 0x20000
-	callback = 0x77c390
+	callback = 0x77c380
 [ConCommand."-break"]
 	flags = 0x0
-	callback = 0x77bc90
+	callback = 0x77bc80
 [ConCommand."-camdistance"]
 	flags = 0x0
-	callback = 0x777e10
+	callback = 0x777e00
 [ConCommand."-camin"]
 	flags = 0x0
-	callback = 0x779c10
+	callback = 0x779c00
 [ConCommand."-cammousemove"]
 	flags = 0x0
-	callback = 0x777d10
+	callback = 0x777d00
 [ConCommand."-camout"]
 	flags = 0x0
-	callback = 0x779d10
+	callback = 0x779d00
 [ConCommand."-campitchdown"]
 	flags = 0x0
-	callback = 0x779910
+	callback = 0x779900
 [ConCommand."-campitchup"]
 	flags = 0x0
-	callback = 0x779810
+	callback = 0x779800
 [ConCommand."-camyawleft"]
 	flags = 0x0
-	callback = 0x779a10
+	callback = 0x779a00
 [ConCommand."-camyawright"]
 	flags = 0x0
-	callback = 0x779b10
+	callback = 0x779b00
 [ConCommand."-commandermousemove"]
 	flags = 0x0
-	callback = 0x77bb90
+	callback = 0x77bb80
 [ConCommand."-csm_rot_x_neg"]
 	flags = 0x0
-	callback = 0x6b4d90
+	callback = 0x6b4d80
 [ConCommand."-csm_rot_x_plus"]
 	flags = 0x0
-	callback = 0x6b4d60
+	callback = 0x6b4d50
 [ConCommand."-csm_rot_y_neg"]
 	flags = 0x0
-	callback = 0x6b4df0
+	callback = 0x6b4de0
 [ConCommand."-csm_rot_y_plus"]
 	flags = 0x0
-	callback = 0x6b4dc0
+	callback = 0x6b4db0
 [ConCommand."-displayFullscreenMap"]
 	flags = 0x0
 	callback = 0x1f0760
 [ConCommand."-dodge"]
 	flags = 0x20000
-	callback = 0x77d990
+	callback = 0x77d980
 [ConCommand."-duck"]
 	flags = 0x20000
-	callback = 0x77cc90
+	callback = 0x77cc80
 [ConCommand."-forward"]
 	flags = 0x20000
-	callback = 0x77c290
+	callback = 0x77c280
 [ConCommand."-graph"]
 	flags = 0x0
-	callback = 0x77d190
+	callback = 0x77d180
 [ConCommand."-jump"]
 	flags = 0x20000
-	callback = 0x77ca90
+	callback = 0x77ca80
 [ConCommand."-klook"]
 	flags = 0x0
-	callback = 0x77bd90
+	callback = 0x77bd80
 [ConCommand."-left"]
 	flags = 0x0
-	callback = 0x77c090
+	callback = 0x77c080
 [ConCommand."-lookdown"]
 	flags = 0x0
-	callback = 0x77c590
+	callback = 0x77c580
 [ConCommand."-lookup"]
 	flags = 0x0
-	callback = 0x77c490
+	callback = 0x77c480
 [ConCommand."-mat_texture_list"]
 	flags = 0x0
-	callback = 0x31e4d0
+	callback = 0x31e440
 [ConCommand."-melee"]
 	flags = 0x0
-	callback = 0x77dd10
+	callback = 0x77dd00
 [ConCommand."-movedown"]
 	flags = 0x0
-	callback = 0x77bf90
+	callback = 0x77bf80
 [ConCommand."-moveleft"]
 	flags = 0x20000
-	callback = 0x77c690
+	callback = 0x77c680
 [ConCommand."-moveright"]
 	flags = 0x20000
-	callback = 0x77c790
+	callback = 0x77c780
 [ConCommand."-moveup"]
 	flags = 0x0
-	callback = 0x77be90
+	callback = 0x77be80
 [ConCommand."-offhand0"]
 	flags = 0x0
-	callback = 0x77d410
+	callback = 0x77d400
 [ConCommand."-offhand1"]
 	flags = 0x0
-	callback = 0x77d510
+	callback = 0x77d500
 [ConCommand."-offhand2"]
 	flags = 0x0
-	callback = 0x77d610
+	callback = 0x77d600
 [ConCommand."-offhand3"]
 	flags = 0x0
-	callback = 0x77d710
+	callback = 0x77d700
 [ConCommand."-offhand4"]
 	flags = 0x0
-	callback = 0x77d810
+	callback = 0x77d800
 [ConCommand."-pause_menu"]
 	flags = 0x0
-	callback = 0x77f260
+	callback = 0x77f250
 [ConCommand."-ping"]
 	flags = 0x20000
-	callback = 0x77db90
+	callback = 0x77db80
 [ConCommand."-posedebug"]
 	description = "Turn off pose debugger or hide ents from pose debugger UI"
 	flags = 0x4000
-	callback = 0x977210
+	callback = 0x977200
 [ConCommand."-pushtotalk"]
 	flags = 0x0
-	callback = 0x2f5d00
+	callback = 0x2f5c30
 [ConCommand."-reload"]
 	flags = 0x0
-	callback = 0x77e1a0
+	callback = 0x77e190
 [ConCommand."-right"]
 	flags = 0x0
-	callback = 0x77c190
+	callback = 0x77c180
 [ConCommand."-score"]
 	flags = 0x0
-	callback = 0x77e3d0
+	callback = 0x77e3c0
 [ConCommand."-scriptCommand1"]
 	flags = 0x0
 	callback = 0x1f0760
@@ -14167,52 +14171,52 @@
 	callback = 0x1f0760
 [ConCommand."-showscores"]
 	flags = 0x0
-	callback = 0x77e3d0
+	callback = 0x77e3c0
 [ConCommand."-speed"]
 	flags = 0x0
-	callback = 0x77c990
+	callback = 0x77c980
 [ConCommand."-strafe"]
 	flags = 0x0
-	callback = 0x77c890
+	callback = 0x77c880
 [ConCommand."-toggle_duck"]
 	flags = 0x20000
-	callback = 0x77cb90
+	callback = 0x77cb80
 [ConCommand."-toggle_zoom"]
 	flags = 0x0
-	callback = 0x77d390
+	callback = 0x77d380
 [ConCommand."-use"]
 	flags = 0x0
-	callback = 0x77cd90
+	callback = 0x77cd80
 [ConCommand."-useAndReload"]
 	flags = 0x0
-	callback = 0x77e0a0
+	callback = 0x77e090
 [ConCommand."-use_alt"]
 	flags = 0x0
-	callback = 0x77cf90
+	callback = 0x77cf80
 [ConCommand."-use_long"]
 	flags = 0x0
-	callback = 0x77ce90
+	callback = 0x77ce80
 [ConCommand."-variableScopeToggle"]
 	flags = 0x20000
-	callback = 0x77da90
+	callback = 0x77da80
 [ConCommand."-vgui_drawtree"]
 	flags = 0x2
-	callback = 0x2d7b40
+	callback = 0x2d7a70
 [ConCommand."-voicerecord"]
 	flags = 0x0
-	callback = 0x2869d0
+	callback = 0x286900
 [ConCommand."-walk"]
 	flags = 0x0
-	callback = 0x77dc10
+	callback = 0x77dc00
 [ConCommand."-weaponCycle"]
 	flags = 0x0
-	callback = 0x77f160
+	callback = 0x77f150
 [ConCommand."-weapon_discard"]
 	flags = 0x0
-	callback = 0x77d090
+	callback = 0x77d080
 [ConCommand."-zoom"]
 	flags = 0x0
-	callback = 0x77d290
+	callback = 0x77d280
 [ConCommand."BindToggle"]
 	description = "Performs a bind <key> \"increment var <cvar> 0 1 1\""
 	flags = 0x0
@@ -14220,13 +14224,13 @@
 [ConCommand."BuildAINFile"]
 	description = "Build and Save the AI Node Graph (restarts map)"
 	flags = 0x4
-	callback = 0xd8b200
+	callback = 0xd8b1f0
 [ConCommand."DebugPrintUsedTextures"]
 	flags = 0x0
-	callback = 0x43bad0
+	callback = 0x43bac0
 [ConCommand."DumpClientDataBlockReceiver"]
 	flags = 0x0
-	callback = 0x326fa0
+	callback = 0x326f10
 [ConCommand."MemTrackDeltaSnapshot"]
 	description = "Debug command compares two snapshots. Takes indices into the snapshot array, negative means from end"
 	flags = 0x0
@@ -14238,38 +14242,38 @@
 [ConCommand."ReloadAimAssistSettings"]
 	description = "Reloads aimassist config files."
 	flags = 0x8
-	callback = 0x637740
+	callback = 0x637730
 [ConCommand."Test_InitRandomEntitySpawner"]
 	flags = 0x4004
-	callback = 0xf2eb30
+	callback = 0xf2eb20
 [ConCommand."Test_RandomizeInPVS"]
 	flags = 0x4004
-	callback = 0xf2ef90
+	callback = 0xf2ef80
 [ConCommand."Test_RemoveAllRandomEntities"]
 	flags = 0x4004
-	callback = 0xf2f150
+	callback = 0xf2f140
 [ConCommand."Test_SpawnRandomEntities"]
 	flags = 0x4004
-	callback = 0xf2ed70
+	callback = 0xf2ed60
 [ConCommand."_setClassVarServer"]
 	description = "Set a class var on the server"
 	flags = 0x4006
-	callback = 0xc5b430
+	callback = 0xc5b420
 [ConCommand."adminmsg"]
 	description = "Send text to the current community (if you are an admin)"
 	flags = 0x0
-	callback = 0x311870
+	callback = 0x3117e0
 [ConCommand."ai_debug_node_connect"]
 	description = "Debug the attempted connection between two nodes"
 	flags = 0x4
-	callback = 0xd87460
+	callback = 0xd87450
 [ConCommand."ai_dump_hints"]
 	flags = 0x4
 	callback = 0x1f0760
 [ConCommand."ai_set_move_height_epsilon"]
 	description = "Set how high AI bumps up ground walkers when checking steps"
 	flags = 0x4
-	callback = 0xd6f550
+	callback = 0xd6f540
 [ConCommand."air_density"]
 	description = "Changes the density of air for drag computations."
 	flags = 0x4004
@@ -14277,19 +14281,19 @@
 [ConCommand."aisettings_reparse"]
 	description = "Reloads the AI settings files"
 	flags = 0x6
-	callback = 0xfd6a30
+	callback = 0xfd6a20
 [ConCommand."aisettings_reparse_client"]
 	description = "Reloads the AI settings files"
 	flags = 0xa
-	callback = 0xa36210
+	callback = 0xa36200
 [ConCommand."alias"]
 	description = "Alias a command."
 	flags = 0x0
-	callback = 0x2525a0
+	callback = 0x2524b0
 [ConCommand."applyVideoChangesDeferred"]
 	description = "Workaround for applying video changes using controller buttons shortcuts."
 	flags = 0x8
-	callback = 0xa184f0
+	callback = 0xa184e0
 [ConCommand."assert_test"]
 	description = "Cause the engine to fail an assert."
 	flags = 0x0
@@ -14297,19 +14301,19 @@
 [ConCommand."bind"]
 	description = "Bind a key to TAPPED."
 	flags = 0x0
-	callback = 0x28b0d0
+	callback = 0x28b000
 [ConCommand."bind_US_standard"]
 	description = "Bind a key to TAPPED. Given a key on a standard US keyboard, this function will translate that key to the appropriate key on the user\'s current keyboard."
 	flags = 0x0
-	callback = 0x28b0f0
+	callback = 0x28b020
 [ConCommand."bind_held"]
 	description = "Bind a key to HELD."
 	flags = 0x0
-	callback = 0x28b0e0
+	callback = 0x28b010
 [ConCommand."bind_held_US_standard"]
 	description = "Bind a key to HELD.. Given a key on a standard US keyboard, this function will translate that key to the appropriate key on the user\'s current keyboard."
 	flags = 0x0
-	callback = 0x28b100
+	callback = 0x28b030
 [ConCommand."bind_list"]
 	description = "List all current bindings."
 	flags = 0x0
@@ -14317,7 +14321,7 @@
 [ConCommand."bind_list_abilities"]
 	description = "List all ability bindings and what commands they resolve to"
 	flags = 0x0
-	callback = 0x28ac90
+	callback = 0x28abc0
 [ConCommand."bink_dump_precached_movies"]
 	description = "Dumps information about all precached Bink movies"
 	flags = 0x0
@@ -14325,15 +14329,15 @@
 [ConCommand."bot_loadout"]
 	description = "Override bot loadout"
 	flags = 0x4008
-	callback = 0x951b00
+	callback = 0x951af0
 [ConCommand."bot_loadout_server"]
 	description = "Override bot loadout."
 	flags = 0x4014
-	callback = 0xccc8a0
+	callback = 0xccc890
 [ConCommand."box"]
 	description = "Draw a debug box."
 	flags = 0x4000
-	callback = 0x30f2c0
+	callback = 0x30f230
 [ConCommand."buildcubemaps"]
 	description = "Rebuild cubemaps."
 	flags = 0x0
@@ -14341,65 +14345,65 @@
 [ConCommand."cache_print"]
 	description = "cache_print [section]\nPrint out contents of cache memory."
 	flags = 0x2
-	callback = 0x286f40
+	callback = 0x286e70
 [ConCommand."cache_print_lru"]
 	description = "cache_print_lru [section]\nPrint out contents of cache memory."
 	flags = 0x2
-	callback = 0x286f70
+	callback = 0x286ea0
 [ConCommand."cache_print_summary"]
 	description = "cache_print_summary [section]\nPrint out a summary contents of cache memory."
 	flags = 0x2
-	callback = 0x286fa0
+	callback = 0x286ed0
 [ConCommand."cam_command"]
 	description = "Tells camera to change modes"
 	flags = 0x4008
-	callback = 0x777b70
+	callback = 0x777b60
 [ConCommand."cancelselect"]
 	flags = 0x10000000
-	callback = 0x77baf0
+	callback = 0x77bae0
 [ConCommand."cast_hull"]
 	description = "Tests hull collision detection"
 	flags = 0x4004
-	callback = 0xe44000
+	callback = 0xe43ff0
 [ConCommand."cast_ray"]
 	description = "Tests collision detection"
 	flags = 0x4004
-	callback = 0xe43c50
+	callback = 0xe43c40
 [ConCommand."cc_emit"]
 	description = "Emits a closed caption"
 	flags = 0x8
-	callback = 0x776dd0
+	callback = 0x776dc0
 [ConCommand."centerview"]
 	flags = 0x0
-	callback = 0x659f10
+	callback = 0x659f00
 [ConCommand."changelevel"]
 	description = "Change server to the specified map"
 	flags = 0x20000
-	callback = 0x2863e0
+	callback = 0x286310
 [ConCommand."chat"]
 	description = "Send text to the current chatroom"
 	flags = 0x0
-	callback = 0x311760
+	callback = 0x3116d0
 [ConCommand."chatroom_adminsOnly"]
 	description = "Set the chatroom to be admins-only"
 	flags = 0x0
-	callback = 0x3a31f0
+	callback = 0x3a31e0
 [ConCommand."chatroom_away"]
 	description = "Tell the chatserver you are away from the room"
 	flags = 0x0
-	callback = 0x3119b0
+	callback = 0x311920
 [ConCommand."chatroom_freetalk"]
 	description = "Set the chatroom to be free talk"
 	flags = 0x0
-	callback = 0x3a3220
+	callback = 0x3a3210
 [ConCommand."chatroom_present"]
 	description = "Tell the chatserver you are present in the room"
 	flags = 0x0
-	callback = 0x3119a0
+	callback = 0x311910
 [ConCommand."chatserver"]
 	description = "Connect to a chatserver"
 	flags = 0x0
-	callback = 0x3111c0
+	callback = 0x311130
 [ConCommand."cl_dump_particle_stats"]
 	description = "dump particle profiling info to particle_profile.csv"
 	flags = 0x0
@@ -14407,31 +14411,31 @@
 [ConCommand."cl_ent_absbox"]
 	description = "Displays the client\'s absbox for the entity under the crosshair."
 	flags = 0x4008
-	callback = 0x6a3d30
+	callback = 0x6a3d20
 [ConCommand."cl_ent_bbox"]
 	description = "Displays the client\'s bounding box for the entity under the crosshair."
 	flags = 0x4008
-	callback = 0x6a3d20
+	callback = 0x6a3d10
 [ConCommand."cl_ent_rbox"]
 	description = "Displays the client\'s render box for the entity under the crosshair."
 	flags = 0x4008
-	callback = 0x6a3d40
+	callback = 0x6a3d30
 [ConCommand."cl_find_ent"]
 	description = "Find and list all client entities with classnames that contain the specified substring.\nFormat: cl_find_ent <substring>\n"
 	flags = 0x4000
-	callback = 0x6a4ec0
+	callback = 0x6a4eb0
 [ConCommand."cl_find_ent_index"]
 	description = "Display data for clientside entity matching specified index.\nFormat: cl_find_ent_index <index>\n"
 	flags = 0x4000
-	callback = 0x6a4f90
+	callback = 0x6a4f80
 [ConCommand."cl_flip_visibility"]
 	description = "Flips the visibilityBits of all Entities"
 	flags = 0x4000
-	callback = 0x6a3bb0
+	callback = 0x6a3ba0
 [ConCommand."cl_fullupdate"]
 	description = "Forces the server to send a full update packet"
 	flags = 0x4000
-	callback = 0x310b90
+	callback = 0x310b00
 [ConCommand."cl_interpolation_report"]
 	description = "Prints all entities being interpolated on the next frame"
 	flags = 0x8
@@ -14439,10 +14443,10 @@
 [ConCommand."cl_panelanimation"]
 	description = "Shows panel animation variables: <panelname | blank for all panels>."
 	flags = 0x8
-	callback = 0x7cbff0
+	callback = 0x7cbfe0
 [ConCommand."cl_particles_dump_effects"]
 	flags = 0x8
-	callback = 0x7b00d0
+	callback = 0x7b00c0
 [ConCommand."cl_particles_dumplist"]
 	description = "Dump all new particles, optional name substring."
 	flags = 0x8
@@ -14450,15 +14454,15 @@
 [ConCommand."cl_precacheinfo"]
 	description = "Show precache info (client)."
 	flags = 0x0
-	callback = 0x310e60
+	callback = 0x310dd0
 [ConCommand."cl_removedecals"]
 	description = "Remove the decals from the entity under the crosshair."
 	flags = 0x4000
-	callback = 0x6a3b00
+	callback = 0x6a3af0
 [ConCommand."cl_showents"]
 	description = "Dump entity list to console."
 	flags = 0x4000
-	callback = 0x310b30
+	callback = 0x310aa0
 [ConCommand."cl_soundscape_flush"]
 	description = "Flushes the client side soundscapes"
 	flags = 0x10004008
@@ -14466,26 +14470,26 @@
 [ConCommand."cl_trace_start_solid"]
 	description = "Trace with given parameters and return start solid result"
 	flags = 0x8
-	callback = 0x8a4610
+	callback = 0x8a4600
 [ConCommand."cl_trace_test_hitbox_with_non_zero_start_offset"]
 	flags = 0x8
-	callback = 0x6e6ed0
+	callback = 0x6e6ec0
 [ConCommand."cl_updatevisibility"]
 	description = "Updates visibility bits."
 	flags = 0x8
-	callback = 0x6985e0
+	callback = 0x6985d0
 [ConCommand."clear_debug_overlays"]
 	description = "clears debug overlays"
 	flags = 0x4
-	callback = 0xe84b10
+	callback = 0xe84b00
 [ConCommand."clear_loading_progress_detente"]
 	description = "Clears the detente for the load screen."
 	flags = 0x20000
-	callback = 0x286180
+	callback = 0x2860b0
 [ConCommand."clear_loading_progress_sp_text"]
 	description = "Clears the sp text for the load screen."
 	flags = 0x20000
-	callback = 0x2862b0
+	callback = 0x2861e0
 [ConCommand."cm_query_log_record"]
 	description = "Start recording a log of all queries"
 	flags = 0x0
@@ -14497,27 +14501,27 @@
 [ConCommand."cmd"]
 	description = "Forward command to server."
 	flags = 0x0
-	callback = 0x252980
+	callback = 0x252890
 [ConCommand."cmd1"]
 	description = "sets userinfo string for split screen player in slot 1"
 	flags = 0x0
-	callback = 0x256f30
+	callback = 0x256e60
 [ConCommand."cmd2"]
 	description = "sets userinfo string for split screen player in slot 2"
 	flags = 0x0
-	callback = 0x256fa0
+	callback = 0x256ed0
 [ConCommand."cmd3"]
 	description = "sets userinfo string for split screen player in slot 3"
 	flags = 0x0
-	callback = 0x257010
+	callback = 0x256f40
 [ConCommand."cmd4"]
 	description = "sets userinfo string for split screen player in slot 4"
 	flags = 0x0
-	callback = 0x257080
+	callback = 0x256fb0
 [ConCommand."collision_debug"]
 	description = "Sends a collision ray from player and gathers info."
 	flags = 0x4008
-	callback = 0x6a19f0
+	callback = 0x6a19e0
 [ConCommand."colorcorrectionui"]
 	description = "Show/hide the color correction tools UI."
 	flags = 0x4000
@@ -14525,63 +14529,63 @@
 [ConCommand."community_browse"]
 	description = "Browse available communities"
 	flags = 0x0
-	callback = 0x3786d0
+	callback = 0x378770
 [ConCommand."community_getPendingJoinRequest"]
 	description = "Get a random pending join request to answer"
 	flags = 0x0
-	callback = 0x374730
+	callback = 0x3747d0
 [ConCommand."community_join"]
 	description = "Join a community"
 	flags = 0x0
-	callback = 0x378db0
+	callback = 0x378e50
 [ConCommand."community_leave"]
 	description = "Leave a community"
 	flags = 0x0
-	callback = 0x379160
+	callback = 0x379200
 [ConCommand."community_list"]
 	description = "list my communities"
 	flags = 0x0
-	callback = 0x3789f0
+	callback = 0x378a90
 [ConCommand."community_report"]
 	description = "Report a community"
 	flags = 0x0
-	callback = 0x3798e0
+	callback = 0x379980
 [ConCommand."connect"]
 	description = "Connect to specified server."
 	flags = 0x20000
-	callback = 0x30cd90
+	callback = 0x30cd00
 [ConCommand."connectWithKey"]
 	description = "Connect to specified server with an explicit encryption key."
 	flags = 0x20000
-	callback = 0x30d3d0
+	callback = 0x30d340
 [ConCommand."connectwithtoken"]
 	description = "Connect to specified server with a reservation token."
 	flags = 0x20000
-	callback = 0x30d1e0
+	callback = 0x30d150
 [ConCommand."convar_differences"]
 	description = "Show all convars which are not at their default values."
 	flags = 0x2
-	callback = 0x258890
+	callback = 0x2587c0
 [ConCommand."convar_findByFlags"]
 	description = "Find concommands by flags."
 	flags = 0x2
-	callback = 0x258830
+	callback = 0x258760
 [ConCommand."convar_list"]
 	description = "Show the list of convars/concommands."
 	flags = 0x2
-	callback = 0x258840
+	callback = 0x258770
 [ConCommand."crash_test"]
 	description = "Cause the engine to crash."
 	flags = 0x0
-	callback = 0x286e60
+	callback = 0x286d90
 [ConCommand."createparty"]
 	description = "Create a party"
 	flags = 0x0
-	callback = 0x3113c0
+	callback = 0x311330
 [ConCommand."createpartyifnotinone"]
 	description = "Create a party if we aren\'t in one"
 	flags = 0x0
-	callback = 0x3113e0
+	callback = 0x311350
 [ConCommand."csm_server_status"]
 	description = "Usage:\n csm_server_status\n"
 	flags = 0x0
@@ -14589,15 +14593,15 @@
 [ConCommand."csm_status"]
 	description = "Usage:\n   csm_status\n"
 	flags = 0x0
-	callback = 0x6b6960
+	callback = 0x6b6950
 [ConCommand."damagedefs_reparse"]
 	description = "Reloads the damage defs"
 	flags = 0x6
-	callback = 0xc8dc60
+	callback = 0xc8dc50
 [ConCommand."damagedefs_reparse_client"]
 	description = "Reloads the damage defs"
 	flags = 0xa
-	callback = 0x90aed0
+	callback = 0x90aec0
 [ConCommand."debugModelPurge"]
 	description = "Debug command to purge unused models..."
 	flags = 0x0
@@ -14609,11 +14613,11 @@
 [ConCommand."devshots_screenshot"]
 	description = "Used by the -makedevshots system to take a screenshot. For taking your own screenshots, use the \'screenshot\' command instead."
 	flags = 0x20000
-	callback = 0x30dfb0
+	callback = 0x30df20
 [ConCommand."disconnect"]
 	description = "Disconnect game from server."
 	flags = 0x8000000
-	callback = 0x2866c0
+	callback = 0x2865f0
 [ConCommand."display_elapsedtime"]
 	description = "Displays how much time has elapsed since the game started"
 	flags = 0x4000
@@ -14621,46 +14625,46 @@
 [ConCommand."dlight_debug"]
 	description = "Creates a dlight in front of the player"
 	flags = 0x4008
-	callback = 0x6a20d0
+	callback = 0x6a20c0
 [ConCommand."do_InvitePeople_test"]
 	flags = 0x0
-	callback = 0x3835e0
+	callback = 0x3835d0
 [ConCommand."do_Invite_friend_test"]
 	flags = 0x0
-	callback = 0x383640
+	callback = 0x383630
 [ConCommand."do_joinPeople_test"]
 	flags = 0x0
-	callback = 0x383610
+	callback = 0x383600
 [ConCommand."do_origin_test_presence"]
 	flags = 0x0
-	callback = 0x383550
+	callback = 0x383540
 [ConCommand."downloadPlaylists"]
 	description = "Re-download the playlists\n"
 	flags = 0x0
-	callback = 0x2c9450
+	callback = 0x2c9380
 [ConCommand."drawline"]
 	description = "Draws line between two 3D Points.\n\tGreen if no collision\n\tRed is collides with something\n\tArguments: x1 y1 z1 x2 y2 z2"
 	flags = 0x4004
-	callback = 0xe44e30
+	callback = 0xe44e20
 [ConCommand."dumpClientStringTable"]
 	description = "Dump the contents of the client\'s game string table to the console."
 	flags = 0x4000
-	callback = 0x8b0d70
+	callback = 0x8b0d60
 [ConCommand."dumpServerStringTable"]
 	description = "Dump the contents of the server\'s game string table to the console."
 	flags = 0x4004
-	callback = 0xc26310
+	callback = 0xc26300
 [ConCommand."dump_entity_sizes"]
 	description = "Print sizeof(entclass)"
 	flags = 0x4
-	callback = 0xf47ce0
+	callback = 0xf47cd0
 [ConCommand."dump_generic_key_values"]
 	flags = 0x0
 	callback = 0x1f0760
 [ConCommand."dumpentityfactories"]
 	description = "Lists all entity factory names."
 	flags = 0x4
-	callback = 0xf47ba0
+	callback = 0xf47b90
 [ConCommand."dumpeventqueue"]
 	description = "Dump the contents of the Entity I/O event queue to the console."
 	flags = 0x0
@@ -14668,7 +14672,7 @@
 [ConCommand."dumpstringtables"]
 	description = "Print string tables to console."
 	flags = 0x2
-	callback = 0x286dd0
+	callback = 0x286d00
 [ConCommand."echo"]
 	description = "Echo text to console."
 	flags = 0x10000000
@@ -14676,43 +14680,43 @@
 [ConCommand."editor_toggle"]
 	description = "Disables the simulation and returns focus to the editor"
 	flags = 0x4000
-	callback = 0x399e40
+	callback = 0x399e30
 [ConCommand."endmovie"]
 	description = "Stop recording movie frames."
 	flags = 0x20000
-	callback = 0x30f2b0
+	callback = 0x30f220
 [ConCommand."ent_absbox"]
 	description = "Displays the total bounding box for the given entity(s) in green.  Some entites will also display entity specific overlays.\n\tArguments:   \t{entity_name} / {class_name} / no argument picks what player is looking at "
 	flags = 0x4004
-	callback = 0xe03c20
+	callback = 0xe03c10
 [ConCommand."ent_animdump"]
 	description = "Dumps the animation each frame the given entity(ies) in red.\n\tArguments:   \t{entity_name} / {class_name} / no argument picks what player is looking at "
 	flags = 0x4004
-	callback = 0xe03c90
+	callback = 0xe03c80
 [ConCommand."ent_attachments"]
 	description = "Displays the attachment points on an entity.\n\tArguments:   \t{entity_name} / {class_name} / no argument picks what player is looking at "
 	flags = 0x4004
-	callback = 0xe03d00
+	callback = 0xe03cf0
 [ConCommand."ent_bbox"]
 	description = "Displays the movement bounding box for the given entity(ies) in orange.  Some entites will also display entity specific overlays.\n\tArguments:   \t{entity_name} / {class_name} / no argument picks what player is looking at "
 	flags = 0x4004
-	callback = 0xe03bb0
+	callback = 0xe03ba0
 [ConCommand."ent_cancelpendingentfires"]
 	description = "Cancels all ent_fire created outputs that are currently waiting for their delay to expire."
 	flags = 0x0
-	callback = 0xe05b40
+	callback = 0xe05b30
 [ConCommand."ent_create"]
 	description = "Creates an entity of the given type where the player is looking."
 	flags = 0x4004
-	callback = 0xe0a9e0
+	callback = 0xe0a9d0
 [ConCommand."ent_dump"]
 	description = "Usage:\n   ent_dump <entity name>\n"
 	flags = 0x4004
-	callback = 0xe04b10
+	callback = 0xe04b00
 [ConCommand."ent_entitylinks"]
 	description = "Displays all incoming and outgoing links to the given entity.\n\tArguments:   \t{entity_name} / {class_name} / no argument picks what player is looking at "
 	flags = 0x4004
-	callback = 0xe03de0
+	callback = 0xe03dd0
 [ConCommand."ent_fire"]
 	description = "Usage:\n   ent_fire <target> [action] [value] [delay]\n"
 	flags = 0x4004
@@ -14720,66 +14724,66 @@
 [ConCommand."ent_info"]
 	description = "Usage:\n   ent_info <class name>\n"
 	flags = 0x4004
-	callback = 0xe05bc0
+	callback = 0xe05bb0
 [ConCommand."ent_messages"]
 	description = "Toggles input/output message display for the selected entity(ies).  The name of the entity will be displayed as well as any messages that it sends or receives.\n\tArguments:   \t{entity_name} / {class_name} / no argument picks what player is looking at"
 	flags = 0x4004
-	callback = 0xe05df0
+	callback = 0xe05de0
 [ConCommand."ent_name"]
 	flags = 0x4004
-	callback = 0xe037d0
+	callback = 0xe037c0
 [ConCommand."ent_orient"]
 	description = "Orient the specified entity to match the player\'s angles. By default, only orients target entity\'s YAW. Use the \'allangles\' option to orient on all axis.\n\tFormat: ent_orient <entity name> <optional: allangles>"
 	flags = 0x4004
-	callback = 0xe0b4e0
+	callback = 0xe0b4d0
 [ConCommand."ent_pause"]
 	description = "Toggles pausing of input/output message processing for entities.  When turned on processing of all message will stop.  Any messages displayed with \'ent_messages\' will stop fading and be displayed indefinitely. To step through the messages one by one use \'ent_step\'."
 	flags = 0x4004
-	callback = 0xe05e60
+	callback = 0xe05e50
 [ConCommand."ent_pivot"]
 	description = "Displays the pivot for the given entity(ies).\n\t(y=up=green, z=forward=blue, x=left=red). \n\tArguments:   \t{entity_name} / {class_name} / no argument picks what player is looking at "
 	flags = 0x4004
-	callback = 0xe05e80
+	callback = 0xe05e70
 [ConCommand."ent_remove"]
 	description = "Removes the given entity(s)\n\tArguments:   \t{entity_name} / {class_name} / no argument picks what player is looking at "
 	flags = 0x4004
-	callback = 0xe03e50
+	callback = 0xe03e40
 [ConCommand."ent_remove_all"]
 	description = "Removes all entities of the specified type\n\tArguments:   \t{entity_name} / {class_name} "
 	flags = 0x4004
-	callback = 0xe040a0
+	callback = 0xe04090
 [ConCommand."ent_script_dump"]
 	description = "Dumps the names and values of this entity\'s script scope to the console\n\tArguments:   \t{entity_name} / {class_name} / no argument picks what player is looking at "
 	flags = 0x4004
-	callback = 0xe03a60
+	callback = 0xe03a50
 [ConCommand."ent_setname"]
 	description = "Sets the targetname of the given entity(s)\n\tArguments:   \t{new entity name} {entity_name} / {class_name} / no argument picks what player is looking at "
 	flags = 0x4004
-	callback = 0xe041b0
+	callback = 0xe041a0
 [ConCommand."ent_step"]
 	description = "When \'ent_pause\' is set this will step through one waiting input / output message at a time."
 	flags = 0x4004
-	callback = 0xe05ef0
+	callback = 0xe05ee0
 [ConCommand."ent_teleport"]
 	description = "Teleport the specified entity to where the player is looking.\n\tFormat: ent_teleport <entity name>"
 	flags = 0x4004
-	callback = 0xe0b480
+	callback = 0xe0b470
 [ConCommand."ent_text"]
 	description = "Displays text debugging information about the given entity(ies) on top of the entity (See Overlay Text)\n\tArguments:   \t{entity_name} / {class_name} / no argument picks what player is looking at "
 	flags = 0x4004
-	callback = 0xe03840
+	callback = 0xe03830
 [ConCommand."ent_text_radius"]
 	description = "Displays text debugging information about the given entity(ies) on top of the entity (See Overlay Text)\n\tArguments:   \t{entity_name} / {class_name} / no argument picks what player is looking at "
 	flags = 0x4004
-	callback = 0xe038b0
+	callback = 0xe038a0
 [ConCommand."ent_throw"]
 	description = "Throws an entity of the given type where the player is looking."
 	flags = 0x4004
-	callback = 0xe0ae40
+	callback = 0xe0ae30
 [ConCommand."ent_viewoffset"]
 	description = "Displays the eye position for the given entity(ies) in red.\n\tArguments:   \t{entity_name} / {class_name} / no argument picks what player is looking at "
 	flags = 0x4004
-	callback = 0xe03d70
+	callback = 0xe03d60
 [ConCommand."entitlements_print"]
 	flags = 0x2
 	callback = 0x1f0760
@@ -14790,34 +14794,34 @@
 [ConCommand."entitlements_set_bits"]
 	description = "Set entitlement bitflags on client. Needs to be set before connecting to server to have effect on server"
 	flags = 0x0
-	callback = 0x285f40
+	callback = 0x285e70
 [ConCommand."envmap"]
 	flags = 0x0
 	callback = 0x23f520
 [ConCommand."error_test"]
 	description = "Cause the engine to call Error()."
 	flags = 0x0
-	callback = 0x286e70
+	callback = 0x286da0
 [ConCommand."escape"]
 	description = "Escape key pressed."
 	flags = 0x40000000
-	callback = 0x28ae40
+	callback = 0x28ad70
 [ConCommand."exec"]
 	description = "Execute script file."
 	flags = 0x0
-	callback = 0x252590
+	callback = 0x2524a0
 [ConCommand."execPlayerConfig"]
 	description = "Load player settings."
 	flags = 0x0
-	callback = 0x276980
+	callback = 0x2768b0
 [ConCommand."execifexists"]
 	description = "Execute script file if file exists."
 	flags = 0x0
-	callback = 0x252590
+	callback = 0x2524a0
 [ConCommand."exit"]
 	description = "Exit the engine."
 	flags = 0x0
-	callback = 0x284d30
+	callback = 0x284c60
 [ConCommand."eyeInfo"]
 	description = "gets info about the current view\n"
 	flags = 0x0
@@ -14825,52 +14829,52 @@
 [ConCommand."find_ent"]
 	description = "Find and list all entities with classnames or targetnames that contain the specified substring.\nFormat: find_ent <substring>\n"
 	flags = 0x4004
-	callback = 0xe044a0
+	callback = 0xe04490
 [ConCommand."find_ent_index"]
 	description = "Display data for entity matching specified index.\nFormat: find_ent_index <index>\n"
 	flags = 0x4004
-	callback = 0xe04500
+	callback = 0xe044f0
 [ConCommand."firetarget"]
 	flags = 0x4004
-	callback = 0xe04c00
+	callback = 0xe04bf0
 [ConCommand."firstperson"]
 	description = "Switch to firstperson camera."
 	flags = 0x0
-	callback = 0x777bc0
+	callback = 0x777bb0
 [ConCommand."flush"]
 	description = "Flush unlocked cache memory."
 	flags = 0x4000
-	callback = 0x286e80
+	callback = 0x286db0
 [ConCommand."flush_locked"]
 	description = "Flush unlocked and locked cache memory."
 	flags = 0x4000
-	callback = 0x286ee0
+	callback = 0x286e10
 [ConCommand."force_centerview"]
 	flags = 0x0
 	callback = 0x1f0760
 [ConCommand."fps_stats_dump"]
 	flags = 0x0
-	callback = 0x419420
+	callback = 0x419410
 [ConCommand."fps_stats_reset"]
 	flags = 0x0
-	callback = 0x419430
+	callback = 0x419420
 [ConCommand."fps_stats_start"]
 	flags = 0x0
-	callback = 0x419400
+	callback = 0x4193f0
 [ConCommand."fps_stats_stop"]
 	flags = 0x0
-	callback = 0x419410
+	callback = 0x419400
 [ConCommand."friends_update"]
 	flags = 0x0
-	callback = 0x3902d0
+	callback = 0x3902c0
 [ConCommand."fs_clear_open_duplicate_times"]
 	description = "Clear the list of files that have been opened."
 	flags = 0x0
-	callback = 0x3e1d00
+	callback = 0x3e1cf0
 [ConCommand."fs_dump_open_duplicate_times"]
 	description = "Set fs_report_long_reads 1 before loading to use this. Prints a list of files that were opened more than once and ~how long was spent reading from them."
 	flags = 0x0
-	callback = 0x3e1cd0
+	callback = 0x3e1cc0
 [ConCommand."fs_fios_cancel_prefetches"]
 	description = "Cancels all the prefetches in progress."
 	flags = 0x0
@@ -14894,51 +14898,51 @@
 [ConCommand."fs_printopenfiles"]
 	description = "Show all files currently opened by the engine."
 	flags = 0x0
-	callback = 0x267230
+	callback = 0x267160
 [ConCommand."fs_warning_level"]
 	description = "Set the filesystem warning level."
 	flags = 0x0
-	callback = 0x267290
+	callback = 0x2671c0
 [ConCommand."fx_impact_reparse"]
 	description = "Reloads the weapon impact effect table files"
 	flags = 0x4008
-	callback = 0x764e90
+	callback = 0x764e80
 [ConCommand."gameui_activate"]
 	description = "Shows the game UI"
 	flags = 0x0
-	callback = 0x2d2250
+	callback = 0x2d2180
 [ConCommand."gameui_allowescape"]
 	description = "Escape key allowed to hide game UI"
 	flags = 0x0
-	callback = 0x2d2290
+	callback = 0x2d21c0
 [ConCommand."gameui_allowescapetoshow"]
 	description = "Escape key allowed to show game UI"
 	flags = 0x0
-	callback = 0x2d2270
+	callback = 0x2d21a0
 [ConCommand."gameui_hide"]
 	description = "Hides the game UI"
 	flags = 0x0
-	callback = 0x28ae40
+	callback = 0x28ad70
 [ConCommand."gameui_preventescape"]
 	description = "Escape key doesn\'t hide game UI"
 	flags = 0x0
-	callback = 0x2d2260
+	callback = 0x2d2190
 [ConCommand."gameui_preventescapetoshow"]
 	description = "Escape key doesn\'t show game UI"
 	flags = 0x0
-	callback = 0x2d2280
+	callback = 0x2d21b0
 [ConCommand."getNewAuthToken"]
 	description = "Ask for a new auth token."
 	flags = 0x0
-	callback = 0x3a4700
+	callback = 0x3a46f0
 [ConCommand."getfov"]
 	description = "Gets info about the current FOV"
 	flags = 0x0
-	callback = 0x6f8580
+	callback = 0x6f8570
 [ConCommand."gethttpdatacenterlist"]
 	description = "Gets the list of datacenters"
 	flags = 0x0
-	callback = 0x291970
+	callback = 0x2918a0
 [ConCommand."getpos"]
 	description = "dump position and angles to the console"
 	flags = 0x8
@@ -14946,39 +14950,39 @@
 [ConCommand."getpos_bind"]
 	description = "Binds the given key to a setpos/setang command of your current position."
 	flags = 0x8
-	callback = 0x65d610
+	callback = 0x65d600
 [ConCommand."getposvec"]
 	description = "dump position and angles to the console in \'Vector( x, y, z ), Vector( pitch, yaw, roll )\' format"
 	flags = 0x8
-	callback = 0x65d5f0
+	callback = 0x65d5e0
 [ConCommand."give"]
 	description = "Give weapon to player."
 	flags = 0x4008
-	callback = 0x951770
+	callback = 0x951760
 [ConCommand."give_server"]
 	description = "Give weapon to player."
 	flags = 0x4014
-	callback = 0xccc490
+	callback = 0xccc480
 [ConCommand."givecurrentammo"]
 	description = "Give a supply of ammo for current weapon..\n"
 	flags = 0x4004
-	callback = 0xea8db0
+	callback = 0xea8da0
 [ConCommand."groundlist"]
 	description = "Display ground entity list <index>"
 	flags = 0x4
-	callback = 0xe450c0
+	callback = 0xe450b0
 [ConCommand."help"]
 	description = "Find help about a convar/concommand."
 	flags = 0x2
-	callback = 0x258850
+	callback = 0x258780
 [ConCommand."hidepanel"]
 	description = "Hides a viewport panel <name>"
 	flags = 0x8
-	callback = 0xacde10
+	callback = 0xacde00
 [ConCommand."hidevideos"]
 	description = "Hides video panels playing to the screen"
 	flags = 0x8
-	callback = 0x7d41b0
+	callback = 0x7d41a0
 [ConCommand."highlight_log"]
 	description = "Log Highlight"
 	flags = 0x0
@@ -14986,36 +14990,36 @@
 [ConCommand."host_runofftime"]
 	description = "Run off some time without rendering/updating sounds\n"
 	flags = 0x0
-	callback = 0x2787c0
+	callback = 0x2786f0
 [ConCommand."hud_subtitles"]
 	description = "Plays the Subtitles: <filename>"
 	flags = 0x8
-	callback = 0x7779c0
+	callback = 0x7779b0
 [ConCommand."huffman_readProps"]
 	description = "Read the huffman file and regenerate huffman trees"
 	flags = 0x0
-	callback = 0x3a5a70
+	callback = 0x3a5a60
 [ConCommand."impulse"]
 	flags = 0x0
-	callback = 0x77e320
+	callback = 0x77e310
 [ConCommand."inboxmessage_report"]
 	description = "Report an inbox message as abusive"
 	flags = 0x0
-	callback = 0x379cc0
+	callback = 0x379d60
 [ConCommand."incrementvar"]
 	description = "Increment specified convar value."
 	flags = 0x20000
-	callback = 0x286b10
+	callback = 0x286a40
 [ConCommand."ingamemenu_activate"]
 	description = "Shows the in-game menu"
 	flags = 0x8
-	callback = 0x8033f0
+	callback = 0x8033e0
 [ConCommand."initMatchmaking"]
 	flags = 0x0
-	callback = 0x293a60
+	callback = 0x293990
 [ConCommand."invnext"]
 	flags = 0x0
-	callback = 0x77e4e0
+	callback = 0x77e4d0
 [ConCommand."is_considered_sony_multiplayer"]
 	description = "Checks the value for whether the game is currently telling sony it\'s in multiplayer"
 	flags = 0x8
@@ -15023,14 +15027,14 @@
 [ConCommand."joinopeninvite"]
 	description = "Join the active open invite in the chat room"
 	flags = 0x0
-	callback = 0x311590
+	callback = 0x311500
 [ConCommand."joystick_initialize"]
 	flags = 0x40000000
-	callback = 0x77b9a0
+	callback = 0x77b990
 [ConCommand."jpeg"]
 	description = "Take a jpeg screenshot:  jpeg <filename> <quality 1-100>."
 	flags = 0x0
-	callback = 0x30e070
+	callback = 0x30dfe0
 [ConCommand."key_listboundkeys"]
 	description = "(DEPRECATED. Prefer bind_list)List bound keys with bindings."
 	flags = 0x0
@@ -15038,14 +15042,14 @@
 [ConCommand."key_updatelayout"]
 	description = "Updates game keyboard layout to current windows keyboard setting."
 	flags = 0x0
-	callback = 0x3f5610
+	callback = 0x3f5600
 [ConCommand."launchplaylist"]
 	flags = 0x0
-	callback = 0x2c96b0
+	callback = 0x2c95e0
 [ConCommand."leaveopeninvite"]
 	description = "Leave the active open invite in the chat room"
 	flags = 0x0
-	callback = 0x311600
+	callback = 0x311570
 [ConCommand."listClientFXScriptHandles"]
 	description = "Lists all active effects tracked by script."
 	flags = 0x8
@@ -15057,27 +15061,27 @@
 [ConCommand."loadPlaylists"]
 	description = "Reload the playlists\n"
 	flags = 0x0
-	callback = 0x2c9450
+	callback = 0x2c9380
 [ConCommand."map"]
 	description = "Start playing on specified map."
 	flags = 0x20000
-	callback = 0x286320
+	callback = 0x286250
 [ConCommand."map_background"]
 	description = "Runs a map as the background to the main menu."
 	flags = 0x20000
-	callback = 0x286350
+	callback = 0x286280
 [ConCommand."maps"]
 	description = "Displays list of maps."
 	flags = 0x0
-	callback = 0x287e10
+	callback = 0x287d40
 [ConCommand."mat_antialias_mode"]
 	description = "Set antialias mode"
 	flags = 0x0
-	callback = 0x2945e0
+	callback = 0x294510
 [ConCommand."mat_configcurrent"]
 	description = "show the current video control panel config for the material system"
 	flags = 0x0
-	callback = 0x295880
+	callback = 0x2957b0
 [ConCommand."mat_crosshair"]
 	description = "Display the name of the material under the crosshair"
 	flags = 0x4000
@@ -15089,7 +15093,7 @@
 [ConCommand."mat_crosshair_edit_all"]
 	description = "open the material under the crosshair (using an engine ray trace) in the editor defined by mat_crosshair_edit_editor"
 	flags = 0x4004
-	callback = 0xe8f6e0
+	callback = 0xe8f6d0
 [ConCommand."mat_crosshair_explorer"]
 	description = "open the material under the crosshair in explorer and highlight the vmt file"
 	flags = 0x4000
@@ -15105,27 +15109,27 @@
 [ConCommand."mat_gamma"]
 	description = "Set gamma ramp"
 	flags = 0x0
-	callback = 0x2946b0
+	callback = 0x2945e0
 [ConCommand."mat_hdr_enabled"]
 	description = "Report if HDR is enabled for debugging"
 	flags = 0x0
-	callback = 0x41df00
+	callback = 0x41def0
 [ConCommand."mat_printLiveTex"]
 	description = "Print stats of all known live textures."
 	flags = 0x0
-	callback = 0x464450
+	callback = 0x464440
 [ConCommand."mat_savechanges"]
 	description = "saves current video configuration"
 	flags = 0x0
-	callback = 0x295a40
+	callback = 0x295970
 [ConCommand."mat_setvideomode"]
 	description = "sets the width, height, windowed state of the material system, as well as borderless state"
 	flags = 0x0
-	callback = 0x2958d0
+	callback = 0x295800
 [ConCommand."mat_shadercount"]
 	description = "display count of all shaders and reset that count"
 	flags = 0x0
-	callback = 0x46c9f0
+	callback = 0x46c9e0
 [ConCommand."mat_spewvertexandpixelshaders"]
 	description = "Print all vertex and pixel shaders currently loaded to the console"
 	flags = 0x0
@@ -15133,124 +15137,124 @@
 [ConCommand."mat_vsync"]
 	description = "Set vsync enabled"
 	flags = 0x0
-	callback = 0x294530
+	callback = 0x294460
 [ConCommand."match_abortAllSearches"]
 	flags = 0x0
-	callback = 0x293e30
+	callback = 0x293d60
 [ConCommand."match_showAllSearches"]
 	flags = 0x0
 	callback = 0x1f0760
 [ConCommand."matchmake"]
 	flags = 0x0
-	callback = 0x293bd0
+	callback = 0x293b00
 [ConCommand."matchmake_cancel"]
 	flags = 0x0
-	callback = 0x293da0
+	callback = 0x293cd0
 [ConCommand."maxplayers"]
 	description = "Change the maximum number of players allowed on this server."
 	flags = 0x0
-	callback = 0x35b800
+	callback = 0x35b770
 [ConCommand."melee_lunge_ent"]
 	description = "Lunge player towards the entity with the given entity index"
 	flags = 0x4004
-	callback = 0xc14b00
+	callback = 0xc14af0
 [ConCommand."mem_compact"]
 	flags = 0x0
-	callback = 0x276120
+	callback = 0x276050
 [ConCommand."mem_dump"]
 	description = "Dump memory stats to text file."
 	flags = 0x0
-	callback = 0x276060
+	callback = 0x275f90
 [ConCommand."mem_dump_vm"]
 	description = "Dump vm allocations to console."
 	flags = 0x0
-	callback = 0x2760a0
+	callback = 0x275fd0
 [ConCommand."mem_eat"]
 	flags = 0x0
-	callback = 0x276180
+	callback = 0x2760b0
 [ConCommand."mem_incremental_compact"]
 	flags = 0x0
-	callback = 0x276150
+	callback = 0x276080
 [ConCommand."mem_leak_vm"]
 	description = "Leak specified amount of virtual memory (in MB or \'oom\' to deliberately run out.)"
 	flags = 0x0
-	callback = 0x2760d0
+	callback = 0x276000
 [ConCommand."mem_test"]
 	flags = 0x0
-	callback = 0x276210
+	callback = 0x276140
 [ConCommand."mem_textures"]
 	flags = 0x0
 	callback = 0x1f0760
 [ConCommand."mem_verify"]
 	description = "Verify the validity of the heap"
 	flags = 0x0
-	callback = 0x276100
+	callback = 0x276030
 [ConCommand."mem_vram"]
 	flags = 0x0
 	callback = 0x1f0760
 [ConCommand."memory"]
 	description = "Print memory stats."
 	flags = 0x2
-	callback = 0x286940
+	callback = 0x286870
 [ConCommand."migrateme"]
 	description = "Ask your server to migrate you over to another server"
 	flags = 0x10000000
-	callback = 0x284f20
+	callback = 0x284e50
 [ConCommand."miles_dump"]
 	description = "Writes out milesdump file and perf CSV for current session (when CSOM_MILESDUMP_PASSIVELY_FOR_DEBUGGING is enabled)"
 	flags = 0x8
-	callback = 0x9c86b0
+	callback = 0x9c86a0
 [ConCommand."miles_event_info"]
 	description = "Shows information about a particular event."
 	flags = 0x0
-	callback = 0x9c85c0
+	callback = 0x9c85b0
 [ConCommand."miles_pauseui_byname"]
 	description = "Pauses any sound played on the listener for this client with the given name."
 	flags = 0x8
-	callback = 0x9c7ff0
+	callback = 0x9c7fe0
 [ConCommand."miles_play"]
 	description = "Plays a given alias at an optional given position"
 	flags = 0x0
-	callback = 0x9c8470
+	callback = 0x9c8460
 [ConCommand."miles_reboot"]
 	description = "restarts the audio engine"
 	flags = 0x8
-	callback = 0x9c86a0
+	callback = 0x9c8690
 [ConCommand."miles_record"]
 	description = "Enable or disable continuous recording (including previous buffer if available) of audio output to WAV file."
 	flags = 0x8
-	callback = 0x9c8710
+	callback = 0x9c8700
 [ConCommand."miles_record_that"]
 	description = "Writes audio output from the last minute or so to WAV file. (Only useful when CSOM_MILESDUMP_PASSIVE_SAMPLES is enabled)"
 	flags = 0x8
-	callback = 0x9c86e0
+	callback = 0x9c86d0
 [ConCommand."miles_stop_all"]
 	description = "stops all playing sounds"
 	flags = 0x8
-	callback = 0x9c8440
+	callback = 0x9c8430
 [ConCommand."miles_unpauseui_byname"]
 	description = "Resumes any paused sound played on the listener for this client with the given name."
 	flags = 0x8
-	callback = 0x9c8030
+	callback = 0x9c8020
 [ConCommand."miles_write_passive_dumpfile"]
 	description = "Writes out milesdump file for current session (Only when CSOM_MILESDUMP_PASSIVELY_FOR_DEBUGGING is enabled)"
 	flags = 0x8
-	callback = 0x9c86b0
+	callback = 0x9c86a0
 [ConCommand."mmdevinit"]
 	flags = 0x20000
-	callback = 0x310f20
+	callback = 0x310e90
 [ConCommand."multvar"]
 	description = "Multiply specified convar value."
 	flags = 0x20000
-	callback = 0x286c70
+	callback = 0x286ba0
 [ConCommand."muteroom"]
 	description = "Mute the chatroom"
 	flags = 0x0
-	callback = 0x3a1ef0
+	callback = 0x3a1ee0
 [ConCommand."net_channels"]
 	description = "Shows net channel info"
 	flags = 0x0
-	callback = 0x2b7300
+	callback = 0x2b7230
 [ConCommand."net_dumpIncomingStats"]
 	description = "Dump incoming traffic stats"
 	flags = 0x2
@@ -15266,11 +15270,11 @@
 [ConCommand."net_start"]
 	description = "Inits multiplayer network sockets"
 	flags = 0x0
-	callback = 0x2b7340
+	callback = 0x2b7270
 [ConCommand."net_status"]
 	description = "Shows current network status"
 	flags = 0x0
-	callback = 0x2b7350
+	callback = 0x2b7280
 [ConCommand."net_writeStatsFile"]
 	description = "Write out networking info to a file\n"
 	flags = 0x0
@@ -15278,126 +15282,126 @@
 [ConCommand."openinvite"]
 	description = "Send an open invite to the chat room"
 	flags = 0x0
-	callback = 0x3112d0
+	callback = 0x311240
 [ConCommand."openinvitecomplete"]
 	description = "Open Invite is complete (we have our search results and reservation is done)"
 	flags = 0x0
-	callback = 0x3116a0
+	callback = 0x311610
 [ConCommand."openinvitelaunch"]
 	description = "Open Invite should launch"
 	flags = 0x0
-	callback = 0x311640
+	callback = 0x3115b0
 [ConCommand."origin_friendlist_dump"]
 	flags = 0x0
-	callback = 0x37ff20
+	callback = 0x37ff10
 [ConCommand."particle_create"]
 	description = "Creates the named particle effect at the location under the crosshair."
 	flags = 0x4000
-	callback = 0x6c64a0
+	callback = 0x6c6490
 [ConCommand."particle_create_ss"]
 	description = "Creates a screen space particle effect"
 	flags = 0x4000
-	callback = 0x6c6340
+	callback = 0x6c6330
 [ConCommand."particle_dump"]
 	description = "dumps particles matching provided filter (id or defname substring or *)"
 	flags = 0x8
-	callback = 0x7b2270
+	callback = 0x7b2260
 [ConCommand."particle_kill"]
 	description = "Destroys the particle effect created with the particle_create console command."
 	flags = 0x4000
-	callback = 0x6c6ae0
+	callback = 0x6c6ad0
 [ConCommand."particle_list"]
 	description = "lists particles all, or matching optional filter (id or defname substring)"
 	flags = 0x8
-	callback = 0x7b2270
+	callback = 0x7b2260
 [ConCommand."particle_recreate"]
 	description = "Replays the last particle effect created with the particle_create console command."
 	flags = 0x4000
-	callback = 0x6c6b80
+	callback = 0x6c6b70
 [ConCommand."particle_remove_all"]
 	flags = 0x0
-	callback = 0x7acf50
+	callback = 0x7acf40
 [ConCommand."particle_scrub_bake"]
 	flags = 0x0
-	callback = 0x6c57a0
+	callback = 0x6c5790
 [ConCommand."particle_scrub_play"]
 	flags = 0x0
-	callback = 0x6c50e0
+	callback = 0x6c50d0
 [ConCommand."particle_scrub_stop"]
 	flags = 0x0
-	callback = 0x6c4a80
+	callback = 0x6c4a70
 [ConCommand."particle_test_start"]
 	description = "Dispatches the test particle system with the parameters specified in particle_test_file,\n particle_test_attach_mode and particle_test_attach_param on the entity the player is looking at.\n\tArguments:   \t{entity_name} / {class_name} / no argument picks what player is looking at "
 	flags = 0x4000
-	callback = 0xc28cf0
+	callback = 0xc28ce0
 [ConCommand."particle_test_stop"]
 	description = "Stops all particle systems on the selected entities.\n\tArguments:   \t{entity_name} / {class_name} / no argument picks what player is looking at "
 	flags = 0x4000
-	callback = 0xc28e60
+	callback = 0xc28e50
 [ConCommand."party_leave"]
 	description = "quit the current party"
 	flags = 0x40000000
-	callback = 0x385460
+	callback = 0x385450
 [ConCommand."party_serverChange"]
 	description = "update the party with new server info"
 	flags = 0x40000000
-	callback = 0x385480
+	callback = 0x385470
 [ConCommand."path"]
 	description = "Show the engine filesystem path."
 	flags = 0x0
-	callback = 0x2671d0
+	callback = 0x267100
 [ConCommand."pause"]
 	description = "Toggle the server pause state."
 	flags = 0x4
-	callback = 0x2867a0
+	callback = 0x2866d0
 [ConCommand."pausevideos"]
 	description = "Pauses all videos playing to the screen"
 	flags = 0x8
-	callback = 0x7d4190
+	callback = 0x7d4180
 [ConCommand."phys_objectDump"]
 	description = "Dump a list of the active objects on the client."
 	flags = 0x20008
-	callback = 0x7b53c0
+	callback = 0x7b53b0
 [ConCommand."phys_throw_client"]
 	description = "Throws an entity of the given model where the player is looking. Model must already be loaded."
 	flags = 0x4008
-	callback = 0x6a5000
+	callback = 0x6a4ff0
 [ConCommand."physics_budget"]
 	description = "Times the cost of each active object"
 	flags = 0x4
-	callback = 0xe8f2e0
+	callback = 0xe8f2d0
 [ConCommand."physics_debug_entity"]
 	description = "Dumps debug info for an entity"
 	flags = 0x4
-	callback = 0xe8f2c0
+	callback = 0xe8f2b0
 [ConCommand."physics_highlight_active"]
 	description = "Turns on the absbox for all active physics objects"
 	flags = 0x4
-	callback = 0xe8ea10
+	callback = 0xe8ea00
 [ConCommand."physics_report_active"]
 	description = "Lists all active physics objects"
 	flags = 0x4
-	callback = 0xe8ea20
+	callback = 0xe8ea10
 [ConCommand."physics_select"]
 	description = "Dumps debug info for an entity"
 	flags = 0x4
-	callback = 0xe8f2d0
+	callback = 0xe8f2c0
 [ConCommand."picker"]
 	description = "Toggles \'picker\' mode.  When picker is on, the bounding box, pivot and debugging text is displayed for whatever entity the player is looking at.\n\tArguments:\tfull - enables all debug information"
 	flags = 0x4004
-	callback = 0xe05e70
+	callback = 0xe05e60
 [ConCommand."ping"]
 	description = "Display ping to server."
 	flags = 0x6
-	callback = 0x2852f0
+	callback = 0x285220
 [ConCommand."ping_specific_type"]
 	description = "Pings a specific ping"
 	flags = 0x8
-	callback = 0x8034b0
+	callback = 0x8034a0
 [ConCommand."pingdatacenters"]
 	description = "Re-pings the datacenters"
 	flags = 0x0
-	callback = 0x290a40
+	callback = 0x290970
 [ConCommand."pixelvis_debug"]
 	description = "Dump debug info"
 	flags = 0x8
@@ -15405,7 +15409,7 @@
 [ConCommand."playerSettings_reparse"]
 	description = "Reload player class settings from .set files"
 	flags = 0x4002
-	callback = 0x8e0550
+	callback = 0x8e0540
 [ConCommand."playsoundscape"]
 	description = "Forces a soundscape to play"
 	flags = 0x4008
@@ -15413,122 +15417,122 @@
 [ConCommand."playvideo"]
 	description = "Plays a video: <filename> [width height]"
 	flags = 0x8
-	callback = 0x7d3ac0
+	callback = 0x7d3ab0
 [ConCommand."playvideo_end_level_transition"]
 	description = "Plays a video fullscreen without ability to skip (unless dev 1) and fades in: <filename> <time>"
 	flags = 0x8
-	callback = 0x7d3d90
+	callback = 0x7d3d80
 [ConCommand."playvideo_exitcommand"]
 	description = "Plays a video and fires and exit command when it is stopped or finishes: <filename> <exit command>"
 	flags = 0x8
-	callback = 0x7d3f00
+	callback = 0x7d3ef0
 [ConCommand."playvideo_exitcommand_nointerrupt"]
 	description = "Plays a video (without interruption) and fires and exit command when it is stopped or finishes: <filename> <exit command>"
 	flags = 0x8
-	callback = 0x7d4020
+	callback = 0x7d4010
 [ConCommand."playvideo_nointerrupt"]
 	description = "Plays a video without ability to skip: <filename> [width height]"
 	flags = 0x8
-	callback = 0x7d3cd0
+	callback = 0x7d3cc0
 [ConCommand."playvideo_scaled"]
 	description = "Plays a video at position using coordinates scaled relative to the base screen resolution: <filename> [pinPos posX posY width height]"
 	flags = 0x8
-	callback = 0x7d3b90
+	callback = 0x7d3b80
 [ConCommand."print_colorcorrection"]
 	description = "Display the color correction layer information."
 	flags = 0x4000
 	callback = 0x1f0760
 [ConCommand."progress_enable"]
 	flags = 0x0
-	callback = 0x2d22a0
+	callback = 0x2d21d0
 [ConCommand."prop_debug"]
 	description = "Toggle prop debug mode. If on, props will show colorcoded bounding boxes. Red means ignore all damage. White means respond physically to damage but never break. Green maps health in the range of 100 down to 1."
 	flags = 0x4004
-	callback = 0xf04c70
+	callback = 0xf04c60
 [ConCommand."quit"]
 	description = "Exit the engine."
 	flags = 0x0
-	callback = 0x284d30
+	callback = 0x284c60
 [ConCommand."r_cheapwaterend"]
 	flags = 0x8
-	callback = 0x7da450
+	callback = 0x7da440
 [ConCommand."r_cheapwaterstart"]
 	flags = 0x8
-	callback = 0x7da3d0
+	callback = 0x7da3c0
 [ConCommand."r_cleardecals"]
 	description = "Usage r_cleardecals <permanent>."
 	flags = 0x40000000
-	callback = 0x26fb70
+	callback = 0x26faa0
 [ConCommand."r_dxgi_max_frame_latency"]
 	description = "Set the max number of command buffers in flight. 0 will set it to the DXGI default of 3. Make sure you are not forcing \"Maximum pre-rendered frames\" in the driver settings, but leave it application controlled."
 	flags = 0x0
-	callback = 0x45bcf0
+	callback = 0x45bce0
 [ConCommand."r_printdecalinfo"]
 	flags = 0x0
 	callback = 0x1f0760
 [ConCommand."r_volumetric_lighting_color"]
 	flags = 0x0
-	callback = 0x452e30
+	callback = 0x452e20
 [ConCommand."readMsgs"]
 	description = "Read your messages"
 	flags = 0x0
-	callback = 0x36fde0
+	callback = 0x36fd50
 [ConCommand."recheck"]
 	description = "Ask your server to recheck your community"
 	flags = 0x10000000
-	callback = 0x284f20
+	callback = 0x284e50
 [ConCommand."recompute_speed"]
 	description = "Recomputes clock speed (for debugging purposes)."
 	flags = 0x4000
-	callback = 0x276ab0
+	callback = 0x2769e0
 [ConCommand."reload"]
 	description = "Reload the game (add setpos to jump to current view position on reload)."
 	flags = 0x2
-	callback = 0x2863a0
+	callback = 0x2862d0
 [ConCommand."reload_localization"]
 	description = "Reloads all the localization data files"
 	flags = 0x0
-	callback = 0x323fa0
+	callback = 0x323f10
 [ConCommand."reload_script_callbacks"]
 	description = "Reloads script callback function pointers for client and server."
 	flags = 0x4008
-	callback = 0x948770
+	callback = 0x948760
 [ConCommand."reload_script_callbacks_server"]
 	description = "Reloads script callback function pointers for server."
 	flags = 0x4014
-	callback = 0xcc2b00
+	callback = 0xcc2af0
 [ConCommand."render_blanks"]
 	description = "render N blank frames"
 	flags = 0x0
-	callback = 0x3991f0
+	callback = 0x3991e0
 [ConCommand."report_entities"]
 	description = "Lists all entities"
 	flags = 0x4
-	callback = 0xe4c5a0
+	callback = 0xe4c590
 [ConCommand."report_simthinklist"]
 	description = "Lists all simulating/thinking entities"
 	flags = 0x4
-	callback = 0xe4c8c0
+	callback = 0xe4c8b0
 [ConCommand."report_touchlinks"]
 	description = "Lists all touchlinks"
 	flags = 0x4
-	callback = 0xe4c5b0
+	callback = 0xe4c5a0
 [ConCommand."reset_cam_ideal_angles"]
 	description = "Resets camera ideal angles to its default"
 	flags = 0x0
-	callback = 0x777b20
+	callback = 0x777b10
 [ConCommand."resetidletimer"]
 	description = "Resets the idle timer."
 	flags = 0x4
-	callback = 0xe45600
+	callback = 0xe455f0
 [ConCommand."restart"]
 	description = "Restart the game on the same level, to the beginning of the level (add setpos to jump to current view position on restart)."
 	flags = 0x2
-	callback = 0x286360
+	callback = 0x286290
 [ConCommand."restart_checkpoint"]
 	description = "Restart the game on the same level, to the last checkpoint (add setpos to jump to current view position on restart)."
 	flags = 0x2
-	callback = 0x286360
+	callback = 0x286290
 [ConCommand."rumble_print"]
 	description = "Print current list of active rumbles"
 	flags = 0x8
@@ -15536,7 +15540,7 @@
 [ConCommand."savePlayerConfig"]
 	description = "Store player settings."
 	flags = 0x0
-	callback = 0x276aa0
+	callback = 0x2769d0
 [ConCommand."scoreboard_down"]
 	description = "Select next scoreboard player"
 	flags = 0x0
@@ -15564,91 +15568,91 @@
 [ConCommand."screenshot"]
 	description = "Take a screenshot."
 	flags = 0x40000000
-	callback = 0x30df90
+	callback = 0x30df00
 [ConCommand."script_printdiag"]
 	description = "Print the printtodiag() buffer to the console"
 	flags = 0x0
-	callback = 0xf56ae0
+	callback = 0xf56ad0
 [ConCommand."server_single_frame"]
 	description = "Single step a frame for server"
 	flags = 0x6
-	callback = 0x2866f0
+	callback = 0x286620
 [ConCommand."serverinfo"]
 	description = "Request serverinfo from a remote ip and port"
 	flags = 0x0
-	callback = 0x2dca80
+	callback = 0x2dc9b0
 [ConCommand."set"]
 	description = "Change a variable in the class settings (does not save out to disk)\n"
 	flags = 0x4002
-	callback = 0x8e0580
+	callback = 0x8e0570
 [ConCommand."set_loading_progress_background"]
 	description = "Sets the background for load screen. This is cleared to the default after each load."
 	flags = 0x20000
-	callback = 0x286050
+	callback = 0x285f80
 [ConCommand."set_loading_progress_detente"]
 	description = "Set the keyboard and controller strings for the detentes. This is cleared to the default after each load."
 	flags = 0x20000
-	callback = 0x2860e0
+	callback = 0x286010
 [ConCommand."set_loading_progress_fadeout_enabled"]
 	description = "Sets whether or not to fade out of loading. This is cleared to the default after each load. (Default is <fadeoutEnabled> = true )"
 	flags = 0x20000
-	callback = 0x285fd0
+	callback = 0x285f00
 [ConCommand."set_loading_progress_sp_text"]
 	description = "Set the sp text for the load sreen. This is cleared to the default after each load."
 	flags = 0x20000
-	callback = 0x2861c0
+	callback = 0x2860f0
 [ConCommand."setinfo"]
 	description = "Adds a new user info value"
 	flags = 0x40000000
-	callback = 0x310bd0
+	callback = 0x310b40
 [ConCommand."settype"]
 	description = "Sets a type for a Convar/ConCommand. This affects UI rendering for the convar. Examples: \'text\', \'bool\', \'int 0 10\', \'float 0.0 100.0\', \'enum apple orange banana\'. Move these to code eventually."
 	flags = 0x0
-	callback = 0x258c10
+	callback = 0x258b40
 [ConCommand."shake"]
 	description = "Shake the screen."
 	flags = 0x4004
-	callback = 0xe593d0
+	callback = 0xe593c0
 [ConCommand."shake_ropes"]
 	description = "Shakes ropes around the player."
 	flags = 0x4004
-	callback = 0xf18da0
+	callback = 0xf18d90
 [ConCommand."shake_stop"]
 	description = "Stops all active screen shakes.\n"
 	flags = 0x4000
-	callback = 0x7f1f90
+	callback = 0x7f1f80
 [ConCommand."shake_testpunch"]
 	description = "Test a punch-style screen shake.\n"
 	flags = 0x4000
-	callback = 0x7f1fa0
+	callback = 0x7f1f90
 [ConCommand."show_loading_progress"]
 	description = "Prints all debug information regarding the state of the loading progress."
 	flags = 0x0
-	callback = 0x2862f0
+	callback = 0x286220
 [ConCommand."showpanel"]
 	description = "Shows a viewport panel <name>"
 	flags = 0x8
-	callback = 0xacdde0
+	callback = 0xacddd0
 [ConCommand."showtriggers_toggle"]
 	description = "Toggle show triggers"
 	flags = 0x4004
-	callback = 0xf37af0
+	callback = 0xf37ae0
 [ConCommand."showvideos"]
 	description = "Makes video panels playing to the screen visible (if they were hidden)"
 	flags = 0x8
-	callback = 0x7d4250
+	callback = 0x7d4240
 [ConCommand."silentconnect"]
 	description = "Silently connect to specified server, without disconnecting from our current server unless it succeeds."
 	flags = 0x20000
-	callback = 0x30d040
+	callback = 0x30cfb0
 [ConCommand."skill_writeTrainingData"]
 	description = "Write training gauntlet skill data"
 	flags = 0x4
-	callback = 0x2e0dd0
+	callback = 0x2e0d00
 [ConCommand."skybox_swap"]
 	description = "Swap through the skyboxes in our queue"
 	flags = 0x4004
-	callback = 0xf193e0
+	callback = 0xf193d0
 [ConCommand."snapshot_memory_report"]
 	description = "Prints information about memory usage of snapshot data structures"
 	flags = 0x20004
@@ -15660,7 +15664,7 @@
 [ConCommand."soundscape_flush"]
 	description = "Flushes the server & client side soundscapes"
 	flags = 0x4
-	callback = 0xf1cf60
+	callback = 0xf1cf50
 [ConCommand."spawn_as_pilot"]
 	description = "Spawn as Pilot"
 	flags = 0x0
@@ -15672,41 +15676,41 @@
 [ConCommand."ss_map"]
 	description = "Start playing on specified map with max allowed splitscreen players."
 	flags = 0x20000
-	callback = 0x286340
+	callback = 0x286270
 [ConCommand."ss_reloadletterbox"]
 	description = "ss_reloadletterbox"
 	flags = 0x8
-	callback = 0x7cb720
+	callback = 0x7cb710
 [ConCommand."sssss_enable"]
 	description = "Enable screen-space subsurface scattering."
 	flags = 0x8
-	callback = 0x7da4d0
+	callback = 0x7da4c0
 [ConCommand."star_memory"]
 	description = "Dump memory stats"
 	flags = 0x0
-	callback = 0x2ea1b0
+	callback = 0x2ea0e0
 [ConCommand."startmovie"]
 	description = "Start recording movie frames."
 	flags = 0x20000
-	callback = 0x30f000
+	callback = 0x30ef70
 [ConCommand."status"]
 	description = "Display map and connection status."
 	flags = 0x2
-	callback = 0x284fe0
+	callback = 0x284f10
 [ConCommand."steamlink"]
 	flags = 0x0
-	callback = 0x38ff00
+	callback = 0x38fef0
 [ConCommand."steamunlink"]
 	flags = 0x0
-	callback = 0x390240
+	callback = 0x390230
 [ConCommand."stop_transition_videos_fadeout"]
 	description = "Fades out all transition videos playing to the screen: <time>"
 	flags = 0x8
-	callback = 0x7d4380
+	callback = 0x7d4370
 [ConCommand."stopserver"]
 	description = "Stop the server  ( DEDI only )."
 	flags = 0x4004
-	callback = 0xe45690
+	callback = 0xe45680
 [ConCommand."stopsoundscape"]
 	description = "Stops all soundscape processing and fades current looping sounds"
 	flags = 0x4008
@@ -15714,19 +15718,19 @@
 [ConCommand."stopvideos"]
 	description = "Stops all videos playing to the screen"
 	flags = 0x8
-	callback = 0x7d4140
+	callback = 0x7d4130
 [ConCommand."stopvideos_fadeout"]
 	description = "Fades out all videos playing to the screen: <time>"
 	flags = 0x8
-	callback = 0x7d42f0
+	callback = 0x7d42e0
 [ConCommand."surfaceprop"]
 	description = "Reports the surface properties at the cursor"
 	flags = 0x4004
-	callback = 0xe8ea30
+	callback = 0xe8ea20
 [ConCommand."sv_precacheinfo"]
 	description = "Show precache info."
 	flags = 0x0
-	callback = 0x366540
+	callback = 0x3664b0
 [ConCommand."sv_showents"]
 	description = "Prints the server entity list"
 	flags = 0x0
@@ -15734,65 +15738,65 @@
 [ConCommand."sv_shutdown"]
 	description = "Sets the server to shutdown when all games have completed"
 	flags = 0x4004
-	callback = 0x35bcd0
+	callback = 0x35bc40
 [ConCommand."sv_soundscape_printdebuginfo"]
 	description = "print soundscapes"
 	flags = 0x4004
 	callback = 0x1f0760
 [ConCommand."sv_test_rotated_box"]
 	flags = 0x4
-	callback = 0x1091d70
+	callback = 0x1091d60
 [ConCommand."sv_trace_start_solid"]
 	description = "Trace with given parameters and return start solid result"
 	flags = 0x4
-	callback = 0xc1a780
+	callback = 0xc1a770
 [ConCommand."sv_writeSendTableStreamFile"]
 	flags = 0x0
-	callback = 0x35c090
+	callback = 0x35c000
 [ConCommand."swap_to_weapon"]
 	description = "uses a weapon in your inventory by name"
 	flags = 0x4004
-	callback = 0x1031760
+	callback = 0x1031750
 [ConCommand."switchPlayerClassActivityMod"]
 	description = "Switches the player\'s class activity modifier to the given string"
 	flags = 0x4006
-	callback = 0xc5b5e0
+	callback = 0xc5b5d0
 [ConCommand."switchclass"]
 	description = "Change player class: soldier, titan"
 	flags = 0x4006
-	callback = 0xc5b3a0
+	callback = 0xc5b390
 [ConCommand."takecurrentammo"]
 	description = "Remove player\'s extra ammo for the current weapon.\n"
 	flags = 0x4004
-	callback = 0xea8ee0
+	callback = 0xea8ed0
 [ConCommand."testCockpitJoltAngles"]
 	flags = 0x8
-	callback = 0x6f6090
+	callback = 0x6f6080
 [ConCommand."testCockpitJoltOrigin"]
 	flags = 0x8
-	callback = 0x6f5f00
+	callback = 0x6f5ef0
 [ConCommand."test_entity_blocker"]
 	description = "Test command that drops an entity blocker out in front of the player."
 	flags = 0x4004
-	callback = 0xbf09d0
+	callback = 0xbf09c0
 [ConCommand."test_freezeframe"]
 	description = "Test the freeze frame code."
 	flags = 0x4000
-	callback = 0x7da350
+	callback = 0x7da340
 [ConCommand."test_setteam"]
 	description = "Sets target to the player\'s team."
 	flags = 0x4004
-	callback = 0xe443d0
+	callback = 0xe443c0
 [ConCommand."testhudanim"]
 	description = "Test a hud element animation.\n\tArguments: <anim name>\n"
 	flags = 0x4008
-	callback = 0x76d8b0
+	callback = 0x76d8a0
 [ConCommand."thread_test_tslist"]
 	flags = 0x0
-	callback = 0x276280
+	callback = 0x2761b0
 [ConCommand."thread_test_tsqueue"]
 	flags = 0x0
-	callback = 0x276340
+	callback = 0x276270
 [ConCommand."titan_loadout_select"]
 	description = "Titan loadout select"
 	flags = 0x0
@@ -15800,75 +15804,75 @@
 [ConCommand."toggle"]
 	description = "Toggles a convar on or off, or cycles through a set of values."
 	flags = 0x0
-	callback = 0x258c00
+	callback = 0x258b30
 [ConCommand."toggle_inventory"]
 	description = "Toggle the inventory menu"
 	flags = 0x8
-	callback = 0x803430
+	callback = 0x803420
 [ConCommand."toggle_map"]
 	description = "Toggle the big map"
 	flags = 0x8
-	callback = 0x803470
+	callback = 0x803460
 [ConCommand."trace_capsule"]
 	description = "Trace a capsule through the world and debug draw the result"
 	flags = 0x4
-	callback = 0xc1a280
+	callback = 0xc1a270
 [ConCommand."ui_reloadscheme"]
 	description = "Reloads the resource files for the active UI window"
 	flags = 0x8
-	callback = 0x9a4480
+	callback = 0x9a4470
 [ConCommand."uiscript_reset"]
 	description = "Resets all UI script state"
 	flags = 0x0
-	callback = 0x8203a0
+	callback = 0x820390
 [ConCommand."uiscript_resolutionchanged"]
 	description = "Notifies UI script that the resolution has changed"
 	flags = 0x0
-	callback = 0x820a80
+	callback = 0x820a70
 [ConCommand."unbind"]
 	description = "Unbind a key\'s TAPPED binding."
 	flags = 0x0
-	callback = 0x28aa90
+	callback = 0x28a9c0
 [ConCommand."unbind_US_standard"]
 	description = "Unbind a key\'s TAPPED binding. Given a key on a standard US keyboard, this function will translate that key to the appropriate key on the user\'s current keyboard and unbind that key."
 	flags = 0x0
-	callback = 0x28aab0
+	callback = 0x28a9e0
 [ConCommand."unbind_all_gamepad"]
 	description = "Unbinds all gamepad binds"
 	flags = 0x0
-	callback = 0x28aad0
+	callback = 0x28aa00
 [ConCommand."unbind_held"]
 	description = "Unbind a key\'s HELD binding."
 	flags = 0x0
-	callback = 0x28aaa0
+	callback = 0x28a9d0
 [ConCommand."unbind_held_US_standard"]
 	description = "Unbind a key\'s HELD binding. Given a key on a standard US keyboard, this function will translate that key to the appropriate key on the user\'s current keyboard and unbind that key."
 	flags = 0x0
-	callback = 0x28aac0
+	callback = 0x28a9f0
 [ConCommand."unbindall"]
 	description = "Unbind all keys."
 	flags = 0x0
-	callback = 0x28ac70
+	callback = 0x28aba0
 [ConCommand."unbindall_ignoreGamepad"]
 	description = "Unbind all keys, skip gamepad binds."
 	flags = 0x0
-	callback = 0x28ac80
+	callback = 0x28abb0
 [ConCommand."unload_level_loadscreen"]
 	description = "Unloads the loadscreen for the current level"
 	flags = 0x0
-	callback = 0x285570
+	callback = 0x2854a0
 [ConCommand."unmuteroom"]
 	description = "Unmute the chatroom"
 	flags = 0x0
-	callback = 0x3a1f10
+	callback = 0x3a1f00
 [ConCommand."unpausevideos"]
 	description = "Unpauses all videos playing to the screen"
 	flags = 0x8
-	callback = 0x7d41a0
+	callback = 0x7d4190
 [ConCommand."user"]
 	description = "Show user data."
 	flags = 0x0
-	callback = 0x35b740
+	callback = 0x35b6b0
 [ConCommand."users"]
 	description = "Show user info for players on server."
 	flags = 0x0
@@ -15879,72 +15883,72 @@
 	callback = 0x1f0760
 [ConCommand."vgui_drawtree_clear"]
 	flags = 0x0
-	callback = 0x2da5f0
+	callback = 0x2da520
 [ConCommand."vgui_spew_fonts"]
 	flags = 0x0
 	callback = 0x1f0760
 [ConCommand."vgui_togglepanel"]
 	description = "show/hide vgui panel by name."
 	flags = 0x0
-	callback = 0x2d6020
+	callback = 0x2d5f50
 [ConCommand."voicerecord_toggle"]
 	flags = 0x0
-	callback = 0x286a50
+	callback = 0x286980
 [ConCommand."vx_datacache_list"]
 	description = "vx_datacache_list"
 	flags = 0x2
-	callback = 0x286fc0
+	callback = 0x286ef0
 [ConCommand."vx_model_list"]
 	description = "Dump models to VXConsole"
 	flags = 0x0
-	callback = 0x2a5280
+	callback = 0x2a51b0
 [ConCommand."warning_test"]
 	description = "Cause the engine to print a Warning()."
 	flags = 0x0
 	callback = 0x1f0760
 [ConCommand."weaponSelectOrdnance"]
 	flags = 0x0
-	callback = 0x77e8d0
+	callback = 0x77e8c0
 [ConCommand."weaponSelectPrimary0"]
 	flags = 0x0
-	callback = 0x789010
+	callback = 0x789000
 [ConCommand."weaponSelectPrimary1"]
 	flags = 0x0
-	callback = 0x789100
+	callback = 0x7890f0
 [ConCommand."weaponSelectPrimary2"]
 	flags = 0x0
-	callback = 0x7891f0
+	callback = 0x7891e0
 [ConCommand."weapon_activity"]
 	description = "Play a custom animation activity on the active weapon."
 	flags = 0x0
-	callback = 0x77ef90
+	callback = 0x77ef80
 [ConCommand."weapon_inspect"]
 	flags = 0x0
-	callback = 0x77f0a0
+	callback = 0x77f090
 [ConCommand."weapon_list"]
 	description = "Lists all weapons owned by the local player"
 	flags = 0x0
-	callback = 0x68b510
+	callback = 0x68b500
 [ConCommand."weapon_reparse"]
 	description = "Reloads the weapon script files"
 	flags = 0x4008
-	callback = 0x950e30
+	callback = 0x950e20
 [ConCommand."xlog_list"]
 	description = "List all xlogs, and various stats"
 	flags = 0x2
-	callback = 0x286fe0
+	callback = 0x286f10
 [ConCommand."xlog_record"]
 	description = "Start writing log file to disk (including any previously buffered data)"
 	flags = 0x2
-	callback = 0x287020
+	callback = 0x286f50
 [ConCommand."xlog_record_that"]
 	description = "Write buffered data (if any)"
 	flags = 0x2
-	callback = 0x287200
+	callback = 0x287130
 [ConCommand."xlog_stop"]
 	description = "Stop writing it to disk. (resume buffering if buffering enabled on log)"
 	flags = 0x2
-	callback = 0x287110
+	callback = 0x287040
 [ConCommand."xlook"]
 	flags = 0x0
 	callback = 0x1f0760
