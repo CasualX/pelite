@@ -188,8 +188,7 @@ pub type Entries<'a, F> = iter::Map<slice::Iter<'a, IMAGE_RESOURCE_DIRECTORY_ENT
 
 /// Represents a resource name.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
-#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
-#[cfg_attr(feature = "serde", serde(untagged))]
+#[cfg_attr(feature = "serde", derive(::serde::Serialize), serde(untagged))]
 pub enum Name<'a> {
 	/// Resource ID.
 	///
@@ -213,8 +212,7 @@ impl<'a> From<&'a WideStr> for Name<'a> {
 
 /// Data or directory entry.
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
-#[cfg_attr(feature = "serde", serde(untagged))]
+#[cfg_attr(feature = "serde", derive(::serde::Serialize), serde(untagged))]
 pub enum Entry<'a> {
 	Directory(Directory<'a>),
 	DataEntry(DataEntry<'a>),
