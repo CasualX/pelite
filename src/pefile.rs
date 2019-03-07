@@ -2,8 +2,7 @@ use crate::*;
 
 /// View into an unmapped PE32 or PE32+ file.
 #[derive(Copy, Clone)]
-#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
-#[cfg_attr(feature = "serde", serde(untagged))]
+#[cfg_attr(feature = "serde", derive(::serde::Serialize), serde(untagged))]
 pub enum PeFile<'a> {
 	Pe32(pe32::PeFile<'a>),
 	Pe64(pe64::PeFile<'a>),

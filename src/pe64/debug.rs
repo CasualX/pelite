@@ -170,8 +170,7 @@ impl<'a, P: Pe<'a>> fmt::Debug for Dir<'a, P> {
 //----------------------------------------------------------------
 
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
-#[cfg_attr(feature = "serde", serde(untagged))]
+#[cfg_attr(feature = "serde", derive(::serde::Serialize), serde(untagged))]
 pub enum Entry<'a> {
 	CodeView(CodeView<'a>),
 	Dbg(Dbg<'a>),
