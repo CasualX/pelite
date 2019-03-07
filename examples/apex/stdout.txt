@@ -51,7 +51,8 @@
 [Misc]
 	NUM_ENT_ENTRIES = 0x10000
 	cl_entitylist = 0x1f6cab8
-	LocalEntityHandle = 0x172263b
+	LocalEntityHandle = 0x172263c
+	GlobalVars = 0x17fd3b0
 [ClientClass."CAI_BaseNPC"]
 	address = 0x1734018
 	size = 6464

@@ -6,6 +6,7 @@ pub fn print(bin: PeFile<'_>) {
 	println!("[Misc]");
 	entity_list(bin);
 	local_entity_handle(bin);
+	global_vars(bin);
 }
 
 fn entity_list(bin: PeFile<'_>) {
@@ -31,7 +32,7 @@ fn entity_list(bin: PeFile<'_>) {
 }
 
 fn local_entity_handle(bin: PeFile<'_>) {
-	let pat = pat::parse("488D15???? 833D${'}FF 741F").unwrap();
+	let pat = pat::parse("488D15???? 833D${?'}FF 741F").unwrap();
 	let mut save = [0; 4];
 	if bin.scanner().finds_code(&pat, &mut save) {
 		let local_entity_handle = save[1];
@@ -39,5 +40,20 @@ fn local_entity_handle(bin: PeFile<'_>) {
 	}
 	else {
 		eprintln!("unable to find LocalEntityHandle!");
+	}
+}
+
+fn global_vars(bin: PeFile<'_>) {
+	// Right above "Client.dll Init_PostVideo() in library "
+	// lea r8, qword_XXX
+
+	let pat = pat::parse("488B01 4C8D05${'} 498BD6 FF5020").unwrap();
+	let mut save = [0; 4];
+	if bin.scanner().finds_code(&pat, &mut save) {
+		let global_vars = save[1];
+		println!("\tGlobalVars = {:#x}", global_vars);
+	}
+	else {
+		eprintln!("unable to find GlobalVars!");
 	}
 }
