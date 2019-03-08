@@ -9,7 +9,28 @@ References:
 
 use crate::{util::CStr, _Pod as Pod};
 
-use super::Ptr;
+use super::{Pe, Ptr};
+
+fn is_ty_desc<'a, P: Pe<'a> + Copy>(pe: P, rva: u32) -> Option<&'a TypeDescriptor> {
+	let ty_desc = pe.derva::<TypeDescriptor>(rva).ok()?;
+	let col = pe.deref(ty_desc.vftable.offset::<RTTICompleteObjectLocator>(-4)).ok()?;
+	if pe.va_to_rva(col.type_descriptor.into()) != Ok(rva) {
+		return None;
+	}
+	return Some(ty_desc);
+}
+fn is_col<'a, P: Pe<'a> + Copy>(pe: P, rva: u32) -> Option<&'a RTTICompleteObjectLocator> {
+	let col = match pe.derva::<RTTICompleteObjectLocator>(rva) {
+		Ok(col) => col,
+		Err(_) => return None,
+	};
+	let ty_desc = pe.va_to_rva(col.type_descriptor.into()).ok().and_then(|rva| is_type_descriptor(pe, rva))?;
+	let class_descriptor = match pe.deref(col.class_descriptor) {
+		Ok(class_descriptor) => class_descriptor,
+		Err(_) => return None,
+	};
+	unimplemented!()
+}
 
 //----------------------------------------------------------------
 
