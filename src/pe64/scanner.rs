@@ -34,6 +34,7 @@ fn example(file: PeFile<'_>, pat: &[pat::Atom]) {
 
 use std::{cmp, mem, ptr};
 use std::ops::Range;
+use std::marker::PhantomData;
 
 use crate::{Pod, pattern as pat};
 
@@ -97,6 +98,10 @@ impl<'a, P: Pe<'a>> Scanner<P> {
 		let optional_header = self.pe.optional_header();
 		let range = optional_header.BaseOfCode..u32::wrapping_add(optional_header.BaseOfCode, optional_header.SizeOfCode);
 		self.matches(pat, range)
+	}
+	/// Returns an iterator over references of `T` in the image.
+	pub fn data_matches<T, F>(self, range: Range<Rva>, filter: F) -> DataIter<'a, P, T, F> where T: Pod, F: FnMut(P, Rva, &'a T) -> bool {
+		DataIter { scanner: self, range, filter, marker: PhantomData }
 	}
 	/// Pattern interpreter.
 	///
@@ -561,6 +566,38 @@ fn finder_section<'a, P, F>(pe: P, range: Range<Rva>, mut f: F) -> bool where
 		}
 		return false;
 	})
+}
+
+//----------------------------------------------------------------
+
+pub struct DataIter<'a, P, T, F>
+	where P: Pe<'a>,
+	      T: Pod,
+	      F: FnMut(P, Rva, &'a T) -> bool
+{
+	scanner: Scanner<P>,
+	range: Range<Rva>,
+	filter: F,
+	marker: PhantomData<fn() -> &'a T>,
+}
+impl<'a, P, T, F> Iterator for DataIter<'a, P, T, F>
+	where P: Pe<'a>,
+	      T: Pod,
+	      F: FnMut(P, Rva, &'a T) -> bool
+{
+	type Item = &'a T;
+	fn next(&mut self) -> Option<&'a T> {
+		while self.range.start < self.range.end {
+			let rva = self.range.start;
+			self.range.start += mem::align_of::<T>() as u32;
+			if let Ok(value) = self.scanner.pe.derva(rva) {
+				if (self.filter)(self.scanner.pe, rva, value) {
+					return Some(value);
+				}
+			}
+		}
+		None
+	}
 }
 
 //----------------------------------------------------------------

@@ -24,7 +24,7 @@ fn is_col<'a, P: Pe<'a> + Copy>(pe: P, rva: u32) -> Option<&'a RTTICompleteObjec
 		Ok(col) => col,
 		Err(_) => return None,
 	};
-	let ty_desc = pe.va_to_rva(col.type_descriptor.into()).ok().and_then(|rva| is_type_descriptor(pe, rva))?;
+	let ty_desc = pe.va_to_rva(col.type_descriptor.into()).ok().and_then(|rva| is_ty_desc(pe, rva))?;
 	let class_descriptor = match pe.deref(col.class_descriptor) {
 		Ok(class_descriptor) => class_descriptor,
 		Err(_) => return None,
