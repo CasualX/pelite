@@ -69,8 +69,8 @@ pub fn interfaces<'a>(file: PeFile<'a>) -> pelite::Result<Vec<Interface<'a>>> {
 	// mov     eax, offset g_Interface
 	// retn
 	// ```
-	let pat = pat::parse("68*{'} 68*{B8*'} B9???? E8${55 8BEC} C3").unwrap();
-	let mut matches = file.scanner().matches_code(&pat);
+	let pat = pat!("68*{'} 68*{B8*'} B9???? E8${55 8BEC} C3");
+	let mut matches = file.scanner().matches_code(pat);
 	while matches.next(&mut save) {
 		// Extract the interface information
 		let name = file.derva_c_str(save[1]).unwrap().to_str().unwrap();

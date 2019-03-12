@@ -43,9 +43,9 @@ pub struct WeaponInfo<'a> {
 
 pub fn weapondata<'a>(client: PeFile<'a>) -> pelite::Result<Vec<WeaponInfo<'a>>> {
 	// Find the initialize function for CSWeaponInfo
-	let init_pat = pat::parse("55 8BEC 83E4F8 83EC14 53 56 8BF1 57 8B7E? 8B87???? 85C0 0F84???? 83B8????? 0F84???? E8$'").unwrap();
+	let init_pat = pat!("55 8BEC 83E4F8 83EC14 53 56 8BF1 57 8B7E? 8B87???? 85C0 0F84???? 83B8????? 0F84???? E8$'");
 	let mut init_save = [0; 2];
-	if !client.scanner().finds_code(&init_pat, &mut init_save) {
+	if !client.scanner().finds_code(init_pat, &mut init_save) {
 		panic!("weapondata pattern not found");
 	}
 
@@ -62,14 +62,14 @@ fn analyse<'a>(client: PeFile<'a>, code_rva: Rva) -> pelite::Result<WeaponInfo<'
 	let code = client.read_bytes(code_va)?;
 
 	// Run through the initializing code
-	let get_pat = pat::parse("E8$ A1???? A801 75? 83C801 C705????*'").unwrap();
+	let get_pat = pat!("E8$ A1???? A801 75? 83C801 C705????*'");
 	let mut get_name = None;
 
 	for (opcode, va) in lde::X86.iter(code, code_va) {
 		// Find functions which call `CEconItemSchema__GetAttributeDefinition`
 		if opcode.starts_with(&[0xE8]) {
 			let mut get_m = [0; 4];
-			if client.scanner().exec(client.va_to_rva(va).unwrap(), &get_pat, &mut get_m) {
+			if client.scanner().exec(client.va_to_rva(va).unwrap(), get_pat, &mut get_m) {
 				let name = client.derva_c_str(get_m[1])?.to_str().unwrap();
 				if let Some(previous_name) = get_name {
 					eprintln!("missing offset \"{}\"", previous_name);

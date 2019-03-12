@@ -49,8 +49,8 @@ pub fn classes<'a>(client: PeFile<'a>) -> pelite::Result<Vec<Class<'a>>> {
 	// mov     g_pClientClassHead, offset s_ClientClass
 	// retn
 	// ```
-	let pat = pat::parse("A1*{'} A3*{'} C705*{'}*{'???? ???? *{'}} C3").unwrap();
-	let mut matches = client.scanner().matches_code(&pat);
+	let pat = pat!("A1*{'} A3*{'} C705*{'}*{'???? ???? *{'}} C3");
+	let mut matches = client.scanner().matches_code(pat);
 	while matches.next(&mut save) {
 		// Remove false positives
 		if save[1] != save[3] || save[2] != save[4] + 0x10 {
