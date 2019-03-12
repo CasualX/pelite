@@ -29,6 +29,7 @@ macro_rules! pattern {
 	}};
 }
 pub mod pattern;
+#[doc(hidden)]
 pub use pelite_macros::pattern_attribute;
 
 mod error;

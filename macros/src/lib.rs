@@ -24,9 +24,14 @@ pub fn _pod_derive(input: TokenStream) -> TokenStream {
 
 /// Compile time pattern parser.
 ///
+/// Pending function-like proc-macro stabilisation this attribute does a textual replacement of `pattern!` invocations.
+/// The macro invocation is replaced with a const array expression of the pattern atoms.
+///
+/// See `pelite::pattern` macro for the macro rules wrapper around this implementation detail.
+///
 /// ```
 /// #[pattern_attribute]
-/// const PATTERN: &[pelite::pattern::Atom] = pattern!("pattern string");
+/// const PATTERN: &[pelite::pattern::Atom] = &pattern!("pattern string");
 /// ```
 #[proc_macro_attribute]
 pub fn pattern_attribute(_args: TokenStream, input: TokenStream) -> TokenStream {
@@ -38,8 +43,10 @@ pub fn pattern_attribute(_args: TokenStream, input: TokenStream) -> TokenStream 
 		result.push_str(&input[..pos]);
 		// Find, parse and splice the pattern string
 		let (consumed, string) = parse_str_literal(&input[pos + 8..]);
-		let pattern = pattern::parse(&string)
-			.expect("invalid pattern syntax");
+		let pattern = match pattern::parse(&string) {
+			Ok(pattern) => pattern,
+			Err(err) => panic!("invalid pattern syntax: {}", err),
+		};
 		result.push_str(&format!("{{ use ::pelite::pattern::Atom::*; {:?} }}", pattern));
 		// Continue looking for other patterns to parse
 		input = &input[pos + 8 + consumed..];
