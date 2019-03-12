@@ -21,7 +21,16 @@ pub mod image;
 
 pub mod stringify;
 
+#[macro_export]
+macro_rules! pattern {
+	($s:literal) => {{
+		#[::pelite_macros::pattern_attribute]
+		const PATTERN: &[$crate::pattern::Atom] = &pattern!($s); PATTERN
+	}};
+}
 pub mod pattern;
+#[doc(hidden)]
+pub use pelite_macros::pattern_attribute;
 
 mod error;
 pub use self::error::{Error, Result};

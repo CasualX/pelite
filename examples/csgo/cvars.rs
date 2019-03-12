@@ -48,8 +48,8 @@ pub fn cvars<'a>(file: PeFile<'a>) -> pelite::Result<Vec<ConVar<'a>>> {
 	// Match static constructors which call [`ConVar::Create`](https://github.com/ValveSoftware/source-sdk-2013/blob/master/mp/src/public/tier1/convar.h#L383)
 
 	// Variant: ConVar with description
-	let pat1 = pat::parse("6A? 51 C704????? 6A? 51 C704????? B9*{'} 6A? 68*{'} 68'???? 68*{'} 68*{'} E8$").unwrap();
-	let mut matches1 = file.scanner().matches_code(&pat1);
+	let pat1 = pat!("6A? 51 C704????? 6A? 51 C704????? B9*{'} 6A? 68*{'} 68'???? 68*{'} 68*{'} E8$");
+	let mut matches1 = file.scanner().matches_code(pat1);
 	while matches1.next(&mut save) {
 		let (min_value, max_value) = get_min_max_value(&save);
 		let offset = save[1];
@@ -61,8 +61,8 @@ pub fn cvars<'a>(file: PeFile<'a>) -> pelite::Result<Vec<ConVar<'a>>> {
 	}
 
 	// Variant: ConVar without description
-	let pat2 = pat::parse("6A? 51 C704????? 6A? 51 C704????? B9*{'} 6A? 6A00 68'???? 68*{'} 68*{'} E8$").unwrap();
-	let mut matches2 = file.scanner().matches_code(&pat2);
+	let pat2 = pat!("6A? 51 C704????? 6A? 51 C704????? B9*{'} 6A? 6A00 68'???? 68*{'} 68*{'} E8$");
+	let mut matches2 = file.scanner().matches_code(pat2);
 	while matches2.next(&mut save) {
 		let (min_value, max_value) = get_min_max_value(&save);
 		let offset = save[1];

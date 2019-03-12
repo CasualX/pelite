@@ -71,8 +71,8 @@ pub fn interfaces<'a>(file: PeFile<'a>) -> pelite::Result<Vec<Interface<'a>>> {
 		// mov     ebp, esp
 		// push    esi
 		// mov     esi, s_pInterfaceRegs
-		let pat = pat::parse("55 8BEC 5D E9$ 55 8BEC 56 8B35*{'}").unwrap();
-		file.scanner().exec(create_interface_fn, &pat, &mut save);
+		let pat = pat!("55 8BEC 5D E9$ 55 8BEC 56 8B35*{'}");
+		file.scanner().exec(create_interface_fn, pat, &mut save);
 		save[1]
 	};
 
@@ -93,8 +93,8 @@ pub fn interfaces<'a>(file: PeFile<'a>) -> pelite::Result<Vec<Interface<'a>>> {
 	// mov     eax, offset s_Interface
 	// retn
 	// ```
-	let pat = pat::parse("A1*{'} A3???? C705*{'}*{*{B8*'} *'} C3").unwrap();
-	let mut matches = file.scanner().matches_code(&pat);
+	let pat = pat!("A1*{'} A3???? C705*{'}*{*{B8*'} *'} C3");
+	let mut matches = file.scanner().matches_code(pat);
 	while matches.next(&mut save) {
 		// Reject false positive matches for the signature
 		if save[1] != s_pInterfaceRegs || save[2] != s_pInterfaceRegs {
