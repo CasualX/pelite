@@ -255,6 +255,8 @@ pub fn parse(pat: &str) -> Result<Pattern, ParsePatError> {
 		},
 	}
 }
+// This is preferable but currently limited by macro rules...
+// pub use crate::pattern as parse;
 fn parse_helper(pat: &mut &str, result: &mut Vec<Atom>) -> Result<(), PatError> {
 	result.push(Atom::Save(0));
 	let mut iter = pat.as_bytes().iter();
