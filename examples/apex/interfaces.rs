@@ -19,9 +19,7 @@ pub fn interfaces(bin: PeFile<'_>) -> Vec<Interface<'_>> {
 	let mut save = [0; 8];
 	let mut list = Vec::new();
 
-	let pat = pat::parse("488B05${} 488905${} 488D05${*{488D05$'}*'} 488905${} C3").unwrap();
-
-	let mut matches = bin.scanner().matches_code(&pat);
+	let mut matches = bin.scanner().matches_code(pat!("488B05${} 488905${} 488D05${*{488D05$'}*'} 488905${} C3"));
 	while matches.next(&mut save) {
 		let offset = save[1];
 		let name = bin.derva_c_str(save[2]).unwrap().to_str().unwrap();

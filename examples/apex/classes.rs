@@ -48,9 +48,7 @@ pub fn classes<'a>(bin: PeFile<'a>) -> pelite::Result<Vec<Class<'a>>> {
 	// mov     g_pClientClassHead, rax
 	// retn
 	// ```
-	let pat = pat::parse("488B05${'} 488905${'} 488D05${'} 488905${'} C3").unwrap();
-
-	let mut matches = bin.scanner().matches_code(&pat);
+	let mut matches = bin.scanner().matches_code(pat!("488B05${'} 488905${'} 488D05${'} 488905${'} C3"));
 	while matches.next(&mut save) {
 		// Remove false positives
 		if save[1] != save[4] || save[2] != save[3] + 0x20 {
@@ -65,6 +63,5 @@ pub fn classes<'a>(bin: PeFile<'a>) -> pelite::Result<Vec<Class<'a>>> {
 	}
 
 	list.sort_by_key(|item| item.name);
-
 	Ok(list)
 }

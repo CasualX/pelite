@@ -81,7 +81,7 @@ pub struct ConVar<'a> {
 pub fn convars(bin: PeFile<'_>) -> Vec<ConVar<'_>> {
 	// Find the main ConVar vtable
 	let mut save = [0; 4];
-	if !bin.scanner().finds_code(&pat::parse("488BC8 488BD3 E8$ 4053 4883EC60 488BD9 C6411000 33C9 488D05$'").unwrap(), &mut save) {
+	if !bin.scanner().finds_code(pat!("488BC8 488BD3 E8$ 4053 4883EC60 488BD9 C6411000 33C9 488D05$'"), &mut save) {
 		eprintln!("ERR: unable to find ConVar vftable");
 		return Vec::new();
 	}
@@ -142,8 +142,8 @@ pub struct ConCommand<'a> {
 pub fn concommands(bin: PeFile<'_>) -> Vec<ConCommand<'_>> {
 	// Find ConCommand constructor thingy
 	let mut save = [0; 4];
-	let pat = pat::parse("488D05${} 488D0D${'} 488905${'} E9$ 4053 4883EC20").unwrap();
-	let mut matches = bin.scanner().matches_code(&pat);
+	let pat = pat!("488D05${} 488D0D${'} 488905${'} E9$ 4053 4883EC20");
+	let mut matches = bin.scanner().matches_code(pat);
 	let mut concommands = Vec::new();
 	while matches.next(&mut save) {
 		if save[1] != save[2] {
