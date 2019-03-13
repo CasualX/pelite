@@ -131,7 +131,7 @@ mod file;
 #[path = "../pe64/headers.rs"]
 pub mod headers;
 #[path = "../pe64/rich_structure.rs"]
-pub mod rich_structure;
+pub(crate) mod rich_structure;
 #[path = "../pe64/exports.rs"]
 pub mod exports;
 #[path = "../pe64/imports.rs"]

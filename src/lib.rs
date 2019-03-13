@@ -66,6 +66,7 @@ pub use self::pe32 as pe;
 pub use self::pe64 as pe;
 
 pub mod resources;
+pub mod rich_structure;
 
 #[cfg(test)]
 mod tests;

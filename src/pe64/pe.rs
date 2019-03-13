@@ -71,10 +71,6 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	fn headers(self) -> super::headers::Headers<Self> {
 		super::headers::Headers::new(self)
 	}
-	/// Returns the Rich structure.
-	fn rich_structure(self) -> Result<super::rich_structure::RichStructure<'a>> {
-		super::rich_structure::RichStructure::try_from(self)
-	}
 
 	//----------------------------------------------------------------
 
@@ -455,6 +451,13 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	}
 
 	//----------------------------------------------------------------
+
+	/// Returns the Rich structure.
+	fn rich_structure(self) -> Result<crate::rich_structure::RichStructure<'a>> {
+		let image = self.image();
+		let image = unsafe { slice::from_raw_parts(image.as_ptr() as *const u32, image.len() / 4) };
+		crate::rich_structure::RichStructure::try_from(image)
+	}
 
 	/// Gets the Export Directory.
 	///
