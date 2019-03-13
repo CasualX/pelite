@@ -124,7 +124,7 @@ mod pe;
 mod view;
 mod file;
 pub mod headers;
-pub mod rich_structure;
+pub(crate) mod rich_structure;
 pub mod exports;
 pub mod imports;
 pub mod base_relocs;
