@@ -25,12 +25,14 @@ macro_rules! offset_of {
 mod c_str;
 mod wide_str;
 mod guid;
+mod align;
 
 #[cfg(feature = "serde")]
 pub(crate) mod serde_helper;
 
 pub use self::c_str::CStr;
 pub use self::wide_str::WideStr;
+pub use self::align::*;
 
 /// Converts from a byte slice to a string.
 pub trait FromBytes {
