@@ -17,6 +17,7 @@ impl<'a, P: Pe<'a>> Headers<P> {
 	pub(crate) fn new(pe: P) -> Headers<P> {
 		Headers { pe }
 	}
+	/// Gets the PE instance.
 	pub fn pe(&self) -> P {
 		self.pe
 	}
@@ -24,7 +25,7 @@ impl<'a, P: Pe<'a>> Headers<P> {
 	pub fn image(&self) -> &'a [u8] {
 		unsafe { self.pe.image().get_unchecked(..self.pe.optional_header().SizeOfHeaders as usize) }
 	}
-	/// Calculates the optional header's check_sum.
+	/// Calculates the optional header's CheckSum.
 	pub fn check_sum(&self) -> u32 {
 		let image = self.pe.image();
 		let check_sum_position = (self.pe.dos_header().e_lfanew as usize +

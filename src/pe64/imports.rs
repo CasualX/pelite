@@ -51,18 +51,7 @@ use super::Pe;
 
 //----------------------------------------------------------------
 
-/// Imported symbol.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
-pub enum Import<'a> {
-	/// Imported by name.
-	///
-	/// The hint is an index in the export names table that may contain the desired symbol.
-	/// For more information see this [blog post](https://blogs.msdn.microsoft.com/oldnewthing/20100317-00/?p=14573) by Raymond Chen.
-	ByName { hint: usize, name: &'a CStr },
-	/// Imported by ordinal.
-	ByOrdinal { ord: Ordinal }
-}
+pub use crate::wrap::imports::Import;
 
 // Gets the import from the import name table.
 //
@@ -105,15 +94,19 @@ impl<'a, P: Pe<'a>> Imports<'a, P> {
 	pub fn image(&self) -> &'a [IMAGE_IMPORT_DESCRIPTOR] {
 		self.image
 	}
+	/// Iterator over the import descriptors.
+	pub fn iter(&self) -> Iter<'a, P> {
+		Iter {
+			pe: self.pe,
+			iter: self.image.iter(),
+		}
+	}
 }
 impl<'a, P: Pe<'a>> IntoIterator for Imports<'a, P> {
 	type Item = Desc<'a, P>;
 	type IntoIter = Iter<'a, P>;
 	fn into_iter(self) -> Iter<'a, P> {
-		Iter {
-			pe: self.pe,
-			iter: self.image.iter(),
-		}
+		self.iter()
 	}
 }
 impl<'a, P: Pe<'a>> fmt::Debug for Imports<'a, P> {

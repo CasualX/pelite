@@ -6,7 +6,6 @@ use std::env;
 use std::path::Path;
 use std::io::{self, Write};
 
-use pelite::{pe32, pe64};
 use pelite::pattern as pat;
 
 const HELP_TEXT: &'static str = "\
@@ -36,26 +35,14 @@ fn main() {
 		let file_map = pelite::FileMap::open(&file_path).expect("cannot open the input file");
 
 		match pelite::PeFile::from_bytes(&file_map) {
-			// Try reading as PE32
-			Ok(pelite::PeFile::Pe32(file)) => {
+			Ok(file) => {
 				process_patterns(args, &mut |pattern, save| {
-					let scanner = pe32::Pe::scanner(file);
-					let mut matches = scanner.matches_code(pattern);
+					let mut matches = file.scanner().matches_code(pattern);
 					while matches.next(save) {
 						print_match(file_name, save);
 					}
 				});
-			},
-			// Try reading as PE32+
-			Ok(pelite::PeFile::Pe64(file)) => {
-				process_patterns(args, &mut |pattern, save| {
-					let scanner = pe64::Pe::scanner(file);
-					let mut matches = scanner.matches_code(pattern);
-					while matches.next(save) {
-						print_match(file_name, save);
-					}
-				});
-			},
+			}
 			// Must be a valid PE file
 			Err(err) => {
 				panic!("Not a valid PE file: {}", err);

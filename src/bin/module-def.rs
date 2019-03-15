@@ -43,8 +43,7 @@ fn main() {
 			Ok(map) => {
 				// Try PE32 and PE32+
 				let result = match pelite::PeFile::from_bytes(&map) {
-					Ok(pelite::PeFile::Pe32(pe)) => lib_pe32(pe),
-					Ok(pelite::PeFile::Pe64(pe)) => lib_pe64(pe),
+					Ok(pe) => lib(pe),
 					Err(err) => Err(err),
 				};
 				// Display errors
@@ -62,30 +61,8 @@ fn main() {
 	}
 }
 
-//----------------------------------------------------------------
-
-fn lib_pe32(file: pelite::pe32::PeFile) -> pelite::Result<()> {
-	use pelite::pe32::Pe;
-
-	let exp = file.exports()?.by()?;
-	let dll_name = exp.dll_name()?;
-	let names = exp
-		.iter_names()
-		.map(|(name, _)| name)
-		.collect::<pelite::Result<Vec<_>>>()?;
-
-	println!("LIBRARY {}\nEXPORTS", dll_name);
-	for name in &names {
-		println!("{}", name);
-	}
-
-	Ok(())
-}
-
-fn lib_pe64(file: pelite::pe64::PeFile) -> pelite::Result<()> {
-	use pelite::pe64::Pe;
-
-	let exp = file.exports()?.by()?;
+fn lib(pe: pelite::PeFile) -> pelite::Result<()> {
+	let exp = pe.exports()?.by()?;
 	let dll_name = exp.dll_name()?;
 	let names = exp
 		.iter_names()

@@ -7,7 +7,7 @@ use std::io::{self, Write};
 use std::path::PathBuf;
 use std::process;
 
-use pelite::{FileMap, PeFile};
+use pelite::{FileMap, Wrap, PeFile};
 
 //----------------------------------------------------------------
 
@@ -195,8 +195,8 @@ fn main() {
 		abort(&format!("{:?}", e));
 	});
 	match PeFile::from_bytes(&map) {
-		Ok(PeFile::Pe32(file)) => dump_pe32(&args, file),
-		Ok(PeFile::Pe64(file)) => dump_pe64(&args, file),
+		Ok(Wrap::T32(file)) => dump_pe32(&args, file),
+		Ok(Wrap::T64(file)) => dump_pe64(&args, file),
 		Err(err) => abort(&format!("{}", err)),
 	}
 }

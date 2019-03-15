@@ -11,16 +11,7 @@ use super::{Ptr, image::*};
 
 //----------------------------------------------------------------
 
-/// The specific alignment used by the view.
-///
-/// See [the module-level documentation](index.html#getting-started) for more information.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum Align {
-	/// The view uses file alignment, typically 512 bytes.
-	File,
-	/// The view uses section alignment, typically 4 KiB.
-	Section,
-}
+pub use crate::wrap::Align;
 
 pub unsafe trait PeObject<'a> {
 	/// Returns the image as a byte slice.

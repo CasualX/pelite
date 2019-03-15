@@ -53,7 +53,7 @@ fn example(file: PeFile<'_>) -> pelite::Result<()> {
 ```
 */
 
-use std::{fmt, iter, ops, slice};
+use std::{fmt, ops};
 
 use crate::{Error, Result};
 use crate::util::CStr;
@@ -64,34 +64,7 @@ use super::Pe;
 
 //----------------------------------------------------------------
 
-/// Exported symbol.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
-pub enum Export<'a> {
-	/// Standard exported symbol.
-	Symbol(&'a Rva),
-	/// This export is forwarded to another dll.
-	///
-	/// Format of the string is `"DllName.ExportName"`.
-	/// For more information see this [blog post](https://blogs.msdn.microsoft.com/oldnewthing/20060719-24/?p=30473) by Raymond Chen.
-	Forward(&'a CStr),
-}
-impl<'a> Export<'a> {
-	/// Returns some if the symbol is exported.
-	pub fn symbol(self) -> Option<Rva> {
-		match self {
-			Export::Symbol(&rva) => Some(rva),
-			_ => None,
-		}
-	}
-	/// Returns some if the symbol is forwarded.
-	pub fn forward(self) -> Option<&'a CStr> {
-		match self {
-			Export::Forward(name) => Some(name),
-			_ => None,
-		}
-	}
-}
+pub use crate::wrap::exports::Export;
 
 //----------------------------------------------------------------
 
@@ -169,7 +142,7 @@ impl<'a, P: Pe<'a>> Exports<'a, P> {
 		// An export is forward if its rva points within data directory bounds
 		rva >= self.datadir.VirtualAddress && rva < self.datadir.VirtualAddress + self.datadir.Size
 	}
-	fn symbol_from_rva(&self, rva: &'a Rva) -> Result<Export<'a>> {
+	pub(crate) fn symbol_from_rva(&self, rva: &'a Rva) -> Result<Export<'a>> {
 		if *rva == 0 {
 			Err(Error::Null)
 		}
@@ -369,16 +342,11 @@ impl<'a, P: Pe<'a>> By<'a, P> {
 	/// Not every exported function has a name, some are exported by ordinal.
 	/// Looking up the exported function's name with [`name_lookup`](#method.name_lookup) results in quadratic performance.
 	/// If the exported function's name is important consider building a cache or using [`iter_names`](#method.iter_names) instead.
-	pub fn iter<'s>(&'s self) ->
-		iter::Map<slice::Iter<'a, Rva>, impl 's + Clone + FnMut(&'a Rva) -> Result<Export<'a>>>
-	{
-		self.functions.iter()
-			.map(move |rva| self.symbol_from_rva(rva))
+	pub fn iter<'s>(&'s self) -> impl 's + Clone + Iterator<Item = Result<Export<'a>>> {
+		self.functions.iter().map(move |rva| self.symbol_from_rva(rva))
 	}
 	/// Iterate over functions exported by name.
-	pub fn iter_names<'s>(&'s self) ->
-		iter::Map<ops::Range<u32>, impl 's + Clone + FnMut(u32) -> (Result<&'a CStr>, Result<Export<'a>>)>
-	{
+	pub fn iter_names<'s>(&'s self) -> impl 's + Clone + Iterator<Item = (Result<&'a CStr>, Result<Export<'a>>)> {
 		(0..self.names().len() as u32)
 			.map(move |hint| (
 				self.name_of_hint(hint as usize),
@@ -386,9 +354,7 @@ impl<'a, P: Pe<'a>> By<'a, P> {
 			))
 	}
 	/// Iterate over functions exported by name, returning their name and index in the functions table.
-	pub fn iter_name_indices<'s>(&'s self) ->
-		iter::Map<ops::Range<u32>, impl 's + Clone + FnMut(u32) -> (Result<&'a CStr>, usize)>
-	{
+	pub fn iter_name_indices<'s>(&'s self) -> impl 's + Clone + Iterator<Item = (Result<&'a CStr>, usize)> {
 		(0..self.names().len() as u32)
 			.map(move |hint| (
 				self.name_of_hint(hint as usize),

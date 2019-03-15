@@ -40,9 +40,8 @@ pub use self::mmap::*;
 
 pub mod pe64;
 pub mod pe32;
-
-mod pefile;
-pub use self::pefile::PeFile;
+pub(crate) mod wrap;
+pub use self::wrap::*;
 
 mod pir;
 pub use self::pir::Pir;

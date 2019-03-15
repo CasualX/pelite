@@ -2,7 +2,7 @@
 Run tests on a variety of cute binaries.
  */
 
-use crate::{pe32, pe64, PeFile};
+use crate::{pe32, pe64, Wrap, PeFile};
 
 #[path = "../tests/pocs/pocs.rs"]
 mod pocs;
@@ -10,8 +10,8 @@ mod pocs;
 macro_rules! test {
 	($image:expr, $module:ident) => {
 		match PeFile::from_bytes(&$image) {
-			Ok(PeFile::Pe32(pe)) => pe32::$module::test(pe),
-			Ok(PeFile::Pe64(pe)) => pe64::$module::test(pe),
+			Ok(Wrap::T32(pe)) => pe32::$module::test(pe),
+			Ok(Wrap::T64(pe)) => pe64::$module::test(pe),
 			Err(err) => Err(err),
 		}
 	};
