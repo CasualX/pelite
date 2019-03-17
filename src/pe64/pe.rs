@@ -804,3 +804,20 @@ pub(crate) fn validate_headers(image: &[u8]) -> Result<u32> {
 	}
 	Ok(nt.OptionalHeader.SizeOfImage)
 }
+
+/// Returns the PE headers as mutable borrows.
+///
+/// # Safety
+///
+/// No checks of any kind are performed, before calling this function ensure the byte slice points to a valid PE image by running it through the `PeFile::from_bytes` constructor.
+pub unsafe fn headers_mut(image: &mut [u8]) -> (&mut IMAGE_DOS_HEADER, &mut IMAGE_NT_HEADERS, &mut [IMAGE_DATA_DIRECTORY], &mut [IMAGE_SECTION_HEADER]) {
+	let dos = &mut *(image.as_mut_ptr() as *mut IMAGE_DOS_HEADER);
+	let nt = &mut *(image.as_mut_ptr().offset(dos.e_lfanew as isize) as *mut IMAGE_NT_HEADERS);
+	let dd_ptr = nt.OptionalHeader.DataDirectory.as_mut_ptr();
+	let dd_len = cmp::min(nt.OptionalHeader.NumberOfRvaAndSizes as usize, IMAGE_NUMBEROF_DIRECTORY_ENTRIES);
+	let dd = slice::from_raw_parts_mut(dd_ptr, dd_len);
+	let sections_ptr = (&mut nt.OptionalHeader as *mut _ as *mut u8).offset(nt.FileHeader.SizeOfOptionalHeader as isize) as *mut IMAGE_SECTION_HEADER;
+	let sections_len = nt.FileHeader.NumberOfSections as usize;
+	let sections = slice::from_raw_parts_mut(sections_ptr, sections_len);
+	(dos, nt, dd, sections)
+}
