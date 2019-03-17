@@ -54,6 +54,10 @@ pub enum Error {
 	///
 	/// Catch-all for string related errors such as lacking a nul terminator.
 	Encoding,
+	/// Aliasing error.
+	///
+	/// Request cannot be fulfilled because it would alias with an existing borrow.
+	Aliasing,
 }
 
 impl Error {
@@ -93,6 +97,7 @@ impl fmt::Display for Error {
 			Error::Invalid => f.write_str("Invalid data"),
 			Error::Overflow => f.write_str("Overflow error"),
 			Error::Encoding => f.write_str("Encoding error"),
+			Error::Aliasing => f.write_str("Aliasing error"),
 		}
 	}
 }
@@ -111,6 +116,7 @@ impl error::Error for Error {
 			Error::Invalid => "invalid data",
 			Error::Overflow => "overflow error",
 			Error::Encoding => "encoding error",
+			Error::Aliasing => "aliasing error",
 		}
 	}
 }
