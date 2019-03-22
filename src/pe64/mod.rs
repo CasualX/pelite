@@ -131,7 +131,7 @@ pub mod base_relocs;
 pub mod load_config;
 pub mod resources;
 pub mod tls;
-pub mod security;
+pub(crate) mod security;
 pub mod exception;
 pub mod debug;
 mod ptr;
