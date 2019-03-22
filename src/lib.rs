@@ -67,6 +67,7 @@ pub use self::pe64 as pe;
 
 pub mod resources;
 pub mod rich_structure;
+pub mod security;
 
 #[cfg(test)]
 mod tests;

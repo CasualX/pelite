@@ -518,8 +518,8 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	/// See the [security](security/index.html) module for more information.
 	///
 	/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) if the image has no security info. Any other error indicates some form of corruption.
-	fn security(self) -> Result<super::security::Security<'a, Self>> {
-		super::security::Security::try_from(self)
+	fn security(self) -> Result<crate::security::Security<'a>> {
+		super::security::try_from(self)
 	}
 
 	/// Gets the Exception Directory.
