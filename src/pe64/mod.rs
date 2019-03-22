@@ -127,7 +127,7 @@ pub mod headers;
 pub(crate) mod rich_structure;
 pub mod exports;
 pub mod imports;
-pub mod base_relocs;
+pub(crate) mod base_relocs;
 pub mod load_config;
 pub mod resources;
 pub mod tls;

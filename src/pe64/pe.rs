@@ -491,8 +491,8 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	/// See the [base relocations](base_relocs/index.html) module for more information.
 	///
 	/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) if the image has no base relocations. Any other error indicates some form of corruption.
-	fn base_relocs(self) -> Result<super::base_relocs::BaseRelocs<'a, Self>> {
-		super::base_relocs::BaseRelocs::try_from(self)
+	fn base_relocs(self) -> Result<crate::base_relocs::BaseRelocs<'a>> {
+		super::base_relocs::try_from(self)
 	}
 
 	/// Gets the Load Config Directory.

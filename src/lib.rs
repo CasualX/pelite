@@ -65,6 +65,7 @@ pub use self::pe32 as pe;
 #[cfg(all(windows, target_pointer_width = "64"))]
 pub use self::pe64 as pe;
 
+pub mod base_relocs;
 pub mod resources;
 pub mod rich_structure;
 pub mod security;
