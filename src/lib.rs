@@ -35,12 +35,8 @@ pub use pelite_macros::pattern_attribute;
 mod error;
 pub use self::error::{Error, Result};
 
-#[cfg(feature = "mmap")]
 mod mmap;
-#[cfg(all(feature = "mmap", windows))]
-pub use self::mmap::{FileMap, ImageMap};
-#[cfg(all(feature = "mmap", unix))]
-pub use self::mmap::{FileMap};
+pub use self::mmap::*;
 
 pub mod pe64;
 pub mod pe32;
