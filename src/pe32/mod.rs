@@ -137,7 +137,7 @@ pub mod exports;
 #[path = "../pe64/imports.rs"]
 pub mod imports;
 #[path = "../pe64/base_relocs.rs"]
-pub mod base_relocs;
+pub(crate) mod base_relocs;
 #[path = "../pe64/load_config.rs"]
 pub mod load_config;
 #[path = "../pe64/resources.rs"]
