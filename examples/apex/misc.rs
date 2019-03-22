@@ -7,6 +7,7 @@ pub fn print(bin: PeFile<'_>) {
 	entity_list(bin);
 	local_entity_handle(bin);
 	global_vars(bin);
+	player_resource(bin);
 }
 
 fn entity_list(bin: PeFile<'_>) {
@@ -50,5 +51,18 @@ fn global_vars(bin: PeFile<'_>) {
 	}
 	else {
 		eprintln!("unable to find GlobalVars!");
+	}
+}
+
+fn player_resource(bin: PeFile<'_>) {
+	// References "#UNCONNECTED_PLAYER_NAME" and the C_PlayerResource vtable
+	// At the very end of the constructor assigns this to global variable
+	let mut save = [0; 4];
+	if bin.scanner().finds_code(pat!("48 8B 6C 24 60  48 8B C3  48 89 1D $'"), &mut save) {
+		let player_resource = save[1];
+		println!("\tPlayerResource = {:#x}", player_resource);
+	}
+	else {
+		eprintln!("unable to find PlayerResource!");
 	}
 }
