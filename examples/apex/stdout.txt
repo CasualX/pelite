@@ -3516,7 +3516,7 @@
 	address = 0x18e6db0
 	description = "Enable dynamic viewport scaling."
 	flags = 0x0
-	default_value = ""
+	default_value = "1"
 [ConVar."dvs_gpuframetime_max"]
 	address = 0x18e7c10
 	description = "GPU frametime threshold above which DVS will start decreasing the scale. Specified in microseconds."
@@ -13990,7 +13990,7 @@
 [ConCommand."+posedebug"]
 	description = "Turn on pose debugger or add ents to pose debugger UI"
 	flags = 0x4000
-	callback = 0x989170
+	callback = 0x989110
 [ConCommand."+pushtotalk"]
 	flags = 0x0
 	callback = 0x2f8030
@@ -14204,7 +14204,7 @@
 [ConCommand."-posedebug"]
 	description = "Turn off pose debugger or hide ents from pose debugger UI"
 	flags = 0x4000
-	callback = 0x989280
+	callback = 0x989220
 [ConCommand."-pushtotalk"]
 	flags = 0x0
 	callback = 0x2f80c0
@@ -14299,7 +14299,7 @@
 [ConCommand."BuildAINFile"]
 	description = "Build and Save the AI Node Graph (restarts map)"
 	flags = 0x4
-	callback = 0xda5b90
+	callback = 0xda5b30
 [ConCommand."DebugPrintUsedTextures"]
 	flags = 0x0
 	callback = 0x447070
@@ -14320,20 +14320,20 @@
 	callback = 0x645ee0
 [ConCommand."Test_InitRandomEntitySpawner"]
 	flags = 0x4004
-	callback = 0xf4b6f0
+	callback = 0xf4b690
 [ConCommand."Test_RandomizeInPVS"]
 	flags = 0x4004
-	callback = 0xf4bb50
+	callback = 0xf4baf0
 [ConCommand."Test_RemoveAllRandomEntities"]
 	flags = 0x4004
-	callback = 0xf4bd10
+	callback = 0xf4bcb0
 [ConCommand."Test_SpawnRandomEntities"]
 	flags = 0x4004
-	callback = 0xf4b930
+	callback = 0xf4b8d0
 [ConCommand."_setClassVarServer"]
 	description = "Set a class var on the server"
 	flags = 0x4006
-	callback = 0xc748b0
+	callback = 0xc74850
 [ConCommand."adminmsg"]
 	description = "Send text to the current community (if you are an admin)"
 	flags = 0x0
@@ -14341,14 +14341,14 @@
 [ConCommand."ai_debug_node_connect"]
 	description = "Debug the attempted connection between two nodes"
 	flags = 0x4
-	callback = 0xda1df0
+	callback = 0xda1d90
 [ConCommand."ai_dump_hints"]
 	flags = 0x4
 	callback = 0x1f2410
 [ConCommand."ai_set_move_height_epsilon"]
 	description = "Set how high AI bumps up ground walkers when checking steps"
 	flags = 0x4
-	callback = 0xd89f10
+	callback = 0xd89eb0
 [ConCommand."air_density"]
 	description = "Changes the density of air for drag computations."
 	flags = 0x4004
@@ -14356,11 +14356,11 @@
 [ConCommand."aisettings_reparse"]
 	description = "Reloads the AI settings files"
 	flags = 0x6
-	callback = 0xff30f0
+	callback = 0xff3090
 [ConCommand."aisettings_reparse_client"]
 	description = "Reloads the AI settings files"
 	flags = 0xa
-	callback = 0xa48fc0
+	callback = 0xa48f60
 [ConCommand."alias"]
 	description = "Alias a command."
 	flags = 0x0
@@ -14368,7 +14368,7 @@
 [ConCommand."applyVideoChangesDeferred"]
 	description = "Workaround for applying video changes using controller buttons shortcuts."
 	flags = 0x8
-	callback = 0xa2b030
+	callback = 0xa2afd0
 [ConCommand."bind"]
 	description = "Bind a key to TAPPED."
 	flags = 0x0
@@ -14400,11 +14400,11 @@
 [ConCommand."bot_loadout"]
 	description = "Override bot loadout"
 	flags = 0x4008
-	callback = 0x963840
+	callback = 0x9637e0
 [ConCommand."bot_loadout_server"]
 	description = "Override bot loadout."
 	flags = 0x4014
-	callback = 0xce7020
+	callback = 0xce6fc0
 [ConCommand."box"]
 	description = "Draw a debug box."
 	flags = 0x4000
@@ -14435,11 +14435,11 @@
 [ConCommand."cast_hull"]
 	description = "Tests hull collision detection"
 	flags = 0x4004
-	callback = 0xe5ef20
+	callback = 0xe5eec0
 [ConCommand."cast_ray"]
 	description = "Tests collision detection"
 	flags = 0x4004
-	callback = 0xe5eb70
+	callback = 0xe5eb10
 [ConCommand."cc_emit"]
 	description = "Emits a closed caption"
 	flags = 0x8
@@ -14549,7 +14549,7 @@
 [ConCommand."cl_trace_start_solid"]
 	description = "Trace with given parameters and return start solid result"
 	flags = 0x8
-	callback = 0x8b51d0
+	callback = 0x8b5170
 [ConCommand."cl_trace_test_hitbox_with_non_zero_start_offset"]
 	flags = 0x8
 	callback = 0x6f6350
@@ -14560,7 +14560,7 @@
 [ConCommand."clear_debug_overlays"]
 	description = "clears debug overlays"
 	flags = 0x4
-	callback = 0xe9fae0
+	callback = 0xe9fa80
 [ConCommand."clear_loading_progress_detente"]
 	description = "Clears the detente for the load screen."
 	flags = 0x20000
@@ -14672,11 +14672,11 @@
 [ConCommand."damagedefs_reparse"]
 	description = "Reloads the damage defs"
 	flags = 0x6
-	callback = 0xca81b0
+	callback = 0xca8150
 [ConCommand."damagedefs_reparse_client"]
 	description = "Reloads the damage defs"
 	flags = 0xa
-	callback = 0x91c4a0
+	callback = 0x91c440
 [ConCommand."debugModelPurge"]
 	description = "Debug command to purge unused models..."
 	flags = 0x0
@@ -14720,26 +14720,26 @@
 [ConCommand."drawline"]
 	description = "Draws line between two 3D Points.\n\tGreen if no collision\n\tRed is collides with something\n\tArguments: x1 y1 z1 x2 y2 z2"
 	flags = 0x4004
-	callback = 0xe5fd50
+	callback = 0xe5fcf0
 [ConCommand."dumpClientStringTable"]
 	description = "Dump the contents of the client\'s game string table to the console."
 	flags = 0x4000
-	callback = 0x8c1930
+	callback = 0x8c18d0
 [ConCommand."dumpServerStringTable"]
 	description = "Dump the contents of the server\'s game string table to the console."
 	flags = 0x4004
-	callback = 0xc3f2f0
+	callback = 0xc3f290
 [ConCommand."dump_entity_sizes"]
 	description = "Print sizeof(entclass)"
 	flags = 0x4
-	callback = 0xf648c0
+	callback = 0xf64860
 [ConCommand."dump_generic_key_values"]
 	flags = 0x0
 	callback = 0x1f2410
 [ConCommand."dumpentityfactories"]
 	description = "Lists all entity factory names."
 	flags = 0x4
-	callback = 0xf64780
+	callback = 0xf64720
 [ConCommand."dumpeventqueue"]
 	description = "Dump the contents of the Entity I/O event queue to the console."
 	flags = 0x0
@@ -14763,35 +14763,35 @@
 [ConCommand."ent_absbox"]
 	description = "Displays the total bounding box for the given entity(s) in green.  Some entites will also display entity specific overlays.\n\tArguments:   \t{entity_name} / {class_name} / no argument picks what player is looking at "
 	flags = 0x4004
-	callback = 0xe1ea40
+	callback = 0xe1e9e0
 [ConCommand."ent_animdump"]
 	description = "Dumps the animation each frame the given entity(ies) in red.\n\tArguments:   \t{entity_name} / {class_name} / no argument picks what player is looking at "
 	flags = 0x4004
-	callback = 0xe1eab0
+	callback = 0xe1ea50
 [ConCommand."ent_attachments"]
 	description = "Displays the attachment points on an entity.\n\tArguments:   \t{entity_name} / {class_name} / no argument picks what player is looking at "
 	flags = 0x4004
-	callback = 0xe1eb20
+	callback = 0xe1eac0
 [ConCommand."ent_bbox"]
 	description = "Displays the movement bounding box for the given entity(ies) in orange.  Some entites will also display entity specific overlays.\n\tArguments:   \t{entity_name} / {class_name} / no argument picks what player is looking at "
 	flags = 0x4004
-	callback = 0xe1e9d0
+	callback = 0xe1e970
 [ConCommand."ent_cancelpendingentfires"]
 	description = "Cancels all ent_fire created outputs that are currently waiting for their delay to expire."
 	flags = 0x0
-	callback = 0xe20960
+	callback = 0xe20900
 [ConCommand."ent_create"]
 	description = "Creates an entity of the given type where the player is looking."
 	flags = 0x4004
-	callback = 0xe25800
+	callback = 0xe257a0
 [ConCommand."ent_dump"]
 	description = "Usage:\n   ent_dump <entity name>\n"
 	flags = 0x4004
-	callback = 0xe1f930
+	callback = 0xe1f8d0
 [ConCommand."ent_entitylinks"]
 	description = "Displays all incoming and outgoing links to the given entity.\n\tArguments:   \t{entity_name} / {class_name} / no argument picks what player is looking at "
 	flags = 0x4004
-	callback = 0xe1ec00
+	callback = 0xe1eba0
 [ConCommand."ent_fire"]
 	description = "Usage:\n   ent_fire <target> [action] [value] [delay]\n"
 	flags = 0x4004
@@ -14799,66 +14799,66 @@
 [ConCommand."ent_info"]
 	description = "Usage:\n   ent_info <class name>\n"
 	flags = 0x4004
-	callback = 0xe209e0
+	callback = 0xe20980
 [ConCommand."ent_messages"]
 	description = "Toggles input/output message display for the selected entity(ies).  The name of the entity will be displayed as well as any messages that it sends or receives.\n\tArguments:   \t{entity_name} / {class_name} / no argument picks what player is looking at"
 	flags = 0x4004
-	callback = 0xe20c10
+	callback = 0xe20bb0
 [ConCommand."ent_name"]
 	flags = 0x4004
-	callback = 0xe1e5f0
+	callback = 0xe1e590
 [ConCommand."ent_orient"]
 	description = "Orient the specified entity to match the player\'s angles. By default, only orients target entity\'s YAW. Use the \'allangles\' option to orient on all axis.\n\tFormat: ent_orient <entity name> <optional: allangles>"
 	flags = 0x4004
-	callback = 0xe26300
+	callback = 0xe262a0
 [ConCommand."ent_pause"]
 	description = "Toggles pausing of input/output message processing for entities.  When turned on processing of all message will stop.  Any messages displayed with \'ent_messages\' will stop fading and be displayed indefinitely. To step through the messages one by one use \'ent_step\'."
 	flags = 0x4004
-	callback = 0xe20c80
+	callback = 0xe20c20
 [ConCommand."ent_pivot"]
 	description = "Displays the pivot for the given entity(ies).\n\t(y=up=green, z=forward=blue, x=left=red). \n\tArguments:   \t{entity_name} / {class_name} / no argument picks what player is looking at "
 	flags = 0x4004
-	callback = 0xe20ca0
+	callback = 0xe20c40
 [ConCommand."ent_remove"]
 	description = "Removes the given entity(s)\n\tArguments:   \t{entity_name} / {class_name} / no argument picks what player is looking at "
 	flags = 0x4004
-	callback = 0xe1ec70
+	callback = 0xe1ec10
 [ConCommand."ent_remove_all"]
 	description = "Removes all entities of the specified type\n\tArguments:   \t{entity_name} / {class_name} "
 	flags = 0x4004
-	callback = 0xe1eec0
+	callback = 0xe1ee60
 [ConCommand."ent_script_dump"]
 	description = "Dumps the names and values of this entity\'s script scope to the console\n\tArguments:   \t{entity_name} / {class_name} / no argument picks what player is looking at "
 	flags = 0x4004
-	callback = 0xe1e880
+	callback = 0xe1e820
 [ConCommand."ent_setname"]
 	description = "Sets the targetname of the given entity(s)\n\tArguments:   \t{new entity name} {entity_name} / {class_name} / no argument picks what player is looking at "
 	flags = 0x4004
-	callback = 0xe1efd0
+	callback = 0xe1ef70
 [ConCommand."ent_step"]
 	description = "When \'ent_pause\' is set this will step through one waiting input / output message at a time."
 	flags = 0x4004
-	callback = 0xe20d10
+	callback = 0xe20cb0
 [ConCommand."ent_teleport"]
 	description = "Teleport the specified entity to where the player is looking.\n\tFormat: ent_teleport <entity name>"
 	flags = 0x4004
-	callback = 0xe262a0
+	callback = 0xe26240
 [ConCommand."ent_text"]
 	description = "Displays text debugging information about the given entity(ies) on top of the entity (See Overlay Text)\n\tArguments:   \t{entity_name} / {class_name} / no argument picks what player is looking at "
 	flags = 0x4004
-	callback = 0xe1e660
+	callback = 0xe1e600
 [ConCommand."ent_text_radius"]
 	description = "Displays text debugging information about the given entity(ies) on top of the entity (See Overlay Text)\n\tArguments:   \t{entity_name} / {class_name} / no argument picks what player is looking at "
 	flags = 0x4004
-	callback = 0xe1e6d0
+	callback = 0xe1e670
 [ConCommand."ent_throw"]
 	description = "Throws an entity of the given type where the player is looking."
 	flags = 0x4004
-	callback = 0xe25c60
+	callback = 0xe25c00
 [ConCommand."ent_viewoffset"]
 	description = "Displays the eye position for the given entity(ies) in red.\n\tArguments:   \t{entity_name} / {class_name} / no argument picks what player is looking at "
 	flags = 0x4004
-	callback = 0xe1eb90
+	callback = 0xe1eb30
 [ConCommand."entitlements_print"]
 	flags = 0x2
 	callback = 0x1f2410
@@ -14900,14 +14900,14 @@
 [ConCommand."find_ent"]
 	description = "Find and list all entities with classnames or targetnames that contain the specified substring.\nFormat: find_ent <substring>\n"
 	flags = 0x4004
-	callback = 0xe1f2c0
+	callback = 0xe1f260
 [ConCommand."find_ent_index"]
 	description = "Display data for entity matching specified index.\nFormat: find_ent_index <index>\n"
 	flags = 0x4004
-	callback = 0xe1f320
+	callback = 0xe1f2c0
 [ConCommand."firetarget"]
 	flags = 0x4004
-	callback = 0xe1fa20
+	callback = 0xe1f9c0
 [ConCommand."firstperson"]
 	description = "Switch to firstperson camera."
 	flags = 0x0
@@ -15029,19 +15029,19 @@
 [ConCommand."give"]
 	description = "Give weapon to player."
 	flags = 0x4008
-	callback = 0x9634b0
+	callback = 0x963450
 [ConCommand."give_server"]
 	description = "Give weapon to player."
 	flags = 0x4014
-	callback = 0xce6c10
+	callback = 0xce6bb0
 [ConCommand."givecurrentammo"]
 	description = "Give a supply of ammo for current weapon..\n"
 	flags = 0x4004
-	callback = 0xec3b40
+	callback = 0xec3ae0
 [ConCommand."groundlist"]
 	description = "Display ground entity list <index>"
 	flags = 0x4
-	callback = 0xe5ffe0
+	callback = 0xe5ff80
 [ConCommand."help"]
 	description = "Find help about a convar/concommand."
 	flags = 0x2
@@ -15049,7 +15049,7 @@
 [ConCommand."hidepanel"]
 	description = "Hides a viewport panel <name>"
 	flags = 0x8
-	callback = 0xae48b0
+	callback = 0xae4850
 [ConCommand."hidevideos"]
 	description = "Hides video panels playing to the screen"
 	flags = 0x8
@@ -15164,7 +15164,7 @@
 [ConCommand."mat_crosshair_edit_all"]
 	description = "open the material under the crosshair (using an engine ray trace) in the editor defined by mat_crosshair_edit_editor"
 	flags = 0x4004
-	callback = 0xeaa2c0
+	callback = 0xeaa260
 [ConCommand."mat_crosshair_explorer"]
 	description = "open the material under the crosshair in explorer and highlight the vmt file"
 	flags = 0x4000
@@ -15228,7 +15228,7 @@
 [ConCommand."melee_lunge_ent"]
 	description = "Lunge player towards the entity with the given entity index"
 	flags = 0x4004
-	callback = 0xc2dae0
+	callback = 0xc2da80
 [ConCommand."mem_compact"]
 	flags = 0x0
 	callback = 0x277ac0
@@ -15274,43 +15274,43 @@
 [ConCommand."miles_dump"]
 	description = "Writes out milesdump file and perf CSV for current session (when CSOM_MILESDUMP_PASSIVELY_FOR_DEBUGGING is enabled)"
 	flags = 0x8
-	callback = 0x9da690
+	callback = 0x9da630
 [ConCommand."miles_event_info"]
 	description = "Shows information about a particular event."
 	flags = 0x0
-	callback = 0x9da5a0
+	callback = 0x9da540
 [ConCommand."miles_pauseui_byname"]
 	description = "Pauses any sound played on the listener for this client with the given name."
 	flags = 0x8
-	callback = 0x9d9fd0
+	callback = 0x9d9f70
 [ConCommand."miles_play"]
 	description = "Plays a given alias at an optional given position"
 	flags = 0x0
-	callback = 0x9da450
+	callback = 0x9da3f0
 [ConCommand."miles_reboot"]
 	description = "restarts the audio engine"
 	flags = 0x8
-	callback = 0x9da680
+	callback = 0x9da620
 [ConCommand."miles_record"]
 	description = "Enable or disable continuous recording (including previous buffer if available) of audio output to WAV file."
 	flags = 0x8
-	callback = 0x9da6f0
+	callback = 0x9da690
 [ConCommand."miles_record_that"]
 	description = "Writes audio output from the last minute or so to WAV file. (Only useful when CSOM_MILESDUMP_PASSIVE_SAMPLES is enabled)"
 	flags = 0x8
-	callback = 0x9da6c0
+	callback = 0x9da660
 [ConCommand."miles_stop_all"]
 	description = "stops all playing sounds"
 	flags = 0x8
-	callback = 0x9da420
+	callback = 0x9da3c0
 [ConCommand."miles_unpauseui_byname"]
 	description = "Resumes any paused sound played on the listener for this client with the given name."
 	flags = 0x8
-	callback = 0x9da010
+	callback = 0x9d9fb0
 [ConCommand."miles_write_passive_dumpfile"]
 	description = "Writes out milesdump file for current session (Only when CSOM_MILESDUMP_PASSIVELY_FOR_DEBUGGING is enabled)"
 	flags = 0x8
-	callback = 0x9da690
+	callback = 0x9da630
 [ConCommand."mmdevinit"]
 	flags = 0x20000
 	callback = 0x31a7b0
@@ -15404,11 +15404,11 @@
 [ConCommand."particle_test_start"]
 	description = "Dispatches the test particle system with the parameters specified in particle_test_file,\n particle_test_attach_mode and particle_test_attach_param on the entity the player is looking at.\n\tArguments:   \t{entity_name} / {class_name} / no argument picks what player is looking at "
 	flags = 0x4000
-	callback = 0xc41cd0
+	callback = 0xc41c70
 [ConCommand."particle_test_stop"]
 	description = "Stops all particle systems on the selected entities.\n\tArguments:   \t{entity_name} / {class_name} / no argument picks what player is looking at "
 	flags = 0x4000
-	callback = 0xc41e40
+	callback = 0xc41de0
 [ConCommand."party_leave"]
 	description = "quit the current party"
 	flags = 0x40000000
@@ -15440,27 +15440,27 @@
 [ConCommand."physics_budget"]
 	description = "Times the cost of each active object"
 	flags = 0x4
-	callback = 0xea9ec0
+	callback = 0xea9e60
 [ConCommand."physics_debug_entity"]
 	description = "Dumps debug info for an entity"
 	flags = 0x4
-	callback = 0xea9ea0
+	callback = 0xea9e40
 [ConCommand."physics_highlight_active"]
 	description = "Turns on the absbox for all active physics objects"
 	flags = 0x4
-	callback = 0xea95f0
+	callback = 0xea9590
 [ConCommand."physics_report_active"]
 	description = "Lists all active physics objects"
 	flags = 0x4
-	callback = 0xea9600
+	callback = 0xea95a0
 [ConCommand."physics_select"]
 	description = "Dumps debug info for an entity"
 	flags = 0x4
-	callback = 0xea9eb0
+	callback = 0xea9e50
 [ConCommand."picker"]
 	description = "Toggles \'picker\' mode.  When picker is on, the bounding box, pivot and debugging text is displayed for whatever entity the player is looking at.\n\tArguments:\tfull - enables all debug information"
 	flags = 0x4004
-	callback = 0xe20c90
+	callback = 0xe20c30
 [ConCommand."ping"]
 	description = "Display ping to server."
 	flags = 0x6
@@ -15480,7 +15480,7 @@
 [ConCommand."playerSettings_reparse"]
 	description = "Reload player class settings from .set files"
 	flags = 0x4002
-	callback = 0x8f1000
+	callback = 0x8f0fa0
 [ConCommand."playsoundscape"]
 	description = "Forces a soundscape to play"
 	flags = 0x4008
@@ -15519,7 +15519,7 @@
 [ConCommand."prop_debug"]
 	description = "Toggle prop debug mode. If on, props will show colorcoded bounding boxes. Red means ignore all damage. White means respond physically to damage but never break. Green maps health in the range of 100 down to 1."
 	flags = 0x4004
-	callback = 0xf21820
+	callback = 0xf217c0
 [ConCommand."quit"]
 	description = "Exit the engine."
 	flags = 0x0
@@ -15567,11 +15567,11 @@
 [ConCommand."reload_script_callbacks"]
 	description = "Reloads script callback function pointers for client and server."
 	flags = 0x4008
-	callback = 0x95a560
+	callback = 0x95a500
 [ConCommand."reload_script_callbacks_server"]
 	description = "Reloads script callback function pointers for server."
 	flags = 0x4014
-	callback = 0xcdd280
+	callback = 0xcdd220
 [ConCommand."render_blanks"]
 	description = "render N blank frames"
 	flags = 0x0
@@ -15579,15 +15579,15 @@
 [ConCommand."report_entities"]
 	description = "Lists all entities"
 	flags = 0x4
-	callback = 0xe674c0
+	callback = 0xe67460
 [ConCommand."report_simthinklist"]
 	description = "Lists all simulating/thinking entities"
 	flags = 0x4
-	callback = 0xe677e0
+	callback = 0xe67780
 [ConCommand."report_touchlinks"]
 	description = "Lists all touchlinks"
 	flags = 0x4
-	callback = 0xe674d0
+	callback = 0xe67470
 [ConCommand."reset_cam_ideal_angles"]
 	description = "Resets camera ideal angles to its default"
 	flags = 0x0
@@ -15595,7 +15595,7 @@
 [ConCommand."resetidletimer"]
 	description = "Resets the idle timer."
 	flags = 0x4
-	callback = 0xe60520
+	callback = 0xe604c0
 [ConCommand."restart"]
 	description = "Restart the game on the same level, to the beginning of the level (add setpos to jump to current view position on restart)."
 	flags = 0x2
@@ -15643,7 +15643,7 @@
 [ConCommand."script_printdiag"]
 	description = "Print the printtodiag() buffer to the console"
 	flags = 0x0
-	callback = 0xf732b0
+	callback = 0xf73250
 [ConCommand."server_single_frame"]
 	description = "Single step a frame for server"
 	flags = 0x6
@@ -15655,7 +15655,7 @@
 [ConCommand."set"]
 	description = "Change a variable in the class settings (does not save out to disk)\n"
 	flags = 0x4002
-	callback = 0x8f1030
+	callback = 0x8f0fd0
 [ConCommand."set_loading_progress_background"]
 	description = "Sets the background for load screen. This is cleared to the default after each load."
 	flags = 0x20000
@@ -15683,11 +15683,11 @@
 [ConCommand."shake"]
 	description = "Shake the screen."
 	flags = 0x4004
-	callback = 0xe743a0
+	callback = 0xe74340
 [ConCommand."shake_ropes"]
 	description = "Shakes ropes around the player."
 	flags = 0x4004
-	callback = 0xf35960
+	callback = 0xf35900
 [ConCommand."shake_stop"]
 	description = "Stops all active screen shakes.\n"
 	flags = 0x4000
@@ -15703,11 +15703,11 @@
 [ConCommand."showpanel"]
 	description = "Shows a viewport panel <name>"
 	flags = 0x8
-	callback = 0xae4880
+	callback = 0xae4820
 [ConCommand."showtriggers_toggle"]
 	description = "Toggle show triggers"
 	flags = 0x4004
-	callback = 0xf54620
+	callback = 0xf545c0
 [ConCommand."showvideos"]
 	description = "Makes video panels playing to the screen visible (if they were hidden)"
 	flags = 0x8
@@ -15723,7 +15723,7 @@
 [ConCommand."skybox_swap"]
 	description = "Swap through the skyboxes in our queue"
 	flags = 0x4004
-	callback = 0xf35fa0
+	callback = 0xf35f40
 [ConCommand."snapshot_memory_report"]
 	description = "Prints information about memory usage of snapshot data structures"
 	flags = 0x20004
@@ -15735,7 +15735,7 @@
 [ConCommand."soundscape_flush"]
 	description = "Flushes the server & client side soundscapes"
 	flags = 0x4
-	callback = 0xf39b20
+	callback = 0xf39ac0
 [ConCommand."spawn_as_pilot"]
 	description = "Spawn as Pilot"
 	flags = 0x0
@@ -15781,7 +15781,7 @@
 [ConCommand."stopserver"]
 	description = "Stop the server  ( DEDI only )."
 	flags = 0x4004
-	callback = 0xe605b0
+	callback = 0xe60550
 [ConCommand."stopsoundscape"]
 	description = "Stops all soundscape processing and fades current looping sounds"
 	flags = 0x4008
@@ -15797,7 +15797,7 @@
 [ConCommand."surfaceprop"]
 	description = "Reports the surface properties at the cursor"
 	flags = 0x4004
-	callback = 0xea9610
+	callback = 0xea95b0
 [ConCommand."sv_precacheinfo"]
 	description = "Show precache info."
 	flags = 0x0
@@ -15816,30 +15816,30 @@
 	callback = 0x1f2410
 [ConCommand."sv_test_rotated_box"]
 	flags = 0x4
-	callback = 0x10b1a50
+	callback = 0x10b19f0
 [ConCommand."sv_trace_start_solid"]
 	description = "Trace with given parameters and return start solid result"
 	flags = 0x4
-	callback = 0xc33760
+	callback = 0xc33700
 [ConCommand."sv_writeSendTableStreamFile"]
 	flags = 0x0
 	callback = 0x367430
 [ConCommand."swap_to_weapon"]
 	description = "uses a weapon in your inventory by name"
 	flags = 0x4004
-	callback = 0x104e990
+	callback = 0x104e930
 [ConCommand."switchPlayerClassActivityMod"]
 	description = "Switches the player\'s class activity modifier to the given string"
 	flags = 0x4006
-	callback = 0xc74a60
+	callback = 0xc74a00
 [ConCommand."switchclass"]
 	description = "Change player class: soldier, titan"
 	flags = 0x4006
-	callback = 0xc74820
+	callback = 0xc747c0
 [ConCommand."takecurrentammo"]
 	description = "Remove player\'s extra ammo for the current weapon.\n"
 	flags = 0x4004
-	callback = 0xec3c70
+	callback = 0xec3c10
 [ConCommand."testCockpitJoltAngles"]
 	flags = 0x8
 	callback = 0x705860
@@ -15849,7 +15849,7 @@
 [ConCommand."test_entity_blocker"]
 	description = "Test command that drops an entity blocker out in front of the player."
 	flags = 0x4004
-	callback = 0xc09600
+	callback = 0xc095a0
 [ConCommand."test_freezeframe"]
 	description = "Test the freeze frame code."
 	flags = 0x4000
@@ -15857,7 +15857,7 @@
 [ConCommand."test_setteam"]
 	description = "Sets target to the player\'s team."
 	flags = 0x4004
-	callback = 0xe5f2f0
+	callback = 0xe5f290
 [ConCommand."testhudanim"]
 	description = "Test a hud element animation.\n\tArguments: <anim name>\n"
 	flags = 0x4008
@@ -15887,11 +15887,11 @@
 [ConCommand."trace_capsule"]
 	description = "Trace a capsule through the world and debug draw the result"
 	flags = 0x4
-	callback = 0xc33260
+	callback = 0xc33200
 [ConCommand."ui_reloadscheme"]
 	description = "Reloads the resource files for the active UI window"
 	flags = 0x8
-	callback = 0x9b62c0
+	callback = 0x9b6260
 [ConCommand."uiscript_reset"]
 	description = "Resets all UI script state"
 	flags = 0x0
@@ -16003,7 +16003,7 @@
 [ConCommand."weapon_reparse"]
 	description = "Reloads the weapon script files"
 	flags = 0x4008
-	callback = 0x962b70
+	callback = 0x962b10
 [ConCommand."xlog_list"]
 	description = "List all xlogs, and various stats"
 	flags = 0x2
@@ -17037,7 +17037,7 @@
 [Global.".?AV?$CUtlVectorDataOps@V?$CUtlVector@Utemplate_t@@V?$CUtlMemory@Utemplate_t@@_J@@H@@$09@@"]
 	address = 0x29133258
 [Global.".?AV?$CUtlVectorDataOps@V?$CUtlVector@V?$CHandle@VCBaseEntity@@@@V?$CUtlMemory@V?$CHandle@VCBaseEntity@@@@_J@@H@@$0N@@@"]
-	address = 0x287486d8
+	address = 0x287486e0
 [Global.".?AV?$CUtlVectorDataOps@V?$CUtlVector@V?$CHandle@VCPlayer@@@@V?$CUtlMemory@V?$CHandle@VCPlayer@@@@_J@@H@@$0N@@@"]
 	address = 0x29132898
 [Global.".?AV?$CUtlVectorDataOps@V?$CUtlVector@V?$CHandle@VCTonemapTrigger@@@@V?$CUtlMemory@V?$CHandle@VCTonemapTrigger@@@@_J@@H@@$0N@@@"]
@@ -17253,8 +17253,6 @@
 [Global.".?AVCHFontProperty@@"]
 	address = 0x1750b28
 [Global.".?AVCHLClient@@"]
-	address = 0x1878940
-[Global.".?AVCHLClient@@"]
 	address = 0x1f73e40
 [Global.".?AVCHudTextMessage@@"]
 	address = 0x185c058
@@ -17271,8 +17269,6 @@
 [Global.".?AVCInfoPlacementManager@@"]
 	address = 0x23f6eb8
 [Global.".?AVCInput@@"]
-	address = 0x18794f8
-[Global.".?AVCInput@@"]
 	address = 0x23332f0
 [Global.".?AVCInputStackSystem@@"]
 	address = 0x18df8d0
@@ -17286,8 +17282,6 @@
 	address = 0x1f93c80
 [Global.".?AVCKeyValuesSystem@@"]
 	address = 0x1f73720
-[Global.".?AVCLC_Move@@"]
-	address = 0x1878958
 [Global.".?AVCLauncherLoggingListener@@"]
 	address = 0x174ea98
 [Global.".?AVCListOps@TSListTests@@"]
@@ -17601,7 +17595,7 @@
 [Global.".?AVCSimpleLoggingListener@@"]
 	address = 0x1746f28
 [Global.".?AVCSimpleLoggingListener@@"]
-	address = 0x2908c7e8
+	address = 0x2908c7c8
 [Global.".?AVCSimpleWindowsLoggingListener@@"]
 	address = 0x1746f38
 [Global.".?AVCSolidSetDefaults@@"]
