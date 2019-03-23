@@ -98,9 +98,7 @@ impl<'a, P: Pe<'a>> Scanner<P> {
 		let range = optional_header.BaseOfCode..u32::wrapping_add(optional_header.BaseOfCode, optional_header.SizeOfCode);
 		self.matches(pat, range)
 	}
-	/// Pattern interpreter.
-	///
-	/// Returns if the pattern matches the binary image at the given rva.
+	/// Pattern interpreter, returns if the pattern matches the binary image at the given rva.
 	///
 	/// The pattern may contain instructions to capture interesting addresses, these are stored in the save array.
 	/// Out of bounds stores are simply ignored, ensure the save array is large enough for the given pattern.
@@ -391,7 +389,7 @@ impl<'a, 'u, P: Pe<'a>> Matches<'u, P> {
 	pub fn cursor(&self) -> Rva {
 		self.cursor
 	}
-	/// Performance.
+	/// Performance counter.
 	///
 	/// Number of times the slow [`exec`](struct.Scanner.html#method.exec) was invoked.
 	pub fn hits(&self) -> u32 {

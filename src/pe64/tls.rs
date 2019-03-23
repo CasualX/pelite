@@ -49,12 +49,15 @@ impl<'a, P: Pe<'a>> Tls<'a, P> {
 		let image = pe.derva(datadir.VirtualAddress)?;
 		Ok(Tls { pe, image })
 	}
+	/// Gets the PE instance.
 	pub fn pe(&self) -> P {
 		self.pe
 	}
+	/// Returns the underlying TLS directory image.
 	pub fn image(&self) -> &'a IMAGE_TLS_DIRECTORY {
 		self.image
 	}
+	/// Gets the raw TLS initialization data.
 	pub fn raw_data(&self) -> Result<&'a [u8]> {
 		if self.image.StartAddressOfRawData > self.image.EndAddressOfRawData {
 			return Err(Error::Invalid);
@@ -63,9 +66,11 @@ impl<'a, P: Pe<'a>> Tls<'a, P> {
 		let len = (self.image.EndAddressOfRawData - self.image.StartAddressOfRawData) as usize;
 		self.pe.deref_slice(self.image.StartAddressOfRawData.into(), len)
 	}
+	/// Gets the TLS slot location.
 	pub fn slot(&self) -> Result<&'a u32> {
 		self.pe.deref(self.image.AddressOfIndex.into())
 	}
+	/// Gets the TLS initialization callbacks.
 	pub fn callbacks(&self) -> Result<&'a [Va]> {
 		self.pe.deref_slice_s(self.image.AddressOfCallBacks.into(), 0)
 	}

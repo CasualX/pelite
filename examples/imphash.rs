@@ -16,11 +16,7 @@ fn main() {
 	if let (Some(_), Some(path), None) = (args.next(), args.next(), args.next()) {
 		match pelite::FileMap::open(&path) {
 			Ok(file_map) => {
-				let result = match pelite::PeFile::from_bytes(&file_map) {
-					Ok(pelite::PeFile::Pe32(_)) => imphash32(file_map.as_ref()),
-					Ok(pelite::PeFile::Pe64(_)) => imphash64(file_map.as_ref()),
-					Err(err) => Err(err),
-				};
+				let result = imphash(file_map.as_ref());
 				match result {
 					Ok(hash) => {
 						println!("Import hash is {:016X} for {:?}.", hash, path);
@@ -38,11 +34,8 @@ fn main() {
 	}
 }
 
-fn imphash64(image: &[u8]) -> pelite::Result<u64> {
-	use pelite::pe64::{Pe, PeFile};
-	use pelite::pe64::imports::Import;
-
-	let file = PeFile::from_bytes(image)?;
+fn imphash(image: &[u8]) -> pelite::Result<u64> {
+	let file = pelite::PeFile::from_bytes(image)?;
 	let imports = match file.imports() {
 		Ok(imports) => imports,
 		Err(err) if err.is_null() => return Ok(0),
@@ -55,43 +48,16 @@ fn imphash64(image: &[u8]) -> pelite::Result<u64> {
 		let dll_name = desc.dll_name()?;
 		dll_name.hash(&mut h);
 		for imp in desc.int()? {
-			match imp? {
-				Import::ByName { hint: _, name } => {
+			use pelite::pe32::imports::Import;
+			match imp {
+				Ok(Import::ByName { hint: _, name }) => {
 					name.hash(&mut h);
 				},
-				Import::ByOrdinal { ord } => {
+				Ok(Import::ByOrdinal { ord }) => {
 					ord.hash(&mut h);
 				},
-			}
-		}
-	}
-
-	Ok(h.finish())
-}
-
-fn imphash32(image: &[u8]) -> pelite::Result<u64> {
-	use pelite::pe32::{Pe, PeFile};
-	use pelite::pe32::imports::Import;
-
-	let file = PeFile::from_bytes(image)?;
-	let imports = match file.imports() {
-		Ok(imports) => imports,
-		Err(err) if err.is_null() => return Ok(0),
-		Err(err) => return Err(err),
-	};
-
-	let mut h = DefaultHasher::new();
-
-	for desc in imports {
-		let dll_name = desc.dll_name()?;
-		dll_name.hash(&mut h);
-		for imp in desc.int()? {
-			match imp? {
-				Import::ByName { hint: _, name } => {
-					name.hash(&mut h);
-				},
-				Import::ByOrdinal { ord } => {
-					ord.hash(&mut h);
+				Err(err) => {
+					eprintln!("Error parsing import: {}", err);
 				},
 			}
 		}
