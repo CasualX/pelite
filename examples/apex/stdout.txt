@@ -53,6 +53,7 @@
 	cl_entitylist = 0x1f96d88
 	LocalEntityHandle = 0x1747efc
 	GlobalVars = 0x1822c10
+	PlayerResource = 0xc1b6cc0
 [ClientClass."CAI_BaseNPC"]
 	address = 0x175a8a8
 	size = 6464
