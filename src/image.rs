@@ -14,6 +14,7 @@ Sources:
 #![allow(non_snake_case)]
 #![allow(non_camel_case_types)]
 
+use std::{fmt, str};
 use crate::_Pod as Pod;
 
 #[cfg(windows)]
@@ -347,7 +348,7 @@ pub const IMAGE_SCN_MEM_EXECUTE: u32            = 0x20000000;
 pub const IMAGE_SCN_MEM_READ: u32               = 0x40000000;
 pub const IMAGE_SCN_MEM_WRITE: u32              = 0x80000000;
 
-#[derive(Copy, Clone, Pod, Debug)]
+#[derive(Copy, Clone, Pod)]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize))]
 #[repr(C)]
 pub struct IMAGE_SECTION_HEADER {
@@ -362,6 +363,21 @@ pub struct IMAGE_SECTION_HEADER {
 	pub NumberOfRelocations: u16,
 	pub NumberOfLinenumbers: u16,
 	pub Characteristics: u32,
+}
+impl fmt::Debug for IMAGE_SECTION_HEADER {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		let mut f = f.debug_struct("IMAGE_SECTION_HEADER");
+		match str::from_utf8(crate::util::strn(&self.Name)) {
+			Ok(s) => f.field("Name", &s),
+			Err(_) => f.field("Name", &self.Name),
+		};
+		f.field("VirtualAddress", &format_args!("{:#x}", self.VirtualAddress));
+		f.field("VirtualSize", &format_args!("{:#x}", self.VirtualSize));
+		f.field("PointerToRawData", &format_args!("{:#x}", self.PointerToRawData));
+		f.field("SizeOfRawData", &format_args!("{:#x}", self.SizeOfRawData));
+		f.field("Characteristics", &format_args!("{:#x}", self.Characteristics));
+		f.finish()
+	}
 }
 
 //----------------------------------------------------------------
