@@ -156,6 +156,16 @@ fn base_relocs() {
 		assert_eq!(baseline.next(), Some(rva));
 	});
 	assert_eq!(baseline.next(), None);
+
+	// Ensure that rebuilding the base relocation round trips
+	let mut rvas = Vec::new();
+	let mut types = Vec::new();
+	base_relocs.for_each(|rva, ty| {
+		rvas.push(rva);
+		types.push(ty);
+	});
+	let result = pelite::base_relocs::build(&rvas, &types);
+	assert_eq!(result, base_relocs.image());
 }
 
 //----------------------------------------------------------------
