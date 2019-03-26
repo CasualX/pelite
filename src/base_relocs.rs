@@ -32,6 +32,8 @@ fn example(file: PeFile<'_>) -> pelite::Result<()> {
 use std::{cmp, fmt, iter, mem, slice};
 
 use crate::image::{IMAGE_BASE_RELOCATION, IMAGE_REL_BASED_ABSOLUTE};
+use crate::util::align_to;
+use crate::{Result, Error};
 
 /// Base Relocations Directory.
 ///
@@ -42,22 +44,31 @@ pub struct BaseRelocs<'a> {
 }
 impl<'a> BaseRelocs<'a> {
 	pub(crate) unsafe fn new(relocs: &'a [u8]) -> BaseRelocs<'a> {
-		debug_assert_eq!(relocs.as_ptr() as usize % mem::align_of::<IMAGE_BASE_RELOCATION>(), 0); // $1
+		debug_assert_eq!(relocs.as_ptr() as usize % 4, 0); // $1
 		BaseRelocs { relocs }
+	}
+	/// Parse a base relocations directory.
+	///
+	/// Requires relocs argument pointer to have an alignment of 4 or an error is returned.
+	pub fn parse(relocs: &'a [u8]) -> Result<BaseRelocs<'a>> {
+		if !cfg!(feature = "unsafe_alignment") && relocs.as_ptr() as usize % 4 != 0 { // $1
+			return Err(Error::Misaligned);
+		}
+		Ok(BaseRelocs { relocs })
+	}
+	/// Returns the base relocations image.
+	pub fn image(&self) -> &'a [u8] {
+		self.relocs
 	}
 	/// Iterates over the base relocation blocks.
 	pub fn iter_blocks(&self) -> IterBlocks<'a> {
 		IterBlocks { data: self.relocs }
 	}
 	/// Iterates over the base relocations with internal iteration.
-	///
-	/// Relocations padding types are skipped.
 	pub fn for_each<F: FnMut(u32, u8)>(&self, mut f: F) {
 		self.fold((), |(), rva, ty| f(rva, ty))
 	}
 	/// Folds over the base relocations with internal iteration.
-	///
-	/// Relocations padding types are skipped.
 	pub fn fold<T, F>(&self, init: T, mut f: F) -> T where F: FnMut(T, u32, u8) -> T {
 		let mut accum = init;
 		for block in self.iter_blocks() {
@@ -88,7 +99,7 @@ pub struct IterBlocks<'a> {
 impl<'a> IterBlocks<'a> {
 	fn peek(&self) -> Option<Block<'a>> {
 		if mem::size_of_val(self.data) >= mem::size_of::<IMAGE_BASE_RELOCATION>() { // $2
-			let block = unsafe {
+			Some(unsafe {
 				// The blocks pointer is dword aligned (see $1) and is at least large enough (see $2).
 				let image_p = self.data.as_ptr() as *const IMAGE_BASE_RELOCATION;
 				let image = &*image_p;
@@ -96,8 +107,7 @@ impl<'a> IterBlocks<'a> {
 				let len = cmp::min(image.SizeOfBlock as usize, self.data.len()).saturating_sub(mem::size_of::<IMAGE_BASE_RELOCATION>()) / 2;
 				let words = slice::from_raw_parts(image_p.offset(1) as *const u16, len);
 				Block { image, words }
-			};
-			Some(block)
+			})
 		}
 		else {
 			None
@@ -112,7 +122,7 @@ impl<'a> Iterator for IterBlocks<'a> {
 			// Avoid infinite loop by skipping at least the image base relocation header
 			let block_size = cmp::max(block_size, mem::size_of::<IMAGE_BASE_RELOCATION>() as u32);
 			// Ensure that the data pointer remains dword aligned
-			let block_size = ((block_size - 1) & !3) + 4; // $1
+			let block_size = align_to(block_size, 4); // $1
 			// Clamp the length to the data size
 			let block_size = cmp::min(block_size as usize, self.data.len());
 			self.data = &self.data[block_size..];
@@ -144,7 +154,7 @@ impl<'a> Block<'a> {
 	}
 	/// Gets the final Rva of a type-offset word.
 	pub fn rva_of(&self, word: &u16) -> u32 {
-		let offset = (word & 0x0FFF) as u32;
+		let offset = (word & 0x0fff) as u32;
 		self.image.VirtualAddress.wrapping_add(offset)
 	}
 	/// Gets the type of a type-offset word.
@@ -155,7 +165,7 @@ impl<'a> Block<'a> {
 impl<'a> fmt::Debug for Block<'a> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		f.debug_struct("Block")
-			.field("virtual_address", &self.image.VirtualAddress)
+			.field("virtual_address", &format_args!("{:#x?}", self.image.VirtualAddress))
 			.field("words.len", &self.words().len())
 			.finish()
 	}
@@ -188,5 +198,81 @@ mod serde {
 			state.serialize_field("types", &*types)?;
 			state.end()
 		}
+	}
+}
+
+//----------------------------------------------------------------
+
+fn encode_type_offset(base: u32, rva: u32, ty: u8) -> u16 {
+	(((rva - base) | (ty as u32) << 12) & 0xffff) as u16
+}
+
+/// Builds a new base relocation directory with given rvas and types.
+///
+/// For optimal results, ensure the inputs are sorted by their rvas.
+pub fn build(mut rvas: &[u32], mut types: &[u8]) -> Vec<u8> {
+	assert_eq!(rvas.len(), types.len());
+
+	let mut result = Vec::<u8>::new();
+	while rvas.len() > 0 {
+		// Given RVA range for the relocation block
+		let start = rvas[0] & !0x0fff;
+		let end = start + 0x0fff;
+
+		// Figure the number of rvas to fit in this block
+		let mut n = 0;
+		while n < rvas.len() && rvas[n] >= start && rvas[n] < end {
+			n += 1;
+		}
+
+		// Size of block should be multiple of 4 to ensure alignment
+		let size = align_to(8 + 2 * n, 4);
+
+		// Allocate enough memory to encode the relocation block
+		let result_len = result.len();
+		let result_cap = result.capacity();
+		if result_len + size > result_cap {
+			result.reserve(size);
+		}
+
+		// Unsafe memory hackery to encode the relocation block
+		unsafe {
+			// Encode the relocation block header
+			let block_ptr = result.as_mut_ptr().offset(result_len as isize) as *mut IMAGE_BASE_RELOCATION;
+			(*block_ptr).VirtualAddress = start;
+			(*block_ptr).SizeOfBlock = size as u32;
+			// Encode the type and offsets
+			let words = slice::from_raw_parts_mut(block_ptr.offset(1) as *mut u16, align_to(n, 2));
+			for i in 0..n {
+				words[i] = encode_type_offset(start, rvas[i], types[i]);
+			}
+			// Add alignment padding
+			if n < words.len() {
+				words[n] = 0;
+			}
+			// Commit the result
+			result.set_len(result_len + size);
+		}
+
+		rvas = &rvas[n..];
+		types = &types[n..];
+	}
+	result
+}
+
+#[cfg(windows)]
+#[test]
+fn test_build_self() {
+	use crate::pe::*;
+	let view = unsafe { PeView::new() };
+	if let Ok(base_relocs) = view.base_relocs() {
+		let mut rvas = Vec::new();
+		let mut types = Vec::new();
+		base_relocs.for_each(|rva, ty| {
+			rvas.push(rva);
+			types.push(ty);
+		});
+		let rebuild = build(&rvas, &types);
+		assert_eq!(rebuild, base_relocs.image());
 	}
 }

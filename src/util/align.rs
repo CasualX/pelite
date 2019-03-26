@@ -21,7 +21,7 @@ macro_rules! impl_align_to {
 		impl AlignTo for $ty {
 			fn align_to(self, align: $ty) -> $ty {
 				debug_assert!(align.is_power_of_two());
-				(self.wrapping_sub(1) & !(align - 1)).wrapping_add(align)
+				(self.wrapping_sub(1) & !align.wrapping_sub(1)).wrapping_add(align)
 			}
 		}
 	};
