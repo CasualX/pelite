@@ -5,7 +5,7 @@ Abstract over mapped images and file binaries.
 use std::{cmp, mem, ptr, slice};
 
 use crate::{Error, Result};
-use crate::{util::CStr, util::FromBytes, Pod};
+use crate::{util::CStr, util::FromBytes, util::AlignTo, Pod};
 
 use super::{Ptr, image::*};
 
@@ -618,12 +618,11 @@ unsafe fn section_headers(image: &[u8]) -> &[IMAGE_SECTION_HEADER] {
 }
 
 unsafe fn slice_section(image: &[u8], rva: Rva, min_size_of: usize, align_of: usize) -> Result<&[u8]> {
-	debug_assert!(align_of != 0 && align_of & (align_of - 1) == 0);
 	let start = rva as usize;
 	if rva == 0 {
 		Err(Error::Null)
 	}
-	else if usize::wrapping_add(image.as_ptr() as usize, start) & (align_of - 1) != 0 {
+	else if !usize::wrapping_add(image.as_ptr() as usize, start).is_aligned_to(align_of) {
 		Err(Error::Misaligned)
 	}
 	else {
@@ -634,20 +633,19 @@ unsafe fn slice_section(image: &[u8], rva: Rva, min_size_of: usize, align_of: us
 	}
 }
 unsafe fn read_section(image: &[u8], va: Va, min_size_of: usize, align_of: usize) -> Result<&[u8]> {
-	debug_assert!(align_of != 0 && align_of & (align_of - 1) == 0);
-	let (image_base, size_of_image) = {
+	let (image_base, image_size) = {
 		let optional_header = optional_header(image);
 		(optional_header.ImageBase, optional_header.SizeOfImage)
 	};
 	if va == 0 {
 		Err(Error::Null)
 	}
-	else if va < image_base || va - image_base > size_of_image as Va {
+	else if va < image_base || va - image_base > image_size as Va {
 		Err(Error::Bounds)
 	}
 	else {
 		let start = (va - image_base) as usize;
-		if usize::wrapping_add(image.as_ptr() as usize, start) & (align_of - 1) != 0 {
+		if !usize::wrapping_add(image.as_ptr() as usize, start).is_aligned_to(align_of) {
 			Err(Error::Misaligned)
 		}
 		else {
@@ -684,11 +682,10 @@ unsafe fn range_file(image: &[u8], rva: Rva, min_size_of: usize) -> Result<&[u8]
 }
 #[inline(never)]
 unsafe fn slice_file(image: &[u8], rva: Rva, min_size_of: usize, align_of: usize) -> Result<&[u8]> {
-	debug_assert!(align_of != 0 && align_of & (align_of - 1) == 0);
 	if rva == 0 {
 		Err(Error::Null)
 	}
-	else if usize::wrapping_add(image.as_ptr() as usize, rva as usize) & (align_of - 1) != 0 {
+	else if !usize::wrapping_add(image.as_ptr() as usize, rva as usize).is_aligned_to(align_of) {
 		Err(Error::Misaligned)
 	}
 	else {
@@ -697,7 +694,6 @@ unsafe fn slice_file(image: &[u8], rva: Rva, min_size_of: usize, align_of: usize
 }
 #[inline(never)]
 unsafe fn read_file(image: &[u8], va: Va, min_size_of: usize, align_of: usize) -> Result<&[u8]> {
-	debug_assert!(align_of != 0 && align_of & (align_of - 1) == 0);
 	let (image_base, size_of_image) = {
 		let optional_header = optional_header(image);
 		(optional_header.ImageBase, optional_header.SizeOfImage)
@@ -710,7 +706,7 @@ unsafe fn read_file(image: &[u8], va: Va, min_size_of: usize, align_of: usize) -
 	}
 	else {
 		let rva = (va - image_base) as Rva;
-		if usize::wrapping_add(image.as_ptr() as usize, rva as usize) & (align_of - 1) != 0 {
+		if !usize::wrapping_add(image.as_ptr() as usize, rva as usize).is_aligned_to(align_of) {
 			Err(Error::Misaligned)
 		}
 		else {

@@ -14,14 +14,23 @@ pub struct Align4K<T>(pub T);
 /// Helper to implement generic alignment operator.
 pub trait AlignTo {
 	fn align_to(self, align: Self) -> Self;
+	fn is_aligned_to(self, align: Self) -> bool;
 }
 
 macro_rules! impl_align_to {
 	($ty:ty) => {
 		impl AlignTo for $ty {
+			#[inline(always)]
 			fn align_to(self, align: $ty) -> $ty {
-				debug_assert!(align.is_power_of_two());
-				(self.wrapping_sub(1) & !align.wrapping_sub(1)).wrapping_add(align)
+				debug_assert!(align.is_power_of_two(), "align ({:#x}) is not a power of two", align);
+				let mask = align - 1;
+				self.wrapping_add(mask) & !mask
+			}
+			#[inline(always)]
+			fn is_aligned_to(self, align: $ty) -> bool {
+				debug_assert!(align.is_power_of_two(), "align ({:#x}) is not a power of two", align);
+				let mask = align - 1;
+				self & mask == 0
 			}
 		}
 	};

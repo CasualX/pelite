@@ -2,6 +2,7 @@ use std::{io, mem, ptr, slice};
 use std::fs::File;
 use std::path::Path;
 use std::os::unix::io::AsRawFd;
+use crate::util::align_to;
 
 /// Memory mapped file.
 pub struct FileMap {
@@ -26,7 +27,7 @@ impl FileMap {
 			}
 			// Round up to nearest multiple of page_size
 			let page_size = libc::sysconf(libc::_SC_PAGE_SIZE) as usize;
-			(stat.st_size as usize + page_size - 1) & !(page_size - 1)
+			align_to(stat.st_size as usize, page_size)
 		};
 
 		// Mmap the file
