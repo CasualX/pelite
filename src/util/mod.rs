@@ -118,3 +118,21 @@ pub fn shannon_entropy(data: &[u8]) -> f64 {
 
 	result
 }
+
+/// Extends the given Vec with a number of additional elements initialised by the callable.
+///
+/// # Safety
+///
+/// The callback is passed uninitialized memory, take care when writing to it.
+/// When returning all the elements in the slice passed to the callable _must_ be initialised.
+///
+/// The underlying Vec is only extended once the callable returns without panicking.
+/// If the callable panics, any already initialised elements are lost and leaked.
+pub(crate) unsafe fn extend_in_place<'a, T, F: FnMut(&'a mut [T])>(vec: &'a mut Vec<T>, additional: usize, mut f: F) {
+	let vec_len = vec.len();
+	if vec_len + additional > vec.capacity() {
+		vec.reserve(additional);
+	}
+	f(std::slice::from_raw_parts_mut(vec.as_mut_ptr().offset(vec_len as isize), additional));
+	vec.set_len(vec_len + additional);
+}
