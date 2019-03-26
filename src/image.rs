@@ -52,6 +52,13 @@ pub fn image_base() -> &'static IMAGE_DOS_HEADER {
 	panic!("undefined reference to `__image_base__'")
 }
 
+#[cfg(all(windows, target_env = "gnu", not(target_pointer_width = "64")))]
+#[allow(dead_code)]
+pub(crate) const IMAGE_BASE_PANICS: bool = true;
+#[cfg(not(all(windows, target_env = "gnu", not(target_pointer_width = "64"))))]
+#[allow(dead_code)]
+pub(crate) const IMAGE_BASE_PANICS: bool = false;
+
 //----------------------------------------------------------------
 
 pub const IMAGE_DOS_SIGNATURE: u16 = 0x5A4D;

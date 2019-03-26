@@ -32,7 +32,7 @@ fn example(file: PeFile<'_>) -> pelite::Result<()> {
 use std::{cmp, fmt, iter, mem, slice};
 
 use crate::image::{IMAGE_BASE_RELOCATION, IMAGE_REL_BASED_ABSOLUTE};
-use crate::util::align_to;
+use crate::util::{align_to, extend_in_place};
 use crate::{Result, Error};
 
 /// Base Relocations Directory.
@@ -228,30 +228,24 @@ pub fn build(mut rvas: &[u32], mut types: &[u8]) -> Vec<u8> {
 		// Size of block should be multiple of 4 to ensure alignment
 		let size = align_to(8 + 2 * n, 4);
 
-		// Allocate enough memory to encode the relocation block
-		let result_len = result.len();
-		let result_cap = result.capacity();
-		if result_len + size > result_cap {
-			result.reserve(size);
-		}
-
-		// Unsafe memory hackery to encode the relocation block
 		unsafe {
-			// Encode the relocation block header
-			let block_ptr = result.as_mut_ptr().offset(result_len as isize) as *mut IMAGE_BASE_RELOCATION;
-			(*block_ptr).VirtualAddress = start;
-			(*block_ptr).SizeOfBlock = size as u32;
-			// Encode the type and offsets
-			let words = slice::from_raw_parts_mut(block_ptr.offset(1) as *mut u16, align_to(n, 2));
-			for i in 0..n {
-				words[i] = encode_type_offset(start, rvas[i], types[i]);
-			}
-			// Add alignment padding
-			if n < words.len() {
-				words[n] = 0;
-			}
-			// Commit the result
-			result.set_len(result_len + size);
+			extend_in_place(&mut result, size, |bytes| {
+				// Encode the relocation block header
+				let block_ptr = bytes.as_mut_ptr() as *mut IMAGE_BASE_RELOCATION;
+				(*block_ptr).VirtualAddress = start;
+				(*block_ptr).SizeOfBlock = size as u32;
+				// Encode the type and offsets
+				let words = slice::from_raw_parts_mut(block_ptr.offset(1) as *mut u16, align_to(n, 2));
+				for i in 0..n {
+					let rva = *rvas.get_unchecked(i);
+					let ty = *types.get_unchecked(i);
+					words[i] = encode_type_offset(start, rva, ty);
+				}
+				// Add alignment padding
+				if n < words.len() {
+					words[n] = 0;
+				}
+			});
 		}
 
 		rvas = &rvas[n..];
@@ -263,6 +257,9 @@ pub fn build(mut rvas: &[u32], mut types: &[u8]) -> Vec<u8> {
 #[cfg(windows)]
 #[test]
 fn test_build_self() {
+	if crate::image::IMAGE_BASE_PANICS {
+		return;
+	}
 	use crate::pe::*;
 	let view = unsafe { PeView::new() };
 	if let Ok(base_relocs) = view.base_relocs() {
