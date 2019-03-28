@@ -42,7 +42,7 @@ fn main() {
 	let vguimatsurface_dll  = open(csgo_path, "bin/vguimatsurface.dll").unwrap();
 	let vphysics_dll        = open(csgo_path, "bin/vphysics.dll").unwrap();
 	let vstdlib_dll         = open(csgo_path, "bin/vstdlib.dll").unwrap();
-	let client_dll          = open(csgo_path, "csgo/bin/client.dll").unwrap();
+	let client_dll          = open(csgo_path, "csgo/bin/client_panorama.dll").unwrap();
 	let matchmaking_dll     = open(csgo_path, "csgo/bin/matchmaking.dll").unwrap();
 	let server_dll          = open(csgo_path, "csgo/bin/server.dll").unwrap();
 
