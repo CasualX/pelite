@@ -72,107 +72,107 @@ vstdlib.dll!00038A10 EventSystem001
 vstdlib.dll!0003E608 VProcessUtils002
 client_panorama.dll!00CCA1A0 ClientRenderTargets001
 client_panorama.dll!00CCF648 GameClientExports001
-client_panorama.dll!04CDE1F8 VClientDllSharedAppSystems001
-client_panorama.dll!04CDE210 VClient018
+client_panorama.dll!04CDE1C8 VClientDllSharedAppSystems001
+client_panorama.dll!04CDE1E0 VClient018
 client_panorama.dll!00CCF8C8 VCLIENTMATERIALSYSTEM001
-client_panorama.dll!04D0350C VClientEntityList003
-client_panorama.dll!04D13588 ClientLeafSystem002
-client_panorama.dll!04D13594 ClientAlphaPropertyMgrV001
+client_panorama.dll!04D034DC VClientEntityList003
+client_panorama.dll!04D13558 ClientLeafSystem002
+client_panorama.dll!04D13564 ClientAlphaPropertyMgrV001
 client_panorama.dll!00CD16D8 IEffects001
 client_panorama.dll!00CDA028 VParticleSystemQuery004
-client_panorama.dll!0511D688 RenderToRTHelper001
-client_panorama.dll!0512D668 GameMovement001
-client_panorama.dll!0512E978 VClientPrediction001
-client_panorama.dll!0512F338 VENGINE_GAMETYPES_VERSION002
+client_panorama.dll!0511D658 RenderToRTHelper001
+client_panorama.dll!0512D638 GameMovement001
+client_panorama.dll!0512E948 VClientPrediction001
+client_panorama.dll!0512F308 VENGINE_GAMETYPES_VERSION002
 client_panorama.dll!00CECFAC GameConsole004
-client_panorama.dll!0512FA28 GameUI011
+client_panorama.dll!0512F9F8 GameUI011
 client_panorama.dll!00CED18C RunGameEngine005
 client_panorama.dll!00CED3CC VGuiModuleLoader003
-client_panorama.dll!05173140 VCLIENTTOOLS001
+client_panorama.dll!05173110 VCLIENTTOOLS001
 matchmaking.dll!00096378 VENGINE_GAMETYPES_VERSION002
 matchmaking.dll!000831E0 MATCHFRAMEWORK_001
-server.dll!00983820 ServerGameTags001
-server.dll!0098523C ServerGameTags001
-server.dll!009852BC ServerGameTags001
-server.dll!00986138 IEffects001
-server.dll!0098B594 ServerGameTags001
-server.dll!0098BB50 ServerGameDLL005
-server.dll!0098BA18 ServerGameEnts001
-server.dll!0098BA80 ServerGameClients004
-server.dll!00A1CEB4 VServerDllSharedAppSystems001
-server.dll!0098CA18 ServerGameTags001
-server.dll!0098EAD0 ServerGameTags001
-server.dll!0098FC10 PlayerInfoManager001
-server.dll!0098FC08 PlayerInfoManager002
-server.dll!0098FC0C BotManager001
-server.dll!0098FC38 PluginHelpersCheck001
-server.dll!00990C48 ServerGameTags001
-server.dll!00990DF4 ServerGameTags001
-server.dll!00991360 ServerGameTags001
-server.dll!00991570 ServerGameTags001
-server.dll!009915B4 ServerGameTags001
-server.dll!00991E64 ServerGameTags001
-server.dll!00992728 ServerGameTags001
-server.dll!00992E2C ServerGameTags001
-server.dll!00992E4C ServerGameTags001
-server.dll!00993080 ServerGameTags001
-server.dll!00A47B70 GameMovement001
-server.dll!00993740 ServerGameTags001
-server.dll!0099C638 ServerGameTags001
-server.dll!00A90670 HLTVDirector001
-server.dll!0099CBD8 ServerGameTags001
-server.dll!0099DB90 ServerGameTags001
-server.dll!0099DC10 ServerGameTags001
-server.dll!00A90FF0 VENGINE_GAMETYPES_VERSION002
-server.dll!009A14B4 ServerGameTags001
-server.dll!009A15B0 ServerGameTags001
-server.dll!009A160C ServerGameTags001
-server.dll!009A1678 ServerGameTags001
-server.dll!009A1694 ServerGameTags001
-server.dll!009A16A4 ServerGameTags001
-server.dll!009A16B4 ServerGameTags001
-server.dll!009A16C4 ServerGameTags001
-server.dll!009A16D4 ServerGameTags001
-server.dll!009A16E4 ServerGameTags001
-server.dll!009A21F8 ServerGameTags001
-server.dll!009A2208 ServerGameTags001
-server.dll!009A2550 ServerGameTags001
-server.dll!009A2560 ServerGameTags001
-server.dll!009A2570 ServerGameTags001
-server.dll!009A2580 ServerGameTags001
-server.dll!009A2590 ServerGameTags001
-server.dll!009A25A0 ServerGameTags001
-server.dll!009A26B8 ServerGameTags001
-server.dll!009A26C8 ServerGameTags001
-server.dll!009A26D8 ServerGameTags001
-server.dll!009A26E8 ServerGameTags001
-server.dll!009A26F8 ServerGameTags001
-server.dll!009A2708 ServerGameTags001
-server.dll!009A2718 ServerGameTags001
-server.dll!009A2728 ServerGameTags001
-server.dll!009A2738 ServerGameTags001
-server.dll!009A2748 ServerGameTags001
-server.dll!009A2AC8 ServerGameTags001
-server.dll!009A2AD8 ServerGameTags001
-server.dll!009A2AE8 ServerGameTags001
-server.dll!009A2AF8 ServerGameTags001
-server.dll!009A2B08 ServerGameTags001
-server.dll!009A2B18 ServerGameTags001
-server.dll!009A2B28 ServerGameTags001
-server.dll!009A2B38 ServerGameTags001
-server.dll!009A2B48 ServerGameTags001
-server.dll!009A2BB0 ServerGameTags001
-server.dll!009A2BC0 ServerGameTags001
-server.dll!009A2BD0 ServerGameTags001
-server.dll!009A2BE0 ServerGameTags001
-server.dll!009A2BF0 ServerGameTags001
-server.dll!009A2C00 ServerGameTags001
-server.dll!009A2C10 ServerGameTags001
-server.dll!009A3370 ServerGameTags001
-server.dll!009A4478 ServerGameTags001
-server.dll!009A49FC ServerGameTags001
-server.dll!009A589C ServerGameTags001
-server.dll!009A7F5C VSERVERTOOLS001
+server.dll!00984820 ServerGameTags001
+server.dll!0098623C ServerGameTags001
+server.dll!009862BC ServerGameTags001
+server.dll!00987138 IEffects001
+server.dll!0098C594 ServerGameTags001
+server.dll!0098CB50 ServerGameDLL005
+server.dll!0098CA18 ServerGameEnts001
+server.dll!0098CA80 ServerGameClients004
+server.dll!00A1DEBC VServerDllSharedAppSystems001
+server.dll!0098DA18 ServerGameTags001
+server.dll!0098FAD0 ServerGameTags001
+server.dll!00990C10 PlayerInfoManager001
+server.dll!00990C08 PlayerInfoManager002
+server.dll!00990C0C BotManager001
+server.dll!00990C38 PluginHelpersCheck001
+server.dll!00991C48 ServerGameTags001
+server.dll!00991DF4 ServerGameTags001
+server.dll!00992360 ServerGameTags001
+server.dll!00992570 ServerGameTags001
+server.dll!009925B4 ServerGameTags001
+server.dll!00992E64 ServerGameTags001
+server.dll!00993728 ServerGameTags001
+server.dll!00993E2C ServerGameTags001
+server.dll!00993E4C ServerGameTags001
+server.dll!00994080 ServerGameTags001
+server.dll!00A48B78 GameMovement001
+server.dll!00994740 ServerGameTags001
+server.dll!0099D638 ServerGameTags001
+server.dll!00A91678 HLTVDirector001
+server.dll!0099DBD8 ServerGameTags001
+server.dll!0099EB90 ServerGameTags001
+server.dll!0099EC10 ServerGameTags001
+server.dll!00A91FF8 VENGINE_GAMETYPES_VERSION002
+server.dll!009A24B4 ServerGameTags001
+server.dll!009A25B0 ServerGameTags001
+server.dll!009A260C ServerGameTags001
+server.dll!009A2678 ServerGameTags001
+server.dll!009A2694 ServerGameTags001
+server.dll!009A26A4 ServerGameTags001
+server.dll!009A26B4 ServerGameTags001
+server.dll!009A26C4 ServerGameTags001
+server.dll!009A26D4 ServerGameTags001
+server.dll!009A26E4 ServerGameTags001
+server.dll!009A31F8 ServerGameTags001
+server.dll!009A3208 ServerGameTags001
+server.dll!009A3550 ServerGameTags001
+server.dll!009A3560 ServerGameTags001
+server.dll!009A3570 ServerGameTags001
+server.dll!009A3580 ServerGameTags001
+server.dll!009A3590 ServerGameTags001
+server.dll!009A35A0 ServerGameTags001
+server.dll!009A36B8 ServerGameTags001
+server.dll!009A36C8 ServerGameTags001
+server.dll!009A36D8 ServerGameTags001
+server.dll!009A36E8 ServerGameTags001
+server.dll!009A36F8 ServerGameTags001
+server.dll!009A3708 ServerGameTags001
+server.dll!009A3718 ServerGameTags001
+server.dll!009A3728 ServerGameTags001
+server.dll!009A3738 ServerGameTags001
+server.dll!009A3748 ServerGameTags001
+server.dll!009A3AC8 ServerGameTags001
+server.dll!009A3AD8 ServerGameTags001
+server.dll!009A3AE8 ServerGameTags001
+server.dll!009A3AF8 ServerGameTags001
+server.dll!009A3B08 ServerGameTags001
+server.dll!009A3B18 ServerGameTags001
+server.dll!009A3B28 ServerGameTags001
+server.dll!009A3B38 ServerGameTags001
+server.dll!009A3B48 ServerGameTags001
+server.dll!009A3BB0 ServerGameTags001
+server.dll!009A3BC0 ServerGameTags001
+server.dll!009A3BD0 ServerGameTags001
+server.dll!009A3BE0 ServerGameTags001
+server.dll!009A3BF0 ServerGameTags001
+server.dll!009A3C00 ServerGameTags001
+server.dll!009A3C10 ServerGameTags001
+server.dll!009A4370 ServerGameTags001
+server.dll!009A5478 ServerGameTags001
+server.dll!009A59FC ServerGameTags001
+server.dll!009A689C ServerGameTags001
+server.dll!009A8F5C VSERVERTOOLS001
 Class { network_name: "CBaseWeaponWorldModel", class_id: 0, size_of: 10768 }
 Class { network_name: "CBaseCombatWeapon", class_id: 0, size_of: 13008 }
 Class { network_name: "CBaseGrenade", class_id: 0, size_of: 10672 }
@@ -394,7 +394,7 @@ Class { network_name: "CEconEntity", class_id: 0, size_of: 12816 }
 Class { network_name: "CBaseAttributableItem", class_id: 0, size_of: 12816 }
 Class { network_name: "CEconWearable", class_id: 0, size_of: 12832 }
 Class { network_name: "NextBotCombatCharacter", class_id: 0, size_of: 12096 }
-Class { network_name: "CBaseTempEntity", class_id: 0, size_of: 3378251463 }
+Class { network_name: "CBaseTempEntity", class_id: 0, size_of: 3377202887 }
 Class { network_name: "CPrecipitationBlocker", class_id: 0, size_of: 645224 }
 Class { network_name: "CPrecipitation", class_id: 0, size_of: 2728 }
 Class { network_name: "CEnvWind", class_id: 0, size_of: 3048 }
@@ -444,7 +444,7 @@ Class { network_name: "CTEImpact", class_id: 0, size_of: 0 }
 Class { network_name: "CTEKillPlayerAttachments", class_id: 0, size_of: 0 }
 Class { network_name: "CTELargeFunnel", class_id: 0, size_of: 0 }
 Class { network_name: "CTEMuzzleFlash", class_id: 0, size_of: 0 }
-Class { network_name: "CTEParticleSystem", class_id: 0, size_of: 1646790343 }
+Class { network_name: "CTEParticleSystem", class_id: 0, size_of: 1647838919 }
 Class { network_name: "CTEPhysicsProp", class_id: 0, size_of: 0 }
 Class { network_name: "CTEPlayerDecal", class_id: 0, size_of: 0 }
 Class { network_name: "CFEPlayerDecal", class_id: 0, size_of: 2736 }
@@ -2635,901 +2635,901 @@ client_panorama.dll!00CF74B0 00004000 r_drawentities
 client_panorama.dll!00CF79D8 00004000 r_skin
 client_panorama.dll!00CF7770 00004000 r_modelwireframedecal
 client_panorama.dll!00CF7878 00004000 mat_normals
-server.dll!00980F18 00006000 achievement_debug
-server.dll!00980F70 00006000 achievement_disable
-server.dll!00981250 00000080 scene_showfaceto
-server.dll!00981300 00004000 rr_remarkable_world_entities_replay_limit
-server.dll!00981358 00004000 rr_remarkables_enabled
-server.dll!009813B0 00004000 rr_remarkable_max_distance
-server.dll!00982E58 00000080 chet_debug_idle
-server.dll!00983C58 00004000 rr_followup_maxdist
-server.dll!00983CB0 00004000 rr_thenany_score_slop
-server.dll!00983E98 00004002 sv_showanimstate
-server.dll!00983EF0 00004002 sv_showanimstate_log
-server.dll!00983F48 00004002 sv_showanimstate_activities
-server.dll!00983FA0 00002002 mp_feetyawrate
-server.dll!00983FF8 00002002 mp_facefronttime
-server.dll!00984050 00002002 mp_ik
-server.dll!009841D0 00000080 npc_height_adjust
-server.dll!009840C0 00000080 sv_pvsskipanimation
-server.dll!00984698 00004002 sv_netvisdist
-server.dll!009848D0 00004000 ent_messages_draw
-server.dll!00984DE8 00082000 sv_clamp_unsafe_velocities
-server.dll!00984FA0 00000080 scene_showlook
-server.dll!00984FF8 00000080 scene_showmoveto
-server.dll!00985050 00000080 scene_showunlock
-server.dll!00985250 00080100 sv_allchat
-server.dll!009855E8 00082000 sv_infinite_ammo
-server.dll!009852D0 00086000 view_punch_decay
-server.dll!00985328 00086000 view_recoil_tracking
-server.dll!00985380 00006000 sv_footstep_sound_frequency
-server.dll!00985488 00002000 sv_max_distance_transmit_footsteps
-server.dll!009854E0 00002000 sv_debug_player_use
-server.dll!00985590 00002000 smoothstairs
-server.dll!00985780 00080000 tv_relaytextchat
-server.dll!00985F68 00082000 sv_dz_zone_bombdrop_money_reward
-server.dll!0098A5B0 00004000 fx_new_sparks
-server.dll!0098A990 00006000 fish_dormant
-server.dll!0098B5A8 00080000 occlusion_test_shadow_length
-server.dll!0098B600 00080000 occlusion_test_camera_margins
-server.dll!0098B658 00080000 occlusion_test_jump_margin
-server.dll!0098B6B0 00080000 pvs_min_player_distance
-server.dll!0098B798 00080000 sv_force_transmit_ents
-server.dll!0098B8A0 00080000 sv_dc_friends_reqd
-server.dll!0098BF70 00002000 sv_ladder_dampen
-server.dll!0098BFC8 00002000 sv_ladder_angle
-server.dll!0098C020 00082000 sv_ladder_scale_speed
-server.dll!0098C400 00082000 mp_radar_showall
-server.dll!0098C458 00002000 mp_allowspectators
-server.dll!0098C4B0 00082100 mp_friendlyfire
-server.dll!0098C508 00082100 mp_teammates_are_enemies
-server.dll!0098C560 00082100 mp_buy_anywhere
-server.dll!0098C5B8 00082100 mp_buy_during_immunity
-server.dll!0098C700 00004000 global_event_log_enabled
-server.dll!0098C858 00080000 tv_delay
-server.dll!0098C8B0 00080000 tv_delay1
-server.dll!0098C908 00080000 tv_allow_static_shots
-server.dll!0098C960 00080000 tv_allow_autorecording_index
-server.dll!0098D050 00082100 sv_stopspeed
-server.dll!0098CFF8 00082100 sv_accelerate
-server.dll!0098D470 00002102 sv_footsteps
-server.dll!0098D520 00002102 sv_rollangle
-server.dll!0098CFA0 00082100 sv_friction
-server.dll!0098D310 00082100 sv_bounce
-server.dll!0098D2B8 00082000 sv_maxvelocity
-server.dll!0098CC30 00002080 sv_skyname
-server.dll!0098CC88 00002002 sv_backspeed
-server.dll!0098CCE0 00002002 sv_waterdist
-server.dll!0098D648 00082000 mp_match_restart_delay
-server.dll!0098D6A0 00082000 mapcycledisabled
-server.dll!0098D750 00002100 mp_fraglimit
-server.dll!0098D7A8 00080000 tv_delaymapchange
-server.dll!0098D800 00080004 mp_restartgame
-server.dll!0098DA38 00080004 nextmap_print_enabled
-server.dll!0098DA90 00082100 nextlevel
-server.dll!0098DAE8 00082100 nextmode
-server.dll!0098DB40 00080000 spec_replay_bot
-server.dll!0098DDE0 00002002 sv_pushaway_force
-server.dll!0098DC80 00002002 sv_pushaway_min_player_speed
-server.dll!0098DE38 00002002 sv_pushaway_max_force
-server.dll!0098DCD8 00002002 sv_pushaway_clientside
-server.dll!0098DD30 00006002 sv_pushaway_player_force
-server.dll!0098DD88 00006002 sv_pushaway_max_player_force
-server.dll!0098DE90 00004000 particle_test_file
-server.dll!0098DEE8 00004000 particle_test_attach_mode
-server.dll!0098DF40 00004000 particle_test_attach_attachment
-server.dll!0098DFF8 00004000 g_debug_constraint_sounds
-server.dll!0098E990 00082000 think_limit
-server.dll!0098E780 00086000 sv_grenade_trajectory
-server.dll!0098E7D8 00082000 sv_grenade_trajectory_time
-server.dll!0098E830 00082000 sv_grenade_trajectory_time_spectator
-server.dll!0098E888 00082000 sv_grenade_trajectory_thickness
-server.dll!0098E8E0 00082000 sv_grenade_trajectory_dash
-server.dll!0098EB90 00080000 spec_replay_cam_delay
-server.dll!0098EBE8 00080000 spec_replay_cam_options
-server.dll!0098EC40 00080000 spec_replay_winddown_time
-server.dll!0098EC98 00082000 spec_freeze_time
-server.dll!0098ECF0 00082000 spec_freeze_time_lock
-server.dll!0098ED48 00082000 spec_freeze_traveltime
-server.dll!0098EDA0 00082000 spec_freeze_panel_extended_time
-server.dll!0098EDF8 00082000 spec_freeze_deathanim_time
-server.dll!0098EE50 00006000 spec_freeze_target_fov_long
-server.dll!0098EEA8 00006000 spec_freeze_target_fov
-server.dll!0098EF00 00006000 spec_allow_roaming
-server.dll!0098EF58 00002000 sv_bonus_challenge
-server.dll!0098EFB0 00080000 sv_force_transmit_players
-server.dll!0098F060 00080000 sv_maxusrcmdprocessticks
-server.dll!0098F110 00006000 sv_noclipduringpause
-server.dll!0098F168 00006000 mp_suicide_time
-server.dll!0098F378 00004000 player_debug_print_damage
-server.dll!0098F500 00082000 sv_spec_post_death_additional_time
-server.dll!0098F558 00080000 sv_clockcorrection_msecs
-server.dll!0098F608 00080000 sv_usercmd_custom_random_seed
-server.dll!0098F778 00080000 sv_maxusrcmdprocessticks_warning
-server.dll!0098F7D0 00080000 sv_maxusrcmdprocessticks_holdaim
-server.dll!0098FB40 00080000 sv_maxunlag
-server.dll!0098F8D8 00004000 sv_showlagcompensation
-server.dll!0098F930 00004000 sv_showlagcompensation_duration
-server.dll!0098F988 00004000 sv_lagcompensationforcerestore
-server.dll!0098FA90 00004000 sv_lagcompensateself
-server.dll!009901A0 00002000 sv_turbophysics
-server.dll!009901F8 00002002 sv_pushaway_clientside_size
-server.dll!00990250 00002000 props_break_max_pieces
-server.dll!009902A8 00002000 props_break_max_pieces_perframe
-server.dll!00990300 00006002 sv_disable_querycache
-server.dll!00990B90 00002000 scene_print
-server.dll!00990B38 00002000 scene_clientflex
-server.dll!00990E90 00006002 sv_soundemitter_version
-server.dll!00990EE8 00006002 snd_prevent_ss_duplicates
-server.dll!00990F98 00002000 sv_soundemitter_trace
-server.dll!00990FF0 00002000 cc_showmissing
-server.dll!00991170 00002000 soundpatch_captionlength
-server.dll!00991250 00004000 soundscape_debug
-server.dll!00991370 00002010 steamworks_sessionid_server
-server.dll!009915D8 00002002 mp_capstyle
-server.dll!00991630 00002002 mp_blockstyle
-server.dll!00991688 00002100 mp_respawnwavetime
-server.dll!009916E0 00002002 mp_capdeteriorate_time
-server.dll!00991790 00002100 mp_teams_unbalance_limit
-server.dll!009917E8 00082100 mp_maxrounds
-server.dll!00991840 00002100 mp_winlimit
-server.dll!009918F0 00002000 mp_bonusroundtime
-server.dll!00991948 00004002 mp_showroundtransitions
-server.dll!009919A0 00002000 mp_enableroundwaittime
-server.dll!009919F8 00004002 mp_showcleanedupents
-server.dll!00991AA8 00002000 mp_stalemate_timelimit
-server.dll!00991B58 00000100 mp_stalemate_enable
-server.dll!00991BB0 00000100 mp_stalemate_at_timelimit
-server.dll!00991F50 00004000 showtriggers
-server.dll!00992330 00080000 developer
-server.dll!00992750 00080000 sv_vote_timer_duration
-server.dll!009927A8 00080000 sv_vote_command_delay
-server.dll!00992800 00080000 sv_allow_votes
-server.dll!00992858 00080000 sv_vote_failure_timer
-server.dll!009928B0 00080000 sv_vote_creation_timer
-server.dll!00992908 00080000 sv_vote_quorum_ratio
-server.dll!00992960 00080000 sv_vote_allow_spectators
-server.dll!009929B8 00080000 sv_vote_count_spectator_votes
-server.dll!00992A10 00080000 sv_vote_allow_in_warmup
-server.dll!00992A68 00080000 sv_vote_disallow_kick_on_match_point
-server.dll!00992E60 00004000 radarvismethod
-server.dll!00992EB8 00004000 radarvispow
-server.dll!00992F10 00004000 radarvisdistance
-server.dll!00992F68 00004000 radarvismaxdot
-server.dll!00992FC0 00080000 mp_logdetail
-server.dll!00993018 00080000 mp_logdetail_items
-server.dll!00993090 00080000 sv_workshop_allow_other_maps
-server.dll!009930E8 00080000 tv_allow_camera_man_steamid
-server.dll!00993140 00080000 tv_allow_camera_man_steamid2
-server.dll!00993198 00080000 sv_prime_accounts_only
-server.dll!009932B8 00082000 sv_staminajumpcost
-server.dll!00993310 00082000 sv_staminalandcost
-server.dll!00993368 00082000 sv_staminarecoveryrate
-server.dll!009933C0 00082000 sv_staminamax
-server.dll!00993418 00082000 sv_timebetweenducks
-server.dll!00993470 00002002 sv_extreme_strafe_accuracy_fishtail
-server.dll!009934C8 00082000 sv_jump_impulse
-server.dll!00993520 00082000 sv_ledge_mantle_helper
-server.dll!00993578 00082000 sv_ledge_mantle_helper_dzonly
-server.dll!009935D0 00002002 sv_ledge_mantle_helper_debug
-server.dll!00993638 00082000 sv_enablebunnyhopping
-server.dll!00993690 00082000 sv_autobunnyhopping
-server.dll!009938D8 00080000 spec_replay_round_delay
-server.dll!0099C530 00082000 sv_server_graphic1
-server.dll!0099C588 00082000 sv_server_graphic2
-server.dll!00993930 00082000 sv_disable_observer_interpolation
-server.dll!00993988 00002000 sv_reward_drop_delay
-server.dll!009939E0 00082000 sv_holiday_mode
-server.dll!00993A38 00082100 sv_teamid_overhead_always_prohibit
-server.dll!00993A90 00082100 sv_show_team_equipment_prohibit
-server.dll!00993AE8 00082000 sv_show_team_equipment_force_on
-server.dll!00993B40 00082000 sv_teamid_overhead_maxdist_spec
-server.dll!00993B98 00082000 sv_teamid_overhead_maxdist
-server.dll!00993BF0 00082100 sv_teamid_overhead
-server.dll!0099C3D0 00082000 sv_falldamage_to_below_player_ratio
-server.dll!0099C428 00082000 sv_falldamage_to_below_player_multiplier
-server.dll!00993DA8 00082004 sv_kick_players_with_cooldown
-server.dll!00993E00 00080004 sv_matchend_drops_enabled
-server.dll!00993E58 00082004 sv_buy_status_override
-server.dll!00993EB0 00080004 sv_ct_spawn_on_bombsite
-server.dll!00993F08 00080004 sv_auto_adjust_bot_difficulty
-server.dll!00993F60 00080004 sv_bots_get_easier_each_win
-server.dll!00993FB8 00080004 sv_bots_get_harder_after_each_wave
-server.dll!00994010 00080004 sv_bots_force_rebuy_every_round
-server.dll!0099C4D8 00082000 sv_skirmish_id
-server.dll!00994068 00082004 mp_team_timeout_time
-server.dll!009940C0 00082004 mp_team_timeout_max
-server.dll!00994118 00082004 mp_weapons_max_gun_purchases_per_weapon_per_match
-server.dll!009941C8 00006002 sv_disable_motd
-server.dll!00994308 00080000 mp_teamname_1
-server.dll!00994360 00080000 mp_teamname_2
-server.dll!009943B8 00080000 mp_teamflag_1
-server.dll!00994410 00080000 mp_teamflag_2
-server.dll!00994468 00080000 mp_teamlogo_1
-server.dll!009944C0 00080000 mp_teamlogo_2
-server.dll!00994518 00080000 mp_teamprediction_txt
-server.dll!00994570 00080000 mp_teamprediction_pct
-server.dll!009945C8 00080000 mp_teammatchstat_txt
-server.dll!00994620 00080000 mp_teammatchstat_1
-server.dll!00994678 00080000 mp_teammatchstat_2
-server.dll!009946D0 00080000 mp_teamscore_1
-server.dll!00994728 00080000 mp_teamscore_2
-server.dll!009947D8 00080000 mp_teammatchstat_holdtime
-server.dll!00994830 00080000 mp_teammatchstat_cycletime
-server.dll!00994888 00082000 mp_heavyassaultsuit_speed
-server.dll!009948E0 00082000 mp_heavybot_damage_reduction_scale
-server.dll!00994938 00082000 mp_heavyassaultsuit_deploy_timescale
-server.dll!00994990 00082000 mp_heavyassaultsuit_aimpunch
-server.dll!009949E8 00080000 mp_backup_round_auto
-server.dll!00994A40 00080000 mp_backup_round_file
-server.dll!00994A98 00080000 mp_backup_round_file_pattern
-server.dll!00994AF0 00080000 mp_backup_round_file_last
-server.dll!00994B90 00080000 mp_backup_restore_load_autopause
-server.dll!009952F0 00002000 ammo_50AE_impulse
-server.dll!00995348 00002000 ammo_762mm_impulse
-server.dll!009953A0 00002000 ammo_556mm_impulse
-server.dll!009953F8 00002000 ammo_556mm_box_impulse
-server.dll!00995450 00002000 ammo_338mag_impulse
-server.dll!009954A8 00002000 ammo_9mm_impulse
-server.dll!00995500 00002000 ammo_buckshot_impulse
-server.dll!00995558 00002000 ammo_45acp_impulse
-server.dll!009955B0 00002000 ammo_357sig_impulse
-server.dll!00995608 00002000 ammo_57mm_impulse
-server.dll!00995660 00002000 ammo_50AE_headshot_mult
-server.dll!009956B8 00002000 ammo_762mm_headshot_mult
-server.dll!00995710 00002000 ammo_556mm_headshot_mult
-server.dll!00995768 00002000 ammo_556mm_box_headshot_mult
-server.dll!009957C0 00002000 ammo_338mag_headshot_mult
-server.dll!00995818 00002000 ammo_9mm_headshot_mult
-server.dll!00995870 00002000 ammo_buckshot_headshot_mult
-server.dll!009958C8 00002000 ammo_45acp_headshot_mult
-server.dll!00995920 00002000 ammo_357sig_headshot_mult
-server.dll!00995978 00002000 ammo_57mm_headshot_mult
-server.dll!009959D0 00082000 mp_spec_swapplayersides
-server.dll!00995A28 00082000 mp_force_assign_teams
-server.dll!00995A80 00082000 sv_gameinstructor_disable
-server.dll!00995B30 00082000 sv_matchpause_auto_5v5
-server.dll!00995B88 00082000 mp_spectators_max
-server.dll!00995BE0 00082000 mp_buytime
-server.dll!00995C38 00082000 mp_buy_allow_grenades
-server.dll!00995C90 00082000 mp_buy_allow_guns
-server.dll!00995CE8 00082000 mp_do_warmup_period
-server.dll!00995D40 00082000 mp_do_warmup_offine
-server.dll!00995D98 00082000 mp_startmoney
-server.dll!00995DF0 00082000 mp_maxmoney
-server.dll!00995E48 00082000 mp_afterroundmoney
-server.dll!00995EA0 00082000 mp_playercashawards
-server.dll!00995EF8 00082000 mp_teamcashawards
-server.dll!00995F50 00082000 mp_overtime_enable
-server.dll!00995FA8 00082000 mp_overtime_maxrounds
-server.dll!00996000 00082000 mp_overtime_startmoney
-server.dll!00996058 00082000 mp_hostages_takedamage
-server.dll!009960B0 00002002 mp_hostages_rescuetowin
-server.dll!00996108 00082000 mp_hostages_rescuetime
-server.dll!00996160 00082000 mp_anyone_can_pickup_c4
-server.dll!009961B8 00082000 mp_c4_cannot_be_defused
-server.dll!0099C5E0 00082000 sv_coaching_enabled
-server.dll!00996210 00082000 sv_coach_comm_unrestricted
-server.dll!00996268 00082000 sv_allow_thirdperson
-server.dll!009962C0 00082000 sv_party_mode
-server.dll!00996318 00082000 sv_dz_hostage_rescue_reward
-server.dll!00996370 00080000 mp_disconnect_kills_players
-server.dll!009963C8 00080000 mp_disconnect_kills_bots
-server.dll!00996508 00082000 mp_warmuptime_all_players_connected
-server.dll!00996560 00082000 mp_endwarmup_player_count
-server.dll!009965B8 00082000 mp_warmup_pausetimer
-server.dll!00996610 00082000 mp_halftime_pausetimer
-server.dll!00996668 00082000 mp_halftime_pausematch
-server.dll!009966C0 00082000 mp_overtime_halftime_pausetimer
-server.dll!00996718 00082000 mp_respawn_immunitytime
-server.dll!00996770 00082000 mp_playerid
-server.dll!009967C8 00082000 mp_playerid_delay
-server.dll!00996820 00082000 mp_playerid_hold
-server.dll!00996878 00082000 mp_round_restart_delay
-server.dll!009968D0 00082000 mp_halftime_duration
-server.dll!00996928 00082000 mp_match_can_clinch
-server.dll!00996980 00082000 mp_ggtr_always_upgrade
-server.dll!009969D8 00082000 mp_ggtr_end_round_kill_bonus
-server.dll!00996A30 00082000 mp_ggtr_last_weapon_kill_ends_half
-server.dll!00996A88 00082000 mp_ggprogressive_round_restart_delay
-server.dll!00996AE0 00082000 mp_ggprogressive_use_random_weapons
-server.dll!00996B38 00082000 mp_ggprogressive_random_weapon_kills_needed
-server.dll!00996B90 00082000 mp_ggtr_num_rounds_autoprogress
-server.dll!00996BE8 00082000 mp_ct_default_melee
-server.dll!00996C40 00082000 mp_ct_default_secondary
-server.dll!00996C98 00082000 mp_ct_default_primary
-server.dll!00996CF0 00082000 mp_ct_default_grenades
-server.dll!00996D48 00082000 mp_t_default_melee
-server.dll!00996DA0 00082000 mp_t_default_secondary
-server.dll!00996DF8 00082000 mp_t_default_primary
-server.dll!00996E50 00082000 mp_t_default_grenades
-server.dll!00996EA8 00082000 mp_join_grace_time
-server.dll!00996F00 00082000 mp_win_panel_display_time
-server.dll!00996F58 00082000 mp_ggtr_bomb_pts_for_upgrade
-server.dll!00996FB0 00082000 mp_ggtr_bomb_pts_for_he
-server.dll!00997008 00082000 mp_ggtr_bomb_pts_for_flash
-server.dll!00997060 00082000 mp_ggtr_bomb_pts_for_molotov
-server.dll!009970B8 00082000 mp_molotovusedelay
-server.dll!00997110 00082000 mp_ggtr_halftime_delay
-server.dll!00997168 00082000 mp_ggtr_bomb_respawn_delay
-server.dll!009971C0 00082000 mp_ggtr_bomb_defuse_bonus
-server.dll!00997218 00082000 mp_ggtr_bomb_detonation_bonus
-server.dll!00997270 00082000 mp_dm_kill_base_score
-server.dll!009972C8 00082000 mp_dm_bonus_percent
-server.dll!00997320 00082000 mp_dm_bonus_respawn
-server.dll!00997378 00082000 mp_dm_dogtag_score
-server.dll!009973D0 00082000 mp_dm_teammode
-server.dll!00997428 00082000 mp_dm_teammode_kill_score
-server.dll!00997480 00082000 mp_dm_teammode_bonus_score
-server.dll!009974D8 00082000 mp_dm_teammode_dogtag_score
-server.dll!00997530 00082000 mp_dm_bonusweapon_dogtags
-server.dll!00997588 00082000 mp_display_kill_assists
-server.dll!009975E0 00082000 mp_match_end_restart
-server.dll!00997638 00082000 mp_match_end_changelevel
-server.dll!00997690 00082000 mp_defuser_allocation
-server.dll!009976E8 00082000 mp_give_player_c4
-server.dll!00997740 00080000 mp_require_gun_use_to_acquire
-server.dll!00997798 00082000 mp_death_drop_gun
-server.dll!009977F0 00082000 mp_death_drop_c4
-server.dll!00997848 00082000 mp_death_drop_grenade
-server.dll!009978A0 00082000 mp_death_drop_defuser
-server.dll!009978F8 00082000 mp_death_drop_taser
-server.dll!00997950 00082000 mp_death_drop_breachcharge
-server.dll!009979A8 00082000 mp_death_drop_healthshot
-server.dll!00997A00 00082000 mp_coop_force_join_ct
-server.dll!00997A58 00082000 mp_coopmission_mission_number
-server.dll!00997AB0 00082000 mp_force_pick_time
-server.dll!00997B08 00082000 bot_autodifficulty_threshold_low
-server.dll!00997B60 00082000 bot_autodifficulty_threshold_high
-server.dll!00997BB8 00082000 mp_equipment_reset_rounds
-server.dll!00997C10 00082000 mp_economy_reset_rounds
-server.dll!00997C68 00082000 mp_weapons_allow_zeus
-server.dll!00997CC0 00082000 mp_weapons_allow_pistols
-server.dll!00997D18 00082000 mp_weapons_allow_smgs
-server.dll!00997D70 00082000 mp_weapons_allow_heavy
-server.dll!00997DC8 00082000 mp_weapons_allow_rifles
-server.dll!00997E78 00082000 mp_heavyassaultsuit_cooldown
-server.dll!00997ED0 00082000 mp_weapons_allow_typecount
-server.dll!0099C480 00082000 mp_weapons_allow_map_placed
-server.dll!00997F28 00082000 mp_default_team_winner_no_objective
-server.dll!00997F80 00082000 mp_weapons_glow_on_ground
-server.dll!00997FD8 00082000 mp_respawn_on_death_t
-server.dll!00998030 00082000 mp_respawn_on_death_ct
-server.dll!00998088 00082000 mp_use_respawn_waves
-server.dll!009981E8 01008082 tr_completed_training
-server.dll!00998240 01008082 tr_best_course_time
-server.dll!009982F0 00080000 mp_competitive_endofmatch_extra_time
-server.dll!00998348 00082000 mp_endmatch_votenextmap
-server.dll!009983A0 00082000 mp_endmatch_votenextmap_keepcurrent
-server.dll!009983F8 00080000 mp_endmatch_votenextleveltime
-server.dll!00998450 00002000 snd_music_boost
-server.dll!009984A8 00002002 sv_endmatch_item_drop_interval
-server.dll!00998500 00002002 sv_endmatch_item_drop_interval_rare
-server.dll!00998558 00002002 sv_endmatch_item_drop_interval_mythical
-server.dll!009985B0 00002002 sv_endmatch_item_drop_interval_legendary
-server.dll!00998608 00002002 sv_endmatch_item_drop_interval_ancient
-server.dll!00998660 00002002 sv_compute_per_bot_difficulty
-server.dll!009986B8 00002000 sv_show_bot_difficulty_in_name
-server.dll!00998710 00002010 sv_bot_difficulty_kbm
-server.dll!00998768 00002010 sv_bot_difficulty_gamepad
-server.dll!009987C0 00002010 sv_bot_difficulty_ps3move
-server.dll!00998818 00002010 sv_bot_difficulty_hydra
-server.dll!00998870 00002010 sv_bot_difficulty_sharpshooter
-server.dll!009988C8 00082100 sv_competitive_official_5v5
-server.dll!00998920 00082100 sv_kick_ban_duration
-server.dll!00998978 00082000 sv_disable_immunity_alpha
-server.dll!009989D0 00082100 sv_alltalk
-server.dll!0099C320 00082100 sv_deadtalk
-server.dll!00998A28 00082000 sv_full_alltalk
-server.dll!00998A80 00082000 sv_talk_enemy_dead
-server.dll!00998AD8 00082000 sv_talk_enemy_living
-server.dll!00998B30 00082000 sv_talk_after_dying_time
-server.dll!00998B88 00080000 sv_auto_full_alltalk_during_warmup_half_end
-server.dll!00998BE0 00082100 sv_spec_hear
-server.dll!00998C38 00082100 mp_c4timer
-server.dll!00998C98 00002002 dev_reportmoneychanges
-server.dll!00998CF0 00082100 mp_roundtime
-server.dll!00998D48 00080000 mp_roundtime_deployment
-server.dll!00998DA0 00082100 mp_roundtime_hostage
-server.dll!00998DF8 00082100 mp_roundtime_defuse
-server.dll!00998E50 00082100 mp_freezetime
-server.dll!00998EA8 00082100 mp_limitteams
-server.dll!00998F00 00082000 mp_tkpunish
-server.dll!00998F58 00082000 mp_autokick
-server.dll!00998FB0 00082000 mp_spawnprotectiontime
-server.dll!00999008 00082000 mp_td_spawndmgthreshold
-server.dll!00999060 00082000 mp_td_dmgtowarn
-server.dll!009990B8 00082000 mp_td_dmgtokick
-server.dll!00999110 00082000 mp_humanteam
-server.dll!00999168 00082000 mp_guardian_special_kills_needed
-server.dll!009991C0 00082000 mp_guardian_special_weapon_needed
-server.dll!00999218 00082000 mp_guardian_player_dist_min
-server.dll!00999270 00082000 mp_guardian_player_dist_max
-server.dll!009992C8 00082000 mp_guardian_bot_money_per_wave
-server.dll!00999320 00082000 mp_guardian_loc_override
-server.dll!00999378 00082000 mp_guardian_loc_mission
-server.dll!009993D0 00082000 mp_guardian_loc_weapon
-server.dll!00999428 00082000 mp_guardian_loc_adjective
-server.dll!00999480 00082000 mp_guardian_loc_condition
-server.dll!009994D8 00082000 mp_guardian_loc_icon
-server.dll!00999530 00082000 mp_ignore_round_win_conditions
-server.dll!00999588 00082000 mp_dm_time_between_bonus_min
-server.dll!009995E0 00082000 mp_dm_time_between_bonus_max
-server.dll!00999638 00082000 mp_dm_bonus_length_min
-server.dll!00999690 00082000 mp_dm_bonus_length_max
-server.dll!009996E8 00082000 mp_dogtag_pickup_rule
-server.dll!00999740 00082000 mp_dogtag_despawn_on_killer_death
-server.dll!00999798 00082000 mp_dogtag_despawn_time
-server.dll!009997F0 00082000 mp_damage_scale_ct_body
-server.dll!00999848 00082000 mp_damage_scale_ct_head
-server.dll!009998A0 00082000 mp_damage_scale_t_body
-server.dll!009998F8 00082000 mp_damage_scale_t_head
-server.dll!00999950 00002000 mp_player_healthbuffer_decay_rate
-server.dll!009999A8 00082000 mp_damage_headshot_only
-server.dll!00999A00 00082000 mp_weapon_self_inflict_amount
-server.dll!00999A58 00082000 mp_damage_vampiric_amount
-server.dll!00999AB0 00082000 mp_global_damage_per_second
-server.dll!00999B08 00082000 mp_starting_losses
-server.dll!00999B60 00082000 mp_consecutive_loss_aversion
-server.dll!00999BB8 00082000 mp_consecutive_loss_max
-server.dll!0099A718 00080004 contributionscore_assist
-server.dll!0099A770 00080004 contributionscore_kill
-server.dll!0099A7C8 00080004 contributionscore_objective_kill
-server.dll!0099A820 00080004 contributionscore_hostage_rescue_minor
-server.dll!0099A878 00080004 contributionscore_hostage_rescue_major
-server.dll!0099A8D0 00080004 contributionscore_bomb_defuse_minor
-server.dll!0099A928 00080004 contributionscore_bomb_defuse_major
-server.dll!0099A980 00080004 contributionscore_bomb_planted
-server.dll!0099A9D8 00080004 contributionscore_bomb_exploded
-server.dll!0099AA30 00080004 contributionscore_suicide
-server.dll!0099AA88 00080004 contributionscore_team_kill
-server.dll!0099AAE0 00080004 contributionscore_hostage_kill
-server.dll!0099AB38 00080004 contributionscore_cash_bundle
-server.dll!0099AB90 00080004 contributionscore_crate_break
-server.dll!0099ABE8 00080004 contributionscore_kill_factor
-server.dll!0099AD10 00080000 mp_endmatch_votenextmap_wargames_modes
-server.dll!0099AD68 00080000 mp_endmatch_votenextmap_wargames_nummaps
-server.dll!0099ADC0 00080000 mp_endmatch_votenextmap_wargames_nummodes
-server.dll!0099C2C8 00082000 mp_solid_teammates
-server.dll!0099BFD8 00082000 mp_free_armor
-server.dll!0099C030 00082000 mp_max_armor
-server.dll!0099C088 00082000 mp_halftime
-server.dll!0099C0E0 00082000 mp_randomspawn
-server.dll!0099C138 00082000 mp_randomspawn_los
-server.dll!0099C190 00082000 mp_randomspawn_dist
-server.dll!0099C1E8 00082100 sv_competitive_minspec
-server.dll!0099CBE8 00004000 cs_ShowStateTransitions
-server.dll!0099CC98 00080000 mp_logmoney
-server.dll!0099CCF0 00080000 mp_logdistance_2d
-server.dll!0099CD48 00080000 mp_logdistance_sec
-server.dll!0099CDA0 00080000 mp_logloadouts
-server.dll!0099CDF8 00002000 phys_playerscale
-server.dll!0099CE50 00002000 phys_headshotscale
-server.dll!0099CEA8 00082000 sv_damage_print_enable
-server.dll!0099CF00 00082000 sv_spawn_afk_bomb_drop_time
-server.dll!0099CF58 00080000 mp_drop_knife_enable
-server.dll!0099CFB0 00080000 mp_drop_grenade_enable
-server.dll!0099D008 00080000 tv_relayradio
-server.dll!0099D060 00004000 CS_WarnFriendlyDamageInterval
-server.dll!0099D218 00002000 sv_disablefreezecam
-server.dll!0099D2C8 00082000 sv_show_voip_indicator_for_enemies
-server.dll!0099D4D8 00082100 sv_autobuyammo
-server.dll!0099D530 00002000 gg_knife_kill_demotes
-server.dll!0099D638 00082000 mp_deathcam_skippable
-server.dll!0099DB38 00082000 sv_dz_cash_bundle_size
-server.dll!0099D690 00082000 sv_dz_contractkill_reward
-server.dll!0099D888 00082000 mp_tagging_scale
-server.dll!0099D908 00006002 mp_flinch_punch_scale
-server.dll!0099E268 00002002 sv_penetration_type
-server.dll!0099DC20 00082000 sv_showimpacts_penetration
-server.dll!0099DC78 00082000 sv_showbullethits
-server.dll!0099DCD0 00082000 sv_showimpacts
-server.dll!0099DD28 00082000 sv_showimpacts_time
-server.dll!0099DD80 00002000 sv_showplayerhitboxes
-server.dll!0099E160 00082000 ff_damage_reduction_grenade
-server.dll!0099E108 00082000 ff_damage_reduction_grenade_self
-server.dll!0099E210 00082000 ff_damage_reduction_bullets
-server.dll!0099E1B8 00082000 ff_damage_reduction_other
-server.dll!0099DDD8 00082000 ff_damage_bullet_penetration
-server.dll!0099DEE0 00082000 sv_cs_player_speed_has_hostage
-server.dll!0099DF38 00082000 sv_spawn_rappel_min_duration
-server.dll!0099E098 00086000 weapon_recoil_view_punch_extra
-server.dll!0099E2C0 00006000 post_jump_crouch
-server.dll!0099E318 00002002 hostage_feetyawrate
-server.dll!0099FA20 00080000 sv_vote_issue_restart_game_allowed
-server.dll!0099FA78 00082000 sv_arms_race_vote_to_restart_disallowed_after
-server.dll!0099FAD0 00082100 sv_vote_issue_kick_allowed
-server.dll!0099FB28 00082100 sv_vote_kick_ban_duration
-server.dll!0099FB80 00082100 sv_vote_issue_loadbackup_allowed
-server.dll!0099FBD8 00082100 sv_vote_issue_loadbackup_spec_only
-server.dll!0099FC30 00080000 sv_vote_issue_loadbackup_spec_safe
-server.dll!0099FC88 00080000 sv_vote_issue_loadbackup_spec_authoritative
-server.dll!0099FD38 00082000 sv_vote_to_changelevel_before_match_point
-server.dll!0099FFA0 00082100 sv_vote_issue_pause_match_spec_only
-server.dll!009A0158 00086000 weapon_recoil_suppression_shots
-server.dll!009A01B0 00086000 weapon_recoil_suppression_factor
-server.dll!009A0208 00086000 weapon_recoil_variance
-server.dll!009A0BA8 00002000 sv_flashbang_strength
-server.dll!009A0F68 00006002 weapon_debug_max_inaccuracy
-server.dll!009A0FC0 00006002 weapon_debug_inaccuracy_only_up
-server.dll!009A1200 0000201C game_online
-server.dll!009A11A8 0000201C game_public
-server.dll!009A12B0 0008200C game_type
-server.dll!009A1258 0008200C game_mode
-server.dll!009A1150 0008200C custom_bot_difficulty
-server.dll!009A1438 00002000 weapon_molotov_maxdetonateslope
-server.dll!009A1558 00002000 sv_snowball_strength
-server.dll!009A16F8 00082000 mp_coopmission_bot_difficulty_offset
-server.dll!009A1750 00006000 bot_traceview
-server.dll!009A17A8 00006000 bot_stop
-server.dll!009A1800 00006000 bot_show_nav
-server.dll!009A1858 00002000 bot_walk
-server.dll!009A1FE8 00082000 bot_difficulty
-server.dll!009A1E88 00006000 bot_debug
-server.dll!009A1EE0 00006000 bot_debug_target
-server.dll!009A2098 00082000 bot_quota
-server.dll!009A20F0 00082000 bot_quota_mode
-server.dll!009A1DD8 00082000 bot_allow_rogues
-server.dll!009A1908 00082000 bot_allow_pistols
-server.dll!009A1960 00082000 bot_allow_shotguns
-server.dll!009A19B8 00082000 bot_allow_sub_machine_guns
-server.dll!009A1A10 00082000 bot_allow_rifles
-server.dll!009A1A68 00082000 bot_allow_machine_guns
-server.dll!009A1AC0 00082000 bot_allow_grenades
-server.dll!009A1B18 00082000 bot_allow_snipers
-server.dll!009A21A0 00082000 bot_join_team
-server.dll!009A2148 00082000 bot_join_after_player
-server.dll!009A1F38 00002000 bot_auto_vacate
-server.dll!009A1B70 00006000 bot_zombie
-server.dll!009A1E30 00082000 bot_defer_to_human_goals
-server.dll!009A2040 00082000 bot_defer_to_human_items
-server.dll!009A1D80 00082000 bot_chatter
-server.dll!009A1BC8 00002000 bot_profile_db
-server.dll!009A1C20 00086000 bot_dont_shoot
-server.dll!009A1C78 00002000 bot_eco_limit
-server.dll!009A1CD0 00002000 bot_auto_follow
-server.dll!009A1D28 00002000 bot_flipout
-server.dll!009A1F90 00002000 bot_controllable
-server.dll!009A2218 00004004 bot_show_occupy_time
-server.dll!009A2270 00004004 bot_show_battlefront
-server.dll!009A25B0 00006000 bot_max_vision_distance_override
-server.dll!009A2608 00004000 bot_ignore_players
-server.dll!009A2660 00006000 bot_coop_idle_max_vision_distance
-server.dll!009A2758 00004000 bot_loadout
-server.dll!009A27B0 00004000 bot_randombuy
-server.dll!009A28B8 00080004 sv_bot_buy_grenade_chance
-server.dll!009A2910 00080004 sv_bot_buy_smoke_weight
-server.dll!009A2968 00080004 sv_bot_buy_flash_weight
-server.dll!009A29C0 00080004 sv_bot_buy_decoy_weight
-server.dll!009A2A18 00080004 sv_bot_buy_molotov_weight
-server.dll!009A2A70 00080004 sv_bot_buy_hegrenade_weight
-server.dll!009A2C90 00004000 inferno_per_flame_spawn_duration
-server.dll!009A2CE8 00004000 inferno_initial_spawn_interval
-server.dll!009A2D40 00004000 inferno_child_spawn_interval_multiplier
-server.dll!009A2D98 00004000 inferno_max_child_spawn_interval
-server.dll!009A2DF0 00004000 inferno_spawn_angle
-server.dll!009A2E48 00082000 inferno_max_flames
-server.dll!009A2EA0 00004000 inferno_flame_spacing
-server.dll!009A2EF8 00082000 inferno_flame_lifetime
-server.dll!009A2F50 00004000 inferno_friendly_fire_duration
-server.dll!009A3000 00004000 inferno_damage
-server.dll!009A3058 00082000 inferno_max_range
-server.dll!009A3380 00000100 mp_hostagepenalty
-server.dll!009A3648 00004000 hostage_debug
-server.dll!009A3430 00004000 hostage_is_silent
-server.dll!009A3488 00006000 sv_pushaway_hostage_force
-server.dll!009A34E0 00006000 sv_pushaway_max_hostage_force
-server.dll!009A36A0 00082000 mp_hostages_max
-server.dll!009A37A8 00082000 mp_hostages_spawn_farthest
-server.dll!009A36F8 00082000 mp_hostages_spawn_same_every_round
-server.dll!009A3750 00082000 mp_hostages_spawn_force_positions
-server.dll!009A3538 00082000 mp_hostages_run_speed_modifier
-server.dll!009A3590 00082000 mp_only_cts_rescue_hostages
-server.dll!009A3880 00080004 mp_guardian_target_site
-server.dll!009A39E8 00080000 sv_dz_jointeam_allowed
-server.dll!009A3A40 00080000 sv_dz_autojointeam
-server.dll!009A3DA0 00082000 sv_dz_team_count
-server.dll!009A3AF0 00080000 sv_dz_warmup_weapon
-server.dll!009A3B48 00080000 sv_dz_warmup_tablet
-server.dll!009A4168 00080000 sv_ignoregrenaderadio
-server.dll!009A4488 00082000 mp_plant_c4_anywhere
-server.dll!009A4560 00006002 weapon_land_dip_amt
-server.dll!009A45B8 00086000 weapon_recoil_decay1_exp
-server.dll!009A4C20 00086000 weapon_recoil_decay2_exp
-server.dll!009A4BC8 00086000 weapon_recoil_decay2_lin
-server.dll!009A4C78 00086000 weapon_recoil_vel_decay
-server.dll!009A4610 00086000 weapon_recoil_decay_coefficient
-server.dll!009A4668 00082000 weapon_accuracy_forcespread
-server.dll!009A46C0 00082000 weapon_accuracy_nospread
-server.dll!009A4718 00086000 weapon_recoil_cooldown
-server.dll!009A4B18 00082000 weapon_recoil_scale
-server.dll!009A4AC0 00086000 weapon_recoil_scale_motion_controller
-server.dll!009A4770 00082000 weapon_air_spread_scale
-server.dll!009A47C8 00082000 weapon_reticle_knife_show
-server.dll!009A4820 00080000 weapon_auto_cleanup_time
-server.dll!009A4B70 00080000 weapon_max_before_cleanup
-server.dll!009A4878 00086000 weapon_sound_falloff_multiplier
-server.dll!009A5770 00082000 sv_dz_exploration_payment_amount
-server.dll!009A57F0 00082000 mp_taser_recharge_time
-server.dll!009A5C70 00004000 nav_split_place_on_ground
-server.dll!009A5CC8 00004000 nav_area_bgcolor
-server.dll!009A5D20 00004000 nav_corner_adjust_adjacent
-server.dll!009A5E28 00004000 nav_show_continguous
-server.dll!009A5E80 00004000 nav_max_view_distance
-server.dll!009A5ED8 00004000 nav_update_visibility_on_edit
-server.dll!009A5F88 00004000 nav_show_potentially_visible
-server.dll!009A61F0 00004000 nav_show_area_info
-server.dll!009A6248 00004000 nav_snap_to_grid
-server.dll!009A62A0 00004000 nav_create_place_on_ground
-server.dll!009A62F8 00004000 nav_draw_limit
-server.dll!009A6538 00004000 nav_solid_props
-server.dll!009A6350 00004000 nav_create_area_at_feet
-server.dll!009A63A8 00002000 nav_drag_selection_volume_zmax_offset
-server.dll!009A6400 00002000 nav_drag_selection_volume_zmin_offset
-server.dll!009A65D0 00004000 nav_slope_limit
-server.dll!009A6628 00004000 nav_slope_tolerance
-server.dll!009A6680 00004000 nav_displacement_test
-server.dll!009A66D8 00004000 nav_generate_fencetops
-server.dll!009A6730 00004000 nav_generate_fixup_jump_areas
-server.dll!009A67E0 00004000 nav_generate_incremental_tolerance
-server.dll!009A6838 00004000 nav_area_max_size
-server.dll!009A7750 00004004 nav_edit
-server.dll!009A76F8 00004004 nav_quicksave
-server.dll!009A6980 00004004 nav_show_approach_points
-server.dll!009A69D8 00004004 nav_show_danger
-server.dll!009A6A30 00004004 nav_show_player_counts
-server.dll!009A7FE8 00002000 cl_simdbones
-server.dll!009A7F90 00002000 cl_use_simd_bones
-server.dll!009A8098 00002000 anim_3wayblend
-server.dll!009A80F0 00006000 anim_twistbones_enabled
-server.dll!009A8148 00002000 choreo_spew_filter
-server.dll!009A9888 00004000 panel_test_title_safe
-server.dll!00981F90 00000080 ai_report_task_timings_on_limit
-server.dll!00981FE8 00000080 ai_think_limit_label
-server.dll!009820B0 00002000 ai_LOS_mode
-server.dll!00982440 00004000 ai_drawbattlelines
-server.dll!00983478 00004000 ai_vehicle_avoidance
-server.dll!00983990 00004000 npc_ally_deathmessage
-server.dll!00983DB8 00004000 g_debug_trackpather
-server.dll!009842F0 00082000 sv_health_approach_enabled
-server.dll!00984348 00082000 sv_health_approach_speed
-server.dll!00984F48 00002000 hl2_episodic
-server.dll!00984E98 00002000 ai_shot_bias_min
-server.dll!00984EF0 00002000 ai_shot_bias_max
-server.dll!00984E40 00006000 ai_debug_shoot_positions
-server.dll!009853D8 00082000 sv_extract_ammo_from_dropped_weapons
-server.dll!00985538 00006002 sv_suppress_viewpunch
-server.dll!00985A08 00004000 noclip_fixup
-server.dll!00985E00 00004000 debug_visibility_monitor
-server.dll!00985E58 00004000 vismon_poll_frequency
-server.dll!00985EB0 00004000 vismon_trace_limit
-server.dll!00985F10 00082000 sv_dz_zone_hex_radius
-server.dll!00985FC0 00084000 sv_dz_zone_damage
-server.dll!0098A400 00082000 sv_env_entity_makers_enabled
-server.dll!0098AB40 00004000 r_vehicleBrakeRate
-server.dll!0098AB98 00000080 xbox_throttlebias
-server.dll!0098ABF0 00000080 xbox_throttlespoof
-server.dll!0098AC48 00000080 xbox_autothrottle
-server.dll!0098AD28 00002080 func_break_max_pieces
-server.dll!0098B068 00006000 loopsingleplayermaps
-server.dll!0098B0C0 00080000 servercfgfile
-server.dll!0098B170 00000100 mp_teamplay
-server.dll!0098B1C8 00000100 mp_falldamage
-server.dll!0098B220 00000100 mp_weaponstay
-server.dll!0098B278 00000100 mp_forcerespawn
-server.dll!0098B2D0 00000100 mp_footsteps
-server.dll!0098B328 00000100 mp_flashlight
-server.dll!0098B380 00000100 mp_autocrosshair
-server.dll!0098B3D8 00000100 mp_teamlist
-server.dll!0098B4E0 00000100 mp_allowNPCs
-server.dll!0098B538 00000080 suitvolume
-server.dll!0098BAF8 00000080 sv_unlockedchapters
-server.dll!0098BA28 00080000 sv_occlude_players
-server.dll!0098BC10 00082000 sv_water_movespeed_multiplier
-server.dll!0098BC68 00082000 sv_water_swim_mode
-server.dll!0098BCC0 00082000 sv_air_max_wishspeed
-server.dll!0098BD18 00082000 sv_air_max_horizontal_parachute_speed
-server.dll!0098BD70 00082000 sv_air_max_horizontal_parachute_ratio
-server.dll!0098BDC8 00082000 sv_air_pushaway_dist
-server.dll!0098BE20 00082000 sv_walkable_normal
-server.dll!0098BE78 00082000 sv_standable_normal
-server.dll!0098C078 00002002 sv_optimizedmovement
-server.dll!0098C258 00002000 g_Language
-server.dll!0098C0D0 00002080 sk_autoaim_mode
-server.dll!0098C1A8 00002000 old_radiusdamage
-server.dll!0098C200 00000080 skill
-server.dll!0098C7A8 00082000 sv_grassburn
-server.dll!0098D368 00002180 sv_noclipaccelerate
-server.dll!0098D3C0 00002180 sv_noclipspeed
-server.dll!0098D208 00002180 sv_specaccelerate
-server.dll!0098D260 00002180 sv_specspeed
-server.dll!0098D1B0 00002180 sv_specnoclip
-server.dll!0098D418 00082100 sv_maxspeed
-server.dll!0098CAD0 00082100 sv_accelerate_use_weapon_speed
-server.dll!0098CB28 00082100 sv_accelerate_debug_speed
-server.dll!0098D158 00082100 sv_airaccelerate
-server.dll!0098D100 00082000 sv_airaccelerate_parachute
-server.dll!0098D0A8 00082000 sv_airaccelerate_rappel
-server.dll!0098CB80 00082102 sv_wateraccelerate
-server.dll!0098CBD8 00082102 sv_waterfriction
-server.dll!0098D4C8 00002102 sv_rollspeed
-server.dll!0098D5D0 00002102 sv_stepsize
-server.dll!0098CD38 00006100 r_VehicleViewDampen
-server.dll!0098CD90 00006100 r_JeepViewDampenFreq
-server.dll!0098CDE8 00006100 r_JeepViewDampenDamp
-server.dll!0098CE40 00006100 r_JeepViewZHeight
-server.dll!0098CE98 00006100 r_AirboatViewDampenFreq
-server.dll!0098CEF0 00006100 r_AirboatViewDampenDamp
-server.dll!0098CF48 00006100 r_AirboatViewZHeight
-server.dll!0098DBC0 00004000 g_debug_vehicledriver
-server.dll!0098E0B0 00004000 phys_show_active
-server.dll!0098E108 00006000 phys_debug_check_contacts
-server.dll!0098F008 00002000 sv_regeneration_wait_time
-server.dll!0098F3F8 00004000 vis_force
-server.dll!0098F450 00082000 sv_drowning_damage_initial
-server.dll!0098F4A8 00082000 sv_drowning_damage_max
-server.dll!0098FBB0 00004000 voice_player_speaking_delay_threshold
-server.dll!0098FCA0 00004000 g_debug_angularsensor
-server.dll!0098FF40 00082000 sv_prop_door_open_speed_scale
-server.dll!00990390 00002000 g_ragdoll_maxcount
-server.dll!009903E8 00006000 g_debug_ragdoll_removal
-server.dll!00990440 00002000 g_ragdoll_important_maxcount
-server.dll!009904B0 00086000 sv_disable_pas
-server.dll!00990F40 00004000 snd_sos_show_server_xmit
-server.dll!00991518 00002000 phys_pushscale
-server.dll!00991738 00002100 mp_tournament
-server.dll!00991898 00002100 mp_disable_respawn_times
-server.dll!00991B00 00080100 mp_autoteambalance
-server.dll!00991FA8 00080000 cl_remove_old_ugc_downloads
-server.dll!009922D8 00004000 r_visualizetraces
-server.dll!00992388 00004000 g_debug_vehiclebase
-server.dll!00992418 00006000 r_JeepFOV
-server.dll!00992470 00004000 g_debug_vehiclesound
-server.dll!009924C8 00004000 g_debug_vehicleexit
-server.dll!00992658 00082000 sv_voice_proximity
-server.dll!009926B0 00082000 sv_voice_proximity_positional
-server.dll!009936E8 00082000 sv_weapon_encumbrance_scale
-server.dll!00993C48 00082000 sv_disable_radar
-server.dll!00993CA0 00082000 sv_outofammo_indicator
-server.dll!00993CF8 00082000 sv_falldamage_scale
-server.dll!00993D50 00082000 sv_chat_proximity
-server.dll!00994C10 00082000 ammo_50AE_max
-server.dll!00994C68 00082000 ammo_762mm_max
-server.dll!00994CC0 00082000 ammo_556mm_max
-server.dll!00994D18 00082000 ammo_556mm_small_max
-server.dll!00994D70 00082000 ammo_556mm_box_max
-server.dll!00994DC8 00082000 ammo_338mag_max
-server.dll!00994E20 00082000 ammo_9mm_max
-server.dll!00994E78 00082000 ammo_buckshot_max
-server.dll!00994ED0 00082000 ammo_45acp_max
-server.dll!00994F28 00082000 ammo_357sig_max
-server.dll!00994F80 00082000 ammo_357sig_p250_max
-server.dll!00994FD8 00082000 ammo_357sig_small_max
-server.dll!00995030 00082000 ammo_357sig_min_max
-server.dll!00995088 00082000 ammo_57mm_max
-server.dll!009950E0 00082000 ammo_grenade_limit_default
-server.dll!00995138 00082000 ammo_grenade_limit_flashbang
-server.dll!00995190 00082000 ammo_grenade_limit_total
-server.dll!009951E8 00082000 ammo_grenade_limit_snowballs
-server.dll!00995240 00082000 ammo_item_limit_healthshot
-server.dll!00995298 00082000 ammo_grenade_limit_breachcharge
-server.dll!0099C378 00080000 mp_verbose_changelevel_spew
-server.dll!0099AE18 00082100 cash_team_terrorist_win_bomb
-server.dll!0099AE70 00082100 cash_team_elimination_hostage_map_t
-server.dll!0099AEC8 00082100 cash_team_elimination_hostage_map_ct
-server.dll!0099AF20 00082100 cash_team_elimination_bomb_map
-server.dll!0099AF78 00082100 cash_team_survive_guardian_wave
-server.dll!0099AFD0 00082100 cash_team_win_by_time_running_out_hostage
-server.dll!0099B028 00082100 cash_team_win_by_time_running_out_bomb
-server.dll!0099B080 00082100 cash_team_win_by_defusing_bomb
-server.dll!0099B0D8 00082100 cash_team_win_by_hostage_rescue
-server.dll!0099B130 00082100 cash_team_loser_bonus
-server.dll!0099B188 00082100 cash_team_loser_bonus_consecutive_rounds
-server.dll!0099B1E0 00082100 cash_team_winner_bonus_consecutive_rounds
-server.dll!0099B238 00082100 cash_team_rescued_hostage
-server.dll!0099B290 00082100 cash_team_hostage_alive
-server.dll!0099B2E8 00082100 cash_team_planted_bomb_but_defused
-server.dll!0099B340 00082100 cash_team_hostage_interaction
-server.dll!0099B398 00082100 cash_player_killed_teammate
-server.dll!0099B3F0 00082100 cash_player_killed_enemy_factor
-server.dll!0099B448 00082100 cash_player_killed_enemy_default
-server.dll!0099B4A0 00082100 cash_player_bomb_planted
-server.dll!0099B4F8 00082100 cash_player_bomb_defused
-server.dll!0099B550 00082100 cash_player_rescued_hostage
-server.dll!0099B5A8 00082100 cash_player_interact_with_hostage
-server.dll!0099B600 00082100 cash_player_damage_hostage
-server.dll!0099B658 00082100 cash_player_killed_hostage
-server.dll!0099B6B0 00082100 cash_player_respawn_amount
-server.dll!0099B708 00082100 cash_player_get_killed
-server.dll!0099D0B8 00080004 sv_guardian_min_wave_for_heavy
-server.dll!0099D110 00080004 sv_guardian_max_wave_for_heavy
-server.dll!0099DAE0 00080004 sv_guardian_heavy_count
-server.dll!0099D168 00080004 sv_guardian_heavy_all
-server.dll!0099D320 00004000 bot_mimic
-server.dll!0099D378 00004000 bot_freeze
-server.dll!0099D3D0 00004000 bot_crouch
-server.dll!0099D428 00004000 bot_mimic_yaw_offset
-server.dll!0099D588 00004000 cs_hostage_near_rescue_music_distance
-server.dll!0099D5E0 00080000 cs_enable_player_physics_box
-server.dll!0099D6E8 00082000 healthshot_healthboost_damage_multiplier
-server.dll!0099D830 00082000 sv_player_parachute_velocity
-server.dll!0099D988 00080004 sv_weapon_require_use_grace_period
-server.dll!0099DE30 00082000 sv_spec_use_tournament_content_standards
-server.dll!0099DE88 00082000 sv_min_jump_landing_sound
-server.dll!0099DF90 00002000 sv_clip_penetration_traces_to_players
-server.dll!0099DFE8 00082000 sv_weapon_encumbrance_per_item
-server.dll!0099E040 00006000 sv_server_verify_blood_on_player
-server.dll!0099F9B0 00004000 g_jeepexitspeed
-server.dll!009A08F8 00080000 sv_debug_ugc_downloads
-server.dll!009A0950 00080000 sv_broadcast_ugc_downloads
-server.dll!009A09A8 00080000 sv_broadcast_ugc_download_progress_interval
-server.dll!009A0A00 00080000 sv_ugc_manager_max_new_file_check_interval_secs
-server.dll!009A0A58 00080000 sv_remove_old_ugc_downloads
-server.dll!009A0E60 00002082 weapon_accuracy_logging
-server.dll!009A0EB8 00080000 steam_controller_haptics
-server.dll!009A0F10 00006000 weapon_near_empty_sound
-server.dll!009A1070 00082000 weapon_accuracy_shotgun_spread_patterns
-server.dll!009A10C8 00002002 debug_aim_angle
-server.dll!009A1308 00082000 sv_hegrenade_damage_multiplier
-server.dll!009A1360 00082000 sv_hegrenade_radius_multiplier
-server.dll!009A13E0 00082000 molotov_throw_detonate_time
-server.dll!009A2B58 00004000 bot_coop_force_throw_grenade_chance
-server.dll!009A2FA8 00004000 inferno_debug
-server.dll!009A30B0 00004000 inferno_velocity_factor
-server.dll!009A3108 00004000 inferno_velocity_decay_factor
-server.dll!009A3160 00004000 inferno_velocity_normal_factor
-server.dll!009A31B8 00004000 inferno_surface_offset
-server.dll!009A3210 00082000 inferno_child_spawn_max_depth
-server.dll!009A3268 00004000 inferno_scorch_decals
-server.dll!009A3318 00004000 inferno_forward_reduction_factor
-server.dll!009A38E0 00080000 sv_dz_player_spawn_health
-server.dll!009A3938 00080000 sv_dz_player_spawn_armor
-server.dll!009A3990 00080000 sv_dz_player_max_health
-server.dll!009A3A98 00082000 sv_force_reflections
-server.dll!009A3BA0 00080000 sv_dz_show_enemy_name_scope_range
-server.dll!009A3FF0 00082000 healthshot_health
-server.dll!009A4048 00082000 healthshot_healthboost_time
-server.dll!009A40F8 00082000 healthshot_healthboost_speed_multiplier
-server.dll!009A40A0 00082000 healthshot_allow_use_at_full
-server.dll!009A41D8 00080004 sv_breachcharge_distance_min
-server.dll!009A4230 00080004 sv_breachcharge_distance_max
-server.dll!009A4288 00080004 sv_breachcharge_delay_min
-server.dll!009A42E0 00080004 sv_breachcharge_delay_max
-server.dll!009A4338 00080004 sv_breachcharge_fuse_min
-server.dll!009A4390 00080004 sv_breachcharge_fuse_max
-server.dll!009A43E8 00080004 sv_breachcharge_arm_delay
-server.dll!009A48D0 00086000 sv_turning_inaccuracy_enabled
-server.dll!009A4928 00086000 sv_turning_inaccuracy_angle_min
-server.dll!009A4980 00086000 sv_turning_inaccuracy_decay
-server.dll!009A4A68 00084000 mp_weapon_next_owner_touch_time
-server.dll!009A4A10 00084000 mp_weapon_prev_owner_touch_time
-server.dll!009A4FB0 00002000 sv_fistpunch_damage
-server.dll!009A5008 00002000 sv_fistpunch_damage_to_player_multiplier
-server.dll!009A51E8 00002000 sv_fistpunch_damage_hard
-server.dll!009A5060 00002000 sv_fistpunch_viewmove
-server.dll!009A50B8 00002000 sv_fistpunch_blocked_damage
-server.dll!009A5110 00002000 sv_fistpoint_delay
-server.dll!009A5168 00002000 sv_fistpunch_impact_sounds
-server.dll!009A5268 00082000 sv_knife_attack_extend_from_player_aabb
-server.dll!009A53B8 00084000 mp_weapon_melee_touch_time_after_hit
-server.dll!009A5650 00082000 tablet_c4_dist_min
-server.dll!009A56A8 00082000 tablet_c4_dist_max
-server.dll!009A5718 00082000 sv_tablet_show_path_to_nearest_resq
-server.dll!009A5BC0 00004000 nav_coplanar_slope_limit
-server.dll!009A5C18 00004000 nav_coplanar_slope_limit_displacement
-server.dll!009A5D78 00004000 nav_show_light_intensity
-server.dll!009A5DD0 00004000 nav_debug_blocked
-server.dll!009A5F30 00004000 nav_potentially_visible_dot_tolerance
-server.dll!009A6470 00004000 nav_show_compass
-server.dll!009A6788 00004000 nav_generate_incremental_range
-server.dll!009A6A88 00004000 nav_max_vis_delta_list_length
-server.dll!009A7968 00004000 nav_show_nodes
-server.dll!009A77B0 00004000 nav_show_node_id
-server.dll!009A7808 00004000 nav_test_node
-server.dll!009A7860 00004000 nav_test_node_crouch
-server.dll!009A78B8 00004000 nav_test_node_crouch_dir
-server.dll!009A7910 00004000 nav_show_node_grid
-server.dll!009A8040 00002000 BlendBonesMode
+server.dll!00981F18 00006000 achievement_debug
+server.dll!00981F70 00006000 achievement_disable
+server.dll!00982250 00000080 scene_showfaceto
+server.dll!00982300 00004000 rr_remarkable_world_entities_replay_limit
+server.dll!00982358 00004000 rr_remarkables_enabled
+server.dll!009823B0 00004000 rr_remarkable_max_distance
+server.dll!00983E58 00000080 chet_debug_idle
+server.dll!00984C58 00004000 rr_followup_maxdist
+server.dll!00984CB0 00004000 rr_thenany_score_slop
+server.dll!00984E98 00004002 sv_showanimstate
+server.dll!00984EF0 00004002 sv_showanimstate_log
+server.dll!00984F48 00004002 sv_showanimstate_activities
+server.dll!00984FA0 00002002 mp_feetyawrate
+server.dll!00984FF8 00002002 mp_facefronttime
+server.dll!00985050 00002002 mp_ik
+server.dll!009851D0 00000080 npc_height_adjust
+server.dll!009850C0 00000080 sv_pvsskipanimation
+server.dll!00985698 00004002 sv_netvisdist
+server.dll!009858D0 00004000 ent_messages_draw
+server.dll!00985DE8 00082000 sv_clamp_unsafe_velocities
+server.dll!00985FA0 00000080 scene_showlook
+server.dll!00985FF8 00000080 scene_showmoveto
+server.dll!00986050 00000080 scene_showunlock
+server.dll!00986250 00080100 sv_allchat
+server.dll!009865E8 00082000 sv_infinite_ammo
+server.dll!009862D0 00086000 view_punch_decay
+server.dll!00986328 00086000 view_recoil_tracking
+server.dll!00986380 00006000 sv_footstep_sound_frequency
+server.dll!00986488 00002000 sv_max_distance_transmit_footsteps
+server.dll!009864E0 00002000 sv_debug_player_use
+server.dll!00986590 00002000 smoothstairs
+server.dll!00986780 00080000 tv_relaytextchat
+server.dll!00986F68 00082000 sv_dz_zone_bombdrop_money_reward
+server.dll!0098B5B0 00004000 fx_new_sparks
+server.dll!0098B990 00006000 fish_dormant
+server.dll!0098C5A8 00080000 occlusion_test_shadow_length
+server.dll!0098C600 00080000 occlusion_test_camera_margins
+server.dll!0098C658 00080000 occlusion_test_jump_margin
+server.dll!0098C6B0 00080000 pvs_min_player_distance
+server.dll!0098C798 00080000 sv_force_transmit_ents
+server.dll!0098C8A0 00080000 sv_dc_friends_reqd
+server.dll!0098CF70 00002000 sv_ladder_dampen
+server.dll!0098CFC8 00002000 sv_ladder_angle
+server.dll!0098D020 00082000 sv_ladder_scale_speed
+server.dll!0098D400 00082000 mp_radar_showall
+server.dll!0098D458 00002000 mp_allowspectators
+server.dll!0098D4B0 00082100 mp_friendlyfire
+server.dll!0098D508 00082100 mp_teammates_are_enemies
+server.dll!0098D560 00082100 mp_buy_anywhere
+server.dll!0098D5B8 00082100 mp_buy_during_immunity
+server.dll!0098D700 00004000 global_event_log_enabled
+server.dll!0098D858 00080000 tv_delay
+server.dll!0098D8B0 00080000 tv_delay1
+server.dll!0098D908 00080000 tv_allow_static_shots
+server.dll!0098D960 00080000 tv_allow_autorecording_index
+server.dll!0098E050 00082100 sv_stopspeed
+server.dll!0098DFF8 00082100 sv_accelerate
+server.dll!0098E470 00002102 sv_footsteps
+server.dll!0098E520 00002102 sv_rollangle
+server.dll!0098DFA0 00082100 sv_friction
+server.dll!0098E310 00082100 sv_bounce
+server.dll!0098E2B8 00082000 sv_maxvelocity
+server.dll!0098DC30 00002080 sv_skyname
+server.dll!0098DC88 00002002 sv_backspeed
+server.dll!0098DCE0 00002002 sv_waterdist
+server.dll!0098E648 00082000 mp_match_restart_delay
+server.dll!0098E6A0 00082000 mapcycledisabled
+server.dll!0098E750 00002100 mp_fraglimit
+server.dll!0098E7A8 00080000 tv_delaymapchange
+server.dll!0098E800 00080004 mp_restartgame
+server.dll!0098EA38 00080004 nextmap_print_enabled
+server.dll!0098EA90 00082100 nextlevel
+server.dll!0098EAE8 00082100 nextmode
+server.dll!0098EB40 00080000 spec_replay_bot
+server.dll!0098EDE0 00002002 sv_pushaway_force
+server.dll!0098EC80 00002002 sv_pushaway_min_player_speed
+server.dll!0098EE38 00002002 sv_pushaway_max_force
+server.dll!0098ECD8 00002002 sv_pushaway_clientside
+server.dll!0098ED30 00006002 sv_pushaway_player_force
+server.dll!0098ED88 00006002 sv_pushaway_max_player_force
+server.dll!0098EE90 00004000 particle_test_file
+server.dll!0098EEE8 00004000 particle_test_attach_mode
+server.dll!0098EF40 00004000 particle_test_attach_attachment
+server.dll!0098EFF8 00004000 g_debug_constraint_sounds
+server.dll!0098F990 00082000 think_limit
+server.dll!0098F780 00086000 sv_grenade_trajectory
+server.dll!0098F7D8 00082000 sv_grenade_trajectory_time
+server.dll!0098F830 00082000 sv_grenade_trajectory_time_spectator
+server.dll!0098F888 00082000 sv_grenade_trajectory_thickness
+server.dll!0098F8E0 00082000 sv_grenade_trajectory_dash
+server.dll!0098FB90 00080000 spec_replay_cam_delay
+server.dll!0098FBE8 00080000 spec_replay_cam_options
+server.dll!0098FC40 00080000 spec_replay_winddown_time
+server.dll!0098FC98 00082000 spec_freeze_time
+server.dll!0098FCF0 00082000 spec_freeze_time_lock
+server.dll!0098FD48 00082000 spec_freeze_traveltime
+server.dll!0098FDA0 00082000 spec_freeze_panel_extended_time
+server.dll!0098FDF8 00082000 spec_freeze_deathanim_time
+server.dll!0098FE50 00006000 spec_freeze_target_fov_long
+server.dll!0098FEA8 00006000 spec_freeze_target_fov
+server.dll!0098FF00 00006000 spec_allow_roaming
+server.dll!0098FF58 00002000 sv_bonus_challenge
+server.dll!0098FFB0 00080000 sv_force_transmit_players
+server.dll!00990060 00080000 sv_maxusrcmdprocessticks
+server.dll!00990110 00006000 sv_noclipduringpause
+server.dll!00990168 00006000 mp_suicide_time
+server.dll!00990378 00004000 player_debug_print_damage
+server.dll!00990500 00082000 sv_spec_post_death_additional_time
+server.dll!00990558 00080000 sv_clockcorrection_msecs
+server.dll!00990608 00080000 sv_usercmd_custom_random_seed
+server.dll!00990778 00080000 sv_maxusrcmdprocessticks_warning
+server.dll!009907D0 00080000 sv_maxusrcmdprocessticks_holdaim
+server.dll!00990B40 00080000 sv_maxunlag
+server.dll!009908D8 00004000 sv_showlagcompensation
+server.dll!00990930 00004000 sv_showlagcompensation_duration
+server.dll!00990988 00004000 sv_lagcompensationforcerestore
+server.dll!00990A90 00004000 sv_lagcompensateself
+server.dll!009911A0 00002000 sv_turbophysics
+server.dll!009911F8 00002002 sv_pushaway_clientside_size
+server.dll!00991250 00002000 props_break_max_pieces
+server.dll!009912A8 00002000 props_break_max_pieces_perframe
+server.dll!00991300 00006002 sv_disable_querycache
+server.dll!00991B90 00002000 scene_print
+server.dll!00991B38 00002000 scene_clientflex
+server.dll!00991E90 00006002 sv_soundemitter_version
+server.dll!00991EE8 00006002 snd_prevent_ss_duplicates
+server.dll!00991F98 00002000 sv_soundemitter_trace
+server.dll!00991FF0 00002000 cc_showmissing
+server.dll!00992170 00002000 soundpatch_captionlength
+server.dll!00992250 00004000 soundscape_debug
+server.dll!00992370 00002010 steamworks_sessionid_server
+server.dll!009925D8 00002002 mp_capstyle
+server.dll!00992630 00002002 mp_blockstyle
+server.dll!00992688 00002100 mp_respawnwavetime
+server.dll!009926E0 00002002 mp_capdeteriorate_time
+server.dll!00992790 00002100 mp_teams_unbalance_limit
+server.dll!009927E8 00082100 mp_maxrounds
+server.dll!00992840 00002100 mp_winlimit
+server.dll!009928F0 00002000 mp_bonusroundtime
+server.dll!00992948 00004002 mp_showroundtransitions
+server.dll!009929A0 00002000 mp_enableroundwaittime
+server.dll!009929F8 00004002 mp_showcleanedupents
+server.dll!00992AA8 00002000 mp_stalemate_timelimit
+server.dll!00992B58 00000100 mp_stalemate_enable
+server.dll!00992BB0 00000100 mp_stalemate_at_timelimit
+server.dll!00992F50 00004000 showtriggers
+server.dll!00993330 00080000 developer
+server.dll!00993750 00080000 sv_vote_timer_duration
+server.dll!009937A8 00080000 sv_vote_command_delay
+server.dll!00993800 00080000 sv_allow_votes
+server.dll!00993858 00080000 sv_vote_failure_timer
+server.dll!009938B0 00080000 sv_vote_creation_timer
+server.dll!00993908 00080000 sv_vote_quorum_ratio
+server.dll!00993960 00080000 sv_vote_allow_spectators
+server.dll!009939B8 00080000 sv_vote_count_spectator_votes
+server.dll!00993A10 00080000 sv_vote_allow_in_warmup
+server.dll!00993A68 00080000 sv_vote_disallow_kick_on_match_point
+server.dll!00993E60 00004000 radarvismethod
+server.dll!00993EB8 00004000 radarvispow
+server.dll!00993F10 00004000 radarvisdistance
+server.dll!00993F68 00004000 radarvismaxdot
+server.dll!00993FC0 00080000 mp_logdetail
+server.dll!00994018 00080000 mp_logdetail_items
+server.dll!00994090 00080000 sv_workshop_allow_other_maps
+server.dll!009940E8 00080000 tv_allow_camera_man_steamid
+server.dll!00994140 00080000 tv_allow_camera_man_steamid2
+server.dll!00994198 00080000 sv_prime_accounts_only
+server.dll!009942B8 00082000 sv_staminajumpcost
+server.dll!00994310 00082000 sv_staminalandcost
+server.dll!00994368 00082000 sv_staminarecoveryrate
+server.dll!009943C0 00082000 sv_staminamax
+server.dll!00994418 00082000 sv_timebetweenducks
+server.dll!00994470 00002002 sv_extreme_strafe_accuracy_fishtail
+server.dll!009944C8 00082000 sv_jump_impulse
+server.dll!00994520 00082000 sv_ledge_mantle_helper
+server.dll!00994578 00082000 sv_ledge_mantle_helper_dzonly
+server.dll!009945D0 00002002 sv_ledge_mantle_helper_debug
+server.dll!00994638 00082000 sv_enablebunnyhopping
+server.dll!00994690 00082000 sv_autobunnyhopping
+server.dll!009948D8 00080000 spec_replay_round_delay
+server.dll!0099D530 00082000 sv_server_graphic1
+server.dll!0099D588 00082000 sv_server_graphic2
+server.dll!00994930 00082000 sv_disable_observer_interpolation
+server.dll!00994988 00002000 sv_reward_drop_delay
+server.dll!009949E0 00082000 sv_holiday_mode
+server.dll!00994A38 00082100 sv_teamid_overhead_always_prohibit
+server.dll!00994A90 00082100 sv_show_team_equipment_prohibit
+server.dll!00994AE8 00082000 sv_show_team_equipment_force_on
+server.dll!00994B40 00082000 sv_teamid_overhead_maxdist_spec
+server.dll!00994B98 00082000 sv_teamid_overhead_maxdist
+server.dll!00994BF0 00082100 sv_teamid_overhead
+server.dll!0099D3D0 00082000 sv_falldamage_to_below_player_ratio
+server.dll!0099D428 00082000 sv_falldamage_to_below_player_multiplier
+server.dll!00994DA8 00082004 sv_kick_players_with_cooldown
+server.dll!00994E00 00080004 sv_matchend_drops_enabled
+server.dll!00994E58 00082004 sv_buy_status_override
+server.dll!00994EB0 00080004 sv_ct_spawn_on_bombsite
+server.dll!00994F08 00080004 sv_auto_adjust_bot_difficulty
+server.dll!00994F60 00080004 sv_bots_get_easier_each_win
+server.dll!00994FB8 00080004 sv_bots_get_harder_after_each_wave
+server.dll!00995010 00080004 sv_bots_force_rebuy_every_round
+server.dll!0099D4D8 00082000 sv_skirmish_id
+server.dll!00995068 00082004 mp_team_timeout_time
+server.dll!009950C0 00082004 mp_team_timeout_max
+server.dll!00995118 00082004 mp_weapons_max_gun_purchases_per_weapon_per_match
+server.dll!009951C8 00006002 sv_disable_motd
+server.dll!00995308 00080000 mp_teamname_1
+server.dll!00995360 00080000 mp_teamname_2
+server.dll!009953B8 00080000 mp_teamflag_1
+server.dll!00995410 00080000 mp_teamflag_2
+server.dll!00995468 00080000 mp_teamlogo_1
+server.dll!009954C0 00080000 mp_teamlogo_2
+server.dll!00995518 00080000 mp_teamprediction_txt
+server.dll!00995570 00080000 mp_teamprediction_pct
+server.dll!009955C8 00080000 mp_teammatchstat_txt
+server.dll!00995620 00080000 mp_teammatchstat_1
+server.dll!00995678 00080000 mp_teammatchstat_2
+server.dll!009956D0 00080000 mp_teamscore_1
+server.dll!00995728 00080000 mp_teamscore_2
+server.dll!009957D8 00080000 mp_teammatchstat_holdtime
+server.dll!00995830 00080000 mp_teammatchstat_cycletime
+server.dll!00995888 00082000 mp_heavyassaultsuit_speed
+server.dll!009958E0 00082000 mp_heavybot_damage_reduction_scale
+server.dll!00995938 00082000 mp_heavyassaultsuit_deploy_timescale
+server.dll!00995990 00082000 mp_heavyassaultsuit_aimpunch
+server.dll!009959E8 00080000 mp_backup_round_auto
+server.dll!00995A40 00080000 mp_backup_round_file
+server.dll!00995A98 00080000 mp_backup_round_file_pattern
+server.dll!00995AF0 00080000 mp_backup_round_file_last
+server.dll!00995B90 00080000 mp_backup_restore_load_autopause
+server.dll!009962F0 00002000 ammo_50AE_impulse
+server.dll!00996348 00002000 ammo_762mm_impulse
+server.dll!009963A0 00002000 ammo_556mm_impulse
+server.dll!009963F8 00002000 ammo_556mm_box_impulse
+server.dll!00996450 00002000 ammo_338mag_impulse
+server.dll!009964A8 00002000 ammo_9mm_impulse
+server.dll!00996500 00002000 ammo_buckshot_impulse
+server.dll!00996558 00002000 ammo_45acp_impulse
+server.dll!009965B0 00002000 ammo_357sig_impulse
+server.dll!00996608 00002000 ammo_57mm_impulse
+server.dll!00996660 00002000 ammo_50AE_headshot_mult
+server.dll!009966B8 00002000 ammo_762mm_headshot_mult
+server.dll!00996710 00002000 ammo_556mm_headshot_mult
+server.dll!00996768 00002000 ammo_556mm_box_headshot_mult
+server.dll!009967C0 00002000 ammo_338mag_headshot_mult
+server.dll!00996818 00002000 ammo_9mm_headshot_mult
+server.dll!00996870 00002000 ammo_buckshot_headshot_mult
+server.dll!009968C8 00002000 ammo_45acp_headshot_mult
+server.dll!00996920 00002000 ammo_357sig_headshot_mult
+server.dll!00996978 00002000 ammo_57mm_headshot_mult
+server.dll!009969D0 00082000 mp_spec_swapplayersides
+server.dll!00996A28 00082000 mp_force_assign_teams
+server.dll!00996A80 00082000 sv_gameinstructor_disable
+server.dll!00996B30 00082000 sv_matchpause_auto_5v5
+server.dll!00996B88 00082000 mp_spectators_max
+server.dll!00996BE0 00082000 mp_buytime
+server.dll!00996C38 00082000 mp_buy_allow_grenades
+server.dll!00996C90 00082000 mp_buy_allow_guns
+server.dll!00996CE8 00082000 mp_do_warmup_period
+server.dll!00996D40 00082000 mp_do_warmup_offine
+server.dll!00996D98 00082000 mp_startmoney
+server.dll!00996DF0 00082000 mp_maxmoney
+server.dll!00996E48 00082000 mp_afterroundmoney
+server.dll!00996EA0 00082000 mp_playercashawards
+server.dll!00996EF8 00082000 mp_teamcashawards
+server.dll!00996F50 00082000 mp_overtime_enable
+server.dll!00996FA8 00082000 mp_overtime_maxrounds
+server.dll!00997000 00082000 mp_overtime_startmoney
+server.dll!00997058 00082000 mp_hostages_takedamage
+server.dll!009970B0 00002002 mp_hostages_rescuetowin
+server.dll!00997108 00082000 mp_hostages_rescuetime
+server.dll!00997160 00082000 mp_anyone_can_pickup_c4
+server.dll!009971B8 00082000 mp_c4_cannot_be_defused
+server.dll!0099D5E0 00082000 sv_coaching_enabled
+server.dll!00997210 00082000 sv_coach_comm_unrestricted
+server.dll!00997268 00082000 sv_allow_thirdperson
+server.dll!009972C0 00082000 sv_party_mode
+server.dll!00997318 00082000 sv_dz_hostage_rescue_reward
+server.dll!00997370 00080000 mp_disconnect_kills_players
+server.dll!009973C8 00080000 mp_disconnect_kills_bots
+server.dll!00997508 00082000 mp_warmuptime_all_players_connected
+server.dll!00997560 00082000 mp_endwarmup_player_count
+server.dll!009975B8 00082000 mp_warmup_pausetimer
+server.dll!00997610 00082000 mp_halftime_pausetimer
+server.dll!00997668 00082000 mp_halftime_pausematch
+server.dll!009976C0 00082000 mp_overtime_halftime_pausetimer
+server.dll!00997718 00082000 mp_respawn_immunitytime
+server.dll!00997770 00082000 mp_playerid
+server.dll!009977C8 00082000 mp_playerid_delay
+server.dll!00997820 00082000 mp_playerid_hold
+server.dll!00997878 00082000 mp_round_restart_delay
+server.dll!009978D0 00082000 mp_halftime_duration
+server.dll!00997928 00082000 mp_match_can_clinch
+server.dll!00997980 00082000 mp_ggtr_always_upgrade
+server.dll!009979D8 00082000 mp_ggtr_end_round_kill_bonus
+server.dll!00997A30 00082000 mp_ggtr_last_weapon_kill_ends_half
+server.dll!00997A88 00082000 mp_ggprogressive_round_restart_delay
+server.dll!00997AE0 00082000 mp_ggprogressive_use_random_weapons
+server.dll!00997B38 00082000 mp_ggprogressive_random_weapon_kills_needed
+server.dll!00997B90 00082000 mp_ggtr_num_rounds_autoprogress
+server.dll!00997BE8 00082000 mp_ct_default_melee
+server.dll!00997C40 00082000 mp_ct_default_secondary
+server.dll!00997C98 00082000 mp_ct_default_primary
+server.dll!00997CF0 00082000 mp_ct_default_grenades
+server.dll!00997D48 00082000 mp_t_default_melee
+server.dll!00997DA0 00082000 mp_t_default_secondary
+server.dll!00997DF8 00082000 mp_t_default_primary
+server.dll!00997E50 00082000 mp_t_default_grenades
+server.dll!00997EA8 00082000 mp_join_grace_time
+server.dll!00997F00 00082000 mp_win_panel_display_time
+server.dll!00997F58 00082000 mp_ggtr_bomb_pts_for_upgrade
+server.dll!00997FB0 00082000 mp_ggtr_bomb_pts_for_he
+server.dll!00998008 00082000 mp_ggtr_bomb_pts_for_flash
+server.dll!00998060 00082000 mp_ggtr_bomb_pts_for_molotov
+server.dll!009980B8 00082000 mp_molotovusedelay
+server.dll!00998110 00082000 mp_ggtr_halftime_delay
+server.dll!00998168 00082000 mp_ggtr_bomb_respawn_delay
+server.dll!009981C0 00082000 mp_ggtr_bomb_defuse_bonus
+server.dll!00998218 00082000 mp_ggtr_bomb_detonation_bonus
+server.dll!00998270 00082000 mp_dm_kill_base_score
+server.dll!009982C8 00082000 mp_dm_bonus_percent
+server.dll!00998320 00082000 mp_dm_bonus_respawn
+server.dll!00998378 00082000 mp_dm_dogtag_score
+server.dll!009983D0 00082000 mp_dm_teammode
+server.dll!00998428 00082000 mp_dm_teammode_kill_score
+server.dll!00998480 00082000 mp_dm_teammode_bonus_score
+server.dll!009984D8 00082000 mp_dm_teammode_dogtag_score
+server.dll!00998530 00082000 mp_dm_bonusweapon_dogtags
+server.dll!00998588 00082000 mp_display_kill_assists
+server.dll!009985E0 00082000 mp_match_end_restart
+server.dll!00998638 00082000 mp_match_end_changelevel
+server.dll!00998690 00082000 mp_defuser_allocation
+server.dll!009986E8 00082000 mp_give_player_c4
+server.dll!00998740 00080000 mp_require_gun_use_to_acquire
+server.dll!00998798 00082000 mp_death_drop_gun
+server.dll!009987F0 00082000 mp_death_drop_c4
+server.dll!00998848 00082000 mp_death_drop_grenade
+server.dll!009988A0 00082000 mp_death_drop_defuser
+server.dll!009988F8 00082000 mp_death_drop_taser
+server.dll!00998950 00082000 mp_death_drop_breachcharge
+server.dll!009989A8 00082000 mp_death_drop_healthshot
+server.dll!00998A00 00082000 mp_coop_force_join_ct
+server.dll!00998A58 00082000 mp_coopmission_mission_number
+server.dll!00998AB0 00082000 mp_force_pick_time
+server.dll!00998B08 00082000 bot_autodifficulty_threshold_low
+server.dll!00998B60 00082000 bot_autodifficulty_threshold_high
+server.dll!00998BB8 00082000 mp_equipment_reset_rounds
+server.dll!00998C10 00082000 mp_economy_reset_rounds
+server.dll!00998C68 00082000 mp_weapons_allow_zeus
+server.dll!00998CC0 00082000 mp_weapons_allow_pistols
+server.dll!00998D18 00082000 mp_weapons_allow_smgs
+server.dll!00998D70 00082000 mp_weapons_allow_heavy
+server.dll!00998DC8 00082000 mp_weapons_allow_rifles
+server.dll!00998E78 00082000 mp_heavyassaultsuit_cooldown
+server.dll!00998ED0 00082000 mp_weapons_allow_typecount
+server.dll!0099D480 00082000 mp_weapons_allow_map_placed
+server.dll!00998F28 00082000 mp_default_team_winner_no_objective
+server.dll!00998F80 00082000 mp_weapons_glow_on_ground
+server.dll!00998FD8 00082000 mp_respawn_on_death_t
+server.dll!00999030 00082000 mp_respawn_on_death_ct
+server.dll!00999088 00082000 mp_use_respawn_waves
+server.dll!009991E8 01008082 tr_completed_training
+server.dll!00999240 01008082 tr_best_course_time
+server.dll!009992F0 00080000 mp_competitive_endofmatch_extra_time
+server.dll!00999348 00082000 mp_endmatch_votenextmap
+server.dll!009993A0 00082000 mp_endmatch_votenextmap_keepcurrent
+server.dll!009993F8 00080000 mp_endmatch_votenextleveltime
+server.dll!00999450 00002000 snd_music_boost
+server.dll!009994A8 00002002 sv_endmatch_item_drop_interval
+server.dll!00999500 00002002 sv_endmatch_item_drop_interval_rare
+server.dll!00999558 00002002 sv_endmatch_item_drop_interval_mythical
+server.dll!009995B0 00002002 sv_endmatch_item_drop_interval_legendary
+server.dll!00999608 00002002 sv_endmatch_item_drop_interval_ancient
+server.dll!00999660 00002002 sv_compute_per_bot_difficulty
+server.dll!009996B8 00002000 sv_show_bot_difficulty_in_name
+server.dll!00999710 00002010 sv_bot_difficulty_kbm
+server.dll!00999768 00002010 sv_bot_difficulty_gamepad
+server.dll!009997C0 00002010 sv_bot_difficulty_ps3move
+server.dll!00999818 00002010 sv_bot_difficulty_hydra
+server.dll!00999870 00002010 sv_bot_difficulty_sharpshooter
+server.dll!009998C8 00082100 sv_competitive_official_5v5
+server.dll!00999920 00082100 sv_kick_ban_duration
+server.dll!00999978 00082000 sv_disable_immunity_alpha
+server.dll!009999D0 00082100 sv_alltalk
+server.dll!0099D320 00082100 sv_deadtalk
+server.dll!00999A28 00082000 sv_full_alltalk
+server.dll!00999A80 00082000 sv_talk_enemy_dead
+server.dll!00999AD8 00082000 sv_talk_enemy_living
+server.dll!00999B30 00082000 sv_talk_after_dying_time
+server.dll!00999B88 00080000 sv_auto_full_alltalk_during_warmup_half_end
+server.dll!00999BE0 00082100 sv_spec_hear
+server.dll!00999C38 00082100 mp_c4timer
+server.dll!00999C98 00002002 dev_reportmoneychanges
+server.dll!00999CF0 00082100 mp_roundtime
+server.dll!00999D48 00080000 mp_roundtime_deployment
+server.dll!00999DA0 00082100 mp_roundtime_hostage
+server.dll!00999DF8 00082100 mp_roundtime_defuse
+server.dll!00999E50 00082100 mp_freezetime
+server.dll!00999EA8 00082100 mp_limitteams
+server.dll!00999F00 00082000 mp_tkpunish
+server.dll!00999F58 00082000 mp_autokick
+server.dll!00999FB0 00082000 mp_spawnprotectiontime
+server.dll!0099A008 00082000 mp_td_spawndmgthreshold
+server.dll!0099A060 00082000 mp_td_dmgtowarn
+server.dll!0099A0B8 00082000 mp_td_dmgtokick
+server.dll!0099A110 00082000 mp_humanteam
+server.dll!0099A168 00082000 mp_guardian_special_kills_needed
+server.dll!0099A1C0 00082000 mp_guardian_special_weapon_needed
+server.dll!0099A218 00082000 mp_guardian_player_dist_min
+server.dll!0099A270 00082000 mp_guardian_player_dist_max
+server.dll!0099A2C8 00082000 mp_guardian_bot_money_per_wave
+server.dll!0099A320 00082000 mp_guardian_loc_override
+server.dll!0099A378 00082000 mp_guardian_loc_mission
+server.dll!0099A3D0 00082000 mp_guardian_loc_weapon
+server.dll!0099A428 00082000 mp_guardian_loc_adjective
+server.dll!0099A480 00082000 mp_guardian_loc_condition
+server.dll!0099A4D8 00082000 mp_guardian_loc_icon
+server.dll!0099A530 00082000 mp_ignore_round_win_conditions
+server.dll!0099A588 00082000 mp_dm_time_between_bonus_min
+server.dll!0099A5E0 00082000 mp_dm_time_between_bonus_max
+server.dll!0099A638 00082000 mp_dm_bonus_length_min
+server.dll!0099A690 00082000 mp_dm_bonus_length_max
+server.dll!0099A6E8 00082000 mp_dogtag_pickup_rule
+server.dll!0099A740 00082000 mp_dogtag_despawn_on_killer_death
+server.dll!0099A798 00082000 mp_dogtag_despawn_time
+server.dll!0099A7F0 00082000 mp_damage_scale_ct_body
+server.dll!0099A848 00082000 mp_damage_scale_ct_head
+server.dll!0099A8A0 00082000 mp_damage_scale_t_body
+server.dll!0099A8F8 00082000 mp_damage_scale_t_head
+server.dll!0099A950 00002000 mp_player_healthbuffer_decay_rate
+server.dll!0099A9A8 00082000 mp_damage_headshot_only
+server.dll!0099AA00 00082000 mp_weapon_self_inflict_amount
+server.dll!0099AA58 00082000 mp_damage_vampiric_amount
+server.dll!0099AAB0 00082000 mp_global_damage_per_second
+server.dll!0099AB08 00082000 mp_starting_losses
+server.dll!0099AB60 00082000 mp_consecutive_loss_aversion
+server.dll!0099ABB8 00082000 mp_consecutive_loss_max
+server.dll!0099B718 00080004 contributionscore_assist
+server.dll!0099B770 00080004 contributionscore_kill
+server.dll!0099B7C8 00080004 contributionscore_objective_kill
+server.dll!0099B820 00080004 contributionscore_hostage_rescue_minor
+server.dll!0099B878 00080004 contributionscore_hostage_rescue_major
+server.dll!0099B8D0 00080004 contributionscore_bomb_defuse_minor
+server.dll!0099B928 00080004 contributionscore_bomb_defuse_major
+server.dll!0099B980 00080004 contributionscore_bomb_planted
+server.dll!0099B9D8 00080004 contributionscore_bomb_exploded
+server.dll!0099BA30 00080004 contributionscore_suicide
+server.dll!0099BA88 00080004 contributionscore_team_kill
+server.dll!0099BAE0 00080004 contributionscore_hostage_kill
+server.dll!0099BB38 00080004 contributionscore_cash_bundle
+server.dll!0099BB90 00080004 contributionscore_crate_break
+server.dll!0099BBE8 00080004 contributionscore_kill_factor
+server.dll!0099BD10 00080000 mp_endmatch_votenextmap_wargames_modes
+server.dll!0099BD68 00080000 mp_endmatch_votenextmap_wargames_nummaps
+server.dll!0099BDC0 00080000 mp_endmatch_votenextmap_wargames_nummodes
+server.dll!0099D2C8 00082000 mp_solid_teammates
+server.dll!0099CFD8 00082000 mp_free_armor
+server.dll!0099D030 00082000 mp_max_armor
+server.dll!0099D088 00082000 mp_halftime
+server.dll!0099D0E0 00082000 mp_randomspawn
+server.dll!0099D138 00082000 mp_randomspawn_los
+server.dll!0099D190 00082000 mp_randomspawn_dist
+server.dll!0099D1E8 00082100 sv_competitive_minspec
+server.dll!0099DBE8 00004000 cs_ShowStateTransitions
+server.dll!0099DC98 00080000 mp_logmoney
+server.dll!0099DCF0 00080000 mp_logdistance_2d
+server.dll!0099DD48 00080000 mp_logdistance_sec
+server.dll!0099DDA0 00080000 mp_logloadouts
+server.dll!0099DDF8 00002000 phys_playerscale
+server.dll!0099DE50 00002000 phys_headshotscale
+server.dll!0099DEA8 00082000 sv_damage_print_enable
+server.dll!0099DF00 00082000 sv_spawn_afk_bomb_drop_time
+server.dll!0099DF58 00080000 mp_drop_knife_enable
+server.dll!0099DFB0 00080000 mp_drop_grenade_enable
+server.dll!0099E008 00080000 tv_relayradio
+server.dll!0099E060 00004000 CS_WarnFriendlyDamageInterval
+server.dll!0099E218 00002000 sv_disablefreezecam
+server.dll!0099E2C8 00082000 sv_show_voip_indicator_for_enemies
+server.dll!0099E4D8 00082100 sv_autobuyammo
+server.dll!0099E530 00002000 gg_knife_kill_demotes
+server.dll!0099E638 00082000 mp_deathcam_skippable
+server.dll!0099EB38 00082000 sv_dz_cash_bundle_size
+server.dll!0099E690 00082000 sv_dz_contractkill_reward
+server.dll!0099E888 00082000 mp_tagging_scale
+server.dll!0099E908 00006002 mp_flinch_punch_scale
+server.dll!0099F268 00002002 sv_penetration_type
+server.dll!0099EC20 00082000 sv_showimpacts_penetration
+server.dll!0099EC78 00082000 sv_showbullethits
+server.dll!0099ECD0 00082000 sv_showimpacts
+server.dll!0099ED28 00082000 sv_showimpacts_time
+server.dll!0099ED80 00002000 sv_showplayerhitboxes
+server.dll!0099F160 00082000 ff_damage_reduction_grenade
+server.dll!0099F108 00082000 ff_damage_reduction_grenade_self
+server.dll!0099F210 00082000 ff_damage_reduction_bullets
+server.dll!0099F1B8 00082000 ff_damage_reduction_other
+server.dll!0099EDD8 00082000 ff_damage_bullet_penetration
+server.dll!0099EEE0 00082000 sv_cs_player_speed_has_hostage
+server.dll!0099EF38 00082000 sv_spawn_rappel_min_duration
+server.dll!0099F098 00086000 weapon_recoil_view_punch_extra
+server.dll!0099F2C0 00006000 post_jump_crouch
+server.dll!0099F318 00002002 hostage_feetyawrate
+server.dll!009A0A20 00080000 sv_vote_issue_restart_game_allowed
+server.dll!009A0A78 00082000 sv_arms_race_vote_to_restart_disallowed_after
+server.dll!009A0AD0 00082100 sv_vote_issue_kick_allowed
+server.dll!009A0B28 00082100 sv_vote_kick_ban_duration
+server.dll!009A0B80 00082100 sv_vote_issue_loadbackup_allowed
+server.dll!009A0BD8 00082100 sv_vote_issue_loadbackup_spec_only
+server.dll!009A0C30 00080000 sv_vote_issue_loadbackup_spec_safe
+server.dll!009A0C88 00080000 sv_vote_issue_loadbackup_spec_authoritative
+server.dll!009A0D38 00082000 sv_vote_to_changelevel_before_match_point
+server.dll!009A0FA0 00082100 sv_vote_issue_pause_match_spec_only
+server.dll!009A1158 00086000 weapon_recoil_suppression_shots
+server.dll!009A11B0 00086000 weapon_recoil_suppression_factor
+server.dll!009A1208 00086000 weapon_recoil_variance
+server.dll!009A1BA8 00002000 sv_flashbang_strength
+server.dll!009A1F68 00006002 weapon_debug_max_inaccuracy
+server.dll!009A1FC0 00006002 weapon_debug_inaccuracy_only_up
+server.dll!009A2200 0000201C game_online
+server.dll!009A21A8 0000201C game_public
+server.dll!009A22B0 0008200C game_type
+server.dll!009A2258 0008200C game_mode
+server.dll!009A2150 0008200C custom_bot_difficulty
+server.dll!009A2438 00002000 weapon_molotov_maxdetonateslope
+server.dll!009A2558 00002000 sv_snowball_strength
+server.dll!009A26F8 00082000 mp_coopmission_bot_difficulty_offset
+server.dll!009A2750 00006000 bot_traceview
+server.dll!009A27A8 00006000 bot_stop
+server.dll!009A2800 00006000 bot_show_nav
+server.dll!009A2858 00002000 bot_walk
+server.dll!009A2FE8 00082000 bot_difficulty
+server.dll!009A2E88 00006000 bot_debug
+server.dll!009A2EE0 00006000 bot_debug_target
+server.dll!009A3098 00082000 bot_quota
+server.dll!009A30F0 00082000 bot_quota_mode
+server.dll!009A2DD8 00082000 bot_allow_rogues
+server.dll!009A2908 00082000 bot_allow_pistols
+server.dll!009A2960 00082000 bot_allow_shotguns
+server.dll!009A29B8 00082000 bot_allow_sub_machine_guns
+server.dll!009A2A10 00082000 bot_allow_rifles
+server.dll!009A2A68 00082000 bot_allow_machine_guns
+server.dll!009A2AC0 00082000 bot_allow_grenades
+server.dll!009A2B18 00082000 bot_allow_snipers
+server.dll!009A31A0 00082000 bot_join_team
+server.dll!009A3148 00082000 bot_join_after_player
+server.dll!009A2F38 00002000 bot_auto_vacate
+server.dll!009A2B70 00006000 bot_zombie
+server.dll!009A2E30 00082000 bot_defer_to_human_goals
+server.dll!009A3040 00082000 bot_defer_to_human_items
+server.dll!009A2D80 00082000 bot_chatter
+server.dll!009A2BC8 00002000 bot_profile_db
+server.dll!009A2C20 00086000 bot_dont_shoot
+server.dll!009A2C78 00002000 bot_eco_limit
+server.dll!009A2CD0 00002000 bot_auto_follow
+server.dll!009A2D28 00002000 bot_flipout
+server.dll!009A2F90 00002000 bot_controllable
+server.dll!009A3218 00004004 bot_show_occupy_time
+server.dll!009A3270 00004004 bot_show_battlefront
+server.dll!009A35B0 00006000 bot_max_vision_distance_override
+server.dll!009A3608 00004000 bot_ignore_players
+server.dll!009A3660 00006000 bot_coop_idle_max_vision_distance
+server.dll!009A3758 00004000 bot_loadout
+server.dll!009A37B0 00004000 bot_randombuy
+server.dll!009A38B8 00080004 sv_bot_buy_grenade_chance
+server.dll!009A3910 00080004 sv_bot_buy_smoke_weight
+server.dll!009A3968 00080004 sv_bot_buy_flash_weight
+server.dll!009A39C0 00080004 sv_bot_buy_decoy_weight
+server.dll!009A3A18 00080004 sv_bot_buy_molotov_weight
+server.dll!009A3A70 00080004 sv_bot_buy_hegrenade_weight
+server.dll!009A3C90 00004000 inferno_per_flame_spawn_duration
+server.dll!009A3CE8 00004000 inferno_initial_spawn_interval
+server.dll!009A3D40 00004000 inferno_child_spawn_interval_multiplier
+server.dll!009A3D98 00004000 inferno_max_child_spawn_interval
+server.dll!009A3DF0 00004000 inferno_spawn_angle
+server.dll!009A3E48 00082000 inferno_max_flames
+server.dll!009A3EA0 00004000 inferno_flame_spacing
+server.dll!009A3EF8 00082000 inferno_flame_lifetime
+server.dll!009A3F50 00004000 inferno_friendly_fire_duration
+server.dll!009A4000 00004000 inferno_damage
+server.dll!009A4058 00082000 inferno_max_range
+server.dll!009A4380 00000100 mp_hostagepenalty
+server.dll!009A4648 00004000 hostage_debug
+server.dll!009A4430 00004000 hostage_is_silent
+server.dll!009A4488 00006000 sv_pushaway_hostage_force
+server.dll!009A44E0 00006000 sv_pushaway_max_hostage_force
+server.dll!009A46A0 00082000 mp_hostages_max
+server.dll!009A47A8 00082000 mp_hostages_spawn_farthest
+server.dll!009A46F8 00082000 mp_hostages_spawn_same_every_round
+server.dll!009A4750 00082000 mp_hostages_spawn_force_positions
+server.dll!009A4538 00082000 mp_hostages_run_speed_modifier
+server.dll!009A4590 00082000 mp_only_cts_rescue_hostages
+server.dll!009A4880 00080004 mp_guardian_target_site
+server.dll!009A49E8 00080000 sv_dz_jointeam_allowed
+server.dll!009A4A40 00080000 sv_dz_autojointeam
+server.dll!009A4DA0 00082000 sv_dz_team_count
+server.dll!009A4AF0 00080000 sv_dz_warmup_weapon
+server.dll!009A4B48 00080000 sv_dz_warmup_tablet
+server.dll!009A5168 00080000 sv_ignoregrenaderadio
+server.dll!009A5488 00082000 mp_plant_c4_anywhere
+server.dll!009A5560 00006002 weapon_land_dip_amt
+server.dll!009A55B8 00086000 weapon_recoil_decay1_exp
+server.dll!009A5C20 00086000 weapon_recoil_decay2_exp
+server.dll!009A5BC8 00086000 weapon_recoil_decay2_lin
+server.dll!009A5C78 00086000 weapon_recoil_vel_decay
+server.dll!009A5610 00086000 weapon_recoil_decay_coefficient
+server.dll!009A5668 00082000 weapon_accuracy_forcespread
+server.dll!009A56C0 00082000 weapon_accuracy_nospread
+server.dll!009A5718 00086000 weapon_recoil_cooldown
+server.dll!009A5B18 00082000 weapon_recoil_scale
+server.dll!009A5AC0 00086000 weapon_recoil_scale_motion_controller
+server.dll!009A5770 00082000 weapon_air_spread_scale
+server.dll!009A57C8 00082000 weapon_reticle_knife_show
+server.dll!009A5820 00080000 weapon_auto_cleanup_time
+server.dll!009A5B70 00080000 weapon_max_before_cleanup
+server.dll!009A5878 00086000 weapon_sound_falloff_multiplier
+server.dll!009A6770 00082000 sv_dz_exploration_payment_amount
+server.dll!009A67F0 00082000 mp_taser_recharge_time
+server.dll!009A6C70 00004000 nav_split_place_on_ground
+server.dll!009A6CC8 00004000 nav_area_bgcolor
+server.dll!009A6D20 00004000 nav_corner_adjust_adjacent
+server.dll!009A6E28 00004000 nav_show_continguous
+server.dll!009A6E80 00004000 nav_max_view_distance
+server.dll!009A6ED8 00004000 nav_update_visibility_on_edit
+server.dll!009A6F88 00004000 nav_show_potentially_visible
+server.dll!009A71F0 00004000 nav_show_area_info
+server.dll!009A7248 00004000 nav_snap_to_grid
+server.dll!009A72A0 00004000 nav_create_place_on_ground
+server.dll!009A72F8 00004000 nav_draw_limit
+server.dll!009A7538 00004000 nav_solid_props
+server.dll!009A7350 00004000 nav_create_area_at_feet
+server.dll!009A73A8 00002000 nav_drag_selection_volume_zmax_offset
+server.dll!009A7400 00002000 nav_drag_selection_volume_zmin_offset
+server.dll!009A75D0 00004000 nav_slope_limit
+server.dll!009A7628 00004000 nav_slope_tolerance
+server.dll!009A7680 00004000 nav_displacement_test
+server.dll!009A76D8 00004000 nav_generate_fencetops
+server.dll!009A7730 00004000 nav_generate_fixup_jump_areas
+server.dll!009A77E0 00004000 nav_generate_incremental_tolerance
+server.dll!009A7838 00004000 nav_area_max_size
+server.dll!009A8750 00004004 nav_edit
+server.dll!009A86F8 00004004 nav_quicksave
+server.dll!009A7980 00004004 nav_show_approach_points
+server.dll!009A79D8 00004004 nav_show_danger
+server.dll!009A7A30 00004004 nav_show_player_counts
+server.dll!009A8FE8 00002000 cl_simdbones
+server.dll!009A8F90 00002000 cl_use_simd_bones
+server.dll!009A9098 00002000 anim_3wayblend
+server.dll!009A90F0 00006000 anim_twistbones_enabled
+server.dll!009A9148 00002000 choreo_spew_filter
+server.dll!009AA888 00004000 panel_test_title_safe
+server.dll!00982F90 00000080 ai_report_task_timings_on_limit
+server.dll!00982FE8 00000080 ai_think_limit_label
+server.dll!009830B0 00002000 ai_LOS_mode
+server.dll!00983440 00004000 ai_drawbattlelines
+server.dll!00984478 00004000 ai_vehicle_avoidance
+server.dll!00984990 00004000 npc_ally_deathmessage
+server.dll!00984DB8 00004000 g_debug_trackpather
+server.dll!009852F0 00082000 sv_health_approach_enabled
+server.dll!00985348 00082000 sv_health_approach_speed
+server.dll!00985F48 00002000 hl2_episodic
+server.dll!00985E98 00002000 ai_shot_bias_min
+server.dll!00985EF0 00002000 ai_shot_bias_max
+server.dll!00985E40 00006000 ai_debug_shoot_positions
+server.dll!009863D8 00082000 sv_extract_ammo_from_dropped_weapons
+server.dll!00986538 00006002 sv_suppress_viewpunch
+server.dll!00986A08 00004000 noclip_fixup
+server.dll!00986E00 00004000 debug_visibility_monitor
+server.dll!00986E58 00004000 vismon_poll_frequency
+server.dll!00986EB0 00004000 vismon_trace_limit
+server.dll!00986F10 00082000 sv_dz_zone_hex_radius
+server.dll!00986FC0 00084000 sv_dz_zone_damage
+server.dll!0098B400 00082000 sv_env_entity_makers_enabled
+server.dll!0098BB40 00004000 r_vehicleBrakeRate
+server.dll!0098BB98 00000080 xbox_throttlebias
+server.dll!0098BBF0 00000080 xbox_throttlespoof
+server.dll!0098BC48 00000080 xbox_autothrottle
+server.dll!0098BD28 00002080 func_break_max_pieces
+server.dll!0098C068 00006000 loopsingleplayermaps
+server.dll!0098C0C0 00080000 servercfgfile
+server.dll!0098C170 00000100 mp_teamplay
+server.dll!0098C1C8 00000100 mp_falldamage
+server.dll!0098C220 00000100 mp_weaponstay
+server.dll!0098C278 00000100 mp_forcerespawn
+server.dll!0098C2D0 00000100 mp_footsteps
+server.dll!0098C328 00000100 mp_flashlight
+server.dll!0098C380 00000100 mp_autocrosshair
+server.dll!0098C3D8 00000100 mp_teamlist
+server.dll!0098C4E0 00000100 mp_allowNPCs
+server.dll!0098C538 00000080 suitvolume
+server.dll!0098CAF8 00000080 sv_unlockedchapters
+server.dll!0098CA28 00080000 sv_occlude_players
+server.dll!0098CC10 00082000 sv_water_movespeed_multiplier
+server.dll!0098CC68 00082000 sv_water_swim_mode
+server.dll!0098CCC0 00082000 sv_air_max_wishspeed
+server.dll!0098CD18 00082000 sv_air_max_horizontal_parachute_speed
+server.dll!0098CD70 00082000 sv_air_max_horizontal_parachute_ratio
+server.dll!0098CDC8 00082000 sv_air_pushaway_dist
+server.dll!0098CE20 00082000 sv_walkable_normal
+server.dll!0098CE78 00082000 sv_standable_normal
+server.dll!0098D078 00002002 sv_optimizedmovement
+server.dll!0098D258 00002000 g_Language
+server.dll!0098D0D0 00002080 sk_autoaim_mode
+server.dll!0098D1A8 00002000 old_radiusdamage
+server.dll!0098D200 00000080 skill
+server.dll!0098D7A8 00082000 sv_grassburn
+server.dll!0098E368 00002180 sv_noclipaccelerate
+server.dll!0098E3C0 00002180 sv_noclipspeed
+server.dll!0098E208 00002180 sv_specaccelerate
+server.dll!0098E260 00002180 sv_specspeed
+server.dll!0098E1B0 00002180 sv_specnoclip
+server.dll!0098E418 00082100 sv_maxspeed
+server.dll!0098DAD0 00082100 sv_accelerate_use_weapon_speed
+server.dll!0098DB28 00082100 sv_accelerate_debug_speed
+server.dll!0098E158 00082100 sv_airaccelerate
+server.dll!0098E100 00082000 sv_airaccelerate_parachute
+server.dll!0098E0A8 00082000 sv_airaccelerate_rappel
+server.dll!0098DB80 00082102 sv_wateraccelerate
+server.dll!0098DBD8 00082102 sv_waterfriction
+server.dll!0098E4C8 00002102 sv_rollspeed
+server.dll!0098E5D0 00002102 sv_stepsize
+server.dll!0098DD38 00006100 r_VehicleViewDampen
+server.dll!0098DD90 00006100 r_JeepViewDampenFreq
+server.dll!0098DDE8 00006100 r_JeepViewDampenDamp
+server.dll!0098DE40 00006100 r_JeepViewZHeight
+server.dll!0098DE98 00006100 r_AirboatViewDampenFreq
+server.dll!0098DEF0 00006100 r_AirboatViewDampenDamp
+server.dll!0098DF48 00006100 r_AirboatViewZHeight
+server.dll!0098EBC0 00004000 g_debug_vehicledriver
+server.dll!0098F0B0 00004000 phys_show_active
+server.dll!0098F108 00006000 phys_debug_check_contacts
+server.dll!00990008 00002000 sv_regeneration_wait_time
+server.dll!009903F8 00004000 vis_force
+server.dll!00990450 00082000 sv_drowning_damage_initial
+server.dll!009904A8 00082000 sv_drowning_damage_max
+server.dll!00990BB0 00004000 voice_player_speaking_delay_threshold
+server.dll!00990CA0 00004000 g_debug_angularsensor
+server.dll!00990F40 00082000 sv_prop_door_open_speed_scale
+server.dll!00991390 00002000 g_ragdoll_maxcount
+server.dll!009913E8 00006000 g_debug_ragdoll_removal
+server.dll!00991440 00002000 g_ragdoll_important_maxcount
+server.dll!009914B0 00086000 sv_disable_pas
+server.dll!00991F40 00004000 snd_sos_show_server_xmit
+server.dll!00992518 00002000 phys_pushscale
+server.dll!00992738 00002100 mp_tournament
+server.dll!00992898 00002100 mp_disable_respawn_times
+server.dll!00992B00 00080100 mp_autoteambalance
+server.dll!00992FA8 00080000 cl_remove_old_ugc_downloads
+server.dll!009932D8 00004000 r_visualizetraces
+server.dll!00993388 00004000 g_debug_vehiclebase
+server.dll!00993418 00006000 r_JeepFOV
+server.dll!00993470 00004000 g_debug_vehiclesound
+server.dll!009934C8 00004000 g_debug_vehicleexit
+server.dll!00993658 00082000 sv_voice_proximity
+server.dll!009936B0 00082000 sv_voice_proximity_positional
+server.dll!009946E8 00082000 sv_weapon_encumbrance_scale
+server.dll!00994C48 00082000 sv_disable_radar
+server.dll!00994CA0 00082000 sv_outofammo_indicator
+server.dll!00994CF8 00082000 sv_falldamage_scale
+server.dll!00994D50 00082000 sv_chat_proximity
+server.dll!00995C10 00082000 ammo_50AE_max
+server.dll!00995C68 00082000 ammo_762mm_max
+server.dll!00995CC0 00082000 ammo_556mm_max
+server.dll!00995D18 00082000 ammo_556mm_small_max
+server.dll!00995D70 00082000 ammo_556mm_box_max
+server.dll!00995DC8 00082000 ammo_338mag_max
+server.dll!00995E20 00082000 ammo_9mm_max
+server.dll!00995E78 00082000 ammo_buckshot_max
+server.dll!00995ED0 00082000 ammo_45acp_max
+server.dll!00995F28 00082000 ammo_357sig_max
+server.dll!00995F80 00082000 ammo_357sig_p250_max
+server.dll!00995FD8 00082000 ammo_357sig_small_max
+server.dll!00996030 00082000 ammo_357sig_min_max
+server.dll!00996088 00082000 ammo_57mm_max
+server.dll!009960E0 00082000 ammo_grenade_limit_default
+server.dll!00996138 00082000 ammo_grenade_limit_flashbang
+server.dll!00996190 00082000 ammo_grenade_limit_total
+server.dll!009961E8 00082000 ammo_grenade_limit_snowballs
+server.dll!00996240 00082000 ammo_item_limit_healthshot
+server.dll!00996298 00082000 ammo_grenade_limit_breachcharge
+server.dll!0099D378 00080000 mp_verbose_changelevel_spew
+server.dll!0099BE18 00082100 cash_team_terrorist_win_bomb
+server.dll!0099BE70 00082100 cash_team_elimination_hostage_map_t
+server.dll!0099BEC8 00082100 cash_team_elimination_hostage_map_ct
+server.dll!0099BF20 00082100 cash_team_elimination_bomb_map
+server.dll!0099BF78 00082100 cash_team_survive_guardian_wave
+server.dll!0099BFD0 00082100 cash_team_win_by_time_running_out_hostage
+server.dll!0099C028 00082100 cash_team_win_by_time_running_out_bomb
+server.dll!0099C080 00082100 cash_team_win_by_defusing_bomb
+server.dll!0099C0D8 00082100 cash_team_win_by_hostage_rescue
+server.dll!0099C130 00082100 cash_team_loser_bonus
+server.dll!0099C188 00082100 cash_team_loser_bonus_consecutive_rounds
+server.dll!0099C1E0 00082100 cash_team_winner_bonus_consecutive_rounds
+server.dll!0099C238 00082100 cash_team_rescued_hostage
+server.dll!0099C290 00082100 cash_team_hostage_alive
+server.dll!0099C2E8 00082100 cash_team_planted_bomb_but_defused
+server.dll!0099C340 00082100 cash_team_hostage_interaction
+server.dll!0099C398 00082100 cash_player_killed_teammate
+server.dll!0099C3F0 00082100 cash_player_killed_enemy_factor
+server.dll!0099C448 00082100 cash_player_killed_enemy_default
+server.dll!0099C4A0 00082100 cash_player_bomb_planted
+server.dll!0099C4F8 00082100 cash_player_bomb_defused
+server.dll!0099C550 00082100 cash_player_rescued_hostage
+server.dll!0099C5A8 00082100 cash_player_interact_with_hostage
+server.dll!0099C600 00082100 cash_player_damage_hostage
+server.dll!0099C658 00082100 cash_player_killed_hostage
+server.dll!0099C6B0 00082100 cash_player_respawn_amount
+server.dll!0099C708 00082100 cash_player_get_killed
+server.dll!0099E0B8 00080004 sv_guardian_min_wave_for_heavy
+server.dll!0099E110 00080004 sv_guardian_max_wave_for_heavy
+server.dll!0099EAE0 00080004 sv_guardian_heavy_count
+server.dll!0099E168 00080004 sv_guardian_heavy_all
+server.dll!0099E320 00004000 bot_mimic
+server.dll!0099E378 00004000 bot_freeze
+server.dll!0099E3D0 00004000 bot_crouch
+server.dll!0099E428 00004000 bot_mimic_yaw_offset
+server.dll!0099E588 00004000 cs_hostage_near_rescue_music_distance
+server.dll!0099E5E0 00080000 cs_enable_player_physics_box
+server.dll!0099E6E8 00082000 healthshot_healthboost_damage_multiplier
+server.dll!0099E830 00082000 sv_player_parachute_velocity
+server.dll!0099E988 00080004 sv_weapon_require_use_grace_period
+server.dll!0099EE30 00082000 sv_spec_use_tournament_content_standards
+server.dll!0099EE88 00082000 sv_min_jump_landing_sound
+server.dll!0099EF90 00002000 sv_clip_penetration_traces_to_players
+server.dll!0099EFE8 00082000 sv_weapon_encumbrance_per_item
+server.dll!0099F040 00006000 sv_server_verify_blood_on_player
+server.dll!009A09B0 00004000 g_jeepexitspeed
+server.dll!009A18F8 00080000 sv_debug_ugc_downloads
+server.dll!009A1950 00080000 sv_broadcast_ugc_downloads
+server.dll!009A19A8 00080000 sv_broadcast_ugc_download_progress_interval
+server.dll!009A1A00 00080000 sv_ugc_manager_max_new_file_check_interval_secs
+server.dll!009A1A58 00080000 sv_remove_old_ugc_downloads
+server.dll!009A1E60 00002082 weapon_accuracy_logging
+server.dll!009A1EB8 00080000 steam_controller_haptics
+server.dll!009A1F10 00006000 weapon_near_empty_sound
+server.dll!009A2070 00082000 weapon_accuracy_shotgun_spread_patterns
+server.dll!009A20C8 00002002 debug_aim_angle
+server.dll!009A2308 00082000 sv_hegrenade_damage_multiplier
+server.dll!009A2360 00082000 sv_hegrenade_radius_multiplier
+server.dll!009A23E0 00082000 molotov_throw_detonate_time
+server.dll!009A3B58 00004000 bot_coop_force_throw_grenade_chance
+server.dll!009A3FA8 00004000 inferno_debug
+server.dll!009A40B0 00004000 inferno_velocity_factor
+server.dll!009A4108 00004000 inferno_velocity_decay_factor
+server.dll!009A4160 00004000 inferno_velocity_normal_factor
+server.dll!009A41B8 00004000 inferno_surface_offset
+server.dll!009A4210 00082000 inferno_child_spawn_max_depth
+server.dll!009A4268 00004000 inferno_scorch_decals
+server.dll!009A4318 00004000 inferno_forward_reduction_factor
+server.dll!009A48E0 00080000 sv_dz_player_spawn_health
+server.dll!009A4938 00080000 sv_dz_player_spawn_armor
+server.dll!009A4990 00080000 sv_dz_player_max_health
+server.dll!009A4A98 00082000 sv_force_reflections
+server.dll!009A4BA0 00080000 sv_dz_show_enemy_name_scope_range
+server.dll!009A4FF0 00082000 healthshot_health
+server.dll!009A5048 00082000 healthshot_healthboost_time
+server.dll!009A50F8 00082000 healthshot_healthboost_speed_multiplier
+server.dll!009A50A0 00082000 healthshot_allow_use_at_full
+server.dll!009A51D8 00080004 sv_breachcharge_distance_min
+server.dll!009A5230 00080004 sv_breachcharge_distance_max
+server.dll!009A5288 00080004 sv_breachcharge_delay_min
+server.dll!009A52E0 00080004 sv_breachcharge_delay_max
+server.dll!009A5338 00080004 sv_breachcharge_fuse_min
+server.dll!009A5390 00080004 sv_breachcharge_fuse_max
+server.dll!009A53E8 00080004 sv_breachcharge_arm_delay
+server.dll!009A58D0 00086000 sv_turning_inaccuracy_enabled
+server.dll!009A5928 00086000 sv_turning_inaccuracy_angle_min
+server.dll!009A5980 00086000 sv_turning_inaccuracy_decay
+server.dll!009A5A68 00084000 mp_weapon_next_owner_touch_time
+server.dll!009A5A10 00084000 mp_weapon_prev_owner_touch_time
+server.dll!009A5FB0 00002000 sv_fistpunch_damage
+server.dll!009A6008 00002000 sv_fistpunch_damage_to_player_multiplier
+server.dll!009A61E8 00002000 sv_fistpunch_damage_hard
+server.dll!009A6060 00002000 sv_fistpunch_viewmove
+server.dll!009A60B8 00002000 sv_fistpunch_blocked_damage
+server.dll!009A6110 00002000 sv_fistpoint_delay
+server.dll!009A6168 00002000 sv_fistpunch_impact_sounds
+server.dll!009A6268 00082000 sv_knife_attack_extend_from_player_aabb
+server.dll!009A63B8 00084000 mp_weapon_melee_touch_time_after_hit
+server.dll!009A6650 00082000 tablet_c4_dist_min
+server.dll!009A66A8 00082000 tablet_c4_dist_max
+server.dll!009A6718 00082000 sv_tablet_show_path_to_nearest_resq
+server.dll!009A6BC0 00004000 nav_coplanar_slope_limit
+server.dll!009A6C18 00004000 nav_coplanar_slope_limit_displacement
+server.dll!009A6D78 00004000 nav_show_light_intensity
+server.dll!009A6DD0 00004000 nav_debug_blocked
+server.dll!009A6F30 00004000 nav_potentially_visible_dot_tolerance
+server.dll!009A7470 00004000 nav_show_compass
+server.dll!009A7788 00004000 nav_generate_incremental_range
+server.dll!009A7A88 00004000 nav_max_vis_delta_list_length
+server.dll!009A8968 00004000 nav_show_nodes
+server.dll!009A87B0 00004000 nav_show_node_id
+server.dll!009A8808 00004000 nav_test_node
+server.dll!009A8860 00004000 nav_test_node_crouch
+server.dll!009A88B8 00004000 nav_test_node_crouch_dir
+server.dll!009A8910 00004000 nav_show_node_grid
+server.dll!009A9040 00002000 BlendBonesMode
 class DT_LocalActiveWeaponData {
 	// field offset: 0x3218
 	m_flNextPrimaryAttack: Float,
