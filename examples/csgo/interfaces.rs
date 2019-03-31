@@ -11,8 +11,7 @@ This only allows you to query interfaces which you know by name and version, thi
 
 use pelite;
 use pelite::pattern as pat;
-use pelite::pe32::{Rva, Va, Ptr, Pe, PeFile};
-use pelite::pe32::exports::Export;
+use pelite::pe32::*;
 use pelite::{util::CStr, Pod};
 
 //----------------------------------------------------------------
@@ -55,7 +54,7 @@ pub fn interfaces<'a>(file: PeFile<'a>) -> pelite::Result<Vec<Interface<'a>>> {
 	// Grab the CreateInterface export
 	let create_interface_export = exports.name("CreateInterface")?;
 	let create_interface_fn = match create_interface_export {
-		Export::Symbol(&rva) => rva,
+		exports::Export::Symbol(&rva) => rva,
 		_ => return Err(pelite::Error::Null),
 	};
 

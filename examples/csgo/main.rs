@@ -9,6 +9,7 @@ mod datamaps;
 mod cvars;
 mod recvtables;
 mod weapondata;
+mod kbutton;
 
 //----------------------------------------------------------------
 
@@ -70,6 +71,8 @@ fn main() {
 	interfaces::print(client_file);
 	interfaces::print(matchmaking_file);
 	interfaces::print(server_file);
+
+	kbutton::print(client_file);
 
 	classes::print(client_file);
 
