@@ -85,17 +85,31 @@ impl<'a, P: Pe<'a>> Scanner<P> {
 		let range = optional_header.BaseOfCode..u32::wrapping_add(optional_header.BaseOfCode, optional_header.SizeOfCode);
 		self.finds(pat, range, save)
 	}
+	/// Finds the unique match for the pattern in the specified section.
+	///
+	/// Restricts the range to the specified section. See [`finds`](#finds) for more information.
+	pub fn finds_section(self, pat: &[pat::Atom], section: &IMAGE_SECTION_HEADER, save: &mut [Rva]) -> bool {
+		let range = section.VirtualAddress..section.VirtualAddress + section.VirtualSize;
+		self.finds(pat, range, save)
+	}
 	/// Returns an iterator over the matches of a pattern within the given range.
-	pub fn matches(self, pat: &[pat::Atom], range: Range<Rva>) -> Matches<P> {
+	pub fn matches<'u>(self, pat: &'u [pat::Atom], range: Range<Rva>) -> Matches<'u, P> {
 		let cursor = range.start;
 		Matches { scanner: self, pat, range, cursor, hits: 0 }
 	}
 	/// Returns an iterator over the code matches of a pattern.
 	///
 	/// Restricts the range to the code section. See [`matches`](#matches) for more information.
-	pub fn matches_code(self, pat: &[pat::Atom]) -> Matches<P> {
+	pub fn matches_code<'u>(self, pat: &'u [pat::Atom]) -> Matches<'u, P> {
 		let optional_header = self.pe.optional_header();
 		let range = optional_header.BaseOfCode..u32::wrapping_add(optional_header.BaseOfCode, optional_header.SizeOfCode);
+		self.matches(pat, range)
+	}
+	/// Returns an iterator over the matches of a pattern in the specified section.
+	///
+	/// Restricts the range to the specified section. See [`matches`](#matches) for more information.
+	pub fn matches_section<'u>(self, pat: &'u [pat::Atom], section: &IMAGE_SECTION_HEADER) -> Matches<'u, P> {
+		let range = section.VirtualAddress..section.VirtualAddress + section.VirtualSize;
 		self.matches(pat, range)
 	}
 	/// Pattern interpreter, returns if the pattern matches the binary image at the given rva.

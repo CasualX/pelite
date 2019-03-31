@@ -173,6 +173,46 @@ server.dll!009A5478 ServerGameTags001
 server.dll!009A59FC ServerGameTags001
 server.dll!009A689C ServerGameTags001
 server.dll!009A8F5C VSERVERTOOLS001
+client.dll!051869ac kbutton_t +alt1
+client.dll!051869b8 kbutton_t +alt2
+client.dll!03114b9c kbutton_t +attack
+client.dll!03114b90 kbutton_t +attack2
+client.dll!03114bf0 kbutton_t +back
+client.dll!051869d0 kbutton_t +break
+client.dll!0518690c kbutton_t +camin
+client.dll!05186918 kbutton_t +camout
+client.dll!051868e8 kbutton_t +campitchdown
+client.dll!051868dc kbutton_t +campitchup
+client.dll!051868f4 kbutton_t +camyawleft
+client.dll!05186900 kbutton_t +camyawright
+client.dll!03114bd8 kbutton_t +commandermousemove
+client.dll!05186994 kbutton_t +duck
+client.dll!03114bcc kbutton_t +forward
+client.dll!03114bfc kbutton_t +graph
+client.dll!051869dc kbutton_t +grenade1
+client.dll!051869e8 kbutton_t +grenade2
+client.dll!03114c30 kbutton_t +jlook
+client.dll!05186970 kbutton_t +jump
+client.dll!05186928 kbutton_t +klook
+client.dll!05186934 kbutton_t +left
+client.dll!05186958 kbutton_t +lookdown
+client.dll!03114c18 kbutton_t +lookspin
+client.dll!0518694c kbutton_t +lookup
+client.dll!05186988 kbutton_t +movedown
+client.dll!03114be4 kbutton_t +moveleft
+client.dll!03114c08 kbutton_t +moveright
+client.dll!0518697c kbutton_t +moveup
+client.dll!051869a0 kbutton_t +reload
+client.dll!05186940 kbutton_t +right
+client.dll!051869c4 kbutton_t +score
+client.dll!051869c4 kbutton_t +showscores
+client.dll!03114bc0 kbutton_t +speed
+client.dll!03114c24 kbutton_t +strafe
+client.dll!05186964 kbutton_t +use
+client.dll!03114bb4 kbutton_t +walk
+client.dll!03114ba8 kbutton_t +zoom
+client.dll!051869dc kbutton_t +zoom_in
+client.dll!051869e8 kbutton_t +zoom_out
 Class { network_name: "CBaseWeaponWorldModel", class_id: 0, size_of: 10768 }
 Class { network_name: "CBaseCombatWeapon", class_id: 0, size_of: 13008 }
 Class { network_name: "CBaseGrenade", class_id: 0, size_of: 10672 }
