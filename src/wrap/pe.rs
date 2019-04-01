@@ -90,6 +90,14 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 	//----------------------------------------------------------------
 
 	#[inline]
+	pub fn get_section_bytes(self, section_header: &image::IMAGE_SECTION_HEADER) -> Result<&'a [u8]> {
+		match self {
+			Wrap::T32(pe32) => pe32.get_section_bytes(section_header),
+			Wrap::T64(pe64) => pe64.get_section_bytes(section_header),
+		}
+	}
+
+	#[inline]
 	pub fn derva<T>(&self, rva: u32) -> Result<&'a T> where T: Pod {
 		match self {
 			Wrap::T32(pe32) => pe32.derva(rva),
