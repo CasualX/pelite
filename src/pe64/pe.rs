@@ -250,16 +250,7 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	/// * [`Bounds`](../enum.Error.html#variant.Bounds):
 	///   The data referenced by the section header is out of bounds.
 	fn get_section_bytes(self, section_header: &IMAGE_SECTION_HEADER) -> Result<&'a [u8]> {
-		let (address, size) = match self.align() {
-			Align::File => (section_header.PointerToRawData, section_header.SizeOfRawData),
-			Align::Section => (section_header.VirtualAddress, section_header.VirtualSize),
-		};
-		if address == 0 {
-			return Err(Error::Null);
-		}
-		let start = address as usize;
-		let end = address.wrapping_add(size) as usize;
-		self.image().get(start..end).ok_or(Error::Bounds)
+		crate::wrap::get_section_bytes(self.image(), section_header, self.align())
 	}
 
 	/// Reads the image at the specified va.
