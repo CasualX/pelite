@@ -56,3 +56,4 @@ mod scanner;
 pub use self::file::PeFile;
 pub use self::view::PeView;
 pub use self::pe::Align;
+pub(crate) use self::pe::get_section_bytes;

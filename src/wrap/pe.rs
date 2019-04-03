@@ -12,6 +12,19 @@ pub enum Align {
 	Section,
 }
 
+pub(crate) fn get_section_bytes<'a>(image: &'a [u8], section_header: &image::IMAGE_SECTION_HEADER, align: Align) -> Result<&'a [u8]> {
+	let (address, size) = match align {
+		Align::File => (section_header.PointerToRawData, section_header.SizeOfRawData),
+		Align::Section => (section_header.VirtualAddress, section_header.VirtualSize),
+	};
+	if address == 0 {
+		return Err(Error::Null);
+	}
+	let start = address as usize;
+	let end = address.wrapping_add(size) as usize;
+	image.get(start..end).ok_or(Error::Bounds)
+}
+
 impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 	#[inline]
 	pub fn image(&self) -> &'a [u8] {
@@ -90,11 +103,8 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 	//----------------------------------------------------------------
 
 	#[inline]
-	pub fn get_section_bytes(self, section_header: &image::IMAGE_SECTION_HEADER) -> Result<&'a [u8]> {
-		match self {
-			Wrap::T32(pe32) => pe32.get_section_bytes(section_header),
-			Wrap::T64(pe64) => pe64.get_section_bytes(section_header),
-		}
+	pub fn get_section_bytes(&self, section_header: &image::IMAGE_SECTION_HEADER) -> Result<&'a [u8]> {
+		get_section_bytes(self.image(), section_header, self.align())
 	}
 
 	#[inline]
