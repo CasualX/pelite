@@ -17,24 +17,26 @@ pub struct Ptr<T: ?Sized = ()> {
 }
 
 impl<T: ?Sized> Ptr<T> {
+	// Work around unstable const fn features
+	const MARKER: PhantomData<fn() -> T> = PhantomData;
 	/// Null pointer constant.
 	pub const NULL: Ptr<T> = Ptr { va: 0, marker: PhantomData };
 	/// Creates a null pointer.
-	pub fn null() -> Ptr<T> {
+	pub const fn null() -> Ptr<T> {
 		Ptr::NULL
 	}
 	/// Returns true if the pointer is null.
-	pub fn is_null(self) -> bool {
+	pub const fn is_null(self) -> bool {
 		self.va == 0
 	}
 	/// Constructs a pointer with an offset.
-	pub fn member(va: Va, offset: u32) -> Ptr<T> {
+	pub const fn member(va: Va, offset: u32) -> Ptr<T> {
 		let va = va + offset as Va;
-		Ptr { va, marker: PhantomData }
+		Ptr { va, marker: Self::MARKER }
 	}
 	/// Casts the pointer to a different type keeping the pointer address fixed.
-	pub fn cast<U: ?Sized>(self) -> Ptr<U> {
-		Ptr { va: self.va, marker: PhantomData }
+	pub const fn cast<U: ?Sized>(self) -> Ptr<U> {
+		Ptr { va: self.va, marker: Ptr::<U>::MARKER }
 	}
 	/// Offsets and casts the pointer.
 	///
@@ -56,12 +58,12 @@ impl<T: ?Sized> Ptr<T> {
 	///
 	/// assert_eq!(target, Ptr::from(0x2004));
 	/// ```
-	pub fn offset<U: ?Sized>(self, offset: SignedVa) -> Ptr<U> {
+	pub const fn offset<U: ?Sized>(self, offset: SignedVa) -> Ptr<U> {
 		let va = self.va.wrapping_add(offset as Va);
-		Ptr { va, marker: PhantomData }
+		Ptr { va, marker: Ptr::<U>::MARKER }
 	}
 	/// Returns the raw integer, type ascription helper.
-	pub fn into_raw(self) -> Va {
+	pub const fn into_raw(self) -> Va {
 		self.va
 	}
 	/// Formats the pointer.
@@ -81,13 +83,13 @@ impl<T: ?Sized> Ptr<T> {
 }
 impl<T> Ptr<[T]> {
 	/// Decays the pointer from `[T]` to `T`.
-	pub fn decay(self) -> Ptr<T> {
-		Ptr { va: self.va, marker: PhantomData }
+	pub const fn decay(self) -> Ptr<T> {
+		Ptr { va: self.va, marker: Ptr::<T>::MARKER }
 	}
 	/// Pointer arithmetic, gets the pointer of an element at the specified index.
-	pub fn at(self, i: usize) -> Ptr<T> {
+	pub const fn at(self, i: usize) -> Ptr<T> {
 		let va = self.va + (i * mem::size_of::<T>()) as Va;
-		Ptr { va, marker: PhantomData }
+		Ptr { va, marker: Ptr::<T>::MARKER }
 	}
 }
 
