@@ -26,6 +26,12 @@ use std::{mem, slice};
 /// }
 /// ```
 pub unsafe trait Pod: 'static {
+	fn zeroed() -> Self where Self: Sized {
+		unsafe { mem::zeroed() }
+	}
+	unsafe fn uninit() -> Self where Self: Sized {
+		mem::uninitialized()
+	}
 	fn as_bytes(&self) -> &[u8] {
 		unsafe { slice::from_raw_parts(self as *const _ as *const u8, mem::size_of_val(self)) }
 	}
