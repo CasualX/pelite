@@ -15,7 +15,6 @@ use pelite::FileMap;
 use pelite::pe32::{Pe, PeFile, Ptr};
 use pelite::pe32::image::{Rva, Va};
 use pelite::pe32::msvc::*;
-use pelite::util::strn;
 
 //----------------------------------------------------------------
 
@@ -44,8 +43,8 @@ fn main() {
 	let file = PeFile::from_bytes(&file_map).expect("msrtti: the file isn't a PE32 binary");
 
 	// Find .text and .rdata sections
-	let text = file.section_headers().iter().find(|sec| strn(&sec.Name) == b".text").expect("msrtti: no `.text` section found");
-	let rdata = file.section_headers().iter().find(|sec| strn(&sec.Name) == b".rdata").expect("msrtti: no `.rdata` section found");
+	let text = file.section_headers().iter().find(|sec| &sec.Name == b".text\0\0\0").expect("msrtti: no `.text` section found");
+	let rdata = file.section_headers().iter().find(|sec| &sec.Name == b".rdata\0\0").expect("msrtti: no `.rdata` section found");
 
 	// Abuse relocations for xrefs
 	let base_relocs = file.base_relocs().expect("msrtti: no base relocations found");
