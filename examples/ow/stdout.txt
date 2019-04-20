@@ -1,0 +1,2674 @@
+Ignore mouse detection:
+[[Overwatch.exe!0x29962b0] + 0x1c8] + 0x13
+
+Overwatch.exe!0x2cef4e0 "AcceptsTab"
+Overwatch.exe!0x2ced098 "Action"
+Overwatch.exe!0x2cf0648 "Actions"
+Overwatch.exe!0x2cee8f0 "ActiveClocks"
+Overwatch.exe!0x2ce7470 "ActiveOnFocus"
+Overwatch.exe!0x2ce92c8 "ActiveOnFocus"
+Overwatch.exe!0x2ceb5a8 "ActiveOnFocus"
+Overwatch.exe!0x2cf0808 "ActiveOnFocus"
+Overwatch.exe!0x2ce5a80 "ActualHeight"
+Overwatch.exe!0x2ce5a40 "ActualWidth"
+Overwatch.exe!0x2ce68f8 "AllowColorBlindForUI"
+Overwatch.exe!0x2ce68e8 "AllowTeamColorDropdowns"
+Overwatch.exe!0x2ce3de8 "AlternateBackground"
+Overwatch.exe!0x2ce3dd8 "AlternateForeground"
+Overwatch.exe!0x2ce90f0 "AlternationCount"
+Overwatch.exe!0x2ceda38 "Amount"
+Overwatch.exe!0x2cdc3d0 "Amplitude"
+Overwatch.exe!0x2ce4e38 "Amplitude"
+Overwatch.exe!0x2ce5150 "Amplitude"
+Overwatch.exe!0x2cdba38 "AnalogStick"
+Overwatch.exe!0x2cecde0 "Angle"
+Overwatch.exe!0x2cee290 "AngleX"
+Overwatch.exe!0x2cee2a0 "AngleY"
+Overwatch.exe!0x2cdc760 "ArcThickness"
+Overwatch.exe!0x2ce0f28 "AutoCycleInterval"
+Overwatch.exe!0x2cefee8 "AutoReverse"
+Overwatch.exe!0x2ce71c0 "BackIcon"
+Overwatch.exe!0x2cebb08 "Background"
+Overwatch.exe!0x2ce3da8 "BackgroundContent"
+Overwatch.exe!0x2ce3db8 "BackgroundContentTemplate"
+Overwatch.exe!0x2ce3dc8 "BackgroundContentTemplateSelector"
+Overwatch.exe!0x2cedbe8 "BackingFill"
+Overwatch.exe!0x2cdba48 "BeginAngle"
+Overwatch.exe!0x2cefef8 "BeginTime"
+Overwatch.exe!0x2ce2b30 "Binding"
+Overwatch.exe!0x2ce40a0 "Binding"
+Overwatch.exe!0x2ce4438 "Binding"
+Overwatch.exe!0x2cec410 "Binding"
+Overwatch.exe!0x2ce2aa0 "BlendMode"
+Overwatch.exe!0x2ce1368 "BlueOpacity"
+Overwatch.exe!0x2ce1348 "BlueX"
+Overwatch.exe!0x2ce1358 "BlueY"
+Overwatch.exe!0x2cde548 "BorderBrush"
+Overwatch.exe!0x2cde568 "BorderThickness"
+Overwatch.exe!0x2ce0da0 "Bottom"
+Overwatch.exe!0x2ce5130 "Bounces"
+Overwatch.exe!0x2ce5140 "Bounciness"
+Overwatch.exe!0x2ce1f50 "By"
+Overwatch.exe!0x2ce4b98 "By"
+Overwatch.exe!0x2ce8818 "By"
+Overwatch.exe!0x2cebeb0 "By"
+Overwatch.exe!0x2cec910 "By"
+Overwatch.exe!0x2cefa70 "By"
+Overwatch.exe!0x2ce8590 "CachedState"
+Overwatch.exe!0x2ce8e60 "CanTakeForeground"
+Overwatch.exe!0x2ce4448 "Cases"
+Overwatch.exe!0x2cecdf0 "CenterX"
+Overwatch.exe!0x2cecf40 "CenterX"
+Overwatch.exe!0x2cee2b0 "CenterX"
+Overwatch.exe!0x2cece00 "CenterY"
+Overwatch.exe!0x2cecf50 "CenterY"
+Overwatch.exe!0x2cee2c0 "CenterY"
+Overwatch.exe!0x2cef350 "CharacterCasing"
+Overwatch.exe!0x2cec1c8 "Child"
+Overwatch.exe!0x2ceff58 "Children"
+Overwatch.exe!0x2ce0b98 "ClickMode"
+Overwatch.exe!0x2ce5b50 "Clip"
+Overwatch.exe!0x2ce5b60 "ClipToBounds"
+Overwatch.exe!0x2cebab8 "Color"
+Overwatch.exe!0x2cee230 "Color"
+Overwatch.exe!0x2cee6e0 "Color"
+Overwatch.exe!0x2cf08b8 "Columns"
+Overwatch.exe!0x2cf1ef8 "Columns"
+Overwatch.exe!0x2ce0b58 "Command"
+Overwatch.exe!0x2ce8f50 "Command"
+Overwatch.exe!0x2ce0b68 "CommandParameter"
+Overwatch.exe!0x2ce1848 "CommandParameter"
+Overwatch.exe!0x2ce8f60 "CommandParameter"
+Overwatch.exe!0x2ce0b78 "CommandTarget"
+Overwatch.exe!0x2ce2b50 "Comparison"
+Overwatch.exe!0x2ce44a8 "Comparison"
+Overwatch.exe!0x2ce6988 "Comparison"
+Overwatch.exe!0x2ced848 "ComputedHorizontalScrollBarVisibility"
+Overwatch.exe!0x2ced858 "ComputedVerticalScrollBarVisibility"
+Overwatch.exe!0x2ce2be0 "Condition"
+Overwatch.exe!0x2ce2d48 "Conditions"
+Overwatch.exe!0x2ce2ea0 "Content"
+Overwatch.exe!0x2ce3d78 "Content"
+Overwatch.exe!0x2ce2eb0 "ContentTemplate"
+Overwatch.exe!0x2ce3d88 "ContentTemplate"
+Overwatch.exe!0x2ceed10 "ContentTemplate"
+Overwatch.exe!0x2ce2ec0 "ContentTemplateSelector"
+Overwatch.exe!0x2ce3d98 "ContentTemplateSelector"
+Overwatch.exe!0x2ceed20 "ContentTemplateSelector"
+Overwatch.exe!0x2ce3720 "ContextMenu"
+Overwatch.exe!0x2ce3b78 "ControlMediaOption"
+Overwatch.exe!0x2ce3e88 "ControlStoryboardOption"
+Overwatch.exe!0x2ce7300 "CrossBottomIcon"
+Overwatch.exe!0x2ce7320 "CrossLeftIcon"
+Overwatch.exe!0x2ce7310 "CrossRightIcon"
+Overwatch.exe!0x2ce7330 "CrossTopIcon"
+Overwatch.exe!0x2ce6250 "CurrentInputDevice"
+Overwatch.exe!0x2ce6230 "CurrentLocale"
+Overwatch.exe!0x2ce6240 "CurrentPlatform"
+Overwatch.exe!0x2ce68b8 "CustomGame"
+Overwatch.exe!0x2ce6918 "CustomGameAllowDatacenterSelect"
+Overwatch.exe!0x2ce68c8 "CustomGameBrowsing"
+Overwatch.exe!0x2ce72c0 "DPadDownIcon"
+Overwatch.exe!0x2ce72e0 "DPadLeftIcon"
+Overwatch.exe!0x2ce72d0 "DPadRightIcon"
+Overwatch.exe!0x2ce72f0 "DPadUpIcon"
+Overwatch.exe!0x2ce72a0 "DPadXIcon"
+Overwatch.exe!0x2ce72b0 "DPadYIcon"
+Overwatch.exe!0x2cebb58 "Data"
+Overwatch.exe!0x2ce5c18 "DataContext"
+Overwatch.exe!0x2ce6978 "DefaultValue"
+Overwatch.exe!0x2ce6c90 "DelegateFocusToChild"
+Overwatch.exe!0x2ceb598 "Delta"
+Overwatch.exe!0x2cf2148 "Depth"
+Overwatch.exe!0x2cedc38 "DesiredSegmentAmount"
+Overwatch.exe!0x2ceefa0 "DestroyImmediately"
+Overwatch.exe!0x2ce68d8 "DevFeatures"
+Overwatch.exe!0x2ceba58 "DialogContent"
+Overwatch.exe!0x2ceba48 "DialogTemplate"
+Overwatch.exe!0x2ce1818 "DoubleLeftClickCommand"
+Overwatch.exe!0x2ce1838 "DoubleMiddleClickCommand"
+Overwatch.exe!0x2ce1828 "DoubleRightClickCommand"
+Overwatch.exe!0x2ceef70 "DrawMode"
+Overwatch.exe!0x2cdc400 "Duration"
+Overwatch.exe!0x2ce8670 "Duration"
+Overwatch.exe!0x2ceff08 "Duration"
+Overwatch.exe!0x2ce1f60 "EasingFunction"
+Overwatch.exe!0x2ce2260 "EasingFunction"
+Overwatch.exe!0x2ce4ba8 "EasingFunction"
+Overwatch.exe!0x2ce4f08 "EasingFunction"
+Overwatch.exe!0x2ce8680 "EasingFunction"
+Overwatch.exe!0x2ce8828 "EasingFunction"
+Overwatch.exe!0x2ce8af8 "EasingFunction"
+Overwatch.exe!0x2cebec0 "EasingFunction"
+Overwatch.exe!0x2cec040 "EasingFunction"
+Overwatch.exe!0x2cec920 "EasingFunction"
+Overwatch.exe!0x2cecaa0 "EasingFunction"
+Overwatch.exe!0x2cefa80 "EasingFunction"
+Overwatch.exe!0x2cefc00 "EasingFunction"
+Overwatch.exe!0x2ce5120 "EasingMode"
+Overwatch.exe!0x2ceef50 "Effect"
+Overwatch.exe!0x2ceef60 "EmissionShapes"
+Overwatch.exe!0x2cdba58 "EndAngle"
+Overwatch.exe!0x2cdc750 "EndAngle"
+Overwatch.exe!0x2ce6718 "ExpandDirection"
+Overwatch.exe!0x2ce5180 "Exponent"
+Overwatch.exe!0x2ced898 "ExtentHeight"
+Overwatch.exe!0x2ced888 "ExtentWidth"
+Overwatch.exe!0x2ce40d0 "FalseState"
+Overwatch.exe!0x2ce84a0 "FarManualScaleDistance"
+Overwatch.exe!0x2cebc18 "Figures"
+Overwatch.exe!0x2ceb058 "FileName"
+Overwatch.exe!0x2ceda18 "Fill"
+Overwatch.exe!0x2cee140 "Fill"
+Overwatch.exe!0x2ce6968 "FilterValue"
+Overwatch.exe!0x2ce7480 "FiredOn"
+Overwatch.exe!0x2ce92d8 "FiredOn"
+Overwatch.exe!0x2cf0818 "FiredOn"
+Overwatch.exe!0x2cf08a8 "FirstColumn"
+Overwatch.exe!0x2ce5ae0 "Focusable"
+Overwatch.exe!0x2ce6b70 "FocusedElement"
+Overwatch.exe!0x2ce6908 "ForceBroadcastMarginSettingEnabled"
+Overwatch.exe!0x2ceef90 "ForcePreRoll"
+Overwatch.exe!0x2ce2d58 "ForwardChaining"
+Overwatch.exe!0x2cedbf8 "FrameBorderStroke"
+Overwatch.exe!0x2cedc18 "FrameBorderStrokeShift"
+Overwatch.exe!0x2cedc08 "FrameBorderThickness"
+Overwatch.exe!0x2cedbc8 "FrameFill"
+Overwatch.exe!0x2cedbd8 "FrameStroke"
+Overwatch.exe!0x2cdc3c0 "Frequency"
+Overwatch.exe!0x2ce4e28 "Frequency"
+Overwatch.exe!0x2ce1f30 "From"
+Overwatch.exe!0x2ce4b78 "From"
+Overwatch.exe!0x2ce8650 "From"
+Overwatch.exe!0x2ce87f8 "From"
+Overwatch.exe!0x2cebe90 "From"
+Overwatch.exe!0x2cec8f0 "From"
+Overwatch.exe!0x2cefa50 "From"
+Overwatch.exe!0x2cdc3f0 "Gain"
+Overwatch.exe!0x2ce4e58 "Gain"
+Overwatch.exe!0x2ce7460 "GamePadButton"
+Overwatch.exe!0x2ce7180 "GamePadType"
+Overwatch.exe!0x2cebd90 "GamepadIcon"
+Overwatch.exe!0x2ce1338 "GreenOpacity"
+Overwatch.exe!0x2ce1318 "GreenX"
+Overwatch.exe!0x2ce1328 "GreenY"
+Overwatch.exe!0x2ce9100 "HasItems"
+Overwatch.exe!0x2ce3d48 "Header"
+Overwatch.exe!0x2ce7868 "Header"
+Overwatch.exe!0x2ce3d58 "HeaderTemplate"
+Overwatch.exe!0x2ce7878 "HeaderTemplate"
+Overwatch.exe!0x2ce3d68 "HeaderTemplateSelector"
+Overwatch.exe!0x2ce7888 "HeaderTemplateSelector"
+Overwatch.exe!0x2ce5a50 "Height"
+Overwatch.exe!0x2ce5aa0 "HorizontalAlignment"
+Overwatch.exe!0x2ce3a78 "HorizontalContentAlignment"
+Overwatch.exe!0x2cdbd18 "HorizontalOffset"
+Overwatch.exe!0x2cec208 "HorizontalOffset"
+Overwatch.exe!0x2ced868 "HorizontalOffset"
+Overwatch.exe!0x2ceb2a8 "Icon"
+Overwatch.exe!0x2cecce0 "Identifier"
+Overwatch.exe!0x2ce7d50 "ImageSource"
+Overwatch.exe!0x2ce7eb0 "ImageSource"
+Overwatch.exe!0x2ce11a8 "Increment"
+Overwatch.exe!0x2ce7190 "Index"
+Overwatch.exe!0x2ce6ca0 "InitialFocusElement"
+Overwatch.exe!0x2ce84f0 "InnerRingMaxRadius"
+Overwatch.exe!0x2ce1138 "IsBehind"
+Overwatch.exe!0x2cf1128 "IsCanvasLayer"
+Overwatch.exe!0x2ceb288 "IsCheckable"
+Overwatch.exe!0x2ceb298 "IsChecked"
+Overwatch.exe!0x2cf0058 "IsChecked"
+Overwatch.exe!0x2cebbb8 "IsClosed"
+Overwatch.exe!0x2ce62b0 "IsContextMenuOpen"
+Overwatch.exe!0x2cee490 "IsDirectionReversed"
+Overwatch.exe!0x2cf03a8 "IsDirectionReversed"
+Overwatch.exe!0x2cefd60 "IsDragging"
+Overwatch.exe!0x2ce41e8 "IsEnabled"
+Overwatch.exe!0x2ce6a48 "IsEnabled"
+Overwatch.exe!0x2ce7390 "IsEnabled"
+Overwatch.exe!0x2ceda48 "IsEnabled"
+Overwatch.exe!0x2cf05e8 "IsEnabled"
+Overwatch.exe!0x2ce6728 "IsExpanded"
+Overwatch.exe!0x2ce4a68 "IsFilled"
+Overwatch.exe!0x2ce5af0 "IsFocused"
+Overwatch.exe!0x2ce8e80 "IsForegroundWithin"
+Overwatch.exe!0x2ce62a0 "IsGamePadActive"
+Overwatch.exe!0x2ce2528 "IsHighlighted"
+Overwatch.exe!0x2cec3a0 "IsIndeterminate"
+Overwatch.exe!0x2ce6290 "IsKeyboardActive"
+Overwatch.exe!0x2ce5b10 "IsKeyboardFocusWithin"
+Overwatch.exe!0x2ce5b00 "IsKeyboardFocused"
+Overwatch.exe!0x2ce5be0 "IsManipulationEnabled"
+Overwatch.exe!0x2cf10e8 "IsModal"
+Overwatch.exe!0x2ce5ac0 "IsMouseOver"
+Overwatch.exe!0x2ce5ad0 "IsMouseVisuallyOver"
+Overwatch.exe!0x2cee4c0 "IsMoveToPointEnabled"
+Overwatch.exe!0x2ce73a0 "IsOnlyActiveOnFocus"
+Overwatch.exe!0x2cf0138 "IsOpen"
+Overwatch.exe!0x2ce6280 "IsPlatformConsole"
+Overwatch.exe!0x2ce6270 "IsPlatformPC"
+Overwatch.exe!0x2ce0b88 "IsPressed"
+Overwatch.exe!0x2ceb278 "IsPressed"
+Overwatch.exe!0x2cee4a0 "IsSnapToTickEnabled"
+Overwatch.exe!0x2ce71a0 "IsType1Controller"
+Overwatch.exe!0x2ce71b0 "IsType2Controller"
+Overwatch.exe!0x2cdccd8 "ItemContainerStyle"
+Overwatch.exe!0x2ce90d0 "ItemContainerStyle"
+Overwatch.exe!0x2ce1c00 "ItemCount"
+Overwatch.exe!0x2ce8ff0 "ItemForItemContainer"
+Overwatch.exe!0x2cf21d8 "ItemHeight"
+Overwatch.exe!0x2cdcce8 "ItemTemplate"
+Overwatch.exe!0x2ce90b0 "ItemTemplate"
+Overwatch.exe!0x2ce90c0 "ItemTemplateSelector"
+Overwatch.exe!0x2cf21c8 "ItemWidth"
+Overwatch.exe!0x2cf2238 "ItemsHorizontalAlignment"
+Overwatch.exe!0x2ce90e0 "ItemsPanel"
+Overwatch.exe!0x2cdccb8 "ItemsSource"
+Overwatch.exe!0x2ce90a0 "ItemsSource"
+Overwatch.exe!0x2ce92a8 "Key"
+Overwatch.exe!0x2cde478 "KeyTime"
+Overwatch.exe!0x2ce2240 "KeyTime"
+Overwatch.exe!0x2ce4ee8 "KeyTime"
+Overwatch.exe!0x2ce8ad8 "KeyTime"
+Overwatch.exe!0x2ceb948 "KeyTime"
+Overwatch.exe!0x2cec020 "KeyTime"
+Overwatch.exe!0x2ceca80 "KeyTime"
+Overwatch.exe!0x2ceeb70 "KeyTime"
+Overwatch.exe!0x2cefbe0 "KeyTime"
+Overwatch.exe!0x2cebd80 "KeyboardText"
+Overwatch.exe!0x2cec850 "LargeChange"
+Overwatch.exe!0x2ce4ab8 "LastChildFill"
+Overwatch.exe!0x2ce2678 "Layers"
+Overwatch.exe!0x2cede80 "LeadingMargin"
+Overwatch.exe!0x2ce0d70 "Left"
+Overwatch.exe!0x2ce17e8 "LeftClickCommand"
+Overwatch.exe!0x2ce25b8 "LeftOperand"
+Overwatch.exe!0x2ce7260 "LeftShoulderIcon"
+Overwatch.exe!0x2ce7210 "LeftStickButtonIcon"
+Overwatch.exe!0x2ce71e0 "LeftStickIcon"
+Overwatch.exe!0x2ce71f0 "LeftStickXIcon"
+Overwatch.exe!0x2ce7200 "LeftStickYIcon"
+Overwatch.exe!0x2ce7270 "LeftTriggerIcon"
+Overwatch.exe!0x2cdccc8 "ListBoxStyle"
+Overwatch.exe!0x2ceb008 "LoadedBehavior"
+Overwatch.exe!0x2ce0ef0 "Loop"
+Overwatch.exe!0x2ceb068 "Looping"
+Overwatch.exe!0x2cedc28 "LostSegmentFill"
+Overwatch.exe!0x2ce5a90 "Margin"
+Overwatch.exe!0x2ce4958 "MarkerSpacing"
+Overwatch.exe!0x2ce4968 "MarkerStyle"
+Overwatch.exe!0x2ce23b0 "MaxDropDownHeight"
+Overwatch.exe!0x2ce5a70 "MaxHeight"
+Overwatch.exe!0x2cef360 "MaxLength"
+Overwatch.exe!0x2ce84c0 "MaxScale"
+Overwatch.exe!0x2ce5a30 "MaxWidth"
+Overwatch.exe!0x2ce4748 "Maximum"
+Overwatch.exe!0x2ce4938 "Maximum"
+Overwatch.exe!0x2cec830 "Maximum"
+Overwatch.exe!0x2ce1808 "MiddleClickCommand"
+Overwatch.exe!0x2ce5a60 "MinHeight"
+Overwatch.exe!0x2ce84b0 "MinScale"
+Overwatch.exe!0x2ce5a20 "MinWidth"
+Overwatch.exe!0x2cec820 "Minimum"
+Overwatch.exe!0x2ce92b8 "Modifiers"
+Overwatch.exe!0x2cf07f8 "Modifiers"
+Overwatch.exe!0x2ce1bf0 "Name"
+Overwatch.exe!0x2ceb7d8 "NameScope"
+Overwatch.exe!0x2ce8480 "NaturalScaleDistance"
+Overwatch.exe!0x2ceb610 "NavigationDirection"
+Overwatch.exe!0x2ce8490 "NearManualScaleDistance"
+Overwatch.exe!0x2ce0f48 "NextTemplate"
+Overwatch.exe!0x2cdc3e0 "Octaves"
+Overwatch.exe!0x2ce4e48 "Octaves"
+Overwatch.exe!0x2ced0a8 "Offset"
+Overwatch.exe!0x2ce7ec0 "OffsetX"
+Overwatch.exe!0x2ce7ed0 "OffsetY"
+Overwatch.exe!0x2ceec38 "OneTime"
+Overwatch.exe!0x2ce09a8 "Opacity"
+Overwatch.exe!0x2ce2a90 "Opacity"
+Overwatch.exe!0x2ce5b20 "Opacity"
+Overwatch.exe!0x2ce25c8 "Operator"
+Overwatch.exe!0x2ce4948 "Orientation"
+Overwatch.exe!0x2cec3b0 "Orientation"
+Overwatch.exe!0x2cec5a8 "Orientation"
+Overwatch.exe!0x2ced368 "Orientation"
+Overwatch.exe!0x2cee480 "Orientation"
+Overwatch.exe!0x2cee760 "Orientation"
+Overwatch.exe!0x2cf0388 "Orientation"
+Overwatch.exe!0x2cf0938 "Orientation"
+Overwatch.exe!0x2cf1e78 "Orientation"
+Overwatch.exe!0x2ce5160 "Oscillations"
+Overwatch.exe!0x2ce84e0 "OuterEdgeMargin"
+Overwatch.exe!0x2cde558 "Padding"
+Overwatch.exe!0x2ce15b8 "Padding"
+Overwatch.exe!0x2ce3a98 "Padding"
+Overwatch.exe!0x2cec1d8 "Placement"
+Overwatch.exe!0x2cec1f8 "PlacementRectangle"
+Overwatch.exe!0x2ce3750 "PlacementTarget"
+Overwatch.exe!0x2cec1e8 "PlacementTarget"
+Overwatch.exe!0x2ce8500 "PositionOverride"
+Overwatch.exe!0x2ce5190 "Power"
+Overwatch.exe!0x2ce0f38 "PreviousTemplate"
+Overwatch.exe!0x2cdc838 "ProgressBarStyle"
+Overwatch.exe!0x2ce8460 "ProjectionMatrix"
+Overwatch.exe!0x2ce1188 "PropertyName"
+Overwatch.exe!0x2cecbc0 "RadiusX"
+Overwatch.exe!0x2cecc50 "RadiusX"
+Overwatch.exe!0x2cecbd0 "RadiusY"
+Overwatch.exe!0x2cecc60 "RadiusY"
+Overwatch.exe!0x2ce2688 "RasterCacheEnabled"
+Overwatch.exe!0x2ce7340 "RawCrossBottomIcon"
+Overwatch.exe!0x2ce7350 "RawCrossRightIcon"
+Overwatch.exe!0x2cecc70 "Rect"
+Overwatch.exe!0x2cedb98 "RectangleRadiusX"
+Overwatch.exe!0x2cedba8 "RectangleRadiusY"
+Overwatch.exe!0x2ce1308 "RedOpacity"
+Overwatch.exe!0x2ce12e8 "RedX"
+Overwatch.exe!0x2ce12f8 "RedY"
+Overwatch.exe!0x2ce5b30 "RenderTransform"
+Overwatch.exe!0x2ce5b40 "RenderTransformOrigin"
+Overwatch.exe!0x2ceff18 "RepeatBehavior"
+Overwatch.exe!0x2cf10f8 "RequiresMouse"
+Overwatch.exe!0x2cedbb8 "ResetID"
+Overwatch.exe!0x2ce0d90 "Right"
+Overwatch.exe!0x2ce17f8 "RightClickCommand"
+Overwatch.exe!0x2ce25d8 "RightOperand"
+Overwatch.exe!0x2ce7280 "RightShoulderIcon"
+Overwatch.exe!0x2ce7250 "RightStickButtonIcon"
+Overwatch.exe!0x2ce7220 "RightStickIcon"
+Overwatch.exe!0x2ce7230 "RightStickXIcon"
+Overwatch.exe!0x2ce7240 "RightStickYIcon"
+Overwatch.exe!0x2ce7290 "RightTriggerIcon"
+Overwatch.exe!0x2cf08c8 "Rows"
+Overwatch.exe!0x2cf1f08 "Rows"
+Overwatch.exe!0x2ce62e0 "SafeZoneMargin"
+Overwatch.exe!0x2ce6300 "SafeZoneMarginHeight"
+Overwatch.exe!0x2ce62f0 "SafeZoneMarginWidth"
+Overwatch.exe!0x2cecf20 "ScaleX"
+Overwatch.exe!0x2cecf30 "ScaleY"
+Overwatch.exe!0x2cecfc8 "ScreenPosition"
+Overwatch.exe!0x2cefe40 "ScrollSpeed"
+Overwatch.exe!0x2ced8b8 "ScrollableHeight"
+Overwatch.exe!0x2ced8a8 "ScrollableWidth"
+Overwatch.exe!0x2cede60 "SegmentCount"
+Overwatch.exe!0x2cedb88 "SegmentMargin"
+Overwatch.exe!0x2cedb78 "SegmentSources"
+Overwatch.exe!0x2cede70 "SegmentThickness"
+Overwatch.exe!0x2ceed30 "SelectedContent"
+Overwatch.exe!0x2ceed40 "SelectedContentTemplate"
+Overwatch.exe!0x2ceed50 "SelectedContentTemplateSelector"
+Overwatch.exe!0x2cedf80 "SelectedIndex"
+Overwatch.exe!0x2cedf90 "SelectedItem"
+Overwatch.exe!0x2cedfa0 "SelectedValue"
+Overwatch.exe!0x2cedfb0 "SelectedValuePath"
+Overwatch.exe!0x2ce23e8 "SelectionBoxItem"
+Overwatch.exe!0x2ce23f8 "SelectionBoxItemTemplate"
+Overwatch.exe!0x2cee020 "SeparatorStyle"
+Overwatch.exe!0x2ce62c0 "ShowMode"
+Overwatch.exe!0x2ce6898 "ShowMode"
+Overwatch.exe!0x2ceefb0 "Skin"
+Overwatch.exe!0x2ceef80 "SkipTime"
+Overwatch.exe!0x2cee608 "SliderWidth"
+Overwatch.exe!0x2cec860 "SmallChange"
+Overwatch.exe!0x2ced988 "SmoothScrollDuration"
+Overwatch.exe!0x2ced978 "SmoothScrollEasingFunction"
+Overwatch.exe!0x2ce3df8 "Sound"
+Overwatch.exe!0x2ce1d60 "Source"
+Overwatch.exe!0x2ce7c60 "Source"
+Overwatch.exe!0x2ceb0c8 "Source"
+Overwatch.exe!0x2cebe00 "Source"
+Overwatch.exe!0x2ce6550 "SourceObject"
+Overwatch.exe!0x2ceff28 "SpeedRatio"
+Overwatch.exe!0x2ce5170 "Springiness"
+Overwatch.exe!0x2cdc740 "StartAngle"
+Overwatch.exe!0x2ce71d0 "StartIcon"
+Overwatch.exe!0x2ce41c8 "State"
+Overwatch.exe!0x2cec228 "StaysOpen"
+Overwatch.exe!0x2cee880 "Storyboard"
+Overwatch.exe!0x2cf1f68 "Storyboard"
+Overwatch.exe!0x2cee130 "Stretch"
+Overwatch.exe!0x2cefdd0 "Stretch"
+Overwatch.exe!0x2cf1210 "Stretch"
+Overwatch.exe!0x2cf1220 "StretchDirection"
+Overwatch.exe!0x2ceda28 "Stroke"
+Overwatch.exe!0x2cee150 "Stroke"
+Overwatch.exe!0x2cee170 "StrokeDashOffset"
+Overwatch.exe!0x2cee160 "StrokeThickness"
+Overwatch.exe!0x2ce5b70 "Style"
+Overwatch.exe!0x2ce6310 "SystemTime"
+Overwatch.exe!0x2ce95f8 "TabOnceActiveElement"
+Overwatch.exe!0x2ce5c28 "Tag"
+Overwatch.exe!0x2ce5df8 "TankEffect"
+Overwatch.exe!0x2ce6028 "TankPointer"
+Overwatch.exe!0x2ce6ab0 "TargetElement"
+Overwatch.exe!0x2ceb9b8 "TargetElement"
+Overwatch.exe!0x2ceba38 "TargetElement"
+Overwatch.exe!0x2ced8e8 "TargetHorizontalOffset"
+Overwatch.exe!0x2ce3b68 "TargetMediaElement"
+Overwatch.exe!0x2cee810 "TargetName"
+Overwatch.exe!0x2cef0b0 "TargetObject"
+Overwatch.exe!0x2cdc3b0 "TargetProperty"
+Overwatch.exe!0x2cee820 "TargetProperty"
+Overwatch.exe!0x2ced8f8 "TargetVerticalOffset"
+Overwatch.exe!0x2ceefc0 "TeamColor"
+Overwatch.exe!0x2ce3aa8 "Template"
+Overwatch.exe!0x2ce91d8 "Template"
+Overwatch.exe!0x2ce2ae0 "TestParamW"
+Overwatch.exe!0x2ce2ab0 "TestParamX"
+Overwatch.exe!0x2ce2ac0 "TestParamY"
+Overwatch.exe!0x2ce2ad0 "TestParamZ"
+Overwatch.exe!0x2cef270 "TextTrimming"
+Overwatch.exe!0x2cef260 "TextWrapping"
+Overwatch.exe!0x2cdba68 "Threshold"
+Overwatch.exe!0x2cee4b0 "TickFrequency"
+Overwatch.exe!0x2cefde0 "TileMode"
+Overwatch.exe!0x2ce1f40 "To"
+Overwatch.exe!0x2ce4b88 "To"
+Overwatch.exe!0x2ce8660 "To"
+Overwatch.exe!0x2ce8808 "To"
+Overwatch.exe!0x2cebea0 "To"
+Overwatch.exe!0x2cec900 "To"
+Overwatch.exe!0x2cefa60 "To"
+Overwatch.exe!0x2cf0208 "ToolTip"
+Overwatch.exe!0x2ce0d80 "Top"
+Overwatch.exe!0x2cedc48 "TotalAmount"
+Overwatch.exe!0x2ce68a8 "TournamentMode"
+Overwatch.exe!0x2cede90 "TrailingMargin"
+Overwatch.exe!0x2ce7548 "Transform"
+Overwatch.exe!0x2ce8580 "TransitionProgress"
+Overwatch.exe!0x2ce40c0 "TrueState"
+Overwatch.exe!0x2cebda0 "UXLogicalButton"
+Overwatch.exe!0x2cf07e8 "UXLogicalButton"
+Overwatch.exe!0x2ce30d0 "UncheckedContent"
+Overwatch.exe!0x2ce30e0 "UncheckedContentTemplate"
+Overwatch.exe!0x2ce30f0 "UncheckedContentTemplateSelector"
+Overwatch.exe!0x2ce41f8 "UseTransitions"
+Overwatch.exe!0x2ce4428 "UseTransitions"
+Overwatch.exe!0x2ce75e0 "UseTransitions"
+Overwatch.exe!0x2cde488 "Value"
+Overwatch.exe!0x2ce1198 "Value"
+Overwatch.exe!0x2ce2250 "Value"
+Overwatch.exe!0x2ce2b40 "Value"
+Overwatch.exe!0x2ce40b0 "Value"
+Overwatch.exe!0x2ce41d8 "Value"
+Overwatch.exe!0x2ce4498 "Value"
+Overwatch.exe!0x2ce4ef8 "Value"
+Overwatch.exe!0x2ce8ae8 "Value"
+Overwatch.exe!0x2ceb958 "Value"
+Overwatch.exe!0x2cec030 "Value"
+Overwatch.exe!0x2cec840 "Value"
+Overwatch.exe!0x2ceca90 "Value"
+Overwatch.exe!0x2cede50 "Value"
+Overwatch.exe!0x2ceeb80 "Value"
+Overwatch.exe!0x2cefbf0 "Value"
+Overwatch.exe!0x2ce5ab0 "VerticalAlignment"
+Overwatch.exe!0x2ce3a88 "VerticalContentAlignment"
+Overwatch.exe!0x2cdbd28 "VerticalOffset"
+Overwatch.exe!0x2cec218 "VerticalOffset"
+Overwatch.exe!0x2ced878 "VerticalOffset"
+Overwatch.exe!0x2ce1d70 "View"
+Overwatch.exe!0x2ce4758 "View"
+Overwatch.exe!0x2ce8450 "ViewMatrix"
+Overwatch.exe!0x2ced8d8 "ViewportHeight"
+Overwatch.exe!0x2ced378 "ViewportSize"
+Overwatch.exe!0x2cf0398 "ViewportSize"
+Overwatch.exe!0x2ced8c8 "ViewportWidth"
+Overwatch.exe!0x2ce5b80 "Visibility"
+Overwatch.exe!0x2ce1378 "WaveHeight"
+Overwatch.exe!0x2ce1388 "WaveSpeed"
+Overwatch.exe!0x2ce1398 "WaveWidth"
+Overwatch.exe!0x2ce5a10 "Width"
+Overwatch.exe!0x2ce8470 "WorldPosition"
+Overwatch.exe!0x2cf0540 "X"
+Overwatch.exe!0x2cf0550 "Y"
+Overwatch.exe!0x2cebaf8 "ZIndex"
+
+# dump encrypted strings
+
+* `""`
+* `"\t\tDevice context destroyed."`
+* `"\t%.4f %.4f %.4f %.4f\n"`
+* `"\tDestroyed depth buffers"`
+* `"\tDestroyed frame timers"`
+* `"\tDestroyed movie player memory"`
+* `"\tDestroyed satellite window resources"`
+* `"\tDestroyed texture pool resources"`
+* `"\tDestroyed vertex format stacks"`
+* `"\tDestroying device context..."`
+* `"\tDestroying queued shaders"`
+* `"\tID3D11DeviceContext::ClearState()"`
+* `"\tID3D11DeviceContext::Flush()"`
+* `"\tProcessed queued resource destruction"`
+* `"\tReleased Vertex Formats"`
+* `"\tReleased all state blocks"`
+* `"\tReleased null buffer"`
+* `"\tReset Device Settings Cache"`
+* `"\n"`
+* `"\n-----------------\n\n"`
+* `"\nAchievements:"`
+* `"\nHero Stats"`
+* `"\nPlayers:\n"`
+* `"\nSection"`
+* `"\nServer view: party %s"`
+* `"\nStats for Hero: %s (0x%016llx)"`
+* `"\nStats for Hero: (0x%016llx)"`
+* `"\nStats for Map: (0x%016llx)"`
+* `"\nStats for context: %d"`
+* `"\nWarning: This path is not guaranteed to be valid more than 2 weeks following bug creation.\nFull Dump Path: \\\\%s\\%s\n"`
+* `"\u{c}`�2�M"`
+* `" "`
+* `"                             SYSTEM INFO                           \n"`
+* `"                            GAME STATE                             \n"`
+* `"                          APPLICATION STATE                        \n"`
+* `"      AVG:  %3d  %3d  %3d  %3d"`
+* `"      MAX:  %3d  %3d  %3d  %3d"`
+* `"    %s"`
+* `"    Bucket type: %s"`
+* `"    Map guid: %016llx"`
+* `"    Map name: %s"`
+* `"    Match: %u"`
+* `"    Population: %s"`
+* `"    Previous winner: %d"`
+* `"    Server: %s"`
+* `"    State: %s"`
+* `"    Summed Rating Value: %.3f"`
+* `"    Total groups: %u"`
+* `"    Wins / Matches: %u / %u"`
+* `"   G: %5.1f, %5.1f, %5.1f, %4.1f"`
+* `"   R: %5.1f, %5.1f, %5.1f, %4.1f"`
+* `"   S: %5.1f, %5.1f, %5.1f, %4.1f"`
+* `"  %s"`
+* `"  (...and more)"`
+* `"  Team: %u (%u members)"`
+* `"  Team: Unassigned"`
+* `"  Tourny Name: %s, eSports Tourny ID: %d, eSports MatchID: %d, Ready To Play: %s"`
+* `"  clnt"`
+* `" %s 0x%p%s"`
+* `" -attachment \"%s\""`
+* `" FPS"`
+* `" Game?"`
+* `" NTSTATUS = %x"`
+* `" Tank?"`
+* `" Version %u"`
+* `" [%s]: "`
+* `"!!UNKNOWN ACHIEVEMENT!!"`
+* `"!!UNKNOWN STAT!!"`
+* `"!!UNKNOWN!!"`
+* `"\"%s\""`
+* `"\"%s\" %s"`
+* `"\"%s\" %s %s %s %s"`
+* `"\"%s\": "`
+* `"\"%s\": \"%s\""`
+* `"\"0x%016llx\""`
+* `"\"0x%08x\""`
+* `"\"0x%llx:0x%llx\""`
+* `"#"`
+* `"##Output"`
+* `"#= VoiceClient: %s (id = %d) :- [%d] %s %s"`
+* `"#= VoiceClient: + Activated channel %d"`
+* `"#= VoiceClient: + Active %s %s"`
+* `"#= VoiceClient: + Active %s device changed (%s) -> (%s)"`
+* `"#= VoiceClient: + Active %s volume %d"`
+* `"#= VoiceClient: + Active user changed %d -> %d"`
+* `"#= VoiceClient: + Available %s list changed to %d devices"`
+* `"#= VoiceClient: + Canceled join channel %d(%s)"`
+* `"#= VoiceClient: + Channel %d %s -> %s"`
+* `"#= VoiceClient: + Channel %d PTT (%s) -> (%s)"`
+* `"#= VoiceClient: + Channel %d active %d -> %d"`
+* `"#= VoiceClient: + Channel %d added member (%s)"`
+* `"#= VoiceClient: + Channel %d display name (%s) -> (%s)"`
+* `"#= VoiceClient: + Channel %d volume %d -> %d"`
+* `"#= VoiceClient: + Channel removed %d(%s)"`
+* `"#= VoiceClient: + Creating %s channel %d(%s)"`
+* `"#= VoiceClient: + Deactivated channel %d"`
+* `"#= VoiceClient: + Found capture device %s"`
+* `"#= VoiceClient: + Found device %s"`
+* `"#= VoiceClient: + Found render device %s"`
+* `"#= VoiceClient: + Joined channel %d(%s)"`
+* `"#= VoiceClient: + Login credentials created for %s"`
+* `"#= VoiceClient: + Login requested for %s"`
+* `"#= VoiceClient: + Member %s active %d -> %d"`
+* `"#= VoiceClient: + Member %s display name %s -> %s"`
+* `"#= VoiceClient: + Member %s muted for all %d -> %d"`
+* `"#= VoiceClient: + Member %s muted for me %d -> %d"`
+* `"#= VoiceClient: + Process added %s (%d)"`
+* `"#= VoiceClient: + Request leave channel %d(%s)"`
+* `"#= VoiceClient: + Starting devices"`
+* `"#= VoiceClient: ============================Startup============================"`
+* `"#= VoiceClient: Auto-Join Enabled Flags %04x -> %04x"`
+* `"#= VoiceClient: ChatSystem leaving PARTY channel: %s"`
+* `"#= VoiceClient: ChatSystem leaving TEAM channel: %s"`
+* `"#= VoiceClient: ChatSystem removing MATCH channel: %s"`
+* `"#= VoiceClient: ChatSystem removing PARTY channel: %s"`
+* `"#= VoiceClient: ChatSystem removing TEAM channel: %s"`
+* `"#= VoiceClient: ChatSystem switching to new MATCH channel: %s"`
+* `"#= VoiceClient: ChatSystem switching to new PARTY channel: %s"`
+* `"#= VoiceClient: ChatSystem switching to new TEAM channel: %s"`
+* `"#= VoiceClient: ERROR:%d : %s (%s) : %s\n"`
+* `"#= VoiceClient: ERROR:%d : %s : %s\n"`
+* `"#= VoiceClient: ERROR:+ Cannot set active %s to unknown device %s"`
+* `"#= VoiceClient: ERROR:+ Channel %d not found for member %s request %s"`
+* `"#= VoiceClient: ERROR:Attempted to retry an unexpected request. \"%s\""`
+* `"#= VoiceClient: ERROR:Failed to leave channel %d with error %d(%d)"`
+* `"#= VoiceClient: ERROR:Failed to set %s field %s with error %d(%d)"`
+* `"#= VoiceClient: ERROR:Hit max retries for %s, id = %d"`
+* `"#= VoiceClient: ERROR:Retrying connector create after %.2f seconds"`
+* `"#= VoiceClient: ERROR:Retrying log in after %.2f seconds"`
+* `"#= VoiceClient: ERROR:Retrying request \"%s\" in %.2f seconds"`
+* `"#= VoiceClient: RequestLeaveChannel -> %s from %s"`
+* `"#= VoiceClient: Retry successful for %s, id = %d"`
+* `"#= VoiceClient: State -> %s"`
+* `"#= VoiceClient: __SetTargetActiveChannelType(%s -> %s) : %d"`
+* `"#Ҁ瞘MXB�\u{f10e}N\u{1d}\u{18}��牖M\u{c}C"`
+* `"$\u{14}�\u{b}�"`
+* `"%.2f"`
+* `"%.3f"`
+* `"%.4f"`
+* `"%00i:%00i:%00i%s"`
+* `"%016llx"`
+* `"%016llx:%016llx"`
+* `"%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X"`
+* `"%02d-%02d-%02d_%02d.%02d.%02d"`
+* `"%4.0f"`
+* `"%4d"`
+* `"%I64u,%f,%f,%f,%f%s"`
+* `"%c%c  --%s%s%s\n"`
+* `"%cE:{%08X}"`
+* `"%d"`
+* `"%d : %s (%s) : %s\n"`
+* `"%d : %s : %s\n"`
+* `"%d%s"`
+* `"%d.%d.%d.%d"`
+* `"%d:%02d"`
+* `"%f"`
+* `"%f%%"`
+* `"%g"`
+* `"%g:%g:%g"`
+* `"%g:%g:%g:%g"`
+* `"%i\n"`
+* `"%lld"`
+* `"%llu"`
+* `"%ls\n"`
+* `"%s"`
+* `"%s\n"`
+* `"%s\n\n"`
+* `"%s "`
+* `"%s #%u"`
+* `"%s %s"`
+* `"%s (%s)"`
+* `"%s (0x%016llx)"`
+* `"%s (0x%016llx), time: %s"`
+* `"%s (0xE0%02X0%02X0)\n"`
+* `"%s ERROR: 0x%016llX"`
+* `"%s Error code: %d "`
+* `"%s [%s]:"`
+* `"%s%s"`
+* `"%s%s = \"%s\"%s\r\n"`
+* `"%s(%d) %s"`
+* `"%s(%d) : Assertion failed: %s  \"%s\""`
+* `"%s(%u): %s(): [%s] %s"`
+* `"%s."`
+* `"%s.%d"`
+* `"%s.%s.%s%s:"`
+* `"%s/%s"`
+* `"%s/%s/CrashMailer_%s.exe \"%s\""`
+* `"%s/CCS"`
+* `"%s/Cache/Shaders/"`
+* `"%s/ErrorReporting"`
+* `"%s/Settings/%s.ini"`
+* `"%s/cache"`
+* `"%s/data"`
+* `"%s/x64/Symbolizer.exe"`
+* `"%s: "`
+* `"%s: %-3d %s"`
+* `"%s: %f"`
+* `"%s: %s\n"`
+* `"%s: pending writes exceeded\n"`
+* `"%s:%d"`
+* `"%s:%u"`
+* `"%s[%s.%d]%s\r\n"`
+* `"%s[%s]"`
+* `"%s\\*.*"`
+* `"%s\\Logs"`
+* `"%s\\Overwatch"`
+* `"%s_%d_%s%s"`
+* `"%u"`
+* `"%u.%u"`
+* `"%x"`
+* `"&"`
+* `"\'%S\'%s"`
+* `"(m_instanceID: %d) (m_timestamp: %d) (SetVar) (guid: %04x) (val: %s)"`
+* `"(null)"`
+* `"*"`
+* `"*** Bad UI render transform detected! ***\n"`
+* `"*** Transform dump from element to root of visual tree: ***\n"`
+* `"****** Logging runaway script %016llx ******"`
+* `"**Crashing Thread**"`
+* `"+"`
+* `","`
+* `", "`
+* `", %s (0x%016llx)"`
+* `",#~1\u{18}|\u{13}�\u{f}#*/\u{b}tE�*&?m"`
+* `",%x"`
+* `"- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"`
+* `"---"`
+* `"-------------------------------------------------------------------\n"`
+* `"-------------------------------------------------------------------\n                                ERROR                              \n-------------------------------------------------------------------\n"`
+* `"-------------------------------------------------------------------\n                               MODULES                             \n-------------------------------------------------------------------\n"`
+* `"-------------------------------------------------------------------\n                              BUG DATA                             \n-------------------------------------------------------------------\n"`
+* `"-------------------------------------------------------------------\n                             STACK TRACE                           \n-------------------------------------------------------------------\n"`
+* `"------------------------------------------------------------------------\n"`
+* `"----------POSSIBLE OPTIONS----------------------------------------------\n"`
+* `"-auto"`
+* `"-savereport"`
+* `"."`
+* `".."`
+* `"..."`
+* `".apm"`
+* `".bin"`
+* `".build.info"`
+* `".cmf"`
+* `".mp4"`
+* `".webm"`
+* `"/"`
+* `"/ScreenShots/"`
+* `"0"`
+* `"0.0.0.0:0"`
+* `"0x%016llX"`
+* `"0x%016llx"`
+* `"0x%016llx,%f,%f,%f,%f"`
+* `"0x%016llx: %f"`
+* `"0x%08x"`
+* `"0x%I64X"`
+* `"0x%llx:0x%llx"`
+* `"1"`
+* `"1 - Critical Impact"`
+* `"1.0"`
+* `"1.35.0.1"`
+* `"15.200.1062.1004"`
+* `"1point1"`
+* `"20140913000000.000000-000"`
+* `"20150407000000.000000-000"`
+* `"20170922000000.000000-000"`
+* `"20180000000000.000000-000"`
+* `"2point1"`
+* `"3 - Medium"`
+* `"3 - Moderate Impact"`
+* `"32-bit"`
+* `"3point0"`
+* `"3point1"`
+* `"4 - Low"`
+* `"4point0"`
+* `"4point1"`
+* `"5point0"`
+* `"5point1"`
+* `"5��/��y.%��8�2;\u{6}��"`
+* `"64"`
+* `"64-bit"`
+* `"7point1"`
+* `":"`
+* `":%u"`
+* `"<:Inspector.Assertion>\n\n"`
+* `"<:Inspector.Assignments>\n\n"`
+* `"<:Inspector.Comments>\n\n"`
+* `"<:Inspector.DebugModules>\n\n"`
+* `"<:Inspector.Steps>\n\n"`
+* `"<Active_GPUs> %u\n\n"`
+* `"<Active_GPUs> 0\n\n"`
+* `"<Branch> %s\n\n"`
+* `"<CPU_Cores> %u\n\n"`
+* `"<CPU_Details> %s\n\n"`
+* `"<CPU_Processors> %u\n\n"`
+* `"<CPU_Threads> %u\n\n"`
+* `"<Executable> %s\n\n"`
+* `"<INVALID>"`
+* `"<Inspector.Assertion:>\n"`
+* `"<Inspector.Assignments:>\n"`
+* `"<Inspector.BuildNumber> %d\n\n"`
+* `"<Inspector.Comments:>\n"`
+* `"<Inspector.DebugModules:>\n"`
+* `"<Inspector.Field4> %s\n\n"`
+* `"<Inspector.HashBlock:>\n"`
+* `"<Inspector.IssueType> %s\n\n"`
+* `"<Inspector.PrimaryAssignment> %s\n\n"`
+* `"<Inspector.Priority> %s\n\n"`
+* `"<Inspector.ProjectId> %d\n\n"`
+* `"<Inspector.Steps:>\n\n"`
+* `"<Inspector.Summary:>\n%s - %s: %s\n<:Inspector.Summary>\n\n"`
+* `"<Operating_System> %s\n\n"`
+* `"<Region> %s\n\n"`
+* `"<SoundDriver_Device> %s\n"`
+* `"<SoundDriver_Version> %s\n"`
+* `"<Video_Card> %s\n\n"`
+* `"<Video_Card> [NONE]\n\n"`
+* `"<Video_Driver_Version> %s\n\n"`
+* `"<Video_Driver_Version> [NONE]\n\n"`
+* `"<Video_Memory> %u MB\n\n"`
+* `"<Video_Memory> 0 MB\n\n"`
+* `"<Video_Memory_Allocated> %u MB\n\n"`
+* `"<Video_Memory_Allocated> 0 MB\n\n"`
+* `"<fg%02x%02x%02xFF>"`
+* `"<unknown>"`
+* `">: "`
+* `"??"`
+* `"???"`
+* `"?GFSDK_Aftermath_DX11_GetData@@YA?AW4GFSDK_Aftermath_Result@@IPEBQEAUID3D11DeviceContext@@PEAUGFSDK_Aftermath_ContextData@@PEAW4GFSDK_Aftermath_Status@@@Z"`
+* `"?GFSDK_Aftermath_DX11_Initialize@@YA?AW4GFSDK_Aftermath_Result@@W4GFSDK_Aftermath_Version@@QEAUID3D11Device@@@Z"`
+* `"?GFSDK_Aftermath_DX11_SetEventMarker@@YA?AW4GFSDK_Aftermath_Result@@QEAUID3D11DeviceContext@@PEAXI@Z"`
+* `"@"`
+* `"A Console Command Shortcut. Any args passed to this command go to the first command executed by this shortcut.\n\nCommands:\n"`
+* `"AADetail"`
+* `"AB After Post"`
+* `"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"`
+* `"ACCOUNT_BANNED"`
+* `"ADL2_Adapter_Primary_Get"`
+* `"ADL2_ApplicationProfiles_HitListsX3_Get"`
+* `"ADL2_OverdriveN_Temperature_Get"`
+* `"ADL_Adapter_AdapterInfo_Get"`
+* `"ADL_Adapter_NumberOfAdapters_Get"`
+* `"ADL_Main_Control_Create"`
+* `"ADL_Main_Control_Destroy"`
+* `"ADL_Overdrive5_Temperature_Get"`
+* `"ADL_Overdrive6_ThermalController_Caps"`
+* `"ALL"`
+* `"ALW"`
+* `"AMD PCI"`
+* `"ANIM"`
+* `"ARRAY FILE REFERENCE"`
+* `"ASSETPACKAGE"`
+* `"ASTC_UNORM_SRGB"`
+* `"AUTHENTICATOR"`
+* `"AUTHENTICATOR_FORM"`
+* `"Abbiamo rilevato l\'utilizzo di un\'applicazione di terze parti che viola il nostro Accordo di licenza. Overwatch verrà chiuso."`
+* `"Accept-Language: %s"`
+* `"Accept: application/json;charset=utf-8"`
+* `"Accept: text/plain"`
+* `"Accepted"`
+* `"ActivatableVM"`
+* `"Active"`
+* `"Active GPUs:               %u\n"`
+* `"Active Unlocks"`
+* `"Active Unlocks for 0x%016llx"`
+* `"Actual"`
+* `"Address"`
+* `"After Blur Opaque Decals"`
+* `"After Blur Opaque Particle"`
+* `"After Blur Opaque Ribbons"`
+* `"After Blur Translucency"`
+* `"After Post"`
+* `"Age is out of bounds by %d seconds"`
+* `"All Heroes"`
+* `"All Unlocks for 0x%016llx"`
+* `"Allied Spectate View"`
+* `"Allocated_Memory"`
+* `"Amount of memory committed by JeMalloc (active pages)"`
+* `"Amount of memory requested from JeMalloc"`
+* `"AnimGameData couldn\'t generate bind pose. Invalid bone count between dst pose and skeleton"`
+* `"AnimGameData couldn\'t generate bind pose. NULL skeleton"`
+* `"AnimGameData couldn\'t generate bind pose. no dst frames"`
+* `"AnimatedView"`
+* `"AnisotropicFiltering"`
+* `"AppPlatform"`
+* `"Application"`
+* `"Application Platform:      %s\n"`
+* `"Application:               %s/%s\n"`
+* `"AreaIntersectionsUpdate"`
+* `"Array"`
+* `"Array of %d"`
+* `"Assert after shutting down an app that failed to start up"`
+* `"Assertion failed: %s  \"%s\""`
+* `"Assets"`
+* `"AsterionClient"`
+* `"AsyncHttp"`
+* `"AsyncHttp_Console"`
+* `"Attempted operation at or past the EOF"`
+* `"Authentication add lobby connection"`
+* `"AuthenticationSystem"`
+* `"Automatic"`
+* `"Automation entity unavailable"`
+* `"Avail"`
+* `"Avail Page File:           %llu MBs\n"`
+* `"Available Memory:          %llu MBs\n"`
+* `"Available Tickets"`
+* `"Avoid Spawn Blockers"`
+* `"BLIZZSTRING"`
+* `"BNetEnabled"`
+* `"BNetSegKey"`
+* `"BNetServer"`
+* `"Background"`
+* `"Background Opaque"`
+* `"Bad Gateway"`
+* `"Bad Request"`
+* `"Bad Request Id"`
+* `"Bad frame read"`
+* `"Balancer"`
+* `"Bank Data corrput! Sound: 0x%016llX"`
+* `"BaseBoard"`
+* `"Battle.net/Armadillo"`
+* `"BattleTag: %s, ID: %s, Status: %s [%u], Leader: %s"`
+* `"Battletag"`
+* `"Beginning Final Swap."`
+* `"Bios"`
+* `"BitRate"`
+* `"BlizzardInventorySystem"`
+* `"Blizzardエンドユーザー使用許諾契約に反するサードパーティ製アプリケーションの使用が検出されました。「オーバーウォッチ」を終了します。"`
+* `"BlockTransfer"`
+* `"Bnet Account ID:           %d\n"`
+* `"Bool"`
+* `"BroadcastMarginBottom"`
+* `"BroadcastMarginLeft"`
+* `"BroadcastMarginRight"`
+* `"BroadcastMarginTop"`
+* `"Build:                     %s\n"`
+* `"BuildNumber"`
+* `"CAPTCHA_REQUIRED"`
+* `"CHANNEL_FIELD_DISPLAY_NAME"`
+* `"CHANNEL_FIELD_IS_ACTIVE"`
+* `"CHANNEL_FIELD_IS_MUTED"`
+* `"CHANNEL_FIELD_IS_STICKY"`
+* `"CHANNEL_FIELD_IS_TRANSMITTING"`
+* `"CHANNEL_FIELD_PTT"`
+* `"CHANNEL_FIELD_VOLUME"`
+* `"CHANNEL_JOIN"`
+* `"CHANNEL_LEAVE"`
+* `"CHANNEL_MODIFY"`
+* `"CLIENT"`
+* `"CLIENT_LOGIN"`
+* `"CLIENT_LOGOUT"`
+* `"CLIENT_SHUTDOWN"`
+* `"CLIENT_STOP"`
+* `"CN"`
+* `"COMPOSITE"`
+* `"CONNECTED"`
+* `"CONOUT$"`
+* `"CONTROLLER_CHORD_SHOULDERS"`
+* `"CPU"`
+* `"CPU Idle:%3d%%"`
+* `"CPU Update Manager"`
+* `"CPUFrequency"`
+* `"CRASHMAIL"`
+* `"CREATED_CONNECTOR"`
+* `"CREATED_SESSIONGROUP"`
+* `"CREATING"`
+* `"CREATING_CONNECTOR"`
+* `"CREATING_SESSIONGROUP"`
+* `"CURSOR"`
+* `"Canvas"`
+* `"Changed"`
+* `"Chat"`
+* `"ChatAutoCompleteItemVM"`
+* `"ChatEndorsementLevelIncreasedNotificationItemVM"`
+* `"ChatEndorsementReceivedNotificationItemVM"`
+* `"ChatHighlightNotificationItemVM"`
+* `"ChatItemVM"`
+* `"ChatLeaverNotificationItemVM"`
+* `"ChatLostCompetitiveRankNotificationItemVM"`
+* `"ChatNotificationItemVM"`
+* `"ChatPlayerNameTokenVM"`
+* `"ChatSilenceNotificationItemVM"`
+* `"ChatTokenVM"`
+* `"ChatVM"`
+* `"Checked"`
+* `"Children"`
+* `"China"`
+* `"Cinematics"`
+* `"Clean"`
+* `"Clearing lobby transition."`
+* `"Client"`
+* `"Client\'s data:\n"`
+* `"Client/Server quanta mismatch."`
+* `"Collapse"`
+* `"Collapsed"`
+* `"ColorBlind"`
+* `"ColorblindMode"`
+* `"ColorblindStrength"`
+* `"Command History"`
+* `"Command Line:           "`
+* `"Composite draw margin."`
+* `"Composite render target padding."`
+* `"ComputeFogEnabled"`
+* `"Computer"`
+* `"Conflict"`
+* `"ConnectToInstance"`
+* `"Connection: keep-alive"`
+* `"Console"`
+* `"Console Opacity"`
+* `"Console Unit Size"`
+* `"Console window Close button."`
+* `"Console##%llX"`
+* `"ConsoleOpacity"`
+* `"ConsoleSize"`
+* `"ConsoleStartScreenVM"`
+* `"Content-type: application/json;charset=utf-8"`
+* `"Context"`
+* `"Continue"`
+* `"Cookie: JSESSIONID=%s; web.id=%s"`
+* `"Corrections"`
+* `"Could not capture error information because the CrashMailer is not running.\nLooking in: %s"`
+* `"Couldn\'t load Sequence 0x%016llX."`
+* `"Count"`
+* `"Cpu"`
+* `"Cpu Details"`
+* `"CpuBiosOutdated"`
+* `"CpuFamily"`
+* `"CpuForceSyncEnabled"`
+* `"CpuPciDriverDate"`
+* `"CpuStepping"`
+* `"CpuUpdateRevision"`
+* `"CpuVendor"`
+* `"Create Match: %s vs %s"`
+* `"Create failure %s"`
+* `"Created"`
+* `"Created:                   %s %s\n"`
+* `"Creating effect 0x%016llX failed: no appropriate effects scene found."`
+* `"Currency"`
+* `"Currency: %d"`
+* `"Current"`
+* `"Current Unlocks for 0x%016llx"`
+* `"Current Week: %d"`
+* `"Current Wins: %d"`
+* `"Current stat events for this instance:"`
+* `"Custom Game"`
+* `"DBG"`
+* `"DBG-OPTIONS<>\n"`
+* `"DBG-OPTIONS<NoImage NoAddress NoFileLine NoFuncOffset NoDbgAddr>\n"`
+* `"DEBUG"`
+* `"DEVICE_FIELD_ACTIVE"`
+* `"DEVICE_FIELD_AVAILABLE_LIST"`
+* `"DEVICE_FIELD_IS_MUTED"`
+* `"DEVICE_FIELD_POWER"`
+* `"DEVICE_MIC"`
+* `"DEVICE_SPEAKER"`
+* `"DEV_"`
+* `"DISCONNECTED_LOBBY_CONNECTED"`
+* `"DISPLAYTEXT"`
+* `"DONE"`
+* `"DataFlow Buffer"`
+* `"DataObject"`
+* `"DataTemplateSelector"`
+* `"Date"`
+* `"Deadline"`
+* `"Debug Spectator Camera"`
+* `"Decay starts (s)"`
+* `"December"`
+* `"Decimal"`
+* `"Default Monitor"`
+* `"DefaultHero"`
+* `"DeleteFile - %s"`
+* `"Delta Experience Needed"`
+* `"Demo"`
+* `"Dependency 0x%016llX failed to load."`
+* `"DeprecatedDialogVM"`
+* `"Depth Prepass"`
+* `"Desired"`
+* `"Destroyed"`
+* `"Destroying window."`
+* `"Detailed FPS"`
+* `"DetailsOverride\n"`
+* `"Detectamos o uso de um aplicativo de terceiros que viola o nosso EULA.  Overwatch será encerrado agora."`
+* `"Development"`
+* `"Device Ext Refs Count:  %d\n"`
+* `"Device-Id: %s"`
+* `"DiffuseColor"`
+* `"DirectionalShadowDetail"`
+* `"Disable movement error correction for local players"`
+* `"Disabled"`
+* `"Discarding invalid pending tournament game."`
+* `"Disconnected due to power save."`
+* `"Disconnected from lobby server"`
+* `"Disconnected from server."`
+* `"Display %d"`
+* `"Display CPU Idle Stats"`
+* `"Display GPU Temp"`
+* `"Display Mode:              %s\n"`
+* `"DisplayArea"`
+* `"Distance Constraint"`
+* `"DolbyAtmosHDMI"`
+* `"DolbyAtmosHeadphone"`
+* `"DominoCollisionEffects"`
+* `"DominoStep"`
+* `"Double"`
+* `"Draw SoundSystem Info"`
+* `"Draw from the raster cache in individual calls."`
+* `"Draw sound importance"`
+* `"DrawDefaultShader"`
+* `"DrawDefaultShaderClipSpace"`
+* `"DrawDefaultShaderClipSpaceAdditive"`
+* `"DrawDefaultShaderClipSpaceNoAlpha"`
+* `"DrawDefaultShaderDomino"`
+* `"DrawShaderDisplayAlphaClipSpace"`
+* `"Dummy Job"`
+* `"Duration"`
+* `"EFFECT"`
+* `"ERR"`
+* `"ERROR"`
+* `"EditionID"`
+* `"Effect"`
+* `"Effect Instance"`
+* `"Effective Resolution:      %dx%d\n"`
+* `"EffectiveHeight"`
+* `"EffectiveWidth"`
+* `"EffectsQuality"`
+* `"Element Attribute"`
+* `"Empty"`
+* `"Enable UX outline rendering"`
+* `"Enable camera update"`
+* `"Enable combat outline rendering"`
+* `"Enable debug drawing of normals."`
+* `"Enable fuzz testing."`
+* `"Enable/Disable limiting the client send rate."`
+* `"Enable/Disable limiting the server send rate."`
+* `"Enable/Disable the network diagnostic graph."`
+* `"Enable/Disable the network diagnostic icons, indicating packet loss or client to server latency issues."`
+* `"Enables clipping masks."`
+* `"Enables compositing effects."`
+* `"Enables culling draw calls outside of visible region."`
+* `"Enables debug drawing of clipping masks."`
+* `"Enables filled paths."`
+* `"Enables stroked paths."`
+* `"Enables subtitles (0 = off, 1 = on )"`
+* `"Enables the raster cache."`
+* `"Enables visualization of composite bounds."`
+* `"Encoding failed."`
+* `"End of Life"`
+* `"Engine"`
+* `"Entity"`
+* `"Error"`
+* `"ErrorLog"`
+* `"Es wurde die Verwendung eines Drittanbieterprogramms festgestellt, das gegen die Endbenutzerlizenzvereinbarung verstößt. Overwatch wird beendet."`
+* `"ExecuteDeferred"`
+* `"Executed a successful async open"`
+* `"Executed a successful async read"`
+* `"Executed a successful async write"`
+* `"Executing pending device commands."`
+* `"Exited"`
+* `"Exited render thread loop..."`
+* `"Exiting with files still open:\n"`
+* `"ExpandDown"`
+* `"ExpandLeft"`
+* `"ExpandRight"`
+* `"ExpandUp"`
+* `"Expanded"`
+* `"Expect:"`
+* `"Expectation Failed"`
+* `"Ext"`
+* `"External"`
+* `"External_Source"`
+* `"Extra Cpu Details"`
+* `"FATAL"`
+* `"FONT"`
+* `"FOV Speed"`
+* `"FOXTROT"`
+* `"FPS"`
+* `"Face Velocity View"`
+* `"Fail"`
+* `"Failed Cosmetic Entity; Entity 0x%016llX has components that require it to be server spawned"`
+* `"Failed memory test in past"`
+* `"Failed to add movement state."`
+* `"Failed to allocate a needed storage struct"`
+* `"Failed to build metadata."`
+* `"Failed to connect to lobby. Please try again later."`
+* `"Failed to create encoder."`
+* `"Failed to create entity for placeable %d, 0x%016llX 0x%016llX 0x%016llX"`
+* `"Failed to create new custom game link - exceeded link creation quota."`
+* `"Failed to create new custom game link."`
+* `"Failed to create recorder."`
+* `"Failed to get WWise RTPC value"`
+* `"Failed to load custom game link: %s"`
+* `"Failed to load data package 0x%016llx due to load error %d"`
+* `"Failed to load handle for hit volume override 0x%016llX"`
+* `"Failed to load resource from package 0x%016llX due to load error %d"`
+* `"Failed to load statescript graph %016llx"`
+* `"Failed to open"`
+* `"Failed to open requested replay stream %s: %s"`
+* `"Failed to parse base path for %s"`
+* `"Failed to read highlight %s: %s"`
+* `"Failed to read reel header from stream: %s"`
+* `"Failed to read reel header size from stream: %s"`
+* `"Failed to register WWise Listener"`
+* `"Failed to register WWise Object"`
+* `"Failed to rename highlight title %s: %s"`
+* `"Failed to request reel."`
+* `"Failed to reset SoundStateGroup"`
+* `"Failed to resolve address for battle.net"`
+* `"Failed to set SoundState"`
+* `"Failed to unregister WWise Listener"`
+* `"Failed to unregister WWise Object"`
+* `"Failed to update WWise"`
+* `"Failed to update dynamic configuration on servers"`
+* `"Failed to write data into CASC. Storage Error: %d"`
+* `"Failed to write highlight %s: %s"`
+* `"Fake Trans Opaque"`
+* `"False"`
+* `"File Reference"`
+* `"File does not exist"`
+* `"File exists"`
+* `"File in exclusive use right now"`
+* `"File is in non-exclusive use and exclusive use was requested"`
+* `"File is in use and an exclusive operation was requested"`
+* `"File is locked"`
+* `"File size was 0 bytes"`
+* `"File was not ready for this operation"`
+* `"FileObjPool"`
+* `"Filter redundant calls to Wwise and only set values if they are different (0 = off, 1 = reduce )"`
+* `"Finalize job failed."`
+* `"Finalizing Swap."`
+* `"Finish Mod (object) %d"`
+* `"First Person Spectate View"`
+* `"First Person View"`
+* `"FlushEntities"`
+* `"Focused"`
+* `"Fog Density Particles"`
+* `"FogEnabled"`
+* `"Font"`
+* `"Font Vector"`
+* `"Font Vector 3D"`
+* `"For local player generate movement commands"`
+* `"Forbidden"`
+* `"Force camera input even if we don\'t have focus"`
+* `"Force importance"`
+* `"Force input mode 0-Global, 1-Game, 2-Spectate"`
+* `"Force the client to hang for this many seconds"`
+* `"ForceClientMode Activate"`
+* `"ForceClientMode Deactivate"`
+* `"ForceFMA3"`
+* `"Forces updates to the raster cache every frame."`
+* `"Foreground"`
+* `"Forever"`
+* `"Forward Lighting Buffer"`
+* `"Found"`
+* `"FrameRateCap"`
+* `"Framerate"`
+* `"FriendsSystem"`
+* `"Full Screen"`
+* `"FullReplaysPath"`
+* `"FullScreenHeight"`
+* `"FullScreenRefresh"`
+* `"FullScreenWidth"`
+* `"FullscreenWindow"`
+* `"FullscreenWindowEnabled"`
+* `"G"`
+* `"GFSDK_Aftermath_Lib.dll"`
+* `"GFXPresetLevel"`
+* `"GPU"`
+* `"GPU Allocated Memory:      %llu MBs\n"`
+* `"GPU Core Delta Freq:       %d\n"`
+* `"GPU Device ID"`
+* `"GPU Driver Date:           %s\n"`
+* `"GPU Driver Date:           [NONE]\n"`
+* `"GPU Driver:                %s - %s\n"`
+* `"GPU Driver:                [NONE] - [NONE]\n"`
+* `"GPU Memory Delta Freq:     %d\n"`
+* `"GPU Memory:                %llu MBs\n"`
+* `"GPU Name"`
+* `"GPU TEMP: %3d degC"`
+* `"GPU Temp:                  %u C\n"`
+* `"GPU Type:                  %s\n"`
+* `"GPU Type:                  [NONE]\n"`
+* `"GPU Vender ID"`
+* `"GPU Voltage Delta Freq:    %d\n"`
+* `"GPUDeviceID"`
+* `"GPUName"`
+* `"GPUScaler"`
+* `"GPUVenderID"`
+* `"GUID"`
+* `"Game"`
+* `"Game Account ID:           %d\n"`
+* `"Game Server IP:            %d.%d.%d.%d\n"`
+* `"GameService"`
+* `"Gamepad camera inertia dampening"`
+* `"Gamepad camera: Stick Power Factor for movement stick"`
+* `"Gamepad camera: Trigger Power Factor for both triggers"`
+* `"Gamepad: Enable aim assist"`
+* `"Gamepad: enable gamepad debug draw"`
+* `"Gateway Time-out"`
+* `"Gathering"`
+* `"GenuineIntel"`
+* `"Get Rating Result: %f"`
+* `"GetCursorPos"`
+* `"GetDiskFreeSpaceEx - %s"`
+* `"GetFileAttributes - %s"`
+* `"GetFileTime - %s"`
+* `"GetOnExternalChallengeRequest Failed"`
+* `"GetSystemTimePreciseAsFileTime"`
+* `"Gone"`
+* `"Governor"`
+* `"Group server info:"`
+* `"Group: %s"`
+* `"H-H-Rank"`
+* `"H-Lvl"`
+* `"H-Rank"`
+* `"H-Tier"`
+* `"HARDWARE\\DESCRIPTION\\System\\CentralProcessor\\0"`
+* `"HBAO"`
+* `"HBAO_CS"`
+* `"HELLO PRO CLIENT"`
+* `"HELLO PRO SERVER"`
+* `"HIT_ERROR"`
+* `"HOMEDRIVE"`
+* `"HOMEPATH"`
+* `"HTTP Version not supported"`
+* `"HandleLinkDown: Pending connection request to new lobby"`
+* `"HealthCardVM"`
+* `"Height"`
+* `"Hemos detectado el uso de una aplicación de terceros que incumple nuestro Contrato de Licencia para Usuario Final.  Overwatch ahora se cerrará."`
+* `"Hemos detectado el uso de una aplicación de terceros que infringe nuestro Contrato de Licencia de Usuario Final. Overwatch se cerrará."`
+* `"Hero"`
+* `"Hero: 0x%016llX\n"`
+* `"Heroes"`
+* `"High"`
+* `"Highlight"`
+* `"Highlights"`
+* `"History2"`
+* `"HorizontalFOV"`
+* `"How many frames must be retired before a shader is considered ready for use"`
+* `"HttpConn"`
+* `"HttpConnError"`
+* `"HttpConnInfo"`
+* `"ID"`
+* `"ID: %s"`
+* `"INF"`
+* `"INFO"`
+* `"INITIALISED"`
+* `"INITY"`
+* `"INPUT LAG:  SUB  RST  RND  GPU"`
+* `"INSTANCE"`
+* `"IN_PROGRESS"`
+* `"IN_SESSION"`
+* `"IR"`
+* `"Ignoring attempt to send cheat command %s when disconnected"`
+* `"ImGuiShader"`
+* `"Incremental_Uptime"`
+* `"Index"`
+* `"Input Lag"`
+* `"InstallHook"`
+* `"Instance"`
+* `"Instance ID"`
+* `"Instance Type"`
+* `"Instance Type: %s, ID: %s"`
+* `"Instance destructor called from teStatescriptContext::PreDelete"`
+* `"Instance information:"`
+* `"Instance state"`
+* `"Instance: %s"`
+* `"Int16"`
+* `"Int32"`
+* `"Int64"`
+* `"Int8"`
+* `"Intel Device Information"`
+* `"Internal Send Failed"`
+* `"Internal Server Error"`
+* `"Invalid Entity Position"`
+* `"Invalid JSON, No input_id for legal submit"`
+* `"Invalid JSON, No input_id in input"`
+* `"Invalid JSON, No label or label is not a string"`
+* `"Invalid SoundState GUID"`
+* `"Invalid index in __SetLegal"`
+* `"Invalid json in __ExtractLegalAgreements, no agreements"`
+* `"Invalid json in __ParseJsonAuthPost_Authenticator, no next_url"`
+* `"Invalid json in __ParseJsonAuthPost_Done, no login_ticket"`
+* `"Invalid json in __ParseJsonAuthPost_Legal, no next_url"`
+* `"Invalid json in __ParseJsonAuthPost_Login, no error_code"`
+* `"Invalid root"`
+* `"Invalid state for LegalAccepted"`
+* `"Invalid state for PARSE_LEGAL_CHALLENGE"`
+* `"Invalid state for Parse Auth Get"`
+* `"Invalid state for Parse Auth Post"`
+* `"Invalid state for Set Legal"`
+* `"Invalid state for Show Captcha"`
+* `"Invalid state in SubmitCaptcha"`
+* `"Invalid state in SubmitLegal"`
+* `"Invalid state in SubmitLogin"`
+* `"Invalid state in __AcquireConsoleAuth"`
+* `"Inverse FOV Interpolation Speed"`
+* `"Inverse Look Interpolation Speed"`
+* `"Inverse Offset Interpolation Speed"`
+* `"Inverse Position Interpolation Speed"`
+* `"Inverse Roll Interpolation Speed"`
+* `"Invitee (Accept)"`
+* `"Invitee (Transfer Info)"`
+* `"Invitee (Transfer Owner)"`
+* `"Invitee (Transfer Ticket)"`
+* `"Irradiance Buffer"`
+* `"IsActive"`
+* `"IsEnabled"`
+* `"Items"`
+* `"ItemsPresenter"`
+* `"JOINING"`
+* `"JPN"`
+* `"JSESSIONID"`
+* `"Jam"`
+* `"JamSystem (%s)"`
+* `"Japanese"`
+* `"JeMalloc.Active"`
+* `"JeMalloc.Allocated"`
+* `"JeMalloc.Mapped"`
+* `"Jh�P���N"`
+* `"Join Failed"`
+* `"Key: %d"`
+* `"KillCamVM"`
+* `"LEGAL"`
+* `"LEGAL_FORM"`
+* `"LIGHTINGDATA"`
+* `"LIGHTINGDEBUGDATA"`
+* `"LIGHTINGMANIFEST"`
+* `"LOCALE"`
+* `"LOCALE_AUDIO"`
+* `"LOGGED_IN"`
+* `"LOGGING_IN"`
+* `"LOGGING_OUT"`
+* `"LOGIN"`
+* `"LOGIN_FORM"`
+* `"LOWEST"`
+* `"LS"`
+* `"Last OS Error:          0x%x\n"`
+* `"LastTDR"`
+* `"Leaderboard:\n"`
+* `"Leaver Tier"`
+* `"Leaving"`
+* `"Leaving (Destroy)"`
+* `"Leaving (Transfer Ticket)"`
+* `"Length Required"`
+* `"Level"`
+* `"Level for the local mic volume"`
+* `"Light Compute"`
+* `"Light Process"`
+* `"Light Shaders"`
+* `"LightQuality"`
+* `"Lighting Env"`
+* `"LimitAspectRatio"`
+* `"LimitTo30"`
+* `"LimitToRefresh"`
+* `"Live World loading"`
+* `"Loaded"`
+* `"Loaded replay."`
+* `"LobbyClientConnectionSystem"`
+* `"LobbyClientPacketPipe"`
+* `"LobbyConsoleLoginErrorVM"`
+* `"LobbyDisconnectClient.m_appExit"`
+* `"LobbyLoginAuthenticatorVM"`
+* `"LobbyLoginCaptchaVM"`
+* `"LobbyLoginConnectingVM"`
+* `"LobbyLoginErrorVM"`
+* `"LobbyLoginLegalScreenVM"`
+* `"LobbyLoginLegalVM"`
+* `"LobbyLoginVM"`
+* `"LobbyLoginWaitingVM"`
+* `"LobbyMessage"`
+* `"LobbyShowModeEnterNameVM"`
+* `"LobbyShowModeSplashVM"`
+* `"Local view: party %s"`
+* `"LocalFogDetail"`
+* `"LocalMicMute"`
+* `"LocalMicVolume"`
+* `"LocalReflections"`
+* `"LogFailures.txt"`
+* `"LogSvc"`
+* `"LogoMovieVM"`
+* `"Look Speed"`
+* `"Lookat View"`
+* `"Loop Exit Scheduled"`
+* `"Loop Exited"`
+* `"Loop Exiting"`
+* `"Loop Running"`
+* `"Loop Starting Up"`
+* `"LoopInputCapture"`
+* `"LoopWork returned false."`
+* `"Loot Box Count: %d"`
+* `"Loot Box Type"`
+* `"LootBoxRewardVM"`
+* `"LootBoxScreenVM"`
+* `"Lost"`
+* `"Lost connection to LobbyServer"`
+* `"LostConnection to ProcessController"`
+* `"LowPop"`
+* `"MAP"`
+* `"MAPDATA"`
+* `"MATCH"`
+* `"MATERIAL"`
+* `"MATERIAL DATA"`
+* `"MEMBER_FIELD_DISPLAY_NAME"`
+* `"MEMBER_FIELD_IS_ACTIVE"`
+* `"MEMBER_FIELD_IS_MUTED_ALL"`
+* `"MEMBER_FIELD_IS_MUTED_ME"`
+* `"MEMBER_FIELD_IS_SPEAKING"`
+* `"MEMBER_FIELD_SPEAKING_ENERGY"`
+* `"MEMBER_FIELD_VOLUME"`
+* `"MEMBER_MODIFY"`
+* `"MISSING WAYPOINT LABEL"`
+* `"MODE"`
+* `"MODEL"`
+* `"MSPF"`
+* `"MT:(%s:%u), Q:(%s), Probe:(%s) map catalog %s"`
+* `"Map"`
+* `"Map GUID"`
+* `"Map GUID: 0x%016llX\n"`
+* `"Map GUIDS: 0x%016llX\n"`
+* `"Map Lighting data out of sync."`
+* `"Map Lighting data parsing failed."`
+* `"Map Name: %s, GUID: 0x%016llx"`
+* `"Maps"`
+* `"MasterMute"`
+* `"MasterVolume"`
+* `"Match: "`
+* `"Matches"`
+* `"Matchmaker %s updated MT:(%s:%u), Q:(%s), Probe:(%s) map catalog to %s"`
+* `"Matchmaking Group ID"`
+* `"Matchmaking information:"`
+* `"Matchmaking tickets:"`
+* `"MatchmakingVM"`
+* `"Matrix Buffer"`
+* `"Matrix:\n"`
+* `"MaxAnisotropy"`
+* `"MaxEffectsAnisotropy"`
+* `"MaxExtraQualityAnisotropy"`
+* `"MaxFrameLatency"`
+* `"MaxPermanentEffectsArea"`
+* `"MaximizedWindow"`
+* `"Megadump"`
+* `"Member"`
+* `"Memory Test State:      %s\n"`
+* `"MemoryTestHasFailed"`
+* `"Method Not Allowed"`
+* `"MetricMgr"`
+* `"Minidump"`
+* `"Mirror"`
+* `"MirrorChange"`
+* `"Mirroring mismatch."`
+* `"Misc Compute"`
+* `"Mismatched placeable type %d, 0x%016llX 0x%016llX"`
+* `"Missing entity definition: 0x%016llX"`
+* `"Missing movement component"`
+* `"Missing placeable data %d, 0x%016llX 0x%016llX"`
+* `"Missing placeable state %d, 0x%016llX 0x%016llX"`
+* `"Model Default"`
+* `"ModelLODPush"`
+* `"ModelQuality"`
+* `"Most Recent Assert: %s\n"`
+* `"Most Recent Logs:\n"`
+* `"Most recent assert: %s\n\n"`
+* `"Motherboard Details"`
+* `"MouseOver"`
+* `"Move Speed"`
+* `"MoveFileEx - %s"`
+* `"Moved Permanently"`
+* `"Movement"`
+* `"Movie Audio Decode"`
+* `"Movie Video Decode"`
+* `"MovieExport"`
+* `"Moving backwards"`
+* `"MultiGPUEnabled"`
+* `"MultiGPUTechnique"`
+* `"MultiThreadedEntitiesUpdate"`
+* `"Multiple Choices"`
+* `"MusicVolume"`
+* `"MuteOnLostFocus"`
+* `"Mutes the local mic (0 = off, 1 = mute )"`
+* `"Mutes the whole game when the window lost focus (0 = off, 1 = mute )"`
+* `"NAN"`
+* `"NONE"`
+* `"NRM"`
+* `"Name"`
+* `"Name: %s"`
+* `"Net"`
+* `"NetClientLimit"`
+* `"NetEvent"`
+* `"NetGraphSamples"`
+* `"NetMessage"`
+* `"NetServerLimit"`
+* `"No Client"`
+* `"No Content"`
+* `"No Device"`
+* `"No VoiceComponent to talk to on Entity: 0x%016llX"`
+* `"No file to be found"`
+* `"No jsessionID"`
+* `"No throttle"`
+* `"Non-Authoritative Information"`
+* `"Non-existent"`
+* `"None"`
+* `"Normal"`
+* `"Not Acceptable"`
+* `"Not Connected"`
+* `"Not Found"`
+* `"Not Implemented"`
+* `"Not Modified"`
+* `"Not Queued"`
+* `"Not sector aligned"`
+* `"NtQuerySystemInformation"`
+* `"Ntdll.dll"`
+* `"Null"`
+* `"NullDataItem"`
+* `"Number"`
+* `"Number of allocations."`
+* `"Number of bytes allocated from the system."`
+* `"Number of bytes allocated."`
+* `"Number of bytes available."`
+* `"Number of bytes used by the page tree"`
+* `"Number of cores:           %u\n"`
+* `"OK"`
+* `"OS"`
+* `"Object"`
+* `"ObjectMovement"`
+* `"Observer"`
+* `"Off"`
+* `"OldInWorldVM"`
+* `"On"`
+* `"On for warning, only"`
+* `"OnBnetDisconnected"`
+* `"OnDeactivate"`
+* `"Opaque Decals"`
+* `"Opaque Particle"`
+* `"Opaque Ribbons"`
+* `"Opaque With Ambient"`
+* `"Opened"`
+* `"Operating System Platform: %s\n"`
+* `"Operating System Version:  %s\n"`
+* `"Operating System:          %s\n"`
+* `"Operation failed: http response code: %u, curl error: %s"`
+* `"Orbit View"`
+* `"Other GPU Driver Date:     %s\n"`
+* `"Other GPU Driver:          %s - %s\n"`
+* `"Other GPU Type:            %s\n"`
+* `"Outline"`
+* `"OutlineDetail"`
+* `"Override"`
+* `"Overwatch"`
+* `"Overwatch/%d.%d.%d.%d/%u"`
+* `"PARTY"`
+* `"PART_Candidates"`
+* `"PART_ContentHost"`
+* `"PART_HorizontalScrollBar"`
+* `"PART_LanguageIcon"`
+* `"PART_Popup"`
+* `"PART_Text"`
+* `"PART_TextBox"`
+* `"PART_Track"`
+* `"PART_VerticalScrollBar"`
+* `"PC"`
+* `"PENDING_CREATE"`
+* `"PENDING_REMOVE"`
+* `"Paced"`
+* `"Parameters supplied to the function were invalid"`
+* `"Parent"`
+* `"Parent Map GUID"`
+* `"Partial Content"`
+* `"PartyId"`
+* `"Patches"`
+* `"Pause set to %s"`
+* `"PayloadCheckpointVM"`
+* `"PayloadVM"`
+* `"Payment Required"`
+* `"Pend. Brk. EN."`
+* `"Persistent ID: %s"`
+* `"Persistent Version: %llu"`
+* `"Physical Resolution:       %dx%d\n"`
+* `"PingConnection"`
+* `"Placed Camera View"`
+* `"Platform: Windows\nBNet Account ID: %d\nGame Account ID: %d\nBuild: %d\nPID: %d\nLocale: %s\nSpeech Locale: %s\nRegion: %s\nBuild Created: %s %s\n"`
+* `"Platform_Friend"`
+* `"Play Highlight"`
+* `"Play Sequence"`
+* `"PlayInputCapture"`
+* `"Playback Device ID"`
+* `"PlaybackDeviceID"`
+* `"Player"`
+* `"Player Count"`
+* `"Player Experience: %llu"`
+* `"Player ID"`
+* `"Player Level: %u"`
+* `"Player Name"`
+* `"Player count: %d"`
+* `"PlayerID"`
+* `"PlayerOnDeck"`
+* `"Players"`
+* `"Playing Sequence 0x%016llX."`
+* `"Plc Mtch count"`
+* `"Plc Mtch results"`
+* `"PodId"`
+* `"PortraitFrameVM"`
+* `"Possible matches:"`
+* `"PostDominoUpdate"`
+* `"Practice"`
+* `"PreDominoUpdate"`
+* `"Precondition Failed"`
+* `"PreferXAudio2"`
+* `"Pressed"`
+* `"PrimDraw Inst VB"`
+* `"PrimDraw Instance"`
+* `"Printing Reproduction Data"`
+* `"Pro"`
+* `"Pro.%s.%s.%s.%s.%s"`
+* `"Probe"`
+* `"ProcessClientRequest"`
+* `"ProcessFlush - Failed Path: \"%s\""`
+* `"ProcessID"`
+* `"Processing frame captures."`
+* `"Prof"`
+* `"ProgressionEntryExpBarHeroVM"`
+* `"ProgressionEntryExpBarVM"`
+* `"ProgressionGainVM"`
+* `"ProgressionLevelUpRewardVM"`
+* `"ProgressionPageHeroVM"`
+* `"ProgressionPageSummaryVM"`
+* `"ProgressionPageVM"`
+* `"ProgressionPlayerEXPGainVM"`
+* `"ProgressionPlayerLevelGainVM"`
+* `"ProgressionPlayerLootBoxGainVM"`
+* `"ProgressionPlayerPromotionGainVM"`
+* `"ProgressionPortraitGainVM"`
+* `"PrometheusExceptions"`
+* `"Proxy Authentication Required"`
+* `"Purchase Failed.  Reason: [%d]"`
+* `"Purges the raster cache."`
+* `"PvE"`
+* `"Queued"`
+* `"QuickLogin"`
+* `"QuickLoginUsername"`
+* `"R"`
+* `"REGION"`
+* `"REJOINING"`
+* `"REMOVING"`
+* `"REMOVING_SESSIONGROUP"`
+* `"Radius of the cross bilateral filter // 0~16. default = 16"`
+* `"Ran out of resource load data structures attempting to load 0x%016llX."`
+* `"Ranked"`
+* `"Ranked Currency: %d"`
+* `"Ranked Offseason"`
+* `"Ranked Offseason Skirmish"`
+* `"Ranked Skirmish"`
+* `"Rarity"`
+* `"Raster Cache Entry Pool"`
+* `"Rating"`
+* `"ReadFile - %s"`
+* `"ReadOnly"`
+* `"Reason"`
+* `"Rebalance"`
+* `"Received shutdown request from our ProcessController."`
+* `"Received unexpected data before encryption keys were set"`
+* `"Received unexpected large string during initial negotiation"`
+* `"Received unexpected oversized data during initial negotiation"`
+* `"Recently failed read"`
+* `"Recently failed read and write"`
+* `"Recently failed write"`
+* `"Recording"`
+* `"ReduceWwiseCalls"`
+* `"Reel request complete but unknown next step, unloading sequence."`
+* `"Referral"`
+* `"ReferralError"`
+* `"ReferralInfo"`
+* `"ReferralQueued"`
+* `"ReferralUpdate"`
+* `"RefractionDetail"`
+* `"Region: %d"`
+* `"ReleaseId"`
+* `"Remainder"`
+* `"RemoveDirectoryA - %s"`
+* `"Render"`
+* `"RenderBrightness"`
+* `"RenderContrast"`
+* `"RenderGamma"`
+* `"RenderOffset: %.4f %.4f\n"`
+* `"RenderScale"`
+* `"RenderTransformOrigin: %.4f %.4f\n"`
+* `"ReplayController"`
+* `"ReplayProxyClient"`
+* `"ReplayStreaming"`
+* `"Replays"`
+* `"Request Entity Too Large"`
+* `"Request Time-out"`
+* `"Request-URI Too Large"`
+* `"RequestExit"`
+* `"Requested range not satisfiable"`
+* `"ResDebug"`
+* `"ResError"`
+* `"ResInfo"`
+* `"ResStatus"`
+* `"Reset Content"`
+* `"Resource"`
+* `"Resource Notification List"`
+* `"Resource already added when attempting to add 0x%016llX."`
+* `"Resource creation from runtime image failed."`
+* `"Resource error during entity creation:  %d"`
+* `"Resource failed to resolve its dependencies."`
+* `"ResourceDictionary unshared load"`
+* `"ResourceErrors.log"`
+* `"Retail"`
+* `"Retrieved default value from WWise RTPC value"`
+* `"Revoked"`
+* `"Role"`
+* `"Roll Speed"`
+* `"Root"`
+* `"RtlGetUnloadEventTraceEx"`
+* `"RtlGetVersion"`
+* `"Ruleset"`
+* `"Ruleset Skirmish"`
+* `"RulesetQueueGUID"`
+* `"Rulesets received first win rewards: "`
+* `"S"`
+* `"SBAPool.AllocatedBytes"`
+* `"SBAPool.AllocationCount"`
+* `"SBAPool.AvailableBytes"`
+* `"SBAPool.CommittedBytes"`
+* `"SBAPool.OverheadBytes"`
+* `"SEQUENCE"`
+* `"SFXVolume"`
+* `"SHADER GROUP"`
+* `"SHADER INSTANCE"`
+* `"SHUTDOWN_CONNECTOR"`
+* `"SKELETON"`
+* `"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion"`
+* `"SOUNDBANK"`
+* `"SPM"`
+* `"SSAO Radius multiplier. default = 1.0"`
+* `"SSAO.HBAO_AngleBias"`
+* `"SSAO.HBAO_BlurRadius"`
+* `"SSAO.HBAO_BlurSharpness"`
+* `"SSAO.HBAO_PowerExponent"`
+* `"SSAO.HBAO_Radius"`
+* `"SSAO.HBAO_SceneScale"`
+* `"SSAO.HBAO_StepSize"`
+* `"SSAO.HBAO_Strength"`
+* `"SSAOEnabled"`
+* `"SSLRDetailLevel"`
+* `"SSQuality"`
+* `"STU"`
+* `"STUStatescriptState"`
+* `"SUBSYS_"`
+* `"Saturday"`
+* `"Scale factor for the AO, the greater the darker. default = 1.0"`
+* `"Scale mouse x axis"`
+* `"Scale mouse y axis"`
+* `"Scene"`
+* `"Scene Manager is exiting with scenes still in existence."`
+* `"Scene.log"`
+* `"SceneGUID"`
+* `"SceneName"`
+* `"SceneUpdateStart"`
+* `"Score"`
+* `"ScoreboardStatVM"`
+* `"Screen Particles"`
+* `"Screenshot"`
+* `"Script %016llx attempted to run a pointfinder on an entity without a AIPointFinder component"`
+* `"Seasn Start"`
+* `"See Other"`
+* `"Selected"`
+* `"Selected Desktop Display"`
+* `"Selected:\n"`
+* `"SelectedDisplay"`
+* `"SelectedUnfocused"`
+* `"Sequence"`
+* `"Sequence 0x%016llX loaded and ready."`
+* `"Sequence Complete"`
+* `"Sequence Reel"`
+* `"Sequence already playing back or capturing; try again after it finishes."`
+* `"SequenceCompositeScreenshot"`
+* `"Serialization didn\'t work!"`
+* `"Serialization worked!"`
+* `"Server/Client hot reloading mismatch"`
+* `"ServerID"`
+* `"Service Unavailable"`
+* `"Set distance at which occlusion query starts (valid range 0 to 2048)"`
+* `"Set the max framerate of the client simulation"`
+* `"SetFileAttributes - %s"`
+* `"SetFileTime - %s"`
+* `"SetSocketMediaStreamingMode"`
+* `"SetUnhandledExceptionFilter"`
+* `"Sets mute on the master volume (0 = off (volume), 1 = muted )"`
+* `"Sets the Speaker Configuration, requires reload (auto, mono, lfe, 1point1, stereo, 2point1, 3point0, 3point1, 4point0, 4point1, 5point0, 5point1, 7point1, surround )"`
+* `"Sets the current hero voice volume"`
+* `"Sets the current master volume"`
+* `"Sets the current music volume"`
+* `"Sets the current sfx volume"`
+* `"Sets the current voice chat volume"`
+* `"Sets the default number of samples on the network diagnostic graph, [60-1200], defaults to 300.  Note that recording more samples may affect client performance."`
+* `"Shader Code 0x%016llX failed to load"`
+* `"Shader.FramesBeforeReady"`
+* `"ShaderQuality"`
+* `"Shadow Composite"`
+* `"ShadowMaxDynamicDist"`
+* `"ShadowMaxStaticDist"`
+* `"SharedFileDataPool"`
+* `"Shots Fired:  %f"`
+* `"Shots Hit:    %f"`
+* `"Show map load status after some number of milliseconds"`
+* `"Show/Hide physical button text/icons"`
+* `"ShowFPS"`
+* `"ShowFPSCounter"`
+* `"ShowGPUTemp"`
+* `"ShowIND"`
+* `"ShowIntro"`
+* `"ShowMode_Settings_v0"`
+* `"ShowNetGraph"`
+* `"ShowNetQualityIcons"`
+* `"ShowPing"`
+* `"ShowRTT"`
+* `"ShowSystemClock"`
+* `"ShowVRAMUsage"`
+* `"Shut Down"`
+* `"Shutdown"`
+* `"Shutting Down"`
+* `"Simple"`
+* `"Simple FPS"`
+* `"SimpleDirectionalShadows"`
+* `"Single"`
+* `"SingleThreadedDataFlowUpdate"`
+* `"SingleThreadedEntitiesPreDominoUpdate"`
+* `"SingleThreadedEntitiesUpdate"`
+* `"Skin: 0x%016llX\n"`
+* `"Skins"`
+* `"Skirmish"`
+* `"SkyModels"`
+* `"Slot"`
+* `"Software\\Blizzard Entertainment\\Battle.net\\Launch Options\\Pro"`
+* `"Sound"`
+* `"Sound has no valid SoundData 0x%016llX"`
+* `"SoundDevice info not yet available (WMI thread has not returned yet)"`
+* `"SoundDevice: %s\n"`
+* `"SoundDevice_Error: %s\n"`
+* `"SoundDevice_LastError: %u\n\n"`
+* `"SoundDevice_Manufacturer: %s\n"`
+* `"SoundDevice_Status: %u\n"`
+* `"SoundDevices: %u\n\n"`
+* `"SoundDriver info not yet available (WMI thread has not returned yet)"`
+* `"SoundDriverDate: %s\n\n"`
+* `"SoundDriver_Device: %s\n"`
+* `"SoundDriver_Manufacturer: %s\n"`
+* `"SoundDriver_Name: %s\n"`
+* `"SoundDriver_Provider: %s\n"`
+* `"SoundDriver_Version: %s\n"`
+* `"SoundDrivers: %u\n\n"`
+* `"SoundQuality"`
+* `"Source and destination were on different different file systems, and this is not allowed for this operation."`
+* `"Source and destination were the same and this is not allowed for this operation"`
+* `"Source was invalid"`
+* `"SpeakerSetup"`
+* `"Spectator Lookat View"`
+* `"Spectator Third Person View"`
+* `"Sphere Dir"`
+* `"Splits instanced draw calls into individual draw calls for debugging."`
+* `"Standard Opaque"`
+* `"Started"`
+* `"Starting Up"`
+* `"Startup"`
+* `"Stat: %s (0x%016llx), Amount: %f"`
+* `"State"`
+* `"Statescript"`
+* `"Statescript Requested Transition"`
+* `"Statescript Requested Transition Deactivate"`
+* `"Statescript Var Pool"`
+* `"Statescript graph %016llx violates array size limit of %d elements"`
+* `"Statescript: created sequence 0x%016llX ..."`
+* `"StatescriptProgressionScreenVM"`
+* `"StatescriptScreenVM"`
+* `"Stats Panel"`
+* `"Status"`
+* `"Step size in the AO pass // 1~16. default = 4."`
+* `"Stop() called"`
+* `"Storage"`
+* `"StorageDebug"`
+* `"StorageError"`
+* `"StorageInfo"`
+* `"StorageMgr error: %u"`
+* `"StorageStatus"`
+* `"StoreSystem"`
+* `"Storyboard action \'%s\' is not currently supported."`
+* `"Stranger"`
+* `"Stream did not support the requested operation"`
+* `"StretchRenderTarget"`
+* `"String"`
+* `"StructuredData"`
+* `"Subtitles"`
+* `"Success"`
+* `"Successful query and return value is FALSE"`
+* `"Successfully created new custom game link: %s"`
+* `"Successfully initialized WWISE %d.%d.%d.%d"`
+* `"Successfully submitted async request"`
+* `"Successfully updated dynamic configuration on servers"`
+* `"SuperSample"`
+* `"Susp Time Remaining (s)"`
+* `"Switching Protocols"`
+* `"SysPlatform"`
+* `"System"`
+* `"System.PageFileUsage"`
+* `"System.PeakPageFileUsage"`
+* `"System.PeakWorkingSet"`
+* `"System.WorkingSetSize"`
+* `"SystemDVR"`
+* `"SystemMemory"`
+* `"TACT"`
+* `"TEAM"`
+* `"TEST"`
+* `"TOURNAMENT"`
+* `"TXTR"`
+* `"TXTR_COMPRESS"`
+* `"TXTR_PAYLOAD"`
+* `"Tag: %02X, %02X, %02X, %02X  (%c%c%c%c)"`
+* `"Tank State:             %s\n"`
+* `"TankMenuItems"`
+* `"TankSettings.txt"`
+* `"Team"`
+* `"Team: %d, Name: %s"`
+* `"TeamA"`
+* `"TeamB"`
+* `"Telemetry"`
+* `"Temporary Redirect"`
+* `"Test"`
+* `"Text"`
+* `"Text 0x%016llX with font 0x%016llX and material 0x%016llX failed load."`
+* `"TextureDetail"`
+* `"The actual eye-space AO radius is set to radius*SceneScale. default = 1.0."`
+* `"The current non-paged pool usage, in bytes."`
+* `"The final AO output is pow(AO, powerExponent). default = 1.0"`
+* `"The higher, the more the blur preserves edges // 0.0~16.0. default = 8.0"`
+* `"The number of shaders we can create in a frame"`
+* `"The requested operation required a larger buffer than was provided"`
+* `"The supplied storage handle is invalid"`
+* `"The teStorageSrc specified for the operation does not allow writing"`
+* `"Third Person View"`
+* `"Thread Manager is still waiting for jobs to complete in the scheduler."`
+* `"ThreadDelay"`
+* `"Ticket"`
+* `"Tier"`
+* `"Time played for each hero:"`
+* `"TimeSinceMemoryReadFailure"`
+* `"TimeSinceMemoryWriteFailure"`
+* `"Timeout Ended"`
+* `"To hide low-tessellation artifacts // 0.0~30.0. default = 10"`
+* `"Too many state changes (%u), bad dependency chain"`
+* `"Total"`
+* `"Total Memory:              %llu MBs\n"`
+* `"Total Page File:           %llu MBs\n"`
+* `"Total time played: %f"`
+* `"TransferBlockPool"`
+* `"Translucency"`
+* `"TranslucentShadowDetail"`
+* `"Transparent Decals"`
+* `"TripleBufferingEnabled"`
+* `"True"`
+* `"Try to initialize WWise with XAudio (0 = WASAPI, DirectSound, 1 = XAudio2, DirectSound, 2 = DirectSound only )"`
+* `"Ttl Leaves"`
+* `"Turns on and off effects of dormant mode, eg slower tick rate"`
+* `"Turns on and off flush debugging"`
+* `"Turns on the DolbyAtmos HDMI Sink (0 = off (default), 1 = on )"`
+* `"Turns on the DolbyAtmos Headphone Effect plugin (0 = off (default), 1 = on )"`
+* `"Tutorial"`
+* `"Type"`
+* `"UBER_SHADER_DEBUG_SHAPE"`
+* `"UInt16"`
+* `"UInt32"`
+* `"UInt64"`
+* `"UInt8"`
+* `"UNINITIALISED"`
+* `"UNKNOWN"`
+* `"UNKNOWN STAT"`
+* `"UNKNOWN?"`
+* `"UX"`
+* `"Unable to acquire handle from teHttpConnectionPool."`
+* `"Unable to do operation for the open mode"`
+* `"Unable to get logon update request"`
+* `"Unable to initialize cURL handle."`
+* `"Unable to parse body as json"`
+* `"Unauthorized"`
+* `"Unchecked"`
+* `"Une application tierce en violation de notre CLUF a été détectée. Overwatch va être fermé."`
+* `"Unfocused"`
+* `"Uniform"`
+* `"Uninitialized"`
+* `"Uninitialized."`
+* `"Unknown"`
+* `"Unknown Error"`
+* `"Unknown OS"`
+* `"Unknown error"`
+* `"Unknown option \'-%c\'.\n"`
+* `"Unknown result code"`
+* `"UnknownApp"`
+* `"Unload Sequence"`
+* `"Unloaded a package too many times. 0x%016llX - %d"`
+* `"Unloading world"`
+* `"Unlock 1"`
+* `"Unlock 2"`
+* `"Unlock 3"`
+* `"Unlock 4"`
+* `"Unlocks"`
+* `"Unranked"`
+* `"Unselected"`
+* `"UnsetValue"`
+* `"Unsorted Translucency"`
+* `"Unspecific op failure"`
+* `"Unspecified"`
+* `"Unsupported Media Type"`
+* `"Unsynchronized entity for placeable"`
+* `"Update Revision"`
+* `"UpdateDominoBodies"`
+* `"UpdateEntityPartitionState"`
+* `"UpdatePartition"`
+* `"Use Default Communications Devices (0 = no, 1 = yes )"`
+* `"Use Gampead camera inertia"`
+* `"Use Proxy"`
+* `"Use219AspectRatio"`
+* `"UseDefaultCommsDevices"`
+* `"UseGPUScale"`
+* `"UseHardware"`
+* `"UseLowMinus"`
+* `"UseSimpleSpecular"`
+* `"User"`
+* `"VERTEXINDEX"`
+* `"VOICEWEMFILE"`
+* `"VS AI"`
+* `"VS AI Skirmish"`
+* `"Value"`
+* `"Values"`
+* `"Variant"`
+* `"VenID 0x%x DevID 0x%x SubID 0x%x"`
+* `"VendorIdentifier"`
+* `"Version %d"`
+* `"VerticalSyncEnabled"`
+* `"Video Device"`
+* `"Video Device State:     %s\n"`
+* `"VideoCard"`
+* `"VideoCardDriverDate"`
+* `"VideoCardDriverName"`
+* `"VideoCardDriverVersion"`
+* `"VideoCardMemory"`
+* `"VideoPath"`
+* `"Videos"`
+* `"VivoxChannelDomain"`
+* `"VivoxServerAddress"`
+* `"VoiceChatVolume"`
+* `"VoiceSystem"`
+* `"VoiceVolume"`
+* `"WAIT_RETRY_CONNECTOR"`
+* `"WARN"`
+* `"WARNING: Option -%c / --%s set twice. Previous value will be overwritten.\n"`
+* `"WEB_TOKEN"`
+* `"WORLD_RUNNING"`
+* `"WRN"`
+* `"Waiters"`
+* `"Waiting"`
+* `"We have detected the use of a third-party application in violation of our EULA.  Overwatch will now exit."`
+* `"WebBrowserProxy"`
+* `"Win"`
+* `"WinLF"`
+* `"WindowMode"`
+* `"Windowed"`
+* `"WindowedFullscreen"`
+* `"WindowedHeight"`
+* `"WindowedPosX"`
+* `"WindowedPosY"`
+* `"WindowedWidth"`
+* `"Windows v%d.%d%s %s"`
+* `"Wins"`
+* `"WireFrame"`
+* `"WorkerThreadCount"`
+* `"Working Directory"`
+* `"WorldState"`
+* `"Wykryliśmy działanie nieautoryzowanej aplikacji, która narusza umowę EULA. Gra Overwatch zostanie zamknięta."`
+* `"X-Powered-By: Tank/%d.%d.%d.%d/%d/%s.%s"`
+* `"XP Scalar"`
+* `"ZipFile"`
+* `"ZipFileError"`
+* `"Zlib"`
+* `"ZlibError"`
+* `"[%d/%d:0x%016llX] %s"`
+* `"[%f, %f, %f, %f]"`
+* `"[%f, %f, %f]"`
+* `"[%g,%g,%g,%g]"`
+* `"[%g,%g,%g]"`
+* `"[%s] [%s(%u)] [%s()]: "`
+* `"[%s] [%s(%u)] [%s()]: %s"`
+* `"[%s] [%s] [%s(%u)] [%s()] [%s]"`
+* `"[%s] [%s] [%s(%u)] [%s()] [%s] "`
+* `"[%s] [%s] [%s(%u)] [%s()] [%s]: "`
+* `"[%u] [%s] [%s] [%s(%d)] [%s()] [%s]: "`
+* `"[UNNAMED SERVER]"`
+* `"[[:alnum:]]+"`
+* `"[optional] start up the client in replay viewing mode"`
+* `"\\/:/\"<>|*?"`
+* `"\\\\%s\\%s\n\n"`
+* `"^[^@]+@[^@]+?\\.[a-zA-Z]+$"`
+* `"_"`
+* `"_DUPE"`
+* `"_LOCK"`
+* `"_LOGS"`
+* `"_Patch.json"`
+* `"__?__"`
+* `"__CASQueueTACTRead failed"`
+* `"__CheckConnections: Timing out attach"`
+* `"__SubmitAuthenticator, Job Creation Failed"`
+* `"__SubmitLegal, Job Creation Failed"`
+* `"__SubmitLogin, Job Creation Failed"`
+* `"__WorkLoadList() - Resource in unrecognized state."`
+* `"_speech"`
+* `"abort"`
+* `"accessing (%d)"`
+* `"account"`
+* `"account_name"`
+* `"agreements"`
+* `"app.IgnoreDormantMode"`
+* `"app.WaitForRenderFrame"`
+* `"approx_queue_position"`
+* `"atiadlxx.dll"`
+* `"authentication_state"`
+* `"authenticator_form"`
+* `"authenticator_input"`
+* `"authenticator_submit"`
+* `"auto"`
+* `"avatar"`
+* `"block"`
+* `"bnl"`
+* `"branch"`
+* `"bsAMQP"`
+* `"bsBnet"`
+* `"bsConnection"`
+* `"bsDataStore"`
+* `"bsDiag"`
+* `"bsGameConnection"`
+* `"bsObjectPool"`
+* `"bsSocket"`
+* `"build"`
+* `"build_source"`
+* `"build_type"`
+* `"c"`
+* `"callback_delay"`
+* `"camera.EnableUpdate"`
+* `"camera.FOVSpeed"`
+* `"camera.FirstPersonAnimationEffectWeight"`
+* `"camera.FirstPersonNearZ"`
+* `"camera.combatOutlines"`
+* `"camera.fovInterpolationSpeedInverse"`
+* `"camera.gamePadCameraDampening"`
+* `"camera.gamepadStickPower"`
+* `"camera.gamepadTriggerPower"`
+* `"camera.lookInterpolationSpeedInverse"`
+* `"camera.lookSpeed"`
+* `"camera.moveSpeed"`
+* `"camera.offsetInterpolationSpeedInverse"`
+* `"camera.positionInterpolationSpeedInverse"`
+* `"camera.rollInterpolationSpeedInverse"`
+* `"camera.rollSpeed"`
+* `"camera.useGamePadCameraDampening"`
+* `"camera.uxOutlines"`
+* `"canvas.ClipGeoEnabled"`
+* `"canvas.ClipGeoVisible"`
+* `"canvas.CompositeBoundsVisible"`
+* `"canvas.CompositeMargin"`
+* `"canvas.CompositePadding"`
+* `"canvas.CompositingEnabled"`
+* `"canvas.CullingEnabled"`
+* `"canvas.DebugNormalsEnabled"`
+* `"canvas.FillsEnabled"`
+* `"canvas.ForceUpdateRasterCache"`
+* `"canvas.IndividualRasterCacheDraws"`
+* `"canvas.PurgeRasterCache"`
+* `"canvas.SplitInstances"`
+* `"canvas.StrokesEnabled"`
+* `"canvas.UseRasterCache"`
+* `"captcha"`
+* `"captcha_url"`
+* `"category"`
+* `"challenge"`
+* `"checkbox"`
+* `"ci   = CPU Idle"`
+* `"cid"`
+* `"client.MaxFPS"`
+* `"cluster"`
+* `"cn"`
+* `"cn.actual.battle.net:1119"`
+* `"code"`
+* `"combat.disableReticle"`
+* `"command.tag"`
+* `"commandLine.txt"`
+* `"complete"`
+* `"console"`
+* `"count"`
+* `"crashed"`
+* `"create_time"`
+* `"d3d9.dll"`
+* `"d:\\"`
+* `"debug.showMapLoadAfterMS"`
+* `"debug_error_message"`
+* `"detaches the first person model and places it at the last known position"`
+* `"development"`
+* `"disable the first person outlines"`
+* `"disable the first person reticle"`
+* `"disablePlayersNearMe"`
+* `"disableReplay"`
+* `"disableTimeout"`
+* `"display the frame of the first person animation"`
+* `"dmp"`
+* `"draws debug duster information."`
+* `"draws debug failed rays information."`
+* `"draws debug lighting probe information."`
+* `"e"`
+* `"elevel"`
+* `"endors"`
+* `"endorser_id"`
+* `"eng"`
+* `"enlighten.dusterdebug"`
+* `"enlighten.failedraysdebug"`
+* `"enlighten.lightvisdebug"`
+* `"enlighten.pause"`
+* `"enlighten.probedebug"`
+* `"environment"`
+* `"error_code"`
+* `"error_message"`
+* `"eu"`
+* `"eu.actual.battle.net:1119"`
+* `"executing"`
+* `"expire_time"`
+* `"external"`
+* `"false"`
+* `"far clipping plane override for objects rendered in first person mode"`
+* `"fastQuit"`
+* `"file"`
+* `"firstPerson.DetachModelFlag"`
+* `"firstPerson.ModelGuid"`
+* `"firstPerson.OffsetPitch"`
+* `"firstPerson.OffsetRoll"`
+* `"firstPerson.OffsetX"`
+* `"firstPerson.OffsetY"`
+* `"firstPerson.OffsetYaw"`
+* `"firstPerson.OffsetZ"`
+* `"firstPerson.ShowFrameFlag"`
+* `"firstPerson.WeaponviewOffsetPitch"`
+* `"firstPerson.WeaponviewOffsetRoll"`
+* `"firstPerson.WeaponviewOffsetX"`
+* `"firstPerson.WeaponviewOffsetY"`
+* `"firstPerson.WeaponviewOffsetYaw"`
+* `"firstPerson.WeaponviewOffsetZ"`
+* `"flags"`
+* `"fps"`
+* `"fps  = Frames per second"`
+* `"g"`
+* `"general"`
+* `"generic-payment-failure"`
+* `"graphics-hook64.dll"`
+* `"gt   = GPU Temp (deg C)"`
+* `"highlight"`
+* `"host"`
+* `"hostv4"`
+* `"how much animation contributes to first person camera effects"`
+* `"http"`
+* `"https://nydus.battle.net/Pro/%s/client/alert"`
+* `"id"`
+* `"il   = Input Lag"`
+* `"il   = Input Lag\nild  = Input Lag, Detailed"`
+* `"ild  = Input Lag, Detailed"`
+* `"in first person view show third person model or not"`
+* `"input.ForceInputMode"`
+* `"input.GamePadAimAssistEnable"`
+* `"input.GamePadRenderDebug"`
+* `"input.MouseScaleX"`
+* `"input.MouseScaleY"`
+* `"input_id"`
+* `"inputs"`
+* `"insert_time"`
+* `"instState"`
+* `"instanceServer"`
+* `"instance_id"`
+* `"internalcheck.corp.blizzard.net"`
+* `"invalid window bits"`
+* `"jaJP"`
+* `"jam"`
+* `"jpg"`
+* `"k0"`
+* `"k1"`
+* `"k2"`
+* `"k3"`
+* `"kernel32.dll"`
+* `"key"`
+* `"kr"`
+* `"kr.actual.battle.net:1119"`
+* `"label"`
+* `"lb matches played"`
+* `"leaked"`
+* `"leaked package render 0x%016llX, 0x%016llX"`
+* `"legal_agreements"`
+* `"legal_form"`
+* `"legal_submit"`
+* `"length"`
+* `"level"`
+* `"lfe"`
+* `"line in"`
+* `"loaded"`
+* `"lobbyServer"`
+* `"locale"`
+* `"localhiteffects.edge"`
+* `"localhiteffects.reticle"`
+* `"localhost:%d"`
+* `"log_in_submit"`
+* `"ltc_help"`
+* `"m_fSourceVisibility"`
+* `"m_uDandT"`
+* `"match-"`
+* `"matchgame-"`
+* `"matchmake"`
+* `"max_length"`
+* `"method_name"`
+* `"microphone"`
+* `"model for the first person animation"`
+* `"mono"`
+* `"ms"`
+* `"mspf"`
+* `"mspf = Milliseconds per frame"`
+* `"mtxInvCheckBit"`
+* `"mtxSourceBit"`
+* `"near clipping plane override for objects rendered in first person mode"`
+* `"network"`
+* `"network.legacylerp"`
+* `"nix"`
+* `"no valid profile"`
+* `"noautoconnect"`
+* `"none"`
+* `"not revoked"`
+* `"ntdll"`
+* `"ntdll.dll"`
+* `"null"`
+* `"nydus-qa.web.blizzard.net"`
+* `"nydus.battle.net"`
+* `"offset the PlaceholderWeaponView rig in X"`
+* `"offset the PlaceholderWeaponView rig in Y"`
+* `"offset the PlaceholderWeaponView rig in Z"`
+* `"offset the PlaceholderWeaponView rig in pitch"`
+* `"offset the PlaceholderWeaponView rig in roll"`
+* `"offset the PlaceholderWeaponView rig in yaw"`
+* `"offset the first person model in X"`
+* `"offset the first person model in Y"`
+* `"offset the first person model in Z"`
+* `"offset the first person model in pitch"`
+* `"offset the first person model in roll"`
+* `"offset the first person model in yaw"`
+* `"online_id"`
+* `"open"`
+* `"opened"`
+* `"overwatch"`
+* `"password"`
+* `"pauses enlighten updates (for NSight)."`
+* `"payload"`
+* `"pc"`
+* `"pframe"`
+* `"pid"`
+* `"platform"`
+* `"platform_env"`
+* `"platform_id"`
+* `"position"`
+* `"precision"`
+* `"program_id"`
+* `"prometheus.%s.%s.%s.%s"`
+* `"prompt"`
+* `"psn"`
+* `"psn_account_id"`
+* `"psplus_product_code"`
+* `"publish"`
+* `"published"`
+* `"pursuit.exe"`
+* `"r"`
+* `"rb"`
+* `"reading from"`
+* `"recorded highlights"`
+* `"recording"`
+* `"remember_authenticator"`
+* `"render camera hit effects"`
+* `"render edge effects"`
+* `"render reticle hit effects"`
+* `"render.CaptureEXR \"%s\" lighting translucency splitTranslucency post SceneKey %d"`
+* `"replayFile"`
+* `"replayTeamIndex"`
+* `"replayTeamSlot"`
+* `"replayViewerMode"`
+* `"request_id"`
+* `"request_type"`
+* `"response_type"`
+* `"revoked"`
+* `"row_major float4x4"`
+* `"runCommand"`
+* `"service"`
+* `"service_id"`
+* `"service_type"`
+* `"sets the light vis debug index."`
+* `"sets the light vis system debug index."`
+* `"sfps = Frames per second, Simple"`
+* `"sfps = Frames per second, Simple\nfps  = Frames per second\nmspf = Milliseconds per frame"`
+* `"showmode"`
+* `"showmodeLobbyLocations.json"`
+* `"sip:confctl-g-%s@%s"`
+* `"sound.AllowMultipleHighImportanceSlots"`
+* `"sound.DrawImportance"`
+* `"sound.ForceImportance"`
+* `"src"`
+* `"startup.pckg_load_time"`
+* `"stats.active"`
+* `"stats.allocated"`
+* `"stats.mapped"`
+* `"stereo"`
+* `"stereo mix"`
+* `"successfully loaded %s"`
+* `"tank_AlwaysMegadump"`
+* `"tank_AssertOnStartupFailure"`
+* `"tank_AssetManifest"`
+* `"tank_AssetPath"`
+* `"tank_AutoLog"`
+* `"tank_AutomationId"`
+* `"tank_BatchMode"`
+* `"tank_BypassPSN"`
+* `"tank_CachePath"`
+* `"tank_CasHTTPThreads"`
+* `"tank_CompiledCasUri"`
+* `"tank_Console"`
+* `"tank_DataBuildServerUri"`
+* `"tank_DataPath"`
+* `"tank_EnableHotReloading"`
+* `"tank_EnablePerfRecorder"`
+* `"tank_ForceMemTracking"`
+* `"tank_ForceMute"`
+* `"tank_ForcePageAlignedAllocator"`
+* `"tank_FullscreenRefreshOverride"`
+* `"tank_HighPri"`
+* `"tank_Locale"`
+* `"tank_MemFillByte"`
+* `"tank_MemStackTrace"`
+* `"tank_NoFullScreen"`
+* `"tank_ProfileMode"`
+* `"tank_ReadOnlyCAS"`
+* `"tank_SaveInspectorReports"`
+* `"tank_SelectHotReloading"`
+* `"tank_ShowMode"`
+* `"tank_SourceCasUri"`
+* `"tank_SupportEditorMaterials"`
+* `"tank_TournamentMode"`
+* `"tank_TournamentModeAdmin"`
+* `"tank_TournamentModeTickRate"`
+* `"tank_WorkerThreadCount"`
+* `"tank_dataRoot"`
+* `"tank_logpath"`
+* `"tank_servicedirectory"`
+* `"tank_tdk_batchTimeoutMS"`
+* `"tank_tdk_customHost"`
+* `"tank_tdk_dontSendMoreWhenRetrying"`
+* `"tank_tdk_httpTimeoutMS"`
+* `"tank_tdk_instance"`
+* `"tank_tdk_maxBatchSize"`
+* `"tank_tdk_maxPendingMessages"`
+* `"tank_tdk_maxQueueSize"`
+* `"tank_tdk_minBatchSize"`
+* `"tank_tdk_useSSL"`
+* `"tank_userlogpath"`
+* `"tank_windowPosX"`
+* `"tank_windowPosY"`
+* `"tank_windowResX"`
+* `"tank_windowResY"`
+* `"teCanvas vertex buffer"`
+* `"teDList Leaked at %s(%d) - HEAD: %p, TAIL: %p, COUNT: %u"`
+* `"teFaceVelocityView"`
+* `"teFreeLookView"`
+* `"teJam"`
+* `"teRegexFilter"`
+* `"teRegexPattern"`
+* `"teScene - Map Load Started: 0x%016llX\n"`
+* `"teScreenQuad"`
+* `"teSequenceCameraView"`
+* `"teSimpleFileStream::PendingWrite"`
+* `"teString"`
+* `"teStructuredData"`
+* `"teTankUtilitiesService"`
+* `"title"`
+* `"tournament-"`
+* `"tournament://"`
+* `"transaction"`
+* `"true"`
+* `"txt"`
+* `"type"`
+* `"u8"`
+* `"uid"`
+* `"unlock_amount"`
+* `"unlock_guid"`
+* `"unopened"`
+* `"url"`
+* `"us"`
+* `"us.actual.battle.net:1119"`
+* `"user32.dll"`
+* `"utctimeary"`
+* `"util"`
+* `"ux"`
+* `"value"`
+* `"version"`
+* `"visor.exe"`
+* `"voiceChatChannelDomain"`
+* `"voiceChatServer"`
+* `"voicechat.forceDenyListen"`
+* `"voicechat.forceDenyTalk"`
+* `"voicechat.forceDisable"`
+* `"voicechat.forceEnable"`
+* `"voicechat.forceError"`
+* `"voicechat.forceErrorPersist"`
+* `"voicechat.forceErrorRespEnum"`
+* `"voicechat.forceLogin"`
+* `"voicechat.maxSpeakingThreshold"`
+* `"voicechat.minSpeakingThreshold"`
+* `"vx_uninitialize"`
+* `"w"`
+* `"width"`
+* `"win"`
+* `"writing to"`
+* `"x64"`
+* `"xbl"`
+* `"xid"`
+* `"xxx"`
+* `"yes"`
+* `"z"`
+* `"{ "`
+* `"{%d}"`
+* `"|%s\n"`
+* `"Обнаружено использование стороннего ПО, нарушающего лицензионное соглашение Blizzard с конечным пользователем. Игра будет закрыта."`
+* `"ӱ�8�/�����0�9Ǽ���&�/��"`
+* `"我们检测到你正在使用违反最终用户许可协议的第三方软件。《守望先锋》即将关闭。"`
+* `"我們偵測到違反使用者條約的第三方軟體。《鬥陣特攻》將立即關閉。"`
+* `"최종 사용자 사용권 계약에 위반되는 써드 파티 응용 프로그램이 사용된 것이 발견되었습니다. 오버워치가 지금 종료됩니다."`
+* `"�\u{0}3��!V"`
+* `"�\u{e}��\t7<\u{15}�2��3\u{1b}I{�%\u{594}\u{13}i&B�\u{3}��\u{4}o#F"`
+* `"�\u{19}{c/�V\u{1d}�6ni>�G\u{14}"`
+* `"�!�i\r\u{2}}F�\u{0}�l\u{10}\u{1e}u\u{1f}�"`
+* `"�$����C\u{4}�$�"`
+* `"��\u{1}��%����\t��&����\u{6}��i"`
+* `"��S�q�AX��@�v�@\u{1d}��f�{�C\u{c}�"`
+* `"��a@�î���RA������R^�Ÿ���RN��륦�YA���㪚\u{12}\\�"`
+
