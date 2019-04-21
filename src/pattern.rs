@@ -131,6 +131,8 @@ pub enum Atom {
 	///
 	/// Reads the dword under the cursor and adds it to the saved cursor for the given slot and continues matching.
 	Pir(u8),
+	/// Checks if the cursor compares equal to the rva in the given slot and fails otherwise.
+	Check(u8),
 	/// Reads and sign-extends the byte under the cursor, writes to the given slot and advances the cursor by 1.
 	ReadI8(u8),
 	/// Reads and zero-extends the byte under the cursor, writes to the given slot and advances the cursor by 1.
