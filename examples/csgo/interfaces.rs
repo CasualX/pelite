@@ -11,15 +11,19 @@ This only allows you to query interfaces which you know by name and version, thi
 
 use pelite;
 use pelite::pattern as pat;
-use pelite::pe32::*;
 use pelite::{util::CStr, Pod};
+use pelite::pe32::*;
 
 //----------------------------------------------------------------
 
-pub fn print(file: PeFile) {
-	for reg in interfaces(file).unwrap() {
-		println!("{}!{:08X} {}", reg.dll_name, reg.offset, reg.name);
+pub fn print(file: PeFile, dll_name: &str) {
+	let ifaces = interfaces(file);
+
+	println!("## Interfaces\n\n```");
+	for iface in &ifaces {
+		println!("{}!{:#010x} {}", dll_name, iface.address, iface.name);
 	}
+	println!("```\n");
 }
 
 //----------------------------------------------------------------
@@ -40,23 +44,16 @@ pub struct InterfaceReg {
 
 #[derive(Copy, Clone, Debug)]
 pub struct Interface<'a> {
-	pub dll_name: &'a str,
 	pub name: &'a str,
-	pub offset: Rva,
+	pub address: u32,
 }
 
-pub fn interfaces<'a>(file: PeFile<'a>) -> pelite::Result<Vec<Interface<'a>>> {
+pub fn interfaces<'a>(file: PeFile<'a>) -> Vec<Interface<'a>> {
 	let mut save = [0; 8];
 
-	let exports = file.exports()?.by()?;
-	let dll_name = exports.dll_name()?.to_str().unwrap();
-
 	// Grab the CreateInterface export
-	let create_interface_export = exports.name("CreateInterface")?;
-	let create_interface_fn = match create_interface_export {
-		exports::Export::Symbol(&rva) => rva,
-		_ => return Err(pelite::Error::Null),
-	};
+	let exports = file.exports().unwrap().by().unwrap();
+	let create_interface_fn = exports.name("CreateInterface").unwrap().symbol().unwrap();
 
 	// Grab the linked list of interface registrations
 	#[allow(non_snake_case)]
@@ -101,10 +98,12 @@ pub fn interfaces<'a>(file: PeFile<'a>) -> pelite::Result<Vec<Interface<'a>>> {
 		}
 
 		// Extract the interface information
-		let offset = save[3];
 		let name = file.derva_c_str(save[4]).unwrap().to_str().unwrap();
-		list.push(Interface { dll_name, name, offset });
+		let address = save[3];
+		list.push(Interface { name, address });
 	}
 
-	Ok(list)
+	// Sort the list by name for improved diff viewer experience
+	list.sort_unstable_by_key(|iface| iface.name);
+	return list;
 }

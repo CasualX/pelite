@@ -4,74 +4,177 @@
 #![allow(unused)]
 
 use pelite;
-use pelite::pe32::{Rva, Pe, PeFile};
 use pelite::pattern as pat;
+use pelite::{util::CStr, Pod};
+use pelite::pe32::*;
 
 //----------------------------------------------------------------
 
-pub fn print(file: PeFile) {
-	for cvar in &cvars(file).unwrap() {
-		println!("{}!{:08X} {:08X} {}", cvar.dll_name, cvar.offset, cvar.flags, cvar.name);
+pub fn print(bin: PeFile, dll_name: &str) {
+	let cvars = convars(bin);
+	let cmds = concommands(bin);
+
+	println!("## ConVars\n");
+	for cvar in &cvars {
+		println!("<details>");
+		println!("<summary><code>{}</code></summary>\n", cvar.name);
+		if let Some(desc) = cvar.desc {
+			println!("{}\n", desc);
+		}
+		println!("default: `{:?}`  ", cvar.default);
+		println!("flags: `{:#x}`  ", cvar.flags);
+		if let Some(min_value) = cvar.min_value {
+			println!("min value: `{}`  ", min_value);
+		}
+		if let Some(max_value) = cvar.max_value {
+			println!("max value: `{}`  ", max_value);
+		}
+		println!("</details>");
 	}
+	println!("\n### Addresses\n\n```");
+	for cvar in &cvars {
+		println!("{}!{:#08x} ConVar {}", dll_name, cvar.address, cvar.name);
+	}
+	println!("```\n");
+
+	println!("## ConCommands\n");
+	for cmd in &cmds {
+		println!("<details>");
+		println!("<summary><code>{}</code></summary>\n", cmd.name);
+		if let Some(desc) = cmd.desc {
+			println!("{}\n", desc);
+		}
+		println!("flags: `{:#x}`  ", cmd.flags);
+		println!("</details>");
+	}
+	println!("\n### Addresses\n\n```");
+	for cmd in &cmds {
+		println!("{}!{:#010x} ConCommand {}", dll_name, cmd.address, cmd.name);
+	}
+	println!("```\n");
 }
 
 //----------------------------------------------------------------
 
 pub struct ConVar<'a> {
-	dll_name: &'a str,
+	address: u32,
 	name: &'a str,
 	desc: Option<&'a str>,
-	default_string: &'a str,
-	offset: Rva,
+	default: &'a str,
 	flags: u32,
 	min_value: Option<f32>,
 	max_value: Option<f32>,
 }
 
-pub fn cvars<'a>(file: PeFile<'a>) -> pelite::Result<Vec<ConVar<'a>>> {
-	let mut save = [0; 8];
-
-	let dll_name = file.exports()?.dll_name()?.to_str().unwrap();
+pub fn convars<'a>(file: PeFile<'a>) -> Vec<ConVar<'a>> {
+	let mut save = [0; 12];
 	let mut cvars = Vec::new();
 
-	let get_min_max_value = |save: &[Rva]| {
-		let has_max = file.derva_copy::<u8>(save[0] + 1).unwrap();
-		let max_value = file.derva_copy::<f32>(save[0] + 6).unwrap();
-		let has_min = file.derva_copy::<u8>(save[0] + 11).unwrap();
-		let min_value = file.derva_copy::<f32>(save[0] + 16).unwrap();
-		(
-			if has_min != 0 { Some(min_value) } else { None },
-			if has_max != 0 { Some(max_value) } else { None },
-		)
-	};
-
 	// Match static constructors which call [`ConVar::Create`](https://github.com/ValveSoftware/source-sdk-2013/blob/master/mp/src/public/tier1/convar.h#L383)
+	// This signature is quite a beast, let's analyze it in detail:
+	// 6A00     push 0                  ; The change callback parameter, assumed to be null and skipped
+	// 51       push ecx                ; Allocates space for the max float value
+	// C70424u4 mov [esp], max_float    ; Writes the fMax argument
+	// 6Au1     push has_max            ; Pushes the bMax argument
+	// 51       push ecx                ; Allocates space for the min float value
+	// C70424u4 mov [esp], min_float    ; Writes the fMin argument
+	// B9*{'}   mov ecx, offset address ; Address of the global ConVar instance
+	// 6Au1     push has_min            ; Pushes the bMin argument
+	// Here comes one of two cases:
+	// 6A00     push nullptr            ; Pushes the pHelpString argument
+	// If there's a help string:
+	// 68*{'}   push help_string        ; Pushes the pHelpString argument
+	// Continue here:
+	// 68u4     push flags              ; Pushes the flags argument
+	// 68*{'}   push default            ; Pushes the pDefaultValue argument
+	// 68*{'}   push name               ; Pushes the pName argument
+	// E8$      call create_fn          ; Calls the ConVar::Create factory method
+	let pat = pat!("6A00 51 C70424u4 6Au1 51 C70424u4 B9*{'} 6Au1 (6A00|68*{'}) 68u4 68*{'} 68*{'} E8$");
 
-	// Variant: ConVar with description
-	let pat1 = pat!("6A? 51 C704????? 6A? 51 C704????? B9*{'} 6A? 68*{'} 68'???? 68*{'} 68*{'} E8$");
-	let mut matches1 = file.scanner().matches_code(pat1);
-	while matches1.next(&mut save) {
-		let (min_value, max_value) = get_min_max_value(&save);
-		let offset = save[1];
-		let desc = Some(file.derva_c_str(save[2]).unwrap().to_str().unwrap());
-		let flags = file.derva_copy(save[3]).unwrap();
-		let default_string = file.derva_c_str(save[4]).unwrap().to_str().unwrap();
-		let name = file.derva_c_str(save[5]).unwrap().to_str().unwrap();
-		cvars.push(ConVar { dll_name, name, desc, default_string, offset, flags, min_value, max_value });
+	let mut matches = file.scanner().matches_code(pat);
+	while matches.next(&mut save) {
+		if let Ok(cvar) = convar(file, &save) {
+			cvars.push(cvar);
+		}
+		else {
+			eprintln!("Convar false-positive {:#010x}", save[0]);
+		}
+		save = [0; 12];
 	}
 
-	// Variant: ConVar without description
-	let pat2 = pat!("6A? 51 C704????? 6A? 51 C704????? B9*{'} 6A? 6A00 68'???? 68*{'} 68*{'} E8$");
-	let mut matches2 = file.scanner().matches_code(pat2);
-	while matches2.next(&mut save) {
-		let (min_value, max_value) = get_min_max_value(&save);
-		let offset = save[1];
-		let desc = None;
-		let flags = file.derva_copy(save[2]).unwrap();
-		let default_string = file.derva_c_str(save[3]).unwrap().to_str().unwrap();
-		let name = file.derva_c_str(save[4]).unwrap().to_str().unwrap();
-		cvars.push(ConVar { dll_name, name, desc, default_string, offset, flags, min_value, max_value });
+	// Sort the list by name for improved diff viewer experience
+	cvars.sort_unstable_by_key(|cvar| cvar.name);
+	return cvars;
+}
+fn convar<'a>(bin: PeFile<'a>, save: &[u32; 12]) -> pelite::Result<ConVar<'a>> {
+	let has_max = save[2] != 0;
+	let max_float = f32::from_bits(save[1]);
+	let max_value = if has_max { Some(max_float) } else { None };
+	let has_min = save[5] != 0;
+	let min_float = f32::from_bits(save[3]);
+	let min_value = if has_min { Some(min_float) } else { None };
+	let address = save[4];
+	let desc = if save[6] == 0 { None }
+	else { Some(bin.derva_c_str(save[6])?.to_str().unwrap()) };
+	let flags = save[7];
+	let default = bin.derva_c_str(save[8])?.to_str().unwrap();
+	let name = bin.derva_c_str(save[9])?.to_str().unwrap();
+	Ok(ConVar { address, name, desc, default, flags, min_value, max_value })
+}
+
+//----------------------------------------------------------------
+
+#[allow(non_snake_case)]
+#[derive(Pod, Debug)]
+#[repr(C)]
+pub struct RawConCommand {
+	// ConCommandBase
+	pub vtable: Ptr<[Ptr]>,
+	pub pNext: Ptr,
+	pub bRegistered: u8,
+	pub pszName: Ptr<CStr>,
+	pub pszHelpString: Ptr<CStr>,
+	pub fFlags: u32,
+	// ConCommand
+	pub fnCommandCallback: Ptr,
+	pub fnCompletionCallback: Ptr,
+	pub fnCommandType: u32,
+}
+
+pub struct ConCommand<'a> {
+	pub address: u32,
+	pub name: &'a str,
+	pub desc: Option<&'a str>,
+	pub flags: u32,
+	pub callback: u32,
+}
+
+pub fn concommands<'a>(bin: PeFile<'a>) -> Vec<ConCommand<'a>> {
+	let mut save = [0; 8];
+	let mut cmds = Vec::new();
+
+	// The ConCommand constructors are already evaluated by the compiler and the global data structures already filled in
+	// Perform a fairly slow signature scan for these instances...
+	let data_section = bin.section_headers().iter().find(|sect| &sect.Name == b".data\0\0\0").unwrap();
+	let mut matches = bin.scanner().matches_section(pat!("*{*{}*{}*{}*} 00000000 00000000 *{'} (*{'}|00000000) u4 *{'}"), data_section);
+	while matches.next(&mut save) {
+		// Filter false-positives...
+		if let Ok(cmd) = concommand(bin, &save) {
+			cmds.push(cmd);
+		}
+		save = [0; 8];
 	}
 
-	Ok(cvars)
+	// Sort the list by name for improved diff viewer experience
+	cmds.sort_unstable_by_key(|cmd| cmd.name);
+	return cmds;
+}
+fn concommand<'a>(bin: PeFile<'a>, save: &[u32; 8]) -> pelite::Result<ConCommand<'a>> {
+	let address = save[0];
+	let name = bin.derva_c_str(save[1])?.to_str().or(Err(pelite::Error::Encoding))?;
+	let desc = if save[2] == 0 { None }
+	else { Some(bin.derva_c_str(save[2])?.to_str().or(Err(pelite::Error::Encoding))?) };
+	let flags = save[3];
+	let callback = save[4];
+	Ok(ConCommand { address, name, desc, flags, callback })
 }
