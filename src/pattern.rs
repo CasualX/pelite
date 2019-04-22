@@ -131,7 +131,7 @@ pub enum Atom {
 	///
 	/// Reads the dword under the cursor and adds it to the saved cursor for the given slot and continues matching.
 	Pir(u8),
-	/// Checks if the cursor compares equal to the rva in the given slot and fails otherwise.
+	/// Compares the cursor with the value in the given save slot and fails if they're not equal.
 	Check(u8),
 	/// Reads and sign-extends the byte under the cursor, writes to the given slot and advances the cursor by 1.
 	ReadI8(u8),
@@ -145,6 +145,8 @@ pub enum Atom {
 	ReadI32(u8),
 	/// Reads the dword under the cursor, writes to the given slot and advances the cursor by 4.
 	ReadU32(u8),
+	/// Writes zero to the given save slot.
+	Zero(u8),
 	/// Sets a retry point when matching fails.
 	///
 	/// When matching fails the cursor is restored and matching begins again skipping _N_ atoms.
@@ -489,6 +491,13 @@ fn parse_helper(pat: &mut &str, result: &mut Vec<Atom>) -> Result<(), PatError> 
 				}
 				save += 1;
 				result.push(atom);
+			},
+			b'z' => {
+				if save >= u8::max_value() {
+					return Err(PatError::SaveOverflow);
+				}
+				result.push(Atom::Zero(save));
+				save += 1;
 			},
 			// Allow spaces as padding
 			b' ' => {},

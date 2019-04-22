@@ -311,6 +311,11 @@ impl<'a, 'u, P: Scan<'a>> Exec<'u, P> {
 						return false;
 					}
 				},
+				pat::Atom::Zero(slot) => {
+					if let Some(slot) = save.get_mut(slot as usize) {
+						*slot = 0;
+					}
+				},
 				pat::Atom::Case(next) => {
 					let pc = self.pc;
 					let cursor = self.cursor;
