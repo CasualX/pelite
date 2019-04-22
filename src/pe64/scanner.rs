@@ -250,6 +250,12 @@ impl<'a, 'u, P: Scan<'a>> Exec<'u, P> {
 						return false;
 					}
 				},
+				pat::Atom::Check(slot) => {
+					match save.get(slot as usize) {
+						Some(&rva) if rva == self.cursor => (),
+						_ => return false,
+					}
+				},
 				pat::Atom::ReadU8(slot) => {
 					if let Some(byte) = self.pe.read::<u8>(self.cursor) {
 						if let Some(slot) = save.get_mut(slot as usize) {
@@ -303,6 +309,11 @@ impl<'a, 'u, P: Scan<'a>> Exec<'u, P> {
 					}
 					else {
 						return false;
+					}
+				},
+				pat::Atom::Zero(slot) => {
+					if let Some(slot) = save.get_mut(slot as usize) {
+						*slot = 0;
 					}
 				},
 				pat::Atom::Case(next) => {
