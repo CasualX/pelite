@@ -5,26 +5,32 @@ Weapon Data.
 #![allow(bad_style)]
 
 use pelite;
-use pelite::pe32::{Rva, Pe, PeFile};
 use pelite::pattern as pat;
+use pelite::pe32::*;
 use lde;
 
 //----------------------------------------------------------------
 
 pub fn print(client: PeFile) {
 	let list = weapondata(client).unwrap();
+
+	println!("### WeaponData\n\n```");
 	print!("class WeaponInfo {{\n");
 	for member in &list[1].members {
-		println!("\t// field offset: {:#x}", member.offset);
 		println!("\t{}: {},", member.name, member.ty);
 	}
-	println!("}}");
-	print!("class CSWeaponInfo extends WeaponInfo {{\n");
+	println!("}}\nclass CSWeaponInfo extends WeaponInfo {{");
 	for member in &list[0].members {
-		println!("\t// field offset: {:#x}", member.offset);
 		println!("\t{}: {},", member.name, member.ty);
 	}
-	println!("}}");
+	println!("}}\n```\n\n#### Offsets\n\n```");
+	for member in &list[1].members {
+		println!("WeaponInfo!{:#06x} {}", member.offset, member.name);
+	}
+	for member in &list[0].members {
+		println!("CSWeaponInfo!{:#06x} {}", member.offset, member.name);
+	}
+	println!("```\n");
 }
 
 //----------------------------------------------------------------
@@ -127,6 +133,7 @@ fn analyse<'a>(client: PeFile<'a>, code_rva: Rva) -> pelite::Result<WeaponInfo<'
 			break;
 		}
 	}
+	members.sort_unstable_by_key(|member| member.offset);
 
 	Ok(WeaponInfo { members })
 }

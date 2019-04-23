@@ -1,6 +1,10 @@
-# Engine
+# Counter-Strike Global Offensive
 
-## Interfaces
+Demonstrates static analysis by dumping Counter-Strike Global Offensive offsets.
+
+## Engine.dll
+
+### Interfaces
 
 ```
 engine.dll!0x007cc0d8 BlackBoxVersion001
@@ -47,7 +51,7 @@ engine.dll!0x0059fc68 VoiceServer002
 engine.dll!0x005a03c8 XboxSystemInterface002
 ```
 
-## ConVars
+### ConVars
 
 <details>
 <summary><code>adsp_debug</code></summary>
@@ -3746,510 +3750,510 @@ default: `"2700.0"`
 flags: `0x1008002`  
 </details>
 
-### Addresses
+#### Addresses
 
 ```
-engine.dll!0x519be8 ConVar adsp_debug
-engine.dll!0x5a0b28 ConVar budget_averages_window
-engine.dll!0x5a0cf8 ConVar budget_background_alpha
-engine.dll!0x5a0ad0 ConVar budget_bargraph_background_alpha
-engine.dll!0x5a0bd8 ConVar budget_history_numsamplesvisible
-engine.dll!0x5a0a20 ConVar budget_peaks_window
-engine.dll!0x5a0b80 ConVar budget_show_averages
-engine.dll!0x5a0c30 ConVar budget_show_history
-engine.dll!0x5a0a78 ConVar budget_show_peaks
-engine.dll!0x5954e0 ConVar bugreporter_uploadasync
-engine.dll!0x595320 ConVar bugreporter_username
-engine.dll!0x591b10 ConVar cl_allowdownload
-engine.dll!0x59e568 ConVar cl_allowupload
-engine.dll!0x5957f8 ConVar cl_clock_correction
-engine.dll!0x595640 ConVar cl_clock_correction_adjustment_max_amount
-engine.dll!0x595698 ConVar cl_clock_correction_adjustment_max_offset
-engine.dll!0x5957a0 ConVar cl_clock_correction_adjustment_min_offset
-engine.dll!0x5956f0 ConVar cl_clock_correction_force_server_tick
-engine.dll!0x595748 ConVar cl_clock_showdebuginfo
-engine.dll!0x595590 ConVar cl_clockdrift_max_ms
-engine.dll!0x5955e8 ConVar cl_clockdrift_max_ms_threadmode
-engine.dll!0x589c08 ConVar cl_color
-engine.dll!0x58c0f0 ConVar cl_debug_ugc_downloads
-engine.dll!0x589c60 ConVar cl_decryptdata_key
-engine.dll!0x589cb8 ConVar cl_decryptdata_key_pub
-engine.dll!0x58c098 ConVar cl_download_demoplayer
-engine.dll!0x58c040 ConVar cl_downloadfilter
-engine.dll!0x58b0c0 ConVar cl_entityreport
-engine.dll!0x58b220 ConVar cl_flushentitypacket
-engine.dll!0x58bfe8 ConVar cl_forcepreload
-engine.dll!0x589d10 ConVar cl_hideserverip
-engine.dll!0x58b350 ConVar cl_ignorepackets
-engine.dll!0x58ac98 ConVar cl_interpolate
-engine.dll!0x589b58 ConVar cl_interpolate
-engine.dll!0x5899f8 ConVar cl_resend
-engine.dll!0x589a50 ConVar cl_resend_timeout
-engine.dll!0x58bba8 ConVar cl_showevents
-engine.dll!0x58bc00 ConVar cl_showpluginmessages2
-engine.dll!0x59e978 ConVar cl_skipslowpath
-engine.dll!0x58bf90 ConVar cl_timeout
-engine.dll!0x59d678 ConVar clientport
-engine.dll!0x597fe8 ConVar closecaption
-engine.dll!0x58c4d8 ConVar con_enable
-engine.dll!0x58c530 ConVar con_filter_enable
-engine.dll!0x58c588 ConVar con_filter_text
-engine.dll!0x58c5e0 ConVar con_filter_text_out
-engine.dll!0x58c3d0 ConVar con_notifytime
-engine.dll!0x58c2c8 ConVar con_timestamp
-engine.dll!0x58c378 ConVar con_trace
-engine.dll!0x58c428 ConVar contimes
-engine.dll!0x598670 ConVar coop
-engine.dll!0x598618 ConVar deathmatch
-engine.dll!0x595538 ConVar debug_map_crc
-engine.dll!0x58a158 ConVar demo_recordcommands
-engine.dll!0x58cf08 ConVar demo_strict_validation
-engine.dll!0x598828 ConVar developer
-engine.dll!0x596820 ConVar display_game_events
-engine.dll!0x51aa48 ConVar dsp_automatic
-engine.dll!0x519980 ConVar dsp_db_min
-engine.dll!0x5199d8 ConVar dsp_db_mixdrop
-engine.dll!0x519878 ConVar dsp_dist_max
-engine.dll!0x519820 ConVar dsp_dist_min
-engine.dll!0x51ad08 ConVar dsp_enhance_stereo
-engine.dll!0x51a998 ConVar dsp_facingaway
-engine.dll!0x519928 ConVar dsp_mix_max
-engine.dll!0x5198d0 ConVar dsp_mix_min
-engine.dll!0x51b258 ConVar dsp_off
-engine.dll!0x51b360 ConVar dsp_room
-engine.dll!0x51aaf8 ConVar dsp_slow_cpu
-engine.dll!0x51b2b0 ConVar dsp_spatial
-engine.dll!0x51a9f0 ConVar dsp_speaker
-engine.dll!0x51acb0 ConVar dsp_vol_2ch
-engine.dll!0x51ac58 ConVar dsp_vol_4ch
-engine.dll!0x51ac00 ConVar dsp_vol_5ch
-engine.dll!0x51aba8 ConVar dsp_volume
-engine.dll!0x51a940 ConVar dsp_water
-engine.dll!0x58ca18 ConVar enable_debug_overlays
-engine.dll!0x59f838 ConVar engine_no_focus_sleep
-engine.dll!0x58da40 ConVar fog_enable_water_fog
-engine.dll!0x51c3b0 ConVar force_audio_english
-engine.dll!0x59f708 ConVar fps_max_menu
-engine.dll!0x58b7c0 ConVar fps_screenshot_frequency
-engine.dll!0x58b768 ConVar fps_screenshot_threshold
-engine.dll!0x592858 ConVar host_flush_threshold
-engine.dll!0x5987d0 ConVar host_framerate
-engine.dll!0x599170 ConVar host_info_show
-engine.dll!0x599220 ConVar host_map
-engine.dll!0x599118 ConVar host_name_store
-engine.dll!0x5990c0 ConVar host_players_show
-engine.dll!0x599068 ConVar host_rules_show
-engine.dll!0x5979e8 ConVar host_sleep
-engine.dll!0x598880 ConVar host_timescale
-engine.dll!0x59d598 ConVar hostip
-engine.dll!0x59d3e0 ConVar hostport
-engine.dll!0x59c148 ConVar in_forceuser
-engine.dll!0x59da00 ConVar ip
-engine.dll!0x59dc00 ConVar ip_relay
-engine.dll!0x59d490 ConVar ip_steam
-engine.dll!0x59dc58 ConVar ip_tv
-engine.dll!0x59d7c8 ConVar ip_tv1
-engine.dll!0x59c6b0 ConVar lightcache_maxmiss
-engine.dll!0x59c600 ConVar mat_ambient_light_b
-engine.dll!0x59c308 ConVar mat_ambient_light_g
-engine.dll!0x59c658 ConVar mat_ambient_light_r
-engine.dll!0x58f478 ConVar mat_bumpbasis
-engine.dll!0x58c170 ConVar mat_colorcorrection
-engine.dll!0x58ef00 ConVar mat_debugalttab
-engine.dll!0x58f218 ConVar mat_depthbias_normal
-engine.dll!0x589de8 ConVar mat_dynamic_tonemapping
-engine.dll!0x589ef0 ConVar mat_force_tonemap_scale
-engine.dll!0x58d8e0 ConVar mat_forcedynamic
-engine.dll!0x58f840 ConVar mat_fullbright
-engine.dll!0x58ffd8 ConVar mat_loadtextures
-engine.dll!0x58f790 ConVar mat_luxels
-engine.dll!0x58efb0 ConVar mat_monitorgamma
-engine.dll!0x58f110 ConVar mat_monitorgamma_tv_enabled
-engine.dll!0x58f7e8 ConVar mat_norendering
-engine.dll!0x58f6e0 ConVar mat_normals
-engine.dll!0x58beb8 ConVar mat_show_texture_memory_usage
-engine.dll!0x58e680 ConVar mat_softwareskin
-engine.dll!0x58dd60 ConVar mat_surfaceid
-engine.dll!0x58ddb8 ConVar mat_surfacemat
-engine.dll!0x58bd10 ConVar mat_texture_list
-engine.dll!0x58bdb0 ConVar mat_texture_list_all
-engine.dll!0x58be60 ConVar mat_texture_list_view
-engine.dll!0x58f738 ConVar mat_wireframe
-engine.dll!0x597b60 ConVar mem_incremental_compact_rate
-engine.dll!0x58fd10 ConVar mod_dynamicloadpause
-engine.dll!0x58fdc0 ConVar mod_dynamicloadspew
-engine.dll!0x58fd68 ConVar mod_dynamicloadthrottle
-engine.dll!0x58fcb8 ConVar mod_dynamicunloadtex
-engine.dll!0x58fc60 ConVar mod_dynamicunloadtime
-engine.dll!0x59cb58 ConVar net_blockmsg
-engine.dll!0x59d028 ConVar net_droponsendoverflow
-engine.dll!0x59d5f0 ConVar net_droppackets
-engine.dll!0x58b560 ConVar net_earliertempents
-engine.dll!0x59d8f8 ConVar net_fakejitter
-engine.dll!0x59d438 ConVar net_fakelag
-engine.dll!0x59dba8 ConVar net_fakeloss
-engine.dll!0x59dcb0 ConVar net_maxroutable
-engine.dll!0x59d950 ConVar net_public_adr
-engine.dll!0x59dd08 ConVar net_queue_trace
-engine.dll!0x591870 ConVar net_showreliablesounds
-engine.dll!0x59d540 ConVar net_showsplits
-engine.dll!0x59cd68 ConVar net_showudp
-engine.dll!0x59ca50 ConVar net_showudp_oob
-engine.dll!0x59d080 ConVar net_showudp_remoteonly
-engine.dll!0x59da58 ConVar net_splitrate
-engine.dll!0x59d280 ConVar net_steamcnx_allowrelay
-engine.dll!0x59d1a8 ConVar net_steamcnx_enabled
-engine.dll!0x59d150 ConVar net_threaded_socket_burst_cap
-engine.dll!0x59d200 ConVar net_threaded_socket_recovery_rate
-engine.dll!0x59d2d8 ConVar net_threaded_socket_recovery_time
-engine.dll!0x5981a0 ConVar next
-engine.dll!0x595998 ConVar occlusion_old
-engine.dll!0x596588 ConVar occlusion_test_async_jitter
-engine.dll!0x596530 ConVar occlusion_test_async_move_tolerance
-engine.dll!0x596690 ConVar occlusion_test_jump_margin
-engine.dll!0x5965e0 ConVar occlusion_test_margins
-engine.dll!0x596710 ConVar occlusion_test_shadow_max_distance
-engine.dll!0x59dfd0 ConVar paint_alpha_offset_enabled
-engine.dll!0x59df78 ConVar paint_max_surface_border_alpha
-engine.dll!0x59e130 ConVar paint_min_valid_alpha_value
-engine.dll!0x59e188 ConVar paintsplat_bias
-engine.dll!0x59e0d8 ConVar paintsplat_max_alpha_noise
-engine.dll!0x59e028 ConVar paintsplat_noise_enabled
-engine.dll!0x5a3958 ConVar panel_test_title_safe
-engine.dll!0x589b00 ConVar password
-engine.dll!0x5904a8 ConVar r_ClipAreaFrustums
-engine.dll!0x590450 ConVar r_ClipAreaPortals
-engine.dll!0x595cd8 ConVar r_DispBuildable
-engine.dll!0x595c80 ConVar r_DispWalkable
-engine.dll!0x589e98 ConVar r_DrawBeams
-engine.dll!0x595c28 ConVar r_DrawDisp
-engine.dll!0x58dfd0 ConVar r_DrawModelLightOrigin
-engine.dll!0x590660 ConVar r_DrawPortals
-engine.dll!0x58eb90 ConVar r_ambientfraction
-engine.dll!0x59c490 ConVar r_ambientlightingonly
-engine.dll!0x59c7b8 ConVar r_avglight
-engine.dll!0x58d338 ConVar r_avglightmap
-engine.dll!0x5910b8 ConVar r_brush_queue_mode
-engine.dll!0x59e920 ConVar r_colorstaticprops
-engine.dll!0x58e2b8 ConVar r_debugrandomstaticlighting
-engine.dll!0x59ebc8 ConVar r_disable_static_prop_loading
-engine.dll!0x58d3e8 ConVar r_dlightsenable
-engine.dll!0x58f580 ConVar r_drawbrushmodels
-engine.dll!0x590978 ConVar r_drawdecals
-engine.dll!0x58e7e0 ConVar r_drawentities
-engine.dll!0x58d9e8 ConVar r_drawfuncdetail
-engine.dll!0x58d938 ConVar r_drawleaf
-engine.dll!0x58ec98 ConVar r_drawlightcache
-engine.dll!0x59c438 ConVar r_drawlightcache
-engine.dll!0x58d2e0 ConVar r_drawlightinfo
-engine.dll!0x58d288 ConVar r_drawlights
-engine.dll!0x58dec8 ConVar r_drawmodelstatsoverlay
-engine.dll!0x58df20 ConVar r_drawmodelstatsoverlaydistance
-engine.dll!0x58df78 ConVar r_drawmodelstatsoverlayfilter
-engine.dll!0x58eda0 ConVar r_drawmodelstatsoverlaymax
-engine.dll!0x58ed48 ConVar r_drawmodelstatsoverlaymin
-engine.dll!0x58de70 ConVar r_drawskybox
-engine.dll!0x59eb70 ConVar r_drawstaticprops
-engine.dll!0x58d888 ConVar r_drawtranslucentworld
-engine.dll!0x5a05b0 ConVar r_drawvgui
-engine.dll!0x58d990 ConVar r_drawworld
-engine.dll!0x590920 ConVar r_dscale_basefov
-engine.dll!0x5908c8 ConVar r_dscale_fardist
-engine.dll!0x590870 ConVar r_dscale_farscale
-engine.dll!0x590818 ConVar r_dscale_neardist
-engine.dll!0x5907c0 ConVar r_dscale_nearscale
-engine.dll!0x58f688 ConVar r_dynamic
-engine.dll!0x58d6d0 ConVar r_dynamiclighting
-engine.dll!0x58e080 ConVar r_entity
-engine.dll!0x58e4c8 ConVar r_eyemove
-engine.dll!0x58e520 ConVar r_eyeshift_x
-engine.dll!0x58e578 ConVar r_eyeshift_y
-engine.dll!0x58e5d0 ConVar r_eyeshift_z
-engine.dll!0x58e628 ConVar r_eyesize
-engine.dll!0x590f98 ConVar r_flashlightclip
-engine.dll!0x590ff0 ConVar r_flashlightdrawclip
-engine.dll!0x591048 ConVar r_flashlightscissor
-engine.dll!0x58ea48 ConVar r_ignoreStaticColorChecksum
-engine.dll!0x58e368 ConVar r_itemblinkmax
-engine.dll!0x58e3c0 ConVar r_itemblinkrate
-engine.dll!0x59c2b0 ConVar r_lightcache_numambientsamples
-engine.dll!0x59c540 ConVar r_lightcache_radiusfactor
-engine.dll!0x59c3b8 ConVar r_lightcachecenter
-engine.dll!0x58ec40 ConVar r_lightcachemodel
-engine.dll!0x58e130 ConVar r_lightinterp
-engine.dll!0x58f5d8 ConVar r_lightmap
-engine.dll!0x58f630 ConVar r_lightstyle
-engine.dll!0x59c8d0 ConVar r_lockpvs
-engine.dll!0x58ecf0 ConVar r_modelAmbientMin
-engine.dll!0x58e940 ConVar r_modelwireframedecal
-engine.dll!0x58e6d8 ConVar r_nohw
-engine.dll!0x58e730 ConVar r_nosw
-engine.dll!0x59c820 ConVar r_novis
-engine.dll!0x590088 ConVar r_occlusionspew
-engine.dll!0x59c5a8 ConVar r_oldlightselection
-engine.dll!0x59e828 ConVar r_partition_level
-engine.dll!0x5905b0 ConVar r_portalsopenall
-engine.dll!0x58e418 ConVar r_proplightingpooling
-engine.dll!0x59c360 ConVar r_radiosity
-engine.dll!0x59e8c8 ConVar r_shadow_deferred
-engine.dll!0x590b68 ConVar r_shadowids
-engine.dll!0x590ab8 ConVar r_shadows_gamecontrol
-engine.dll!0x590b10 ConVar r_shadowwireframe
-engine.dll!0x58e470 ConVar r_showenvcubemap
-engine.dll!0x58e8e8 ConVar r_skin
-engine.dll!0x58e9f0 ConVar r_slowpathwireframe
-engine.dll!0x5901e8 ConVar r_visocclusion
-engine.dll!0x58d5c8 ConVar r_visualizelighttraces
-engine.dll!0x58d620 ConVar r_visualizelighttracesshowfulltrace
-engine.dll!0x58d570 ConVar r_visualizetraces
-engine.dll!0x591bc0 ConVar replay_debug
-engine.dll!0x51aaa0 ConVar room_type
-engine.dll!0x59fee0 ConVar rpt_vprof_time
-engine.dll!0x5a1448 ConVar showbudget_texture
-engine.dll!0x598360 ConVar singlestep
-engine.dll!0x598778 ConVar skill
-engine.dll!0x519310 ConVar snd_deathcamera_volume
-engine.dll!0x51a6d8 ConVar snd_debug_panlaw
-engine.dll!0x51b998 ConVar snd_disable_mixer_duck
-engine.dll!0x51b940 ConVar snd_disable_mixer_solo
-engine.dll!0x51a280 ConVar snd_duckerattacktime
-engine.dll!0x51a2d8 ConVar snd_duckerreleasetime
-engine.dll!0x51a330 ConVar snd_duckerthreshold
-engine.dll!0x51a388 ConVar snd_ducking_off
-engine.dll!0x51a228 ConVar snd_ducktovolume
-engine.dll!0x519a88 ConVar snd_dvar_dist_max
-engine.dll!0x519a30 ConVar snd_dvar_dist_min
-engine.dll!0x519100 ConVar snd_dzmusic_volume
-engine.dll!0x51a178 ConVar snd_filter
-engine.dll!0x59e618 ConVar snd_foliage_db_loss
-engine.dll!0x59e778 ConVar snd_gain
-engine.dll!0x59e6c8 ConVar snd_gain_max
-engine.dll!0x59e5c0 ConVar snd_gain_min
-engine.dll!0x518a70 ConVar snd_hrtf_distance_behind
-engine.dll!0x5187b0 ConVar snd_hrtf_lerp_max_distance
-engine.dll!0x518758 ConVar snd_hrtf_lerp_min_distance
-engine.dll!0x51c0f0 ConVar snd_hrtf_stereo_blend
-engine.dll!0x51c148 ConVar snd_hrtf_voice_delay
-engine.dll!0x51b470 ConVar snd_hrtf_volume
-engine.dll!0x518700 ConVar snd_hwcompat
-engine.dll!0x51b890 ConVar snd_list
-engine.dll!0x519260 ConVar snd_mapobjective_volume
-engine.dll!0x518b48 ConVar snd_max_same_sounds
-engine.dll!0x518ba0 ConVar snd_max_same_weapon_sounds
-engine.dll!0x519158 ConVar snd_menumusic_volume
-engine.dll!0x5194c8 ConVar snd_mix_async
-engine.dll!0x519520 ConVar snd_mix_async_onetime_reset
-engine.dll!0x5193c0 ConVar snd_mixahead
-engine.dll!0x51b7e0 ConVar snd_mixer_master_dsp
-engine.dll!0x51b788 ConVar snd_mixer_master_level
-engine.dll!0x519578 ConVar snd_music_volume_onetime_reset_2
-engine.dll!0x519050 ConVar snd_musicvolume_multiplier_inoverlay
-engine.dll!0x5195d0 ConVar snd_mute_losefocus
-engine.dll!0x519368 ConVar snd_mvp_volume
-engine.dll!0x519b90 ConVar snd_obscured_gain_dB
-engine.dll!0x51c9e8 ConVar snd_occlusion_bounces
-engine.dll!0x51c7d8 ConVar snd_occlusion_collide_min_distance
-engine.dll!0x51c8e0 ConVar snd_occlusion_eq_high
-engine.dll!0x51c830 ConVar snd_occlusion_eq_low
-engine.dll!0x51c888 ConVar snd_occlusion_eq_mid
-engine.dll!0x51c780 ConVar snd_occlusion_indirect_max
-engine.dll!0x51c728 ConVar snd_occlusion_indirect_min
-engine.dll!0x51c6d0 ConVar snd_occlusion_indirect_radius
-engine.dll!0x51c5c8 ConVar snd_occlusion_material_override
-engine.dll!0x51c938 ConVar snd_occlusion_no_eq_scale
-engine.dll!0x51c570 ConVar snd_occlusion_pos_override
-engine.dll!0x51c990 ConVar snd_occlusion_rays
-engine.dll!0x51c620 ConVar snd_occlusion_visualize
-engine.dll!0x51c678 ConVar snd_occlusion_visualize_filter
-engine.dll!0x51c518 ConVar snd_op_test_convar
-engine.dll!0x51b4c8 ConVar snd_pause_all
-engine.dll!0x518fa0 ConVar snd_pitchquality
-engine.dll!0x519b38 ConVar snd_pre_gain_dist_falloff
-engine.dll!0x51c358 ConVar snd_prefetch_common
-engine.dll!0x51ab50 ConVar snd_profile
-engine.dll!0x518650 ConVar snd_rear_speaker_scale
-engine.dll!0x59e720 ConVar snd_refdist
-engine.dll!0x5189c0 ConVar snd_report_format_sound
-engine.dll!0x518968 ConVar snd_report_loop_sound
-engine.dll!0x5188b8 ConVar snd_report_start_sound
-engine.dll!0x518910 ConVar snd_report_stop_sound
-engine.dll!0x518a18 ConVar snd_report_verbose_error
-engine.dll!0x519208 ConVar snd_roundend_volume
-engine.dll!0x5191b0 ConVar snd_roundstart_volume
-engine.dll!0x518de8 ConVar snd_show
-engine.dll!0x518e98 ConVar snd_show_filter
-engine.dll!0x51b838 ConVar snd_showclassname
-engine.dll!0x51b8e8 ConVar snd_showmixer
-engine.dll!0x519ae0 ConVar snd_showstart
-engine.dll!0x51cc50 ConVar snd_sos_list_operator_updates
-engine.dll!0x51a1d0 ConVar snd_sos_show_block_debug
-engine.dll!0x5186a8 ConVar snd_sos_show_client_rcv
-engine.dll!0x51cf08 ConVar snd_sos_show_operator_entry_filter
-engine.dll!0x51cb48 ConVar snd_sos_show_operator_init
-engine.dll!0x51cbf8 ConVar snd_sos_show_operator_parse
-engine.dll!0x51ce58 ConVar snd_sos_show_operator_prestart
-engine.dll!0x51ce00 ConVar snd_sos_show_operator_shutdown
-engine.dll!0x51ceb0 ConVar snd_sos_show_operator_start
-engine.dll!0x51ca98 ConVar snd_sos_show_operator_stop_entry
-engine.dll!0x51cba0 ConVar snd_sos_show_operator_updates
-engine.dll!0x51caf0 ConVar snd_sos_show_queuetotrack
-engine.dll!0x51ccd0 ConVar snd_sos_show_startqueue
-engine.dll!0x51a730 ConVar snd_surround_speakers
-engine.dll!0x5192b8 ConVar snd_tensecondwarning_volume
-engine.dll!0x518f48 ConVar snd_visualize
-engine.dll!0x519628 ConVar sound_device_override
-engine.dll!0x591660 ConVar spec_replay_enable
-engine.dll!0x5973b8 ConVar spec_replay_leadup_time
-engine.dll!0x5916b8 ConVar spec_replay_message_time
-engine.dll!0x591920 ConVar spec_replay_on_death
-engine.dll!0x591b68 ConVar spec_replay_rate_base
-engine.dll!0x591710 ConVar spec_replay_rate_limit
-engine.dll!0x5918c8 ConVar sv_allow_legacy_cmd_execution_from_client
-engine.dll!0x594cc8 ConVar sv_allow_wait_command
-engine.dll!0x591558 ConVar sv_allowdownload
-engine.dll!0x5915b0 ConVar sv_allowupload
-engine.dll!0x594e80 ConVar sv_alternateticks
-engine.dll!0x592cf8 ConVar sv_client_cmdrate_difference
-engine.dll!0x592da8 ConVar sv_client_max_interp_ratio
-engine.dll!0x592d50 ConVar sv_client_min_interp_ratio
-engine.dll!0x592e00 ConVar sv_client_predict
-engine.dll!0x5932d8 ConVar sv_consistency
-engine.dll!0x592ae8 ConVar sv_contact
-engine.dll!0x591f90 ConVar sv_creationtickcheck
-engine.dll!0x593578 ConVar sv_debugmanualmode
-engine.dll!0x592bf0 ConVar sv_downloadurl
-engine.dll!0x59dd60 ConVar sv_dumpstringtables
-engine.dll!0x591138 ConVar sv_duplicate_playernames_ok
-engine.dll!0x593520 ConVar sv_enable_delta_packing
-engine.dll!0x5937f0 ConVar sv_forcepreload
-engine.dll!0x592750 ConVar sv_hibernate_ms
-engine.dll!0x5927a8 ConVar sv_hibernate_ms_vgui
-engine.dll!0x592800 ConVar sv_hibernate_postgame_delay
-engine.dll!0x5926f8 ConVar sv_hibernate_punt_tv_clients
-engine.dll!0x595060 ConVar sv_hosting_lobby
-engine.dll!0x592a38 ConVar sv_lan
-engine.dll!0x592358 ConVar sv_log_onefile
-engine.dll!0x5923b0 ConVar sv_logbans
-engine.dll!0x591fe8 ConVar sv_logblocks
-engine.dll!0x592300 ConVar sv_logecho
-engine.dll!0x592250 ConVar sv_logfile
-engine.dll!0x5922a8 ConVar sv_logflush
-engine.dll!0x5921f8 ConVar sv_logsdir
-engine.dll!0x592408 ConVar sv_logsecret
-engine.dll!0x592460 ConVar sv_logsocket2
-engine.dll!0x5924b8 ConVar sv_logsocket2_substr
-engine.dll!0x5917c0 ConVar sv_max_dropped_packets_to_process
-engine.dll!0x5921a0 ConVar sv_max_queries_sec
-engine.dll!0x592098 ConVar sv_max_queries_sec_global
-engine.dll!0x5920f0 ConVar sv_max_queries_tracked_ips_max
-engine.dll!0x592040 ConVar sv_max_queries_tracked_ips_prune
-engine.dll!0x592148 ConVar sv_max_queries_window
-engine.dll!0x592ca0 ConVar sv_maxcmdrate
-engine.dll!0x591348 ConVar sv_maxrate
-engine.dll!0x5913f8 ConVar sv_maxupdaterate
-engine.dll!0x593048 ConVar sv_maxuptimelimit
-engine.dll!0x592f98 ConVar sv_memlimit
-engine.dll!0x592c48 ConVar sv_mincmdrate
-engine.dll!0x5913a0 ConVar sv_minrate
-engine.dll!0x591450 ConVar sv_minupdaterate
-engine.dll!0x592ff0 ConVar sv_minuptimelimit
-engine.dll!0x593628 ConVar sv_parallel_packentities
-engine.dll!0x5930c8 ConVar sv_parallel_sendsnapshot
-engine.dll!0x592a90 ConVar sv_pausable
-engine.dll!0x592988 ConVar sv_pure_consensus
-engine.dll!0x5931d0 ConVar sv_pure_kick_clients
-engine.dll!0x5929e0 ConVar sv_pure_retiretime
-engine.dll!0x593228 ConVar sv_pure_trace
-engine.dll!0x591818 ConVar sv_quota_stringcmdspersecond
-engine.dll!0x593920 ConVar sv_rcon_whitelist_address
-engine.dll!0x595168 ConVar sv_region
-engine.dll!0x591298 ConVar sv_reliableavatardata
-engine.dll!0x591500 ConVar sv_replaybots
-engine.dll!0x594f30 ConVar sv_reservation_tickrate_adjustment
-engine.dll!0x5950b8 ConVar sv_reservation_timeout
-engine.dll!0x591cf0 ConVar sv_show_cull_props
-engine.dll!0x593b30 ConVar sv_steamauth_enforce
-engine.dll!0x594c70 ConVar sv_steamgroup_exclusive
-engine.dll!0x5914a8 ConVar sv_stressbots
-engine.dll!0x58b2a0 ConVar sv_unlockedchapters
-engine.dll!0x5934c8 ConVar sv_validate_edict_change_infos
-engine.dll!0x594dd0 ConVar sv_visiblemaxplayers
-engine.dll!0x519ee8 ConVar sv_voice_proximity_minvolume
-engine.dll!0x589468 ConVar sv_voice_proximity_use_falloff
-engine.dll!0x593398 ConVar sv_voicecodec
-engine.dll!0x592b98 ConVar sv_voiceenable
-engine.dll!0x59f410 ConVar sys_minidumpspewlines
-engine.dll!0x5a1740 ConVar texture_budget_background_alpha
-engine.dll!0x59e7d0 ConVar think_trace_limit
-engine.dll!0x5971b0 ConVar tv_advertise_watchable
-engine.dll!0x5935d0 ConVar tv_allow_camera_man_override
-engine.dll!0x597840 ConVar tv_autorecord
-engine.dll!0x596ee0 ConVar tv_autoretry
-engine.dll!0x596af0 ConVar tv_broadcast_drop_fragments
-engine.dll!0x596c20 ConVar tv_broadcast_keyframe_interval
-engine.dll!0x596a40 ConVar tv_broadcast_keyframe_interval1
-engine.dll!0x596ba0 ConVar tv_broadcast_max_requests
-engine.dll!0x596b48 ConVar tv_broadcast_max_requests1
-engine.dll!0x596a98 ConVar tv_broadcast_origin_auth
-engine.dll!0x5969e8 ConVar tv_broadcast_origin_auth1
-engine.dll!0x596c78 ConVar tv_broadcast_startup_resend_interval
-engine.dll!0x596990 ConVar tv_broadcast_terminate
-engine.dll!0x5976b8 ConVar tv_broadcast_url
-engine.dll!0x597738 ConVar tv_broadcast_url1
-engine.dll!0x596cd0 ConVar tv_chatgroupsize
-engine.dll!0x596d80 ConVar tv_chattimelimit
-engine.dll!0x597790 ConVar tv_debug
-engine.dll!0x597638 ConVar tv_deltacache
-engine.dll!0x597158 ConVar tv_dispatchmode
-engine.dll!0x597230 ConVar tv_dispatchweight
-engine.dll!0x5974b0 ConVar tv_enable_delta_frames
-engine.dll!0x596fb8 ConVar tv_encryptdata_key
-engine.dll!0x597508 ConVar tv_encryptdata_key_pub
-engine.dll!0x597898 ConVar tv_maxclients
-engine.dll!0x5978f0 ConVar tv_maxclients_relayreserved
-engine.dll!0x596dd8 ConVar tv_maxrate
-engine.dll!0x58b2f8 ConVar tv_nochat
-engine.dll!0x597288 ConVar tv_overridemaster
-engine.dll!0x597588 ConVar tv_password
-engine.dll!0x58d068 ConVar tv_playcast_delay_prediction
-engine.dll!0x58a0d8 ConVar tv_playcast_delay_resync
-engine.dll!0x58d118 ConVar tv_playcast_max_rcvage
-engine.dll!0x58d010 ConVar tv_playcast_max_rtdelay
-engine.dll!0x58cf60 ConVar tv_playcast_origin_auth
-engine.dll!0x58cfb8 ConVar tv_playcast_retry_timeout
-engine.dll!0x59d9a8 ConVar tv_port
-engine.dll!0x59d878 ConVar tv_port1
-engine.dll!0x596d28 ConVar tv_relaypassword
-engine.dll!0x597080 ConVar tv_relayvoice
-engine.dll!0x596f38 ConVar tv_snapshotrate
-engine.dll!0x596e30 ConVar tv_snapshotrate1
-engine.dll!0x596e88 ConVar tv_timeout
-engine.dll!0x597948 ConVar tv_transmitall
-engine.dll!0x5a0fb8 ConVar vgui_drawtree
-engine.dll!0x51d328 ConVar voice_caster_enable
-engine.dll!0x51d118 ConVar voice_caster_scale
-engine.dll!0x51d2d0 ConVar voice_enable
-engine.dll!0x51d3d8 ConVar voice_forcemicrecord
-engine.dll!0x598b20 ConVar voice_inputfromfile
-engine.dll!0x51cf60 ConVar voice_loopback
-engine.dll!0x5893b8 ConVar voice_mixer_boost
-engine.dll!0x589360 ConVar voice_mixer_mute
-engine.dll!0x589410 ConVar voice_mixer_volume
-engine.dll!0x5894c0 ConVar voice_positional
-engine.dll!0x519f40 ConVar voice_positional_seconds_after_death
-engine.dll!0x598c98 ConVar voice_recordtofile
-engine.dll!0x51d0c0 ConVar voice_scale
-engine.dll!0x51d380 ConVar voice_threshold
-engine.dll!0x518ff8 ConVar volume
-engine.dll!0x5a1848 ConVar vprof_graphheight
-engine.dll!0x5a17f0 ConVar vprof_graphwidth
-engine.dll!0x5a1988 ConVar vprof_unaccounted_limit
-engine.dll!0x5a1930 ConVar vprof_verbose
-engine.dll!0x5a19e0 ConVar vprof_warningmsec
-engine.dll!0x5a0438 ConVar xbox_arcade_remaining_trial_time
+engine.dll!0x00519be8 ConVar adsp_debug
+engine.dll!0x005a0b28 ConVar budget_averages_window
+engine.dll!0x005a0cf8 ConVar budget_background_alpha
+engine.dll!0x005a0ad0 ConVar budget_bargraph_background_alpha
+engine.dll!0x005a0bd8 ConVar budget_history_numsamplesvisible
+engine.dll!0x005a0a20 ConVar budget_peaks_window
+engine.dll!0x005a0b80 ConVar budget_show_averages
+engine.dll!0x005a0c30 ConVar budget_show_history
+engine.dll!0x005a0a78 ConVar budget_show_peaks
+engine.dll!0x005954e0 ConVar bugreporter_uploadasync
+engine.dll!0x00595320 ConVar bugreporter_username
+engine.dll!0x00591b10 ConVar cl_allowdownload
+engine.dll!0x0059e568 ConVar cl_allowupload
+engine.dll!0x005957f8 ConVar cl_clock_correction
+engine.dll!0x00595640 ConVar cl_clock_correction_adjustment_max_amount
+engine.dll!0x00595698 ConVar cl_clock_correction_adjustment_max_offset
+engine.dll!0x005957a0 ConVar cl_clock_correction_adjustment_min_offset
+engine.dll!0x005956f0 ConVar cl_clock_correction_force_server_tick
+engine.dll!0x00595748 ConVar cl_clock_showdebuginfo
+engine.dll!0x00595590 ConVar cl_clockdrift_max_ms
+engine.dll!0x005955e8 ConVar cl_clockdrift_max_ms_threadmode
+engine.dll!0x00589c08 ConVar cl_color
+engine.dll!0x0058c0f0 ConVar cl_debug_ugc_downloads
+engine.dll!0x00589c60 ConVar cl_decryptdata_key
+engine.dll!0x00589cb8 ConVar cl_decryptdata_key_pub
+engine.dll!0x0058c098 ConVar cl_download_demoplayer
+engine.dll!0x0058c040 ConVar cl_downloadfilter
+engine.dll!0x0058b0c0 ConVar cl_entityreport
+engine.dll!0x0058b220 ConVar cl_flushentitypacket
+engine.dll!0x0058bfe8 ConVar cl_forcepreload
+engine.dll!0x00589d10 ConVar cl_hideserverip
+engine.dll!0x0058b350 ConVar cl_ignorepackets
+engine.dll!0x0058ac98 ConVar cl_interpolate
+engine.dll!0x00589b58 ConVar cl_interpolate
+engine.dll!0x005899f8 ConVar cl_resend
+engine.dll!0x00589a50 ConVar cl_resend_timeout
+engine.dll!0x0058bba8 ConVar cl_showevents
+engine.dll!0x0058bc00 ConVar cl_showpluginmessages2
+engine.dll!0x0059e978 ConVar cl_skipslowpath
+engine.dll!0x0058bf90 ConVar cl_timeout
+engine.dll!0x0059d678 ConVar clientport
+engine.dll!0x00597fe8 ConVar closecaption
+engine.dll!0x0058c4d8 ConVar con_enable
+engine.dll!0x0058c530 ConVar con_filter_enable
+engine.dll!0x0058c588 ConVar con_filter_text
+engine.dll!0x0058c5e0 ConVar con_filter_text_out
+engine.dll!0x0058c3d0 ConVar con_notifytime
+engine.dll!0x0058c2c8 ConVar con_timestamp
+engine.dll!0x0058c378 ConVar con_trace
+engine.dll!0x0058c428 ConVar contimes
+engine.dll!0x00598670 ConVar coop
+engine.dll!0x00598618 ConVar deathmatch
+engine.dll!0x00595538 ConVar debug_map_crc
+engine.dll!0x0058a158 ConVar demo_recordcommands
+engine.dll!0x0058cf08 ConVar demo_strict_validation
+engine.dll!0x00598828 ConVar developer
+engine.dll!0x00596820 ConVar display_game_events
+engine.dll!0x0051aa48 ConVar dsp_automatic
+engine.dll!0x00519980 ConVar dsp_db_min
+engine.dll!0x005199d8 ConVar dsp_db_mixdrop
+engine.dll!0x00519878 ConVar dsp_dist_max
+engine.dll!0x00519820 ConVar dsp_dist_min
+engine.dll!0x0051ad08 ConVar dsp_enhance_stereo
+engine.dll!0x0051a998 ConVar dsp_facingaway
+engine.dll!0x00519928 ConVar dsp_mix_max
+engine.dll!0x005198d0 ConVar dsp_mix_min
+engine.dll!0x0051b258 ConVar dsp_off
+engine.dll!0x0051b360 ConVar dsp_room
+engine.dll!0x0051aaf8 ConVar dsp_slow_cpu
+engine.dll!0x0051b2b0 ConVar dsp_spatial
+engine.dll!0x0051a9f0 ConVar dsp_speaker
+engine.dll!0x0051acb0 ConVar dsp_vol_2ch
+engine.dll!0x0051ac58 ConVar dsp_vol_4ch
+engine.dll!0x0051ac00 ConVar dsp_vol_5ch
+engine.dll!0x0051aba8 ConVar dsp_volume
+engine.dll!0x0051a940 ConVar dsp_water
+engine.dll!0x0058ca18 ConVar enable_debug_overlays
+engine.dll!0x0059f838 ConVar engine_no_focus_sleep
+engine.dll!0x0058da40 ConVar fog_enable_water_fog
+engine.dll!0x0051c3b0 ConVar force_audio_english
+engine.dll!0x0059f708 ConVar fps_max_menu
+engine.dll!0x0058b7c0 ConVar fps_screenshot_frequency
+engine.dll!0x0058b768 ConVar fps_screenshot_threshold
+engine.dll!0x00592858 ConVar host_flush_threshold
+engine.dll!0x005987d0 ConVar host_framerate
+engine.dll!0x00599170 ConVar host_info_show
+engine.dll!0x00599220 ConVar host_map
+engine.dll!0x00599118 ConVar host_name_store
+engine.dll!0x005990c0 ConVar host_players_show
+engine.dll!0x00599068 ConVar host_rules_show
+engine.dll!0x005979e8 ConVar host_sleep
+engine.dll!0x00598880 ConVar host_timescale
+engine.dll!0x0059d598 ConVar hostip
+engine.dll!0x0059d3e0 ConVar hostport
+engine.dll!0x0059c148 ConVar in_forceuser
+engine.dll!0x0059da00 ConVar ip
+engine.dll!0x0059dc00 ConVar ip_relay
+engine.dll!0x0059d490 ConVar ip_steam
+engine.dll!0x0059dc58 ConVar ip_tv
+engine.dll!0x0059d7c8 ConVar ip_tv1
+engine.dll!0x0059c6b0 ConVar lightcache_maxmiss
+engine.dll!0x0059c600 ConVar mat_ambient_light_b
+engine.dll!0x0059c308 ConVar mat_ambient_light_g
+engine.dll!0x0059c658 ConVar mat_ambient_light_r
+engine.dll!0x0058f478 ConVar mat_bumpbasis
+engine.dll!0x0058c170 ConVar mat_colorcorrection
+engine.dll!0x0058ef00 ConVar mat_debugalttab
+engine.dll!0x0058f218 ConVar mat_depthbias_normal
+engine.dll!0x00589de8 ConVar mat_dynamic_tonemapping
+engine.dll!0x00589ef0 ConVar mat_force_tonemap_scale
+engine.dll!0x0058d8e0 ConVar mat_forcedynamic
+engine.dll!0x0058f840 ConVar mat_fullbright
+engine.dll!0x0058ffd8 ConVar mat_loadtextures
+engine.dll!0x0058f790 ConVar mat_luxels
+engine.dll!0x0058efb0 ConVar mat_monitorgamma
+engine.dll!0x0058f110 ConVar mat_monitorgamma_tv_enabled
+engine.dll!0x0058f7e8 ConVar mat_norendering
+engine.dll!0x0058f6e0 ConVar mat_normals
+engine.dll!0x0058beb8 ConVar mat_show_texture_memory_usage
+engine.dll!0x0058e680 ConVar mat_softwareskin
+engine.dll!0x0058dd60 ConVar mat_surfaceid
+engine.dll!0x0058ddb8 ConVar mat_surfacemat
+engine.dll!0x0058bd10 ConVar mat_texture_list
+engine.dll!0x0058bdb0 ConVar mat_texture_list_all
+engine.dll!0x0058be60 ConVar mat_texture_list_view
+engine.dll!0x0058f738 ConVar mat_wireframe
+engine.dll!0x00597b60 ConVar mem_incremental_compact_rate
+engine.dll!0x0058fd10 ConVar mod_dynamicloadpause
+engine.dll!0x0058fdc0 ConVar mod_dynamicloadspew
+engine.dll!0x0058fd68 ConVar mod_dynamicloadthrottle
+engine.dll!0x0058fcb8 ConVar mod_dynamicunloadtex
+engine.dll!0x0058fc60 ConVar mod_dynamicunloadtime
+engine.dll!0x0059cb58 ConVar net_blockmsg
+engine.dll!0x0059d028 ConVar net_droponsendoverflow
+engine.dll!0x0059d5f0 ConVar net_droppackets
+engine.dll!0x0058b560 ConVar net_earliertempents
+engine.dll!0x0059d8f8 ConVar net_fakejitter
+engine.dll!0x0059d438 ConVar net_fakelag
+engine.dll!0x0059dba8 ConVar net_fakeloss
+engine.dll!0x0059dcb0 ConVar net_maxroutable
+engine.dll!0x0059d950 ConVar net_public_adr
+engine.dll!0x0059dd08 ConVar net_queue_trace
+engine.dll!0x00591870 ConVar net_showreliablesounds
+engine.dll!0x0059d540 ConVar net_showsplits
+engine.dll!0x0059cd68 ConVar net_showudp
+engine.dll!0x0059ca50 ConVar net_showudp_oob
+engine.dll!0x0059d080 ConVar net_showudp_remoteonly
+engine.dll!0x0059da58 ConVar net_splitrate
+engine.dll!0x0059d280 ConVar net_steamcnx_allowrelay
+engine.dll!0x0059d1a8 ConVar net_steamcnx_enabled
+engine.dll!0x0059d150 ConVar net_threaded_socket_burst_cap
+engine.dll!0x0059d200 ConVar net_threaded_socket_recovery_rate
+engine.dll!0x0059d2d8 ConVar net_threaded_socket_recovery_time
+engine.dll!0x005981a0 ConVar next
+engine.dll!0x00595998 ConVar occlusion_old
+engine.dll!0x00596588 ConVar occlusion_test_async_jitter
+engine.dll!0x00596530 ConVar occlusion_test_async_move_tolerance
+engine.dll!0x00596690 ConVar occlusion_test_jump_margin
+engine.dll!0x005965e0 ConVar occlusion_test_margins
+engine.dll!0x00596710 ConVar occlusion_test_shadow_max_distance
+engine.dll!0x0059dfd0 ConVar paint_alpha_offset_enabled
+engine.dll!0x0059df78 ConVar paint_max_surface_border_alpha
+engine.dll!0x0059e130 ConVar paint_min_valid_alpha_value
+engine.dll!0x0059e188 ConVar paintsplat_bias
+engine.dll!0x0059e0d8 ConVar paintsplat_max_alpha_noise
+engine.dll!0x0059e028 ConVar paintsplat_noise_enabled
+engine.dll!0x005a3958 ConVar panel_test_title_safe
+engine.dll!0x00589b00 ConVar password
+engine.dll!0x005904a8 ConVar r_ClipAreaFrustums
+engine.dll!0x00590450 ConVar r_ClipAreaPortals
+engine.dll!0x00595cd8 ConVar r_DispBuildable
+engine.dll!0x00595c80 ConVar r_DispWalkable
+engine.dll!0x00589e98 ConVar r_DrawBeams
+engine.dll!0x00595c28 ConVar r_DrawDisp
+engine.dll!0x0058dfd0 ConVar r_DrawModelLightOrigin
+engine.dll!0x00590660 ConVar r_DrawPortals
+engine.dll!0x0058eb90 ConVar r_ambientfraction
+engine.dll!0x0059c490 ConVar r_ambientlightingonly
+engine.dll!0x0059c7b8 ConVar r_avglight
+engine.dll!0x0058d338 ConVar r_avglightmap
+engine.dll!0x005910b8 ConVar r_brush_queue_mode
+engine.dll!0x0059e920 ConVar r_colorstaticprops
+engine.dll!0x0058e2b8 ConVar r_debugrandomstaticlighting
+engine.dll!0x0059ebc8 ConVar r_disable_static_prop_loading
+engine.dll!0x0058d3e8 ConVar r_dlightsenable
+engine.dll!0x0058f580 ConVar r_drawbrushmodels
+engine.dll!0x00590978 ConVar r_drawdecals
+engine.dll!0x0058e7e0 ConVar r_drawentities
+engine.dll!0x0058d9e8 ConVar r_drawfuncdetail
+engine.dll!0x0058d938 ConVar r_drawleaf
+engine.dll!0x0058ec98 ConVar r_drawlightcache
+engine.dll!0x0059c438 ConVar r_drawlightcache
+engine.dll!0x0058d2e0 ConVar r_drawlightinfo
+engine.dll!0x0058d288 ConVar r_drawlights
+engine.dll!0x0058dec8 ConVar r_drawmodelstatsoverlay
+engine.dll!0x0058df20 ConVar r_drawmodelstatsoverlaydistance
+engine.dll!0x0058df78 ConVar r_drawmodelstatsoverlayfilter
+engine.dll!0x0058eda0 ConVar r_drawmodelstatsoverlaymax
+engine.dll!0x0058ed48 ConVar r_drawmodelstatsoverlaymin
+engine.dll!0x0058de70 ConVar r_drawskybox
+engine.dll!0x0059eb70 ConVar r_drawstaticprops
+engine.dll!0x0058d888 ConVar r_drawtranslucentworld
+engine.dll!0x005a05b0 ConVar r_drawvgui
+engine.dll!0x0058d990 ConVar r_drawworld
+engine.dll!0x00590920 ConVar r_dscale_basefov
+engine.dll!0x005908c8 ConVar r_dscale_fardist
+engine.dll!0x00590870 ConVar r_dscale_farscale
+engine.dll!0x00590818 ConVar r_dscale_neardist
+engine.dll!0x005907c0 ConVar r_dscale_nearscale
+engine.dll!0x0058f688 ConVar r_dynamic
+engine.dll!0x0058d6d0 ConVar r_dynamiclighting
+engine.dll!0x0058e080 ConVar r_entity
+engine.dll!0x0058e4c8 ConVar r_eyemove
+engine.dll!0x0058e520 ConVar r_eyeshift_x
+engine.dll!0x0058e578 ConVar r_eyeshift_y
+engine.dll!0x0058e5d0 ConVar r_eyeshift_z
+engine.dll!0x0058e628 ConVar r_eyesize
+engine.dll!0x00590f98 ConVar r_flashlightclip
+engine.dll!0x00590ff0 ConVar r_flashlightdrawclip
+engine.dll!0x00591048 ConVar r_flashlightscissor
+engine.dll!0x0058ea48 ConVar r_ignoreStaticColorChecksum
+engine.dll!0x0058e368 ConVar r_itemblinkmax
+engine.dll!0x0058e3c0 ConVar r_itemblinkrate
+engine.dll!0x0059c2b0 ConVar r_lightcache_numambientsamples
+engine.dll!0x0059c540 ConVar r_lightcache_radiusfactor
+engine.dll!0x0059c3b8 ConVar r_lightcachecenter
+engine.dll!0x0058ec40 ConVar r_lightcachemodel
+engine.dll!0x0058e130 ConVar r_lightinterp
+engine.dll!0x0058f5d8 ConVar r_lightmap
+engine.dll!0x0058f630 ConVar r_lightstyle
+engine.dll!0x0059c8d0 ConVar r_lockpvs
+engine.dll!0x0058ecf0 ConVar r_modelAmbientMin
+engine.dll!0x0058e940 ConVar r_modelwireframedecal
+engine.dll!0x0058e6d8 ConVar r_nohw
+engine.dll!0x0058e730 ConVar r_nosw
+engine.dll!0x0059c820 ConVar r_novis
+engine.dll!0x00590088 ConVar r_occlusionspew
+engine.dll!0x0059c5a8 ConVar r_oldlightselection
+engine.dll!0x0059e828 ConVar r_partition_level
+engine.dll!0x005905b0 ConVar r_portalsopenall
+engine.dll!0x0058e418 ConVar r_proplightingpooling
+engine.dll!0x0059c360 ConVar r_radiosity
+engine.dll!0x0059e8c8 ConVar r_shadow_deferred
+engine.dll!0x00590b68 ConVar r_shadowids
+engine.dll!0x00590ab8 ConVar r_shadows_gamecontrol
+engine.dll!0x00590b10 ConVar r_shadowwireframe
+engine.dll!0x0058e470 ConVar r_showenvcubemap
+engine.dll!0x0058e8e8 ConVar r_skin
+engine.dll!0x0058e9f0 ConVar r_slowpathwireframe
+engine.dll!0x005901e8 ConVar r_visocclusion
+engine.dll!0x0058d5c8 ConVar r_visualizelighttraces
+engine.dll!0x0058d620 ConVar r_visualizelighttracesshowfulltrace
+engine.dll!0x0058d570 ConVar r_visualizetraces
+engine.dll!0x00591bc0 ConVar replay_debug
+engine.dll!0x0051aaa0 ConVar room_type
+engine.dll!0x0059fee0 ConVar rpt_vprof_time
+engine.dll!0x005a1448 ConVar showbudget_texture
+engine.dll!0x00598360 ConVar singlestep
+engine.dll!0x00598778 ConVar skill
+engine.dll!0x00519310 ConVar snd_deathcamera_volume
+engine.dll!0x0051a6d8 ConVar snd_debug_panlaw
+engine.dll!0x0051b998 ConVar snd_disable_mixer_duck
+engine.dll!0x0051b940 ConVar snd_disable_mixer_solo
+engine.dll!0x0051a280 ConVar snd_duckerattacktime
+engine.dll!0x0051a2d8 ConVar snd_duckerreleasetime
+engine.dll!0x0051a330 ConVar snd_duckerthreshold
+engine.dll!0x0051a388 ConVar snd_ducking_off
+engine.dll!0x0051a228 ConVar snd_ducktovolume
+engine.dll!0x00519a88 ConVar snd_dvar_dist_max
+engine.dll!0x00519a30 ConVar snd_dvar_dist_min
+engine.dll!0x00519100 ConVar snd_dzmusic_volume
+engine.dll!0x0051a178 ConVar snd_filter
+engine.dll!0x0059e618 ConVar snd_foliage_db_loss
+engine.dll!0x0059e778 ConVar snd_gain
+engine.dll!0x0059e6c8 ConVar snd_gain_max
+engine.dll!0x0059e5c0 ConVar snd_gain_min
+engine.dll!0x00518a70 ConVar snd_hrtf_distance_behind
+engine.dll!0x005187b0 ConVar snd_hrtf_lerp_max_distance
+engine.dll!0x00518758 ConVar snd_hrtf_lerp_min_distance
+engine.dll!0x0051c0f0 ConVar snd_hrtf_stereo_blend
+engine.dll!0x0051c148 ConVar snd_hrtf_voice_delay
+engine.dll!0x0051b470 ConVar snd_hrtf_volume
+engine.dll!0x00518700 ConVar snd_hwcompat
+engine.dll!0x0051b890 ConVar snd_list
+engine.dll!0x00519260 ConVar snd_mapobjective_volume
+engine.dll!0x00518b48 ConVar snd_max_same_sounds
+engine.dll!0x00518ba0 ConVar snd_max_same_weapon_sounds
+engine.dll!0x00519158 ConVar snd_menumusic_volume
+engine.dll!0x005194c8 ConVar snd_mix_async
+engine.dll!0x00519520 ConVar snd_mix_async_onetime_reset
+engine.dll!0x005193c0 ConVar snd_mixahead
+engine.dll!0x0051b7e0 ConVar snd_mixer_master_dsp
+engine.dll!0x0051b788 ConVar snd_mixer_master_level
+engine.dll!0x00519578 ConVar snd_music_volume_onetime_reset_2
+engine.dll!0x00519050 ConVar snd_musicvolume_multiplier_inoverlay
+engine.dll!0x005195d0 ConVar snd_mute_losefocus
+engine.dll!0x00519368 ConVar snd_mvp_volume
+engine.dll!0x00519b90 ConVar snd_obscured_gain_dB
+engine.dll!0x0051c9e8 ConVar snd_occlusion_bounces
+engine.dll!0x0051c7d8 ConVar snd_occlusion_collide_min_distance
+engine.dll!0x0051c8e0 ConVar snd_occlusion_eq_high
+engine.dll!0x0051c830 ConVar snd_occlusion_eq_low
+engine.dll!0x0051c888 ConVar snd_occlusion_eq_mid
+engine.dll!0x0051c780 ConVar snd_occlusion_indirect_max
+engine.dll!0x0051c728 ConVar snd_occlusion_indirect_min
+engine.dll!0x0051c6d0 ConVar snd_occlusion_indirect_radius
+engine.dll!0x0051c5c8 ConVar snd_occlusion_material_override
+engine.dll!0x0051c938 ConVar snd_occlusion_no_eq_scale
+engine.dll!0x0051c570 ConVar snd_occlusion_pos_override
+engine.dll!0x0051c990 ConVar snd_occlusion_rays
+engine.dll!0x0051c620 ConVar snd_occlusion_visualize
+engine.dll!0x0051c678 ConVar snd_occlusion_visualize_filter
+engine.dll!0x0051c518 ConVar snd_op_test_convar
+engine.dll!0x0051b4c8 ConVar snd_pause_all
+engine.dll!0x00518fa0 ConVar snd_pitchquality
+engine.dll!0x00519b38 ConVar snd_pre_gain_dist_falloff
+engine.dll!0x0051c358 ConVar snd_prefetch_common
+engine.dll!0x0051ab50 ConVar snd_profile
+engine.dll!0x00518650 ConVar snd_rear_speaker_scale
+engine.dll!0x0059e720 ConVar snd_refdist
+engine.dll!0x005189c0 ConVar snd_report_format_sound
+engine.dll!0x00518968 ConVar snd_report_loop_sound
+engine.dll!0x005188b8 ConVar snd_report_start_sound
+engine.dll!0x00518910 ConVar snd_report_stop_sound
+engine.dll!0x00518a18 ConVar snd_report_verbose_error
+engine.dll!0x00519208 ConVar snd_roundend_volume
+engine.dll!0x005191b0 ConVar snd_roundstart_volume
+engine.dll!0x00518de8 ConVar snd_show
+engine.dll!0x00518e98 ConVar snd_show_filter
+engine.dll!0x0051b838 ConVar snd_showclassname
+engine.dll!0x0051b8e8 ConVar snd_showmixer
+engine.dll!0x00519ae0 ConVar snd_showstart
+engine.dll!0x0051cc50 ConVar snd_sos_list_operator_updates
+engine.dll!0x0051a1d0 ConVar snd_sos_show_block_debug
+engine.dll!0x005186a8 ConVar snd_sos_show_client_rcv
+engine.dll!0x0051cf08 ConVar snd_sos_show_operator_entry_filter
+engine.dll!0x0051cb48 ConVar snd_sos_show_operator_init
+engine.dll!0x0051cbf8 ConVar snd_sos_show_operator_parse
+engine.dll!0x0051ce58 ConVar snd_sos_show_operator_prestart
+engine.dll!0x0051ce00 ConVar snd_sos_show_operator_shutdown
+engine.dll!0x0051ceb0 ConVar snd_sos_show_operator_start
+engine.dll!0x0051ca98 ConVar snd_sos_show_operator_stop_entry
+engine.dll!0x0051cba0 ConVar snd_sos_show_operator_updates
+engine.dll!0x0051caf0 ConVar snd_sos_show_queuetotrack
+engine.dll!0x0051ccd0 ConVar snd_sos_show_startqueue
+engine.dll!0x0051a730 ConVar snd_surround_speakers
+engine.dll!0x005192b8 ConVar snd_tensecondwarning_volume
+engine.dll!0x00518f48 ConVar snd_visualize
+engine.dll!0x00519628 ConVar sound_device_override
+engine.dll!0x00591660 ConVar spec_replay_enable
+engine.dll!0x005973b8 ConVar spec_replay_leadup_time
+engine.dll!0x005916b8 ConVar spec_replay_message_time
+engine.dll!0x00591920 ConVar spec_replay_on_death
+engine.dll!0x00591b68 ConVar spec_replay_rate_base
+engine.dll!0x00591710 ConVar spec_replay_rate_limit
+engine.dll!0x005918c8 ConVar sv_allow_legacy_cmd_execution_from_client
+engine.dll!0x00594cc8 ConVar sv_allow_wait_command
+engine.dll!0x00591558 ConVar sv_allowdownload
+engine.dll!0x005915b0 ConVar sv_allowupload
+engine.dll!0x00594e80 ConVar sv_alternateticks
+engine.dll!0x00592cf8 ConVar sv_client_cmdrate_difference
+engine.dll!0x00592da8 ConVar sv_client_max_interp_ratio
+engine.dll!0x00592d50 ConVar sv_client_min_interp_ratio
+engine.dll!0x00592e00 ConVar sv_client_predict
+engine.dll!0x005932d8 ConVar sv_consistency
+engine.dll!0x00592ae8 ConVar sv_contact
+engine.dll!0x00591f90 ConVar sv_creationtickcheck
+engine.dll!0x00593578 ConVar sv_debugmanualmode
+engine.dll!0x00592bf0 ConVar sv_downloadurl
+engine.dll!0x0059dd60 ConVar sv_dumpstringtables
+engine.dll!0x00591138 ConVar sv_duplicate_playernames_ok
+engine.dll!0x00593520 ConVar sv_enable_delta_packing
+engine.dll!0x005937f0 ConVar sv_forcepreload
+engine.dll!0x00592750 ConVar sv_hibernate_ms
+engine.dll!0x005927a8 ConVar sv_hibernate_ms_vgui
+engine.dll!0x00592800 ConVar sv_hibernate_postgame_delay
+engine.dll!0x005926f8 ConVar sv_hibernate_punt_tv_clients
+engine.dll!0x00595060 ConVar sv_hosting_lobby
+engine.dll!0x00592a38 ConVar sv_lan
+engine.dll!0x00592358 ConVar sv_log_onefile
+engine.dll!0x005923b0 ConVar sv_logbans
+engine.dll!0x00591fe8 ConVar sv_logblocks
+engine.dll!0x00592300 ConVar sv_logecho
+engine.dll!0x00592250 ConVar sv_logfile
+engine.dll!0x005922a8 ConVar sv_logflush
+engine.dll!0x005921f8 ConVar sv_logsdir
+engine.dll!0x00592408 ConVar sv_logsecret
+engine.dll!0x00592460 ConVar sv_logsocket2
+engine.dll!0x005924b8 ConVar sv_logsocket2_substr
+engine.dll!0x005917c0 ConVar sv_max_dropped_packets_to_process
+engine.dll!0x005921a0 ConVar sv_max_queries_sec
+engine.dll!0x00592098 ConVar sv_max_queries_sec_global
+engine.dll!0x005920f0 ConVar sv_max_queries_tracked_ips_max
+engine.dll!0x00592040 ConVar sv_max_queries_tracked_ips_prune
+engine.dll!0x00592148 ConVar sv_max_queries_window
+engine.dll!0x00592ca0 ConVar sv_maxcmdrate
+engine.dll!0x00591348 ConVar sv_maxrate
+engine.dll!0x005913f8 ConVar sv_maxupdaterate
+engine.dll!0x00593048 ConVar sv_maxuptimelimit
+engine.dll!0x00592f98 ConVar sv_memlimit
+engine.dll!0x00592c48 ConVar sv_mincmdrate
+engine.dll!0x005913a0 ConVar sv_minrate
+engine.dll!0x00591450 ConVar sv_minupdaterate
+engine.dll!0x00592ff0 ConVar sv_minuptimelimit
+engine.dll!0x00593628 ConVar sv_parallel_packentities
+engine.dll!0x005930c8 ConVar sv_parallel_sendsnapshot
+engine.dll!0x00592a90 ConVar sv_pausable
+engine.dll!0x00592988 ConVar sv_pure_consensus
+engine.dll!0x005931d0 ConVar sv_pure_kick_clients
+engine.dll!0x005929e0 ConVar sv_pure_retiretime
+engine.dll!0x00593228 ConVar sv_pure_trace
+engine.dll!0x00591818 ConVar sv_quota_stringcmdspersecond
+engine.dll!0x00593920 ConVar sv_rcon_whitelist_address
+engine.dll!0x00595168 ConVar sv_region
+engine.dll!0x00591298 ConVar sv_reliableavatardata
+engine.dll!0x00591500 ConVar sv_replaybots
+engine.dll!0x00594f30 ConVar sv_reservation_tickrate_adjustment
+engine.dll!0x005950b8 ConVar sv_reservation_timeout
+engine.dll!0x00591cf0 ConVar sv_show_cull_props
+engine.dll!0x00593b30 ConVar sv_steamauth_enforce
+engine.dll!0x00594c70 ConVar sv_steamgroup_exclusive
+engine.dll!0x005914a8 ConVar sv_stressbots
+engine.dll!0x0058b2a0 ConVar sv_unlockedchapters
+engine.dll!0x005934c8 ConVar sv_validate_edict_change_infos
+engine.dll!0x00594dd0 ConVar sv_visiblemaxplayers
+engine.dll!0x00519ee8 ConVar sv_voice_proximity_minvolume
+engine.dll!0x00589468 ConVar sv_voice_proximity_use_falloff
+engine.dll!0x00593398 ConVar sv_voicecodec
+engine.dll!0x00592b98 ConVar sv_voiceenable
+engine.dll!0x0059f410 ConVar sys_minidumpspewlines
+engine.dll!0x005a1740 ConVar texture_budget_background_alpha
+engine.dll!0x0059e7d0 ConVar think_trace_limit
+engine.dll!0x005971b0 ConVar tv_advertise_watchable
+engine.dll!0x005935d0 ConVar tv_allow_camera_man_override
+engine.dll!0x00597840 ConVar tv_autorecord
+engine.dll!0x00596ee0 ConVar tv_autoretry
+engine.dll!0x00596af0 ConVar tv_broadcast_drop_fragments
+engine.dll!0x00596c20 ConVar tv_broadcast_keyframe_interval
+engine.dll!0x00596a40 ConVar tv_broadcast_keyframe_interval1
+engine.dll!0x00596ba0 ConVar tv_broadcast_max_requests
+engine.dll!0x00596b48 ConVar tv_broadcast_max_requests1
+engine.dll!0x00596a98 ConVar tv_broadcast_origin_auth
+engine.dll!0x005969e8 ConVar tv_broadcast_origin_auth1
+engine.dll!0x00596c78 ConVar tv_broadcast_startup_resend_interval
+engine.dll!0x00596990 ConVar tv_broadcast_terminate
+engine.dll!0x005976b8 ConVar tv_broadcast_url
+engine.dll!0x00597738 ConVar tv_broadcast_url1
+engine.dll!0x00596cd0 ConVar tv_chatgroupsize
+engine.dll!0x00596d80 ConVar tv_chattimelimit
+engine.dll!0x00597790 ConVar tv_debug
+engine.dll!0x00597638 ConVar tv_deltacache
+engine.dll!0x00597158 ConVar tv_dispatchmode
+engine.dll!0x00597230 ConVar tv_dispatchweight
+engine.dll!0x005974b0 ConVar tv_enable_delta_frames
+engine.dll!0x00596fb8 ConVar tv_encryptdata_key
+engine.dll!0x00597508 ConVar tv_encryptdata_key_pub
+engine.dll!0x00597898 ConVar tv_maxclients
+engine.dll!0x005978f0 ConVar tv_maxclients_relayreserved
+engine.dll!0x00596dd8 ConVar tv_maxrate
+engine.dll!0x0058b2f8 ConVar tv_nochat
+engine.dll!0x00597288 ConVar tv_overridemaster
+engine.dll!0x00597588 ConVar tv_password
+engine.dll!0x0058d068 ConVar tv_playcast_delay_prediction
+engine.dll!0x0058a0d8 ConVar tv_playcast_delay_resync
+engine.dll!0x0058d118 ConVar tv_playcast_max_rcvage
+engine.dll!0x0058d010 ConVar tv_playcast_max_rtdelay
+engine.dll!0x0058cf60 ConVar tv_playcast_origin_auth
+engine.dll!0x0058cfb8 ConVar tv_playcast_retry_timeout
+engine.dll!0x0059d9a8 ConVar tv_port
+engine.dll!0x0059d878 ConVar tv_port1
+engine.dll!0x00596d28 ConVar tv_relaypassword
+engine.dll!0x00597080 ConVar tv_relayvoice
+engine.dll!0x00596f38 ConVar tv_snapshotrate
+engine.dll!0x00596e30 ConVar tv_snapshotrate1
+engine.dll!0x00596e88 ConVar tv_timeout
+engine.dll!0x00597948 ConVar tv_transmitall
+engine.dll!0x005a0fb8 ConVar vgui_drawtree
+engine.dll!0x0051d328 ConVar voice_caster_enable
+engine.dll!0x0051d118 ConVar voice_caster_scale
+engine.dll!0x0051d2d0 ConVar voice_enable
+engine.dll!0x0051d3d8 ConVar voice_forcemicrecord
+engine.dll!0x00598b20 ConVar voice_inputfromfile
+engine.dll!0x0051cf60 ConVar voice_loopback
+engine.dll!0x005893b8 ConVar voice_mixer_boost
+engine.dll!0x00589360 ConVar voice_mixer_mute
+engine.dll!0x00589410 ConVar voice_mixer_volume
+engine.dll!0x005894c0 ConVar voice_positional
+engine.dll!0x00519f40 ConVar voice_positional_seconds_after_death
+engine.dll!0x00598c98 ConVar voice_recordtofile
+engine.dll!0x0051d0c0 ConVar voice_scale
+engine.dll!0x0051d380 ConVar voice_threshold
+engine.dll!0x00518ff8 ConVar volume
+engine.dll!0x005a1848 ConVar vprof_graphheight
+engine.dll!0x005a17f0 ConVar vprof_graphwidth
+engine.dll!0x005a1988 ConVar vprof_unaccounted_limit
+engine.dll!0x005a1930 ConVar vprof_verbose
+engine.dll!0x005a19e0 ConVar vprof_warningmsec
+engine.dll!0x005a0438 ConVar xbox_arcade_remaining_trial_time
 ```
 
-## ConCommands
+### ConCommands
 
 <details>
 <summary><code>+mat_texture_list</code></summary>
@@ -7117,7 +7121,7 @@ Saves current game to a console storage device.
 flags: `0x20000`  
 </details>
 
-### Addresses
+#### Addresses
 
 ```
 engine.dll!0x0058bd68 ConCommand +mat_texture_list
@@ -7530,9 +7534,9 @@ engine.dll!0x00599888 ConCommand xload
 engine.dll!0x00599734 ConCommand xsave
 ```
 
-# Client
+## Client.dll
 
-## Interfaces
+### Interfaces
 
 ```
 client_panorama.dll!0x04d13564 ClientAlphaPropertyMgrV001
@@ -7556,7 +7560,7 @@ client_panorama.dll!0x00ced3cc VGuiModuleLoader003
 client_panorama.dll!0x00cda028 VParticleSystemQuery004
 ```
 
-## ConVars
+### ConVars
 
 <details>
 <summary><code>BlendBonesMode</code></summary>
@@ -15493,1077 +15497,1077 @@ default: `"1.0"`
 flags: `0x1008080`  
 </details>
 
-### Addresses
+#### Addresses
 
 ```
-client_panorama.dll!0xcf6ea0 ConVar BlendBonesMode
-client_panorama.dll!0xcc9e60 ConVar achievement_debug
-client_panorama.dll!0xcc9eb8 ConVar achievement_disable
-client_panorama.dll!0xcca368 ConVar ai_debug_shoot_positions
-client_panorama.dll!0xcca310 ConVar ai_shot_bias_max
-client_panorama.dll!0xcca2b8 ConVar ai_shot_bias_min
-client_panorama.dll!0xce6220 ConVar ammo_338mag_headshot_mult
-client_panorama.dll!0xce5eb0 ConVar ammo_338mag_impulse
-client_panorama.dll!0xce5828 ConVar ammo_338mag_max
-client_panorama.dll!0xce6380 ConVar ammo_357sig_headshot_mult
-client_panorama.dll!0xce6010 ConVar ammo_357sig_impulse
-client_panorama.dll!0xce5988 ConVar ammo_357sig_max
-client_panorama.dll!0xce5a90 ConVar ammo_357sig_min_max
-client_panorama.dll!0xce59e0 ConVar ammo_357sig_p250_max
-client_panorama.dll!0xce5a38 ConVar ammo_357sig_small_max
-client_panorama.dll!0xce6328 ConVar ammo_45acp_headshot_mult
-client_panorama.dll!0xce5fb8 ConVar ammo_45acp_impulse
-client_panorama.dll!0xce5930 ConVar ammo_45acp_max
-client_panorama.dll!0xce60c0 ConVar ammo_50AE_headshot_mult
-client_panorama.dll!0xce5d50 ConVar ammo_50AE_impulse
-client_panorama.dll!0xce5670 ConVar ammo_50AE_max
-client_panorama.dll!0xce61c8 ConVar ammo_556mm_box_headshot_mult
-client_panorama.dll!0xce5e58 ConVar ammo_556mm_box_impulse
-client_panorama.dll!0xce57d0 ConVar ammo_556mm_box_max
-client_panorama.dll!0xce6170 ConVar ammo_556mm_headshot_mult
-client_panorama.dll!0xce5e00 ConVar ammo_556mm_impulse
-client_panorama.dll!0xce5720 ConVar ammo_556mm_max
-client_panorama.dll!0xce5778 ConVar ammo_556mm_small_max
-client_panorama.dll!0xce63d8 ConVar ammo_57mm_headshot_mult
-client_panorama.dll!0xce6068 ConVar ammo_57mm_impulse
-client_panorama.dll!0xce5ae8 ConVar ammo_57mm_max
-client_panorama.dll!0xce6118 ConVar ammo_762mm_headshot_mult
-client_panorama.dll!0xce5da8 ConVar ammo_762mm_impulse
-client_panorama.dll!0xce56c8 ConVar ammo_762mm_max
-client_panorama.dll!0xce6278 ConVar ammo_9mm_headshot_mult
-client_panorama.dll!0xce5f08 ConVar ammo_9mm_impulse
-client_panorama.dll!0xce5880 ConVar ammo_9mm_max
-client_panorama.dll!0xce62d0 ConVar ammo_buckshot_headshot_mult
-client_panorama.dll!0xce5f60 ConVar ammo_buckshot_impulse
-client_panorama.dll!0xce58d8 ConVar ammo_buckshot_max
-client_panorama.dll!0xce5cf8 ConVar ammo_grenade_limit_breachcharge
-client_panorama.dll!0xce5b40 ConVar ammo_grenade_limit_default
-client_panorama.dll!0xce5b98 ConVar ammo_grenade_limit_flashbang
-client_panorama.dll!0xce5c48 ConVar ammo_grenade_limit_snowballs
-client_panorama.dll!0xce5bf0 ConVar ammo_grenade_limit_total
-client_panorama.dll!0xce5ca0 ConVar ammo_item_limit_healthshot
-client_panorama.dll!0xcf6ef8 ConVar anim_3wayblend
-client_panorama.dll!0xcf6f50 ConVar anim_twistbones_enabled
-client_panorama.dll!0xce82c8 ConVar bot_autodifficulty_threshold_high
-client_panorama.dll!0xce8270 ConVar bot_autodifficulty_threshold_low
-client_panorama.dll!0xcd47e0 ConVar c_maxdistance
-client_panorama.dll!0xcd4680 ConVar c_maxpitch
-client_panorama.dll!0xcd4730 ConVar c_maxyaw
-client_panorama.dll!0xcd4838 ConVar c_mindistance
-client_panorama.dll!0xcd46d8 ConVar c_minpitch
-client_panorama.dll!0xcd4788 ConVar c_minyaw
-client_panorama.dll!0xcd48e8 ConVar c_orthoheight
-client_panorama.dll!0xcd4890 ConVar c_orthowidth
-client_panorama.dll!0xcd4940 ConVar c_thirdpersonshoulder
-client_panorama.dll!0xcd4aa0 ConVar c_thirdpersonshoulderaimdist
-client_panorama.dll!0xcd49f0 ConVar c_thirdpersonshoulderdist
-client_panorama.dll!0xcd4a48 ConVar c_thirdpersonshoulderheight
-client_panorama.dll!0xcd4998 ConVar c_thirdpersonshoulderoffset
-client_panorama.dll!0xcefbc8 ConVar cachedvalue_count_partybrowser
-client_panorama.dll!0xcf0760 ConVar cachedvalue_count_teammates
-client_panorama.dll!0xcd45d0 ConVar cam_collision
-client_panorama.dll!0xcd44c8 ConVar cam_idealdelta
-client_panorama.dll!0xcd4f08 ConVar cam_idealdist
-client_panorama.dll!0xcd4eb0 ConVar cam_idealdistright
-client_panorama.dll!0xcd4e58 ConVar cam_idealdistup
-client_panorama.dll!0xcd4470 ConVar cam_ideallag
-client_panorama.dll!0xcd4578 ConVar cam_idealpitch
-client_panorama.dll!0xcd4520 ConVar cam_idealyaw
-client_panorama.dll!0xcd4628 ConVar cam_showangles
-client_panorama.dll!0xcd4418 ConVar cam_snapto
-client_panorama.dll!0xce9a28 ConVar cash_player_bomb_defused
-client_panorama.dll!0xce99d0 ConVar cash_player_bomb_planted
-client_panorama.dll!0xce9b30 ConVar cash_player_damage_hostage
-client_panorama.dll!0xce9c38 ConVar cash_player_get_killed
-client_panorama.dll!0xce9ad8 ConVar cash_player_interact_with_hostage
-client_panorama.dll!0xce9978 ConVar cash_player_killed_enemy_default
-client_panorama.dll!0xce9920 ConVar cash_player_killed_enemy_factor
-client_panorama.dll!0xce9b88 ConVar cash_player_killed_hostage
-client_panorama.dll!0xce98c8 ConVar cash_player_killed_teammate
-client_panorama.dll!0xce9a80 ConVar cash_player_rescued_hostage
-client_panorama.dll!0xce9be0 ConVar cash_player_respawn_amount
-client_panorama.dll!0xce9450 ConVar cash_team_elimination_bomb_map
-client_panorama.dll!0xce93f8 ConVar cash_team_elimination_hostage_map_ct
-client_panorama.dll!0xce93a0 ConVar cash_team_elimination_hostage_map_t
-client_panorama.dll!0xce97c0 ConVar cash_team_hostage_alive
-client_panorama.dll!0xce9870 ConVar cash_team_hostage_interaction
-client_panorama.dll!0xce9660 ConVar cash_team_loser_bonus
-client_panorama.dll!0xce96b8 ConVar cash_team_loser_bonus_consecutive_rounds
-client_panorama.dll!0xce9818 ConVar cash_team_planted_bomb_but_defused
-client_panorama.dll!0xce9768 ConVar cash_team_rescued_hostage
-client_panorama.dll!0xce94a8 ConVar cash_team_survive_guardian_wave
-client_panorama.dll!0xce9348 ConVar cash_team_terrorist_win_bomb
-client_panorama.dll!0xce95b0 ConVar cash_team_win_by_defusing_bomb
-client_panorama.dll!0xce9608 ConVar cash_team_win_by_hostage_rescue
-client_panorama.dll!0xce9558 ConVar cash_team_win_by_time_running_out_bomb
-client_panorama.dll!0xce9500 ConVar cash_team_win_by_time_running_out_hostage
-client_panorama.dll!0xce9710 ConVar cash_team_winner_bonus_consecutive_rounds
-client_panorama.dll!0xcd3610 ConVar cc_linger_time
-client_panorama.dll!0xcd3668 ConVar cc_predisplay_time
-client_panorama.dll!0xcdb8e8 ConVar cc_showmissing
-client_panorama.dll!0xcd3718 ConVar cc_subtitles
-client_panorama.dll!0xcf6fa8 ConVar choreo_spew_filter
-client_panorama.dll!0xce4708 ConVar cl_autobuy
-client_panorama.dll!0xce9298 ConVar cl_autohelp
-client_panorama.dll!0xce91e8 ConVar cl_autowepswitch
-client_panorama.dll!0xcd6b90 ConVar cl_backspeed
-client_panorama.dll!0xcf1ce8 ConVar cl_bob_lower_amt
-client_panorama.dll!0xcf1b30 ConVar cl_bob_version
-client_panorama.dll!0xcf1c90 ConVar cl_bobamt_lat
-client_panorama.dll!0xcf1c38 ConVar cl_bobamt_vert
-client_panorama.dll!0xcf1b88 ConVar cl_bobcycle
-client_panorama.dll!0xcf1be0 ConVar cl_bobup
-client_panorama.dll!0xce0f98 ConVar cl_brushfastpath
-client_panorama.dll!0xcf1ad8 ConVar cl_cam_driver_compensation_scale
-client_panorama.dll!0xcdd308 ConVar cl_camera_follow_bone_index
-client_panorama.dll!0xce2eb8 ConVar cl_camera_height_restriction_debug
-client_panorama.dll!0xcd35a8 ConVar cl_chatfilter_version
-client_panorama.dll!0xcd3550 ConVar cl_chatfilters
-client_panorama.dll!0xcf0230 ConVar cl_clanid
-client_panorama.dll!0xcedfd8 ConVar cl_compass_enabled
-client_panorama.dll!0xce3a40 ConVar cl_connection_trouble_show
-client_panorama.dll!0xcdc688 ConVar cl_countbones
-client_panorama.dll!0xcf1870 ConVar cl_crosshair_drawoutline
-client_panorama.dll!0xcf1a28 ConVar cl_crosshair_dynamic_maxdist_splitratio
-client_panorama.dll!0xcf1978 ConVar cl_crosshair_dynamic_splitalpha_innermod
-client_panorama.dll!0xcf19d0 ConVar cl_crosshair_dynamic_splitalpha_outermod
-client_panorama.dll!0xcf1920 ConVar cl_crosshair_dynamic_splitdist
-client_panorama.dll!0xcf18c8 ConVar cl_crosshair_outlinethickness
-client_panorama.dll!0xcf1318 ConVar cl_crosshair_recoil
-client_panorama.dll!0xcedc68 ConVar cl_crosshair_sniper_show_normal_inaccuracy
-client_panorama.dll!0xce2570 ConVar cl_crosshair_sniper_width
-client_panorama.dll!0xcf1a80 ConVar cl_crosshair_t
-client_panorama.dll!0xcf15b0 ConVar cl_crosshairalpha
-client_panorama.dll!0xcf14a8 ConVar cl_crosshaircolor
-client_panorama.dll!0xcf21b8 ConVar cl_crosshaircolor_b
-client_panorama.dll!0xcf2160 ConVar cl_crosshaircolor_g
-client_panorama.dll!0xcf2108 ConVar cl_crosshaircolor_r
-client_panorama.dll!0xcf17c0 ConVar cl_crosshairdot
-client_panorama.dll!0xcf1660 ConVar cl_crosshairgap
-client_panorama.dll!0xcf16b8 ConVar cl_crosshairgap_useweaponvalue
-client_panorama.dll!0xcf1558 ConVar cl_crosshairscale
-client_panorama.dll!0xcf1710 ConVar cl_crosshairsize
-client_panorama.dll!0xcf2210 ConVar cl_crosshairstyle
-client_panorama.dll!0xcf1768 ConVar cl_crosshairthickness
-client_panorama.dll!0xcf1608 ConVar cl_crosshairusealpha
-client_panorama.dll!0xcde110 ConVar cl_custommaterial_debug_graph
-client_panorama.dll!0xce2f68 ConVar cl_dangerzone_approaching_sound_radius
-client_panorama.dll!0xce3018 ConVar cl_dangerzone_moving_sound_volume
-client_panorama.dll!0xce2fc0 ConVar cl_dangerzone_sound_volume
-client_panorama.dll!0xcceb30 ConVar cl_debugrumble
-client_panorama.dll!0xcd1438 ConVar cl_detail_avoid_force
-client_panorama.dll!0xcd13e0 ConVar cl_detail_avoid_radius
-client_panorama.dll!0xcd1490 ConVar cl_detail_avoid_recover_speed
-client_panorama.dll!0xcd1388 ConVar cl_detail_max_sway
-client_panorama.dll!0xcd1610 ConVar cl_detail_multiplier
-client_panorama.dll!0xccacc8 ConVar cl_disable_ragdolls
-client_panorama.dll!0xce4658 ConVar cl_disablefreezecam
-client_panorama.dll!0xcf3868 ConVar cl_disablehtmlmotd
-client_panorama.dll!0xce2af0 ConVar cl_dm_buyrandomweapons
-client_panorama.dll!0xce40d8 ConVar cl_draw_only_deathnotices
-client_panorama.dll!0xccfdb0 ConVar cl_drawhud
-client_panorama.dll!0xce3ef8 ConVar cl_drawhud_force_deathnotices
-client_panorama.dll!0xce42e8 ConVar cl_drawhud_force_radar
-client_panorama.dll!0xce3e48 ConVar cl_drawhud_force_teamid_overhead
-client_panorama.dll!0xceee20 ConVar cl_drawhud_specvote
-client_panorama.dll!0xccf9a0 ConVar cl_drawleaf
-client_panorama.dll!0xcddb38 ConVar cl_drawmaterial
-client_panorama.dll!0xcde190 ConVar cl_drawshadowtexture
-client_panorama.dll!0xcee430 ConVar cl_dz_playagain_auto_spectate
-client_panorama.dll!0xcef338 ConVar cl_embedded_stream_audio_volume_xmaster
-client_panorama.dll!0xccb2d8 ConVar cl_extrapolate
-client_panorama.dll!0xcd84e8 ConVar cl_extrapolate_amount
-client_panorama.dll!0xcd1668 ConVar cl_fastdetailsprites
-client_panorama.dll!0xce3d40 ConVar cl_fixedcrosshairgap
-client_panorama.dll!0xce2200 ConVar cl_foot_contact_shadows
-client_panorama.dll!0xcd79e8 ConVar cl_forwardspeed
-client_panorama.dll!0xce2e60 ConVar cl_freezecameffects_showholiday
-client_panorama.dll!0xce3fa8 ConVar cl_freezecampanel_position_dynamic
-client_panorama.dll!0xcec600 ConVar cl_http_log_enable
-client_panorama.dll!0xce2d58 ConVar cl_hud_background_alpha
-client_panorama.dll!0xce2d00 ConVar cl_hud_bomb_under_radar
-client_panorama.dll!0xce2c50 ConVar cl_hud_color
-client_panorama.dll!0xce2db0 ConVar cl_hud_healthammo_style
-client_panorama.dll!0xce2ba0 ConVar cl_hud_playercount_pos
-client_panorama.dll!0xce2bf8 ConVar cl_hud_playercount_showcount
-client_panorama.dll!0xcdaad0 ConVar cl_idealpitchscale
-client_panorama.dll!0xccb5f0 ConVar cl_interpolate
-client_panorama.dll!0xcef550 ConVar cl_inventory_debug_tooltip
-client_panorama.dll!0xcef4a0 ConVar cl_inventory_saved_filter2
-client_panorama.dll!0xcef4f8 ConVar cl_inventory_saved_sort2
-client_panorama.dll!0xcd85f0 ConVar cl_jiggle_bone_debug
-client_panorama.dll!0xcd8540 ConVar cl_jiggle_bone_debug_pitch_constraints
-client_panorama.dll!0xcd86a0 ConVar cl_jiggle_bone_debug_yaw_constraints
-client_panorama.dll!0xcd8598 ConVar cl_jiggle_bone_invert
-client_panorama.dll!0xccf5a8 ConVar cl_join_advertise
-client_panorama.dll!0xcdaa78 ConVar cl_lagcompensation
-client_panorama.dll!0xccfb00 ConVar cl_leafsystemvis
-client_panorama.dll!0xcdd710 ConVar cl_leveloverview
-client_panorama.dll!0xcf37c8 ConVar cl_leveloverviewmarker
-client_panorama.dll!0xcdd4c0 ConVar cl_lock_camera
-client_panorama.dll!0xcef268 ConVar cl_mainmenu_show_datagraph
-client_panorama.dll!0xcdfaa8 ConVar cl_maxrenderable_dist
-client_panorama.dll!0xccadd0 ConVar cl_minimal_rtt_shadows
-client_panorama.dll!0xcd8178 ConVar cl_mouselook
-client_panorama.dll!0xce1570 ConVar cl_mute_all_but_friends_and_party
-client_panorama.dll!0xce1518 ConVar cl_mute_enemy_team
-client_panorama.dll!0xce36a8 ConVar cl_obs_interp_enable
-client_panorama.dll!0xce3ce8 ConVar cl_observercrosshair
-client_panorama.dll!0xcdde50 ConVar cl_overdraw_test
-client_panorama.dll!0xcd9d80 ConVar cl_particle_retire_cost
-client_panorama.dll!0xcd9b18 ConVar cl_particles_show_bbox
-client_panorama.dll!0xcd9f08 ConVar cl_particles_show_controlpoints
-client_panorama.dll!0xcdabd8 ConVar cl_pclass
-client_panorama.dll!0xcdab80 ConVar cl_pdump
-client_panorama.dll!0xcda3d0 ConVar cl_phys_show_active
-client_panorama.dll!0xcda0f0 ConVar cl_phys_timescale
-client_panorama.dll!0xcd7bf8 ConVar cl_pitchdown
-client_panorama.dll!0xcd7c50 ConVar cl_pitchup
-client_panorama.dll!0xce34c8 ConVar cl_player_proximity_debug
-client_panorama.dll!0xcf6aa8 ConVar cl_playerspray_auto_apply
-client_panorama.dll!0xccc458 ConVar cl_portal_use_new_dissolve
-client_panorama.dll!0xcdab28 ConVar cl_predictionlist
-client_panorama.dll!0xcdaa20 ConVar cl_predictweapons
-client_panorama.dll!0xcee280 ConVar cl_quickinventory_deadzone_size
-client_panorama.dll!0xcee2d8 ConVar cl_quickinventory_lastinv
-client_panorama.dll!0xce4238 ConVar cl_radar_always_centered
-client_panorama.dll!0xce4290 ConVar cl_radar_icon_scale_min
-client_panorama.dll!0xce4188 ConVar cl_radar_rotate
-client_panorama.dll!0xce41e0 ConVar cl_radar_scale
-client_panorama.dll!0xce4130 ConVar cl_radar_square_with_scoreboard
-client_panorama.dll!0xce31b0 ConVar cl_ragdoll_workaround_threshold
-client_panorama.dll!0xcef018 ConVar cl_rappel_tilt
-client_panorama.dll!0xce46b0 ConVar cl_rebuy
-client_panorama.dll!0xcdc148 ConVar cl_remove_old_ugc_downloads
-client_panorama.dll!0xccc108 ConVar cl_righthand
-client_panorama.dll!0xccead8 ConVar cl_rumblescale
-client_panorama.dll!0xcce0b8 ConVar cl_sanitize_player_names
-client_panorama.dll!0xcf1500 ConVar cl_scalecrosshair
-client_panorama.dll!0xce45b8 ConVar cl_scoreboard_mouse_enable_binding
-client_panorama.dll!0xcee380 ConVar cl_scoreboard_survivors_always_on
-client_panorama.dll!0xcef910 ConVar cl_server_graphic1_enable
-client_panorama.dll!0xcef8b8 ConVar cl_server_graphic2_enable
-client_panorama.dll!0xcde060 ConVar cl_shadowtextureoverlaysize
-client_panorama.dll!0xce2a98 ConVar cl_show_clan_in_death_notice
-client_panorama.dll!0xcc9f38 ConVar cl_showanimstate
-client_panorama.dll!0xcc9fe8 ConVar cl_showanimstate_activities
-client_panorama.dll!0xcc9f90 ConVar cl_showanimstate_log
-client_panorama.dll!0xcdad38 ConVar cl_showerror
-client_panorama.dll!0xcdc4c8 ConVar cl_showfps
-client_panorama.dll!0xcd3100 ConVar cl_showhelp
-client_panorama.dll!0xcdc520 ConVar cl_showpos
-client_panorama.dll!0xcd7ca8 ConVar cl_sidespeed
-client_panorama.dll!0xcf6e48 ConVar cl_simdbones
-client_panorama.dll!0xcd8858 ConVar cl_skipfastpath
-client_panorama.dll!0xce10a0 ConVar cl_skipslowpath
-client_panorama.dll!0xce2e08 ConVar cl_spec_follow_grenade_key
-client_panorama.dll!0xce4080 ConVar cl_spec_mode
-client_panorama.dll!0xce2728 ConVar cl_spec_show_bindings
-client_panorama.dll!0xcef838 ConVar cl_spec_stats
-client_panorama.dll!0xcebb08 ConVar cl_spec_use_tournament_content_standards
-client_panorama.dll!0xcf6000 ConVar cl_sporeclipdistance
-client_panorama.dll!0xcd2f28 ConVar cl_sun_decay_rate
-client_panorama.dll!0xcd2f80 ConVar cl_sun_in_reflection_h_scale
-client_panorama.dll!0xcd2fd8 ConVar cl_sun_in_reflection_v_scale
-client_panorama.dll!0xcceff8 ConVar cl_sunlight_ortho_size
-client_panorama.dll!0xcf2e58 ConVar cl_tablet_mapmode
-client_panorama.dll!0xce2990 ConVar cl_teamid_overhead_maxdist
-client_panorama.dll!0xce29e8 ConVar cl_teamid_overhead_maxdist_spec
-client_panorama.dll!0xce2b48 ConVar cl_teammate_colors_show
-client_panorama.dll!0xccb0b0 ConVar cl_threaded_bone_setup
-client_panorama.dll!0xcd6b38 ConVar cl_upspeed
-client_panorama.dll!0xcf2268 ConVar cl_use_new_headbob
-client_panorama.dll!0xce9240 ConVar cl_use_opens_buy_menu
-client_panorama.dll!0xcf6df0 ConVar cl_use_simd_bones
-client_panorama.dll!0xcf1d40 ConVar cl_viewmodel_shift_left_amt
-client_panorama.dll!0xcf1d98 ConVar cl_viewmodel_shift_right_amt
-client_panorama.dll!0xce32a0 ConVar cl_weapon_clip_thinwalls
-client_panorama.dll!0xce32f8 ConVar cl_weapon_clip_thinwalls_debug
-client_panorama.dll!0xce3350 ConVar cl_weapon_clip_thinwalls_lock
-client_panorama.dll!0xcf1fa8 ConVar cl_weapon_debug_print_accuracy
-client_panorama.dll!0xcf1ef8 ConVar cl_weapon_debug_show_accuracy
-client_panorama.dll!0xcf1f50 ConVar cl_weapon_debug_show_accuracy_duration
-client_panorama.dll!0xcf4fd0 ConVar cl_winddir
-client_panorama.dll!0xcf5028 ConVar cl_windspeed
-client_panorama.dll!0xcda868 ConVar cl_wpn_sway_scale
-client_panorama.dll!0xcd3988 ConVar closecaption
-client_panorama.dll!0xce92f0 ConVar closeonbuy
-client_panorama.dll!0xcf72a0 ConVar cloth_windage_multiplier
-client_panorama.dll!0xced410 ConVar commentary_firstrun
-client_panorama.dll!0xce47b8 ConVar crosshair
-client_panorama.dll!0xcecc00 ConVar custom_bot_difficulty
-client_panorama.dll!0xceca20 ConVar debug_aim_angle
-client_panorama.dll!0xce2678 ConVar debug_entity_outline_highlight
-client_panorama.dll!0xce4760 ConVar default_fov
-client_panorama.dll!0xcdc408 ConVar developer
-client_panorama.dll!0xccaf30 ConVar enable_skeleton_draw
-client_panorama.dll!0xceb880 ConVar ff_damage_bullet_penetration
-client_panorama.dll!0xceb7d0 ConVar ff_damage_reduction_bullets
-client_panorama.dll!0xceb720 ConVar ff_damage_reduction_grenade
-client_panorama.dll!0xceb778 ConVar ff_damage_reduction_grenade_self
-client_panorama.dll!0xceb828 ConVar ff_damage_reduction_other
-client_panorama.dll!0xccd6a8 ConVar fish_debug
-client_panorama.dll!0xce0238 ConVar fog_color
-client_panorama.dll!0xce03f0 ConVar fog_colorskybox
-client_panorama.dll!0xce0290 ConVar fog_enable
-client_panorama.dll!0xce0448 ConVar fog_enableskybox
-client_panorama.dll!0xce01e0 ConVar fog_end
-client_panorama.dll!0xce0340 ConVar fog_endskybox
-client_panorama.dll!0xce04f8 ConVar fog_hdrcolorscale
-client_panorama.dll!0xce0550 ConVar fog_hdrcolorscaleskybox
-client_panorama.dll!0xce04a0 ConVar fog_maxdensity
-client_panorama.dll!0xce0398 ConVar fog_maxdensityskybox
-client_panorama.dll!0xce0188 ConVar fog_start
-client_panorama.dll!0xce02e8 ConVar fog_startskybox
-client_panorama.dll!0xce3a98 ConVar fov_cs_debug
-client_panorama.dll!0xcf68a8 ConVar func_break_max_pieces
-client_panorama.dll!0xcd3b00 ConVar g15_update_msec
-client_panorama.dll!0xcd29b8 ConVar g_Language
-client_panorama.dll!0xcdb1e8 ConVar g_debug_ragdoll_removal
-client_panorama.dll!0xccafa8 ConVar g_debug_ragdoll_visualize
-client_panorama.dll!0xcdb240 ConVar g_ragdoll_important_maxcount
-client_panorama.dll!0xcdb190 ConVar g_ragdoll_maxcount
-client_panorama.dll!0xceccb0 ConVar game_mode
-client_panorama.dll!0xcecc58 ConVar game_online
-client_panorama.dll!0xcecba8 ConVar game_public
-client_panorama.dll!0xcecd08 ConVar game_type
-client_panorama.dll!0xccdb98 ConVar gameinstructor_find_errors
-client_panorama.dll!0xccd908 ConVar gameinstructor_save_restore_lessons
-client_panorama.dll!0xccdae8 ConVar gameinstructor_verbose
-client_panorama.dll!0xccdb40 ConVar gameinstructor_verbose_lesson
-client_panorama.dll!0xcdd3b8 ConVar gl_clear_randomcolor
-client_panorama.dll!0xcd2e68 ConVar glow_muzzle_debug
-client_panorama.dll!0xcd2db8 ConVar glow_outline_effect_enable
-client_panorama.dll!0xcd2e10 ConVar glow_outline_width
-client_panorama.dll!0xcef7e0 ConVar gotv_theater_container
-client_panorama.dll!0xcf0a38 ConVar healthshot_allow_use_at_full
-client_panorama.dll!0xcf0988 ConVar healthshot_health
-client_panorama.dll!0xcf0a90 ConVar healthshot_healthboost_speed_multiplier
-client_panorama.dll!0xcf09e0 ConVar healthshot_healthboost_time
-client_panorama.dll!0xcd3320 ConVar hidehud
-client_panorama.dll!0xcca208 ConVar hl2_episodic
-client_panorama.dll!0xcebc68 ConVar hostage_feetyawrate
-client_panorama.dll!0xce1740 ConVar hud_fastswitch
-client_panorama.dll!0xceeaa0 ConVar hud_scaling
-client_panorama.dll!0xce3df0 ConVar hud_showtargetid
-client_panorama.dll!0xccfe08 ConVar hud_takesshots
-client_panorama.dll!0xcd6df8 ConVar in_forceuser
-client_panorama.dll!0xcece08 ConVar inferno_dlight_spacing
-client_panorama.dll!0xcd5900 ConVar joy_accelmax
-client_panorama.dll!0xcd5850 ConVar joy_accelscale
-client_panorama.dll!0xcd58a8 ConVar joy_accelscalepoly
-client_panorama.dll!0xcd5068 ConVar joy_advanced
-client_panorama.dll!0xcd51c8 ConVar joy_advaxisr
-client_panorama.dll!0xcd5220 ConVar joy_advaxisu
-client_panorama.dll!0xcd5278 ConVar joy_advaxisv
-client_panorama.dll!0xcd50c0 ConVar joy_advaxisx
-client_panorama.dll!0xcd5118 ConVar joy_advaxisy
-client_panorama.dll!0xcd5170 ConVar joy_advaxisz
-client_panorama.dll!0xcd5958 ConVar joy_autoAimDampenMethod
-client_panorama.dll!0xcd5a08 ConVar joy_autoaimdampen
-client_panorama.dll!0xcd59b0 ConVar joy_autoaimdampenrange
-client_panorama.dll!0xcd6140 ConVar joy_cfg_preset
-client_panorama.dll!0xcd5e28 ConVar joy_circle_correct
-client_panorama.dll!0xcd5ab8 ConVar joy_curvepoint_1
-client_panorama.dll!0xcd5b10 ConVar joy_curvepoint_2
-client_panorama.dll!0xcd5b68 ConVar joy_curvepoint_3
-client_panorama.dll!0xcd5bc0 ConVar joy_curvepoint_4
-client_panorama.dll!0xcd5c18 ConVar joy_curvepoint_end
-client_panorama.dll!0xcd5e80 ConVar joy_diagonalpov
-client_panorama.dll!0xcd5ed8 ConVar joy_display_input
-client_panorama.dll!0xcd5430 ConVar joy_forwardsensitivity
-client_panorama.dll!0xcd52d0 ConVar joy_forwardthreshold
-client_panorama.dll!0xcd57f8 ConVar joy_gamma
-client_panorama.dll!0xcd5f88 ConVar joy_inverty
-client_panorama.dll!0xcd56f0 ConVar joy_lowend
-client_panorama.dll!0xcd5748 ConVar joy_lowend_linear
-client_panorama.dll!0xcd57a0 ConVar joy_lowmap
-client_panorama.dll!0xcd5010 ConVar joy_name
-client_panorama.dll!0xcd6248 ConVar joy_no_accel_jump
-client_panorama.dll!0xcd54e0 ConVar joy_pitchsensitivity
-client_panorama.dll!0xcd5380 ConVar joy_pitchthreshold
-client_panorama.dll!0xcd5640 ConVar joy_response_look
-client_panorama.dll!0xcd5698 ConVar joy_response_look_pitch
-client_panorama.dll!0xcd5590 ConVar joy_response_move
-client_panorama.dll!0xcd5d20 ConVar joy_sensitive_step0
-client_panorama.dll!0xcd5d78 ConVar joy_sensitive_step1
-client_panorama.dll!0xcd5dd0 ConVar joy_sensitive_step2
-client_panorama.dll!0xcd5488 ConVar joy_sidesensitivity
-client_panorama.dll!0xcd5328 ConVar joy_sidethreshold
-client_panorama.dll!0xcd5f30 ConVar joy_wingmanwarrior_turnhack
-client_panorama.dll!0xcd5538 ConVar joy_yawsensitivity
-client_panorama.dll!0xcd53d8 ConVar joy_yawthreshold
-client_panorama.dll!0xcd4fb8 ConVar joystick_force_disabled
-client_panorama.dll!0xcf0288 ConVar key_bind_version
-client_panorama.dll!0xcd4298 ConVar locator_split_len
-client_panorama.dll!0xcd4240 ConVar locator_split_maxwide_percent
-client_panorama.dll!0xce3d98 ConVar lockMoveControllerRet
-client_panorama.dll!0xcd7ba0 ConVar lookspring
-client_panorama.dll!0xcd7a98 ConVar lookstrafe
-client_panorama.dll!0xcd7db0 ConVar m_customaccel
-client_panorama.dll!0xcd8018 ConVar m_customaccel_exponent
-client_panorama.dll!0xcd7fc0 ConVar m_customaccel_max
-client_panorama.dll!0xcd8070 ConVar m_customaccel_scale
-client_panorama.dll!0xcd8228 ConVar m_forward
-client_panorama.dll!0xcd7f68 ConVar m_mouseaccel1
-client_panorama.dll!0xcd81d0 ConVar m_mouseaccel2
-client_panorama.dll!0xcd82d8 ConVar m_mousespeed
-client_panorama.dll!0xcd7e08 ConVar m_rawinput
-client_panorama.dll!0xcd80c8 ConVar m_side
-client_panorama.dll!0xcd7f10 ConVar m_yaw
-client_panorama.dll!0xcd9490 ConVar mapcycledisabled
-client_panorama.dll!0xcd0018 ConVar mapoverview_allow_client_draw
-client_panorama.dll!0xcd0070 ConVar mapoverview_allow_grid_usage
-client_panorama.dll!0xcd00c8 ConVar mapoverview_icon_scale
-client_panorama.dll!0xcde768 ConVar mat_accelerate_adjust_exposure_down
-client_panorama.dll!0xcde450 ConVar mat_autoexposure_max
-client_panorama.dll!0xcde4a8 ConVar mat_autoexposure_max_multiplier
-client_panorama.dll!0xcde500 ConVar mat_autoexposure_min
-client_panorama.dll!0xcde818 ConVar mat_bloom_scalefactor_scalar
-client_panorama.dll!0xcde2f0 ConVar mat_bloomamount_rate
-client_panorama.dll!0xcde240 ConVar mat_bloomscale
-client_panorama.dll!0xcddd48 ConVar mat_camerarendertargetoverlaysize
-client_panorama.dll!0xccc3a8 ConVar mat_colcorrection_forceentitiesclientside
-client_panorama.dll!0xcde710 ConVar mat_colorcorrection
-client_panorama.dll!0xcde6b8 ConVar mat_debug_bloom
-client_panorama.dll!0xcde348 ConVar mat_debug_postprocessing_effects
-client_panorama.dll!0xcde660 ConVar mat_disable_bloom
-client_panorama.dll!0xce1150 ConVar mat_draw_zone_highlight
-client_panorama.dll!0xce10f8 ConVar mat_draw_zone_projection_mode
-client_panorama.dll!0xce07b8 ConVar mat_drawwater
-client_panorama.dll!0xcde3a0 ConVar mat_dynamic_tonemapping
-client_panorama.dll!0xcde870 ConVar mat_exposure_center_region_x
-client_panorama.dll!0xcde8c8 ConVar mat_exposure_center_region_y
-client_panorama.dll!0xcde608 ConVar mat_force_bloom
-client_panorama.dll!0xcdea28 ConVar mat_force_tonemap_min_avglum
-client_panorama.dll!0xcde9d0 ConVar mat_force_tonemap_percent_bright_pixels
-client_panorama.dll!0xcde978 ConVar mat_force_tonemap_percent_target
-client_panorama.dll!0xcdea80 ConVar mat_force_tonemap_scale
-client_panorama.dll!0xcce5c0 ConVar mat_fullbright
-client_panorama.dll!0xcd1598 ConVar mat_fullbright
-client_panorama.dll!0xcdead8 ConVar mat_fullbright
-client_panorama.dll!0xcde5b0 ConVar mat_hdr_uncapexposure
-client_panorama.dll!0xcddda0 ConVar mat_hsv
-client_panorama.dll!0xce0e80 ConVar mat_lpreview_mode
-client_panorama.dll!0xcde7c0 ConVar mat_non_hdr_bloom_scalefactor
-client_panorama.dll!0xcf4ce0 ConVar mat_normals
-client_panorama.dll!0xcf7878 ConVar mat_normals
-client_panorama.dll!0xcdf2f0 ConVar mat_postprocess_enable
-client_panorama.dll!0xccc2c0 ConVar mat_preview
-client_panorama.dll!0xcde558 ConVar mat_show_histogram
-client_panorama.dll!0xcddcf0 ConVar mat_showcamerarendertarget
-client_panorama.dll!0xcddc40 ConVar mat_showframebuffertexture
-client_panorama.dll!0xcddb90 ConVar mat_showwatertextures
-client_panorama.dll!0xcf4970 ConVar mat_softwareskin
-client_panorama.dll!0xcf7610 ConVar mat_softwareskin
-client_panorama.dll!0xccf8e0 ConVar mat_stub
-client_panorama.dll!0xcde920 ConVar mat_tonemap_algorithm
-client_panorama.dll!0xcdd258 ConVar mat_viewportscale
-client_panorama.dll!0xcdd2b0 ConVar mat_viewportupscale
-client_panorama.dll!0xcde1e8 ConVar mat_wireframe
-client_panorama.dll!0xcdddf8 ConVar mat_yuv
-client_panorama.dll!0xcd62f8 ConVar mc_accel_band_size
-client_panorama.dll!0xcd62a0 ConVar mc_dead_zone_radius
-client_panorama.dll!0xcd63a8 ConVar mc_max_pitchrate
-client_panorama.dll!0xcd6350 ConVar mc_max_yawrate
-client_panorama.dll!0xcf0ae8 ConVar molotov_throw_detonate_time
-client_panorama.dll!0xce67f8 ConVar mp_afterroundmoney
-client_panorama.dll!0xcd2ba8 ConVar mp_allowspectators
-client_panorama.dll!0xce6b10 ConVar mp_anyone_can_pickup_c4
-client_panorama.dll!0xcdbdb8 ConVar mp_blockstyle
-client_panorama.dll!0xcdc020 ConVar mp_bonusroundtime
-client_panorama.dll!0xce65e8 ConVar mp_buy_allow_grenades
-client_panorama.dll!0xce6640 ConVar mp_buy_allow_guns
-client_panorama.dll!0xcd2cb0 ConVar mp_buy_anywhere
-client_panorama.dll!0xcd2d08 ConVar mp_buy_during_immunity
-client_panorama.dll!0xce6590 ConVar mp_buytime
-client_panorama.dll!0xce6b68 ConVar mp_c4_cannot_be_defused
-client_panorama.dll!0xcea7b0 ConVar mp_c4timer
-client_panorama.dll!0xcdc0d0 ConVar mp_capdeteriorate_time
-client_panorama.dll!0xcdc078 ConVar mp_capstyle
-client_panorama.dll!0xce8168 ConVar mp_coop_force_join_ct
-client_panorama.dll!0xce81c0 ConVar mp_coopmission_mission_number
-client_panorama.dll!0xce74b0 ConVar mp_ct_default_grenades
-client_panorama.dll!0xce73a8 ConVar mp_ct_default_melee
-client_panorama.dll!0xce7458 ConVar mp_ct_default_primary
-client_panorama.dll!0xce7400 ConVar mp_ct_default_secondary
-client_panorama.dll!0xce80b8 ConVar mp_death_drop_breachcharge
-client_panorama.dll!0xce7f58 ConVar mp_death_drop_c4
-client_panorama.dll!0xce8008 ConVar mp_death_drop_defuser
-client_panorama.dll!0xce7fb0 ConVar mp_death_drop_grenade
-client_panorama.dll!0xce7f00 ConVar mp_death_drop_gun
-client_panorama.dll!0xce8110 ConVar mp_death_drop_healthshot
-client_panorama.dll!0xce8060 ConVar mp_death_drop_taser
-client_panorama.dll!0xce86e8 ConVar mp_default_team_winner_no_objective
-client_panorama.dll!0xce7e50 ConVar mp_defuser_allocation
-client_panorama.dll!0xcdbfc8 ConVar mp_disable_respawn_times
-client_panorama.dll!0xce7d48 ConVar mp_display_kill_assists
-client_panorama.dll!0xce7a88 ConVar mp_dm_bonus_percent
-client_panorama.dll!0xce7ae0 ConVar mp_dm_bonus_respawn
-client_panorama.dll!0xce7cf0 ConVar mp_dm_bonusweapon_dogtags
-client_panorama.dll!0xce7b38 ConVar mp_dm_dogtag_score
-client_panorama.dll!0xce7a30 ConVar mp_dm_kill_base_score
-client_panorama.dll!0xce7b90 ConVar mp_dm_teammode
-client_panorama.dll!0xce7c40 ConVar mp_dm_teammode_bonus_score
-client_panorama.dll!0xce7c98 ConVar mp_dm_teammode_dogtag_score
-client_panorama.dll!0xce7be8 ConVar mp_dm_teammode_kill_score
-client_panorama.dll!0xce66f0 ConVar mp_do_warmup_offine
-client_panorama.dll!0xce6698 ConVar mp_do_warmup_period
-client_panorama.dll!0xce8378 ConVar mp_economy_reset_rounds
-client_panorama.dll!0xce8950 ConVar mp_endmatch_votenextleveltime
-client_panorama.dll!0xce88a0 ConVar mp_endmatch_votenextmap
-client_panorama.dll!0xce88f8 ConVar mp_endmatch_votenextmap_keepcurrent
-client_panorama.dll!0xce6e28 ConVar mp_endwarmup_player_count
-client_panorama.dll!0xce8320 ConVar mp_equipment_reset_rounds
-client_panorama.dll!0xcca098 ConVar mp_facefronttime
-client_panorama.dll!0xcca040 ConVar mp_feetyawrate
-client_panorama.dll!0xce6488 ConVar mp_force_assign_teams
-client_panorama.dll!0xce8218 ConVar mp_force_pick_time
-client_panorama.dll!0xcd2d60 ConVar mp_forcecamera
-client_panorama.dll!0xcd9540 ConVar mp_fraglimit
-client_panorama.dll!0xcea498 ConVar mp_free_armor
-client_panorama.dll!0xcd2c00 ConVar mp_friendlyfire
-client_panorama.dll!0xce72f8 ConVar mp_ggprogressive_random_weapon_kills_needed
-client_panorama.dll!0xce7248 ConVar mp_ggprogressive_round_restart_delay
-client_panorama.dll!0xce72a0 ConVar mp_ggprogressive_use_random_weapons
-client_panorama.dll!0xce7140 ConVar mp_ggtr_always_upgrade
-client_panorama.dll!0xce7980 ConVar mp_ggtr_bomb_defuse_bonus
-client_panorama.dll!0xce79d8 ConVar mp_ggtr_bomb_detonation_bonus
-client_panorama.dll!0xce77c8 ConVar mp_ggtr_bomb_pts_for_flash
-client_panorama.dll!0xce7770 ConVar mp_ggtr_bomb_pts_for_he
-client_panorama.dll!0xce7820 ConVar mp_ggtr_bomb_pts_for_molotov
-client_panorama.dll!0xce7718 ConVar mp_ggtr_bomb_pts_for_upgrade
-client_panorama.dll!0xce7928 ConVar mp_ggtr_bomb_respawn_delay
-client_panorama.dll!0xce7198 ConVar mp_ggtr_end_round_kill_bonus
-client_panorama.dll!0xce78d0 ConVar mp_ggtr_halftime_delay
-client_panorama.dll!0xce71f0 ConVar mp_ggtr_last_weapon_kill_ends_half
-client_panorama.dll!0xce7350 ConVar mp_ggtr_num_rounds_autoprogress
-client_panorama.dll!0xce7ea8 ConVar mp_give_player_c4
-client_panorama.dll!0xcea548 ConVar mp_halftime
-client_panorama.dll!0xce7090 ConVar mp_halftime_duration
-client_panorama.dll!0xce6f30 ConVar mp_halftime_pausematch
-client_panorama.dll!0xce6ed8 ConVar mp_halftime_pausetimer
-client_panorama.dll!0xce5618 ConVar mp_heavyassaultsuit_aimpunch
-client_panorama.dll!0xce85e0 ConVar mp_heavyassaultsuit_cooldown
-client_panorama.dll!0xce55c0 ConVar mp_heavyassaultsuit_deploy_timescale
-client_panorama.dll!0xce5510 ConVar mp_heavyassaultsuit_speed
-client_panorama.dll!0xce5568 ConVar mp_heavybot_damage_reduction_scale
-client_panorama.dll!0xce6ab8 ConVar mp_hostages_rescuetime
-client_panorama.dll!0xce6a60 ConVar mp_hostages_rescuetowin
-client_panorama.dll!0xce6a08 ConVar mp_hostages_takedamage
-client_panorama.dll!0xcca0f0 ConVar mp_ik
-client_panorama.dll!0xce7668 ConVar mp_join_grace_time
-client_panorama.dll!0xce70e8 ConVar mp_match_can_clinch
-client_panorama.dll!0xce7df8 ConVar mp_match_end_changelevel
-client_panorama.dll!0xce7da0 ConVar mp_match_end_restart
-client_panorama.dll!0xcd9438 ConVar mp_match_restart_delay
-client_panorama.dll!0xcea4f0 ConVar mp_max_armor
-client_panorama.dll!0xce67a0 ConVar mp_maxmoney
-client_panorama.dll!0xcdbf18 ConVar mp_maxrounds
-client_panorama.dll!0xce7878 ConVar mp_molotovusedelay
-client_panorama.dll!0xce6900 ConVar mp_overtime_enable
-client_panorama.dll!0xce6f88 ConVar mp_overtime_halftime_pausetimer
-client_panorama.dll!0xce6958 ConVar mp_overtime_maxrounds
-client_panorama.dll!0xce69b0 ConVar mp_overtime_startmoney
-client_panorama.dll!0xcf0ec8 ConVar mp_plant_c4_anywhere
-client_panorama.dll!0xce6850 ConVar mp_playercashawards
-client_panorama.dll!0xcea910 ConVar mp_playerid
-client_panorama.dll!0xcea968 ConVar mp_playerid_delay
-client_panorama.dll!0xcea9c0 ConVar mp_playerid_hold
-client_panorama.dll!0xcd2b50 ConVar mp_radar_showall
-client_panorama.dll!0xcea5a0 ConVar mp_randomspawn
-client_panorama.dll!0xcea650 ConVar mp_randomspawn_dist
-client_panorama.dll!0xcea5f8 ConVar mp_randomspawn_los
-client_panorama.dll!0xce6fe0 ConVar mp_respawn_immunitytime
-client_panorama.dll!0xce87f0 ConVar mp_respawn_on_death_ct
-client_panorama.dll!0xce8798 ConVar mp_respawn_on_death_t
-client_panorama.dll!0xcdbe10 ConVar mp_respawnwavetime
-client_panorama.dll!0xce7038 ConVar mp_round_restart_delay
-client_panorama.dll!0xceab20 ConVar mp_solid_teammates
-client_panorama.dll!0xce6430 ConVar mp_spec_swapplayersides
-client_panorama.dll!0xce6538 ConVar mp_spectators_max
-client_panorama.dll!0xce6748 ConVar mp_startmoney
-client_panorama.dll!0xce7610 ConVar mp_t_default_grenades
-client_panorama.dll!0xce7508 ConVar mp_t_default_melee
-client_panorama.dll!0xce75b8 ConVar mp_t_default_primary
-client_panorama.dll!0xce7560 ConVar mp_t_default_secondary
-client_panorama.dll!0xcf2eb0 ConVar mp_taser_recharge_time
-client_panorama.dll!0xce5348 ConVar mp_team_timeout_max
-client_panorama.dll!0xce52f0 ConVar mp_team_timeout_time
-client_panorama.dll!0xce68a8 ConVar mp_teamcashawards
-client_panorama.dll!0xcd2c58 ConVar mp_teammates_are_enemies
-client_panorama.dll!0xcdbec0 ConVar mp_teams_unbalance_limit
-client_panorama.dll!0xcd94e8 ConVar mp_timelimit
-client_panorama.dll!0xcdbe68 ConVar mp_tournament
-client_panorama.dll!0xcea8b8 ConVar mp_use_respawn_waves
-client_panorama.dll!0xce6d20 ConVar mp_verbose_changelevel_spew
-client_panorama.dll!0xce6e80 ConVar mp_warmup_pausetimer
-client_panorama.dll!0xce6dd0 ConVar mp_warmuptime_all_players_connected
-client_panorama.dll!0xce84d8 ConVar mp_weapons_allow_heavy
-client_panorama.dll!0xce8690 ConVar mp_weapons_allow_map_placed
-client_panorama.dll!0xce8428 ConVar mp_weapons_allow_pistols
-client_panorama.dll!0xce8530 ConVar mp_weapons_allow_rifles
-client_panorama.dll!0xce8480 ConVar mp_weapons_allow_smgs
-client_panorama.dll!0xce8638 ConVar mp_weapons_allow_typecount
-client_panorama.dll!0xce83d0 ConVar mp_weapons_allow_zeus
-client_panorama.dll!0xce8740 ConVar mp_weapons_glow_on_ground
-client_panorama.dll!0xce53a0 ConVar mp_weapons_max_gun_purchases_per_weapon_per_match
-client_panorama.dll!0xce76c0 ConVar mp_win_panel_display_time
-client_panorama.dll!0xcdbf70 ConVar mp_winlimit
-client_panorama.dll!0xcf6c98 ConVar muzzleflash_light
-client_panorama.dll!0xceb1a8 ConVar net_client_steamdatagram_enable_override
-client_panorama.dll!0xcdcdc0 ConVar net_graphholdsvframerate
-client_panorama.dll!0xcdce70 ConVar net_graphipc
-client_panorama.dll!0xcdcc60 ConVar net_graphmsecs
-client_panorama.dll!0xcdcb58 ConVar net_graphpos
-client_panorama.dll!0xcdcd10 ConVar net_graphshowinterp
-client_panorama.dll!0xcdccb8 ConVar net_graphshowlatency
-client_panorama.dll!0xcdcd68 ConVar net_graphshowsvframerate
-client_panorama.dll!0xcdcbb0 ConVar net_graphsolid
-client_panorama.dll!0xcdcc08 ConVar net_graphtext
-client_panorama.dll!0xcdcb00 ConVar net_scale
-client_panorama.dll!0xcd9598 ConVar nextlevel
-client_panorama.dll!0xcd95f0 ConVar nextmode
-client_panorama.dll!0xcd2af0 ConVar old_radiusdamage
-client_panorama.dll!0xcd6c98 ConVar option_duck_method
-client_panorama.dll!0xcd6cf0 ConVar option_speed_method
-client_panorama.dll!0xcfa768 ConVar panel_test_title_safe
-client_panorama.dll!0xcd9ac0 ConVar particle_simulateoverflow
-client_panorama.dll!0xcda1f8 ConVar phys_debug_check_contacts
-client_panorama.dll!0xcdbd40 ConVar phys_pushscale
-client_panorama.dll!0xcf0180 ConVar player_botdifflast_s
-client_panorama.dll!0xced668 ConVar player_nevershow_communityservermessage
-client_panorama.dll!0xce43f0 ConVar player_teamplayedlast
-client_panorama.dll!0xcebc10 ConVar post_jump_crouch
-client_panorama.dll!0xcdaf58 ConVar props_break_max_pieces
-client_panorama.dll!0xcdafb0 ConVar props_break_max_pieces_perframe
-client_panorama.dll!0xcdade8 ConVar pwatchent
-client_panorama.dll!0xcdae40 ConVar pwatchvar
-client_panorama.dll!0xcd8be8 ConVar r_AirboatViewDampenDamp
-client_panorama.dll!0xcd8b90 ConVar r_AirboatViewDampenFreq
-client_panorama.dll!0xcd8c40 ConVar r_AirboatViewZHeight
-client_panorama.dll!0xcdd838 ConVar r_DrawBeams
-client_panorama.dll!0xcd87a8 ConVar r_DrawModelLightOrigin
-client_panorama.dll!0xcf5340 ConVar r_DrawRain
-client_panorama.dll!0xccf1f8 ConVar r_JeepViewBlendTo
-client_panorama.dll!0xccf250 ConVar r_JeepViewBlendToScale
-client_panorama.dll!0xccf2a8 ConVar r_JeepViewBlendToTime
-client_panorama.dll!0xcd9110 ConVar r_JeepViewDampenDamp
-client_panorama.dll!0xcd9168 ConVar r_JeepViewDampenFreq
-client_panorama.dll!0xcd91c0 ConVar r_JeepViewZHeight
-client_panorama.dll!0xccf9f8 ConVar r_PortalTestEnts
-client_panorama.dll!0xcf5290 ConVar r_RainCheck
-client_panorama.dll!0xcf53f0 ConVar r_RainDebugDuration
-client_panorama.dll!0xcf5188 ConVar r_RainHack
-client_panorama.dll!0xcf5398 ConVar r_RainProfile
-client_panorama.dll!0xcf51e0 ConVar r_RainRadius
-client_panorama.dll!0xcf5238 ConVar r_RainSideVel
-client_panorama.dll!0xcf52e8 ConVar r_RainSimulate
-client_panorama.dll!0xcf5080 ConVar r_RainSplashPercentage
-client_panorama.dll!0xcf5750 ConVar r_SnowDebugBox
-client_panorama.dll!0xcf5490 ConVar r_SnowEnable
-client_panorama.dll!0xcf58b0 ConVar r_SnowEndAlpha
-client_panorama.dll!0xcf5960 ConVar r_SnowEndSize
-client_panorama.dll!0xcf56a0 ConVar r_SnowFallSpeed
-client_panorama.dll!0xcf5540 ConVar r_SnowInsideRadius
-client_panorama.dll!0xcf5598 ConVar r_SnowOutsideRadius
-client_panorama.dll!0xcf54e8 ConVar r_SnowParticles
-client_panorama.dll!0xcf5648 ConVar r_SnowPosScale
-client_panorama.dll!0xcf5a68 ConVar r_SnowRayEnable
-client_panorama.dll!0xcf59b8 ConVar r_SnowRayLength
-client_panorama.dll!0xcf5a10 ConVar r_SnowRayRadius
-client_panorama.dll!0xcf55f0 ConVar r_SnowSpeedScale
-client_panorama.dll!0xcf5858 ConVar r_SnowStartAlpha
-client_panorama.dll!0xcf5908 ConVar r_SnowStartSize
-client_panorama.dll!0xcf56f8 ConVar r_SnowWindScale
-client_panorama.dll!0xcf57a8 ConVar r_SnowZoomOffset
-client_panorama.dll!0xcf5800 ConVar r_SnowZoomRadius
-client_panorama.dll!0xcf5f40 ConVar r_VehicleViewClamp
-client_panorama.dll!0xcd8b38 ConVar r_VehicleViewDampen
-client_panorama.dll!0xccfb58 ConVar r_alphafade_usefov
-client_panorama.dll!0xce05a8 ConVar r_debugcheapwater
-client_panorama.dll!0xcdd9b0 ConVar r_depthoverlay
-client_panorama.dll!0xccfbf8 ConVar r_disable_distance_fade_on_big_props
-client_panorama.dll!0xccfc50 ConVar r_disable_distance_fade_on_big_props_thresh
-client_panorama.dll!0xcd0288 ConVar r_disable_update_shadow
-client_panorama.dll!0xccfca8 ConVar r_drawallrenderables
-client_panorama.dll!0xce0ff0 ConVar r_drawbrushmodels
-client_panorama.dll!0xcf4ad0 ConVar r_drawentities
-client_panorama.dll!0xcf74b0 ConVar r_drawentities
-client_panorama.dll!0xccb160 ConVar r_drawmodelnames
-client_panorama.dll!0xccb1b8 ConVar r_drawmodelstatsoverlay
-client_panorama.dll!0xcdffd0 ConVar r_drawopaquedetailprops
-client_panorama.dll!0xce0028 ConVar r_drawopaquedetailprops_csm
-client_panorama.dll!0xce0080 ConVar r_drawopaquedetailprops_reflect
-client_panorama.dll!0xce00d8 ConVar r_drawopaquedetailprops_refract
-client_panorama.dll!0xcdfdc0 ConVar r_drawopaquerenderables
-client_panorama.dll!0xcdfbb0 ConVar r_drawopaqueworld
-client_panorama.dll!0xccb108 ConVar r_drawothermodels
-client_panorama.dll!0xcd9a68 ConVar r_drawparticles
-client_panorama.dll!0xccb438 ConVar r_drawrenderboxes
-client_panorama.dll!0xcce618 ConVar r_drawropes
-client_panorama.dll!0xcdff78 ConVar r_drawscreenoverlay
-client_panorama.dll!0xccef68 ConVar r_drawsprites
-client_panorama.dll!0xcd2218 ConVar r_drawtracers
-client_panorama.dll!0xcd2270 ConVar r_drawtracers_firstperson
-client_panorama.dll!0xcd22c8 ConVar r_drawtracers_movetonotintersect
-client_panorama.dll!0xcdfd68 ConVar r_drawtranslucentrenderables
-client_panorama.dll!0xcdfc08 ConVar r_drawtranslucentworld
-client_panorama.dll!0xcdff20 ConVar r_drawunderwateroverlay
-client_panorama.dll!0xce1308 ConVar r_drawviewmodel
-client_panorama.dll!0xcf4760 ConVar r_eyegloss
-client_panorama.dll!0xcf7928 ConVar r_eyegloss
-client_panorama.dll!0xcf47b8 ConVar r_eyemove
-client_panorama.dll!0xcf7508 ConVar r_eyemove
-client_panorama.dll!0xcf4810 ConVar r_eyeshift_x
-client_panorama.dll!0xcf75b8 ConVar r_eyeshift_x
-client_panorama.dll!0xcf7400 ConVar r_eyeshift_y
-client_panorama.dll!0xcf4868 ConVar r_eyeshift_y
-client_panorama.dll!0xcf48c0 ConVar r_eyeshift_z
-client_panorama.dll!0xcf7718 ConVar r_eyeshift_z
-client_panorama.dll!0xcf4918 ConVar r_eyesize
-client_panorama.dll!0xcf7458 ConVar r_eyesize
-client_panorama.dll!0xce08c0 ConVar r_eyewaterepsilon
-client_panorama.dll!0xcdd410 ConVar r_farz
-client_panorama.dll!0xcd1bd8 ConVar r_flashlightambient
-client_panorama.dll!0xcd1de8 ConVar r_flashlightbacktraceoffset
-client_panorama.dll!0xcd1a78 ConVar r_flashlightconstant
-client_panorama.dll!0xcd1a20 ConVar r_flashlightfar
-client_panorama.dll!0xcd1868 ConVar r_flashlightfov
-client_panorama.dll!0xcd1c88 ConVar r_flashlightladderdist
-client_panorama.dll!0xcd1ad0 ConVar r_flashlightlinear
-client_panorama.dll!0xcd1810 ConVar r_flashlightlockposition
-client_panorama.dll!0xcd1e40 ConVar r_flashlightmuzzleflashfov
-client_panorama.dll!0xcd19c8 ConVar r_flashlightnear
-client_panorama.dll!0xcd1d38 ConVar r_flashlightnearoffsetscale
-client_panorama.dll!0xcd1970 ConVar r_flashlightoffsetforward
-client_panorama.dll!0xcd18c0 ConVar r_flashlightoffsetright
-client_panorama.dll!0xcd1918 ConVar r_flashlightoffsetup
-client_panorama.dll!0xcd1b28 ConVar r_flashlightquadratic
-client_panorama.dll!0xcd1c30 ConVar r_flashlightshadowatten
-client_panorama.dll!0xcd1b80 ConVar r_flashlightvisualizetrace
-client_panorama.dll!0xcdd768 ConVar r_mapextents
-client_panorama.dll!0xcf7770 ConVar r_modelwireframedecal
-client_panorama.dll!0xcf4c88 ConVar r_modelwireframedecal
-client_panorama.dll!0xcf73a8 ConVar r_nohw
-client_panorama.dll!0xcf49c8 ConVar r_nohw
-client_panorama.dll!0xcf7820 ConVar r_nosw
-client_panorama.dll!0xcf4a20 ConVar r_nosw
-client_panorama.dll!0xce0f30 ConVar r_particle_demo
-client_panorama.dll!0xccfa50 ConVar r_portalsopenall
-client_panorama.dll!0xcf5c20 ConVar r_rainalpha
-client_panorama.dll!0xcf5c78 ConVar r_rainalphapow
-client_panorama.dll!0xcf5ac0 ConVar r_raindensity
-client_panorama.dll!0xcf5b70 ConVar r_rainlength
-client_panorama.dll!0xcf5bc8 ConVar r_rainspeed
-client_panorama.dll!0xcf5b18 ConVar r_rainwidth
-client_panorama.dll!0xcedc10 ConVar r_replay_post_effect
-client_panorama.dll!0xcd0700 ConVar r_shadow_debug_spew
-client_panorama.dll!0xcd04f0 ConVar r_shadowfromanyworldlight
-client_panorama.dll!0xcd0498 ConVar r_shadowfromworldlights_debug
-client_panorama.dll!0xcd0910 ConVar r_shadows_gamecontrol
-client_panorama.dll!0xcf7350 ConVar r_showenvcubemap
-client_panorama.dll!0xcf4708 ConVar r_showenvcubemap
-client_panorama.dll!0xcf4bd8 ConVar r_skin
-client_panorama.dll!0xcf79d8 ConVar r_skin
-client_panorama.dll!0xcdfd10 ConVar r_skybox
-client_panorama.dll!0xcd17b8 ConVar r_swingflashlight
-client_panorama.dll!0xcdfec8 ConVar r_underwateroverlay_drain_speed
-client_panorama.dll!0xcdda08 ConVar r_updaterefracttexture
-client_panorama.dll!0xcdfa50 ConVar r_visocclusion
-client_panorama.dll!0xcdc3b0 ConVar r_visualizetraces
-client_panorama.dll!0xccb280 ConVar report_cliententitysim
-client_panorama.dll!0xccf938 ConVar report_clientthinklist
-client_panorama.dll!0xcce300 ConVar rope_subdiv
-client_panorama.dll!0xcee9f0 ConVar safezonex
-client_panorama.dll!0xceea48 ConVar safezoney
-client_panorama.dll!0xcd83e0 ConVar sc_enable
-client_panorama.dll!0xcd8388 ConVar sc_pitch_sensitivity
-client_panorama.dll!0xcd8438 ConVar sc_yaw_sensitivity
-client_panorama.dll!0xcdb710 ConVar scene_clientflex
-client_panorama.dll!0xcdb2b0 ConVar scene_print
-client_panorama.dll!0xcd8120 ConVar sensitivity
-client_panorama.dll!0xcd2a10 ConVar sk_autoaim_mode
-client_panorama.dll!0xce1258 ConVar skybox_disablereflection
-client_panorama.dll!0xcca7c0 ConVar smoothstairs
-client_panorama.dll!0xced028 ConVar snd_mainmenu_music_break_time_max
-client_panorama.dll!0xcecfc8 ConVar snd_mainmenu_music_break_time_min
-client_panorama.dll!0xce89a8 ConVar snd_music_boost
-client_panorama.dll!0xce8a00 ConVar snd_music_selection
-client_panorama.dll!0xcdb7e0 ConVar snd_prevent_ss_duplicates
-client_panorama.dll!0xcdb838 ConVar snd_sos_show_client_xmit
-client_panorama.dll!0xcdb9f8 ConVar soundpatch_captionlength
-client_panorama.dll!0xccec98 ConVar soundscape_fadetime
-client_panorama.dll!0xcced48 ConVar soundscape_radius_debug
-client_panorama.dll!0xcd3180 ConVar spec_autodirector
-client_panorama.dll!0xcd31d8 ConVar spec_autodirector_pausetime
-client_panorama.dll!0xccffc0 ConVar spec_cameraman_disable_with_user_control
-client_panorama.dll!0xccff10 ConVar spec_cameraman_ui
-client_panorama.dll!0xccff68 ConVar spec_cameraman_xray
-client_panorama.dll!0xccfe60 ConVar spec_dz_group_teams
-client_panorama.dll!0xce2308 ConVar spec_freeze_cinematiclight_b
-client_panorama.dll!0xce22b0 ConVar spec_freeze_cinematiclight_g
-client_panorama.dll!0xce2258 ConVar spec_freeze_cinematiclight_r
-client_panorama.dll!0xce2360 ConVar spec_freeze_cinematiclight_scale
-client_panorama.dll!0xccbdc8 ConVar spec_freeze_deathanim_time
-client_panorama.dll!0xccbd18 ConVar spec_freeze_distance_max
-client_panorama.dll!0xccbcc0 ConVar spec_freeze_distance_min
-client_panorama.dll!0xccbd70 ConVar spec_freeze_panel_extended_time
-client_panorama.dll!0xccbe78 ConVar spec_freeze_target_fov
-client_panorama.dll!0xccbe20 ConVar spec_freeze_target_fov_long
-client_panorama.dll!0xccbbb8 ConVar spec_freeze_time
-client_panorama.dll!0xccbc10 ConVar spec_freeze_traveltime
-client_panorama.dll!0xccbc68 ConVar spec_freeze_traveltime_long
-client_panorama.dll!0xce24c0 ConVar spec_glow_decay_time
-client_panorama.dll!0xce2468 ConVar spec_glow_full_time
-client_panorama.dll!0xce23b8 ConVar spec_glow_silent_factor
-client_panorama.dll!0xce2410 ConVar spec_glow_spike_factor
-client_panorama.dll!0xce2518 ConVar spec_glow_spike_time
-client_panorama.dll!0xce3b48 ConVar spec_hide_players
-client_panorama.dll!0xccbf28 ConVar spec_lock_to_accountid
-client_panorama.dll!0xcd3288 ConVar spec_overwatch_skip_idle_ticks
-client_panorama.dll!0xcedb08 ConVar spec_replay_autostart
-client_panorama.dll!0xccfeb8 ConVar spec_usenumberkeys_nobinds
-client_panorama.dll!0xcdd540 ConVar ss_debug_draw_player
-client_panorama.dll!0xcdc950 ConVar ss_enable
-client_panorama.dll!0xcd6e50 ConVar ss_mimic
-client_panorama.dll!0xcec868 ConVar steam_controller_haptics
-client_panorama.dll!0xcecd60 ConVar steamworks_sessionid_client
-client_panorama.dll!0xcdbb30 ConVar steamworks_sessionid_server
-client_panorama.dll!0xcf3550 ConVar store_version
-client_panorama.dll!0xcd8cf0 ConVar sv_accelerate
-client_panorama.dll!0xcd8928 ConVar sv_accelerate_debug_speed
-client_panorama.dll!0xcd88d0 ConVar sv_accelerate_use_weapon_speed
-client_panorama.dll!0xcd2600 ConVar sv_air_max_horizontal_parachute_ratio
-client_panorama.dll!0xcd25a8 ConVar sv_air_max_horizontal_parachute_speed
-client_panorama.dll!0xcd2550 ConVar sv_air_max_wishspeed
-client_panorama.dll!0xcd2658 ConVar sv_air_pushaway_dist
-client_panorama.dll!0xcd8e50 ConVar sv_airaccelerate
-client_panorama.dll!0xcd8df8 ConVar sv_airaccelerate_parachute
-client_panorama.dll!0xcd8da0 ConVar sv_airaccelerate_rappel
-client_panorama.dll!0xce6c18 ConVar sv_allow_thirdperson
-client_panorama.dll!0xce9030 ConVar sv_alltalk
-client_panorama.dll!0xce4cf0 ConVar sv_autobunnyhopping
-client_panorama.dll!0xcd8a88 ConVar sv_backspeed
-client_panorama.dll!0xce8cc0 ConVar sv_bot_difficulty_gamepad
-client_panorama.dll!0xce8d70 ConVar sv_bot_difficulty_hydra
-client_panorama.dll!0xce8c68 ConVar sv_bot_difficulty_kbm
-client_panorama.dll!0xce8d18 ConVar sv_bot_difficulty_ps3move
-client_panorama.dll!0xce8dc8 ConVar sv_bot_difficulty_sharpshooter
-client_panorama.dll!0xcd9008 ConVar sv_bounce
-client_panorama.dll!0xcf0e28 ConVar sv_breachcharge_arm_delay
-client_panorama.dll!0xcf0d20 ConVar sv_breachcharge_delay_max
-client_panorama.dll!0xcf0cc8 ConVar sv_breachcharge_delay_min
-client_panorama.dll!0xcf0c70 ConVar sv_breachcharge_distance_max
-client_panorama.dll!0xcf0c18 ConVar sv_breachcharge_distance_min
-client_panorama.dll!0xcf0dd0 ConVar sv_breachcharge_fuse_max
-client_panorama.dll!0xcf0d78 ConVar sv_breachcharge_fuse_min
-client_panorama.dll!0xce5298 ConVar sv_chat_proximity
-client_panorama.dll!0xcca260 ConVar sv_clamp_unsafe_velocities
-client_panorama.dll!0xceb988 ConVar sv_clip_penetration_traces_to_players
-client_panorama.dll!0xce6bc0 ConVar sv_coach_comm_unrestricted
-client_panorama.dll!0xceacd8 ConVar sv_coaching_enabled
-client_panorama.dll!0xceac28 ConVar sv_competitive_official_5v5
-client_panorama.dll!0xce8c10 ConVar sv_compute_per_bot_difficulty
-client_panorama.dll!0xceb930 ConVar sv_cs_player_speed_has_hostage
-client_panorama.dll!0xce9088 ConVar sv_deadtalk
-client_panorama.dll!0xcca710 ConVar sv_debug_player_use
-client_panorama.dll!0xcea860 ConVar sv_disable_immunity_alpha
-client_panorama.dll!0xce53f8 ConVar sv_disable_motd
-client_panorama.dll!0xceaa18 ConVar sv_disable_observer_interpolation
-client_panorama.dll!0xce50e0 ConVar sv_disable_radar
-client_panorama.dll!0xce6cc8 ConVar sv_dz_hostage_rescue_reward
-client_panorama.dll!0xcef0b8 ConVar sv_dz_team_count
-client_panorama.dll!0xcd12f8 ConVar sv_dz_zone_bombdrop_money_reward
-client_panorama.dll!0xcd12a0 ConVar sv_dz_zone_hex_radius
-client_panorama.dll!0xce4c98 ConVar sv_enablebunnyhopping
-client_panorama.dll!0xce8a58 ConVar sv_endmatch_item_drop_interval
-client_panorama.dll!0xce8bb8 ConVar sv_endmatch_item_drop_interval_ancient
-client_panorama.dll!0xce8b60 ConVar sv_endmatch_item_drop_interval_legendary
-client_panorama.dll!0xce8b08 ConVar sv_endmatch_item_drop_interval_mythical
-client_panorama.dll!0xce8ab0 ConVar sv_endmatch_item_drop_interval_rare
-client_panorama.dll!0xcca500 ConVar sv_extract_ammo_from_dropped_weapons
-client_panorama.dll!0xce4ad0 ConVar sv_extreme_strafe_accuracy_fishtail
-client_panorama.dll!0xce5190 ConVar sv_falldamage_scale
-client_panorama.dll!0xce5240 ConVar sv_falldamage_to_below_player_multiplier
-client_panorama.dll!0xce51e8 ConVar sv_falldamage_to_below_player_ratio
-client_panorama.dll!0xcf2878 ConVar sv_fistpoint_delay
-client_panorama.dll!0xcf2820 ConVar sv_fistpunch_blocked_damage
-client_panorama.dll!0xcf26c0 ConVar sv_fistpunch_damage
-client_panorama.dll!0xcf2770 ConVar sv_fistpunch_damage_hard
-client_panorama.dll!0xcf2718 ConVar sv_fistpunch_damage_to_player_multiplier
-client_panorama.dll!0xcf28d0 ConVar sv_fistpunch_impact_sounds
-client_panorama.dll!0xcf27c8 ConVar sv_fistpunch_viewmove
-client_panorama.dll!0xcca4a8 ConVar sv_footstep_sound_frequency
-client_panorama.dll!0xcd92c8 ConVar sv_footsteps
-client_panorama.dll!0xcef110 ConVar sv_force_reflections
-client_panorama.dll!0xcd8c98 ConVar sv_friction
-client_panorama.dll!0xce90e0 ConVar sv_full_alltalk
-client_panorama.dll!0xcd3088 ConVar sv_grassburn
-client_panorama.dll!0xcda488 ConVar sv_grenade_trajectory
-client_panorama.dll!0xcda5e8 ConVar sv_grenade_trajectory_dash
-client_panorama.dll!0xcda590 ConVar sv_grenade_trajectory_thickness
-client_panorama.dll!0xcda4e0 ConVar sv_grenade_trajectory_time
-client_panorama.dll!0xcda538 ConVar sv_grenade_trajectory_time_spectator
-client_panorama.dll!0xccbfd8 ConVar sv_highlight_distance
-client_panorama.dll!0xccbf80 ConVar sv_highlight_duration
-client_panorama.dll!0xce4ed0 ConVar sv_holiday_mode
-client_panorama.dll!0xcd3a38 ConVar sv_hudhint_sound
-client_panorama.dll!0xcca870 ConVar sv_infinite_ammo
-client_panorama.dll!0xce4b28 ConVar sv_jump_impulse
-client_panorama.dll!0xce8e20 ConVar sv_kick_ban_duration
-client_panorama.dll!0xcf2990 ConVar sv_knife_attack_extend_from_player_aabb
-client_panorama.dll!0xcd2858 ConVar sv_ladder_angle
-client_panorama.dll!0xcd2800 ConVar sv_ladder_dampen
-client_panorama.dll!0xcd28b0 ConVar sv_ladder_scale_speed
-client_panorama.dll!0xce4b80 ConVar sv_ledge_mantle_helper
-client_panorama.dll!0xce4c30 ConVar sv_ledge_mantle_helper_debug
-client_panorama.dll!0xce4bd8 ConVar sv_ledge_mantle_helper_dzonly
-client_panorama.dll!0xce64e0 ConVar sv_matchpause_auto_5v5
-client_panorama.dll!0xcca6b8 ConVar sv_max_distance_transmit_footsteps
-client_panorama.dll!0xcd9270 ConVar sv_maxspeed
-client_panorama.dll!0xcd8fb0 ConVar sv_maxvelocity
-client_panorama.dll!0xceb8d8 ConVar sv_min_jump_landing_sound
-client_panorama.dll!0xcd9688 ConVar sv_mumble_positionalaudio
-client_panorama.dll!0xcd9060 ConVar sv_noclipaccelerate
-client_panorama.dll!0xcd6be8 ConVar sv_noclipduringpause
-client_panorama.dll!0xcd90b8 ConVar sv_noclipspeed
-client_panorama.dll!0xcd2960 ConVar sv_optimizedmovement
-client_panorama.dll!0xce5138 ConVar sv_outofammo_indicator
-client_panorama.dll!0xce6c70 ConVar sv_party_mode
-client_panorama.dll!0xceb568 ConVar sv_penetration_type
-client_panorama.dll!0xcd98b0 ConVar sv_pushaway_clientside
-client_panorama.dll!0xcdaf00 ConVar sv_pushaway_clientside_size
-client_panorama.dll!0xcd97a8 ConVar sv_pushaway_force
-client_panorama.dll!0xcd9858 ConVar sv_pushaway_max_force
-client_panorama.dll!0xcd9960 ConVar sv_pushaway_max_player_force
-client_panorama.dll!0xcd9800 ConVar sv_pushaway_min_player_speed
-client_panorama.dll!0xcd9908 ConVar sv_pushaway_player_force
-client_panorama.dll!0xce4e78 ConVar sv_reward_drop_delay
-client_panorama.dll!0xcd9378 ConVar sv_rollangle
-client_panorama.dll!0xcd9320 ConVar sv_rollspeed
-client_panorama.dll!0xce4dc8 ConVar sv_server_graphic1
-client_panorama.dll!0xce4e20 ConVar sv_server_graphic2
-client_panorama.dll!0xceba38 ConVar sv_server_verify_blood_on_player
-client_panorama.dll!0xcea808 ConVar sv_show_bot_difficulty_in_name
-client_panorama.dll!0xce25c8 ConVar sv_show_ragdoll_playernames
-client_panorama.dll!0xce4fd8 ConVar sv_show_team_equipment_force_on
-client_panorama.dll!0xce4f80 ConVar sv_show_team_equipment_prohibit
-client_panorama.dll!0xcebbb8 ConVar sv_showbullethits
-client_panorama.dll!0xceb618 ConVar sv_showimpacts
-client_panorama.dll!0xceb5c0 ConVar sv_showimpacts_penetration
-client_panorama.dll!0xceb670 ConVar sv_showimpacts_time
-client_panorama.dll!0xceb6c8 ConVar sv_showplayerhitboxes
-client_panorama.dll!0xceac80 ConVar sv_skirmish_id
-client_panorama.dll!0xcd8a30 ConVar sv_skyname
-client_panorama.dll!0xcdb890 ConVar sv_soundemitter_trace
-client_panorama.dll!0xcdb788 ConVar sv_soundemitter_version
-client_panorama.dll!0xce9190 ConVar sv_spec_hear
-client_panorama.dll!0xcebb60 ConVar sv_spec_use_tournament_content_standards
-client_panorama.dll!0xcd8f00 ConVar sv_specaccelerate
-client_panorama.dll!0xcd8ea8 ConVar sv_specnoclip
-client_panorama.dll!0xcd8f58 ConVar sv_specspeed
-client_panorama.dll!0xce4918 ConVar sv_staminajumpcost
-client_panorama.dll!0xce4970 ConVar sv_staminalandcost
-client_panorama.dll!0xce4a20 ConVar sv_staminamax
-client_panorama.dll!0xce49c8 ConVar sv_staminarecoveryrate
-client_panorama.dll!0xcd2708 ConVar sv_standable_normal
-client_panorama.dll!0xcd93d0 ConVar sv_stepsize
-client_panorama.dll!0xcd8d48 ConVar sv_stopspeed
-client_panorama.dll!0xcca768 ConVar sv_suppress_viewpunch
-client_panorama.dll!0xcf2e00 ConVar sv_tablet_show_path_to_nearest_resq
-client_panorama.dll!0xce9138 ConVar sv_talk_after_dying_time
-client_panorama.dll!0xceabd0 ConVar sv_talk_enemy_dead
-client_panorama.dll!0xceab78 ConVar sv_talk_enemy_living
-client_panorama.dll!0xceaa70 ConVar sv_teamid_overhead
-client_panorama.dll!0xce4f28 ConVar sv_teamid_overhead_always_prohibit
-client_panorama.dll!0xce5088 ConVar sv_teamid_overhead_maxdist
-client_panorama.dll!0xce5030 ConVar sv_teamid_overhead_maxdist_spec
-client_panorama.dll!0xce4a78 ConVar sv_timebetweenducks
-client_panorama.dll!0xcd99b8 ConVar sv_turbophysics
-client_panorama.dll!0xcf13c8 ConVar sv_turning_inaccuracy_angle_min
-client_panorama.dll!0xcf1420 ConVar sv_turning_inaccuracy_decay
-client_panorama.dll!0xcf1370 ConVar sv_turning_inaccuracy_enabled
-client_panorama.dll!0xcd26b0 ConVar sv_walkable_normal
-client_panorama.dll!0xcd24a0 ConVar sv_water_movespeed_multiplier
-client_panorama.dll!0xcd24f8 ConVar sv_water_swim_mode
-client_panorama.dll!0xcd8980 ConVar sv_wateraccelerate
-client_panorama.dll!0xcd8ae0 ConVar sv_waterdist
-client_panorama.dll!0xcd89d8 ConVar sv_waterfriction
-client_panorama.dll!0xceb9e0 ConVar sv_weapon_encumbrance_per_item
-client_panorama.dll!0xce4d48 ConVar sv_weapon_encumbrance_scale
-client_panorama.dll!0xcf2d78 ConVar tablet_c4_dist_max
-client_panorama.dll!0xcf2d20 ConVar tablet_c4_dist_min
-client_panorama.dll!0xceeee0 ConVar test_convar
-client_panorama.dll!0xceef38 ConVar test_convar
-client_panorama.dll!0xcda640 ConVar think_limit
-client_panorama.dll!0xce33a8 ConVar thirdperson_lockcamera
-client_panorama.dll!0xceb3a8 ConVar tv_spectator_port_offset
-client_panorama.dll!0xcf0128 ConVar ui_inventorysettings_recently_acknowledged
-client_panorama.dll!0xcef6e8 ConVar ui_lobby_draft_enabled
-client_panorama.dll!0xcefcb0 ConVar ui_nearbylobbies_filter
-client_panorama.dll!0xceff18 ConVar ui_playsettings_maps_listen_casual
-client_panorama.dll!0xcefe10 ConVar ui_playsettings_maps_listen_competitive
-client_panorama.dll!0xceff70 ConVar ui_playsettings_maps_listen_deathmatch
-client_panorama.dll!0xcefe68 ConVar ui_playsettings_maps_listen_scrimcomp2v2
-client_panorama.dll!0xcefec0 ConVar ui_playsettings_maps_listen_skirmish
-client_panorama.dll!0xcefd08 ConVar ui_playsettings_maps_official_casual
-client_panorama.dll!0xcefdb8 ConVar ui_playsettings_maps_official_dangerzone
-client_panorama.dll!0xcefd60 ConVar ui_playsettings_maps_official_deathmatch
-client_panorama.dll!0xceffc8 ConVar ui_playsettings_maps_workshop
-client_panorama.dll!0xcf0390 ConVar ui_playsettings_mode_listen
-client_panorama.dll!0xcf0338 ConVar ui_playsettings_mode_official_dz
-client_panorama.dll!0xcf03e8 ConVar ui_playsettings_survival_solo
-client_panorama.dll!0xcf02e0 ConVar ui_playsettings_warmup_map_name
-client_panorama.dll!0xcf01d8 ConVar ui_popup_weaponupdate_version
-client_panorama.dll!0xcda790 ConVar ui_posedebug_fade_in_time
-client_panorama.dll!0xcda738 ConVar ui_posedebug_fade_out_time
-client_panorama.dll!0xcf0020 ConVar ui_vanitysetting_itemid
-client_panorama.dll!0xcf00d0 ConVar ui_vanitysetting_loadoutslot
-client_panorama.dll!0xcf0078 ConVar ui_vanitysetting_team
-client_panorama.dll!0xced570 ConVar vgui_message_dialog_modal
-client_panorama.dll!0xcca3f8 ConVar view_punch_decay
-client_panorama.dll!0xcca450 ConVar view_recoil_tracking
-client_panorama.dll!0xcdd6b8 ConVar viewmodel_fov
-client_panorama.dll!0xcca8c8 ConVar viewmodel_offset_x
-client_panorama.dll!0xcca920 ConVar viewmodel_offset_y
-client_panorama.dll!0xcca978 ConVar viewmodel_offset_z
-client_panorama.dll!0xcca9d0 ConVar viewmodel_recoil
-client_panorama.dll!0xccc1b8 ConVar vm_debug
-client_panorama.dll!0xccc210 ConVar vm_draw_always
-client_panorama.dll!0xce1360 ConVar voice_modenable
-client_panorama.dll!0xcf1058 ConVar weapon_accuracy_forcespread
-client_panorama.dll!0xcec810 ConVar weapon_accuracy_logging
-client_panorama.dll!0xcf10b0 ConVar weapon_accuracy_nospread
-client_panorama.dll!0xceca78 ConVar weapon_accuracy_shotgun_spread_patterns
-client_panorama.dll!0xcf1160 ConVar weapon_air_spread_scale
-client_panorama.dll!0xcf1210 ConVar weapon_auto_cleanup_time
-client_panorama.dll!0xcec970 ConVar weapon_debug_inaccuracy_only_up
-client_panorama.dll!0xcec918 ConVar weapon_debug_max_inaccuracy
-client_panorama.dll!0xcf1818 ConVar weapon_debug_spread_gap
-client_panorama.dll!0xcf1df0 ConVar weapon_debug_spread_show
-client_panorama.dll!0xcf0f50 ConVar weapon_land_dip_amt
-client_panorama.dll!0xcf1268 ConVar weapon_max_before_cleanup
-client_panorama.dll!0xcec8c0 ConVar weapon_near_empty_sound
-client_panorama.dll!0xcf1108 ConVar weapon_recoil_cooldown
-client_panorama.dll!0xcf0fa8 ConVar weapon_recoil_decay1_exp
-client_panorama.dll!0xcf2058 ConVar weapon_recoil_decay2_exp
-client_panorama.dll!0xcf2000 ConVar weapon_recoil_decay2_lin
-client_panorama.dll!0xcf1000 ConVar weapon_recoil_decay_coefficient
-client_panorama.dll!0xcf1ea0 ConVar weapon_recoil_scale
-client_panorama.dll!0xcf1e48 ConVar weapon_recoil_scale_motion_controller
-client_panorama.dll!0xcebea0 ConVar weapon_recoil_suppression_factor
-client_panorama.dll!0xcebe48 ConVar weapon_recoil_suppression_shots
-client_panorama.dll!0xcebef8 ConVar weapon_recoil_variance
-client_panorama.dll!0xcf20b0 ConVar weapon_recoil_vel_decay
-client_panorama.dll!0xceba90 ConVar weapon_recoil_view_punch_extra
-client_panorama.dll!0xcf11b8 ConVar weapon_reticle_knife_show
-client_panorama.dll!0xcf12c0 ConVar weapon_sound_falloff_multiplier
-client_panorama.dll!0xcdd0f8 ConVar zoom_sensitivity_ratio_joystick
-client_panorama.dll!0xcdd150 ConVar zoom_sensitivity_ratio_mouse
+client_panorama.dll!0x00cf6ea0 ConVar BlendBonesMode
+client_panorama.dll!0x00cc9e60 ConVar achievement_debug
+client_panorama.dll!0x00cc9eb8 ConVar achievement_disable
+client_panorama.dll!0x00cca368 ConVar ai_debug_shoot_positions
+client_panorama.dll!0x00cca310 ConVar ai_shot_bias_max
+client_panorama.dll!0x00cca2b8 ConVar ai_shot_bias_min
+client_panorama.dll!0x00ce6220 ConVar ammo_338mag_headshot_mult
+client_panorama.dll!0x00ce5eb0 ConVar ammo_338mag_impulse
+client_panorama.dll!0x00ce5828 ConVar ammo_338mag_max
+client_panorama.dll!0x00ce6380 ConVar ammo_357sig_headshot_mult
+client_panorama.dll!0x00ce6010 ConVar ammo_357sig_impulse
+client_panorama.dll!0x00ce5988 ConVar ammo_357sig_max
+client_panorama.dll!0x00ce5a90 ConVar ammo_357sig_min_max
+client_panorama.dll!0x00ce59e0 ConVar ammo_357sig_p250_max
+client_panorama.dll!0x00ce5a38 ConVar ammo_357sig_small_max
+client_panorama.dll!0x00ce6328 ConVar ammo_45acp_headshot_mult
+client_panorama.dll!0x00ce5fb8 ConVar ammo_45acp_impulse
+client_panorama.dll!0x00ce5930 ConVar ammo_45acp_max
+client_panorama.dll!0x00ce60c0 ConVar ammo_50AE_headshot_mult
+client_panorama.dll!0x00ce5d50 ConVar ammo_50AE_impulse
+client_panorama.dll!0x00ce5670 ConVar ammo_50AE_max
+client_panorama.dll!0x00ce61c8 ConVar ammo_556mm_box_headshot_mult
+client_panorama.dll!0x00ce5e58 ConVar ammo_556mm_box_impulse
+client_panorama.dll!0x00ce57d0 ConVar ammo_556mm_box_max
+client_panorama.dll!0x00ce6170 ConVar ammo_556mm_headshot_mult
+client_panorama.dll!0x00ce5e00 ConVar ammo_556mm_impulse
+client_panorama.dll!0x00ce5720 ConVar ammo_556mm_max
+client_panorama.dll!0x00ce5778 ConVar ammo_556mm_small_max
+client_panorama.dll!0x00ce63d8 ConVar ammo_57mm_headshot_mult
+client_panorama.dll!0x00ce6068 ConVar ammo_57mm_impulse
+client_panorama.dll!0x00ce5ae8 ConVar ammo_57mm_max
+client_panorama.dll!0x00ce6118 ConVar ammo_762mm_headshot_mult
+client_panorama.dll!0x00ce5da8 ConVar ammo_762mm_impulse
+client_panorama.dll!0x00ce56c8 ConVar ammo_762mm_max
+client_panorama.dll!0x00ce6278 ConVar ammo_9mm_headshot_mult
+client_panorama.dll!0x00ce5f08 ConVar ammo_9mm_impulse
+client_panorama.dll!0x00ce5880 ConVar ammo_9mm_max
+client_panorama.dll!0x00ce62d0 ConVar ammo_buckshot_headshot_mult
+client_panorama.dll!0x00ce5f60 ConVar ammo_buckshot_impulse
+client_panorama.dll!0x00ce58d8 ConVar ammo_buckshot_max
+client_panorama.dll!0x00ce5cf8 ConVar ammo_grenade_limit_breachcharge
+client_panorama.dll!0x00ce5b40 ConVar ammo_grenade_limit_default
+client_panorama.dll!0x00ce5b98 ConVar ammo_grenade_limit_flashbang
+client_panorama.dll!0x00ce5c48 ConVar ammo_grenade_limit_snowballs
+client_panorama.dll!0x00ce5bf0 ConVar ammo_grenade_limit_total
+client_panorama.dll!0x00ce5ca0 ConVar ammo_item_limit_healthshot
+client_panorama.dll!0x00cf6ef8 ConVar anim_3wayblend
+client_panorama.dll!0x00cf6f50 ConVar anim_twistbones_enabled
+client_panorama.dll!0x00ce82c8 ConVar bot_autodifficulty_threshold_high
+client_panorama.dll!0x00ce8270 ConVar bot_autodifficulty_threshold_low
+client_panorama.dll!0x00cd47e0 ConVar c_maxdistance
+client_panorama.dll!0x00cd4680 ConVar c_maxpitch
+client_panorama.dll!0x00cd4730 ConVar c_maxyaw
+client_panorama.dll!0x00cd4838 ConVar c_mindistance
+client_panorama.dll!0x00cd46d8 ConVar c_minpitch
+client_panorama.dll!0x00cd4788 ConVar c_minyaw
+client_panorama.dll!0x00cd48e8 ConVar c_orthoheight
+client_panorama.dll!0x00cd4890 ConVar c_orthowidth
+client_panorama.dll!0x00cd4940 ConVar c_thirdpersonshoulder
+client_panorama.dll!0x00cd4aa0 ConVar c_thirdpersonshoulderaimdist
+client_panorama.dll!0x00cd49f0 ConVar c_thirdpersonshoulderdist
+client_panorama.dll!0x00cd4a48 ConVar c_thirdpersonshoulderheight
+client_panorama.dll!0x00cd4998 ConVar c_thirdpersonshoulderoffset
+client_panorama.dll!0x00cefbc8 ConVar cachedvalue_count_partybrowser
+client_panorama.dll!0x00cf0760 ConVar cachedvalue_count_teammates
+client_panorama.dll!0x00cd45d0 ConVar cam_collision
+client_panorama.dll!0x00cd44c8 ConVar cam_idealdelta
+client_panorama.dll!0x00cd4f08 ConVar cam_idealdist
+client_panorama.dll!0x00cd4eb0 ConVar cam_idealdistright
+client_panorama.dll!0x00cd4e58 ConVar cam_idealdistup
+client_panorama.dll!0x00cd4470 ConVar cam_ideallag
+client_panorama.dll!0x00cd4578 ConVar cam_idealpitch
+client_panorama.dll!0x00cd4520 ConVar cam_idealyaw
+client_panorama.dll!0x00cd4628 ConVar cam_showangles
+client_panorama.dll!0x00cd4418 ConVar cam_snapto
+client_panorama.dll!0x00ce9a28 ConVar cash_player_bomb_defused
+client_panorama.dll!0x00ce99d0 ConVar cash_player_bomb_planted
+client_panorama.dll!0x00ce9b30 ConVar cash_player_damage_hostage
+client_panorama.dll!0x00ce9c38 ConVar cash_player_get_killed
+client_panorama.dll!0x00ce9ad8 ConVar cash_player_interact_with_hostage
+client_panorama.dll!0x00ce9978 ConVar cash_player_killed_enemy_default
+client_panorama.dll!0x00ce9920 ConVar cash_player_killed_enemy_factor
+client_panorama.dll!0x00ce9b88 ConVar cash_player_killed_hostage
+client_panorama.dll!0x00ce98c8 ConVar cash_player_killed_teammate
+client_panorama.dll!0x00ce9a80 ConVar cash_player_rescued_hostage
+client_panorama.dll!0x00ce9be0 ConVar cash_player_respawn_amount
+client_panorama.dll!0x00ce9450 ConVar cash_team_elimination_bomb_map
+client_panorama.dll!0x00ce93f8 ConVar cash_team_elimination_hostage_map_ct
+client_panorama.dll!0x00ce93a0 ConVar cash_team_elimination_hostage_map_t
+client_panorama.dll!0x00ce97c0 ConVar cash_team_hostage_alive
+client_panorama.dll!0x00ce9870 ConVar cash_team_hostage_interaction
+client_panorama.dll!0x00ce9660 ConVar cash_team_loser_bonus
+client_panorama.dll!0x00ce96b8 ConVar cash_team_loser_bonus_consecutive_rounds
+client_panorama.dll!0x00ce9818 ConVar cash_team_planted_bomb_but_defused
+client_panorama.dll!0x00ce9768 ConVar cash_team_rescued_hostage
+client_panorama.dll!0x00ce94a8 ConVar cash_team_survive_guardian_wave
+client_panorama.dll!0x00ce9348 ConVar cash_team_terrorist_win_bomb
+client_panorama.dll!0x00ce95b0 ConVar cash_team_win_by_defusing_bomb
+client_panorama.dll!0x00ce9608 ConVar cash_team_win_by_hostage_rescue
+client_panorama.dll!0x00ce9558 ConVar cash_team_win_by_time_running_out_bomb
+client_panorama.dll!0x00ce9500 ConVar cash_team_win_by_time_running_out_hostage
+client_panorama.dll!0x00ce9710 ConVar cash_team_winner_bonus_consecutive_rounds
+client_panorama.dll!0x00cd3610 ConVar cc_linger_time
+client_panorama.dll!0x00cd3668 ConVar cc_predisplay_time
+client_panorama.dll!0x00cdb8e8 ConVar cc_showmissing
+client_panorama.dll!0x00cd3718 ConVar cc_subtitles
+client_panorama.dll!0x00cf6fa8 ConVar choreo_spew_filter
+client_panorama.dll!0x00ce4708 ConVar cl_autobuy
+client_panorama.dll!0x00ce9298 ConVar cl_autohelp
+client_panorama.dll!0x00ce91e8 ConVar cl_autowepswitch
+client_panorama.dll!0x00cd6b90 ConVar cl_backspeed
+client_panorama.dll!0x00cf1ce8 ConVar cl_bob_lower_amt
+client_panorama.dll!0x00cf1b30 ConVar cl_bob_version
+client_panorama.dll!0x00cf1c90 ConVar cl_bobamt_lat
+client_panorama.dll!0x00cf1c38 ConVar cl_bobamt_vert
+client_panorama.dll!0x00cf1b88 ConVar cl_bobcycle
+client_panorama.dll!0x00cf1be0 ConVar cl_bobup
+client_panorama.dll!0x00ce0f98 ConVar cl_brushfastpath
+client_panorama.dll!0x00cf1ad8 ConVar cl_cam_driver_compensation_scale
+client_panorama.dll!0x00cdd308 ConVar cl_camera_follow_bone_index
+client_panorama.dll!0x00ce2eb8 ConVar cl_camera_height_restriction_debug
+client_panorama.dll!0x00cd35a8 ConVar cl_chatfilter_version
+client_panorama.dll!0x00cd3550 ConVar cl_chatfilters
+client_panorama.dll!0x00cf0230 ConVar cl_clanid
+client_panorama.dll!0x00cedfd8 ConVar cl_compass_enabled
+client_panorama.dll!0x00ce3a40 ConVar cl_connection_trouble_show
+client_panorama.dll!0x00cdc688 ConVar cl_countbones
+client_panorama.dll!0x00cf1870 ConVar cl_crosshair_drawoutline
+client_panorama.dll!0x00cf1a28 ConVar cl_crosshair_dynamic_maxdist_splitratio
+client_panorama.dll!0x00cf1978 ConVar cl_crosshair_dynamic_splitalpha_innermod
+client_panorama.dll!0x00cf19d0 ConVar cl_crosshair_dynamic_splitalpha_outermod
+client_panorama.dll!0x00cf1920 ConVar cl_crosshair_dynamic_splitdist
+client_panorama.dll!0x00cf18c8 ConVar cl_crosshair_outlinethickness
+client_panorama.dll!0x00cf1318 ConVar cl_crosshair_recoil
+client_panorama.dll!0x00cedc68 ConVar cl_crosshair_sniper_show_normal_inaccuracy
+client_panorama.dll!0x00ce2570 ConVar cl_crosshair_sniper_width
+client_panorama.dll!0x00cf1a80 ConVar cl_crosshair_t
+client_panorama.dll!0x00cf15b0 ConVar cl_crosshairalpha
+client_panorama.dll!0x00cf14a8 ConVar cl_crosshaircolor
+client_panorama.dll!0x00cf21b8 ConVar cl_crosshaircolor_b
+client_panorama.dll!0x00cf2160 ConVar cl_crosshaircolor_g
+client_panorama.dll!0x00cf2108 ConVar cl_crosshaircolor_r
+client_panorama.dll!0x00cf17c0 ConVar cl_crosshairdot
+client_panorama.dll!0x00cf1660 ConVar cl_crosshairgap
+client_panorama.dll!0x00cf16b8 ConVar cl_crosshairgap_useweaponvalue
+client_panorama.dll!0x00cf1558 ConVar cl_crosshairscale
+client_panorama.dll!0x00cf1710 ConVar cl_crosshairsize
+client_panorama.dll!0x00cf2210 ConVar cl_crosshairstyle
+client_panorama.dll!0x00cf1768 ConVar cl_crosshairthickness
+client_panorama.dll!0x00cf1608 ConVar cl_crosshairusealpha
+client_panorama.dll!0x00cde110 ConVar cl_custommaterial_debug_graph
+client_panorama.dll!0x00ce2f68 ConVar cl_dangerzone_approaching_sound_radius
+client_panorama.dll!0x00ce3018 ConVar cl_dangerzone_moving_sound_volume
+client_panorama.dll!0x00ce2fc0 ConVar cl_dangerzone_sound_volume
+client_panorama.dll!0x00cceb30 ConVar cl_debugrumble
+client_panorama.dll!0x00cd1438 ConVar cl_detail_avoid_force
+client_panorama.dll!0x00cd13e0 ConVar cl_detail_avoid_radius
+client_panorama.dll!0x00cd1490 ConVar cl_detail_avoid_recover_speed
+client_panorama.dll!0x00cd1388 ConVar cl_detail_max_sway
+client_panorama.dll!0x00cd1610 ConVar cl_detail_multiplier
+client_panorama.dll!0x00ccacc8 ConVar cl_disable_ragdolls
+client_panorama.dll!0x00ce4658 ConVar cl_disablefreezecam
+client_panorama.dll!0x00cf3868 ConVar cl_disablehtmlmotd
+client_panorama.dll!0x00ce2af0 ConVar cl_dm_buyrandomweapons
+client_panorama.dll!0x00ce40d8 ConVar cl_draw_only_deathnotices
+client_panorama.dll!0x00ccfdb0 ConVar cl_drawhud
+client_panorama.dll!0x00ce3ef8 ConVar cl_drawhud_force_deathnotices
+client_panorama.dll!0x00ce42e8 ConVar cl_drawhud_force_radar
+client_panorama.dll!0x00ce3e48 ConVar cl_drawhud_force_teamid_overhead
+client_panorama.dll!0x00ceee20 ConVar cl_drawhud_specvote
+client_panorama.dll!0x00ccf9a0 ConVar cl_drawleaf
+client_panorama.dll!0x00cddb38 ConVar cl_drawmaterial
+client_panorama.dll!0x00cde190 ConVar cl_drawshadowtexture
+client_panorama.dll!0x00cee430 ConVar cl_dz_playagain_auto_spectate
+client_panorama.dll!0x00cef338 ConVar cl_embedded_stream_audio_volume_xmaster
+client_panorama.dll!0x00ccb2d8 ConVar cl_extrapolate
+client_panorama.dll!0x00cd84e8 ConVar cl_extrapolate_amount
+client_panorama.dll!0x00cd1668 ConVar cl_fastdetailsprites
+client_panorama.dll!0x00ce3d40 ConVar cl_fixedcrosshairgap
+client_panorama.dll!0x00ce2200 ConVar cl_foot_contact_shadows
+client_panorama.dll!0x00cd79e8 ConVar cl_forwardspeed
+client_panorama.dll!0x00ce2e60 ConVar cl_freezecameffects_showholiday
+client_panorama.dll!0x00ce3fa8 ConVar cl_freezecampanel_position_dynamic
+client_panorama.dll!0x00cec600 ConVar cl_http_log_enable
+client_panorama.dll!0x00ce2d58 ConVar cl_hud_background_alpha
+client_panorama.dll!0x00ce2d00 ConVar cl_hud_bomb_under_radar
+client_panorama.dll!0x00ce2c50 ConVar cl_hud_color
+client_panorama.dll!0x00ce2db0 ConVar cl_hud_healthammo_style
+client_panorama.dll!0x00ce2ba0 ConVar cl_hud_playercount_pos
+client_panorama.dll!0x00ce2bf8 ConVar cl_hud_playercount_showcount
+client_panorama.dll!0x00cdaad0 ConVar cl_idealpitchscale
+client_panorama.dll!0x00ccb5f0 ConVar cl_interpolate
+client_panorama.dll!0x00cef550 ConVar cl_inventory_debug_tooltip
+client_panorama.dll!0x00cef4a0 ConVar cl_inventory_saved_filter2
+client_panorama.dll!0x00cef4f8 ConVar cl_inventory_saved_sort2
+client_panorama.dll!0x00cd85f0 ConVar cl_jiggle_bone_debug
+client_panorama.dll!0x00cd8540 ConVar cl_jiggle_bone_debug_pitch_constraints
+client_panorama.dll!0x00cd86a0 ConVar cl_jiggle_bone_debug_yaw_constraints
+client_panorama.dll!0x00cd8598 ConVar cl_jiggle_bone_invert
+client_panorama.dll!0x00ccf5a8 ConVar cl_join_advertise
+client_panorama.dll!0x00cdaa78 ConVar cl_lagcompensation
+client_panorama.dll!0x00ccfb00 ConVar cl_leafsystemvis
+client_panorama.dll!0x00cdd710 ConVar cl_leveloverview
+client_panorama.dll!0x00cf37c8 ConVar cl_leveloverviewmarker
+client_panorama.dll!0x00cdd4c0 ConVar cl_lock_camera
+client_panorama.dll!0x00cef268 ConVar cl_mainmenu_show_datagraph
+client_panorama.dll!0x00cdfaa8 ConVar cl_maxrenderable_dist
+client_panorama.dll!0x00ccadd0 ConVar cl_minimal_rtt_shadows
+client_panorama.dll!0x00cd8178 ConVar cl_mouselook
+client_panorama.dll!0x00ce1570 ConVar cl_mute_all_but_friends_and_party
+client_panorama.dll!0x00ce1518 ConVar cl_mute_enemy_team
+client_panorama.dll!0x00ce36a8 ConVar cl_obs_interp_enable
+client_panorama.dll!0x00ce3ce8 ConVar cl_observercrosshair
+client_panorama.dll!0x00cdde50 ConVar cl_overdraw_test
+client_panorama.dll!0x00cd9d80 ConVar cl_particle_retire_cost
+client_panorama.dll!0x00cd9b18 ConVar cl_particles_show_bbox
+client_panorama.dll!0x00cd9f08 ConVar cl_particles_show_controlpoints
+client_panorama.dll!0x00cdabd8 ConVar cl_pclass
+client_panorama.dll!0x00cdab80 ConVar cl_pdump
+client_panorama.dll!0x00cda3d0 ConVar cl_phys_show_active
+client_panorama.dll!0x00cda0f0 ConVar cl_phys_timescale
+client_panorama.dll!0x00cd7bf8 ConVar cl_pitchdown
+client_panorama.dll!0x00cd7c50 ConVar cl_pitchup
+client_panorama.dll!0x00ce34c8 ConVar cl_player_proximity_debug
+client_panorama.dll!0x00cf6aa8 ConVar cl_playerspray_auto_apply
+client_panorama.dll!0x00ccc458 ConVar cl_portal_use_new_dissolve
+client_panorama.dll!0x00cdab28 ConVar cl_predictionlist
+client_panorama.dll!0x00cdaa20 ConVar cl_predictweapons
+client_panorama.dll!0x00cee280 ConVar cl_quickinventory_deadzone_size
+client_panorama.dll!0x00cee2d8 ConVar cl_quickinventory_lastinv
+client_panorama.dll!0x00ce4238 ConVar cl_radar_always_centered
+client_panorama.dll!0x00ce4290 ConVar cl_radar_icon_scale_min
+client_panorama.dll!0x00ce4188 ConVar cl_radar_rotate
+client_panorama.dll!0x00ce41e0 ConVar cl_radar_scale
+client_panorama.dll!0x00ce4130 ConVar cl_radar_square_with_scoreboard
+client_panorama.dll!0x00ce31b0 ConVar cl_ragdoll_workaround_threshold
+client_panorama.dll!0x00cef018 ConVar cl_rappel_tilt
+client_panorama.dll!0x00ce46b0 ConVar cl_rebuy
+client_panorama.dll!0x00cdc148 ConVar cl_remove_old_ugc_downloads
+client_panorama.dll!0x00ccc108 ConVar cl_righthand
+client_panorama.dll!0x00ccead8 ConVar cl_rumblescale
+client_panorama.dll!0x00cce0b8 ConVar cl_sanitize_player_names
+client_panorama.dll!0x00cf1500 ConVar cl_scalecrosshair
+client_panorama.dll!0x00ce45b8 ConVar cl_scoreboard_mouse_enable_binding
+client_panorama.dll!0x00cee380 ConVar cl_scoreboard_survivors_always_on
+client_panorama.dll!0x00cef910 ConVar cl_server_graphic1_enable
+client_panorama.dll!0x00cef8b8 ConVar cl_server_graphic2_enable
+client_panorama.dll!0x00cde060 ConVar cl_shadowtextureoverlaysize
+client_panorama.dll!0x00ce2a98 ConVar cl_show_clan_in_death_notice
+client_panorama.dll!0x00cc9f38 ConVar cl_showanimstate
+client_panorama.dll!0x00cc9fe8 ConVar cl_showanimstate_activities
+client_panorama.dll!0x00cc9f90 ConVar cl_showanimstate_log
+client_panorama.dll!0x00cdad38 ConVar cl_showerror
+client_panorama.dll!0x00cdc4c8 ConVar cl_showfps
+client_panorama.dll!0x00cd3100 ConVar cl_showhelp
+client_panorama.dll!0x00cdc520 ConVar cl_showpos
+client_panorama.dll!0x00cd7ca8 ConVar cl_sidespeed
+client_panorama.dll!0x00cf6e48 ConVar cl_simdbones
+client_panorama.dll!0x00cd8858 ConVar cl_skipfastpath
+client_panorama.dll!0x00ce10a0 ConVar cl_skipslowpath
+client_panorama.dll!0x00ce2e08 ConVar cl_spec_follow_grenade_key
+client_panorama.dll!0x00ce4080 ConVar cl_spec_mode
+client_panorama.dll!0x00ce2728 ConVar cl_spec_show_bindings
+client_panorama.dll!0x00cef838 ConVar cl_spec_stats
+client_panorama.dll!0x00cebb08 ConVar cl_spec_use_tournament_content_standards
+client_panorama.dll!0x00cf6000 ConVar cl_sporeclipdistance
+client_panorama.dll!0x00cd2f28 ConVar cl_sun_decay_rate
+client_panorama.dll!0x00cd2f80 ConVar cl_sun_in_reflection_h_scale
+client_panorama.dll!0x00cd2fd8 ConVar cl_sun_in_reflection_v_scale
+client_panorama.dll!0x00cceff8 ConVar cl_sunlight_ortho_size
+client_panorama.dll!0x00cf2e58 ConVar cl_tablet_mapmode
+client_panorama.dll!0x00ce2990 ConVar cl_teamid_overhead_maxdist
+client_panorama.dll!0x00ce29e8 ConVar cl_teamid_overhead_maxdist_spec
+client_panorama.dll!0x00ce2b48 ConVar cl_teammate_colors_show
+client_panorama.dll!0x00ccb0b0 ConVar cl_threaded_bone_setup
+client_panorama.dll!0x00cd6b38 ConVar cl_upspeed
+client_panorama.dll!0x00cf2268 ConVar cl_use_new_headbob
+client_panorama.dll!0x00ce9240 ConVar cl_use_opens_buy_menu
+client_panorama.dll!0x00cf6df0 ConVar cl_use_simd_bones
+client_panorama.dll!0x00cf1d40 ConVar cl_viewmodel_shift_left_amt
+client_panorama.dll!0x00cf1d98 ConVar cl_viewmodel_shift_right_amt
+client_panorama.dll!0x00ce32a0 ConVar cl_weapon_clip_thinwalls
+client_panorama.dll!0x00ce32f8 ConVar cl_weapon_clip_thinwalls_debug
+client_panorama.dll!0x00ce3350 ConVar cl_weapon_clip_thinwalls_lock
+client_panorama.dll!0x00cf1fa8 ConVar cl_weapon_debug_print_accuracy
+client_panorama.dll!0x00cf1ef8 ConVar cl_weapon_debug_show_accuracy
+client_panorama.dll!0x00cf1f50 ConVar cl_weapon_debug_show_accuracy_duration
+client_panorama.dll!0x00cf4fd0 ConVar cl_winddir
+client_panorama.dll!0x00cf5028 ConVar cl_windspeed
+client_panorama.dll!0x00cda868 ConVar cl_wpn_sway_scale
+client_panorama.dll!0x00cd3988 ConVar closecaption
+client_panorama.dll!0x00ce92f0 ConVar closeonbuy
+client_panorama.dll!0x00cf72a0 ConVar cloth_windage_multiplier
+client_panorama.dll!0x00ced410 ConVar commentary_firstrun
+client_panorama.dll!0x00ce47b8 ConVar crosshair
+client_panorama.dll!0x00cecc00 ConVar custom_bot_difficulty
+client_panorama.dll!0x00ceca20 ConVar debug_aim_angle
+client_panorama.dll!0x00ce2678 ConVar debug_entity_outline_highlight
+client_panorama.dll!0x00ce4760 ConVar default_fov
+client_panorama.dll!0x00cdc408 ConVar developer
+client_panorama.dll!0x00ccaf30 ConVar enable_skeleton_draw
+client_panorama.dll!0x00ceb880 ConVar ff_damage_bullet_penetration
+client_panorama.dll!0x00ceb7d0 ConVar ff_damage_reduction_bullets
+client_panorama.dll!0x00ceb720 ConVar ff_damage_reduction_grenade
+client_panorama.dll!0x00ceb778 ConVar ff_damage_reduction_grenade_self
+client_panorama.dll!0x00ceb828 ConVar ff_damage_reduction_other
+client_panorama.dll!0x00ccd6a8 ConVar fish_debug
+client_panorama.dll!0x00ce0238 ConVar fog_color
+client_panorama.dll!0x00ce03f0 ConVar fog_colorskybox
+client_panorama.dll!0x00ce0290 ConVar fog_enable
+client_panorama.dll!0x00ce0448 ConVar fog_enableskybox
+client_panorama.dll!0x00ce01e0 ConVar fog_end
+client_panorama.dll!0x00ce0340 ConVar fog_endskybox
+client_panorama.dll!0x00ce04f8 ConVar fog_hdrcolorscale
+client_panorama.dll!0x00ce0550 ConVar fog_hdrcolorscaleskybox
+client_panorama.dll!0x00ce04a0 ConVar fog_maxdensity
+client_panorama.dll!0x00ce0398 ConVar fog_maxdensityskybox
+client_panorama.dll!0x00ce0188 ConVar fog_start
+client_panorama.dll!0x00ce02e8 ConVar fog_startskybox
+client_panorama.dll!0x00ce3a98 ConVar fov_cs_debug
+client_panorama.dll!0x00cf68a8 ConVar func_break_max_pieces
+client_panorama.dll!0x00cd3b00 ConVar g15_update_msec
+client_panorama.dll!0x00cd29b8 ConVar g_Language
+client_panorama.dll!0x00cdb1e8 ConVar g_debug_ragdoll_removal
+client_panorama.dll!0x00ccafa8 ConVar g_debug_ragdoll_visualize
+client_panorama.dll!0x00cdb240 ConVar g_ragdoll_important_maxcount
+client_panorama.dll!0x00cdb190 ConVar g_ragdoll_maxcount
+client_panorama.dll!0x00ceccb0 ConVar game_mode
+client_panorama.dll!0x00cecc58 ConVar game_online
+client_panorama.dll!0x00cecba8 ConVar game_public
+client_panorama.dll!0x00cecd08 ConVar game_type
+client_panorama.dll!0x00ccdb98 ConVar gameinstructor_find_errors
+client_panorama.dll!0x00ccd908 ConVar gameinstructor_save_restore_lessons
+client_panorama.dll!0x00ccdae8 ConVar gameinstructor_verbose
+client_panorama.dll!0x00ccdb40 ConVar gameinstructor_verbose_lesson
+client_panorama.dll!0x00cdd3b8 ConVar gl_clear_randomcolor
+client_panorama.dll!0x00cd2e68 ConVar glow_muzzle_debug
+client_panorama.dll!0x00cd2db8 ConVar glow_outline_effect_enable
+client_panorama.dll!0x00cd2e10 ConVar glow_outline_width
+client_panorama.dll!0x00cef7e0 ConVar gotv_theater_container
+client_panorama.dll!0x00cf0a38 ConVar healthshot_allow_use_at_full
+client_panorama.dll!0x00cf0988 ConVar healthshot_health
+client_panorama.dll!0x00cf0a90 ConVar healthshot_healthboost_speed_multiplier
+client_panorama.dll!0x00cf09e0 ConVar healthshot_healthboost_time
+client_panorama.dll!0x00cd3320 ConVar hidehud
+client_panorama.dll!0x00cca208 ConVar hl2_episodic
+client_panorama.dll!0x00cebc68 ConVar hostage_feetyawrate
+client_panorama.dll!0x00ce1740 ConVar hud_fastswitch
+client_panorama.dll!0x00ceeaa0 ConVar hud_scaling
+client_panorama.dll!0x00ce3df0 ConVar hud_showtargetid
+client_panorama.dll!0x00ccfe08 ConVar hud_takesshots
+client_panorama.dll!0x00cd6df8 ConVar in_forceuser
+client_panorama.dll!0x00cece08 ConVar inferno_dlight_spacing
+client_panorama.dll!0x00cd5900 ConVar joy_accelmax
+client_panorama.dll!0x00cd5850 ConVar joy_accelscale
+client_panorama.dll!0x00cd58a8 ConVar joy_accelscalepoly
+client_panorama.dll!0x00cd5068 ConVar joy_advanced
+client_panorama.dll!0x00cd51c8 ConVar joy_advaxisr
+client_panorama.dll!0x00cd5220 ConVar joy_advaxisu
+client_panorama.dll!0x00cd5278 ConVar joy_advaxisv
+client_panorama.dll!0x00cd50c0 ConVar joy_advaxisx
+client_panorama.dll!0x00cd5118 ConVar joy_advaxisy
+client_panorama.dll!0x00cd5170 ConVar joy_advaxisz
+client_panorama.dll!0x00cd5958 ConVar joy_autoAimDampenMethod
+client_panorama.dll!0x00cd5a08 ConVar joy_autoaimdampen
+client_panorama.dll!0x00cd59b0 ConVar joy_autoaimdampenrange
+client_panorama.dll!0x00cd6140 ConVar joy_cfg_preset
+client_panorama.dll!0x00cd5e28 ConVar joy_circle_correct
+client_panorama.dll!0x00cd5ab8 ConVar joy_curvepoint_1
+client_panorama.dll!0x00cd5b10 ConVar joy_curvepoint_2
+client_panorama.dll!0x00cd5b68 ConVar joy_curvepoint_3
+client_panorama.dll!0x00cd5bc0 ConVar joy_curvepoint_4
+client_panorama.dll!0x00cd5c18 ConVar joy_curvepoint_end
+client_panorama.dll!0x00cd5e80 ConVar joy_diagonalpov
+client_panorama.dll!0x00cd5ed8 ConVar joy_display_input
+client_panorama.dll!0x00cd5430 ConVar joy_forwardsensitivity
+client_panorama.dll!0x00cd52d0 ConVar joy_forwardthreshold
+client_panorama.dll!0x00cd57f8 ConVar joy_gamma
+client_panorama.dll!0x00cd5f88 ConVar joy_inverty
+client_panorama.dll!0x00cd56f0 ConVar joy_lowend
+client_panorama.dll!0x00cd5748 ConVar joy_lowend_linear
+client_panorama.dll!0x00cd57a0 ConVar joy_lowmap
+client_panorama.dll!0x00cd5010 ConVar joy_name
+client_panorama.dll!0x00cd6248 ConVar joy_no_accel_jump
+client_panorama.dll!0x00cd54e0 ConVar joy_pitchsensitivity
+client_panorama.dll!0x00cd5380 ConVar joy_pitchthreshold
+client_panorama.dll!0x00cd5640 ConVar joy_response_look
+client_panorama.dll!0x00cd5698 ConVar joy_response_look_pitch
+client_panorama.dll!0x00cd5590 ConVar joy_response_move
+client_panorama.dll!0x00cd5d20 ConVar joy_sensitive_step0
+client_panorama.dll!0x00cd5d78 ConVar joy_sensitive_step1
+client_panorama.dll!0x00cd5dd0 ConVar joy_sensitive_step2
+client_panorama.dll!0x00cd5488 ConVar joy_sidesensitivity
+client_panorama.dll!0x00cd5328 ConVar joy_sidethreshold
+client_panorama.dll!0x00cd5f30 ConVar joy_wingmanwarrior_turnhack
+client_panorama.dll!0x00cd5538 ConVar joy_yawsensitivity
+client_panorama.dll!0x00cd53d8 ConVar joy_yawthreshold
+client_panorama.dll!0x00cd4fb8 ConVar joystick_force_disabled
+client_panorama.dll!0x00cf0288 ConVar key_bind_version
+client_panorama.dll!0x00cd4298 ConVar locator_split_len
+client_panorama.dll!0x00cd4240 ConVar locator_split_maxwide_percent
+client_panorama.dll!0x00ce3d98 ConVar lockMoveControllerRet
+client_panorama.dll!0x00cd7ba0 ConVar lookspring
+client_panorama.dll!0x00cd7a98 ConVar lookstrafe
+client_panorama.dll!0x00cd7db0 ConVar m_customaccel
+client_panorama.dll!0x00cd8018 ConVar m_customaccel_exponent
+client_panorama.dll!0x00cd7fc0 ConVar m_customaccel_max
+client_panorama.dll!0x00cd8070 ConVar m_customaccel_scale
+client_panorama.dll!0x00cd8228 ConVar m_forward
+client_panorama.dll!0x00cd7f68 ConVar m_mouseaccel1
+client_panorama.dll!0x00cd81d0 ConVar m_mouseaccel2
+client_panorama.dll!0x00cd82d8 ConVar m_mousespeed
+client_panorama.dll!0x00cd7e08 ConVar m_rawinput
+client_panorama.dll!0x00cd80c8 ConVar m_side
+client_panorama.dll!0x00cd7f10 ConVar m_yaw
+client_panorama.dll!0x00cd9490 ConVar mapcycledisabled
+client_panorama.dll!0x00cd0018 ConVar mapoverview_allow_client_draw
+client_panorama.dll!0x00cd0070 ConVar mapoverview_allow_grid_usage
+client_panorama.dll!0x00cd00c8 ConVar mapoverview_icon_scale
+client_panorama.dll!0x00cde768 ConVar mat_accelerate_adjust_exposure_down
+client_panorama.dll!0x00cde450 ConVar mat_autoexposure_max
+client_panorama.dll!0x00cde4a8 ConVar mat_autoexposure_max_multiplier
+client_panorama.dll!0x00cde500 ConVar mat_autoexposure_min
+client_panorama.dll!0x00cde818 ConVar mat_bloom_scalefactor_scalar
+client_panorama.dll!0x00cde2f0 ConVar mat_bloomamount_rate
+client_panorama.dll!0x00cde240 ConVar mat_bloomscale
+client_panorama.dll!0x00cddd48 ConVar mat_camerarendertargetoverlaysize
+client_panorama.dll!0x00ccc3a8 ConVar mat_colcorrection_forceentitiesclientside
+client_panorama.dll!0x00cde710 ConVar mat_colorcorrection
+client_panorama.dll!0x00cde6b8 ConVar mat_debug_bloom
+client_panorama.dll!0x00cde348 ConVar mat_debug_postprocessing_effects
+client_panorama.dll!0x00cde660 ConVar mat_disable_bloom
+client_panorama.dll!0x00ce1150 ConVar mat_draw_zone_highlight
+client_panorama.dll!0x00ce10f8 ConVar mat_draw_zone_projection_mode
+client_panorama.dll!0x00ce07b8 ConVar mat_drawwater
+client_panorama.dll!0x00cde3a0 ConVar mat_dynamic_tonemapping
+client_panorama.dll!0x00cde870 ConVar mat_exposure_center_region_x
+client_panorama.dll!0x00cde8c8 ConVar mat_exposure_center_region_y
+client_panorama.dll!0x00cde608 ConVar mat_force_bloom
+client_panorama.dll!0x00cdea28 ConVar mat_force_tonemap_min_avglum
+client_panorama.dll!0x00cde9d0 ConVar mat_force_tonemap_percent_bright_pixels
+client_panorama.dll!0x00cde978 ConVar mat_force_tonemap_percent_target
+client_panorama.dll!0x00cdea80 ConVar mat_force_tonemap_scale
+client_panorama.dll!0x00cce5c0 ConVar mat_fullbright
+client_panorama.dll!0x00cd1598 ConVar mat_fullbright
+client_panorama.dll!0x00cdead8 ConVar mat_fullbright
+client_panorama.dll!0x00cde5b0 ConVar mat_hdr_uncapexposure
+client_panorama.dll!0x00cddda0 ConVar mat_hsv
+client_panorama.dll!0x00ce0e80 ConVar mat_lpreview_mode
+client_panorama.dll!0x00cde7c0 ConVar mat_non_hdr_bloom_scalefactor
+client_panorama.dll!0x00cf4ce0 ConVar mat_normals
+client_panorama.dll!0x00cf7878 ConVar mat_normals
+client_panorama.dll!0x00cdf2f0 ConVar mat_postprocess_enable
+client_panorama.dll!0x00ccc2c0 ConVar mat_preview
+client_panorama.dll!0x00cde558 ConVar mat_show_histogram
+client_panorama.dll!0x00cddcf0 ConVar mat_showcamerarendertarget
+client_panorama.dll!0x00cddc40 ConVar mat_showframebuffertexture
+client_panorama.dll!0x00cddb90 ConVar mat_showwatertextures
+client_panorama.dll!0x00cf4970 ConVar mat_softwareskin
+client_panorama.dll!0x00cf7610 ConVar mat_softwareskin
+client_panorama.dll!0x00ccf8e0 ConVar mat_stub
+client_panorama.dll!0x00cde920 ConVar mat_tonemap_algorithm
+client_panorama.dll!0x00cdd258 ConVar mat_viewportscale
+client_panorama.dll!0x00cdd2b0 ConVar mat_viewportupscale
+client_panorama.dll!0x00cde1e8 ConVar mat_wireframe
+client_panorama.dll!0x00cdddf8 ConVar mat_yuv
+client_panorama.dll!0x00cd62f8 ConVar mc_accel_band_size
+client_panorama.dll!0x00cd62a0 ConVar mc_dead_zone_radius
+client_panorama.dll!0x00cd63a8 ConVar mc_max_pitchrate
+client_panorama.dll!0x00cd6350 ConVar mc_max_yawrate
+client_panorama.dll!0x00cf0ae8 ConVar molotov_throw_detonate_time
+client_panorama.dll!0x00ce67f8 ConVar mp_afterroundmoney
+client_panorama.dll!0x00cd2ba8 ConVar mp_allowspectators
+client_panorama.dll!0x00ce6b10 ConVar mp_anyone_can_pickup_c4
+client_panorama.dll!0x00cdbdb8 ConVar mp_blockstyle
+client_panorama.dll!0x00cdc020 ConVar mp_bonusroundtime
+client_panorama.dll!0x00ce65e8 ConVar mp_buy_allow_grenades
+client_panorama.dll!0x00ce6640 ConVar mp_buy_allow_guns
+client_panorama.dll!0x00cd2cb0 ConVar mp_buy_anywhere
+client_panorama.dll!0x00cd2d08 ConVar mp_buy_during_immunity
+client_panorama.dll!0x00ce6590 ConVar mp_buytime
+client_panorama.dll!0x00ce6b68 ConVar mp_c4_cannot_be_defused
+client_panorama.dll!0x00cea7b0 ConVar mp_c4timer
+client_panorama.dll!0x00cdc0d0 ConVar mp_capdeteriorate_time
+client_panorama.dll!0x00cdc078 ConVar mp_capstyle
+client_panorama.dll!0x00ce8168 ConVar mp_coop_force_join_ct
+client_panorama.dll!0x00ce81c0 ConVar mp_coopmission_mission_number
+client_panorama.dll!0x00ce74b0 ConVar mp_ct_default_grenades
+client_panorama.dll!0x00ce73a8 ConVar mp_ct_default_melee
+client_panorama.dll!0x00ce7458 ConVar mp_ct_default_primary
+client_panorama.dll!0x00ce7400 ConVar mp_ct_default_secondary
+client_panorama.dll!0x00ce80b8 ConVar mp_death_drop_breachcharge
+client_panorama.dll!0x00ce7f58 ConVar mp_death_drop_c4
+client_panorama.dll!0x00ce8008 ConVar mp_death_drop_defuser
+client_panorama.dll!0x00ce7fb0 ConVar mp_death_drop_grenade
+client_panorama.dll!0x00ce7f00 ConVar mp_death_drop_gun
+client_panorama.dll!0x00ce8110 ConVar mp_death_drop_healthshot
+client_panorama.dll!0x00ce8060 ConVar mp_death_drop_taser
+client_panorama.dll!0x00ce86e8 ConVar mp_default_team_winner_no_objective
+client_panorama.dll!0x00ce7e50 ConVar mp_defuser_allocation
+client_panorama.dll!0x00cdbfc8 ConVar mp_disable_respawn_times
+client_panorama.dll!0x00ce7d48 ConVar mp_display_kill_assists
+client_panorama.dll!0x00ce7a88 ConVar mp_dm_bonus_percent
+client_panorama.dll!0x00ce7ae0 ConVar mp_dm_bonus_respawn
+client_panorama.dll!0x00ce7cf0 ConVar mp_dm_bonusweapon_dogtags
+client_panorama.dll!0x00ce7b38 ConVar mp_dm_dogtag_score
+client_panorama.dll!0x00ce7a30 ConVar mp_dm_kill_base_score
+client_panorama.dll!0x00ce7b90 ConVar mp_dm_teammode
+client_panorama.dll!0x00ce7c40 ConVar mp_dm_teammode_bonus_score
+client_panorama.dll!0x00ce7c98 ConVar mp_dm_teammode_dogtag_score
+client_panorama.dll!0x00ce7be8 ConVar mp_dm_teammode_kill_score
+client_panorama.dll!0x00ce66f0 ConVar mp_do_warmup_offine
+client_panorama.dll!0x00ce6698 ConVar mp_do_warmup_period
+client_panorama.dll!0x00ce8378 ConVar mp_economy_reset_rounds
+client_panorama.dll!0x00ce8950 ConVar mp_endmatch_votenextleveltime
+client_panorama.dll!0x00ce88a0 ConVar mp_endmatch_votenextmap
+client_panorama.dll!0x00ce88f8 ConVar mp_endmatch_votenextmap_keepcurrent
+client_panorama.dll!0x00ce6e28 ConVar mp_endwarmup_player_count
+client_panorama.dll!0x00ce8320 ConVar mp_equipment_reset_rounds
+client_panorama.dll!0x00cca098 ConVar mp_facefronttime
+client_panorama.dll!0x00cca040 ConVar mp_feetyawrate
+client_panorama.dll!0x00ce6488 ConVar mp_force_assign_teams
+client_panorama.dll!0x00ce8218 ConVar mp_force_pick_time
+client_panorama.dll!0x00cd2d60 ConVar mp_forcecamera
+client_panorama.dll!0x00cd9540 ConVar mp_fraglimit
+client_panorama.dll!0x00cea498 ConVar mp_free_armor
+client_panorama.dll!0x00cd2c00 ConVar mp_friendlyfire
+client_panorama.dll!0x00ce72f8 ConVar mp_ggprogressive_random_weapon_kills_needed
+client_panorama.dll!0x00ce7248 ConVar mp_ggprogressive_round_restart_delay
+client_panorama.dll!0x00ce72a0 ConVar mp_ggprogressive_use_random_weapons
+client_panorama.dll!0x00ce7140 ConVar mp_ggtr_always_upgrade
+client_panorama.dll!0x00ce7980 ConVar mp_ggtr_bomb_defuse_bonus
+client_panorama.dll!0x00ce79d8 ConVar mp_ggtr_bomb_detonation_bonus
+client_panorama.dll!0x00ce77c8 ConVar mp_ggtr_bomb_pts_for_flash
+client_panorama.dll!0x00ce7770 ConVar mp_ggtr_bomb_pts_for_he
+client_panorama.dll!0x00ce7820 ConVar mp_ggtr_bomb_pts_for_molotov
+client_panorama.dll!0x00ce7718 ConVar mp_ggtr_bomb_pts_for_upgrade
+client_panorama.dll!0x00ce7928 ConVar mp_ggtr_bomb_respawn_delay
+client_panorama.dll!0x00ce7198 ConVar mp_ggtr_end_round_kill_bonus
+client_panorama.dll!0x00ce78d0 ConVar mp_ggtr_halftime_delay
+client_panorama.dll!0x00ce71f0 ConVar mp_ggtr_last_weapon_kill_ends_half
+client_panorama.dll!0x00ce7350 ConVar mp_ggtr_num_rounds_autoprogress
+client_panorama.dll!0x00ce7ea8 ConVar mp_give_player_c4
+client_panorama.dll!0x00cea548 ConVar mp_halftime
+client_panorama.dll!0x00ce7090 ConVar mp_halftime_duration
+client_panorama.dll!0x00ce6f30 ConVar mp_halftime_pausematch
+client_panorama.dll!0x00ce6ed8 ConVar mp_halftime_pausetimer
+client_panorama.dll!0x00ce5618 ConVar mp_heavyassaultsuit_aimpunch
+client_panorama.dll!0x00ce85e0 ConVar mp_heavyassaultsuit_cooldown
+client_panorama.dll!0x00ce55c0 ConVar mp_heavyassaultsuit_deploy_timescale
+client_panorama.dll!0x00ce5510 ConVar mp_heavyassaultsuit_speed
+client_panorama.dll!0x00ce5568 ConVar mp_heavybot_damage_reduction_scale
+client_panorama.dll!0x00ce6ab8 ConVar mp_hostages_rescuetime
+client_panorama.dll!0x00ce6a60 ConVar mp_hostages_rescuetowin
+client_panorama.dll!0x00ce6a08 ConVar mp_hostages_takedamage
+client_panorama.dll!0x00cca0f0 ConVar mp_ik
+client_panorama.dll!0x00ce7668 ConVar mp_join_grace_time
+client_panorama.dll!0x00ce70e8 ConVar mp_match_can_clinch
+client_panorama.dll!0x00ce7df8 ConVar mp_match_end_changelevel
+client_panorama.dll!0x00ce7da0 ConVar mp_match_end_restart
+client_panorama.dll!0x00cd9438 ConVar mp_match_restart_delay
+client_panorama.dll!0x00cea4f0 ConVar mp_max_armor
+client_panorama.dll!0x00ce67a0 ConVar mp_maxmoney
+client_panorama.dll!0x00cdbf18 ConVar mp_maxrounds
+client_panorama.dll!0x00ce7878 ConVar mp_molotovusedelay
+client_panorama.dll!0x00ce6900 ConVar mp_overtime_enable
+client_panorama.dll!0x00ce6f88 ConVar mp_overtime_halftime_pausetimer
+client_panorama.dll!0x00ce6958 ConVar mp_overtime_maxrounds
+client_panorama.dll!0x00ce69b0 ConVar mp_overtime_startmoney
+client_panorama.dll!0x00cf0ec8 ConVar mp_plant_c4_anywhere
+client_panorama.dll!0x00ce6850 ConVar mp_playercashawards
+client_panorama.dll!0x00cea910 ConVar mp_playerid
+client_panorama.dll!0x00cea968 ConVar mp_playerid_delay
+client_panorama.dll!0x00cea9c0 ConVar mp_playerid_hold
+client_panorama.dll!0x00cd2b50 ConVar mp_radar_showall
+client_panorama.dll!0x00cea5a0 ConVar mp_randomspawn
+client_panorama.dll!0x00cea650 ConVar mp_randomspawn_dist
+client_panorama.dll!0x00cea5f8 ConVar mp_randomspawn_los
+client_panorama.dll!0x00ce6fe0 ConVar mp_respawn_immunitytime
+client_panorama.dll!0x00ce87f0 ConVar mp_respawn_on_death_ct
+client_panorama.dll!0x00ce8798 ConVar mp_respawn_on_death_t
+client_panorama.dll!0x00cdbe10 ConVar mp_respawnwavetime
+client_panorama.dll!0x00ce7038 ConVar mp_round_restart_delay
+client_panorama.dll!0x00ceab20 ConVar mp_solid_teammates
+client_panorama.dll!0x00ce6430 ConVar mp_spec_swapplayersides
+client_panorama.dll!0x00ce6538 ConVar mp_spectators_max
+client_panorama.dll!0x00ce6748 ConVar mp_startmoney
+client_panorama.dll!0x00ce7610 ConVar mp_t_default_grenades
+client_panorama.dll!0x00ce7508 ConVar mp_t_default_melee
+client_panorama.dll!0x00ce75b8 ConVar mp_t_default_primary
+client_panorama.dll!0x00ce7560 ConVar mp_t_default_secondary
+client_panorama.dll!0x00cf2eb0 ConVar mp_taser_recharge_time
+client_panorama.dll!0x00ce5348 ConVar mp_team_timeout_max
+client_panorama.dll!0x00ce52f0 ConVar mp_team_timeout_time
+client_panorama.dll!0x00ce68a8 ConVar mp_teamcashawards
+client_panorama.dll!0x00cd2c58 ConVar mp_teammates_are_enemies
+client_panorama.dll!0x00cdbec0 ConVar mp_teams_unbalance_limit
+client_panorama.dll!0x00cd94e8 ConVar mp_timelimit
+client_panorama.dll!0x00cdbe68 ConVar mp_tournament
+client_panorama.dll!0x00cea8b8 ConVar mp_use_respawn_waves
+client_panorama.dll!0x00ce6d20 ConVar mp_verbose_changelevel_spew
+client_panorama.dll!0x00ce6e80 ConVar mp_warmup_pausetimer
+client_panorama.dll!0x00ce6dd0 ConVar mp_warmuptime_all_players_connected
+client_panorama.dll!0x00ce84d8 ConVar mp_weapons_allow_heavy
+client_panorama.dll!0x00ce8690 ConVar mp_weapons_allow_map_placed
+client_panorama.dll!0x00ce8428 ConVar mp_weapons_allow_pistols
+client_panorama.dll!0x00ce8530 ConVar mp_weapons_allow_rifles
+client_panorama.dll!0x00ce8480 ConVar mp_weapons_allow_smgs
+client_panorama.dll!0x00ce8638 ConVar mp_weapons_allow_typecount
+client_panorama.dll!0x00ce83d0 ConVar mp_weapons_allow_zeus
+client_panorama.dll!0x00ce8740 ConVar mp_weapons_glow_on_ground
+client_panorama.dll!0x00ce53a0 ConVar mp_weapons_max_gun_purchases_per_weapon_per_match
+client_panorama.dll!0x00ce76c0 ConVar mp_win_panel_display_time
+client_panorama.dll!0x00cdbf70 ConVar mp_winlimit
+client_panorama.dll!0x00cf6c98 ConVar muzzleflash_light
+client_panorama.dll!0x00ceb1a8 ConVar net_client_steamdatagram_enable_override
+client_panorama.dll!0x00cdcdc0 ConVar net_graphholdsvframerate
+client_panorama.dll!0x00cdce70 ConVar net_graphipc
+client_panorama.dll!0x00cdcc60 ConVar net_graphmsecs
+client_panorama.dll!0x00cdcb58 ConVar net_graphpos
+client_panorama.dll!0x00cdcd10 ConVar net_graphshowinterp
+client_panorama.dll!0x00cdccb8 ConVar net_graphshowlatency
+client_panorama.dll!0x00cdcd68 ConVar net_graphshowsvframerate
+client_panorama.dll!0x00cdcbb0 ConVar net_graphsolid
+client_panorama.dll!0x00cdcc08 ConVar net_graphtext
+client_panorama.dll!0x00cdcb00 ConVar net_scale
+client_panorama.dll!0x00cd9598 ConVar nextlevel
+client_panorama.dll!0x00cd95f0 ConVar nextmode
+client_panorama.dll!0x00cd2af0 ConVar old_radiusdamage
+client_panorama.dll!0x00cd6c98 ConVar option_duck_method
+client_panorama.dll!0x00cd6cf0 ConVar option_speed_method
+client_panorama.dll!0x00cfa768 ConVar panel_test_title_safe
+client_panorama.dll!0x00cd9ac0 ConVar particle_simulateoverflow
+client_panorama.dll!0x00cda1f8 ConVar phys_debug_check_contacts
+client_panorama.dll!0x00cdbd40 ConVar phys_pushscale
+client_panorama.dll!0x00cf0180 ConVar player_botdifflast_s
+client_panorama.dll!0x00ced668 ConVar player_nevershow_communityservermessage
+client_panorama.dll!0x00ce43f0 ConVar player_teamplayedlast
+client_panorama.dll!0x00cebc10 ConVar post_jump_crouch
+client_panorama.dll!0x00cdaf58 ConVar props_break_max_pieces
+client_panorama.dll!0x00cdafb0 ConVar props_break_max_pieces_perframe
+client_panorama.dll!0x00cdade8 ConVar pwatchent
+client_panorama.dll!0x00cdae40 ConVar pwatchvar
+client_panorama.dll!0x00cd8be8 ConVar r_AirboatViewDampenDamp
+client_panorama.dll!0x00cd8b90 ConVar r_AirboatViewDampenFreq
+client_panorama.dll!0x00cd8c40 ConVar r_AirboatViewZHeight
+client_panorama.dll!0x00cdd838 ConVar r_DrawBeams
+client_panorama.dll!0x00cd87a8 ConVar r_DrawModelLightOrigin
+client_panorama.dll!0x00cf5340 ConVar r_DrawRain
+client_panorama.dll!0x00ccf1f8 ConVar r_JeepViewBlendTo
+client_panorama.dll!0x00ccf250 ConVar r_JeepViewBlendToScale
+client_panorama.dll!0x00ccf2a8 ConVar r_JeepViewBlendToTime
+client_panorama.dll!0x00cd9110 ConVar r_JeepViewDampenDamp
+client_panorama.dll!0x00cd9168 ConVar r_JeepViewDampenFreq
+client_panorama.dll!0x00cd91c0 ConVar r_JeepViewZHeight
+client_panorama.dll!0x00ccf9f8 ConVar r_PortalTestEnts
+client_panorama.dll!0x00cf5290 ConVar r_RainCheck
+client_panorama.dll!0x00cf53f0 ConVar r_RainDebugDuration
+client_panorama.dll!0x00cf5188 ConVar r_RainHack
+client_panorama.dll!0x00cf5398 ConVar r_RainProfile
+client_panorama.dll!0x00cf51e0 ConVar r_RainRadius
+client_panorama.dll!0x00cf5238 ConVar r_RainSideVel
+client_panorama.dll!0x00cf52e8 ConVar r_RainSimulate
+client_panorama.dll!0x00cf5080 ConVar r_RainSplashPercentage
+client_panorama.dll!0x00cf5750 ConVar r_SnowDebugBox
+client_panorama.dll!0x00cf5490 ConVar r_SnowEnable
+client_panorama.dll!0x00cf58b0 ConVar r_SnowEndAlpha
+client_panorama.dll!0x00cf5960 ConVar r_SnowEndSize
+client_panorama.dll!0x00cf56a0 ConVar r_SnowFallSpeed
+client_panorama.dll!0x00cf5540 ConVar r_SnowInsideRadius
+client_panorama.dll!0x00cf5598 ConVar r_SnowOutsideRadius
+client_panorama.dll!0x00cf54e8 ConVar r_SnowParticles
+client_panorama.dll!0x00cf5648 ConVar r_SnowPosScale
+client_panorama.dll!0x00cf5a68 ConVar r_SnowRayEnable
+client_panorama.dll!0x00cf59b8 ConVar r_SnowRayLength
+client_panorama.dll!0x00cf5a10 ConVar r_SnowRayRadius
+client_panorama.dll!0x00cf55f0 ConVar r_SnowSpeedScale
+client_panorama.dll!0x00cf5858 ConVar r_SnowStartAlpha
+client_panorama.dll!0x00cf5908 ConVar r_SnowStartSize
+client_panorama.dll!0x00cf56f8 ConVar r_SnowWindScale
+client_panorama.dll!0x00cf57a8 ConVar r_SnowZoomOffset
+client_panorama.dll!0x00cf5800 ConVar r_SnowZoomRadius
+client_panorama.dll!0x00cf5f40 ConVar r_VehicleViewClamp
+client_panorama.dll!0x00cd8b38 ConVar r_VehicleViewDampen
+client_panorama.dll!0x00ccfb58 ConVar r_alphafade_usefov
+client_panorama.dll!0x00ce05a8 ConVar r_debugcheapwater
+client_panorama.dll!0x00cdd9b0 ConVar r_depthoverlay
+client_panorama.dll!0x00ccfbf8 ConVar r_disable_distance_fade_on_big_props
+client_panorama.dll!0x00ccfc50 ConVar r_disable_distance_fade_on_big_props_thresh
+client_panorama.dll!0x00cd0288 ConVar r_disable_update_shadow
+client_panorama.dll!0x00ccfca8 ConVar r_drawallrenderables
+client_panorama.dll!0x00ce0ff0 ConVar r_drawbrushmodels
+client_panorama.dll!0x00cf4ad0 ConVar r_drawentities
+client_panorama.dll!0x00cf74b0 ConVar r_drawentities
+client_panorama.dll!0x00ccb160 ConVar r_drawmodelnames
+client_panorama.dll!0x00ccb1b8 ConVar r_drawmodelstatsoverlay
+client_panorama.dll!0x00cdffd0 ConVar r_drawopaquedetailprops
+client_panorama.dll!0x00ce0028 ConVar r_drawopaquedetailprops_csm
+client_panorama.dll!0x00ce0080 ConVar r_drawopaquedetailprops_reflect
+client_panorama.dll!0x00ce00d8 ConVar r_drawopaquedetailprops_refract
+client_panorama.dll!0x00cdfdc0 ConVar r_drawopaquerenderables
+client_panorama.dll!0x00cdfbb0 ConVar r_drawopaqueworld
+client_panorama.dll!0x00ccb108 ConVar r_drawothermodels
+client_panorama.dll!0x00cd9a68 ConVar r_drawparticles
+client_panorama.dll!0x00ccb438 ConVar r_drawrenderboxes
+client_panorama.dll!0x00cce618 ConVar r_drawropes
+client_panorama.dll!0x00cdff78 ConVar r_drawscreenoverlay
+client_panorama.dll!0x00ccef68 ConVar r_drawsprites
+client_panorama.dll!0x00cd2218 ConVar r_drawtracers
+client_panorama.dll!0x00cd2270 ConVar r_drawtracers_firstperson
+client_panorama.dll!0x00cd22c8 ConVar r_drawtracers_movetonotintersect
+client_panorama.dll!0x00cdfd68 ConVar r_drawtranslucentrenderables
+client_panorama.dll!0x00cdfc08 ConVar r_drawtranslucentworld
+client_panorama.dll!0x00cdff20 ConVar r_drawunderwateroverlay
+client_panorama.dll!0x00ce1308 ConVar r_drawviewmodel
+client_panorama.dll!0x00cf4760 ConVar r_eyegloss
+client_panorama.dll!0x00cf7928 ConVar r_eyegloss
+client_panorama.dll!0x00cf47b8 ConVar r_eyemove
+client_panorama.dll!0x00cf7508 ConVar r_eyemove
+client_panorama.dll!0x00cf4810 ConVar r_eyeshift_x
+client_panorama.dll!0x00cf75b8 ConVar r_eyeshift_x
+client_panorama.dll!0x00cf7400 ConVar r_eyeshift_y
+client_panorama.dll!0x00cf4868 ConVar r_eyeshift_y
+client_panorama.dll!0x00cf48c0 ConVar r_eyeshift_z
+client_panorama.dll!0x00cf7718 ConVar r_eyeshift_z
+client_panorama.dll!0x00cf4918 ConVar r_eyesize
+client_panorama.dll!0x00cf7458 ConVar r_eyesize
+client_panorama.dll!0x00ce08c0 ConVar r_eyewaterepsilon
+client_panorama.dll!0x00cdd410 ConVar r_farz
+client_panorama.dll!0x00cd1bd8 ConVar r_flashlightambient
+client_panorama.dll!0x00cd1de8 ConVar r_flashlightbacktraceoffset
+client_panorama.dll!0x00cd1a78 ConVar r_flashlightconstant
+client_panorama.dll!0x00cd1a20 ConVar r_flashlightfar
+client_panorama.dll!0x00cd1868 ConVar r_flashlightfov
+client_panorama.dll!0x00cd1c88 ConVar r_flashlightladderdist
+client_panorama.dll!0x00cd1ad0 ConVar r_flashlightlinear
+client_panorama.dll!0x00cd1810 ConVar r_flashlightlockposition
+client_panorama.dll!0x00cd1e40 ConVar r_flashlightmuzzleflashfov
+client_panorama.dll!0x00cd19c8 ConVar r_flashlightnear
+client_panorama.dll!0x00cd1d38 ConVar r_flashlightnearoffsetscale
+client_panorama.dll!0x00cd1970 ConVar r_flashlightoffsetforward
+client_panorama.dll!0x00cd18c0 ConVar r_flashlightoffsetright
+client_panorama.dll!0x00cd1918 ConVar r_flashlightoffsetup
+client_panorama.dll!0x00cd1b28 ConVar r_flashlightquadratic
+client_panorama.dll!0x00cd1c30 ConVar r_flashlightshadowatten
+client_panorama.dll!0x00cd1b80 ConVar r_flashlightvisualizetrace
+client_panorama.dll!0x00cdd768 ConVar r_mapextents
+client_panorama.dll!0x00cf7770 ConVar r_modelwireframedecal
+client_panorama.dll!0x00cf4c88 ConVar r_modelwireframedecal
+client_panorama.dll!0x00cf73a8 ConVar r_nohw
+client_panorama.dll!0x00cf49c8 ConVar r_nohw
+client_panorama.dll!0x00cf7820 ConVar r_nosw
+client_panorama.dll!0x00cf4a20 ConVar r_nosw
+client_panorama.dll!0x00ce0f30 ConVar r_particle_demo
+client_panorama.dll!0x00ccfa50 ConVar r_portalsopenall
+client_panorama.dll!0x00cf5c20 ConVar r_rainalpha
+client_panorama.dll!0x00cf5c78 ConVar r_rainalphapow
+client_panorama.dll!0x00cf5ac0 ConVar r_raindensity
+client_panorama.dll!0x00cf5b70 ConVar r_rainlength
+client_panorama.dll!0x00cf5bc8 ConVar r_rainspeed
+client_panorama.dll!0x00cf5b18 ConVar r_rainwidth
+client_panorama.dll!0x00cedc10 ConVar r_replay_post_effect
+client_panorama.dll!0x00cd0700 ConVar r_shadow_debug_spew
+client_panorama.dll!0x00cd04f0 ConVar r_shadowfromanyworldlight
+client_panorama.dll!0x00cd0498 ConVar r_shadowfromworldlights_debug
+client_panorama.dll!0x00cd0910 ConVar r_shadows_gamecontrol
+client_panorama.dll!0x00cf7350 ConVar r_showenvcubemap
+client_panorama.dll!0x00cf4708 ConVar r_showenvcubemap
+client_panorama.dll!0x00cf4bd8 ConVar r_skin
+client_panorama.dll!0x00cf79d8 ConVar r_skin
+client_panorama.dll!0x00cdfd10 ConVar r_skybox
+client_panorama.dll!0x00cd17b8 ConVar r_swingflashlight
+client_panorama.dll!0x00cdfec8 ConVar r_underwateroverlay_drain_speed
+client_panorama.dll!0x00cdda08 ConVar r_updaterefracttexture
+client_panorama.dll!0x00cdfa50 ConVar r_visocclusion
+client_panorama.dll!0x00cdc3b0 ConVar r_visualizetraces
+client_panorama.dll!0x00ccb280 ConVar report_cliententitysim
+client_panorama.dll!0x00ccf938 ConVar report_clientthinklist
+client_panorama.dll!0x00cce300 ConVar rope_subdiv
+client_panorama.dll!0x00cee9f0 ConVar safezonex
+client_panorama.dll!0x00ceea48 ConVar safezoney
+client_panorama.dll!0x00cd83e0 ConVar sc_enable
+client_panorama.dll!0x00cd8388 ConVar sc_pitch_sensitivity
+client_panorama.dll!0x00cd8438 ConVar sc_yaw_sensitivity
+client_panorama.dll!0x00cdb710 ConVar scene_clientflex
+client_panorama.dll!0x00cdb2b0 ConVar scene_print
+client_panorama.dll!0x00cd8120 ConVar sensitivity
+client_panorama.dll!0x00cd2a10 ConVar sk_autoaim_mode
+client_panorama.dll!0x00ce1258 ConVar skybox_disablereflection
+client_panorama.dll!0x00cca7c0 ConVar smoothstairs
+client_panorama.dll!0x00ced028 ConVar snd_mainmenu_music_break_time_max
+client_panorama.dll!0x00cecfc8 ConVar snd_mainmenu_music_break_time_min
+client_panorama.dll!0x00ce89a8 ConVar snd_music_boost
+client_panorama.dll!0x00ce8a00 ConVar snd_music_selection
+client_panorama.dll!0x00cdb7e0 ConVar snd_prevent_ss_duplicates
+client_panorama.dll!0x00cdb838 ConVar snd_sos_show_client_xmit
+client_panorama.dll!0x00cdb9f8 ConVar soundpatch_captionlength
+client_panorama.dll!0x00ccec98 ConVar soundscape_fadetime
+client_panorama.dll!0x00cced48 ConVar soundscape_radius_debug
+client_panorama.dll!0x00cd3180 ConVar spec_autodirector
+client_panorama.dll!0x00cd31d8 ConVar spec_autodirector_pausetime
+client_panorama.dll!0x00ccffc0 ConVar spec_cameraman_disable_with_user_control
+client_panorama.dll!0x00ccff10 ConVar spec_cameraman_ui
+client_panorama.dll!0x00ccff68 ConVar spec_cameraman_xray
+client_panorama.dll!0x00ccfe60 ConVar spec_dz_group_teams
+client_panorama.dll!0x00ce2308 ConVar spec_freeze_cinematiclight_b
+client_panorama.dll!0x00ce22b0 ConVar spec_freeze_cinematiclight_g
+client_panorama.dll!0x00ce2258 ConVar spec_freeze_cinematiclight_r
+client_panorama.dll!0x00ce2360 ConVar spec_freeze_cinematiclight_scale
+client_panorama.dll!0x00ccbdc8 ConVar spec_freeze_deathanim_time
+client_panorama.dll!0x00ccbd18 ConVar spec_freeze_distance_max
+client_panorama.dll!0x00ccbcc0 ConVar spec_freeze_distance_min
+client_panorama.dll!0x00ccbd70 ConVar spec_freeze_panel_extended_time
+client_panorama.dll!0x00ccbe78 ConVar spec_freeze_target_fov
+client_panorama.dll!0x00ccbe20 ConVar spec_freeze_target_fov_long
+client_panorama.dll!0x00ccbbb8 ConVar spec_freeze_time
+client_panorama.dll!0x00ccbc10 ConVar spec_freeze_traveltime
+client_panorama.dll!0x00ccbc68 ConVar spec_freeze_traveltime_long
+client_panorama.dll!0x00ce24c0 ConVar spec_glow_decay_time
+client_panorama.dll!0x00ce2468 ConVar spec_glow_full_time
+client_panorama.dll!0x00ce23b8 ConVar spec_glow_silent_factor
+client_panorama.dll!0x00ce2410 ConVar spec_glow_spike_factor
+client_panorama.dll!0x00ce2518 ConVar spec_glow_spike_time
+client_panorama.dll!0x00ce3b48 ConVar spec_hide_players
+client_panorama.dll!0x00ccbf28 ConVar spec_lock_to_accountid
+client_panorama.dll!0x00cd3288 ConVar spec_overwatch_skip_idle_ticks
+client_panorama.dll!0x00cedb08 ConVar spec_replay_autostart
+client_panorama.dll!0x00ccfeb8 ConVar spec_usenumberkeys_nobinds
+client_panorama.dll!0x00cdd540 ConVar ss_debug_draw_player
+client_panorama.dll!0x00cdc950 ConVar ss_enable
+client_panorama.dll!0x00cd6e50 ConVar ss_mimic
+client_panorama.dll!0x00cec868 ConVar steam_controller_haptics
+client_panorama.dll!0x00cecd60 ConVar steamworks_sessionid_client
+client_panorama.dll!0x00cdbb30 ConVar steamworks_sessionid_server
+client_panorama.dll!0x00cf3550 ConVar store_version
+client_panorama.dll!0x00cd8cf0 ConVar sv_accelerate
+client_panorama.dll!0x00cd8928 ConVar sv_accelerate_debug_speed
+client_panorama.dll!0x00cd88d0 ConVar sv_accelerate_use_weapon_speed
+client_panorama.dll!0x00cd2600 ConVar sv_air_max_horizontal_parachute_ratio
+client_panorama.dll!0x00cd25a8 ConVar sv_air_max_horizontal_parachute_speed
+client_panorama.dll!0x00cd2550 ConVar sv_air_max_wishspeed
+client_panorama.dll!0x00cd2658 ConVar sv_air_pushaway_dist
+client_panorama.dll!0x00cd8e50 ConVar sv_airaccelerate
+client_panorama.dll!0x00cd8df8 ConVar sv_airaccelerate_parachute
+client_panorama.dll!0x00cd8da0 ConVar sv_airaccelerate_rappel
+client_panorama.dll!0x00ce6c18 ConVar sv_allow_thirdperson
+client_panorama.dll!0x00ce9030 ConVar sv_alltalk
+client_panorama.dll!0x00ce4cf0 ConVar sv_autobunnyhopping
+client_panorama.dll!0x00cd8a88 ConVar sv_backspeed
+client_panorama.dll!0x00ce8cc0 ConVar sv_bot_difficulty_gamepad
+client_panorama.dll!0x00ce8d70 ConVar sv_bot_difficulty_hydra
+client_panorama.dll!0x00ce8c68 ConVar sv_bot_difficulty_kbm
+client_panorama.dll!0x00ce8d18 ConVar sv_bot_difficulty_ps3move
+client_panorama.dll!0x00ce8dc8 ConVar sv_bot_difficulty_sharpshooter
+client_panorama.dll!0x00cd9008 ConVar sv_bounce
+client_panorama.dll!0x00cf0e28 ConVar sv_breachcharge_arm_delay
+client_panorama.dll!0x00cf0d20 ConVar sv_breachcharge_delay_max
+client_panorama.dll!0x00cf0cc8 ConVar sv_breachcharge_delay_min
+client_panorama.dll!0x00cf0c70 ConVar sv_breachcharge_distance_max
+client_panorama.dll!0x00cf0c18 ConVar sv_breachcharge_distance_min
+client_panorama.dll!0x00cf0dd0 ConVar sv_breachcharge_fuse_max
+client_panorama.dll!0x00cf0d78 ConVar sv_breachcharge_fuse_min
+client_panorama.dll!0x00ce5298 ConVar sv_chat_proximity
+client_panorama.dll!0x00cca260 ConVar sv_clamp_unsafe_velocities
+client_panorama.dll!0x00ceb988 ConVar sv_clip_penetration_traces_to_players
+client_panorama.dll!0x00ce6bc0 ConVar sv_coach_comm_unrestricted
+client_panorama.dll!0x00ceacd8 ConVar sv_coaching_enabled
+client_panorama.dll!0x00ceac28 ConVar sv_competitive_official_5v5
+client_panorama.dll!0x00ce8c10 ConVar sv_compute_per_bot_difficulty
+client_panorama.dll!0x00ceb930 ConVar sv_cs_player_speed_has_hostage
+client_panorama.dll!0x00ce9088 ConVar sv_deadtalk
+client_panorama.dll!0x00cca710 ConVar sv_debug_player_use
+client_panorama.dll!0x00cea860 ConVar sv_disable_immunity_alpha
+client_panorama.dll!0x00ce53f8 ConVar sv_disable_motd
+client_panorama.dll!0x00ceaa18 ConVar sv_disable_observer_interpolation
+client_panorama.dll!0x00ce50e0 ConVar sv_disable_radar
+client_panorama.dll!0x00ce6cc8 ConVar sv_dz_hostage_rescue_reward
+client_panorama.dll!0x00cef0b8 ConVar sv_dz_team_count
+client_panorama.dll!0x00cd12f8 ConVar sv_dz_zone_bombdrop_money_reward
+client_panorama.dll!0x00cd12a0 ConVar sv_dz_zone_hex_radius
+client_panorama.dll!0x00ce4c98 ConVar sv_enablebunnyhopping
+client_panorama.dll!0x00ce8a58 ConVar sv_endmatch_item_drop_interval
+client_panorama.dll!0x00ce8bb8 ConVar sv_endmatch_item_drop_interval_ancient
+client_panorama.dll!0x00ce8b60 ConVar sv_endmatch_item_drop_interval_legendary
+client_panorama.dll!0x00ce8b08 ConVar sv_endmatch_item_drop_interval_mythical
+client_panorama.dll!0x00ce8ab0 ConVar sv_endmatch_item_drop_interval_rare
+client_panorama.dll!0x00cca500 ConVar sv_extract_ammo_from_dropped_weapons
+client_panorama.dll!0x00ce4ad0 ConVar sv_extreme_strafe_accuracy_fishtail
+client_panorama.dll!0x00ce5190 ConVar sv_falldamage_scale
+client_panorama.dll!0x00ce5240 ConVar sv_falldamage_to_below_player_multiplier
+client_panorama.dll!0x00ce51e8 ConVar sv_falldamage_to_below_player_ratio
+client_panorama.dll!0x00cf2878 ConVar sv_fistpoint_delay
+client_panorama.dll!0x00cf2820 ConVar sv_fistpunch_blocked_damage
+client_panorama.dll!0x00cf26c0 ConVar sv_fistpunch_damage
+client_panorama.dll!0x00cf2770 ConVar sv_fistpunch_damage_hard
+client_panorama.dll!0x00cf2718 ConVar sv_fistpunch_damage_to_player_multiplier
+client_panorama.dll!0x00cf28d0 ConVar sv_fistpunch_impact_sounds
+client_panorama.dll!0x00cf27c8 ConVar sv_fistpunch_viewmove
+client_panorama.dll!0x00cca4a8 ConVar sv_footstep_sound_frequency
+client_panorama.dll!0x00cd92c8 ConVar sv_footsteps
+client_panorama.dll!0x00cef110 ConVar sv_force_reflections
+client_panorama.dll!0x00cd8c98 ConVar sv_friction
+client_panorama.dll!0x00ce90e0 ConVar sv_full_alltalk
+client_panorama.dll!0x00cd3088 ConVar sv_grassburn
+client_panorama.dll!0x00cda488 ConVar sv_grenade_trajectory
+client_panorama.dll!0x00cda5e8 ConVar sv_grenade_trajectory_dash
+client_panorama.dll!0x00cda590 ConVar sv_grenade_trajectory_thickness
+client_panorama.dll!0x00cda4e0 ConVar sv_grenade_trajectory_time
+client_panorama.dll!0x00cda538 ConVar sv_grenade_trajectory_time_spectator
+client_panorama.dll!0x00ccbfd8 ConVar sv_highlight_distance
+client_panorama.dll!0x00ccbf80 ConVar sv_highlight_duration
+client_panorama.dll!0x00ce4ed0 ConVar sv_holiday_mode
+client_panorama.dll!0x00cd3a38 ConVar sv_hudhint_sound
+client_panorama.dll!0x00cca870 ConVar sv_infinite_ammo
+client_panorama.dll!0x00ce4b28 ConVar sv_jump_impulse
+client_panorama.dll!0x00ce8e20 ConVar sv_kick_ban_duration
+client_panorama.dll!0x00cf2990 ConVar sv_knife_attack_extend_from_player_aabb
+client_panorama.dll!0x00cd2858 ConVar sv_ladder_angle
+client_panorama.dll!0x00cd2800 ConVar sv_ladder_dampen
+client_panorama.dll!0x00cd28b0 ConVar sv_ladder_scale_speed
+client_panorama.dll!0x00ce4b80 ConVar sv_ledge_mantle_helper
+client_panorama.dll!0x00ce4c30 ConVar sv_ledge_mantle_helper_debug
+client_panorama.dll!0x00ce4bd8 ConVar sv_ledge_mantle_helper_dzonly
+client_panorama.dll!0x00ce64e0 ConVar sv_matchpause_auto_5v5
+client_panorama.dll!0x00cca6b8 ConVar sv_max_distance_transmit_footsteps
+client_panorama.dll!0x00cd9270 ConVar sv_maxspeed
+client_panorama.dll!0x00cd8fb0 ConVar sv_maxvelocity
+client_panorama.dll!0x00ceb8d8 ConVar sv_min_jump_landing_sound
+client_panorama.dll!0x00cd9688 ConVar sv_mumble_positionalaudio
+client_panorama.dll!0x00cd9060 ConVar sv_noclipaccelerate
+client_panorama.dll!0x00cd6be8 ConVar sv_noclipduringpause
+client_panorama.dll!0x00cd90b8 ConVar sv_noclipspeed
+client_panorama.dll!0x00cd2960 ConVar sv_optimizedmovement
+client_panorama.dll!0x00ce5138 ConVar sv_outofammo_indicator
+client_panorama.dll!0x00ce6c70 ConVar sv_party_mode
+client_panorama.dll!0x00ceb568 ConVar sv_penetration_type
+client_panorama.dll!0x00cd98b0 ConVar sv_pushaway_clientside
+client_panorama.dll!0x00cdaf00 ConVar sv_pushaway_clientside_size
+client_panorama.dll!0x00cd97a8 ConVar sv_pushaway_force
+client_panorama.dll!0x00cd9858 ConVar sv_pushaway_max_force
+client_panorama.dll!0x00cd9960 ConVar sv_pushaway_max_player_force
+client_panorama.dll!0x00cd9800 ConVar sv_pushaway_min_player_speed
+client_panorama.dll!0x00cd9908 ConVar sv_pushaway_player_force
+client_panorama.dll!0x00ce4e78 ConVar sv_reward_drop_delay
+client_panorama.dll!0x00cd9378 ConVar sv_rollangle
+client_panorama.dll!0x00cd9320 ConVar sv_rollspeed
+client_panorama.dll!0x00ce4dc8 ConVar sv_server_graphic1
+client_panorama.dll!0x00ce4e20 ConVar sv_server_graphic2
+client_panorama.dll!0x00ceba38 ConVar sv_server_verify_blood_on_player
+client_panorama.dll!0x00cea808 ConVar sv_show_bot_difficulty_in_name
+client_panorama.dll!0x00ce25c8 ConVar sv_show_ragdoll_playernames
+client_panorama.dll!0x00ce4fd8 ConVar sv_show_team_equipment_force_on
+client_panorama.dll!0x00ce4f80 ConVar sv_show_team_equipment_prohibit
+client_panorama.dll!0x00cebbb8 ConVar sv_showbullethits
+client_panorama.dll!0x00ceb618 ConVar sv_showimpacts
+client_panorama.dll!0x00ceb5c0 ConVar sv_showimpacts_penetration
+client_panorama.dll!0x00ceb670 ConVar sv_showimpacts_time
+client_panorama.dll!0x00ceb6c8 ConVar sv_showplayerhitboxes
+client_panorama.dll!0x00ceac80 ConVar sv_skirmish_id
+client_panorama.dll!0x00cd8a30 ConVar sv_skyname
+client_panorama.dll!0x00cdb890 ConVar sv_soundemitter_trace
+client_panorama.dll!0x00cdb788 ConVar sv_soundemitter_version
+client_panorama.dll!0x00ce9190 ConVar sv_spec_hear
+client_panorama.dll!0x00cebb60 ConVar sv_spec_use_tournament_content_standards
+client_panorama.dll!0x00cd8f00 ConVar sv_specaccelerate
+client_panorama.dll!0x00cd8ea8 ConVar sv_specnoclip
+client_panorama.dll!0x00cd8f58 ConVar sv_specspeed
+client_panorama.dll!0x00ce4918 ConVar sv_staminajumpcost
+client_panorama.dll!0x00ce4970 ConVar sv_staminalandcost
+client_panorama.dll!0x00ce4a20 ConVar sv_staminamax
+client_panorama.dll!0x00ce49c8 ConVar sv_staminarecoveryrate
+client_panorama.dll!0x00cd2708 ConVar sv_standable_normal
+client_panorama.dll!0x00cd93d0 ConVar sv_stepsize
+client_panorama.dll!0x00cd8d48 ConVar sv_stopspeed
+client_panorama.dll!0x00cca768 ConVar sv_suppress_viewpunch
+client_panorama.dll!0x00cf2e00 ConVar sv_tablet_show_path_to_nearest_resq
+client_panorama.dll!0x00ce9138 ConVar sv_talk_after_dying_time
+client_panorama.dll!0x00ceabd0 ConVar sv_talk_enemy_dead
+client_panorama.dll!0x00ceab78 ConVar sv_talk_enemy_living
+client_panorama.dll!0x00ceaa70 ConVar sv_teamid_overhead
+client_panorama.dll!0x00ce4f28 ConVar sv_teamid_overhead_always_prohibit
+client_panorama.dll!0x00ce5088 ConVar sv_teamid_overhead_maxdist
+client_panorama.dll!0x00ce5030 ConVar sv_teamid_overhead_maxdist_spec
+client_panorama.dll!0x00ce4a78 ConVar sv_timebetweenducks
+client_panorama.dll!0x00cd99b8 ConVar sv_turbophysics
+client_panorama.dll!0x00cf13c8 ConVar sv_turning_inaccuracy_angle_min
+client_panorama.dll!0x00cf1420 ConVar sv_turning_inaccuracy_decay
+client_panorama.dll!0x00cf1370 ConVar sv_turning_inaccuracy_enabled
+client_panorama.dll!0x00cd26b0 ConVar sv_walkable_normal
+client_panorama.dll!0x00cd24a0 ConVar sv_water_movespeed_multiplier
+client_panorama.dll!0x00cd24f8 ConVar sv_water_swim_mode
+client_panorama.dll!0x00cd8980 ConVar sv_wateraccelerate
+client_panorama.dll!0x00cd8ae0 ConVar sv_waterdist
+client_panorama.dll!0x00cd89d8 ConVar sv_waterfriction
+client_panorama.dll!0x00ceb9e0 ConVar sv_weapon_encumbrance_per_item
+client_panorama.dll!0x00ce4d48 ConVar sv_weapon_encumbrance_scale
+client_panorama.dll!0x00cf2d78 ConVar tablet_c4_dist_max
+client_panorama.dll!0x00cf2d20 ConVar tablet_c4_dist_min
+client_panorama.dll!0x00ceeee0 ConVar test_convar
+client_panorama.dll!0x00ceef38 ConVar test_convar
+client_panorama.dll!0x00cda640 ConVar think_limit
+client_panorama.dll!0x00ce33a8 ConVar thirdperson_lockcamera
+client_panorama.dll!0x00ceb3a8 ConVar tv_spectator_port_offset
+client_panorama.dll!0x00cf0128 ConVar ui_inventorysettings_recently_acknowledged
+client_panorama.dll!0x00cef6e8 ConVar ui_lobby_draft_enabled
+client_panorama.dll!0x00cefcb0 ConVar ui_nearbylobbies_filter
+client_panorama.dll!0x00ceff18 ConVar ui_playsettings_maps_listen_casual
+client_panorama.dll!0x00cefe10 ConVar ui_playsettings_maps_listen_competitive
+client_panorama.dll!0x00ceff70 ConVar ui_playsettings_maps_listen_deathmatch
+client_panorama.dll!0x00cefe68 ConVar ui_playsettings_maps_listen_scrimcomp2v2
+client_panorama.dll!0x00cefec0 ConVar ui_playsettings_maps_listen_skirmish
+client_panorama.dll!0x00cefd08 ConVar ui_playsettings_maps_official_casual
+client_panorama.dll!0x00cefdb8 ConVar ui_playsettings_maps_official_dangerzone
+client_panorama.dll!0x00cefd60 ConVar ui_playsettings_maps_official_deathmatch
+client_panorama.dll!0x00ceffc8 ConVar ui_playsettings_maps_workshop
+client_panorama.dll!0x00cf0390 ConVar ui_playsettings_mode_listen
+client_panorama.dll!0x00cf0338 ConVar ui_playsettings_mode_official_dz
+client_panorama.dll!0x00cf03e8 ConVar ui_playsettings_survival_solo
+client_panorama.dll!0x00cf02e0 ConVar ui_playsettings_warmup_map_name
+client_panorama.dll!0x00cf01d8 ConVar ui_popup_weaponupdate_version
+client_panorama.dll!0x00cda790 ConVar ui_posedebug_fade_in_time
+client_panorama.dll!0x00cda738 ConVar ui_posedebug_fade_out_time
+client_panorama.dll!0x00cf0020 ConVar ui_vanitysetting_itemid
+client_panorama.dll!0x00cf00d0 ConVar ui_vanitysetting_loadoutslot
+client_panorama.dll!0x00cf0078 ConVar ui_vanitysetting_team
+client_panorama.dll!0x00ced570 ConVar vgui_message_dialog_modal
+client_panorama.dll!0x00cca3f8 ConVar view_punch_decay
+client_panorama.dll!0x00cca450 ConVar view_recoil_tracking
+client_panorama.dll!0x00cdd6b8 ConVar viewmodel_fov
+client_panorama.dll!0x00cca8c8 ConVar viewmodel_offset_x
+client_panorama.dll!0x00cca920 ConVar viewmodel_offset_y
+client_panorama.dll!0x00cca978 ConVar viewmodel_offset_z
+client_panorama.dll!0x00cca9d0 ConVar viewmodel_recoil
+client_panorama.dll!0x00ccc1b8 ConVar vm_debug
+client_panorama.dll!0x00ccc210 ConVar vm_draw_always
+client_panorama.dll!0x00ce1360 ConVar voice_modenable
+client_panorama.dll!0x00cf1058 ConVar weapon_accuracy_forcespread
+client_panorama.dll!0x00cec810 ConVar weapon_accuracy_logging
+client_panorama.dll!0x00cf10b0 ConVar weapon_accuracy_nospread
+client_panorama.dll!0x00ceca78 ConVar weapon_accuracy_shotgun_spread_patterns
+client_panorama.dll!0x00cf1160 ConVar weapon_air_spread_scale
+client_panorama.dll!0x00cf1210 ConVar weapon_auto_cleanup_time
+client_panorama.dll!0x00cec970 ConVar weapon_debug_inaccuracy_only_up
+client_panorama.dll!0x00cec918 ConVar weapon_debug_max_inaccuracy
+client_panorama.dll!0x00cf1818 ConVar weapon_debug_spread_gap
+client_panorama.dll!0x00cf1df0 ConVar weapon_debug_spread_show
+client_panorama.dll!0x00cf0f50 ConVar weapon_land_dip_amt
+client_panorama.dll!0x00cf1268 ConVar weapon_max_before_cleanup
+client_panorama.dll!0x00cec8c0 ConVar weapon_near_empty_sound
+client_panorama.dll!0x00cf1108 ConVar weapon_recoil_cooldown
+client_panorama.dll!0x00cf0fa8 ConVar weapon_recoil_decay1_exp
+client_panorama.dll!0x00cf2058 ConVar weapon_recoil_decay2_exp
+client_panorama.dll!0x00cf2000 ConVar weapon_recoil_decay2_lin
+client_panorama.dll!0x00cf1000 ConVar weapon_recoil_decay_coefficient
+client_panorama.dll!0x00cf1ea0 ConVar weapon_recoil_scale
+client_panorama.dll!0x00cf1e48 ConVar weapon_recoil_scale_motion_controller
+client_panorama.dll!0x00cebea0 ConVar weapon_recoil_suppression_factor
+client_panorama.dll!0x00cebe48 ConVar weapon_recoil_suppression_shots
+client_panorama.dll!0x00cebef8 ConVar weapon_recoil_variance
+client_panorama.dll!0x00cf20b0 ConVar weapon_recoil_vel_decay
+client_panorama.dll!0x00ceba90 ConVar weapon_recoil_view_punch_extra
+client_panorama.dll!0x00cf11b8 ConVar weapon_reticle_knife_show
+client_panorama.dll!0x00cf12c0 ConVar weapon_sound_falloff_multiplier
+client_panorama.dll!0x00cdd0f8 ConVar zoom_sensitivity_ratio_joystick
+client_panorama.dll!0x00cdd150 ConVar zoom_sensitivity_ratio_mouse
 ```
 
-## ConCommands
+### ConCommands
 
 <details>
 <summary><code>+alt1</code></summary>
@@ -18824,7 +18828,7 @@ flags: `0x0`
 flags: `0x0`  
 </details>
 
-### Addresses
+#### Addresses
 
 ```
 client_panorama.dll!0x00cd75d4 ConCommand +alt1
@@ -19150,7 +19154,7 @@ client_panorama.dll!0x00cd79c4 ConCommand xlook
 client_panorama.dll!0x00cd79a0 ConCommand xmove
 ```
 
-## Buttons
+### Buttons
 
 ```
 client_panorama.dll!0x051869ac kbutton_t +alt1
@@ -19195,1420 +19199,1420 @@ client_panorama.dll!0x051869dc kbutton_t +zoom_in
 client_panorama.dll!0x051869e8 kbutton_t +zoom_out
 ```
 
-## ClientClasses
+### ClientClasses
 
 <details>
-<summary>client_class CAI_BaseNPC</summary>
+<summary><code>client_class CAI_BaseNPC</code></summary>
 
 sizeof: `12080`  
 </details>
 <details>
-<summary>client_class CAK47</summary>
+<summary><code>client_class CAK47</code></summary>
 
 sizeof: `13232`  
 </details>
 <details>
-<summary>client_class CBRC4Target</summary>
+<summary><code>client_class CBRC4Target</code></summary>
 
 sizeof: `10640`  
 </details>
 <details>
-<summary>client_class CBaseAnimating</summary>
+<summary><code>client_class CBaseAnimating</code></summary>
 
 sizeof: `10624`  
 </details>
 <details>
-<summary>client_class CBaseAnimatingOverlay</summary>
+<summary><code>client_class CBaseAnimatingOverlay</code></summary>
 
 sizeof: `10736`  
 </details>
 <details>
-<summary>client_class CBaseAttributableItem</summary>
+<summary><code>client_class CBaseAttributableItem</code></summary>
 
 sizeof: `12816`  
 </details>
 <details>
-<summary>client_class CBaseButton</summary>
+<summary><code>client_class CBaseButton</code></summary>
 
 sizeof: `2576`  
 </details>
 <details>
-<summary>client_class CBaseCSGrenade</summary>
+<summary><code>client_class CBaseCSGrenade</code></summary>
 
 sizeof: `13232`  
 </details>
 <details>
-<summary>client_class CBaseCSGrenadeProjectile</summary>
+<summary><code>client_class CBaseCSGrenadeProjectile</code></summary>
 
 sizeof: `10720`  
 </details>
 <details>
-<summary>client_class CBaseCombatCharacter</summary>
+<summary><code>client_class CBaseCombatCharacter</code></summary>
 
 sizeof: `12048`  
 </details>
 <details>
-<summary>client_class CBaseCombatWeapon</summary>
+<summary><code>client_class CBaseCombatWeapon</code></summary>
 
 sizeof: `13008`  
 </details>
 <details>
-<summary>client_class CBaseDoor</summary>
+<summary><code>client_class CBaseDoor</code></summary>
 
 sizeof: `2576`  
 </details>
 <details>
-<summary>client_class CBaseEntity</summary>
+<summary><code>client_class CBaseEntity</code></summary>
 
 sizeof: `2520`  
 </details>
 <details>
-<summary>client_class CBaseFlex</summary>
+<summary><code>client_class CBaseFlex</code></summary>
 
 sizeof: `11632`  
 </details>
 <details>
-<summary>client_class CBaseGrenade</summary>
+<summary><code>client_class CBaseGrenade</code></summary>
 
 sizeof: `10672`  
 </details>
 <details>
-<summary>client_class CBaseParticleEntity</summary>
+<summary><code>client_class CBaseParticleEntity</code></summary>
 
 sizeof: `2752`  
 </details>
 <details>
-<summary>client_class CBasePlayer</summary>
+<summary><code>client_class CBasePlayer</code></summary>
 
 sizeof: `14448`  
 </details>
 <details>
-<summary>client_class CBasePropDoor</summary>
+<summary><code>client_class CBasePropDoor</code></summary>
 
 sizeof: `10736`  
 </details>
 <details>
-<summary>client_class CBaseTeamObjectiveResource</summary>
+<summary><code>client_class CBaseTeamObjectiveResource</code></summary>
 
 sizeof: `7440`  
 </details>
 <details>
-<summary>client_class CBaseTempEntity</summary>
+<summary><code>client_class CBaseTempEntity</code></summary>
 
 sizeof: `3375630023`  
 </details>
 <details>
-<summary>client_class CBaseToggle</summary>
+<summary><code>client_class CBaseToggle</code></summary>
 
 sizeof: `2568`  
 </details>
 <details>
-<summary>client_class CBaseTrigger</summary>
+<summary><code>client_class CBaseTrigger</code></summary>
 
 sizeof: `2576`  
 </details>
 <details>
-<summary>client_class CBaseVPhysicsTrigger</summary>
+<summary><code>client_class CBaseVPhysicsTrigger</code></summary>
 
 sizeof: `2528`  
 </details>
 <details>
-<summary>client_class CBaseViewModel</summary>
+<summary><code>client_class CBaseViewModel</code></summary>
 
 sizeof: `10896`  
 </details>
 <details>
-<summary>client_class CBaseWeaponWorldModel</summary>
+<summary><code>client_class CBaseWeaponWorldModel</code></summary>
 
 sizeof: `10768`  
 </details>
 <details>
-<summary>client_class CBeam</summary>
+<summary><code>client_class CBeam</code></summary>
 
 sizeof: `2688`  
 </details>
 <details>
-<summary>client_class CBeamSpotlight</summary>
+<summary><code>client_class CBeamSpotlight</code></summary>
 
 sizeof: `2608`  
 </details>
 <details>
-<summary>client_class CBoneFollower</summary>
+<summary><code>client_class CBoneFollower</code></summary>
 
 sizeof: `2528`  
 </details>
 <details>
-<summary>client_class CBreachCharge</summary>
+<summary><code>client_class CBreachCharge</code></summary>
 
 sizeof: `13216`  
 </details>
 <details>
-<summary>client_class CBreachChargeProjectile</summary>
+<summary><code>client_class CBreachChargeProjectile</code></summary>
 
 sizeof: `10704`  
 </details>
 <details>
-<summary>client_class CBreakableProp</summary>
+<summary><code>client_class CBreakableProp</code></summary>
 
 sizeof: `10656`  
 </details>
 <details>
-<summary>client_class CBreakableSurface</summary>
+<summary><code>client_class CBreakableSurface</code></summary>
 
 sizeof: `3592`  
 </details>
 <details>
-<summary>client_class CC4</summary>
+<summary><code>client_class CC4</code></summary>
 
 sizeof: `13280`  
 </details>
 <details>
-<summary>client_class CCSGameRulesProxy</summary>
+<summary><code>client_class CCSGameRulesProxy</code></summary>
 
 sizeof: `2520`  
 </details>
 <details>
-<summary>client_class CCSPlayer</summary>
+<summary><code>client_class CCSPlayer</code></summary>
 
 sizeof: `48176`  
 </details>
 <details>
-<summary>client_class CCSPlayerResource</summary>
+<summary><code>client_class CCSPlayerResource</code></summary>
 
 sizeof: `24936`  
 </details>
 <details>
-<summary>client_class CCSRagdoll</summary>
+<summary><code>client_class CCSRagdoll</code></summary>
 
 sizeof: `10832`  
 </details>
 <details>
-<summary>client_class CCSTeam</summary>
+<summary><code>client_class CCSTeam</code></summary>
 
 sizeof: `2936`  
 </details>
 <details>
-<summary>client_class CCascadeLight</summary>
+<summary><code>client_class CCascadeLight</code></summary>
 
 sizeof: `2560`  
 </details>
 <details>
-<summary>client_class CChicken</summary>
+<summary><code>client_class CChicken</code></summary>
 
 sizeof: `10736`  
 </details>
 <details>
-<summary>client_class CColorCorrection</summary>
+<summary><code>client_class CColorCorrection</code></summary>
 
 sizeof: `2848`  
 </details>
 <details>
-<summary>client_class CColorCorrectionVolume</summary>
+<summary><code>client_class CColorCorrectionVolume</code></summary>
 
 sizeof: `2872`  
 </details>
 <details>
-<summary>client_class CDEagle</summary>
+<summary><code>client_class CDEagle</code></summary>
 
 sizeof: `13232`  
 </details>
 <details>
-<summary>client_class CDangerZone</summary>
+<summary><code>client_class CDangerZone</code></summary>
 
 sizeof: `2560`  
 </details>
 <details>
-<summary>client_class CDangerZoneController</summary>
+<summary><code>client_class CDangerZoneController</code></summary>
 
 sizeof: `2752`  
 </details>
 <details>
-<summary>client_class CDecoyGrenade</summary>
+<summary><code>client_class CDecoyGrenade</code></summary>
 
 sizeof: `13232`  
 </details>
 <details>
-<summary>client_class CDecoyProjectile</summary>
+<summary><code>client_class CDecoyProjectile</code></summary>
 
 sizeof: `10736`  
 </details>
 <details>
-<summary>client_class CDrone</summary>
+<summary><code>client_class CDrone</code></summary>
 
 sizeof: `10784`  
 </details>
 <details>
-<summary>client_class CDronegun</summary>
+<summary><code>client_class CDronegun</code></summary>
 
 sizeof: `10720`  
 </details>
 <details>
-<summary>client_class CDynamicLight</summary>
+<summary><code>client_class CDynamicLight</code></summary>
 
 sizeof: `2552`  
 </details>
 <details>
-<summary>client_class CDynamicProp</summary>
+<summary><code>client_class CDynamicProp</code></summary>
 
 sizeof: `10720`  
 </details>
 <details>
-<summary>client_class CEconEntity</summary>
+<summary><code>client_class CEconEntity</code></summary>
 
 sizeof: `12816`  
 </details>
 <details>
-<summary>client_class CEconWearable</summary>
+<summary><code>client_class CEconWearable</code></summary>
 
 sizeof: `12832`  
 </details>
 <details>
-<summary>client_class CEmbers</summary>
+<summary><code>client_class CEmbers</code></summary>
 
 sizeof: `2552`  
 </details>
 <details>
-<summary>client_class CEntityDissolve</summary>
+<summary><code>client_class CEntityDissolve</code></summary>
 
 sizeof: `2592`  
 </details>
 <details>
-<summary>client_class CEntityFlame</summary>
+<summary><code>client_class CEntityFlame</code></summary>
 
 sizeof: `2544`  
 </details>
 <details>
-<summary>client_class CEntityFreezing</summary>
+<summary><code>client_class CEntityFreezing</code></summary>
 
 sizeof: `2760`  
 </details>
 <details>
-<summary>client_class CEntityParticleTrail</summary>
+<summary><code>client_class CEntityParticleTrail</code></summary>
 
 sizeof: `2792`  
 </details>
 <details>
-<summary>client_class CEnvAmbientLight</summary>
+<summary><code>client_class CEnvAmbientLight</code></summary>
 
 sizeof: `2872`  
 </details>
 <details>
-<summary>client_class CEnvDOFController</summary>
+<summary><code>client_class CEnvDOFController</code></summary>
 
 sizeof: `2552`  
 </details>
 <details>
-<summary>client_class CEnvDetailController</summary>
+<summary><code>client_class CEnvDetailController</code></summary>
 
 sizeof: `2528`  
 </details>
 <details>
-<summary>client_class CEnvGasCanister</summary>
+<summary><code>client_class CEnvGasCanister</code></summary>
 
 sizeof: `10816`  
 </details>
 <details>
-<summary>client_class CEnvParticleScript</summary>
+<summary><code>client_class CEnvParticleScript</code></summary>
 
 sizeof: `10864`  
 </details>
 <details>
-<summary>client_class CEnvProjectedTexture</summary>
+<summary><code>client_class CEnvProjectedTexture</code></summary>
 
 sizeof: `2904`  
 </details>
 <details>
-<summary>client_class CEnvQuadraticBeam</summary>
+<summary><code>client_class CEnvQuadraticBeam</code></summary>
 
 sizeof: `2552`  
 </details>
 <details>
-<summary>client_class CEnvScreenEffect</summary>
+<summary><code>client_class CEnvScreenEffect</code></summary>
 
 sizeof: `2528`  
 </details>
 <details>
-<summary>client_class CEnvScreenOverlay</summary>
+<summary><code>client_class CEnvScreenOverlay</code></summary>
 
 sizeof: `5136`  
 </details>
 <details>
-<summary>client_class CEnvTonemapController</summary>
+<summary><code>client_class CEnvTonemapController</code></summary>
 
 sizeof: `2568`  
 </details>
 <details>
-<summary>client_class CEnvWind</summary>
+<summary><code>client_class CEnvWind</code></summary>
 
 sizeof: `3048`  
 </details>
 <details>
-<summary>client_class CFEPlayerDecal</summary>
+<summary><code>client_class CFEPlayerDecal</code></summary>
 
 sizeof: `2736`  
 </details>
 <details>
-<summary>client_class CFireCrackerBlast</summary>
+<summary><code>client_class CFireCrackerBlast</code></summary>
 
 sizeof: `10688`  
 </details>
 <details>
-<summary>client_class CFireSmoke</summary>
+<summary><code>client_class CFireSmoke</code></summary>
 
 sizeof: `23696`  
 </details>
 <details>
-<summary>client_class CFireTrail</summary>
+<summary><code>client_class CFireTrail</code></summary>
 
 sizeof: `2832`  
 </details>
 <details>
-<summary>client_class CFish</summary>
+<summary><code>client_class CFish</code></summary>
 
 sizeof: `10832`  
 </details>
 <details>
-<summary>client_class CFists</summary>
+<summary><code>client_class CFists</code></summary>
 
 sizeof: `13216`  
 </details>
 <details>
-<summary>client_class CFlashbang</summary>
+<summary><code>client_class CFlashbang</code></summary>
 
 sizeof: `13232`  
 </details>
 <details>
-<summary>client_class CFogController</summary>
+<summary><code>client_class CFogController</code></summary>
 
 sizeof: `2600`  
 </details>
 <details>
-<summary>client_class CFootstepControl</summary>
+<summary><code>client_class CFootstepControl</code></summary>
 
 sizeof: `2608`  
 </details>
 <details>
-<summary>client_class CFuncAreaPortalWindow</summary>
+<summary><code>client_class CFuncAreaPortalWindow</code></summary>
 
 sizeof: `2536`  
 </details>
 <details>
-<summary>client_class CFuncBrush</summary>
+<summary><code>client_class CFuncBrush</code></summary>
 
 sizeof: `2520`  
 </details>
 <details>
-<summary>client_class CFuncConveyor</summary>
+<summary><code>client_class CFuncConveyor</code></summary>
 
 sizeof: `2528`  
 </details>
 <details>
-<summary>client_class CFuncLadder</summary>
+<summary><code>client_class CFuncLadder</code></summary>
 
 sizeof: `2584`  
 </details>
 <details>
-<summary>client_class CFuncMonitor</summary>
+<summary><code>client_class CFuncMonitor</code></summary>
 
 sizeof: `2520`  
 </details>
 <details>
-<summary>client_class CFuncMoveLinear</summary>
+<summary><code>client_class CFuncMoveLinear</code></summary>
 
 sizeof: `2568`  
 </details>
 <details>
-<summary>client_class CFuncOccluder</summary>
+<summary><code>client_class CFuncOccluder</code></summary>
 
 sizeof: `2528`  
 </details>
 <details>
-<summary>client_class CFuncReflectiveGlass</summary>
+<summary><code>client_class CFuncReflectiveGlass</code></summary>
 
 sizeof: `2528`  
 </details>
 <details>
-<summary>client_class CFuncRotating</summary>
+<summary><code>client_class CFuncRotating</code></summary>
 
 sizeof: `2520`  
 </details>
 <details>
-<summary>client_class CFuncSmokeVolume</summary>
+<summary><code>client_class CFuncSmokeVolume</code></summary>
 
 sizeof: `3144`  
 </details>
 <details>
-<summary>client_class CFuncTrackTrain</summary>
+<summary><code>client_class CFuncTrackTrain</code></summary>
 
 sizeof: `2536`  
 </details>
 <details>
-<summary>client_class CFunc_Dust</summary>
+<summary><code>client_class CFunc_Dust</code></summary>
 
 sizeof: `2832`  
 </details>
 <details>
-<summary>client_class CFunc_LOD</summary>
+<summary><code>client_class CFunc_LOD</code></summary>
 
 sizeof: `2528`  
 </details>
 <details>
-<summary>client_class CGameRulesProxy</summary>
+<summary><code>client_class CGameRulesProxy</code></summary>
 
 sizeof: `2520`  
 </details>
 <details>
-<summary>client_class CGrassBurn</summary>
+<summary><code>client_class CGrassBurn</code></summary>
 
 sizeof: `2552`  
 </details>
 <details>
-<summary>client_class CHEGrenade</summary>
+<summary><code>client_class CHEGrenade</code></summary>
 
 sizeof: `13232`  
 </details>
 <details>
-<summary>client_class CHandleTest</summary>
+<summary><code>client_class CHandleTest</code></summary>
 
 sizeof: `2528`  
 </details>
 <details>
-<summary>client_class CHostage</summary>
+<summary><code>client_class CHostage</code></summary>
 
 sizeof: `12224`  
 </details>
 <details>
-<summary>client_class CHostageCarriableProp</summary>
+<summary><code>client_class CHostageCarriableProp</code></summary>
 
 sizeof: `10640`  
 </details>
 <details>
-<summary>client_class CIncendiaryGrenade</summary>
+<summary><code>client_class CIncendiaryGrenade</code></summary>
 
 sizeof: `13248`  
 </details>
 <details>
-<summary>client_class CInferno</summary>
+<summary><code>client_class CInferno</code></summary>
 
 sizeof: `10688`  
 </details>
 <details>
-<summary>client_class CInfoLadderDismount</summary>
+<summary><code>client_class CInfoLadderDismount</code></summary>
 
 sizeof: `2520`  
 </details>
 <details>
-<summary>client_class CInfoMapRegion</summary>
+<summary><code>client_class CInfoMapRegion</code></summary>
 
 sizeof: `2656`  
 </details>
 <details>
-<summary>client_class CInfoOverlayAccessor</summary>
+<summary><code>client_class CInfoOverlayAccessor</code></summary>
 
 sizeof: `2528`  
 </details>
 <details>
-<summary>client_class CItem</summary>
+<summary><code>client_class CItem</code></summary>
 
 sizeof: `13344`  
 </details>
 <details>
-<summary>client_class CItemAssaultSuitUseable</summary>
+<summary><code>client_class CItemAssaultSuitUseable</code></summary>
 
 sizeof: `13360`  
 </details>
 <details>
-<summary>client_class CItemCash</summary>
+<summary><code>client_class CItemCash</code></summary>
 
 sizeof: `13344`  
 </details>
 <details>
-<summary>client_class CItemDogtags</summary>
+<summary><code>client_class CItemDogtags</code></summary>
 
 sizeof: `13360`  
 </details>
 <details>
-<summary>client_class CItem_Healthshot</summary>
+<summary><code>client_class CItem_Healthshot</code></summary>
 
 sizeof: `13216`  
 </details>
 <details>
-<summary>client_class CKnife</summary>
+<summary><code>client_class CKnife</code></summary>
 
 sizeof: `13200`  
 </details>
 <details>
-<summary>client_class CKnifeGG</summary>
+<summary><code>client_class CKnifeGG</code></summary>
 
 sizeof: `13200`  
 </details>
 <details>
-<summary>client_class CLightGlow</summary>
+<summary><code>client_class CLightGlow</code></summary>
 
 sizeof: `2760`  
 </details>
 <details>
-<summary>client_class CMaterialModifyControl</summary>
+<summary><code>client_class CMaterialModifyControl</code></summary>
 
 sizeof: `3344`  
 </details>
 <details>
-<summary>client_class CMelee</summary>
+<summary><code>client_class CMelee</code></summary>
 
 sizeof: `13216`  
 </details>
 <details>
-<summary>client_class CMolotovGrenade</summary>
+<summary><code>client_class CMolotovGrenade</code></summary>
 
 sizeof: `13248`  
 </details>
 <details>
-<summary>client_class CMolotovProjectile</summary>
+<summary><code>client_class CMolotovProjectile</code></summary>
 
 sizeof: `10736`  
 </details>
 <details>
-<summary>client_class CMovieDisplay</summary>
+<summary><code>client_class CMovieDisplay</code></summary>
 
 sizeof: `2800`  
 </details>
 <details>
-<summary>client_class CParadropChopper</summary>
+<summary><code>client_class CParadropChopper</code></summary>
 
 sizeof: `10656`  
 </details>
 <details>
-<summary>client_class CParticleFire</summary>
+<summary><code>client_class CParticleFire</code></summary>
 
 sizeof: `6384`  
 </details>
 <details>
-<summary>client_class CParticlePerformanceMonitor</summary>
+<summary><code>client_class CParticlePerformanceMonitor</code></summary>
 
 sizeof: `2528`  
 </details>
 <details>
-<summary>client_class CParticleSystem</summary>
+<summary><code>client_class CParticleSystem</code></summary>
 
 sizeof: `3184`  
 </details>
 <details>
-<summary>client_class CPhysBox</summary>
+<summary><code>client_class CPhysBox</code></summary>
 
 sizeof: `2528`  
 </details>
 <details>
-<summary>client_class CPhysBoxMultiplayer</summary>
+<summary><code>client_class CPhysBoxMultiplayer</code></summary>
 
 sizeof: `2544`  
 </details>
 <details>
-<summary>client_class CPhysMagnet</summary>
+<summary><code>client_class CPhysMagnet</code></summary>
 
 sizeof: `10672`  
 </details>
 <details>
-<summary>client_class CPhysPropAmmoBox</summary>
+<summary><code>client_class CPhysPropAmmoBox</code></summary>
 
 sizeof: `10736`  
 </details>
 <details>
-<summary>client_class CPhysPropLootCrate</summary>
+<summary><code>client_class CPhysPropLootCrate</code></summary>
 
 sizeof: `10752`  
 </details>
 <details>
-<summary>client_class CPhysPropRadarJammer</summary>
+<summary><code>client_class CPhysPropRadarJammer</code></summary>
 
 sizeof: `10752`  
 </details>
 <details>
-<summary>client_class CPhysPropWeaponUpgrade</summary>
+<summary><code>client_class CPhysPropWeaponUpgrade</code></summary>
 
 sizeof: `10736`  
 </details>
 <details>
-<summary>client_class CPhysicsProp</summary>
+<summary><code>client_class CPhysicsProp</code></summary>
 
 sizeof: `10688`  
 </details>
 <details>
-<summary>client_class CPhysicsPropMultiplayer</summary>
+<summary><code>client_class CPhysicsPropMultiplayer</code></summary>
 
 sizeof: `10736`  
 </details>
 <details>
-<summary>client_class CPlantedC4</summary>
+<summary><code>client_class CPlantedC4</code></summary>
 
 sizeof: `10720`  
 </details>
 <details>
-<summary>client_class CPlasma</summary>
+<summary><code>client_class CPlasma</code></summary>
 
 sizeof: `21104`  
 </details>
 <details>
-<summary>client_class CPlayerResource</summary>
+<summary><code>client_class CPlayerResource</code></summary>
 
 sizeof: `5656`  
 </details>
 <details>
-<summary>client_class CPointCamera</summary>
+<summary><code>client_class CPointCamera</code></summary>
 
 sizeof: `2560`  
 </details>
 <details>
-<summary>client_class CPointCommentaryNode</summary>
+<summary><code>client_class CPointCommentaryNode</code></summary>
 
 sizeof: `11440`  
 </details>
 <details>
-<summary>client_class CPointWorldText</summary>
+<summary><code>client_class CPointWorldText</code></summary>
 
 sizeof: `2840`  
 </details>
 <details>
-<summary>client_class CPoseController</summary>
+<summary><code>client_class CPoseController</code></summary>
 
 sizeof: `2608`  
 </details>
 <details>
-<summary>client_class CPostProcessController</summary>
+<summary><code>client_class CPostProcessController</code></summary>
 
 sizeof: `2568`  
 </details>
 <details>
-<summary>client_class CPrecipitation</summary>
+<summary><code>client_class CPrecipitation</code></summary>
 
 sizeof: `2728`  
 </details>
 <details>
-<summary>client_class CPrecipitationBlocker</summary>
+<summary><code>client_class CPrecipitationBlocker</code></summary>
 
 sizeof: `645224`  
 </details>
 <details>
-<summary>client_class CPredictedViewModel</summary>
+<summary><code>client_class CPredictedViewModel</code></summary>
 
 sizeof: `11024`  
 </details>
 <details>
-<summary>client_class CPropCounter</summary>
+<summary><code>client_class CPropCounter</code></summary>
 
 sizeof: `10640`  
 </details>
 <details>
-<summary>client_class CPropDoorRotating</summary>
+<summary><code>client_class CPropDoorRotating</code></summary>
 
 sizeof: `10736`  
 </details>
 <details>
-<summary>client_class CPropJeep</summary>
+<summary><code>client_class CPropJeep</code></summary>
 
 sizeof: `10960`  
 </details>
 <details>
-<summary>client_class CPropVehicleChoreoGeneric</summary>
+<summary><code>client_class CPropVehicleChoreoGeneric</code></summary>
 
 sizeof: `10944`  
 </details>
 <details>
-<summary>client_class CPropVehicleDriveable</summary>
+<summary><code>client_class CPropVehicleDriveable</code></summary>
 
 sizeof: `10896`  
 </details>
 <details>
-<summary>client_class CProp_Hallucination</summary>
+<summary><code>client_class CProp_Hallucination</code></summary>
 
 sizeof: `10672`  
 </details>
 <details>
-<summary>client_class CRagdollManager</summary>
+<summary><code>client_class CRagdollManager</code></summary>
 
 sizeof: `2528`  
 </details>
 <details>
-<summary>client_class CRagdollProp</summary>
+<summary><code>client_class CRagdollProp</code></summary>
 
 sizeof: `11408`  
 </details>
 <details>
-<summary>client_class CRagdollPropAttached</summary>
+<summary><code>client_class CRagdollPropAttached</code></summary>
 
 sizeof: `11472`  
 </details>
 <details>
-<summary>client_class CRopeKeyframe</summary>
+<summary><code>client_class CRopeKeyframe</code></summary>
 
 sizeof: `3416`  
 </details>
 <details>
-<summary>client_class CSCAR17</summary>
+<summary><code>client_class CSCAR17</code></summary>
 
 sizeof: `13232`  
 </details>
 <details>
-<summary>client_class CSceneEntity</summary>
+<summary><code>client_class CSceneEntity</code></summary>
 
 sizeof: `2600`  
 </details>
 <details>
-<summary>client_class CSensorGrenade</summary>
+<summary><code>client_class CSensorGrenade</code></summary>
 
 sizeof: `13232`  
 </details>
 <details>
-<summary>client_class CSensorGrenadeProjectile</summary>
+<summary><code>client_class CSensorGrenadeProjectile</code></summary>
 
 sizeof: `10736`  
 </details>
 <details>
-<summary>client_class CShadowControl</summary>
+<summary><code>client_class CShadowControl</code></summary>
 
 sizeof: `2544`  
 </details>
 <details>
-<summary>client_class CSlideshowDisplay</summary>
+<summary><code>client_class CSlideshowDisplay</code></summary>
 
 sizeof: `2856`  
 </details>
 <details>
-<summary>client_class CSmokeGrenade</summary>
+<summary><code>client_class CSmokeGrenade</code></summary>
 
 sizeof: `13232`  
 </details>
 <details>
-<summary>client_class CSmokeGrenadeProjectile</summary>
+<summary><code>client_class CSmokeGrenadeProjectile</code></summary>
 
 sizeof: `10736`  
 </details>
 <details>
-<summary>client_class CSmokeStack</summary>
+<summary><code>client_class CSmokeStack</code></summary>
 
 sizeof: `3016`  
 </details>
 <details>
-<summary>client_class CSnowball</summary>
+<summary><code>client_class CSnowball</code></summary>
 
 sizeof: `13232`  
 </details>
 <details>
-<summary>client_class CSnowballPile</summary>
+<summary><code>client_class CSnowballPile</code></summary>
 
 sizeof: `10640`  
 </details>
 <details>
-<summary>client_class CSnowballProjectile</summary>
+<summary><code>client_class CSnowballProjectile</code></summary>
 
 sizeof: `10736`  
 </details>
 <details>
-<summary>client_class CSpatialEntity</summary>
+<summary><code>client_class CSpatialEntity</code></summary>
 
 sizeof: `2816`  
 </details>
 <details>
-<summary>client_class CSpotlightEnd</summary>
+<summary><code>client_class CSpotlightEnd</code></summary>
 
 sizeof: `2536`  
 </details>
 <details>
-<summary>client_class CSprite</summary>
+<summary><code>client_class CSprite</code></summary>
 
 sizeof: `2624`  
 </details>
 <details>
-<summary>client_class CSpriteOriented</summary>
+<summary><code>client_class CSpriteOriented</code></summary>
 
 sizeof: `2624`  
 </details>
 <details>
-<summary>client_class CSpriteTrail</summary>
+<summary><code>client_class CSpriteTrail</code></summary>
 
 sizeof: `4264`  
 </details>
 <details>
-<summary>client_class CStatueProp</summary>
+<summary><code>client_class CStatueProp</code></summary>
 
 sizeof: `10736`  
 </details>
 <details>
-<summary>client_class CSteamJet</summary>
+<summary><code>client_class CSteamJet</code></summary>
 
 sizeof: `2904`  
 </details>
 <details>
-<summary>client_class CSun</summary>
+<summary><code>client_class CSun</code></summary>
 
 sizeof: `2912`  
 </details>
 <details>
-<summary>client_class CSunlightShadowControl</summary>
+<summary><code>client_class CSunlightShadowControl</code></summary>
 
 sizeof: `2848`  
 </details>
 <details>
-<summary>client_class CSurvivalSpawnChopper</summary>
+<summary><code>client_class CSurvivalSpawnChopper</code></summary>
 
 sizeof: `10624`  
 </details>
 <details>
-<summary>client_class CTEArmorRicochet</summary>
+<summary><code>client_class CTEArmorRicochet</code></summary>
 
 sizeof: `0`  
 </details>
 <details>
-<summary>client_class CTEBSPDecal</summary>
+<summary><code>client_class CTEBSPDecal</code></summary>
 
 sizeof: `0`  
 </details>
 <details>
-<summary>client_class CTEBaseBeam</summary>
+<summary><code>client_class CTEBaseBeam</code></summary>
 
 sizeof: `4291726102`  
 </details>
 <details>
-<summary>client_class CTEBeamEntPoint</summary>
+<summary><code>client_class CTEBeamEntPoint</code></summary>
 
 sizeof: `0`  
 </details>
 <details>
-<summary>client_class CTEBeamEnts</summary>
+<summary><code>client_class CTEBeamEnts</code></summary>
 
 sizeof: `0`  
 </details>
 <details>
-<summary>client_class CTEBeamFollow</summary>
+<summary><code>client_class CTEBeamFollow</code></summary>
 
 sizeof: `0`  
 </details>
 <details>
-<summary>client_class CTEBeamLaser</summary>
+<summary><code>client_class CTEBeamLaser</code></summary>
 
 sizeof: `0`  
 </details>
 <details>
-<summary>client_class CTEBeamPoints</summary>
+<summary><code>client_class CTEBeamPoints</code></summary>
 
 sizeof: `0`  
 </details>
 <details>
-<summary>client_class CTEBeamRing</summary>
+<summary><code>client_class CTEBeamRing</code></summary>
 
 sizeof: `0`  
 </details>
 <details>
-<summary>client_class CTEBeamRingPoint</summary>
+<summary><code>client_class CTEBeamRingPoint</code></summary>
 
 sizeof: `0`  
 </details>
 <details>
-<summary>client_class CTEBeamSpline</summary>
+<summary><code>client_class CTEBeamSpline</code></summary>
 
 sizeof: `0`  
 </details>
 <details>
-<summary>client_class CTEBloodSprite</summary>
+<summary><code>client_class CTEBloodSprite</code></summary>
 
 sizeof: `0`  
 </details>
 <details>
-<summary>client_class CTEBloodStream</summary>
+<summary><code>client_class CTEBloodStream</code></summary>
 
 sizeof: `0`  
 </details>
 <details>
-<summary>client_class CTEBreakModel</summary>
+<summary><code>client_class CTEBreakModel</code></summary>
 
 sizeof: `0`  
 </details>
 <details>
-<summary>client_class CTEBubbleTrail</summary>
+<summary><code>client_class CTEBubbleTrail</code></summary>
 
 sizeof: `0`  
 </details>
 <details>
-<summary>client_class CTEBubbles</summary>
+<summary><code>client_class CTEBubbles</code></summary>
 
 sizeof: `0`  
 </details>
 <details>
-<summary>client_class CTEClientProjectile</summary>
+<summary><code>client_class CTEClientProjectile</code></summary>
 
 sizeof: `0`  
 </details>
 <details>
-<summary>client_class CTEDecal</summary>
+<summary><code>client_class CTEDecal</code></summary>
 
 sizeof: `0`  
 </details>
 <details>
-<summary>client_class CTEDust</summary>
+<summary><code>client_class CTEDust</code></summary>
 
 sizeof: `0`  
 </details>
 <details>
-<summary>client_class CTEDynamicLight</summary>
+<summary><code>client_class CTEDynamicLight</code></summary>
 
 sizeof: `0`  
 </details>
 <details>
-<summary>client_class CTEEffectDispatch</summary>
+<summary><code>client_class CTEEffectDispatch</code></summary>
 
 sizeof: `0`  
 </details>
 <details>
-<summary>client_class CTEEnergySplash</summary>
+<summary><code>client_class CTEEnergySplash</code></summary>
 
 sizeof: `0`  
 </details>
 <details>
-<summary>client_class CTEExplosion</summary>
+<summary><code>client_class CTEExplosion</code></summary>
 
 sizeof: `0`  
 </details>
 <details>
-<summary>client_class CTEFireBullets</summary>
+<summary><code>client_class CTEFireBullets</code></summary>
 
 sizeof: `0`  
 </details>
 <details>
-<summary>client_class CTEFizz</summary>
+<summary><code>client_class CTEFizz</code></summary>
 
 sizeof: `0`  
 </details>
 <details>
-<summary>client_class CTEFootprintDecal</summary>
+<summary><code>client_class CTEFootprintDecal</code></summary>
 
 sizeof: `0`  
 </details>
 <details>
-<summary>client_class CTEFoundryHelpers</summary>
+<summary><code>client_class CTEFoundryHelpers</code></summary>
 
 sizeof: `0`  
 </details>
 <details>
-<summary>client_class CTEGaussExplosion</summary>
+<summary><code>client_class CTEGaussExplosion</code></summary>
 
 sizeof: `0`  
 </details>
 <details>
-<summary>client_class CTEGlowSprite</summary>
+<summary><code>client_class CTEGlowSprite</code></summary>
 
 sizeof: `0`  
 </details>
 <details>
-<summary>client_class CTEImpact</summary>
+<summary><code>client_class CTEImpact</code></summary>
 
 sizeof: `0`  
 </details>
 <details>
-<summary>client_class CTEKillPlayerAttachments</summary>
+<summary><code>client_class CTEKillPlayerAttachments</code></summary>
 
 sizeof: `0`  
 </details>
 <details>
-<summary>client_class CTELargeFunnel</summary>
+<summary><code>client_class CTELargeFunnel</code></summary>
 
 sizeof: `0`  
 </details>
 <details>
-<summary>client_class CTEMetalSparks</summary>
+<summary><code>client_class CTEMetalSparks</code></summary>
 
 sizeof: `0`  
 </details>
 <details>
-<summary>client_class CTEMuzzleFlash</summary>
+<summary><code>client_class CTEMuzzleFlash</code></summary>
 
 sizeof: `0`  
 </details>
 <details>
-<summary>client_class CTEParticleSystem</summary>
+<summary><code>client_class CTEParticleSystem</code></summary>
 
 sizeof: `1713899207`  
 </details>
 <details>
-<summary>client_class CTEPhysicsProp</summary>
+<summary><code>client_class CTEPhysicsProp</code></summary>
 
 sizeof: `0`  
 </details>
 <details>
-<summary>client_class CTEPlantBomb</summary>
+<summary><code>client_class CTEPlantBomb</code></summary>
 
 sizeof: `0`  
 </details>
 <details>
-<summary>client_class CTEPlayerAnimEvent</summary>
+<summary><code>client_class CTEPlayerAnimEvent</code></summary>
 
 sizeof: `0`  
 </details>
 <details>
-<summary>client_class CTEPlayerDecal</summary>
+<summary><code>client_class CTEPlayerDecal</code></summary>
 
 sizeof: `0`  
 </details>
 <details>
-<summary>client_class CTEProjectedDecal</summary>
+<summary><code>client_class CTEProjectedDecal</code></summary>
 
 sizeof: `0`  
 </details>
 <details>
-<summary>client_class CTERadioIcon</summary>
+<summary><code>client_class CTERadioIcon</code></summary>
 
 sizeof: `0`  
 </details>
 <details>
-<summary>client_class CTEShatterSurface</summary>
+<summary><code>client_class CTEShatterSurface</code></summary>
 
 sizeof: `0`  
 </details>
 <details>
-<summary>client_class CTEShowLine</summary>
+<summary><code>client_class CTEShowLine</code></summary>
 
 sizeof: `0`  
 </details>
 <details>
-<summary>client_class CTESmoke</summary>
+<summary><code>client_class CTESmoke</code></summary>
 
 sizeof: `0`  
 </details>
 <details>
-<summary>client_class CTESparks</summary>
+<summary><code>client_class CTESparks</code></summary>
 
 sizeof: `0`  
 </details>
 <details>
-<summary>client_class CTESprite</summary>
+<summary><code>client_class CTESprite</code></summary>
 
 sizeof: `0`  
 </details>
 <details>
-<summary>client_class CTESpriteSpray</summary>
+<summary><code>client_class CTESpriteSpray</code></summary>
 
 sizeof: `0`  
 </details>
 <details>
-<summary>client_class CTEWorldDecal</summary>
+<summary><code>client_class CTEWorldDecal</code></summary>
 
 sizeof: `0`  
 </details>
 <details>
-<summary>client_class CTablet</summary>
+<summary><code>client_class CTablet</code></summary>
 
 sizeof: `15200`  
 </details>
 <details>
-<summary>client_class CTeam</summary>
+<summary><code>client_class CTeam</code></summary>
 
 sizeof: `2936`  
 </details>
 <details>
-<summary>client_class CTeamplayRoundBasedRulesProxy</summary>
+<summary><code>client_class CTeamplayRoundBasedRulesProxy</code></summary>
 
 sizeof: `2520`  
 </details>
 <details>
-<summary>client_class CTesla</summary>
+<summary><code>client_class CTesla</code></summary>
 
 sizeof: `2880`  
 </details>
 <details>
-<summary>client_class CTestTraceline</summary>
+<summary><code>client_class CTestTraceline</code></summary>
 
 sizeof: `2528`  
 </details>
 <details>
-<summary>client_class CTest_ProxyToggle_Networkable</summary>
+<summary><code>client_class CTest_ProxyToggle_Networkable</code></summary>
 
 sizeof: `2528`  
 </details>
 <details>
-<summary>client_class CTriggerPlayerMovement</summary>
+<summary><code>client_class CTriggerPlayerMovement</code></summary>
 
 sizeof: `2584`  
 </details>
 <details>
-<summary>client_class CTriggerSoundOperator</summary>
+<summary><code>client_class CTriggerSoundOperator</code></summary>
 
 sizeof: `2584`  
 </details>
 <details>
-<summary>client_class CVGuiScreen</summary>
+<summary><code>client_class CVGuiScreen</code></summary>
 
 sizeof: `2672`  
 </details>
 <details>
-<summary>client_class CVoteController</summary>
+<summary><code>client_class CVoteController</code></summary>
 
 sizeof: `2576`  
 </details>
 <details>
-<summary>client_class CWaterBullet</summary>
+<summary><code>client_class CWaterBullet</code></summary>
 
 sizeof: `10640`  
 </details>
 <details>
-<summary>client_class CWaterLODControl</summary>
+<summary><code>client_class CWaterLODControl</code></summary>
 
 sizeof: `2528`  
 </details>
 <details>
-<summary>client_class CWeaponAWP</summary>
+<summary><code>client_class CWeaponAWP</code></summary>
 
 sizeof: `13232`  
 </details>
 <details>
-<summary>client_class CWeaponAug</summary>
+<summary><code>client_class CWeaponAug</code></summary>
 
 sizeof: `13232`  
 </details>
 <details>
-<summary>client_class CWeaponBaseItem</summary>
+<summary><code>client_class CWeaponBaseItem</code></summary>
 
 sizeof: `13216`  
 </details>
 <details>
-<summary>client_class CWeaponBizon</summary>
+<summary><code>client_class CWeaponBizon</code></summary>
 
 sizeof: `13232`  
 </details>
 <details>
-<summary>client_class CWeaponCSBase</summary>
+<summary><code>client_class CWeaponCSBase</code></summary>
 
 sizeof: `13200`  
 </details>
 <details>
-<summary>client_class CWeaponCSBaseGun</summary>
+<summary><code>client_class CWeaponCSBaseGun</code></summary>
 
 sizeof: `13232`  
 </details>
 <details>
-<summary>client_class CWeaponCubemap</summary>
+<summary><code>client_class CWeaponCubemap</code></summary>
 
 sizeof: `13008`  
 </details>
 <details>
-<summary>client_class CWeaponCycler</summary>
+<summary><code>client_class CWeaponCycler</code></summary>
 
 sizeof: `13008`  
 </details>
 <details>
-<summary>client_class CWeaponElite</summary>
+<summary><code>client_class CWeaponElite</code></summary>
 
 sizeof: `13232`  
 </details>
 <details>
-<summary>client_class CWeaponFamas</summary>
+<summary><code>client_class CWeaponFamas</code></summary>
 
 sizeof: `13232`  
 </details>
 <details>
-<summary>client_class CWeaponFiveSeven</summary>
+<summary><code>client_class CWeaponFiveSeven</code></summary>
 
 sizeof: `13232`  
 </details>
 <details>
-<summary>client_class CWeaponG3SG1</summary>
+<summary><code>client_class CWeaponG3SG1</code></summary>
 
 sizeof: `13232`  
 </details>
 <details>
-<summary>client_class CWeaponGalil</summary>
+<summary><code>client_class CWeaponGalil</code></summary>
 
 sizeof: `13232`  
 </details>
 <details>
-<summary>client_class CWeaponGalilAR</summary>
+<summary><code>client_class CWeaponGalilAR</code></summary>
 
 sizeof: `13232`  
 </details>
 <details>
-<summary>client_class CWeaponGlock</summary>
+<summary><code>client_class CWeaponGlock</code></summary>
 
 sizeof: `13232`  
 </details>
 <details>
-<summary>client_class CWeaponHKP2000</summary>
+<summary><code>client_class CWeaponHKP2000</code></summary>
 
 sizeof: `13232`  
 </details>
 <details>
-<summary>client_class CWeaponM249</summary>
+<summary><code>client_class CWeaponM249</code></summary>
 
 sizeof: `13232`  
 </details>
 <details>
-<summary>client_class CWeaponM3</summary>
+<summary><code>client_class CWeaponM3</code></summary>
 
 sizeof: `13216`  
 </details>
 <details>
-<summary>client_class CWeaponM4A1</summary>
+<summary><code>client_class CWeaponM4A1</code></summary>
 
 sizeof: `13232`  
 </details>
 <details>
-<summary>client_class CWeaponMAC10</summary>
+<summary><code>client_class CWeaponMAC10</code></summary>
 
 sizeof: `13232`  
 </details>
 <details>
-<summary>client_class CWeaponMP5Navy</summary>
+<summary><code>client_class CWeaponMP5Navy</code></summary>
 
 sizeof: `13232`  
 </details>
 <details>
-<summary>client_class CWeaponMP7</summary>
+<summary><code>client_class CWeaponMP7</code></summary>
 
 sizeof: `13232`  
 </details>
 <details>
-<summary>client_class CWeaponMP9</summary>
+<summary><code>client_class CWeaponMP9</code></summary>
 
 sizeof: `13232`  
 </details>
 <details>
-<summary>client_class CWeaponMag7</summary>
+<summary><code>client_class CWeaponMag7</code></summary>
 
 sizeof: `13232`  
 </details>
 <details>
-<summary>client_class CWeaponNOVA</summary>
+<summary><code>client_class CWeaponNOVA</code></summary>
 
 sizeof: `13216`  
 </details>
 <details>
-<summary>client_class CWeaponNegev</summary>
+<summary><code>client_class CWeaponNegev</code></summary>
 
 sizeof: `13232`  
 </details>
 <details>
-<summary>client_class CWeaponP228</summary>
+<summary><code>client_class CWeaponP228</code></summary>
 
 sizeof: `13232`  
 </details>
 <details>
-<summary>client_class CWeaponP250</summary>
+<summary><code>client_class CWeaponP250</code></summary>
 
 sizeof: `13232`  
 </details>
 <details>
-<summary>client_class CWeaponP90</summary>
+<summary><code>client_class CWeaponP90</code></summary>
 
 sizeof: `13232`  
 </details>
 <details>
-<summary>client_class CWeaponSCAR20</summary>
+<summary><code>client_class CWeaponSCAR20</code></summary>
 
 sizeof: `13232`  
 </details>
 <details>
-<summary>client_class CWeaponSG550</summary>
+<summary><code>client_class CWeaponSG550</code></summary>
 
 sizeof: `13232`  
 </details>
 <details>
-<summary>client_class CWeaponSG552</summary>
+<summary><code>client_class CWeaponSG552</code></summary>
 
 sizeof: `13232`  
 </details>
 <details>
-<summary>client_class CWeaponSG556</summary>
+<summary><code>client_class CWeaponSG556</code></summary>
 
 sizeof: `13232`  
 </details>
 <details>
-<summary>client_class CWeaponSSG08</summary>
+<summary><code>client_class CWeaponSSG08</code></summary>
 
 sizeof: `13232`  
 </details>
 <details>
-<summary>client_class CWeaponSawedoff</summary>
+<summary><code>client_class CWeaponSawedoff</code></summary>
 
 sizeof: `13216`  
 </details>
 <details>
-<summary>client_class CWeaponScout</summary>
+<summary><code>client_class CWeaponScout</code></summary>
 
 sizeof: `13232`  
 </details>
 <details>
-<summary>client_class CWeaponTMP</summary>
+<summary><code>client_class CWeaponTMP</code></summary>
 
 sizeof: `13232`  
 </details>
 <details>
-<summary>client_class CWeaponTaser</summary>
+<summary><code>client_class CWeaponTaser</code></summary>
 
 sizeof: `13248`  
 </details>
 <details>
-<summary>client_class CWeaponTec9</summary>
+<summary><code>client_class CWeaponTec9</code></summary>
 
 sizeof: `13232`  
 </details>
 <details>
-<summary>client_class CWeaponUMP45</summary>
+<summary><code>client_class CWeaponUMP45</code></summary>
 
 sizeof: `13232`  
 </details>
 <details>
-<summary>client_class CWeaponUSP</summary>
+<summary><code>client_class CWeaponUSP</code></summary>
 
 sizeof: `13232`  
 </details>
 <details>
-<summary>client_class CWeaponXM1014</summary>
+<summary><code>client_class CWeaponXM1014</code></summary>
 
 sizeof: `13216`  
 </details>
 <details>
-<summary>client_class CWorld</summary>
+<summary><code>client_class CWorld</code></summary>
 
 sizeof: `3435971421`  
 </details>
 <details>
-<summary>client_class CWorldVguiText</summary>
+<summary><code>client_class CWorldVguiText</code></summary>
 
 sizeof: `3368`  
 </details>
 <details>
-<summary>client_class DustTrail</summary>
+<summary><code>client_class DustTrail</code></summary>
 
 sizeof: `2912`  
 </details>
 <details>
-<summary>client_class MovieExplosion</summary>
+<summary><code>client_class MovieExplosion</code></summary>
 
 sizeof: `4576`  
 </details>
 <details>
-<summary>client_class NextBotCombatCharacter</summary>
+<summary><code>client_class NextBotCombatCharacter</code></summary>
 
 sizeof: `12096`  
 </details>
 <details>
-<summary>client_class ParticleSmokeGrenade</summary>
+<summary><code>client_class ParticleSmokeGrenade</code></summary>
 
 sizeof: `11800`  
 </details>
 <details>
-<summary>client_class RocketTrail</summary>
+<summary><code>client_class RocketTrail</code></summary>
 
 sizeof: `2880`  
 </details>
 <details>
-<summary>client_class SmokeTrail</summary>
+<summary><code>client_class SmokeTrail</code></summary>
 
 sizeof: `2872`  
 </details>
 <details>
-<summary>client_class SporeExplosion</summary>
+<summary><code>client_class SporeExplosion</code></summary>
 
 sizeof: `2808`  
 </details>
 <details>
-<summary>client_class SporeTrail</summary>
+<summary><code>client_class SporeTrail</code></summary>
 
 sizeof: `2904`  
 </details>
@@ -20899,1991 +20903,2875 @@ client_panorama.dll!0x00cf5fe4 ClientClass SporeExplosion
 client_panorama.dll!0x00cf6074 ClientClass SporeTrail
 ```
 
-class CBaseWeaponWorldModel extends C_BaseAnimatingOverlay {
-	// field offset: 0xf0
-	m_fEffects: Integer,
-	// field offset: 0x258
-	m_nModelIndex: Short,
-	// field offset: 0xa20
-	m_nBody: Integer,
-	// field offset: 0x29f0
-	m_hCombatWeaponParent: EHandle,
-}
-class CBaseCombatWeapon extends C_BaseFlex {
-	// field offset: 0xfc
-	m_nNextThinkTick: Integer,
-	// field offset: 0x3210
-	m_hOwner: EHandle,
-	// field offset: 0x3214
-	m_nViewModelIndex: Integer,
-	// field offset: 0x3218
-	m_flNextPrimaryAttack: Float,
-	// field offset: 0x321c
-	m_flNextSecondaryAttack: Float,
-	// field offset: 0x3220
-	m_iViewModelIndex: Integer,
-	// field offset: 0x3224
-	m_iWorldModelIndex: Integer,
-	// field offset: 0x3228
-	m_iWorldDroppedModelIndex: Integer,
-	// field offset: 0x322c
-	m_iWeaponModule: Integer,
-	// field offset: 0x3230
-	m_iNumEmptyAttacks: Integer,
-	// field offset: 0x3238
-	m_iState: Integer,
-	// field offset: 0x323c
-	m_iPrimaryAmmoType: Integer,
-	// field offset: 0x3240
-	m_iSecondaryAmmoType: Integer,
-	// field offset: 0x3244
-	m_iClip1: Integer,
-	// field offset: 0x3248
-	m_iClip2: Integer,
-	// field offset: 0x324c
-	m_iPrimaryReserveAmmoCount: Integer,
-	// field offset: 0x3250
-	m_iSecondaryReserveAmmoCount: Integer,
-	// field offset: 0x3254
-	m_flTimeWeaponIdle: Float,
-	// field offset: 0x3258
-	m_flNextEmptySoundTime: Float,
-	// field offset: 0x325c
-	m_fMinRange1: Float,
-	// field offset: 0x3260
-	m_fMinRange2: Float,
-	// field offset: 0x3264
-	m_fMaxRange1: Float,
-	// field offset: 0x3268
-	m_fMaxRange2: Float,
-	// field offset: 0x326c
-	m_fFireDuration: Float,
-	// field offset: 0x3274
-	m_Activity: Integer,
-	// field offset: 0x3278
-	m_iPrimaryAmmoCount: Integer,
-	// field offset: 0x327c
-	m_iSecondaryAmmoCount: Integer,
-	// field offset: 0x3280
-	m_iszName: Integer,
-	// field offset: 0x3284
-	m_bRemoveable: Boolean,
-	// field offset: 0x3285
-	m_bInReload: Boolean,
-	// field offset: 0x3286
-	m_bFireOnEmpty: Boolean,
-	// field offset: 0x3287
-	m_bFiresUnderwater: Boolean,
-	// field offset: 0x3288
-	m_bAltFiresUnderwater: Boolean,
-	// field offset: 0x3289
-	m_bReloadsSingly: Boolean,
-}
-class CBaseGrenade extends C_BaseAnimating {
-	// field offset: 0x114
-	m_vecVelocity: Vector,
-	// field offset: 0x2981
-	m_bIsLive: Boolean,
-	// field offset: 0x2984
-	m_DmgRadius: Boolean,
-	// field offset: 0x2988
-	m_flNextAttack: Float,
-	// field offset: 0x2998
-	m_flDamage: Float,
-	// field offset: 0x29a0
-	m_hThrower: EHandle,
-}
-class CBaseViewModel extends C_BaseAnimating {
-	// field offset: 0xf0
-	m_fEffects: Integer,
-	// field offset: 0x258
-	m_nModelIndex: Short,
-	// field offset: 0x260
-	m_flAnimTime: Float,
-	// field offset: 0xa14
-	m_flCycle: Float,
-	// field offset: 0xa18
-	m_flPlaybackRate: Float,
-	// field offset: 0xa1c
-	m_nSkin: Integer,
-	// field offset: 0xa20
-	m_nBody: Integer,
-	// field offset: 0x28bc
-	m_nSequence: Integer,
-	// field offset: 0x29c0
-	m_nViewModelIndex: Integer,
-	// field offset: 0x29c4
-	m_nAnimationParity: Integer,
-	// field offset: 0x29c8
-	m_hWeapon: EHandle,
-	// field offset: 0x29cc
-	m_hOwner: EHandle,
-	// field offset: 0x29d0
-	m_flTimeWeaponIdle: Float,
-	// field offset: 0x29d4
-	m_Activity: Integer,
-}
-class CBeam extends C_BaseEntity {
-	// field offset: 0x70
-	m_clrRender: Integer,
-	// field offset: 0xac
-	m_vecOrigin: Vector,
-	// field offset: 0x258
-	m_nModelIndex: Integer,
-	// field offset: 0x25a
-	m_nRenderFX: Integer,
-	// field offset: 0x25b
-	m_nRenderMode: Integer,
-	// field offset: 0x9d8
-	m_flFrameRate: Float,
-	// field offset: 0x9e8
-	m_nNumBeamEnts: Integer,
-	// field offset: 0x9f0
-	m_nHaloIndex: Integer,
-	// field offset: 0x9f4
-	m_nBeamType: Integer,
-	// field offset: 0x9fc
-	m_hAttachEntity: EHandle,
-	// field offset: 0xa24
-	m_nAttachIndex: Integer,
-	// field offset: 0xa4c
-	m_fWidth: Float,
-	// field offset: 0xa50
-	m_fEndWidth: Float,
-	// field offset: 0xa54
-	m_fFadeLength: Float,
-	// field offset: 0xa58
-	m_fHaloScale: Float,
-	// field offset: 0xa5c
-	m_fAmplitude: Float,
-	// field offset: 0xa60
-	m_fStartFrame: Float,
-	// field offset: 0xa64
-	m_fSpeed: Float,
-	// field offset: 0xa68
-	m_flFrame: Float,
-	// field offset: 0xa70
-	m_vecEndPos: Vector,
-}
-class C_BaseAnimating extends C_BaseEntity {
-	// field offset: 0xa18
-	m_flPlaybackRate: Float,
-	// field offset: 0xa1c
-	m_nSkin: Integer,
-	// field offset: 0xa20
-	m_nBody: Integer,
-	// field offset: 0xa44
-	m_nNewSequenceParity: Integer,
-	// field offset: 0xa48
-	m_nResetEventsParity: Integer,
-	// field offset: 0xa54
-	m_flEncodedController: Float,
-	// field offset: 0xa64
-	m_nMuzzleFlashParity: Char,
-}
-class C_BaseCombatCharacter extends C_BaseFlex {
-	// field offset: 0x2d70
-	m_flNextAttack: Float,
-	// field offset: 0x2d78
-	m_iAmmo: Integer,
-	// field offset: 0x2df8
-	m_hMyWeapons: EHandle,
-	// field offset: 0x2ef8
-	m_hActiveWeapon: EHandle,
-}
-class C_BaseEntity {
-	// field offset: 0x94
-	m_vecAbsVelocity: Vector,
-	// field offset: 0xa0
-	m_vecAbsOrigin: Vector,
-	// field offset: 0xac
-	m_vecOrigin: Vector,
-	// field offset: 0xb8
-	m_vecAngVelocity: Vector,
-	// field offset: 0xc4
-	m_angAbsRotation: Vector,
-	// field offset: 0xd0
-	m_angRotation: Vector,
-	// field offset: 0xdc
-	m_flMaxFallVelocity: Float,
-	// field offset: 0xe0
-	m_flGravity: Float,
-	// field offset: 0xe4
-	m_flProxyRandomValue: Float,
-	// field offset: 0xe8
-	m_iEFlags: Integer,
-	// field offset: 0xec
-	m_nWaterType: Char,
-	// field offset: 0xf0
-	m_fEffects: Integer,
-	// field offset: 0xf4
-	m_iTeamNum: Integer,
-	// field offset: 0xf8
-	m_iPendingTeamNum: Integer,
-	// field offset: 0x100
-	m_iHealth: Integer,
-	// field offset: 0x104
-	m_fFlags: Integer,
-	// field offset: 0x108
-	m_vecViewOffset: Vector,
-	// field offset: 0x114
-	m_vecVelocity: Vector,
-	// field offset: 0x120
-	m_vecBaseVelocity: Vector,
-	// field offset: 0x12c
-	m_angNetworkAngles: Vector,
-	// field offset: 0x138
-	m_vecNetworkOrigin: Vector,
-	// field offset: 0x144
-	m_flFriction: Float,
-	// field offset: 0x148
-	m_hNetworkMoveParent: EHandle,
-	// field offset: 0x14c
-	m_hOwnerEntity: EHandle,
-	// field offset: 0x150
-	m_hGroundEntity: EHandle,
-	// field offset: 0x258
-	m_nModelIndex: Short,
-	// field offset: 0x25a
-	m_nRenderFX: Char,
-	// field offset: 0x25b
-	m_nRenderMode: Char,
-	// field offset: 0x25c
-	m_MoveType: Char,
-	// field offset: 0x25d
-	m_MoveCollide: Char,
-	// field offset: 0x25e
-	m_nWaterLevel: Char,
-	// field offset: 0x2cc
-	m_flUseLookAtAngle: Float,
-	// field offset: 0x31c
-	m_Collision: CCollisionProperty,
-	// field offset: 0x938
-	m_bEverHadPredictionErrorsForThisCommand: Boolean,
-}
-class CPlayerState {
-	// field offset: 0x4
-	deadflag: Boolean,
-}
-class CPlayerLocalData {
-	// field offset: 0x3c
-	m_nStepside: Integer,
-	// field offset: 0x40
-	m_nOldButtons: Integer,
-	// field offset: 0x44
-	m_flFOVRate: Float,
-	// field offset: 0x48
-	m_iHideHUD: Integer,
-	// field offset: 0x4c
-	m_nDuckTimeMsecs: Integer,
-	// field offset: 0x50
-	m_nDuckJumpTimeMsecs: Integer,
-	// field offset: 0x54
-	m_nJumpTimeMsecs: Integer,
-	// field offset: 0x58
-	m_flFallVelocity: Float,
-	// field offset: 0x60
-	m_flStepSize: Float,
-	// field offset: 0x64
-	m_viewPunchAngle: Vector,
-	// field offset: 0x70
-	m_aimPunchAngle: Vector,
-	// field offset: 0x7c
-	m_aimPunchAngleVel: Vector,
-	// field offset: 0x88
-	m_bDucked: Boolean,
-	// field offset: 0x89
-	m_bDucking: Boolean,
-	// field offset: 0x8c
-	m_flLastDuckTime: Float,
-	// field offset: 0x90
-	m_bInDuckJump: Boolean,
-	// field offset: 0x91
-	m_bDrawViewmodel: Boolean,
-	// field offset: 0x92
-	m_bWearingSuit: Boolean,
-	// field offset: 0x93
-	m_bPoisoned: Boolean,
-	// field offset: 0x94
-	m_bAllowAutoMovement: Boolean,
-}
-class C_BasePlayer extends C_BaseCombatCharacter {
-	// field offset: 0xfc
-	m_nNextThinkTick: Integer,
-	// field offset: 0x100
-	m_iHealth: Integer,
-	// field offset: 0x120
-	m_vecBaseVelocity: Vector,
-	// field offset: 0x150
-	m_hGroundEntity: EHandle,
-	// field offset: 0x25e
-	m_nWaterLevel: Char,
-	// field offset: 0x25f
-	m_lifeState: Char,
-	// field offset: 0x2fac
-	m_flDuckAmount: Float,
-	// field offset: 0x2fb0
-	m_flDuckSpeed: Float,
-	// field offset: 0x2fbc
-	m_Local: CPlayerLocalData,
-	// field offset: 0x31d0
-	pl: CPlayerState,
-	// field offset: 0x31e4
-	m_iFOV: Integer,
-	// field offset: 0x31e8
-	m_iFOVStart: Integer,
-	// field offset: 0x31ec
-	m_afButtonLast: Integer,
-	// field offset: 0x31f0
-	m_afButtonPressed: Integer,
-	// field offset: 0x31f4
-	m_afButtonReleased: Integer,
-	// field offset: 0x31f8
-	m_nButtons: Integer,
-	// field offset: 0x31fc
-	m_nImpulse: Integer,
-	// field offset: 0x3200
-	m_ladderSurfaceProps: Integer,
-	// field offset: 0x3204
-	m_flPhysics: Integer,
-	// field offset: 0x3208
-	m_flFOVTime: Float,
-	// field offset: 0x320c
-	m_flWaterJumpTime: Float,
-	// field offset: 0x3210
-	m_flSwimSoundTime: Float,
-	// field offset: 0x3214
-	m_ignoreLadderJumpTime: Float,
-	// field offset: 0x3218
-	m_bHasWalkMovedSinceLastJump: Boolean,
-	// field offset: 0x321c
-	m_flStepSoundTime: Float,
-	// field offset: 0x322c
-	m_surfaceFriction: Float,
-	// field offset: 0x3230
-	m_vecLadderNormal: Vector,
-	// field offset: 0x3240
-	m_iBonusProgress: Integer,
-	// field offset: 0x3244
-	m_iBonusChallenge: Integer,
-	// field offset: 0x3248
-	m_flMaxspeed: Float,
-	// field offset: 0x324c
-	m_hZoomOwner: EHandle,
-	// field offset: 0x325c
-	m_vphysicsCollisionState: Integer,
-	// field offset: 0x3260
-	m_oldOrigin: Vector,
-	// field offset: 0x326c
-	m_bTouchedPhysObject: Boolean,
-	// field offset: 0x326d
-	m_bPhysicsWasFrozen: Boolean,
-	// field offset: 0x3270
-	m_vNewVPhysicsPosition: Vector,
-	// field offset: 0x327c
-	m_vNewVPhysicsVelocity: Vector,
-	// field offset: 0x32ec
-	m_afPhysicsFlags: Integer,
-	// field offset: 0x32f0
-	m_hVehicle: EHandle,
-	// field offset: 0x32f4
-	m_hLastWeapon: EHandle,
-	// field offset: 0x32f8
-	m_hViewModel: EHandle,
-	// field offset: 0x3324
-	m_fOnTarget: Boolean,
-	// field offset: 0x342c
-	m_nTickBase: Integer,
-	// field offset: 0x35a4
-	m_vecPreviouslyPredictedOrigin: Vector,
-}
-class C_ColorCorrectionVolume extends C_BaseToggle {
-	// field offset: 0xa2c
-	m_Weight: Float,
-}
-class C_PlayerResource extends C_BaseEntity {
-	// field offset: 0x9e0
-	m_szName: String,
-	// field offset: 0xae4
-	m_bConnected: Boolean,
-	// field offset: 0xb28
-	m_iPing: Integer,
-	// field offset: 0xc2c
-	m_iKills: Integer,
-	// field offset: 0xd30
-	m_iAssists: Integer,
-	// field offset: 0xe34
-	m_iDeaths: Integer,
-	// field offset: 0xf38
-	m_iTeam: Integer,
-	// field offset: 0x103c
-	m_iPendingTeam: Integer,
-	// field offset: 0x1140
-	m_bAlive: Boolean,
-	// field offset: 0x1184
-	m_iHealth: Integer,
-	// field offset: 0x1288
-	m_iCoachingTeam: Integer,
-}
-class C_Team extends C_BaseEntity {
-	// field offset: 0x9ec
-	m_szTeamname: Char,
-	// field offset: 0xa0c
-	m_szClanTeamname: Char,
-	// field offset: 0xa2c
-	m_szTeamFlagImage: Char,
-	// field offset: 0xa34
-	m_szTeamLogoImage: Char,
-	// field offset: 0xa3c
-	m_szTeamMatchStat: Char,
-	// field offset: 0xb40
-	m_scoreTotal: Integer,
-	// field offset: 0xb44
-	m_scoreFirstHalf: Integer,
-	// field offset: 0xb48
-	m_scoreSecondHalf: Integer,
-	// field offset: 0xb4c
-	m_scoreOvertime: Integer,
-	// field offset: 0xb58
-	m_iClanID: Integer,
-	// field offset: 0xb5c
-	m_iDeaths: Integer,
-	// field offset: 0xb60
-	m_iPing: Integer,
-	// field offset: 0xb64
-	m_iPacketloss: Integer,
-	// field offset: 0xb68
-	m_iTeamNum: Integer,
-	// field offset: 0xb6c
-	m_bSurrendered: Integer,
-}
-class CCollisionProperty {
-	// field offset: 0x8
-	m_vecMins: Vector,
-	// field offset: 0x14
-	m_vecMaxs: Vector,
-	// field offset: 0x20
-	m_usSolidFlags: Short,
-	// field offset: 0x22
-	m_nSolidType: Char,
-	// field offset: 0x23
-	m_triggerBloat: Char,
-}
-class CSprite extends C_BaseEntity {
-	// field offset: 0x9e8
-	m_hAttachedToEntity: EHandle,
-	// field offset: 0x9ec
-	m_nAttachment: Integer,
-	// field offset: 0x9f0
-	m_flSpriteFramerate: Float,
-	// field offset: 0x9f4
-	m_flFrame: Float,
-	// field offset: 0x9f8
-	m_flDieTime: Float,
-	// field offset: 0x9fc
-	m_nBrightness: Integer,
-	// field offset: 0xa00
-	m_flBrightnessTime: Float,
-	// field offset: 0xa04
-	m_flSpriteScale: Float,
-	// field offset: 0xa08
-	m_flScaleTime: Float,
-	// field offset: 0xa18
-	m_flLastTime: Float,
-	// field offset: 0xa1c
-	m_flMaxFrame: Float,
-}
-class IntervalTimer {
-	// field offset: 0x4
-	m_timestamp: Float,
-}
-class CountdownTimer {
-	// field offset: 0x4
-	m_duration: Float,
-	// field offset: 0x8
-	m_timestamp: Float,
-}
-class C_CSPlayer extends C_BasePlayer {
-	// field offset: 0xa14
-	m_flCycle: Float,
-	// field offset: 0x390a
-	m_bIsScoped: Boolean,
-	// field offset: 0x390b
-	m_bIsWalking: Boolean,
-	// field offset: 0x390c
-	m_bResumeZoom: Boolean,
-	// field offset: 0x3a7c
-	m_nIsAutoMounting: Integer,
-	// field offset: 0xa368
-	m_flStamina: Float,
-	// field offset: 0xa36c
-	m_iDirection: Integer,
-	// field offset: 0xa370
-	m_iShotsFired: Integer,
-	// field offset: 0xa374
-	m_nNumFastDucks: Integer,
-	// field offset: 0xa378
-	m_bDuckOverride: Boolean,
-}
-class CBaseCSGrenade extends CWeaponCSBase {
-	// field offset: 0x3390
+### Datamaps
+
+<details>
+<summary><code>class CBaseCSGrenade extends CWeaponCSBase</code></summary>
+
+```
+{
 	m_bRedraw: Boolean,
-	// field offset: 0x3392
 	m_bPinPulled: Boolean,
-	// field offset: 0x339c
 	m_flThrowStrength: Float,
 }
-class CWeaponBaseItem extends CWeaponCSBase {
-	// field offset: 0x339c
-	m_bRedraw: Boolean,
+```
+
+#### Offsets
+
+```
+CBaseCSGrenade!0x3390 m_bRedraw
+CBaseCSGrenade!0x3392 m_bPinPulled
+CBaseCSGrenade!0x339c m_flThrowStrength
+```
+</details>
+<details>
+<summary><code>class CBaseCombatWeapon extends C_BaseFlex</code></summary>
+
+```
+{
+	m_nNextThinkTick: Integer,
+	m_hOwner: EHandle,
+	m_nViewModelIndex: Integer,
+	m_flNextPrimaryAttack: Float,
+	m_flNextSecondaryAttack: Float,
+	m_iViewModelIndex: Integer,
+	m_iWorldModelIndex: Integer,
+	m_iWorldDroppedModelIndex: Integer,
+	m_iWeaponModule: Integer,
+	m_iNumEmptyAttacks: Integer,
+	m_iState: Integer,
+	m_iPrimaryAmmoType: Integer,
+	m_iSecondaryAmmoType: Integer,
+	m_iClip1: Integer,
+	m_iClip2: Integer,
+	m_iPrimaryReserveAmmoCount: Integer,
+	m_iSecondaryReserveAmmoCount: Integer,
+	m_flTimeWeaponIdle: Float,
+	m_flNextEmptySoundTime: Float,
+	m_fMinRange1: Float,
+	m_fMinRange2: Float,
+	m_fMaxRange1: Float,
+	m_fMaxRange2: Float,
+	m_fFireDuration: Float,
+	m_Activity: Integer,
+	m_iPrimaryAmmoCount: Integer,
+	m_iSecondaryAmmoCount: Integer,
+	m_iszName: Integer,
+	m_bRemoveable: Boolean,
+	m_bInReload: Boolean,
+	m_bFireOnEmpty: Boolean,
+	m_bFiresUnderwater: Boolean,
+	m_bAltFiresUnderwater: Boolean,
+	m_bReloadsSingly: Boolean,
 }
-class CC4 extends CWeaponCSBase {
-	// field offset: 0x33c0
+```
+
+#### Offsets
+
+```
+CBaseCombatWeapon!0x00fc m_nNextThinkTick
+CBaseCombatWeapon!0x3210 m_hOwner
+CBaseCombatWeapon!0x3214 m_nViewModelIndex
+CBaseCombatWeapon!0x3218 m_flNextPrimaryAttack
+CBaseCombatWeapon!0x321c m_flNextSecondaryAttack
+CBaseCombatWeapon!0x3220 m_iViewModelIndex
+CBaseCombatWeapon!0x3224 m_iWorldModelIndex
+CBaseCombatWeapon!0x3228 m_iWorldDroppedModelIndex
+CBaseCombatWeapon!0x322c m_iWeaponModule
+CBaseCombatWeapon!0x3230 m_iNumEmptyAttacks
+CBaseCombatWeapon!0x3238 m_iState
+CBaseCombatWeapon!0x323c m_iPrimaryAmmoType
+CBaseCombatWeapon!0x3240 m_iSecondaryAmmoType
+CBaseCombatWeapon!0x3244 m_iClip1
+CBaseCombatWeapon!0x3248 m_iClip2
+CBaseCombatWeapon!0x324c m_iPrimaryReserveAmmoCount
+CBaseCombatWeapon!0x3250 m_iSecondaryReserveAmmoCount
+CBaseCombatWeapon!0x3254 m_flTimeWeaponIdle
+CBaseCombatWeapon!0x3258 m_flNextEmptySoundTime
+CBaseCombatWeapon!0x325c m_fMinRange1
+CBaseCombatWeapon!0x3260 m_fMinRange2
+CBaseCombatWeapon!0x3264 m_fMaxRange1
+CBaseCombatWeapon!0x3268 m_fMaxRange2
+CBaseCombatWeapon!0x326c m_fFireDuration
+CBaseCombatWeapon!0x3274 m_Activity
+CBaseCombatWeapon!0x3278 m_iPrimaryAmmoCount
+CBaseCombatWeapon!0x327c m_iSecondaryAmmoCount
+CBaseCombatWeapon!0x3280 m_iszName
+CBaseCombatWeapon!0x3284 m_bRemoveable
+CBaseCombatWeapon!0x3285 m_bInReload
+CBaseCombatWeapon!0x3286 m_bFireOnEmpty
+CBaseCombatWeapon!0x3287 m_bFiresUnderwater
+CBaseCombatWeapon!0x3288 m_bAltFiresUnderwater
+CBaseCombatWeapon!0x3289 m_bReloadsSingly
+```
+</details>
+<details>
+<summary><code>class CBaseGrenade extends C_BaseAnimating</code></summary>
+
+```
+{
+	m_vecVelocity: Vector,
+	m_bIsLive: Boolean,
+	m_DmgRadius: Boolean,
+	m_flNextAttack: Float,
+	m_flDamage: Float,
+	m_hThrower: EHandle,
+}
+```
+
+#### Offsets
+
+```
+CBaseGrenade!0x0114 m_vecVelocity
+CBaseGrenade!0x2981 m_bIsLive
+CBaseGrenade!0x2984 m_DmgRadius
+CBaseGrenade!0x2988 m_flNextAttack
+CBaseGrenade!0x2998 m_flDamage
+CBaseGrenade!0x29a0 m_hThrower
+```
+</details>
+<details>
+<summary><code>class CBaseViewModel extends C_BaseAnimating</code></summary>
+
+```
+{
+	m_fEffects: Integer,
+	m_nModelIndex: Short,
+	m_flAnimTime: Float,
+	m_flCycle: Float,
+	m_flPlaybackRate: Float,
+	m_nSkin: Integer,
+	m_nBody: Integer,
+	m_nSequence: Integer,
+	m_nViewModelIndex: Integer,
+	m_nAnimationParity: Integer,
+	m_hWeapon: EHandle,
+	m_hOwner: EHandle,
+	m_flTimeWeaponIdle: Float,
+	m_Activity: Integer,
+}
+```
+
+#### Offsets
+
+```
+CBaseViewModel!0x00f0 m_fEffects
+CBaseViewModel!0x0258 m_nModelIndex
+CBaseViewModel!0x0260 m_flAnimTime
+CBaseViewModel!0x0a14 m_flCycle
+CBaseViewModel!0x0a18 m_flPlaybackRate
+CBaseViewModel!0x0a1c m_nSkin
+CBaseViewModel!0x0a20 m_nBody
+CBaseViewModel!0x28bc m_nSequence
+CBaseViewModel!0x29c0 m_nViewModelIndex
+CBaseViewModel!0x29c4 m_nAnimationParity
+CBaseViewModel!0x29c8 m_hWeapon
+CBaseViewModel!0x29cc m_hOwner
+CBaseViewModel!0x29d0 m_flTimeWeaponIdle
+CBaseViewModel!0x29d4 m_Activity
+```
+</details>
+<details>
+<summary><code>class CBaseWeaponWorldModel extends C_BaseAnimatingOverlay</code></summary>
+
+```
+{
+	m_fEffects: Integer,
+	m_nModelIndex: Short,
+	m_nBody: Integer,
+	m_hCombatWeaponParent: EHandle,
+}
+```
+
+#### Offsets
+
+```
+CBaseWeaponWorldModel!0x00f0 m_fEffects
+CBaseWeaponWorldModel!0x0258 m_nModelIndex
+CBaseWeaponWorldModel!0x0a20 m_nBody
+CBaseWeaponWorldModel!0x29f0 m_hCombatWeaponParent
+```
+</details>
+<details>
+<summary><code>class CBeam extends C_BaseEntity</code></summary>
+
+```
+{
+	m_clrRender: Integer,
+	m_vecOrigin: Vector,
+	m_nModelIndex: Integer,
+	m_nRenderFX: Integer,
+	m_nRenderMode: Integer,
+	m_flFrameRate: Float,
+	m_nNumBeamEnts: Integer,
+	m_nHaloIndex: Integer,
+	m_nBeamType: Integer,
+	m_hAttachEntity: EHandle,
+	m_nAttachIndex: Integer,
+	m_fWidth: Float,
+	m_fEndWidth: Float,
+	m_fFadeLength: Float,
+	m_fHaloScale: Float,
+	m_fAmplitude: Float,
+	m_fStartFrame: Float,
+	m_fSpeed: Float,
+	m_flFrame: Float,
+	m_vecEndPos: Vector,
+}
+```
+
+#### Offsets
+
+```
+CBeam!0x0070 m_clrRender
+CBeam!0x00ac m_vecOrigin
+CBeam!0x0258 m_nModelIndex
+CBeam!0x025a m_nRenderFX
+CBeam!0x025b m_nRenderMode
+CBeam!0x09d8 m_flFrameRate
+CBeam!0x09e8 m_nNumBeamEnts
+CBeam!0x09f0 m_nHaloIndex
+CBeam!0x09f4 m_nBeamType
+CBeam!0x09fc m_hAttachEntity
+CBeam!0x0a24 m_nAttachIndex
+CBeam!0x0a4c m_fWidth
+CBeam!0x0a50 m_fEndWidth
+CBeam!0x0a54 m_fFadeLength
+CBeam!0x0a58 m_fHaloScale
+CBeam!0x0a5c m_fAmplitude
+CBeam!0x0a60 m_fStartFrame
+CBeam!0x0a64 m_fSpeed
+CBeam!0x0a68 m_flFrame
+CBeam!0x0a70 m_vecEndPos
+```
+</details>
+<details>
+<summary><code>class CC4 extends CWeaponCSBase</code></summary>
+
+```
+{
 	m_bStartedArming: Integer,
-	// field offset: 0x33c4
 	m_fArmedTime: Float,
-	// field offset: 0x33c8
 	m_bBombPlacedAnimation: Integer,
-	// field offset: 0x33c9
 	m_bShowC4LED: Integer,
-	// field offset: 0x33ca
 	m_bIsPlantingViaUse: Integer,
 }
-class CWeaponCSBase extends CBaseCombatWeapon {
-	// field offset: 0x3218
-	m_flNextPrimaryAttack: Float,
-	// field offset: 0x321c
-	m_flNextSecondaryAttack: Float,
-	// field offset: 0x3254
-	m_flTimeWeaponIdle: Float,
-	// field offset: 0x32ec
-	m_weaponMode: Integer,
-	// field offset: 0x3304
-	m_fAccuracyPenalty: Float,
-	// field offset: 0x3310
-	m_iRecoilIndex: Integer,
-	// field offset: 0x3314
-	m_flRecoilIndex: Float,
-	// field offset: 0x331c
-	m_flPostponeFireReadyTime: Float,
-	// field offset: 0x3320
-	m_bReloadVisuallyComplete: Boolean,
-	// field offset: 0x3360
-	m_fLastShotTime: Float,
-	// field offset: 0x337c
-	m_iIronSightMode: Integer,
+```
+
+#### Offsets
+
+```
+CC4!0x33c0 m_bStartedArming
+CC4!0x33c4 m_fArmedTime
+CC4!0x33c8 m_bBombPlacedAnimation
+CC4!0x33c9 m_bShowC4LED
+CC4!0x33ca m_bIsPlantingViaUse
+```
+</details>
+<details>
+<summary><code>class CCollisionProperty</code></summary>
+
+```
+{
+	m_vecMins: Vector,
+	m_vecMaxs: Vector,
+	m_usSolidFlags: Short,
+	m_nSolidType: Char,
+	m_triggerBloat: Char,
 }
-class CWeaponCSBaseGun extends CWeaponCSBase {
-	// field offset: 0x3390
-	m_zoomLevel: Integer,
-	// field offset: 0x3394
-	m_iBurstShotsRemaining: Integer,
-	// field offset: 0x3398
-	m_fNextBurstShot: Float,
-}
-class CWeaponM3 extends CWeaponCSBase {
-	// field offset: 0x3394
-	m_reloadState: Integer,
-}
-class CMelee extends CWeaponCSBase {
-	// field offset: 0x3390
-	m_flThrowAt: Float,
-}
-class CWeaponNOVA extends CWeaponCSBase {
-	// field offset: 0x3394
-	m_reloadState: Integer,
-}
-class CWeaponSawedoff extends CWeaponCSBase {
-	// field offset: 0x3394
-	m_reloadState: Integer,
-}
-class CWeaponTaser extends CWeaponCSBaseGun {
-	// field offset: 0x33b0
-	m_fFireTime: Float,
-}
-class CWeaponXM1014 extends CWeaponCSBase {
-	// field offset: 0x3394
-	m_reloadState: Integer,
-}
-class CDispSubNeighbor {
-	// field offset: 0x0
+```
+
+#### Offsets
+
+```
+CCollisionProperty!0x0008 m_vecMins
+CCollisionProperty!0x0014 m_vecMaxs
+CCollisionProperty!0x0020 m_usSolidFlags
+CCollisionProperty!0x0022 m_nSolidType
+CCollisionProperty!0x0023 m_triggerBloat
+```
+</details>
+<details>
+<summary><code>class CDispSubNeighbor</code></summary>
+
+```
+{
 	m_iNeighbor: Short,
-	// field offset: 0x2
 	m_NeighborOrientation: Char,
-	// field offset: 0x3
 	m_Span: Char,
-	// field offset: 0x4
 	m_NeighborSpan: Char,
 }
-class DT_LocalActiveWeaponData {
-	// field offset: 0x3218
-	m_flNextPrimaryAttack: Float,
-	// field offset: 0x321c
-	m_flNextSecondaryAttack: Float,
-	// field offset: 0xfc
-	m_nNextThinkTick: Int,
-	// field offset: 0x3254
-	m_flTimeWeaponIdle: Float,
+```
+
+#### Offsets
+
+```
+CDispSubNeighbor!0x0000 m_iNeighbor
+CDispSubNeighbor!0x0002 m_NeighborOrientation
+CDispSubNeighbor!0x0003 m_Span
+CDispSubNeighbor!0x0004 m_NeighborSpan
+```
+</details>
+<details>
+<summary><code>class CMelee extends CWeaponCSBase</code></summary>
+
+```
+{
+	m_flThrowAt: Float,
 }
-class DT_AI_BaseNPC {
-	// field offset: 0x0
-	baseclass: DataTable,
-	// field offset: 0x25f
-	m_lifeState: Int,
-	// field offset: 0x2f24
-	m_bPerformAvoidance: Int,
-	// field offset: 0x2f25
-	m_bIsMoving: Int,
-	// field offset: 0x2f26
-	m_bFadeCorpse: Int,
-	// field offset: 0x2f14
-	m_iDeathPose: Int,
-	// field offset: 0x2f18
-	m_iDeathFrame: Int,
-	// field offset: 0x2f1c
-	m_iSpeedModRadius: Int,
-	// field offset: 0x2f20
-	m_iSpeedModSpeed: Int,
-	// field offset: 0x2f27
-	m_bSpeedModActive: Int,
-	// field offset: 0x2f28
-	m_bImportanRagdoll: Int,
-	// field offset: 0x2f10
-	m_flTimePingEffect: Float,
+```
+
+#### Offsets
+
+```
+CMelee!0x3390 m_flThrowAt
+```
+</details>
+<details>
+<summary><code>class CPlayerLocalData</code></summary>
+
+```
+{
+	m_nStepside: Integer,
+	m_nOldButtons: Integer,
+	m_flFOVRate: Float,
+	m_iHideHUD: Integer,
+	m_nDuckTimeMsecs: Integer,
+	m_nDuckJumpTimeMsecs: Integer,
+	m_nJumpTimeMsecs: Integer,
+	m_flFallVelocity: Float,
+	m_flStepSize: Float,
+	m_viewPunchAngle: Vector,
+	m_aimPunchAngle: Vector,
+	m_aimPunchAngleVel: Vector,
+	m_bDucked: Boolean,
+	m_bDucking: Boolean,
+	m_flLastDuckTime: Float,
+	m_bInDuckJump: Boolean,
+	m_bDrawViewmodel: Boolean,
+	m_bWearingSuit: Boolean,
+	m_bPoisoned: Boolean,
+	m_bAllowAutoMovement: Boolean,
 }
-class DT_LocalPlayerExclusive {
-	// field offset: 0x2fbc
-	m_Local: DataTable,
-	// field offset: 0x108
-	m_vecViewOffset[0]: Float,
-	// field offset: 0x10c
-	m_vecViewOffset[1]: Float,
-	// field offset: 0x110
-	m_vecViewOffset[2]: Float,
-	// field offset: 0x144
-	m_flFriction: Float,
-	// field offset: 0x3324
-	m_fOnTarget: Int,
-	// field offset: 0x342c
-	m_nTickBase: Int,
-	// field offset: 0xfc
-	m_nNextThinkTick: Int,
-	// field offset: 0x32f4
-	m_hLastWeapon: Int,
-	// field offset: 0x114
-	m_vecVelocity[0]: Float,
-	// field offset: 0x118
-	m_vecVelocity[1]: Float,
-	// field offset: 0x11c
-	m_vecVelocity[2]: Float,
-	// field offset: 0x120
-	m_vecBaseVelocity: Vector,
-	// field offset: 0x3340
-	m_hConstraintEntity: Int,
-	// field offset: 0x3344
-	m_vecConstraintCenter: Vector,
-	// field offset: 0x3350
-	m_flConstraintRadius: Float,
-	// field offset: 0x3354
-	m_flConstraintWidth: Float,
-	// field offset: 0x3358
-	m_flConstraintSpeedFactor: Float,
-	// field offset: 0x335c
-	m_bConstraintPastRadius: Int,
-	// field offset: 0x33c0
-	m_flDeathTime: Float,
-	// field offset: 0x33c4
-	m_flNextDecalTime: Float,
-	// field offset: 0x33c8
-	m_fForceTeam: Float,
-	// field offset: 0x3590
-	m_flLaggedMovementValue: Float,
-	// field offset: 0x31cc
-	m_hTonemapController: Int,
+```
+
+#### Offsets
+
+```
+CPlayerLocalData!0x003c m_nStepside
+CPlayerLocalData!0x0040 m_nOldButtons
+CPlayerLocalData!0x0044 m_flFOVRate
+CPlayerLocalData!0x0048 m_iHideHUD
+CPlayerLocalData!0x004c m_nDuckTimeMsecs
+CPlayerLocalData!0x0050 m_nDuckJumpTimeMsecs
+CPlayerLocalData!0x0054 m_nJumpTimeMsecs
+CPlayerLocalData!0x0058 m_flFallVelocity
+CPlayerLocalData!0x0060 m_flStepSize
+CPlayerLocalData!0x0064 m_viewPunchAngle
+CPlayerLocalData!0x0070 m_aimPunchAngle
+CPlayerLocalData!0x007c m_aimPunchAngleVel
+CPlayerLocalData!0x0088 m_bDucked
+CPlayerLocalData!0x0089 m_bDucking
+CPlayerLocalData!0x008c m_flLastDuckTime
+CPlayerLocalData!0x0090 m_bInDuckJump
+CPlayerLocalData!0x0091 m_bDrawViewmodel
+CPlayerLocalData!0x0092 m_bWearingSuit
+CPlayerLocalData!0x0093 m_bPoisoned
+CPlayerLocalData!0x0094 m_bAllowAutoMovement
+```
+</details>
+<details>
+<summary><code>class CPlayerState</code></summary>
+
+```
+{
+	deadflag: Boolean,
 }
-class DT_BaseToggle {
-	// field offset: 0x0
-	baseclass: DataTable,
-	// field offset: 0x9ec
-	m_vecFinalDest: Vector,
-	// field offset: 0x9f8
-	m_movementType: Int,
-	// field offset: 0x9fc
-	m_flMoveTargetTime: Float,
-}
-class DT_ColorCorrectionVolume {
-	// field offset: 0x0
-	baseclass: DataTable,
-	// field offset: 0xa20
-	m_bEnabled: Int,
-	// field offset: 0xa24
-	m_MaxWeight: Float,
-	// field offset: 0xa28
-	m_FadeDuration: Float,
-	// field offset: 0xa2c
-	m_Weight: Float,
-	// field offset: 0xa30
-	m_lookupFilename: String,
-}
-class DT_DynamicLight {
-	// field offset: 0x0
-	baseclass: DataTable,
-	// field offset: 0x9d8
-	m_Flags: Int,
-	// field offset: 0x9d9
-	m_LightStyle: Int,
-	// field offset: 0x9dc
-	m_Radius: Float,
-	// field offset: 0x9e0
-	m_Exponent: Int,
-	// field offset: 0x9e4
-	m_InnerAngle: Float,
-	// field offset: 0x9e8
-	m_OuterAngle: Float,
-	// field offset: 0x9ec
-	m_SpotRadius: Float,
-}
-class DT_EntityParticleTrail {
-	// field offset: 0x0
-	baseclass: DataTable,
-	// field offset: 0xac0
-	m_iMaterialName: Int,
-	// field offset: 0xac4
-	m_Info: DataTable,
-	// field offset: 0xad8
-	m_hConstraintEntity: Int,
-}
-class DT_CascadeLight {
-	// field offset: 0x0
-	baseclass: DataTable,
-	// field offset: 0x9d8
-	m_shadowDirection: Vector,
-	// field offset: 0x9e4
-	m_envLightShadowDirection: Vector,
-	// field offset: 0x9f0
-	m_bEnabled: Int,
-	// field offset: 0x9f1
-	m_bUseLightEnvAngles: Int,
-	// field offset: 0x9f2
-	m_LightColor: Int,
-	// field offset: 0x9f8
-	m_LightColorScale: Int,
-	// field offset: 0x9fc
-	m_flMaxShadowDist: Float,
-}
-class DT_EnvDOFController {
-	// field offset: 0x0
-	baseclass: DataTable,
-	// field offset: 0x9d8
-	m_bDOFEnabled: Int,
-	// field offset: 0x9dc
-	m_flNearBlurDepth: Float,
-	// field offset: 0x9e0
-	m_flNearFocusDepth: Float,
-	// field offset: 0x9e4
-	m_flFarFocusDepth: Float,
-	// field offset: 0x9e8
-	m_flFarBlurDepth: Float,
-	// field offset: 0x9ec
-	m_flNearBlurRadius: Float,
-	// field offset: 0x9f0
-	m_flFarBlurRadius: Float,
-}
-class DT_EnvProjectedTexture {
-	// field offset: 0x0
-	baseclass: DataTable,
-	// field offset: 0x9dc
-	m_hTargetEntity: Int,
-	// field offset: 0x9e0
-	m_bState: Int,
-	// field offset: 0x9e1
-	m_bAlwaysUpdate: Int,
-	// field offset: 0x9e4
-	m_flLightFOV: Float,
-	// field offset: 0x9e8
-	m_bEnableShadows: Int,
-	// field offset: 0x9e9
-	m_bSimpleProjection: Int,
-	// field offset: 0x9ea
-	m_bLightOnlyTarget: Int,
-	// field offset: 0x9eb
-	m_bLightWorld: Int,
-	// field offset: 0x9ec
-	m_bCameraSpace: Int,
-	// field offset: 0x9f0
-	m_flBrightnessScale: Float,
-	// field offset: 0x9f4
-	m_LightColor: Int,
-	// field offset: 0xa08
-	m_flColorTransitionTime: Float,
-	// field offset: 0xa0c
-	m_flAmbient: Float,
-	// field offset: 0xa18
-	m_SpotlightTextureName: String,
-	// field offset: 0xb24
-	m_nSpotlightTextureFrame: Int,
-	// field offset: 0xa10
-	m_flNearZ: Float,
-	// field offset: 0xa14
-	m_flFarZ: Float,
-	// field offset: 0xb28
-	m_nShadowQuality: Int,
-	// field offset: 0xb38
-	m_flProjectionSize: Float,
-	// field offset: 0xb3c
-	m_flRotation: Float,
-	// field offset: 0xb2c
-	m_iStyle: Int,
-}
-class DT_CFish {
-	// field offset: 0x29e0
-	m_poolOrigin: Vector,
-	// field offset: 0x29c8
-	m_x: Float,
-	// field offset: 0x29cc
-	m_y: Float,
-	// field offset: 0x29d0
-	m_z: Float,
-	// field offset: 0x29d8
-	m_angle: Float,
-	// field offset: 0x258
-	m_nModelIndex: Int,
-	// field offset: 0x25f
-	m_lifeState: Int,
-	// field offset: 0x29ec
-	m_waterLevel: Float,
-}
-class DT_TEDust {
-	// field offset: 0x0
-	baseclass: DataTable,
-	// field offset: 0x1c
-	m_flSize: Float,
-	// field offset: 0x20
-	m_flSpeed: Float,
-	// field offset: 0x24
-	m_vecDirection: Vector,
-}
-class DT_LightGlow {
-	// field offset: 0x70
-	m_clrRender: Int,
-	// field offset: 0x9d8
-	m_nHorizontalSize: Int,
-	// field offset: 0x9dc
-	m_nVerticalSize: Int,
-	// field offset: 0x9e0
-	m_nMinDist: Int,
-	// field offset: 0x9e4
-	m_nMaxDist: Int,
-	// field offset: 0x9e8
-	m_nOuterMaxDist: Int,
-	// field offset: 0x9ec
-	m_spawnflags: Int,
-	// field offset: 0x138
-	m_vecOrigin: Vector,
-	// field offset: 0x12c
-	m_angRotation: Vector,
-	// field offset: 0x148
-	moveparent: Int,
-	// field offset: 0xac4
-	m_flGlowProxySize: Float,
-	// field offset: 0x0
-	HDRColorScale: Float,
-}
-class DT_MaterialModifyControl {
-	// field offset: 0x0
-	baseclass: DataTable,
-	// field offset: 0x9d8
-	m_szMaterialName: String,
-	// field offset: 0xad7
-	m_szMaterialVar: String,
-	// field offset: 0xbd6
-	m_szMaterialVarValue: String,
-	// field offset: 0xce0
-	m_iFrameStart: Int,
-	// field offset: 0xce4
-	m_iFrameEnd: Int,
-	// field offset: 0xce8
-	m_bWrap: Int,
-	// field offset: 0xcec
-	m_flFramerate: Float,
-	// field offset: 0xcf0
-	m_bNewAnimCommandsSemaphore: Int,
-	// field offset: 0xcf4
-	m_flFloatLerpStartValue: Float,
-	// field offset: 0xcf8
-	m_flFloatLerpEndValue: Float,
-	// field offset: 0xcfc
-	m_flFloatLerpTransitionTime: Float,
-	// field offset: 0xd00
-	m_bFloatLerpWrap: Int,
-	// field offset: 0xd08
-	m_nModifyMode: Int,
-}
-class DT_MovieDisplay {
-	// field offset: 0x0
-	baseclass: DataTable,
-	// field offset: 0x9d8
-	m_bEnabled: Int,
-	// field offset: 0x9d9
-	m_bLooping: Int,
-	// field offset: 0x9da
-	m_szMovieFilename: String,
-	// field offset: 0xa5a
-	m_szGroupName: String,
-	// field offset: 0xada
-	m_bStretchToFill: Int,
-	// field offset: 0xadb
-	m_bForcedSlave: Int,
-	// field offset: 0xadc
-	m_bUseCustomUVs: Int,
-	// field offset: 0xae0
-	m_flUMin: Float,
-	// field offset: 0xae4
-	m_flUMax: Float,
-	// field offset: 0xae8
-	m_flVMin: Float,
-	// field offset: 0xaec
-	m_flVMax: Float,
-}
-class DT_Plasma {
-	// field offset: 0x0
-	baseclass: DataTable,
-	// field offset: 0x9d8
-	m_flStartScale: Float,
-	// field offset: 0x9dc
-	m_flScale: Float,
-	// field offset: 0x9e0
-	m_flScaleTime: Float,
-	// field offset: 0x9e4
-	m_nFlags: Int,
-	// field offset: 0x9e8
-	m_nPlasmaModelIndex: Int,
-	// field offset: 0x9ec
-	m_nPlasmaModelIndex2: Int,
-	// field offset: 0x9f0
-	m_nGlowModelIndex: Int,
-}
-class DT_Prop_Hallucination {
-	// field offset: 0x0
-	baseclass: DataTable,
-	// field offset: 0x2999
-	m_bEnabled: Int,
-	// field offset: 0x299c
-	m_fVisibleTime: Float,
-	// field offset: 0x29a0
-	m_fRechargeTime: Float,
-}
-class DT_RopeKeyframe {
-	// field offset: 0xccc
-	m_nChangeCount: Int,
-	// field offset: 0xa14
-	m_iRopeMaterialModelIndex: Int,
-	// field offset: 0xcac
-	m_hStartPoint: Int,
-	// field offset: 0xcb0
-	m_hEndPoint: Int,
-	// field offset: 0xcb4
-	m_iStartAttachment: Int,
-	// field offset: 0xcb6
-	m_iEndAttachment: Int,
-	// field offset: 0xcc8
-	m_fLockedPoints: Int,
-	// field offset: 0xcc0
-	m_Slack: Int,
-	// field offset: 0xcbc
-	m_RopeLength: Int,
-	// field offset: 0xa10
-	m_RopeFlags: Int,
-	// field offset: 0xcc4
-	m_TextureScale: Float,
-	// field offset: 0xca8
-	m_nSegments: Int,
-	// field offset: 0xd50
-	m_bConstrainBetweenEndpoints: Int,
-	// field offset: 0xcb8
-	m_Subdiv: Int,
-	// field offset: 0xcd0
-	m_Width: Float,
-	// field offset: 0xa0c
-	m_flScrollSpeed: Float,
-	// field offset: 0x138
-	m_vecOrigin: Vector,
-	// field offset: 0x148
-	moveparent: Int,
-	// field offset: 0x2ec
-	m_iParentAttachment: Int,
-	// field offset: 0xa18
-	m_iDefaultRopeMaterialModelIndex: Int,
-	// field offset: 0x988
-	m_nMinCPULevel: Int,
-	// field offset: 0x989
-	m_nMaxCPULevel: Int,
-	// field offset: 0x98a
-	m_nMinGPULevel: Int,
-	// field offset: 0x98b
-	m_nMaxGPULevel: Int,
-}
-class DT_PropVehicleChoreoGeneric {
-	// field offset: 0x0
-	baseclass: DataTable,
-	// field offset: 0x29f4
-	m_hPlayer: Int,
-	// field offset: 0x29fc
-	m_bEnterAnimOn: Int,
-	// field offset: 0x29fd
-	m_bExitAnimOn: Int,
-	// field offset: 0x2a0c
-	m_bForceEyesToAttachment: Int,
-	// field offset: 0x2a00
-	m_vecEyeExitEndpoint: Vector,
-	// field offset: 0x2a90
-	m_vehicleView.bClampEyeAngles: Int,
-	// field offset: 0x2a94
-	m_vehicleView.flPitchCurveZero: Float,
-	// field offset: 0x2a98
-	m_vehicleView.flPitchCurveLinear: Float,
-	// field offset: 0x2a9c
-	m_vehicleView.flRollCurveZero: Float,
-	// field offset: 0x2aa0
-	m_vehicleView.flRollCurveLinear: Float,
-	// field offset: 0x2aa4
-	m_vehicleView.flFOV: Float,
-	// field offset: 0x2aa8
-	m_vehicleView.flYawMin: Float,
-	// field offset: 0x2aac
-	m_vehicleView.flYawMax: Float,
-	// field offset: 0x2ab0
-	m_vehicleView.flPitchMin: Float,
-	// field offset: 0x2ab4
-	m_vehicleView.flPitchMax: Float,
-}
-class DT_VGuiScreen {
-	// field offset: 0x0
-	baseclass: DataTable,
-	// field offset: 0x9e0
-	m_flWidth: Float,
-	// field offset: 0x9e4
-	m_flHeight: Float,
-	// field offset: 0xa0c
-	m_fScreenFlags: Int,
-	// field offset: 0x9e8
-	m_nPanelName: Int,
-	// field offset: 0xa04
-	m_nAttachmentIndex: Int,
-	// field offset: 0xa08
-	m_nOverlayMaterial: Int,
-	// field offset: 0xa68
-	m_hPlayerOwner: Int,
-}
-class DT_CollisionProperty {
-	// field offset: 0x8
-	m_vecMins: Vector,
-	// field offset: 0x14
-	m_vecMaxs: Vector,
-	// field offset: 0x22
-	m_nSolidType: Int,
-	// field offset: 0x20
-	m_usSolidFlags: Int,
-	// field offset: 0x2a
-	m_nSurroundType: Int,
-	// field offset: 0x23
-	m_triggerBloat: Int,
-	// field offset: 0x2c
-	m_vecSpecifiedSurroundingMins: Vector,
-	// field offset: 0x38
-	m_vecSpecifiedSurroundingMaxs: Vector,
-}
-class DT_DangerZone {
-	// field offset: 0x0
-	baseclass: DataTable,
-	// field offset: 0x9d8
-	m_vecDangerZoneOriginStartedAt: Vector,
-	// field offset: 0x9e4
-	m_flBombLaunchTime: Float,
-	// field offset: 0x9e8
-	m_flExtraRadius: Float,
-	// field offset: 0x9ec
-	m_flExtraRadiusStartTime: Float,
-	// field offset: 0x9f0
-	m_flExtraRadiusTotalLerpTime: Float,
-	// field offset: 0x9f4
-	m_nDropOrder: Int,
-	// field offset: 0x9f8
-	m_iWave: Int,
-}
-class DT_GameRulesProxy {
-}
-class DT_ParticleProperty {
-}
-class DT_Ragdoll {
-	// field offset: 0x0
-	baseclass: DataTable,
-	// field offset: 0x2aa0
-	m_ragAngles[0]: Vector,
-	// field offset: 0x0
-	m_ragAngles: Array,
-	// field offset: 0x2980
-	m_ragPos[0]: Vector,
-	// field offset: 0x0
-	m_ragPos: Array,
-	// field offset: 0x2c7c
-	m_hUnragdoll: Int,
-	// field offset: 0x2c80
-	m_flBlendWeight: Float,
-	// field offset: 0x2c88
-	m_nOverlaySequence: Int,
-}
-class DT_Sprite {
-	// field offset: 0x0
-	baseclass: DataTable,
-	// field offset: 0x9e8
-	m_hAttachedToEntity: Int,
-	// field offset: 0x9ec
-	m_nAttachment: Int,
-	// field offset: 0xa08
-	m_flScaleTime: Float,
-	// field offset: 0xa04
-	m_flSpriteScale: Float,
-	// field offset: 0x9f0
+```
+
+#### Offsets
+
+```
+CPlayerState!0x0004 deadflag
+```
+</details>
+<details>
+<summary><code>class CSprite extends C_BaseEntity</code></summary>
+
+```
+{
+	m_hAttachedToEntity: EHandle,
+	m_nAttachment: Integer,
 	m_flSpriteFramerate: Float,
-	// field offset: 0xa10
-	m_flGlowProxySize: Float,
-	// field offset: 0xa14
-	m_flHDRColorScale: Float,
-	// field offset: 0x9f4
 	m_flFrame: Float,
-	// field offset: 0xa00
+	m_flDieTime: Float,
+	m_nBrightness: Integer,
 	m_flBrightnessTime: Float,
-	// field offset: 0x9fc
-	m_nBrightness: Int,
-	// field offset: 0xa0c
-	m_bWorldSpaceScale: Int,
+	m_flSpriteScale: Float,
+	m_flScaleTime: Float,
+	m_flLastTime: Float,
+	m_flMaxFrame: Float,
 }
-class DT_ParadropChopper {
-	// field offset: 0x0
-	baseclass: DataTable,
-	// field offset: 0x138
-	m_vecOrigin: VectorXY,
-	// field offset: 0x140
-	m_vecOrigin[2]: Float,
-	// field offset: 0x2990
-	m_hCallingPlayer: Int,
+```
+
+#### Offsets
+
+```
+CSprite!0x09e8 m_hAttachedToEntity
+CSprite!0x09ec m_nAttachment
+CSprite!0x09f0 m_flSpriteFramerate
+CSprite!0x09f4 m_flFrame
+CSprite!0x09f8 m_flDieTime
+CSprite!0x09fc m_nBrightness
+CSprite!0x0a00 m_flBrightnessTime
+CSprite!0x0a04 m_flSpriteScale
+CSprite!0x0a08 m_flScaleTime
+CSprite!0x0a18 m_flLastTime
+CSprite!0x0a1c m_flMaxFrame
+```
+</details>
+<details>
+<summary><code>class CWeaponBaseItem extends CWeaponCSBase</code></summary>
+
+```
+{
+	m_bRedraw: Boolean,
 }
-class DT_EnvGasCanister {
-	// field offset: 0x0
-	baseclass: DataTable,
-	// field offset: 0x29f4
-	m_flFlightSpeed: Float,
-	// field offset: 0x29f8
-	m_flLaunchTime: Float,
-	// field offset: 0x2a0c
-	m_vecParabolaDirection: Vector,
-	// field offset: 0x29f0
-	m_flFlightTime: Float,
-	// field offset: 0x2a18
-	m_flWorldEnterTime: Float,
-	// field offset: 0x29fc
-	m_flInitialZSpeed: Float,
-	// field offset: 0x2a00
-	m_flZAcceleration: Float,
-	// field offset: 0x2a04
-	m_flHorizSpeed: Float,
-	// field offset: 0x2a08
-	m_bLaunchedFromWithinWorld: Int,
-	// field offset: 0x29b4
-	m_vecImpactPosition: Vector,
-	// field offset: 0x29c0
-	m_vecStartPosition: Vector,
-	// field offset: 0x29cc
-	m_vecEnterWorldPosition: Vector,
-	// field offset: 0x29d8
-	m_vecDirection: Vector,
-	// field offset: 0x29e4
-	m_vecStartAngles: Vector,
-	// field offset: 0x2a1c
-	m_vecSkyboxOrigin: Vector,
-	// field offset: 0x2a28
-	m_flSkyboxScale: Float,
-	// field offset: 0x2a2c
-	m_bInSkybox: Int,
-	// field offset: 0x2a2d
-	m_bDoImpactEffects: Int,
-	// field offset: 0x2980
-	m_bLanded: Int,
-	// field offset: 0x29a8
-	m_hSkyboxCopy: Int,
-	// field offset: 0x2a30
-	m_nMyZoneIndex: Int,
-	// field offset: 0x138
-	m_vecOrigin: VectorXY,
-	// field offset: 0x140
-	m_vecOrigin[2]: Float,
+```
+
+#### Offsets
+
+```
+CWeaponBaseItem!0x339c m_bRedraw
+```
+</details>
+<details>
+<summary><code>class CWeaponCSBase extends CBaseCombatWeapon</code></summary>
+
+```
+{
+	m_flNextPrimaryAttack: Float,
+	m_flNextSecondaryAttack: Float,
+	m_flTimeWeaponIdle: Float,
+	m_weaponMode: Integer,
+	m_fAccuracyPenalty: Float,
+	m_iRecoilIndex: Integer,
+	m_flRecoilIndex: Float,
+	m_flPostponeFireReadyTime: Float,
+	m_bReloadVisuallyComplete: Boolean,
+	m_fLastShotTime: Float,
+	m_iIronSightMode: Integer,
 }
-class DT_AttributeContainer {
-	// field offset: 0x1c
-	m_hOuter: Int,
-	// field offset: 0x24
-	m_ProviderType: Int,
-	// field offset: 0x18
+```
+
+#### Offsets
+
+```
+CWeaponCSBase!0x3218 m_flNextPrimaryAttack
+CWeaponCSBase!0x321c m_flNextSecondaryAttack
+CWeaponCSBase!0x3254 m_flTimeWeaponIdle
+CWeaponCSBase!0x32ec m_weaponMode
+CWeaponCSBase!0x3304 m_fAccuracyPenalty
+CWeaponCSBase!0x3310 m_iRecoilIndex
+CWeaponCSBase!0x3314 m_flRecoilIndex
+CWeaponCSBase!0x331c m_flPostponeFireReadyTime
+CWeaponCSBase!0x3320 m_bReloadVisuallyComplete
+CWeaponCSBase!0x3360 m_fLastShotTime
+CWeaponCSBase!0x337c m_iIronSightMode
+```
+</details>
+<details>
+<summary><code>class CWeaponCSBaseGun extends CWeaponCSBase</code></summary>
+
+```
+{
+	m_zoomLevel: Integer,
+	m_iBurstShotsRemaining: Integer,
+	m_fNextBurstShot: Float,
+}
+```
+
+#### Offsets
+
+```
+CWeaponCSBaseGun!0x3390 m_zoomLevel
+CWeaponCSBaseGun!0x3394 m_iBurstShotsRemaining
+CWeaponCSBaseGun!0x3398 m_fNextBurstShot
+```
+</details>
+<details>
+<summary><code>class CWeaponM3 extends CWeaponCSBase</code></summary>
+
+```
+{
+	m_reloadState: Integer,
+}
+```
+
+#### Offsets
+
+```
+CWeaponM3!0x3394 m_reloadState
+```
+</details>
+<details>
+<summary><code>class CWeaponNOVA extends CWeaponCSBase</code></summary>
+
+```
+{
+	m_reloadState: Integer,
+}
+```
+
+#### Offsets
+
+```
+CWeaponNOVA!0x3394 m_reloadState
+```
+</details>
+<details>
+<summary><code>class CWeaponSawedoff extends CWeaponCSBase</code></summary>
+
+```
+{
+	m_reloadState: Integer,
+}
+```
+
+#### Offsets
+
+```
+CWeaponSawedoff!0x3394 m_reloadState
+```
+</details>
+<details>
+<summary><code>class CWeaponTaser extends CWeaponCSBaseGun</code></summary>
+
+```
+{
+	m_fFireTime: Float,
+}
+```
+
+#### Offsets
+
+```
+CWeaponTaser!0x33b0 m_fFireTime
+```
+</details>
+<details>
+<summary><code>class CWeaponXM1014 extends CWeaponCSBase</code></summary>
+
+```
+{
+	m_reloadState: Integer,
+}
+```
+
+#### Offsets
+
+```
+CWeaponXM1014!0x3394 m_reloadState
+```
+</details>
+<details>
+<summary><code>class C_BaseAnimating extends C_BaseEntity</code></summary>
+
+```
+{
+	m_flPlaybackRate: Float,
+	m_nSkin: Integer,
+	m_nBody: Integer,
+	m_nNewSequenceParity: Integer,
+	m_nResetEventsParity: Integer,
+	m_flEncodedController: Float,
+	m_nMuzzleFlashParity: Char,
+}
+```
+
+#### Offsets
+
+```
+C_BaseAnimating!0x0a18 m_flPlaybackRate
+C_BaseAnimating!0x0a1c m_nSkin
+C_BaseAnimating!0x0a20 m_nBody
+C_BaseAnimating!0x0a44 m_nNewSequenceParity
+C_BaseAnimating!0x0a48 m_nResetEventsParity
+C_BaseAnimating!0x0a54 m_flEncodedController
+C_BaseAnimating!0x0a64 m_nMuzzleFlashParity
+```
+</details>
+<details>
+<summary><code>class C_BaseCombatCharacter extends C_BaseFlex</code></summary>
+
+```
+{
+	m_flNextAttack: Float,
+	m_iAmmo: Integer,
+	m_hMyWeapons: EHandle,
+	m_hActiveWeapon: EHandle,
+}
+```
+
+#### Offsets
+
+```
+C_BaseCombatCharacter!0x2d70 m_flNextAttack
+C_BaseCombatCharacter!0x2d78 m_iAmmo
+C_BaseCombatCharacter!0x2df8 m_hMyWeapons
+C_BaseCombatCharacter!0x2ef8 m_hActiveWeapon
+```
+</details>
+<details>
+<summary><code>class C_BaseEntity</code></summary>
+
+```
+{
+	m_vecAbsVelocity: Vector,
+	m_vecAbsOrigin: Vector,
+	m_vecOrigin: Vector,
+	m_vecAngVelocity: Vector,
+	m_angAbsRotation: Vector,
+	m_angRotation: Vector,
+	m_flMaxFallVelocity: Float,
+	m_flGravity: Float,
+	m_flProxyRandomValue: Float,
+	m_iEFlags: Integer,
+	m_nWaterType: Char,
+	m_fEffects: Integer,
+	m_iTeamNum: Integer,
+	m_iPendingTeamNum: Integer,
+	m_iHealth: Integer,
+	m_fFlags: Integer,
+	m_vecViewOffset: Vector,
+	m_vecVelocity: Vector,
+	m_vecBaseVelocity: Vector,
+	m_angNetworkAngles: Vector,
+	m_vecNetworkOrigin: Vector,
+	m_flFriction: Float,
+	m_hNetworkMoveParent: EHandle,
+	m_hOwnerEntity: EHandle,
+	m_hGroundEntity: EHandle,
+	m_nModelIndex: Short,
+	m_nRenderFX: Char,
+	m_nRenderMode: Char,
+	m_MoveType: Char,
+	m_MoveCollide: Char,
+	m_nWaterLevel: Char,
+	m_flUseLookAtAngle: Float,
+	m_Collision: CCollisionProperty,
+	m_bEverHadPredictionErrorsForThisCommand: Boolean,
+}
+```
+
+#### Offsets
+
+```
+C_BaseEntity!0x0094 m_vecAbsVelocity
+C_BaseEntity!0x00a0 m_vecAbsOrigin
+C_BaseEntity!0x00ac m_vecOrigin
+C_BaseEntity!0x00b8 m_vecAngVelocity
+C_BaseEntity!0x00c4 m_angAbsRotation
+C_BaseEntity!0x00d0 m_angRotation
+C_BaseEntity!0x00dc m_flMaxFallVelocity
+C_BaseEntity!0x00e0 m_flGravity
+C_BaseEntity!0x00e4 m_flProxyRandomValue
+C_BaseEntity!0x00e8 m_iEFlags
+C_BaseEntity!0x00ec m_nWaterType
+C_BaseEntity!0x00f0 m_fEffects
+C_BaseEntity!0x00f4 m_iTeamNum
+C_BaseEntity!0x00f8 m_iPendingTeamNum
+C_BaseEntity!0x0100 m_iHealth
+C_BaseEntity!0x0104 m_fFlags
+C_BaseEntity!0x0108 m_vecViewOffset
+C_BaseEntity!0x0114 m_vecVelocity
+C_BaseEntity!0x0120 m_vecBaseVelocity
+C_BaseEntity!0x012c m_angNetworkAngles
+C_BaseEntity!0x0138 m_vecNetworkOrigin
+C_BaseEntity!0x0144 m_flFriction
+C_BaseEntity!0x0148 m_hNetworkMoveParent
+C_BaseEntity!0x014c m_hOwnerEntity
+C_BaseEntity!0x0150 m_hGroundEntity
+C_BaseEntity!0x0258 m_nModelIndex
+C_BaseEntity!0x025a m_nRenderFX
+C_BaseEntity!0x025b m_nRenderMode
+C_BaseEntity!0x025c m_MoveType
+C_BaseEntity!0x025d m_MoveCollide
+C_BaseEntity!0x025e m_nWaterLevel
+C_BaseEntity!0x02cc m_flUseLookAtAngle
+C_BaseEntity!0x031c m_Collision
+C_BaseEntity!0x0938 m_bEverHadPredictionErrorsForThisCommand
+```
+</details>
+<details>
+<summary><code>class C_BasePlayer extends C_BaseCombatCharacter</code></summary>
+
+```
+{
+	m_nNextThinkTick: Integer,
+	m_iHealth: Integer,
+	m_vecBaseVelocity: Vector,
+	m_hGroundEntity: EHandle,
+	m_nWaterLevel: Char,
+	m_lifeState: Char,
+	m_flDuckAmount: Float,
+	m_flDuckSpeed: Float,
+	m_Local: CPlayerLocalData,
+	pl: CPlayerState,
+	m_iFOV: Integer,
+	m_iFOVStart: Integer,
+	m_afButtonLast: Integer,
+	m_afButtonPressed: Integer,
+	m_afButtonReleased: Integer,
+	m_nButtons: Integer,
+	m_nImpulse: Integer,
+	m_ladderSurfaceProps: Integer,
+	m_flPhysics: Integer,
+	m_flFOVTime: Float,
+	m_flWaterJumpTime: Float,
+	m_flSwimSoundTime: Float,
+	m_ignoreLadderJumpTime: Float,
+	m_bHasWalkMovedSinceLastJump: Boolean,
+	m_flStepSoundTime: Float,
+	m_surfaceFriction: Float,
+	m_vecLadderNormal: Vector,
+	m_iBonusProgress: Integer,
+	m_iBonusChallenge: Integer,
+	m_flMaxspeed: Float,
+	m_hZoomOwner: EHandle,
+	m_vphysicsCollisionState: Integer,
+	m_oldOrigin: Vector,
+	m_bTouchedPhysObject: Boolean,
+	m_bPhysicsWasFrozen: Boolean,
+	m_vNewVPhysicsPosition: Vector,
+	m_vNewVPhysicsVelocity: Vector,
+	m_afPhysicsFlags: Integer,
+	m_hVehicle: EHandle,
+	m_hLastWeapon: EHandle,
+	m_hViewModel: EHandle,
+	m_fOnTarget: Boolean,
+	m_nTickBase: Integer,
+	m_vecPreviouslyPredictedOrigin: Vector,
+}
+```
+
+#### Offsets
+
+```
+C_BasePlayer!0x00fc m_nNextThinkTick
+C_BasePlayer!0x0100 m_iHealth
+C_BasePlayer!0x0120 m_vecBaseVelocity
+C_BasePlayer!0x0150 m_hGroundEntity
+C_BasePlayer!0x025e m_nWaterLevel
+C_BasePlayer!0x025f m_lifeState
+C_BasePlayer!0x2fac m_flDuckAmount
+C_BasePlayer!0x2fb0 m_flDuckSpeed
+C_BasePlayer!0x2fbc m_Local
+C_BasePlayer!0x31d0 pl
+C_BasePlayer!0x31e4 m_iFOV
+C_BasePlayer!0x31e8 m_iFOVStart
+C_BasePlayer!0x31ec m_afButtonLast
+C_BasePlayer!0x31f0 m_afButtonPressed
+C_BasePlayer!0x31f4 m_afButtonReleased
+C_BasePlayer!0x31f8 m_nButtons
+C_BasePlayer!0x31fc m_nImpulse
+C_BasePlayer!0x3200 m_ladderSurfaceProps
+C_BasePlayer!0x3204 m_flPhysics
+C_BasePlayer!0x3208 m_flFOVTime
+C_BasePlayer!0x320c m_flWaterJumpTime
+C_BasePlayer!0x3210 m_flSwimSoundTime
+C_BasePlayer!0x3214 m_ignoreLadderJumpTime
+C_BasePlayer!0x3218 m_bHasWalkMovedSinceLastJump
+C_BasePlayer!0x321c m_flStepSoundTime
+C_BasePlayer!0x322c m_surfaceFriction
+C_BasePlayer!0x3230 m_vecLadderNormal
+C_BasePlayer!0x3240 m_iBonusProgress
+C_BasePlayer!0x3244 m_iBonusChallenge
+C_BasePlayer!0x3248 m_flMaxspeed
+C_BasePlayer!0x324c m_hZoomOwner
+C_BasePlayer!0x325c m_vphysicsCollisionState
+C_BasePlayer!0x3260 m_oldOrigin
+C_BasePlayer!0x326c m_bTouchedPhysObject
+C_BasePlayer!0x326d m_bPhysicsWasFrozen
+C_BasePlayer!0x3270 m_vNewVPhysicsPosition
+C_BasePlayer!0x327c m_vNewVPhysicsVelocity
+C_BasePlayer!0x32ec m_afPhysicsFlags
+C_BasePlayer!0x32f0 m_hVehicle
+C_BasePlayer!0x32f4 m_hLastWeapon
+C_BasePlayer!0x32f8 m_hViewModel
+C_BasePlayer!0x3324 m_fOnTarget
+C_BasePlayer!0x342c m_nTickBase
+C_BasePlayer!0x35a4 m_vecPreviouslyPredictedOrigin
+```
+</details>
+<details>
+<summary><code>class C_CSPlayer extends C_BasePlayer</code></summary>
+
+```
+{
+	m_flCycle: Float,
+	m_bIsScoped: Boolean,
+	m_bIsWalking: Boolean,
+	m_bResumeZoom: Boolean,
+	m_nIsAutoMounting: Integer,
+	m_flStamina: Float,
+	m_iDirection: Integer,
+	m_iShotsFired: Integer,
+	m_nNumFastDucks: Integer,
+	m_bDuckOverride: Boolean,
+}
+```
+
+#### Offsets
+
+```
+C_CSPlayer!0x0a14 m_flCycle
+C_CSPlayer!0x390a m_bIsScoped
+C_CSPlayer!0x390b m_bIsWalking
+C_CSPlayer!0x390c m_bResumeZoom
+C_CSPlayer!0x3a7c m_nIsAutoMounting
+C_CSPlayer!0xa368 m_flStamina
+C_CSPlayer!0xa36c m_iDirection
+C_CSPlayer!0xa370 m_iShotsFired
+C_CSPlayer!0xa374 m_nNumFastDucks
+C_CSPlayer!0xa378 m_bDuckOverride
+```
+</details>
+<details>
+<summary><code>class C_ColorCorrectionVolume extends C_BaseToggle</code></summary>
+
+```
+{
+	m_Weight: Float,
+}
+```
+
+#### Offsets
+
+```
+C_ColorCorrectionVolume!0x0a2c m_Weight
+```
+</details>
+<details>
+<summary><code>class C_PlayerResource extends C_BaseEntity</code></summary>
+
+```
+{
+	m_szName: String,
+	m_bConnected: Boolean,
+	m_iPing: Integer,
+	m_iKills: Integer,
+	m_iAssists: Integer,
+	m_iDeaths: Integer,
+	m_iTeam: Integer,
+	m_iPendingTeam: Integer,
+	m_bAlive: Boolean,
+	m_iHealth: Integer,
+	m_iCoachingTeam: Integer,
+}
+```
+
+#### Offsets
+
+```
+C_PlayerResource!0x09e0 m_szName
+C_PlayerResource!0x0ae4 m_bConnected
+C_PlayerResource!0x0b28 m_iPing
+C_PlayerResource!0x0c2c m_iKills
+C_PlayerResource!0x0d30 m_iAssists
+C_PlayerResource!0x0e34 m_iDeaths
+C_PlayerResource!0x0f38 m_iTeam
+C_PlayerResource!0x103c m_iPendingTeam
+C_PlayerResource!0x1140 m_bAlive
+C_PlayerResource!0x1184 m_iHealth
+C_PlayerResource!0x1288 m_iCoachingTeam
+```
+</details>
+<details>
+<summary><code>class C_Team extends C_BaseEntity</code></summary>
+
+```
+{
+	m_szTeamname: Char,
+	m_szClanTeamname: Char,
+	m_szTeamFlagImage: Char,
+	m_szTeamLogoImage: Char,
+	m_szTeamMatchStat: Char,
+	m_scoreTotal: Integer,
+	m_scoreFirstHalf: Integer,
+	m_scoreSecondHalf: Integer,
+	m_scoreOvertime: Integer,
+	m_iClanID: Integer,
+	m_iDeaths: Integer,
+	m_iPing: Integer,
+	m_iPacketloss: Integer,
+	m_iTeamNum: Integer,
+	m_bSurrendered: Integer,
+}
+```
+
+#### Offsets
+
+```
+C_Team!0x09ec m_szTeamname
+C_Team!0x0a0c m_szClanTeamname
+C_Team!0x0a2c m_szTeamFlagImage
+C_Team!0x0a34 m_szTeamLogoImage
+C_Team!0x0a3c m_szTeamMatchStat
+C_Team!0x0b40 m_scoreTotal
+C_Team!0x0b44 m_scoreFirstHalf
+C_Team!0x0b48 m_scoreSecondHalf
+C_Team!0x0b4c m_scoreOvertime
+C_Team!0x0b58 m_iClanID
+C_Team!0x0b5c m_iDeaths
+C_Team!0x0b60 m_iPing
+C_Team!0x0b64 m_iPacketloss
+C_Team!0x0b68 m_iTeamNum
+C_Team!0x0b6c m_bSurrendered
+```
+</details>
+<details>
+<summary><code>class CountdownTimer</code></summary>
+
+```
+{
+	m_duration: Float,
+	m_timestamp: Float,
+}
+```
+
+#### Offsets
+
+```
+CountdownTimer!0x0004 m_duration
+CountdownTimer!0x0008 m_timestamp
+```
+</details>
+<details>
+<summary><code>class IntervalTimer</code></summary>
+
+```
+{
+	m_timestamp: Float,
+}
+```
+
+#### Offsets
+
+```
+IntervalTimer!0x0004 m_timestamp
+```
+</details>
+
+### Recvtables
+
+<details>
+<summary><code>class DT_AI_BaseNPC</code></summary>
+
+```
+{
+	m_lifeState: Int,
+	m_flTimePingEffect: Float,
+	m_iDeathPose: Int,
+	m_iDeathFrame: Int,
+	m_iSpeedModRadius: Int,
+	m_iSpeedModSpeed: Int,
+	m_bPerformAvoidance: Int,
+	m_bIsMoving: Int,
+	m_bFadeCorpse: Int,
+	m_bSpeedModActive: Int,
+	m_bImportanRagdoll: Int,
+}
+```
+
+#### Offsets
+
+```
+DT_AI_BaseNPC!0x025f m_lifeState
+DT_AI_BaseNPC!0x2f10 m_flTimePingEffect
+DT_AI_BaseNPC!0x2f14 m_iDeathPose
+DT_AI_BaseNPC!0x2f18 m_iDeathFrame
+DT_AI_BaseNPC!0x2f1c m_iSpeedModRadius
+DT_AI_BaseNPC!0x2f20 m_iSpeedModSpeed
+DT_AI_BaseNPC!0x2f24 m_bPerformAvoidance
+DT_AI_BaseNPC!0x2f25 m_bIsMoving
+DT_AI_BaseNPC!0x2f26 m_bFadeCorpse
+DT_AI_BaseNPC!0x2f27 m_bSpeedModActive
+DT_AI_BaseNPC!0x2f28 m_bImportanRagdoll
+```
+</details>
+<details>
+<summary><code>class DT_AttributeContainer</code></summary>
+
+```
+{
 	m_iReapplyProvisionParity: Int,
-	// field offset: 0x40
+	m_hOuter: Int,
+	m_ProviderType: Int,
 	m_Item: DataTable,
 }
-class DT_AttributeContainerPlayer {
-	// field offset: 0x1c
-	m_hOuter: Int,
-	// field offset: 0x24
-	m_ProviderType: Int,
-	// field offset: 0x18
+```
+
+#### Offsets
+
+```
+DT_AttributeContainer!0x0018 m_iReapplyProvisionParity
+DT_AttributeContainer!0x001c m_hOuter
+DT_AttributeContainer!0x0024 m_ProviderType
+DT_AttributeContainer!0x0040 m_Item
+```
+</details>
+<details>
+<summary><code>class DT_AttributeContainerPlayer</code></summary>
+
+```
+{
 	m_iReapplyProvisionParity: Int,
-	// field offset: 0x40
+	m_hOuter: Int,
+	m_ProviderType: Int,
 	m_hPlayer: Int,
 }
-class DT_EconEntity {
-	// field offset: 0x0
-	baseclass: DataTable,
-	// field offset: 0x2d80
-	m_AttributeManager: DataTable,
-	// field offset: 0x31b0
-	m_OriginalOwnerXuidLow: Int,
-	// field offset: 0x31b4
-	m_OriginalOwnerXuidHigh: Int,
-	// field offset: 0x31b8
-	m_nFallbackPaintKit: Int,
-	// field offset: 0x31bc
-	m_nFallbackSeed: Int,
-	// field offset: 0x31c0
-	m_flFallbackWear: Float,
-	// field offset: 0x31c4
-	m_nFallbackStatTrak: Int,
+```
+
+#### Offsets
+
+```
+DT_AttributeContainerPlayer!0x0018 m_iReapplyProvisionParity
+DT_AttributeContainerPlayer!0x001c m_hOuter
+DT_AttributeContainerPlayer!0x0024 m_ProviderType
+DT_AttributeContainerPlayer!0x0040 m_hPlayer
+```
+</details>
+<details>
+<summary><code>class DT_AttributeList</code></summary>
+
+```
+{
 }
-class DT_BaseAttributableItem {
-	// field offset: 0x0
-	baseclass: DataTable,
-	// field offset: 0x2d80
-	m_AttributeManager: DataTable,
-	// field offset: 0x31b0
-	m_OriginalOwnerXuidLow: Int,
-	// field offset: 0x31b4
-	m_OriginalOwnerXuidHigh: Int,
-	// field offset: 0x31b8
-	m_nFallbackPaintKit: Int,
-	// field offset: 0x31bc
-	m_nFallbackSeed: Int,
-	// field offset: 0x31c0
-	m_flFallbackWear: Float,
-	// field offset: 0x31c4
-	m_nFallbackStatTrak: Int,
-}
-class DT_BaseTempEntity {
-}
-class DT_EnvWindShared {
-	// field offset: 0xc
-	m_iMinWind: Int,
-	// field offset: 0x10
-	m_iMaxWind: Int,
-	// field offset: 0x18
-	m_iMinGust: Int,
-	// field offset: 0x1c
-	m_iMaxGust: Int,
-	// field offset: 0x20
-	m_flMinGustDelay: Float,
-	// field offset: 0x24
-	m_flMaxGustDelay: Float,
-	// field offset: 0x2c
-	m_iGustDirChange: Int,
-	// field offset: 0x8
-	m_iWindSeed: Int,
-	// field offset: 0x6c
-	m_iInitialWindDir: Int,
-	// field offset: 0x70
-	m_flInitialWindSpeed: Float,
-	// field offset: 0x4
-	m_flStartTime: Float,
-	// field offset: 0x28
-	m_flGustDuration: Float,
-}
-class DT_SmokeTrail {
-	// field offset: 0x0
-	baseclass: DataTable,
-	// field offset: 0xac4
-	m_SpawnRate: Float,
-	// field offset: 0xac8
-	m_StartColor: Vector,
-	// field offset: 0xad4
-	m_EndColor: Vector,
-	// field offset: 0xae4
-	m_ParticleLifetime: Float,
-	// field offset: 0xae8
-	m_StopEmitTime: Float,
-	// field offset: 0xaec
-	m_MinSpeed: Float,
-	// field offset: 0xaf0
-	m_MaxSpeed: Float,
-	// field offset: 0xaf4
-	m_MinDirectedSpeed: Float,
-	// field offset: 0xaf8
-	m_MaxDirectedSpeed: Float,
-	// field offset: 0xafc
-	m_StartSize: Float,
-	// field offset: 0xb00
-	m_EndSize: Float,
-	// field offset: 0xb04
-	m_SpawnRadius: Float,
-	// field offset: 0xb14
-	m_bEmit: Int,
-	// field offset: 0xb18
-	m_nAttachment: Int,
-	// field offset: 0xae0
-	m_Opacity: Float,
-}
-class DT_RocketTrail {
-	// field offset: 0x0
-	baseclass: DataTable,
-	// field offset: 0xac4
-	m_SpawnRate: Float,
-	// field offset: 0xac8
-	m_StartColor: Vector,
-	// field offset: 0xad4
-	m_EndColor: Vector,
-	// field offset: 0xae4
-	m_ParticleLifetime: Float,
-	// field offset: 0xae8
-	m_StopEmitTime: Float,
-	// field offset: 0xaec
-	m_MinSpeed: Float,
-	// field offset: 0xaf0
-	m_MaxSpeed: Float,
-	// field offset: 0xaf4
-	m_StartSize: Float,
-	// field offset: 0xaf8
-	m_EndSize: Float,
-	// field offset: 0xafc
-	m_SpawnRadius: Float,
-	// field offset: 0xb0c
-	m_bEmit: Int,
-	// field offset: 0xb10
-	m_nAttachment: Int,
-	// field offset: 0xae0
-	m_Opacity: Float,
-	// field offset: 0xb0d
-	m_bDamaged: Int,
-	// field offset: 0xb20
-	m_flFlareScale: Float,
-}
-class DT_SporeExplosion {
-	// field offset: 0x0
-	baseclass: DataTable,
-	// field offset: 0xac4
-	m_flSpawnRate: Float,
-	// field offset: 0xac8
-	m_flParticleLifetime: Float,
-	// field offset: 0xacc
-	m_flStartSize: Float,
-	// field offset: 0xad0
-	m_flEndSize: Float,
-	// field offset: 0xad4
-	m_flSpawnRadius: Float,
-	// field offset: 0xadc
-	m_bEmit: Int,
-	// field offset: 0xadd
-	m_bDontRemove: Int,
-}
-class DT_SporeTrail {
-	// field offset: 0x0
-	baseclass: DataTable,
-	// field offset: 0xacc
-	m_flSpawnRate: Float,
-	// field offset: 0xac0
-	m_vecEndColor: Vector,
-	// field offset: 0xad0
-	m_flParticleLifetime: Float,
-	// field offset: 0xad4
-	m_flStartSize: Float,
-	// field offset: 0xad8
-	m_flEndSize: Float,
-	// field offset: 0xadc
-	m_flSpawnRadius: Float,
-	// field offset: 0xaec
-	m_bEmit: Int,
-}
-class DT_SteamJet {
-	// field offset: 0x0
-	baseclass: DataTable,
-	// field offset: 0xac4
-	m_SpreadSpeed: Float,
-	// field offset: 0xac8
-	m_Speed: Float,
-	// field offset: 0xacc
-	m_StartSize: Float,
-	// field offset: 0xad0
-	m_EndSize: Float,
-	// field offset: 0xad4
-	m_Rate: Float,
-	// field offset: 0xad8
-	m_JetLength: Float,
-	// field offset: 0xadc
-	m_bEmit: Int,
-	// field offset: 0xae4
-	m_bFaceLeft: Int,
-	// field offset: 0xae0
-	m_nType: Int,
-	// field offset: 0xae8
-	m_spawnflags: Int,
-	// field offset: 0xaec
-	m_flRollSpeed: Float,
-}
-class DT_TEBeamRingPoint {
-	// field offset: 0x0
-	baseclass: DataTable,
-	// field offset: 0x4c
-	m_vecCenter: Vector,
-	// field offset: 0x58
-	m_flStartRadius: Float,
-	// field offset: 0x5c
-	m_flEndRadius: Float,
-}
-class DT_TEBreakModel {
-	// field offset: 0x0
-	baseclass: DataTable,
-	// field offset: 0x10
-	m_vecOrigin: Vector,
-	// field offset: 0x1c
-	m_angRotation[0]: Float,
-	// field offset: 0x20
-	m_angRotation[1]: Float,
-	// field offset: 0x24
-	m_angRotation[2]: Float,
-	// field offset: 0x28
-	m_vecSize: Vector,
-	// field offset: 0x34
-	m_vecVelocity: Vector,
-	// field offset: 0x44
-	m_nModelIndex: Int,
-	// field offset: 0x40
-	m_nRandomization: Int,
-	// field offset: 0x48
-	m_nCount: Int,
-	// field offset: 0x4c
-	m_fTime: Float,
-	// field offset: 0x50
-	m_nFlags: Int,
-}
-class DT_TEBSPDecal {
-	// field offset: 0x0
-	baseclass: DataTable,
-	// field offset: 0x10
-	m_vecOrigin: Vector,
-	// field offset: 0x1c
-	m_nEntity: Int,
-	// field offset: 0x20
-	m_nIndex: Int,
-}
-class DT_TEParticleSystem {
-	// field offset: 0x0
-	baseclass: DataTable,
-	// field offset: 0x10
-	m_vecOrigin[0]: Float,
-	// field offset: 0x14
-	m_vecOrigin[1]: Float,
-	// field offset: 0x18
-	m_vecOrigin[2]: Float,
-}
-class DT_TESparks {
-	// field offset: 0x0
-	baseclass: DataTable,
-	// field offset: 0x1c
-	m_nMagnitude: Int,
-	// field offset: 0x20
-	m_nTrailLength: Int,
-	// field offset: 0x24
-	m_vecDir: Vector,
-}
-class DT_Beam {
-	// field offset: 0x9f4
-	m_nBeamType: Int,
-	// field offset: 0x9f8
-	m_nBeamFlags: Int,
-	// field offset: 0x9e8
-	m_nNumBeamEnts: Int,
-	// field offset: 0x9f0
-	m_nHaloIndex: Int,
-	// field offset: 0xa58
-	m_fHaloScale: Float,
-	// field offset: 0xa4c
-	m_fWidth: Float,
-	// field offset: 0xa50
-	m_fEndWidth: Float,
-	// field offset: 0xa54
-	m_fFadeLength: Float,
-	// field offset: 0xa5c
-	m_fAmplitude: Float,
-	// field offset: 0xa60
-	m_fStartFrame: Float,
-	// field offset: 0xa64
-	m_fSpeed: Float,
-	// field offset: 0x9d8
-	m_flFrameRate: Float,
-	// field offset: 0x9dc
-	m_flHDRColorScale: Float,
-	// field offset: 0x70
-	m_clrRender: Int,
-	// field offset: 0x25a
-	m_nRenderFX: Int,
-	// field offset: 0x25b
-	m_nRenderMode: Int,
-	// field offset: 0xa68
-	m_flFrame: Float,
-	// field offset: 0xa6c
-	m_nClipStyle: Int,
-	// field offset: 0xa70
-	m_vecEndPos: Vector,
-	// field offset: 0x258
-	m_nModelIndex: Int,
-	// field offset: 0x138
-	m_vecOrigin: Vector,
-	// field offset: 0x148
-	moveparent: Int,
-}
-class DT_BaseAnimating {
-	// field offset: 0x0
-	baseclass: DataTable,
-	// field offset: 0x28bc
-	m_nSequence: Int,
-	// field offset: 0x268c
-	m_nForceBone: Int,
-	// field offset: 0x2680
-	m_vecForce: Vector,
-	// field offset: 0xa1c
-	m_nSkin: Int,
-	// field offset: 0xa20
-	m_nBody: Int,
-	// field offset: 0x9fc
-	m_nHitboxSet: Int,
-	// field offset: 0x2748
-	m_flModelScale: Float,
-	// field offset: 0xa18
-	m_flPlaybackRate: Float,
-	// field offset: 0x289c
-	m_bClientSideAnimation: Int,
-	// field offset: 0x26c0
-	m_bClientSideFrameReset: Int,
-	// field offset: 0x279
-	m_bClientSideRagdoll: Int,
-	// field offset: 0xa44
-	m_nNewSequenceParity: Int,
-	// field offset: 0xa48
-	m_nResetEventsParity: Int,
-	// field offset: 0xa64
-	m_nMuzzleFlashParity: Int,
-	// field offset: 0x0
+```
+
+#### Offsets
+
+```
+```
+</details>
+<details>
+<summary><code>class DT_BaseAnimating</code></summary>
+
+```
+{
 	serveranimdata: DataTable,
-	// field offset: 0x26f8
-	m_flFrozen: Float,
-	// field offset: 0x274c
-	m_ScaleType: Int,
-	// field offset: 0x294a
-	m_bSuppressAnimSounds: Int,
-	// field offset: 0xa38
+	m_bClientSideRagdoll: Int,
+	m_nHitboxSet: Int,
+	m_flPlaybackRate: Float,
+	m_nSkin: Int,
+	m_nBody: Int,
 	m_nHighlightColorR: Int,
-	// field offset: 0xa3c
 	m_nHighlightColorG: Int,
-	// field offset: 0xa40
 	m_nHighlightColorB: Int,
-}
-class DT_BaseFlex {
-	// field offset: 0x0
-	baseclass: DataTable,
-	// field offset: 0x2bd4
-	m_blinktoggle: Int,
-	// field offset: 0x29f0
-	m_viewtarget: Vector,
-}
-class DT_EntityFreezing {
-	// field offset: 0x0
-	baseclass: DataTable,
-	// field offset: 0x9d8
-	m_vFreezingOrigin: Vector,
-	// field offset: 0xaac
+	m_nNewSequenceParity: Int,
+	m_nResetEventsParity: Int,
+	m_nMuzzleFlashParity: Int,
+	m_vecForce: Vector,
+	m_nForceBone: Int,
+	m_bClientSideFrameReset: Int,
 	m_flFrozen: Float,
-	// field offset: 0xab0
-	m_bFinishFreezing: Int,
+	m_flModelScale: Float,
+	m_ScaleType: Int,
+	m_bClientSideAnimation: Int,
+	m_nSequence: Int,
+	m_bSuppressAnimSounds: Int,
 }
-class DT_PlayerResource {
+```
+
+#### Offsets
+
+```
+DT_BaseAnimating!0x0000 serveranimdata
+DT_BaseAnimating!0x0279 m_bClientSideRagdoll
+DT_BaseAnimating!0x09fc m_nHitboxSet
+DT_BaseAnimating!0x0a18 m_flPlaybackRate
+DT_BaseAnimating!0x0a1c m_nSkin
+DT_BaseAnimating!0x0a20 m_nBody
+DT_BaseAnimating!0x0a38 m_nHighlightColorR
+DT_BaseAnimating!0x0a3c m_nHighlightColorG
+DT_BaseAnimating!0x0a40 m_nHighlightColorB
+DT_BaseAnimating!0x0a44 m_nNewSequenceParity
+DT_BaseAnimating!0x0a48 m_nResetEventsParity
+DT_BaseAnimating!0x0a64 m_nMuzzleFlashParity
+DT_BaseAnimating!0x2680 m_vecForce
+DT_BaseAnimating!0x268c m_nForceBone
+DT_BaseAnimating!0x26c0 m_bClientSideFrameReset
+DT_BaseAnimating!0x26f8 m_flFrozen
+DT_BaseAnimating!0x2748 m_flModelScale
+DT_BaseAnimating!0x274c m_ScaleType
+DT_BaseAnimating!0x289c m_bClientSideAnimation
+DT_BaseAnimating!0x28bc m_nSequence
+DT_BaseAnimating!0x294a m_bSuppressAnimSounds
+```
+</details>
+<details>
+<summary><code>class DT_BaseAttributableItem</code></summary>
+
+```
+{
+	m_AttributeManager: DataTable,
+	m_OriginalOwnerXuidLow: Int,
+	m_OriginalOwnerXuidHigh: Int,
+	m_nFallbackPaintKit: Int,
+	m_nFallbackSeed: Int,
+	m_flFallbackWear: Float,
+	m_nFallbackStatTrak: Int,
 }
-class DT_PostProcessController {
-	// field offset: 0x0
-	baseclass: DataTable,
-	// field offset: 0xa04
-	m_bMaster: Int,
+```
+
+#### Offsets
+
+```
+DT_BaseAttributableItem!0x2d80 m_AttributeManager
+DT_BaseAttributableItem!0x31b0 m_OriginalOwnerXuidLow
+DT_BaseAttributableItem!0x31b4 m_OriginalOwnerXuidHigh
+DT_BaseAttributableItem!0x31b8 m_nFallbackPaintKit
+DT_BaseAttributableItem!0x31bc m_nFallbackSeed
+DT_BaseAttributableItem!0x31c0 m_flFallbackWear
+DT_BaseAttributableItem!0x31c4 m_nFallbackStatTrak
+```
+</details>
+<details>
+<summary><code>class DT_BaseFlex</code></summary>
+
+```
+{
+	m_viewtarget: Vector,
+	m_blinktoggle: Int,
 }
-class DT_SceneEntity {
-	// field offset: 0x0
-	baseclass: DataTable,
-	// field offset: 0x9e8
-	m_nSceneStringIndex: Int,
-	// field offset: 0x9dc
-	m_bIsPlayingBack: Int,
-	// field offset: 0x9dd
-	m_bPaused: Int,
-	// field offset: 0x9de
-	m_bMultiplayer: Int,
-	// field offset: 0x9e4
-	m_flForceClientTime: Float,
+```
+
+#### Offsets
+
+```
+DT_BaseFlex!0x29f0 m_viewtarget
+DT_BaseFlex!0x2bd4 m_blinktoggle
+```
+</details>
+<details>
+<summary><code>class DT_BaseTempEntity</code></summary>
+
+```
+{
 }
-class DT_SlideshowDisplay {
-	// field offset: 0x0
-	baseclass: DataTable,
-	// field offset: 0x9d8
-	m_bEnabled: Int,
-	// field offset: 0x9d9
-	m_szDisplayText: String,
-	// field offset: 0xa59
-	m_szSlideshowDirectory: String,
-	// field offset: 0xb08
-	m_fMinSlideTime: Float,
-	// field offset: 0xb0c
-	m_fMaxSlideTime: Float,
-	// field offset: 0xb14
-	m_iCycleType: Int,
-	// field offset: 0xb18
-	m_bNoListRepeats: Int,
+```
+
+#### Offsets
+
+```
+```
+</details>
+<details>
+<summary><code>class DT_BaseToggle</code></summary>
+
+```
+{
+	m_vecFinalDest: Vector,
+	m_movementType: Int,
+	m_flMoveTargetTime: Float,
 }
-class DT_VoteController {
-	// field offset: 0x0
-	baseclass: DataTable,
-	// field offset: 0x9e4
-	m_iActiveIssueIndex: Int,
-	// field offset: 0x9e8
-	m_iOnlyTeamToVote: Int,
-	// field offset: 0xa04
-	m_nPotentialVotes: Int,
-	// field offset: 0xa0a
-	m_bIsYesNoVote: Int,
+```
+
+#### Offsets
+
+```
+DT_BaseToggle!0x09ec m_vecFinalDest
+DT_BaseToggle!0x09f8 m_movementType
+DT_BaseToggle!0x09fc m_flMoveTargetTime
+```
+</details>
+<details>
+<summary><code>class DT_Beam</code></summary>
+
+```
+{
+	m_clrRender: Int,
+	m_vecOrigin: Vector,
+	moveparent: Int,
+	m_nModelIndex: Int,
+	m_nRenderFX: Int,
+	m_nRenderMode: Int,
+	m_flFrameRate: Float,
+	m_flHDRColorScale: Float,
+	m_nNumBeamEnts: Int,
+	m_nHaloIndex: Int,
+	m_nBeamType: Int,
+	m_nBeamFlags: Int,
+	m_fWidth: Float,
+	m_fEndWidth: Float,
+	m_fFadeLength: Float,
+	m_fHaloScale: Float,
+	m_fAmplitude: Float,
+	m_fStartFrame: Float,
+	m_fSpeed: Float,
+	m_flFrame: Float,
+	m_nClipStyle: Int,
+	m_vecEndPos: Vector,
 }
-class DT_CSGameRules {
-	// field offset: 0x20
+```
+
+#### Offsets
+
+```
+DT_Beam!0x0070 m_clrRender
+DT_Beam!0x0138 m_vecOrigin
+DT_Beam!0x0148 moveparent
+DT_Beam!0x0258 m_nModelIndex
+DT_Beam!0x025a m_nRenderFX
+DT_Beam!0x025b m_nRenderMode
+DT_Beam!0x09d8 m_flFrameRate
+DT_Beam!0x09dc m_flHDRColorScale
+DT_Beam!0x09e8 m_nNumBeamEnts
+DT_Beam!0x09f0 m_nHaloIndex
+DT_Beam!0x09f4 m_nBeamType
+DT_Beam!0x09f8 m_nBeamFlags
+DT_Beam!0x0a4c m_fWidth
+DT_Beam!0x0a50 m_fEndWidth
+DT_Beam!0x0a54 m_fFadeLength
+DT_Beam!0x0a58 m_fHaloScale
+DT_Beam!0x0a5c m_fAmplitude
+DT_Beam!0x0a60 m_fStartFrame
+DT_Beam!0x0a64 m_fSpeed
+DT_Beam!0x0a68 m_flFrame
+DT_Beam!0x0a6c m_nClipStyle
+DT_Beam!0x0a70 m_vecEndPos
+```
+</details>
+<details>
+<summary><code>class DT_CFish</code></summary>
+
+```
+{
+	m_nModelIndex: Int,
+	m_lifeState: Int,
+	m_x: Float,
+	m_y: Float,
+	m_z: Float,
+	m_angle: Float,
+	m_poolOrigin: Vector,
+	m_waterLevel: Float,
+}
+```
+
+#### Offsets
+
+```
+DT_CFish!0x0258 m_nModelIndex
+DT_CFish!0x025f m_lifeState
+DT_CFish!0x29c8 m_x
+DT_CFish!0x29cc m_y
+DT_CFish!0x29d0 m_z
+DT_CFish!0x29d8 m_angle
+DT_CFish!0x29e0 m_poolOrigin
+DT_CFish!0x29ec m_waterLevel
+```
+</details>
+<details>
+<summary><code>class DT_CSGameRules</code></summary>
+
+```
+{
 	m_bFreezePeriod: Int,
-	// field offset: 0x40
-	m_bMatchWaitingForResume: Int,
-	// field offset: 0x21
 	m_bWarmupPeriod: Int,
-	// field offset: 0x24
 	m_fWarmupPeriodEnd: Float,
-	// field offset: 0x28
 	m_fWarmupPeriodStart: Float,
-	// field offset: 0x2c
 	m_bTerroristTimeOutActive: Int,
-	// field offset: 0x2d
 	m_bCTTimeOutActive: Int,
-	// field offset: 0x30
 	m_flTerroristTimeOutRemaining: Float,
-	// field offset: 0x34
 	m_flCTTimeOutRemaining: Float,
-	// field offset: 0x38
 	m_nTerroristTimeOuts: Int,
-	// field offset: 0x3c
 	m_nCTTimeOuts: Int,
-	// field offset: 0x44
+	m_bMatchWaitingForResume: Int,
 	m_iRoundTime: Int,
-	// field offset: 0x60
-	m_gamePhase: Int,
-	// field offset: 0x64
-	m_totalRoundsPlayed: Int,
-	// field offset: 0x68
-	m_nOvertimePlaying: Int,
-	// field offset: 0x5c
-	m_timeUntilNextPhaseStarts: Float,
-	// field offset: 0x870
-	m_flCMMItemDropRevealStartTime: Float,
-	// field offset: 0x874
-	m_flCMMItemDropRevealEndTime: Float,
-	// field offset: 0x4c
-	m_fRoundStartTime: Float,
-	// field offset: 0x54
-	m_bGameRestart: Int,
-	// field offset: 0x50
-	m_flRestartRoundTime: Float,
-	// field offset: 0x58
-	m_flGameStartTime: Float,
-	// field offset: 0x6c
-	m_iHostagesRemaining: Int,
-	// field offset: 0x70
-	m_bAnyHostageReached: Int,
-	// field offset: 0x71
-	m_bMapHasBombTarget: Int,
-	// field offset: 0x72
-	m_bMapHasRescueZone: Int,
-	// field offset: 0x73
-	m_bMapHasBuyZone: Int,
-	// field offset: 0x74
-	m_bIsQueuedMatchmaking: Int,
-	// field offset: 0x75
-	m_bIsValveDS: Int,
-	// field offset: 0x879
-	m_bIsQuestEligible: Int,
-	// field offset: 0x76
-	m_bLogoMap: Int,
-	// field offset: 0x77
-	m_bPlayAllStepSoundsOnServer: Int,
-	// field offset: 0x78
-	m_iNumGunGameProgressiveWeaponsCT: Int,
-	// field offset: 0x7c
-	m_iNumGunGameProgressiveWeaponsT: Int,
-	// field offset: 0x80
-	m_iSpectatorSlotCount: Int,
-	// field offset: 0x99c
-	m_bBombDropped: Int,
-	// field offset: 0x99d
-	m_bBombPlanted: Int,
-	// field offset: 0x9a0
-	m_iRoundWinStatus: Int,
-	// field offset: 0x9a4
-	m_eRoundWinReason: Int,
-	// field offset: 0x44c
-	m_flDMBonusStartTime: Float,
-	// field offset: 0x450
-	m_flDMBonusTimeLength: Float,
-	// field offset: 0x454
-	m_unDMBonusWeaponLoadoutSlot: Int,
-	// field offset: 0x456
-	m_bDMBonusActive: Int,
-	// field offset: 0x9a8
-	m_bTCantBuy: Int,
-	// field offset: 0x9a9
-	m_bCTCantBuy: Int,
-	// field offset: 0x9ac
-	m_flGuardianBuyUntilTime: Float,
-	// field offset: 0x444
-	m_MatchDevice: Int,
-	// field offset: 0x448
-	m_bHasMatchStarted: Int,
-	// field offset: 0x458
-	m_nNextMapInMapgroup: Int,
-	// field offset: 0xc70
-	m_nEndMatchMapVoteWinner: Int,
-	// field offset: 0x878
-	m_bIsDroppingItems: Int,
-	// field offset: 0xc18
-	m_iActiveAssassinationTargetMissionID: Int,
-	// field offset: 0x48
 	m_fMatchStartTime: Float,
-	// field offset: 0x45c
+	m_fRoundStartTime: Float,
+	m_flRestartRoundTime: Float,
+	m_bGameRestart: Int,
+	m_flGameStartTime: Float,
+	m_timeUntilNextPhaseStarts: Float,
+	m_gamePhase: Int,
+	m_totalRoundsPlayed: Int,
+	m_nOvertimePlaying: Int,
+	m_iHostagesRemaining: Int,
+	m_bAnyHostageReached: Int,
+	m_bMapHasBombTarget: Int,
+	m_bMapHasRescueZone: Int,
+	m_bMapHasBuyZone: Int,
+	m_bIsQueuedMatchmaking: Int,
+	m_bIsValveDS: Int,
+	m_bLogoMap: Int,
+	m_bPlayAllStepSoundsOnServer: Int,
+	m_iNumGunGameProgressiveWeaponsCT: Int,
+	m_iNumGunGameProgressiveWeaponsT: Int,
+	m_iSpectatorSlotCount: Int,
+	m_MatchDevice: Int,
+	m_bHasMatchStarted: Int,
+	m_flDMBonusStartTime: Float,
+	m_flDMBonusTimeLength: Float,
+	m_unDMBonusWeaponLoadoutSlot: Int,
+	m_bDMBonusActive: Int,
+	m_nNextMapInMapgroup: Int,
 	m_szTournamentEventName: String,
-	// field offset: 0x560
 	m_szTournamentEventStage: String,
-	// field offset: 0x768
-	m_szTournamentPredictionsTxt: String,
-	// field offset: 0x86c
-	m_nTournamentPredictionsPct: Int,
-	// field offset: 0x664
 	m_szMatchStatTxt: String,
-	// field offset: 0x87c
+	m_szTournamentPredictionsTxt: String,
+	m_nTournamentPredictionsPct: Int,
+	m_flCMMItemDropRevealStartTime: Float,
+	m_flCMMItemDropRevealEndTime: Float,
+	m_bIsDroppingItems: Int,
+	m_bIsQuestEligible: Int,
 	m_nGuardianModeWaveNumber: Int,
-	// field offset: 0x880
 	m_nGuardianModeSpecialKillsRemaining: Int,
-	// field offset: 0x884
 	m_nGuardianModeSpecialWeaponNeeded: Int,
-	// field offset: 0x998
-	m_nHalloweenMaskListSeed: Int,
-	// field offset: 0x890
 	m_numGlobalGiftsGiven: Int,
-	// field offset: 0x894
 	m_numGlobalGifters: Int,
-	// field offset: 0x898
 	m_numGlobalGiftsPeriodSeconds: Int,
-	// field offset: 0x994
 	m_numBestOfMaps: Int,
-	// field offset: 0xc74
+	m_nHalloweenMaskListSeed: Int,
+	m_bBombDropped: Int,
+	m_bBombPlanted: Int,
+	m_iRoundWinStatus: Int,
+	m_eRoundWinReason: Int,
+	m_bTCantBuy: Int,
+	m_bCTCantBuy: Int,
+	m_flGuardianBuyUntilTime: Float,
+	m_iActiveAssassinationTargetMissionID: Int,
+	m_nEndMatchMapVoteWinner: Int,
 	m_iNumConsecutiveCTLoses: Int,
-	// field offset: 0xc78
 	m_iNumConsecutiveTerroristLoses: Int,
-	// field offset: 0xcf8
 	m_SurvivalRules: DataTable,
 }
-class DT_AttributeList {
+```
+
+#### Offsets
+
+```
+DT_CSGameRules!0x0020 m_bFreezePeriod
+DT_CSGameRules!0x0021 m_bWarmupPeriod
+DT_CSGameRules!0x0024 m_fWarmupPeriodEnd
+DT_CSGameRules!0x0028 m_fWarmupPeriodStart
+DT_CSGameRules!0x002c m_bTerroristTimeOutActive
+DT_CSGameRules!0x002d m_bCTTimeOutActive
+DT_CSGameRules!0x0030 m_flTerroristTimeOutRemaining
+DT_CSGameRules!0x0034 m_flCTTimeOutRemaining
+DT_CSGameRules!0x0038 m_nTerroristTimeOuts
+DT_CSGameRules!0x003c m_nCTTimeOuts
+DT_CSGameRules!0x0040 m_bMatchWaitingForResume
+DT_CSGameRules!0x0044 m_iRoundTime
+DT_CSGameRules!0x0048 m_fMatchStartTime
+DT_CSGameRules!0x004c m_fRoundStartTime
+DT_CSGameRules!0x0050 m_flRestartRoundTime
+DT_CSGameRules!0x0054 m_bGameRestart
+DT_CSGameRules!0x0058 m_flGameStartTime
+DT_CSGameRules!0x005c m_timeUntilNextPhaseStarts
+DT_CSGameRules!0x0060 m_gamePhase
+DT_CSGameRules!0x0064 m_totalRoundsPlayed
+DT_CSGameRules!0x0068 m_nOvertimePlaying
+DT_CSGameRules!0x006c m_iHostagesRemaining
+DT_CSGameRules!0x0070 m_bAnyHostageReached
+DT_CSGameRules!0x0071 m_bMapHasBombTarget
+DT_CSGameRules!0x0072 m_bMapHasRescueZone
+DT_CSGameRules!0x0073 m_bMapHasBuyZone
+DT_CSGameRules!0x0074 m_bIsQueuedMatchmaking
+DT_CSGameRules!0x0075 m_bIsValveDS
+DT_CSGameRules!0x0076 m_bLogoMap
+DT_CSGameRules!0x0077 m_bPlayAllStepSoundsOnServer
+DT_CSGameRules!0x0078 m_iNumGunGameProgressiveWeaponsCT
+DT_CSGameRules!0x007c m_iNumGunGameProgressiveWeaponsT
+DT_CSGameRules!0x0080 m_iSpectatorSlotCount
+DT_CSGameRules!0x0444 m_MatchDevice
+DT_CSGameRules!0x0448 m_bHasMatchStarted
+DT_CSGameRules!0x044c m_flDMBonusStartTime
+DT_CSGameRules!0x0450 m_flDMBonusTimeLength
+DT_CSGameRules!0x0454 m_unDMBonusWeaponLoadoutSlot
+DT_CSGameRules!0x0456 m_bDMBonusActive
+DT_CSGameRules!0x0458 m_nNextMapInMapgroup
+DT_CSGameRules!0x045c m_szTournamentEventName
+DT_CSGameRules!0x0560 m_szTournamentEventStage
+DT_CSGameRules!0x0664 m_szMatchStatTxt
+DT_CSGameRules!0x0768 m_szTournamentPredictionsTxt
+DT_CSGameRules!0x086c m_nTournamentPredictionsPct
+DT_CSGameRules!0x0870 m_flCMMItemDropRevealStartTime
+DT_CSGameRules!0x0874 m_flCMMItemDropRevealEndTime
+DT_CSGameRules!0x0878 m_bIsDroppingItems
+DT_CSGameRules!0x0879 m_bIsQuestEligible
+DT_CSGameRules!0x087c m_nGuardianModeWaveNumber
+DT_CSGameRules!0x0880 m_nGuardianModeSpecialKillsRemaining
+DT_CSGameRules!0x0884 m_nGuardianModeSpecialWeaponNeeded
+DT_CSGameRules!0x0890 m_numGlobalGiftsGiven
+DT_CSGameRules!0x0894 m_numGlobalGifters
+DT_CSGameRules!0x0898 m_numGlobalGiftsPeriodSeconds
+DT_CSGameRules!0x0994 m_numBestOfMaps
+DT_CSGameRules!0x0998 m_nHalloweenMaskListSeed
+DT_CSGameRules!0x099c m_bBombDropped
+DT_CSGameRules!0x099d m_bBombPlanted
+DT_CSGameRules!0x09a0 m_iRoundWinStatus
+DT_CSGameRules!0x09a4 m_eRoundWinReason
+DT_CSGameRules!0x09a8 m_bTCantBuy
+DT_CSGameRules!0x09a9 m_bCTCantBuy
+DT_CSGameRules!0x09ac m_flGuardianBuyUntilTime
+DT_CSGameRules!0x0c18 m_iActiveAssassinationTargetMissionID
+DT_CSGameRules!0x0c70 m_nEndMatchMapVoteWinner
+DT_CSGameRules!0x0c74 m_iNumConsecutiveCTLoses
+DT_CSGameRules!0x0c78 m_iNumConsecutiveTerroristLoses
+DT_CSGameRules!0x0cf8 m_SurvivalRules
+```
+</details>
+<details>
+<summary><code>class DT_CascadeLight</code></summary>
+
+```
+{
+	m_shadowDirection: Vector,
+	m_envLightShadowDirection: Vector,
+	m_bEnabled: Int,
+	m_bUseLightEnvAngles: Int,
+	m_LightColor: Int,
+	m_LightColorScale: Int,
+	m_flMaxShadowDist: Float,
 }
+```
+
+#### Offsets
+
+```
+DT_CascadeLight!0x09d8 m_shadowDirection
+DT_CascadeLight!0x09e4 m_envLightShadowDirection
+DT_CascadeLight!0x09f0 m_bEnabled
+DT_CascadeLight!0x09f1 m_bUseLightEnvAngles
+DT_CascadeLight!0x09f2 m_LightColor
+DT_CascadeLight!0x09f8 m_LightColorScale
+DT_CascadeLight!0x09fc m_flMaxShadowDist
+```
+</details>
+<details>
+<summary><code>class DT_CollisionProperty</code></summary>
+
+```
+{
+	m_vecMins: Vector,
+	m_vecMaxs: Vector,
+	m_usSolidFlags: Int,
+	m_nSolidType: Int,
+	m_triggerBloat: Int,
+	m_nSurroundType: Int,
+	m_vecSpecifiedSurroundingMins: Vector,
+	m_vecSpecifiedSurroundingMaxs: Vector,
+}
+```
+
+#### Offsets
+
+```
+DT_CollisionProperty!0x0008 m_vecMins
+DT_CollisionProperty!0x0014 m_vecMaxs
+DT_CollisionProperty!0x0020 m_usSolidFlags
+DT_CollisionProperty!0x0022 m_nSolidType
+DT_CollisionProperty!0x0023 m_triggerBloat
+DT_CollisionProperty!0x002a m_nSurroundType
+DT_CollisionProperty!0x002c m_vecSpecifiedSurroundingMins
+DT_CollisionProperty!0x0038 m_vecSpecifiedSurroundingMaxs
+```
+</details>
+<details>
+<summary><code>class DT_ColorCorrectionVolume</code></summary>
+
+```
+{
+	m_bEnabled: Int,
+	m_MaxWeight: Float,
+	m_FadeDuration: Float,
+	m_Weight: Float,
+	m_lookupFilename: String,
+}
+```
+
+#### Offsets
+
+```
+DT_ColorCorrectionVolume!0x0a20 m_bEnabled
+DT_ColorCorrectionVolume!0x0a24 m_MaxWeight
+DT_ColorCorrectionVolume!0x0a28 m_FadeDuration
+DT_ColorCorrectionVolume!0x0a2c m_Weight
+DT_ColorCorrectionVolume!0x0a30 m_lookupFilename
+```
+</details>
+<details>
+<summary><code>class DT_DangerZone</code></summary>
+
+```
+{
+	m_vecDangerZoneOriginStartedAt: Vector,
+	m_flBombLaunchTime: Float,
+	m_flExtraRadius: Float,
+	m_flExtraRadiusStartTime: Float,
+	m_flExtraRadiusTotalLerpTime: Float,
+	m_nDropOrder: Int,
+	m_iWave: Int,
+}
+```
+
+#### Offsets
+
+```
+DT_DangerZone!0x09d8 m_vecDangerZoneOriginStartedAt
+DT_DangerZone!0x09e4 m_flBombLaunchTime
+DT_DangerZone!0x09e8 m_flExtraRadius
+DT_DangerZone!0x09ec m_flExtraRadiusStartTime
+DT_DangerZone!0x09f0 m_flExtraRadiusTotalLerpTime
+DT_DangerZone!0x09f4 m_nDropOrder
+DT_DangerZone!0x09f8 m_iWave
+```
+</details>
+<details>
+<summary><code>class DT_DynamicLight</code></summary>
+
+```
+{
+	m_Flags: Int,
+	m_LightStyle: Int,
+	m_Radius: Float,
+	m_Exponent: Int,
+	m_InnerAngle: Float,
+	m_OuterAngle: Float,
+	m_SpotRadius: Float,
+}
+```
+
+#### Offsets
+
+```
+DT_DynamicLight!0x09d8 m_Flags
+DT_DynamicLight!0x09d9 m_LightStyle
+DT_DynamicLight!0x09dc m_Radius
+DT_DynamicLight!0x09e0 m_Exponent
+DT_DynamicLight!0x09e4 m_InnerAngle
+DT_DynamicLight!0x09e8 m_OuterAngle
+DT_DynamicLight!0x09ec m_SpotRadius
+```
+</details>
+<details>
+<summary><code>class DT_EconEntity</code></summary>
+
+```
+{
+	m_AttributeManager: DataTable,
+	m_OriginalOwnerXuidLow: Int,
+	m_OriginalOwnerXuidHigh: Int,
+	m_nFallbackPaintKit: Int,
+	m_nFallbackSeed: Int,
+	m_flFallbackWear: Float,
+	m_nFallbackStatTrak: Int,
+}
+```
+
+#### Offsets
+
+```
+DT_EconEntity!0x2d80 m_AttributeManager
+DT_EconEntity!0x31b0 m_OriginalOwnerXuidLow
+DT_EconEntity!0x31b4 m_OriginalOwnerXuidHigh
+DT_EconEntity!0x31b8 m_nFallbackPaintKit
+DT_EconEntity!0x31bc m_nFallbackSeed
+DT_EconEntity!0x31c0 m_flFallbackWear
+DT_EconEntity!0x31c4 m_nFallbackStatTrak
+```
+</details>
+<details>
+<summary><code>class DT_EntityFreezing</code></summary>
+
+```
+{
+	m_vFreezingOrigin: Vector,
+	m_flFrozen: Float,
+	m_bFinishFreezing: Int,
+}
+```
+
+#### Offsets
+
+```
+DT_EntityFreezing!0x09d8 m_vFreezingOrigin
+DT_EntityFreezing!0x0aac m_flFrozen
+DT_EntityFreezing!0x0ab0 m_bFinishFreezing
+```
+</details>
+<details>
+<summary><code>class DT_EntityParticleTrail</code></summary>
+
+```
+{
+	m_iMaterialName: Int,
+	m_Info: DataTable,
+	m_hConstraintEntity: Int,
+}
+```
+
+#### Offsets
+
+```
+DT_EntityParticleTrail!0x0ac0 m_iMaterialName
+DT_EntityParticleTrail!0x0ac4 m_Info
+DT_EntityParticleTrail!0x0ad8 m_hConstraintEntity
+```
+</details>
+<details>
+<summary><code>class DT_EnvDOFController</code></summary>
+
+```
+{
+	m_bDOFEnabled: Int,
+	m_flNearBlurDepth: Float,
+	m_flNearFocusDepth: Float,
+	m_flFarFocusDepth: Float,
+	m_flFarBlurDepth: Float,
+	m_flNearBlurRadius: Float,
+	m_flFarBlurRadius: Float,
+}
+```
+
+#### Offsets
+
+```
+DT_EnvDOFController!0x09d8 m_bDOFEnabled
+DT_EnvDOFController!0x09dc m_flNearBlurDepth
+DT_EnvDOFController!0x09e0 m_flNearFocusDepth
+DT_EnvDOFController!0x09e4 m_flFarFocusDepth
+DT_EnvDOFController!0x09e8 m_flFarBlurDepth
+DT_EnvDOFController!0x09ec m_flNearBlurRadius
+DT_EnvDOFController!0x09f0 m_flFarBlurRadius
+```
+</details>
+<details>
+<summary><code>class DT_EnvGasCanister</code></summary>
+
+```
+{
+	m_vecOrigin: VectorXY,
+	m_vecOrigin[2]: Float,
+	m_bLanded: Int,
+	m_hSkyboxCopy: Int,
+	m_vecImpactPosition: Vector,
+	m_vecStartPosition: Vector,
+	m_vecEnterWorldPosition: Vector,
+	m_vecDirection: Vector,
+	m_vecStartAngles: Vector,
+	m_flFlightTime: Float,
+	m_flFlightSpeed: Float,
+	m_flLaunchTime: Float,
+	m_flInitialZSpeed: Float,
+	m_flZAcceleration: Float,
+	m_flHorizSpeed: Float,
+	m_bLaunchedFromWithinWorld: Int,
+	m_vecParabolaDirection: Vector,
+	m_flWorldEnterTime: Float,
+	m_vecSkyboxOrigin: Vector,
+	m_flSkyboxScale: Float,
+	m_bInSkybox: Int,
+	m_bDoImpactEffects: Int,
+	m_nMyZoneIndex: Int,
+}
+```
+
+#### Offsets
+
+```
+DT_EnvGasCanister!0x0138 m_vecOrigin
+DT_EnvGasCanister!0x0140 m_vecOrigin[2]
+DT_EnvGasCanister!0x2980 m_bLanded
+DT_EnvGasCanister!0x29a8 m_hSkyboxCopy
+DT_EnvGasCanister!0x29b4 m_vecImpactPosition
+DT_EnvGasCanister!0x29c0 m_vecStartPosition
+DT_EnvGasCanister!0x29cc m_vecEnterWorldPosition
+DT_EnvGasCanister!0x29d8 m_vecDirection
+DT_EnvGasCanister!0x29e4 m_vecStartAngles
+DT_EnvGasCanister!0x29f0 m_flFlightTime
+DT_EnvGasCanister!0x29f4 m_flFlightSpeed
+DT_EnvGasCanister!0x29f8 m_flLaunchTime
+DT_EnvGasCanister!0x29fc m_flInitialZSpeed
+DT_EnvGasCanister!0x2a00 m_flZAcceleration
+DT_EnvGasCanister!0x2a04 m_flHorizSpeed
+DT_EnvGasCanister!0x2a08 m_bLaunchedFromWithinWorld
+DT_EnvGasCanister!0x2a0c m_vecParabolaDirection
+DT_EnvGasCanister!0x2a18 m_flWorldEnterTime
+DT_EnvGasCanister!0x2a1c m_vecSkyboxOrigin
+DT_EnvGasCanister!0x2a28 m_flSkyboxScale
+DT_EnvGasCanister!0x2a2c m_bInSkybox
+DT_EnvGasCanister!0x2a2d m_bDoImpactEffects
+DT_EnvGasCanister!0x2a30 m_nMyZoneIndex
+```
+</details>
+<details>
+<summary><code>class DT_EnvProjectedTexture</code></summary>
+
+```
+{
+	m_hTargetEntity: Int,
+	m_bState: Int,
+	m_bAlwaysUpdate: Int,
+	m_flLightFOV: Float,
+	m_bEnableShadows: Int,
+	m_bSimpleProjection: Int,
+	m_bLightOnlyTarget: Int,
+	m_bLightWorld: Int,
+	m_bCameraSpace: Int,
+	m_flBrightnessScale: Float,
+	m_LightColor: Int,
+	m_flColorTransitionTime: Float,
+	m_flAmbient: Float,
+	m_flNearZ: Float,
+	m_flFarZ: Float,
+	m_SpotlightTextureName: String,
+	m_nSpotlightTextureFrame: Int,
+	m_nShadowQuality: Int,
+	m_iStyle: Int,
+	m_flProjectionSize: Float,
+	m_flRotation: Float,
+}
+```
+
+#### Offsets
+
+```
+DT_EnvProjectedTexture!0x09dc m_hTargetEntity
+DT_EnvProjectedTexture!0x09e0 m_bState
+DT_EnvProjectedTexture!0x09e1 m_bAlwaysUpdate
+DT_EnvProjectedTexture!0x09e4 m_flLightFOV
+DT_EnvProjectedTexture!0x09e8 m_bEnableShadows
+DT_EnvProjectedTexture!0x09e9 m_bSimpleProjection
+DT_EnvProjectedTexture!0x09ea m_bLightOnlyTarget
+DT_EnvProjectedTexture!0x09eb m_bLightWorld
+DT_EnvProjectedTexture!0x09ec m_bCameraSpace
+DT_EnvProjectedTexture!0x09f0 m_flBrightnessScale
+DT_EnvProjectedTexture!0x09f4 m_LightColor
+DT_EnvProjectedTexture!0x0a08 m_flColorTransitionTime
+DT_EnvProjectedTexture!0x0a0c m_flAmbient
+DT_EnvProjectedTexture!0x0a10 m_flNearZ
+DT_EnvProjectedTexture!0x0a14 m_flFarZ
+DT_EnvProjectedTexture!0x0a18 m_SpotlightTextureName
+DT_EnvProjectedTexture!0x0b24 m_nSpotlightTextureFrame
+DT_EnvProjectedTexture!0x0b28 m_nShadowQuality
+DT_EnvProjectedTexture!0x0b2c m_iStyle
+DT_EnvProjectedTexture!0x0b38 m_flProjectionSize
+DT_EnvProjectedTexture!0x0b3c m_flRotation
+```
+</details>
+<details>
+<summary><code>class DT_EnvWindShared</code></summary>
+
+```
+{
+	m_flStartTime: Float,
+	m_iWindSeed: Int,
+	m_iMinWind: Int,
+	m_iMaxWind: Int,
+	m_iMinGust: Int,
+	m_iMaxGust: Int,
+	m_flMinGustDelay: Float,
+	m_flMaxGustDelay: Float,
+	m_flGustDuration: Float,
+	m_iGustDirChange: Int,
+	m_iInitialWindDir: Int,
+	m_flInitialWindSpeed: Float,
+}
+```
+
+#### Offsets
+
+```
+DT_EnvWindShared!0x0004 m_flStartTime
+DT_EnvWindShared!0x0008 m_iWindSeed
+DT_EnvWindShared!0x000c m_iMinWind
+DT_EnvWindShared!0x0010 m_iMaxWind
+DT_EnvWindShared!0x0018 m_iMinGust
+DT_EnvWindShared!0x001c m_iMaxGust
+DT_EnvWindShared!0x0020 m_flMinGustDelay
+DT_EnvWindShared!0x0024 m_flMaxGustDelay
+DT_EnvWindShared!0x0028 m_flGustDuration
+DT_EnvWindShared!0x002c m_iGustDirChange
+DT_EnvWindShared!0x006c m_iInitialWindDir
+DT_EnvWindShared!0x0070 m_flInitialWindSpeed
+```
+</details>
+<details>
+<summary><code>class DT_GameRulesProxy</code></summary>
+
+```
+{
+}
+```
+
+#### Offsets
+
+```
+```
+</details>
+<details>
+<summary><code>class DT_LightGlow</code></summary>
+
+```
+{
+	HDRColorScale: Float,
+	m_clrRender: Int,
+	m_angRotation: Vector,
+	m_vecOrigin: Vector,
+	moveparent: Int,
+	m_nHorizontalSize: Int,
+	m_nVerticalSize: Int,
+	m_nMinDist: Int,
+	m_nMaxDist: Int,
+	m_nOuterMaxDist: Int,
+	m_spawnflags: Int,
+	m_flGlowProxySize: Float,
+}
+```
+
+#### Offsets
+
+```
+DT_LightGlow!0x0000 HDRColorScale
+DT_LightGlow!0x0070 m_clrRender
+DT_LightGlow!0x012c m_angRotation
+DT_LightGlow!0x0138 m_vecOrigin
+DT_LightGlow!0x0148 moveparent
+DT_LightGlow!0x09d8 m_nHorizontalSize
+DT_LightGlow!0x09dc m_nVerticalSize
+DT_LightGlow!0x09e0 m_nMinDist
+DT_LightGlow!0x09e4 m_nMaxDist
+DT_LightGlow!0x09e8 m_nOuterMaxDist
+DT_LightGlow!0x09ec m_spawnflags
+DT_LightGlow!0x0ac4 m_flGlowProxySize
+```
+</details>
+<details>
+<summary><code>class DT_LocalActiveWeaponData</code></summary>
+
+```
+{
+	m_nNextThinkTick: Int,
+	m_flNextPrimaryAttack: Float,
+	m_flNextSecondaryAttack: Float,
+	m_flTimeWeaponIdle: Float,
+}
+```
+
+#### Offsets
+
+```
+DT_LocalActiveWeaponData!0x00fc m_nNextThinkTick
+DT_LocalActiveWeaponData!0x3218 m_flNextPrimaryAttack
+DT_LocalActiveWeaponData!0x321c m_flNextSecondaryAttack
+DT_LocalActiveWeaponData!0x3254 m_flTimeWeaponIdle
+```
+</details>
+<details>
+<summary><code>class DT_LocalPlayerExclusive</code></summary>
+
+```
+{
+	m_nNextThinkTick: Int,
+	m_vecViewOffset[0]: Float,
+	m_vecViewOffset[1]: Float,
+	m_vecViewOffset[2]: Float,
+	m_vecVelocity[0]: Float,
+	m_vecVelocity[1]: Float,
+	m_vecVelocity[2]: Float,
+	m_vecBaseVelocity: Vector,
+	m_flFriction: Float,
+	m_Local: DataTable,
+	m_hTonemapController: Int,
+	m_hLastWeapon: Int,
+	m_fOnTarget: Int,
+	m_hConstraintEntity: Int,
+	m_vecConstraintCenter: Vector,
+	m_flConstraintRadius: Float,
+	m_flConstraintWidth: Float,
+	m_flConstraintSpeedFactor: Float,
+	m_bConstraintPastRadius: Int,
+	m_flDeathTime: Float,
+	m_flNextDecalTime: Float,
+	m_fForceTeam: Float,
+	m_nTickBase: Int,
+	m_flLaggedMovementValue: Float,
+}
+```
+
+#### Offsets
+
+```
+DT_LocalPlayerExclusive!0x00fc m_nNextThinkTick
+DT_LocalPlayerExclusive!0x0108 m_vecViewOffset[0]
+DT_LocalPlayerExclusive!0x010c m_vecViewOffset[1]
+DT_LocalPlayerExclusive!0x0110 m_vecViewOffset[2]
+DT_LocalPlayerExclusive!0x0114 m_vecVelocity[0]
+DT_LocalPlayerExclusive!0x0118 m_vecVelocity[1]
+DT_LocalPlayerExclusive!0x011c m_vecVelocity[2]
+DT_LocalPlayerExclusive!0x0120 m_vecBaseVelocity
+DT_LocalPlayerExclusive!0x0144 m_flFriction
+DT_LocalPlayerExclusive!0x2fbc m_Local
+DT_LocalPlayerExclusive!0x31cc m_hTonemapController
+DT_LocalPlayerExclusive!0x32f4 m_hLastWeapon
+DT_LocalPlayerExclusive!0x3324 m_fOnTarget
+DT_LocalPlayerExclusive!0x3340 m_hConstraintEntity
+DT_LocalPlayerExclusive!0x3344 m_vecConstraintCenter
+DT_LocalPlayerExclusive!0x3350 m_flConstraintRadius
+DT_LocalPlayerExclusive!0x3354 m_flConstraintWidth
+DT_LocalPlayerExclusive!0x3358 m_flConstraintSpeedFactor
+DT_LocalPlayerExclusive!0x335c m_bConstraintPastRadius
+DT_LocalPlayerExclusive!0x33c0 m_flDeathTime
+DT_LocalPlayerExclusive!0x33c4 m_flNextDecalTime
+DT_LocalPlayerExclusive!0x33c8 m_fForceTeam
+DT_LocalPlayerExclusive!0x342c m_nTickBase
+DT_LocalPlayerExclusive!0x3590 m_flLaggedMovementValue
+```
+</details>
+<details>
+<summary><code>class DT_MaterialModifyControl</code></summary>
+
+```
+{
+	m_szMaterialName: String,
+	m_szMaterialVar: String,
+	m_szMaterialVarValue: String,
+	m_iFrameStart: Int,
+	m_iFrameEnd: Int,
+	m_bWrap: Int,
+	m_flFramerate: Float,
+	m_bNewAnimCommandsSemaphore: Int,
+	m_flFloatLerpStartValue: Float,
+	m_flFloatLerpEndValue: Float,
+	m_flFloatLerpTransitionTime: Float,
+	m_bFloatLerpWrap: Int,
+	m_nModifyMode: Int,
+}
+```
+
+#### Offsets
+
+```
+DT_MaterialModifyControl!0x09d8 m_szMaterialName
+DT_MaterialModifyControl!0x0ad7 m_szMaterialVar
+DT_MaterialModifyControl!0x0bd6 m_szMaterialVarValue
+DT_MaterialModifyControl!0x0ce0 m_iFrameStart
+DT_MaterialModifyControl!0x0ce4 m_iFrameEnd
+DT_MaterialModifyControl!0x0ce8 m_bWrap
+DT_MaterialModifyControl!0x0cec m_flFramerate
+DT_MaterialModifyControl!0x0cf0 m_bNewAnimCommandsSemaphore
+DT_MaterialModifyControl!0x0cf4 m_flFloatLerpStartValue
+DT_MaterialModifyControl!0x0cf8 m_flFloatLerpEndValue
+DT_MaterialModifyControl!0x0cfc m_flFloatLerpTransitionTime
+DT_MaterialModifyControl!0x0d00 m_bFloatLerpWrap
+DT_MaterialModifyControl!0x0d08 m_nModifyMode
+```
+</details>
+<details>
+<summary><code>class DT_MovieDisplay</code></summary>
+
+```
+{
+	m_bEnabled: Int,
+	m_bLooping: Int,
+	m_szMovieFilename: String,
+	m_szGroupName: String,
+	m_bStretchToFill: Int,
+	m_bForcedSlave: Int,
+	m_bUseCustomUVs: Int,
+	m_flUMin: Float,
+	m_flUMax: Float,
+	m_flVMin: Float,
+	m_flVMax: Float,
+}
+```
+
+#### Offsets
+
+```
+DT_MovieDisplay!0x09d8 m_bEnabled
+DT_MovieDisplay!0x09d9 m_bLooping
+DT_MovieDisplay!0x09da m_szMovieFilename
+DT_MovieDisplay!0x0a5a m_szGroupName
+DT_MovieDisplay!0x0ada m_bStretchToFill
+DT_MovieDisplay!0x0adb m_bForcedSlave
+DT_MovieDisplay!0x0adc m_bUseCustomUVs
+DT_MovieDisplay!0x0ae0 m_flUMin
+DT_MovieDisplay!0x0ae4 m_flUMax
+DT_MovieDisplay!0x0ae8 m_flVMin
+DT_MovieDisplay!0x0aec m_flVMax
+```
+</details>
+<details>
+<summary><code>class DT_ParadropChopper</code></summary>
+
+```
+{
+	m_vecOrigin: VectorXY,
+	m_vecOrigin[2]: Float,
+	m_hCallingPlayer: Int,
+}
+```
+
+#### Offsets
+
+```
+DT_ParadropChopper!0x0138 m_vecOrigin
+DT_ParadropChopper!0x0140 m_vecOrigin[2]
+DT_ParadropChopper!0x2990 m_hCallingPlayer
+```
+</details>
+<details>
+<summary><code>class DT_ParticleProperty</code></summary>
+
+```
+{
+}
+```
+
+#### Offsets
+
+```
+```
+</details>
+<details>
+<summary><code>class DT_Plasma</code></summary>
+
+```
+{
+	m_flStartScale: Float,
+	m_flScale: Float,
+	m_flScaleTime: Float,
+	m_nFlags: Int,
+	m_nPlasmaModelIndex: Int,
+	m_nPlasmaModelIndex2: Int,
+	m_nGlowModelIndex: Int,
+}
+```
+
+#### Offsets
+
+```
+DT_Plasma!0x09d8 m_flStartScale
+DT_Plasma!0x09dc m_flScale
+DT_Plasma!0x09e0 m_flScaleTime
+DT_Plasma!0x09e4 m_nFlags
+DT_Plasma!0x09e8 m_nPlasmaModelIndex
+DT_Plasma!0x09ec m_nPlasmaModelIndex2
+DT_Plasma!0x09f0 m_nGlowModelIndex
+```
+</details>
+<details>
+<summary><code>class DT_PlayerResource</code></summary>
+
+```
+{
+}
+```
+
+#### Offsets
+
+```
+```
+</details>
+<details>
+<summary><code>class DT_PostProcessController</code></summary>
+
+```
+{
+	m_bMaster: Int,
+}
+```
+
+#### Offsets
+
+```
+DT_PostProcessController!0x0a04 m_bMaster
+```
+</details>
+<details>
+<summary><code>class DT_PropVehicleChoreoGeneric</code></summary>
+
+```
+{
+	m_hPlayer: Int,
+	m_bEnterAnimOn: Int,
+	m_bExitAnimOn: Int,
+	m_vecEyeExitEndpoint: Vector,
+	m_bForceEyesToAttachment: Int,
+	m_vehicleView.bClampEyeAngles: Int,
+	m_vehicleView.flPitchCurveZero: Float,
+	m_vehicleView.flPitchCurveLinear: Float,
+	m_vehicleView.flRollCurveZero: Float,
+	m_vehicleView.flRollCurveLinear: Float,
+	m_vehicleView.flFOV: Float,
+	m_vehicleView.flYawMin: Float,
+	m_vehicleView.flYawMax: Float,
+	m_vehicleView.flPitchMin: Float,
+	m_vehicleView.flPitchMax: Float,
+}
+```
+
+#### Offsets
+
+```
+DT_PropVehicleChoreoGeneric!0x29f4 m_hPlayer
+DT_PropVehicleChoreoGeneric!0x29fc m_bEnterAnimOn
+DT_PropVehicleChoreoGeneric!0x29fd m_bExitAnimOn
+DT_PropVehicleChoreoGeneric!0x2a00 m_vecEyeExitEndpoint
+DT_PropVehicleChoreoGeneric!0x2a0c m_bForceEyesToAttachment
+DT_PropVehicleChoreoGeneric!0x2a90 m_vehicleView.bClampEyeAngles
+DT_PropVehicleChoreoGeneric!0x2a94 m_vehicleView.flPitchCurveZero
+DT_PropVehicleChoreoGeneric!0x2a98 m_vehicleView.flPitchCurveLinear
+DT_PropVehicleChoreoGeneric!0x2a9c m_vehicleView.flRollCurveZero
+DT_PropVehicleChoreoGeneric!0x2aa0 m_vehicleView.flRollCurveLinear
+DT_PropVehicleChoreoGeneric!0x2aa4 m_vehicleView.flFOV
+DT_PropVehicleChoreoGeneric!0x2aa8 m_vehicleView.flYawMin
+DT_PropVehicleChoreoGeneric!0x2aac m_vehicleView.flYawMax
+DT_PropVehicleChoreoGeneric!0x2ab0 m_vehicleView.flPitchMin
+DT_PropVehicleChoreoGeneric!0x2ab4 m_vehicleView.flPitchMax
+```
+</details>
+<details>
+<summary><code>class DT_Prop_Hallucination</code></summary>
+
+```
+{
+	m_bEnabled: Int,
+	m_fVisibleTime: Float,
+	m_fRechargeTime: Float,
+}
+```
+
+#### Offsets
+
+```
+DT_Prop_Hallucination!0x2999 m_bEnabled
+DT_Prop_Hallucination!0x299c m_fVisibleTime
+DT_Prop_Hallucination!0x29a0 m_fRechargeTime
+```
+</details>
+<details>
+<summary><code>class DT_Ragdoll</code></summary>
+
+```
+{
+	m_ragAngles: Array,
+	m_ragPos: Array,
+	m_ragPos[0]: Vector,
+	m_ragAngles[0]: Vector,
+	m_hUnragdoll: Int,
+	m_flBlendWeight: Float,
+	m_nOverlaySequence: Int,
+}
+```
+
+#### Offsets
+
+```
+DT_Ragdoll!0x0000 m_ragAngles
+DT_Ragdoll!0x0000 m_ragPos
+DT_Ragdoll!0x2980 m_ragPos[0]
+DT_Ragdoll!0x2aa0 m_ragAngles[0]
+DT_Ragdoll!0x2c7c m_hUnragdoll
+DT_Ragdoll!0x2c80 m_flBlendWeight
+DT_Ragdoll!0x2c88 m_nOverlaySequence
+```
+</details>
+<details>
+<summary><code>class DT_RocketTrail</code></summary>
+
+```
+{
+	m_SpawnRate: Float,
+	m_StartColor: Vector,
+	m_EndColor: Vector,
+	m_Opacity: Float,
+	m_ParticleLifetime: Float,
+	m_StopEmitTime: Float,
+	m_MinSpeed: Float,
+	m_MaxSpeed: Float,
+	m_StartSize: Float,
+	m_EndSize: Float,
+	m_SpawnRadius: Float,
+	m_bEmit: Int,
+	m_bDamaged: Int,
+	m_nAttachment: Int,
+	m_flFlareScale: Float,
+}
+```
+
+#### Offsets
+
+```
+DT_RocketTrail!0x0ac4 m_SpawnRate
+DT_RocketTrail!0x0ac8 m_StartColor
+DT_RocketTrail!0x0ad4 m_EndColor
+DT_RocketTrail!0x0ae0 m_Opacity
+DT_RocketTrail!0x0ae4 m_ParticleLifetime
+DT_RocketTrail!0x0ae8 m_StopEmitTime
+DT_RocketTrail!0x0aec m_MinSpeed
+DT_RocketTrail!0x0af0 m_MaxSpeed
+DT_RocketTrail!0x0af4 m_StartSize
+DT_RocketTrail!0x0af8 m_EndSize
+DT_RocketTrail!0x0afc m_SpawnRadius
+DT_RocketTrail!0x0b0c m_bEmit
+DT_RocketTrail!0x0b0d m_bDamaged
+DT_RocketTrail!0x0b10 m_nAttachment
+DT_RocketTrail!0x0b20 m_flFlareScale
+```
+</details>
+<details>
+<summary><code>class DT_RopeKeyframe</code></summary>
+
+```
+{
+	m_vecOrigin: Vector,
+	moveparent: Int,
+	m_iParentAttachment: Int,
+	m_nMinCPULevel: Int,
+	m_nMaxCPULevel: Int,
+	m_nMinGPULevel: Int,
+	m_nMaxGPULevel: Int,
+	m_flScrollSpeed: Float,
+	m_RopeFlags: Int,
+	m_iRopeMaterialModelIndex: Int,
+	m_iDefaultRopeMaterialModelIndex: Int,
+	m_nSegments: Int,
+	m_hStartPoint: Int,
+	m_hEndPoint: Int,
+	m_iStartAttachment: Int,
+	m_iEndAttachment: Int,
+	m_Subdiv: Int,
+	m_RopeLength: Int,
+	m_Slack: Int,
+	m_TextureScale: Float,
+	m_fLockedPoints: Int,
+	m_nChangeCount: Int,
+	m_Width: Float,
+	m_bConstrainBetweenEndpoints: Int,
+}
+```
+
+#### Offsets
+
+```
+DT_RopeKeyframe!0x0138 m_vecOrigin
+DT_RopeKeyframe!0x0148 moveparent
+DT_RopeKeyframe!0x02ec m_iParentAttachment
+DT_RopeKeyframe!0x0988 m_nMinCPULevel
+DT_RopeKeyframe!0x0989 m_nMaxCPULevel
+DT_RopeKeyframe!0x098a m_nMinGPULevel
+DT_RopeKeyframe!0x098b m_nMaxGPULevel
+DT_RopeKeyframe!0x0a0c m_flScrollSpeed
+DT_RopeKeyframe!0x0a10 m_RopeFlags
+DT_RopeKeyframe!0x0a14 m_iRopeMaterialModelIndex
+DT_RopeKeyframe!0x0a18 m_iDefaultRopeMaterialModelIndex
+DT_RopeKeyframe!0x0ca8 m_nSegments
+DT_RopeKeyframe!0x0cac m_hStartPoint
+DT_RopeKeyframe!0x0cb0 m_hEndPoint
+DT_RopeKeyframe!0x0cb4 m_iStartAttachment
+DT_RopeKeyframe!0x0cb6 m_iEndAttachment
+DT_RopeKeyframe!0x0cb8 m_Subdiv
+DT_RopeKeyframe!0x0cbc m_RopeLength
+DT_RopeKeyframe!0x0cc0 m_Slack
+DT_RopeKeyframe!0x0cc4 m_TextureScale
+DT_RopeKeyframe!0x0cc8 m_fLockedPoints
+DT_RopeKeyframe!0x0ccc m_nChangeCount
+DT_RopeKeyframe!0x0cd0 m_Width
+DT_RopeKeyframe!0x0d50 m_bConstrainBetweenEndpoints
+```
+</details>
+<details>
+<summary><code>class DT_SceneEntity</code></summary>
+
+```
+{
+	m_bIsPlayingBack: Int,
+	m_bPaused: Int,
+	m_bMultiplayer: Int,
+	m_flForceClientTime: Float,
+	m_nSceneStringIndex: Int,
+}
+```
+
+#### Offsets
+
+```
+DT_SceneEntity!0x09dc m_bIsPlayingBack
+DT_SceneEntity!0x09dd m_bPaused
+DT_SceneEntity!0x09de m_bMultiplayer
+DT_SceneEntity!0x09e4 m_flForceClientTime
+DT_SceneEntity!0x09e8 m_nSceneStringIndex
+```
+</details>
+<details>
+<summary><code>class DT_SlideshowDisplay</code></summary>
+
+```
+{
+	m_bEnabled: Int,
+	m_szDisplayText: String,
+	m_szSlideshowDirectory: String,
+	m_fMinSlideTime: Float,
+	m_fMaxSlideTime: Float,
+	m_iCycleType: Int,
+	m_bNoListRepeats: Int,
+}
+```
+
+#### Offsets
+
+```
+DT_SlideshowDisplay!0x09d8 m_bEnabled
+DT_SlideshowDisplay!0x09d9 m_szDisplayText
+DT_SlideshowDisplay!0x0a59 m_szSlideshowDirectory
+DT_SlideshowDisplay!0x0b08 m_fMinSlideTime
+DT_SlideshowDisplay!0x0b0c m_fMaxSlideTime
+DT_SlideshowDisplay!0x0b14 m_iCycleType
+DT_SlideshowDisplay!0x0b18 m_bNoListRepeats
+```
+</details>
+<details>
+<summary><code>class DT_SmokeTrail</code></summary>
+
+```
+{
+	m_SpawnRate: Float,
+	m_StartColor: Vector,
+	m_EndColor: Vector,
+	m_Opacity: Float,
+	m_ParticleLifetime: Float,
+	m_StopEmitTime: Float,
+	m_MinSpeed: Float,
+	m_MaxSpeed: Float,
+	m_MinDirectedSpeed: Float,
+	m_MaxDirectedSpeed: Float,
+	m_StartSize: Float,
+	m_EndSize: Float,
+	m_SpawnRadius: Float,
+	m_bEmit: Int,
+	m_nAttachment: Int,
+}
+```
+
+#### Offsets
+
+```
+DT_SmokeTrail!0x0ac4 m_SpawnRate
+DT_SmokeTrail!0x0ac8 m_StartColor
+DT_SmokeTrail!0x0ad4 m_EndColor
+DT_SmokeTrail!0x0ae0 m_Opacity
+DT_SmokeTrail!0x0ae4 m_ParticleLifetime
+DT_SmokeTrail!0x0ae8 m_StopEmitTime
+DT_SmokeTrail!0x0aec m_MinSpeed
+DT_SmokeTrail!0x0af0 m_MaxSpeed
+DT_SmokeTrail!0x0af4 m_MinDirectedSpeed
+DT_SmokeTrail!0x0af8 m_MaxDirectedSpeed
+DT_SmokeTrail!0x0afc m_StartSize
+DT_SmokeTrail!0x0b00 m_EndSize
+DT_SmokeTrail!0x0b04 m_SpawnRadius
+DT_SmokeTrail!0x0b14 m_bEmit
+DT_SmokeTrail!0x0b18 m_nAttachment
+```
+</details>
+<details>
+<summary><code>class DT_SporeExplosion</code></summary>
+
+```
+{
+	m_flSpawnRate: Float,
+	m_flParticleLifetime: Float,
+	m_flStartSize: Float,
+	m_flEndSize: Float,
+	m_flSpawnRadius: Float,
+	m_bEmit: Int,
+	m_bDontRemove: Int,
+}
+```
+
+#### Offsets
+
+```
+DT_SporeExplosion!0x0ac4 m_flSpawnRate
+DT_SporeExplosion!0x0ac8 m_flParticleLifetime
+DT_SporeExplosion!0x0acc m_flStartSize
+DT_SporeExplosion!0x0ad0 m_flEndSize
+DT_SporeExplosion!0x0ad4 m_flSpawnRadius
+DT_SporeExplosion!0x0adc m_bEmit
+DT_SporeExplosion!0x0add m_bDontRemove
+```
+</details>
+<details>
+<summary><code>class DT_SporeTrail</code></summary>
+
+```
+{
+	m_vecEndColor: Vector,
+	m_flSpawnRate: Float,
+	m_flParticleLifetime: Float,
+	m_flStartSize: Float,
+	m_flEndSize: Float,
+	m_flSpawnRadius: Float,
+	m_bEmit: Int,
+}
+```
+
+#### Offsets
+
+```
+DT_SporeTrail!0x0ac0 m_vecEndColor
+DT_SporeTrail!0x0acc m_flSpawnRate
+DT_SporeTrail!0x0ad0 m_flParticleLifetime
+DT_SporeTrail!0x0ad4 m_flStartSize
+DT_SporeTrail!0x0ad8 m_flEndSize
+DT_SporeTrail!0x0adc m_flSpawnRadius
+DT_SporeTrail!0x0aec m_bEmit
+```
+</details>
+<details>
+<summary><code>class DT_Sprite</code></summary>
+
+```
+{
+	m_hAttachedToEntity: Int,
+	m_nAttachment: Int,
+	m_flSpriteFramerate: Float,
+	m_flFrame: Float,
+	m_nBrightness: Int,
+	m_flBrightnessTime: Float,
+	m_flSpriteScale: Float,
+	m_flScaleTime: Float,
+	m_bWorldSpaceScale: Int,
+	m_flGlowProxySize: Float,
+	m_flHDRColorScale: Float,
+}
+```
+
+#### Offsets
+
+```
+DT_Sprite!0x09e8 m_hAttachedToEntity
+DT_Sprite!0x09ec m_nAttachment
+DT_Sprite!0x09f0 m_flSpriteFramerate
+DT_Sprite!0x09f4 m_flFrame
+DT_Sprite!0x09fc m_nBrightness
+DT_Sprite!0x0a00 m_flBrightnessTime
+DT_Sprite!0x0a04 m_flSpriteScale
+DT_Sprite!0x0a08 m_flScaleTime
+DT_Sprite!0x0a0c m_bWorldSpaceScale
+DT_Sprite!0x0a10 m_flGlowProxySize
+DT_Sprite!0x0a14 m_flHDRColorScale
+```
+</details>
+<details>
+<summary><code>class DT_SteamJet</code></summary>
+
+```
+{
+	m_SpreadSpeed: Float,
+	m_Speed: Float,
+	m_StartSize: Float,
+	m_EndSize: Float,
+	m_Rate: Float,
+	m_JetLength: Float,
+	m_bEmit: Int,
+	m_nType: Int,
+	m_bFaceLeft: Int,
+	m_spawnflags: Int,
+	m_flRollSpeed: Float,
+}
+```
+
+#### Offsets
+
+```
+DT_SteamJet!0x0ac4 m_SpreadSpeed
+DT_SteamJet!0x0ac8 m_Speed
+DT_SteamJet!0x0acc m_StartSize
+DT_SteamJet!0x0ad0 m_EndSize
+DT_SteamJet!0x0ad4 m_Rate
+DT_SteamJet!0x0ad8 m_JetLength
+DT_SteamJet!0x0adc m_bEmit
+DT_SteamJet!0x0ae0 m_nType
+DT_SteamJet!0x0ae4 m_bFaceLeft
+DT_SteamJet!0x0ae8 m_spawnflags
+DT_SteamJet!0x0aec m_flRollSpeed
+```
+</details>
+<details>
+<summary><code>class DT_TEBSPDecal</code></summary>
+
+```
+{
+	m_vecOrigin: Vector,
+	m_nEntity: Int,
+	m_nIndex: Int,
+}
+```
+
+#### Offsets
+
+```
+DT_TEBSPDecal!0x0010 m_vecOrigin
+DT_TEBSPDecal!0x001c m_nEntity
+DT_TEBSPDecal!0x0020 m_nIndex
+```
+</details>
+<details>
+<summary><code>class DT_TEBeamRingPoint</code></summary>
+
+```
+{
+	m_vecCenter: Vector,
+	m_flStartRadius: Float,
+	m_flEndRadius: Float,
+}
+```
+
+#### Offsets
+
+```
+DT_TEBeamRingPoint!0x004c m_vecCenter
+DT_TEBeamRingPoint!0x0058 m_flStartRadius
+DT_TEBeamRingPoint!0x005c m_flEndRadius
+```
+</details>
+<details>
+<summary><code>class DT_TEBreakModel</code></summary>
+
+```
+{
+	m_vecOrigin: Vector,
+	m_angRotation[0]: Float,
+	m_angRotation[1]: Float,
+	m_angRotation[2]: Float,
+	m_vecSize: Vector,
+	m_vecVelocity: Vector,
+	m_nRandomization: Int,
+	m_nModelIndex: Int,
+	m_nCount: Int,
+	m_fTime: Float,
+	m_nFlags: Int,
+}
+```
+
+#### Offsets
+
+```
+DT_TEBreakModel!0x0010 m_vecOrigin
+DT_TEBreakModel!0x001c m_angRotation[0]
+DT_TEBreakModel!0x0020 m_angRotation[1]
+DT_TEBreakModel!0x0024 m_angRotation[2]
+DT_TEBreakModel!0x0028 m_vecSize
+DT_TEBreakModel!0x0034 m_vecVelocity
+DT_TEBreakModel!0x0040 m_nRandomization
+DT_TEBreakModel!0x0044 m_nModelIndex
+DT_TEBreakModel!0x0048 m_nCount
+DT_TEBreakModel!0x004c m_fTime
+DT_TEBreakModel!0x0050 m_nFlags
+```
+</details>
+<details>
+<summary><code>class DT_TEDust</code></summary>
+
+```
+{
+	m_flSize: Float,
+	m_flSpeed: Float,
+	m_vecDirection: Vector,
+}
+```
+
+#### Offsets
+
+```
+DT_TEDust!0x001c m_flSize
+DT_TEDust!0x0020 m_flSpeed
+DT_TEDust!0x0024 m_vecDirection
+```
+</details>
+<details>
+<summary><code>class DT_TEParticleSystem</code></summary>
+
+```
+{
+	m_vecOrigin[0]: Float,
+	m_vecOrigin[1]: Float,
+	m_vecOrigin[2]: Float,
+}
+```
+
+#### Offsets
+
+```
+DT_TEParticleSystem!0x0010 m_vecOrigin[0]
+DT_TEParticleSystem!0x0014 m_vecOrigin[1]
+DT_TEParticleSystem!0x0018 m_vecOrigin[2]
+```
+</details>
+<details>
+<summary><code>class DT_TESparks</code></summary>
+
+```
+{
+	m_nMagnitude: Int,
+	m_nTrailLength: Int,
+	m_vecDir: Vector,
+}
+```
+
+#### Offsets
+
+```
+DT_TESparks!0x001c m_nMagnitude
+DT_TESparks!0x0020 m_nTrailLength
+DT_TESparks!0x0024 m_vecDir
+```
+</details>
+<details>
+<summary><code>class DT_VGuiScreen</code></summary>
+
+```
+{
+	m_flWidth: Float,
+	m_flHeight: Float,
+	m_nPanelName: Int,
+	m_nAttachmentIndex: Int,
+	m_nOverlayMaterial: Int,
+	m_fScreenFlags: Int,
+	m_hPlayerOwner: Int,
+}
+```
+
+#### Offsets
+
+```
+DT_VGuiScreen!0x09e0 m_flWidth
+DT_VGuiScreen!0x09e4 m_flHeight
+DT_VGuiScreen!0x09e8 m_nPanelName
+DT_VGuiScreen!0x0a04 m_nAttachmentIndex
+DT_VGuiScreen!0x0a08 m_nOverlayMaterial
+DT_VGuiScreen!0x0a0c m_fScreenFlags
+DT_VGuiScreen!0x0a68 m_hPlayerOwner
+```
+</details>
+<details>
+<summary><code>class DT_VoteController</code></summary>
+
+```
+{
+	m_iActiveIssueIndex: Int,
+	m_iOnlyTeamToVote: Int,
+	m_nPotentialVotes: Int,
+	m_bIsYesNoVote: Int,
+}
+```
+
+#### Offsets
+
+```
+DT_VoteController!0x09e4 m_iActiveIssueIndex
+DT_VoteController!0x09e8 m_iOnlyTeamToVote
+DT_VoteController!0x0a04 m_nPotentialVotes
+DT_VoteController!0x0a0a m_bIsYesNoVote
+```
+</details>
+
+### WeaponData
+
+```
 class WeaponInfo {
-	// field offset: 0x14
 	primary clip size: Int,
-	// field offset: 0x18
 	secondary clip size: Int,
-	// field offset: 0x1c
 	primary default clip size: Int,
-	// field offset: 0x20
 	secondary default clip size: Int,
-	// field offset: 0x24
 	primary reserve ammo max: Int,
-	// field offset: 0x28
 	secondary reserve ammo max: Int,
-	// field offset: 0x90
 	allow hand flipping: Bool,
-	// field offset: 0x91
 	model right handed: Bool,
-	// field offset: 0x92
 	is melee weapon: Bool,
-	// field offset: 0x9c
 	weapon weight: Int,
-	// field offset: 0xc0
 	rumble effect: Int,
 }
 class CSWeaponInfo extends WeaponInfo {
-	// field offset: 0xd0
 	in game price: Int,
-	// field offset: 0xd4
 	kill award: Int,
-	// field offset: 0xdc
 	cycletime: Float,
-	// field offset: 0xe0
 	cycletime alt: Float,
-	// field offset: 0xe4
 	time to idle: Float,
-	// field offset: 0xe8
 	idle interval: Float,
-	// field offset: 0xec
 	is full auto: Bool,
-	// field offset: 0xf0
 	damage: Int,
-	// field offset: 0xf4
 	armor ratio: Float,
-	// field offset: 0xf8
 	bullets: Int,
-	// field offset: 0xfc
 	penetration: Float,
-	// field offset: 0x100
 	flinch velocity modifier large: Float,
-	// field offset: 0x104
 	flinch velocity modifier small: Float,
-	// field offset: 0x108
 	range: Float,
-	// field offset: 0x10c
 	range modifier: Float,
-	// field offset: 0x110
 	throw velocity: Float,
-	// field offset: 0x120
 	has silencer: Int,
-	// field offset: 0x124
 	silencer model: Int,
-	// field offset: 0x128
 	crosshair min distance: Int,
-	// field offset: 0x12c
 	crosshair delta distance: Int,
-	// field offset: 0x130
 	max player speed: Float,
-	// field offset: 0x134
 	max player speed alt: Float,
-	// field offset: 0x138
 	attack movespeed factor: Float,
-	// field offset: 0x13c
 	spread: Float,
-	// field offset: 0x140
 	spread alt: Float,
-	// field offset: 0x144
 	inaccuracy crouch: Float,
-	// field offset: 0x148
 	inaccuracy crouch alt: Float,
-	// field offset: 0x14c
 	inaccuracy stand: Float,
-	// field offset: 0x150
 	inaccuracy stand alt: Float,
-	// field offset: 0x154
 	inaccuracy jump initial: Float,
-	// field offset: 0x158
 	inaccuracy jump: Float,
-	// field offset: 0x15c
 	inaccuracy jump alt: Float,
-	// field offset: 0x160
 	inaccuracy land: Float,
-	// field offset: 0x164
 	inaccuracy land alt: Float,
-	// field offset: 0x168
 	inaccuracy ladder: Float,
-	// field offset: 0x16c
 	inaccuracy ladder alt: Float,
-	// field offset: 0x170
 	inaccuracy fire: Float,
-	// field offset: 0x174
 	inaccuracy fire alt: Float,
-	// field offset: 0x178
 	inaccuracy move: Float,
-	// field offset: 0x17c
 	inaccuracy move alt: Float,
-	// field offset: 0x180
 	inaccuracy reload: Float,
-	// field offset: 0x184
 	recoil seed: Int,
-	// field offset: 0x188
 	recoil angle: Float,
-	// field offset: 0x18c
 	recoil angle alt: Float,
-	// field offset: 0x190
 	recoil angle variance: Float,
-	// field offset: 0x194
 	recoil angle variance alt: Float,
-	// field offset: 0x198
 	recoil magnitude: Float,
-	// field offset: 0x19c
 	recoil magnitude alt: Float,
-	// field offset: 0x1a0
 	recoil magnitude variance: Float,
-	// field offset: 0x1a4
 	recoil magnitude variance alt: Float,
-	// field offset: 0x1a8
 	spread seed: Int,
-	// field offset: 0x1ac
 	recovery time crouch: Float,
-	// field offset: 0x1b0
 	recovery time stand: Float,
-	// field offset: 0x1b4
 	recovery time crouch final: Float,
-	// field offset: 0x1b8
 	recovery time stand final: Float,
-	// field offset: 0x1bc
 	recovery transition start bullet: Int,
-	// field offset: 0x1c0
 	recovery transition end bullet: Int,
-	// field offset: 0x1c4
 	unzoom after shot: Bool,
-	// field offset: 0x1c5
 	hide view model zoomed: Bool,
-	// field offset: 0x1c8
 	zoom levels: Int,
-	// field offset: 0x1cc
 	zoom fov 1: Int,
-	// field offset: 0x1d0
 	zoom fov 2: Int,
-	// field offset: 0x1d4
 	zoom time 0: Float,
-	// field offset: 0x1d8
 	zoom time 1: Float,
-	// field offset: 0x1dc
 	zoom time 2: Float,
-	// field offset: 0x1e8
 	addon scale: Float,
-	// field offset: 0x1f4
 	tracer frequency: Int,
-	// field offset: 0x1f8
 	tracer frequency alt: Int,
-	// field offset: 0x210
 	heat per shot: Float,
-	// field offset: 0x21c
 	inaccuracy pitch shift: Float,
-	// field offset: 0x220
 	inaccuracy alt sound threshold: Float,
-	// field offset: 0x224
 	bot audible range: Float,
-	// field offset: 0x230
 	wrong team msg: Int,
-	// field offset: 0x234
 	has burst mode: Bool,
-	// field offset: 0x235
 	is revolver: Bool,
-	// field offset: 0x236
 	cannot shoot underwater: Bool,
 }
-# Server
+```
 
-## Interfaces
+#### Offsets
+
+```
+WeaponInfo!0x0014 primary clip size
+WeaponInfo!0x0018 secondary clip size
+WeaponInfo!0x001c primary default clip size
+WeaponInfo!0x0020 secondary default clip size
+WeaponInfo!0x0024 primary reserve ammo max
+WeaponInfo!0x0028 secondary reserve ammo max
+WeaponInfo!0x0090 allow hand flipping
+WeaponInfo!0x0091 model right handed
+WeaponInfo!0x0092 is melee weapon
+WeaponInfo!0x009c weapon weight
+WeaponInfo!0x00c0 rumble effect
+CSWeaponInfo!0x00d0 in game price
+CSWeaponInfo!0x00d4 kill award
+CSWeaponInfo!0x00dc cycletime
+CSWeaponInfo!0x00e0 cycletime alt
+CSWeaponInfo!0x00e4 time to idle
+CSWeaponInfo!0x00e8 idle interval
+CSWeaponInfo!0x00ec is full auto
+CSWeaponInfo!0x00f0 damage
+CSWeaponInfo!0x00f4 armor ratio
+CSWeaponInfo!0x00f8 bullets
+CSWeaponInfo!0x00fc penetration
+CSWeaponInfo!0x0100 flinch velocity modifier large
+CSWeaponInfo!0x0104 flinch velocity modifier small
+CSWeaponInfo!0x0108 range
+CSWeaponInfo!0x010c range modifier
+CSWeaponInfo!0x0110 throw velocity
+CSWeaponInfo!0x0120 has silencer
+CSWeaponInfo!0x0124 silencer model
+CSWeaponInfo!0x0128 crosshair min distance
+CSWeaponInfo!0x012c crosshair delta distance
+CSWeaponInfo!0x0130 max player speed
+CSWeaponInfo!0x0134 max player speed alt
+CSWeaponInfo!0x0138 attack movespeed factor
+CSWeaponInfo!0x013c spread
+CSWeaponInfo!0x0140 spread alt
+CSWeaponInfo!0x0144 inaccuracy crouch
+CSWeaponInfo!0x0148 inaccuracy crouch alt
+CSWeaponInfo!0x014c inaccuracy stand
+CSWeaponInfo!0x0150 inaccuracy stand alt
+CSWeaponInfo!0x0154 inaccuracy jump initial
+CSWeaponInfo!0x0158 inaccuracy jump
+CSWeaponInfo!0x015c inaccuracy jump alt
+CSWeaponInfo!0x0160 inaccuracy land
+CSWeaponInfo!0x0164 inaccuracy land alt
+CSWeaponInfo!0x0168 inaccuracy ladder
+CSWeaponInfo!0x016c inaccuracy ladder alt
+CSWeaponInfo!0x0170 inaccuracy fire
+CSWeaponInfo!0x0174 inaccuracy fire alt
+CSWeaponInfo!0x0178 inaccuracy move
+CSWeaponInfo!0x017c inaccuracy move alt
+CSWeaponInfo!0x0180 inaccuracy reload
+CSWeaponInfo!0x0184 recoil seed
+CSWeaponInfo!0x0188 recoil angle
+CSWeaponInfo!0x018c recoil angle alt
+CSWeaponInfo!0x0190 recoil angle variance
+CSWeaponInfo!0x0194 recoil angle variance alt
+CSWeaponInfo!0x0198 recoil magnitude
+CSWeaponInfo!0x019c recoil magnitude alt
+CSWeaponInfo!0x01a0 recoil magnitude variance
+CSWeaponInfo!0x01a4 recoil magnitude variance alt
+CSWeaponInfo!0x01a8 spread seed
+CSWeaponInfo!0x01ac recovery time crouch
+CSWeaponInfo!0x01b0 recovery time stand
+CSWeaponInfo!0x01b4 recovery time crouch final
+CSWeaponInfo!0x01b8 recovery time stand final
+CSWeaponInfo!0x01bc recovery transition start bullet
+CSWeaponInfo!0x01c0 recovery transition end bullet
+CSWeaponInfo!0x01c4 unzoom after shot
+CSWeaponInfo!0x01c5 hide view model zoomed
+CSWeaponInfo!0x01c8 zoom levels
+CSWeaponInfo!0x01cc zoom fov 1
+CSWeaponInfo!0x01d0 zoom fov 2
+CSWeaponInfo!0x01d4 zoom time 0
+CSWeaponInfo!0x01d8 zoom time 1
+CSWeaponInfo!0x01dc zoom time 2
+CSWeaponInfo!0x01e8 addon scale
+CSWeaponInfo!0x01f4 tracer frequency
+CSWeaponInfo!0x01f8 tracer frequency alt
+CSWeaponInfo!0x0210 heat per shot
+CSWeaponInfo!0x021c inaccuracy pitch shift
+CSWeaponInfo!0x0220 inaccuracy alt sound threshold
+CSWeaponInfo!0x0224 bot audible range
+CSWeaponInfo!0x0230 wrong team msg
+CSWeaponInfo!0x0234 has burst mode
+CSWeaponInfo!0x0235 is revolver
+CSWeaponInfo!0x0236 cannot shoot underwater
+```
+
+## Server.dll
+
+### Interfaces
 
 ```
 server.dll!0x00990c0c BotManager001
@@ -22970,7 +23858,7 @@ server.dll!0x009a8f5c VSERVERTOOLS001
 server.dll!0x00a1debc VServerDllSharedAppSystems001
 ```
 
-## ConVars
+### ConVars
 
 <details>
 <summary><code>BlendBonesMode</code></summary>
@@ -29857,907 +30745,907 @@ default: `"200"`
 flags: `0x80`  
 </details>
 
-### Addresses
+#### Addresses
 
 ```
-server.dll!0x9a9040 ConVar BlendBonesMode
-server.dll!0x99e060 ConVar CS_WarnFriendlyDamageInterval
-server.dll!0x981f18 ConVar achievement_debug
-server.dll!0x981f70 ConVar achievement_disable
-server.dll!0x9830b0 ConVar ai_LOS_mode
-server.dll!0x985e40 ConVar ai_debug_shoot_positions
-server.dll!0x983440 ConVar ai_drawbattlelines
-server.dll!0x982f90 ConVar ai_report_task_timings_on_limit
-server.dll!0x985ef0 ConVar ai_shot_bias_max
-server.dll!0x985e98 ConVar ai_shot_bias_min
-server.dll!0x982fe8 ConVar ai_think_limit_label
-server.dll!0x984478 ConVar ai_vehicle_avoidance
-server.dll!0x9967c0 ConVar ammo_338mag_headshot_mult
-server.dll!0x996450 ConVar ammo_338mag_impulse
-server.dll!0x995dc8 ConVar ammo_338mag_max
-server.dll!0x996920 ConVar ammo_357sig_headshot_mult
-server.dll!0x9965b0 ConVar ammo_357sig_impulse
-server.dll!0x995f28 ConVar ammo_357sig_max
-server.dll!0x996030 ConVar ammo_357sig_min_max
-server.dll!0x995f80 ConVar ammo_357sig_p250_max
-server.dll!0x995fd8 ConVar ammo_357sig_small_max
-server.dll!0x9968c8 ConVar ammo_45acp_headshot_mult
-server.dll!0x996558 ConVar ammo_45acp_impulse
-server.dll!0x995ed0 ConVar ammo_45acp_max
-server.dll!0x996660 ConVar ammo_50AE_headshot_mult
-server.dll!0x9962f0 ConVar ammo_50AE_impulse
-server.dll!0x995c10 ConVar ammo_50AE_max
-server.dll!0x996768 ConVar ammo_556mm_box_headshot_mult
-server.dll!0x9963f8 ConVar ammo_556mm_box_impulse
-server.dll!0x995d70 ConVar ammo_556mm_box_max
-server.dll!0x996710 ConVar ammo_556mm_headshot_mult
-server.dll!0x9963a0 ConVar ammo_556mm_impulse
-server.dll!0x995cc0 ConVar ammo_556mm_max
-server.dll!0x995d18 ConVar ammo_556mm_small_max
-server.dll!0x996978 ConVar ammo_57mm_headshot_mult
-server.dll!0x996608 ConVar ammo_57mm_impulse
-server.dll!0x996088 ConVar ammo_57mm_max
-server.dll!0x9966b8 ConVar ammo_762mm_headshot_mult
-server.dll!0x996348 ConVar ammo_762mm_impulse
-server.dll!0x995c68 ConVar ammo_762mm_max
-server.dll!0x996818 ConVar ammo_9mm_headshot_mult
-server.dll!0x9964a8 ConVar ammo_9mm_impulse
-server.dll!0x995e20 ConVar ammo_9mm_max
-server.dll!0x996870 ConVar ammo_buckshot_headshot_mult
-server.dll!0x996500 ConVar ammo_buckshot_impulse
-server.dll!0x995e78 ConVar ammo_buckshot_max
-server.dll!0x996298 ConVar ammo_grenade_limit_breachcharge
-server.dll!0x9960e0 ConVar ammo_grenade_limit_default
-server.dll!0x996138 ConVar ammo_grenade_limit_flashbang
-server.dll!0x9961e8 ConVar ammo_grenade_limit_snowballs
-server.dll!0x996190 ConVar ammo_grenade_limit_total
-server.dll!0x996240 ConVar ammo_item_limit_healthshot
-server.dll!0x9a9098 ConVar anim_3wayblend
-server.dll!0x9a90f0 ConVar anim_twistbones_enabled
-server.dll!0x9a2ac0 ConVar bot_allow_grenades
-server.dll!0x9a2a68 ConVar bot_allow_machine_guns
-server.dll!0x9a2908 ConVar bot_allow_pistols
-server.dll!0x9a2a10 ConVar bot_allow_rifles
-server.dll!0x9a2dd8 ConVar bot_allow_rogues
-server.dll!0x9a2960 ConVar bot_allow_shotguns
-server.dll!0x9a2b18 ConVar bot_allow_snipers
-server.dll!0x9a29b8 ConVar bot_allow_sub_machine_guns
-server.dll!0x9a2cd0 ConVar bot_auto_follow
-server.dll!0x9a2f38 ConVar bot_auto_vacate
-server.dll!0x998b60 ConVar bot_autodifficulty_threshold_high
-server.dll!0x998b08 ConVar bot_autodifficulty_threshold_low
-server.dll!0x9a2d80 ConVar bot_chatter
-server.dll!0x9a2f90 ConVar bot_controllable
-server.dll!0x9a3b58 ConVar bot_coop_force_throw_grenade_chance
-server.dll!0x9a3660 ConVar bot_coop_idle_max_vision_distance
-server.dll!0x99e3d0 ConVar bot_crouch
-server.dll!0x9a2e88 ConVar bot_debug
-server.dll!0x9a2ee0 ConVar bot_debug_target
-server.dll!0x9a2e30 ConVar bot_defer_to_human_goals
-server.dll!0x9a3040 ConVar bot_defer_to_human_items
-server.dll!0x9a2fe8 ConVar bot_difficulty
-server.dll!0x9a2c20 ConVar bot_dont_shoot
-server.dll!0x9a2c78 ConVar bot_eco_limit
-server.dll!0x9a2d28 ConVar bot_flipout
-server.dll!0x99e378 ConVar bot_freeze
-server.dll!0x9a3608 ConVar bot_ignore_players
-server.dll!0x9a3148 ConVar bot_join_after_player
-server.dll!0x9a31a0 ConVar bot_join_team
-server.dll!0x9a3758 ConVar bot_loadout
-server.dll!0x9a35b0 ConVar bot_max_vision_distance_override
-server.dll!0x99e320 ConVar bot_mimic
-server.dll!0x99e428 ConVar bot_mimic_yaw_offset
-server.dll!0x9a2bc8 ConVar bot_profile_db
-server.dll!0x9a3098 ConVar bot_quota
-server.dll!0x9a30f0 ConVar bot_quota_mode
-server.dll!0x9a37b0 ConVar bot_randombuy
-server.dll!0x9a3270 ConVar bot_show_battlefront
-server.dll!0x9a2800 ConVar bot_show_nav
-server.dll!0x9a3218 ConVar bot_show_occupy_time
-server.dll!0x9a27a8 ConVar bot_stop
-server.dll!0x9a2750 ConVar bot_traceview
-server.dll!0x9a2858 ConVar bot_walk
-server.dll!0x9a2b70 ConVar bot_zombie
-server.dll!0x99c4f8 ConVar cash_player_bomb_defused
-server.dll!0x99c4a0 ConVar cash_player_bomb_planted
-server.dll!0x99c600 ConVar cash_player_damage_hostage
-server.dll!0x99c708 ConVar cash_player_get_killed
-server.dll!0x99c5a8 ConVar cash_player_interact_with_hostage
-server.dll!0x99c448 ConVar cash_player_killed_enemy_default
-server.dll!0x99c3f0 ConVar cash_player_killed_enemy_factor
-server.dll!0x99c658 ConVar cash_player_killed_hostage
-server.dll!0x99c398 ConVar cash_player_killed_teammate
-server.dll!0x99c550 ConVar cash_player_rescued_hostage
-server.dll!0x99c6b0 ConVar cash_player_respawn_amount
-server.dll!0x99bf20 ConVar cash_team_elimination_bomb_map
-server.dll!0x99bec8 ConVar cash_team_elimination_hostage_map_ct
-server.dll!0x99be70 ConVar cash_team_elimination_hostage_map_t
-server.dll!0x99c290 ConVar cash_team_hostage_alive
-server.dll!0x99c340 ConVar cash_team_hostage_interaction
-server.dll!0x99c130 ConVar cash_team_loser_bonus
-server.dll!0x99c188 ConVar cash_team_loser_bonus_consecutive_rounds
-server.dll!0x99c2e8 ConVar cash_team_planted_bomb_but_defused
-server.dll!0x99c238 ConVar cash_team_rescued_hostage
-server.dll!0x99bf78 ConVar cash_team_survive_guardian_wave
-server.dll!0x99be18 ConVar cash_team_terrorist_win_bomb
-server.dll!0x99c080 ConVar cash_team_win_by_defusing_bomb
-server.dll!0x99c0d8 ConVar cash_team_win_by_hostage_rescue
-server.dll!0x99c028 ConVar cash_team_win_by_time_running_out_bomb
-server.dll!0x99bfd0 ConVar cash_team_win_by_time_running_out_hostage
-server.dll!0x99c1e0 ConVar cash_team_winner_bonus_consecutive_rounds
-server.dll!0x991ff0 ConVar cc_showmissing
-server.dll!0x983e58 ConVar chet_debug_idle
-server.dll!0x9a9148 ConVar choreo_spew_filter
-server.dll!0x992fa8 ConVar cl_remove_old_ugc_downloads
-server.dll!0x9a8fe8 ConVar cl_simdbones
-server.dll!0x9a8f90 ConVar cl_use_simd_bones
-server.dll!0x99b718 ConVar contributionscore_assist
-server.dll!0x99b928 ConVar contributionscore_bomb_defuse_major
-server.dll!0x99b8d0 ConVar contributionscore_bomb_defuse_minor
-server.dll!0x99b9d8 ConVar contributionscore_bomb_exploded
-server.dll!0x99b980 ConVar contributionscore_bomb_planted
-server.dll!0x99bb38 ConVar contributionscore_cash_bundle
-server.dll!0x99bb90 ConVar contributionscore_crate_break
-server.dll!0x99bae0 ConVar contributionscore_hostage_kill
-server.dll!0x99b878 ConVar contributionscore_hostage_rescue_major
-server.dll!0x99b820 ConVar contributionscore_hostage_rescue_minor
-server.dll!0x99b770 ConVar contributionscore_kill
-server.dll!0x99bbe8 ConVar contributionscore_kill_factor
-server.dll!0x99b7c8 ConVar contributionscore_objective_kill
-server.dll!0x99ba30 ConVar contributionscore_suicide
-server.dll!0x99ba88 ConVar contributionscore_team_kill
-server.dll!0x99dbe8 ConVar cs_ShowStateTransitions
-server.dll!0x99e5e0 ConVar cs_enable_player_physics_box
-server.dll!0x99e588 ConVar cs_hostage_near_rescue_music_distance
-server.dll!0x9a2150 ConVar custom_bot_difficulty
-server.dll!0x9a20c8 ConVar debug_aim_angle
-server.dll!0x986e00 ConVar debug_visibility_monitor
-server.dll!0x999c98 ConVar dev_reportmoneychanges
-server.dll!0x993330 ConVar developer
-server.dll!0x9858d0 ConVar ent_messages_draw
-server.dll!0x99edd8 ConVar ff_damage_bullet_penetration
-server.dll!0x99f210 ConVar ff_damage_reduction_bullets
-server.dll!0x99f160 ConVar ff_damage_reduction_grenade
-server.dll!0x99f108 ConVar ff_damage_reduction_grenade_self
-server.dll!0x99f1b8 ConVar ff_damage_reduction_other
-server.dll!0x98b990 ConVar fish_dormant
-server.dll!0x98bd28 ConVar func_break_max_pieces
-server.dll!0x98b5b0 ConVar fx_new_sparks
-server.dll!0x98d258 ConVar g_Language
-server.dll!0x990ca0 ConVar g_debug_angularsensor
-server.dll!0x98eff8 ConVar g_debug_constraint_sounds
-server.dll!0x9913e8 ConVar g_debug_ragdoll_removal
-server.dll!0x984db8 ConVar g_debug_trackpather
-server.dll!0x993388 ConVar g_debug_vehiclebase
-server.dll!0x98ebc0 ConVar g_debug_vehicledriver
-server.dll!0x9934c8 ConVar g_debug_vehicleexit
-server.dll!0x993470 ConVar g_debug_vehiclesound
-server.dll!0x9a09b0 ConVar g_jeepexitspeed
-server.dll!0x991440 ConVar g_ragdoll_important_maxcount
-server.dll!0x991390 ConVar g_ragdoll_maxcount
-server.dll!0x9a2258 ConVar game_mode
-server.dll!0x9a2200 ConVar game_online
-server.dll!0x9a21a8 ConVar game_public
-server.dll!0x9a22b0 ConVar game_type
-server.dll!0x99e530 ConVar gg_knife_kill_demotes
-server.dll!0x98d700 ConVar global_event_log_enabled
-server.dll!0x9a50a0 ConVar healthshot_allow_use_at_full
-server.dll!0x9a4ff0 ConVar healthshot_health
-server.dll!0x99e6e8 ConVar healthshot_healthboost_damage_multiplier
-server.dll!0x9a50f8 ConVar healthshot_healthboost_speed_multiplier
-server.dll!0x9a5048 ConVar healthshot_healthboost_time
-server.dll!0x985f48 ConVar hl2_episodic
-server.dll!0x9a4648 ConVar hostage_debug
-server.dll!0x99f318 ConVar hostage_feetyawrate
-server.dll!0x9a4430 ConVar hostage_is_silent
-server.dll!0x9a3d40 ConVar inferno_child_spawn_interval_multiplier
-server.dll!0x9a4210 ConVar inferno_child_spawn_max_depth
-server.dll!0x9a4000 ConVar inferno_damage
-server.dll!0x9a3fa8 ConVar inferno_debug
-server.dll!0x9a3ef8 ConVar inferno_flame_lifetime
-server.dll!0x9a3ea0 ConVar inferno_flame_spacing
-server.dll!0x9a4318 ConVar inferno_forward_reduction_factor
-server.dll!0x9a3f50 ConVar inferno_friendly_fire_duration
-server.dll!0x9a3ce8 ConVar inferno_initial_spawn_interval
-server.dll!0x9a3d98 ConVar inferno_max_child_spawn_interval
-server.dll!0x9a3e48 ConVar inferno_max_flames
-server.dll!0x9a4058 ConVar inferno_max_range
-server.dll!0x9a3c90 ConVar inferno_per_flame_spawn_duration
-server.dll!0x9a4268 ConVar inferno_scorch_decals
-server.dll!0x9a3df0 ConVar inferno_spawn_angle
-server.dll!0x9a41b8 ConVar inferno_surface_offset
-server.dll!0x9a4108 ConVar inferno_velocity_decay_factor
-server.dll!0x9a40b0 ConVar inferno_velocity_factor
-server.dll!0x9a4160 ConVar inferno_velocity_normal_factor
-server.dll!0x98c068 ConVar loopsingleplayermaps
-server.dll!0x98e6a0 ConVar mapcycledisabled
-server.dll!0x9a23e0 ConVar molotov_throw_detonate_time
-server.dll!0x996e48 ConVar mp_afterroundmoney
-server.dll!0x98c4e0 ConVar mp_allowNPCs
-server.dll!0x98d458 ConVar mp_allowspectators
-server.dll!0x997160 ConVar mp_anyone_can_pickup_c4
-server.dll!0x98c380 ConVar mp_autocrosshair
-server.dll!0x999f58 ConVar mp_autokick
-server.dll!0x992b00 ConVar mp_autoteambalance
-server.dll!0x995b90 ConVar mp_backup_restore_load_autopause
-server.dll!0x9959e8 ConVar mp_backup_round_auto
-server.dll!0x995a40 ConVar mp_backup_round_file
-server.dll!0x995af0 ConVar mp_backup_round_file_last
-server.dll!0x995a98 ConVar mp_backup_round_file_pattern
-server.dll!0x992630 ConVar mp_blockstyle
-server.dll!0x9928f0 ConVar mp_bonusroundtime
-server.dll!0x996c38 ConVar mp_buy_allow_grenades
-server.dll!0x996c90 ConVar mp_buy_allow_guns
-server.dll!0x98d560 ConVar mp_buy_anywhere
-server.dll!0x98d5b8 ConVar mp_buy_during_immunity
-server.dll!0x996be0 ConVar mp_buytime
-server.dll!0x9971b8 ConVar mp_c4_cannot_be_defused
-server.dll!0x999c38 ConVar mp_c4timer
-server.dll!0x9926e0 ConVar mp_capdeteriorate_time
-server.dll!0x9925d8 ConVar mp_capstyle
-server.dll!0x9992f0 ConVar mp_competitive_endofmatch_extra_time
-server.dll!0x99ab60 ConVar mp_consecutive_loss_aversion
-server.dll!0x99abb8 ConVar mp_consecutive_loss_max
-server.dll!0x998a00 ConVar mp_coop_force_join_ct
-server.dll!0x9a26f8 ConVar mp_coopmission_bot_difficulty_offset
-server.dll!0x998a58 ConVar mp_coopmission_mission_number
-server.dll!0x997cf0 ConVar mp_ct_default_grenades
-server.dll!0x997be8 ConVar mp_ct_default_melee
-server.dll!0x997c98 ConVar mp_ct_default_primary
-server.dll!0x997c40 ConVar mp_ct_default_secondary
-server.dll!0x99a9a8 ConVar mp_damage_headshot_only
-server.dll!0x99a7f0 ConVar mp_damage_scale_ct_body
-server.dll!0x99a848 ConVar mp_damage_scale_ct_head
-server.dll!0x99a8a0 ConVar mp_damage_scale_t_body
-server.dll!0x99a8f8 ConVar mp_damage_scale_t_head
-server.dll!0x99aa58 ConVar mp_damage_vampiric_amount
-server.dll!0x998950 ConVar mp_death_drop_breachcharge
-server.dll!0x9987f0 ConVar mp_death_drop_c4
-server.dll!0x9988a0 ConVar mp_death_drop_defuser
-server.dll!0x998848 ConVar mp_death_drop_grenade
-server.dll!0x998798 ConVar mp_death_drop_gun
-server.dll!0x9989a8 ConVar mp_death_drop_healthshot
-server.dll!0x9988f8 ConVar mp_death_drop_taser
-server.dll!0x99e638 ConVar mp_deathcam_skippable
-server.dll!0x998f28 ConVar mp_default_team_winner_no_objective
-server.dll!0x998690 ConVar mp_defuser_allocation
-server.dll!0x992898 ConVar mp_disable_respawn_times
-server.dll!0x9973c8 ConVar mp_disconnect_kills_bots
-server.dll!0x997370 ConVar mp_disconnect_kills_players
-server.dll!0x998588 ConVar mp_display_kill_assists
-server.dll!0x99a690 ConVar mp_dm_bonus_length_max
-server.dll!0x99a638 ConVar mp_dm_bonus_length_min
-server.dll!0x9982c8 ConVar mp_dm_bonus_percent
-server.dll!0x998320 ConVar mp_dm_bonus_respawn
-server.dll!0x998530 ConVar mp_dm_bonusweapon_dogtags
-server.dll!0x998378 ConVar mp_dm_dogtag_score
-server.dll!0x998270 ConVar mp_dm_kill_base_score
-server.dll!0x9983d0 ConVar mp_dm_teammode
-server.dll!0x998480 ConVar mp_dm_teammode_bonus_score
-server.dll!0x9984d8 ConVar mp_dm_teammode_dogtag_score
-server.dll!0x998428 ConVar mp_dm_teammode_kill_score
-server.dll!0x99a5e0 ConVar mp_dm_time_between_bonus_max
-server.dll!0x99a588 ConVar mp_dm_time_between_bonus_min
-server.dll!0x996d40 ConVar mp_do_warmup_offine
-server.dll!0x996ce8 ConVar mp_do_warmup_period
-server.dll!0x99a740 ConVar mp_dogtag_despawn_on_killer_death
-server.dll!0x99a798 ConVar mp_dogtag_despawn_time
-server.dll!0x99a6e8 ConVar mp_dogtag_pickup_rule
-server.dll!0x99dfb0 ConVar mp_drop_grenade_enable
-server.dll!0x99df58 ConVar mp_drop_knife_enable
-server.dll!0x998c10 ConVar mp_economy_reset_rounds
-server.dll!0x9929a0 ConVar mp_enableroundwaittime
-server.dll!0x9993f8 ConVar mp_endmatch_votenextleveltime
-server.dll!0x999348 ConVar mp_endmatch_votenextmap
-server.dll!0x9993a0 ConVar mp_endmatch_votenextmap_keepcurrent
-server.dll!0x99bd10 ConVar mp_endmatch_votenextmap_wargames_modes
-server.dll!0x99bd68 ConVar mp_endmatch_votenextmap_wargames_nummaps
-server.dll!0x99bdc0 ConVar mp_endmatch_votenextmap_wargames_nummodes
-server.dll!0x997560 ConVar mp_endwarmup_player_count
-server.dll!0x998bb8 ConVar mp_equipment_reset_rounds
-server.dll!0x984ff8 ConVar mp_facefronttime
-server.dll!0x98c1c8 ConVar mp_falldamage
-server.dll!0x984fa0 ConVar mp_feetyawrate
-server.dll!0x98c328 ConVar mp_flashlight
-server.dll!0x99e908 ConVar mp_flinch_punch_scale
-server.dll!0x98c2d0 ConVar mp_footsteps
-server.dll!0x996a28 ConVar mp_force_assign_teams
-server.dll!0x998ab0 ConVar mp_force_pick_time
-server.dll!0x98c278 ConVar mp_forcerespawn
-server.dll!0x98e750 ConVar mp_fraglimit
-server.dll!0x99cfd8 ConVar mp_free_armor
-server.dll!0x999e50 ConVar mp_freezetime
-server.dll!0x98d4b0 ConVar mp_friendlyfire
-server.dll!0x997b38 ConVar mp_ggprogressive_random_weapon_kills_needed
-server.dll!0x997a88 ConVar mp_ggprogressive_round_restart_delay
-server.dll!0x997ae0 ConVar mp_ggprogressive_use_random_weapons
-server.dll!0x997980 ConVar mp_ggtr_always_upgrade
-server.dll!0x9981c0 ConVar mp_ggtr_bomb_defuse_bonus
-server.dll!0x998218 ConVar mp_ggtr_bomb_detonation_bonus
-server.dll!0x998008 ConVar mp_ggtr_bomb_pts_for_flash
-server.dll!0x997fb0 ConVar mp_ggtr_bomb_pts_for_he
-server.dll!0x998060 ConVar mp_ggtr_bomb_pts_for_molotov
-server.dll!0x997f58 ConVar mp_ggtr_bomb_pts_for_upgrade
-server.dll!0x998168 ConVar mp_ggtr_bomb_respawn_delay
-server.dll!0x9979d8 ConVar mp_ggtr_end_round_kill_bonus
-server.dll!0x998110 ConVar mp_ggtr_halftime_delay
-server.dll!0x997a30 ConVar mp_ggtr_last_weapon_kill_ends_half
-server.dll!0x997b90 ConVar mp_ggtr_num_rounds_autoprogress
-server.dll!0x9986e8 ConVar mp_give_player_c4
-server.dll!0x99aab0 ConVar mp_global_damage_per_second
-server.dll!0x99a2c8 ConVar mp_guardian_bot_money_per_wave
-server.dll!0x99a428 ConVar mp_guardian_loc_adjective
-server.dll!0x99a480 ConVar mp_guardian_loc_condition
-server.dll!0x99a4d8 ConVar mp_guardian_loc_icon
-server.dll!0x99a378 ConVar mp_guardian_loc_mission
-server.dll!0x99a320 ConVar mp_guardian_loc_override
-server.dll!0x99a3d0 ConVar mp_guardian_loc_weapon
-server.dll!0x99a270 ConVar mp_guardian_player_dist_max
-server.dll!0x99a218 ConVar mp_guardian_player_dist_min
-server.dll!0x99a168 ConVar mp_guardian_special_kills_needed
-server.dll!0x99a1c0 ConVar mp_guardian_special_weapon_needed
-server.dll!0x9a4880 ConVar mp_guardian_target_site
-server.dll!0x99d088 ConVar mp_halftime
-server.dll!0x9978d0 ConVar mp_halftime_duration
-server.dll!0x997668 ConVar mp_halftime_pausematch
-server.dll!0x997610 ConVar mp_halftime_pausetimer
-server.dll!0x995990 ConVar mp_heavyassaultsuit_aimpunch
-server.dll!0x998e78 ConVar mp_heavyassaultsuit_cooldown
-server.dll!0x995938 ConVar mp_heavyassaultsuit_deploy_timescale
-server.dll!0x995888 ConVar mp_heavyassaultsuit_speed
-server.dll!0x9958e0 ConVar mp_heavybot_damage_reduction_scale
-server.dll!0x9a4380 ConVar mp_hostagepenalty
-server.dll!0x9a46a0 ConVar mp_hostages_max
-server.dll!0x997108 ConVar mp_hostages_rescuetime
-server.dll!0x9970b0 ConVar mp_hostages_rescuetowin
-server.dll!0x9a4538 ConVar mp_hostages_run_speed_modifier
-server.dll!0x9a47a8 ConVar mp_hostages_spawn_farthest
-server.dll!0x9a4750 ConVar mp_hostages_spawn_force_positions
-server.dll!0x9a46f8 ConVar mp_hostages_spawn_same_every_round
-server.dll!0x997058 ConVar mp_hostages_takedamage
-server.dll!0x99a110 ConVar mp_humanteam
-server.dll!0x99a530 ConVar mp_ignore_round_win_conditions
-server.dll!0x985050 ConVar mp_ik
-server.dll!0x997ea8 ConVar mp_join_grace_time
-server.dll!0x999ea8 ConVar mp_limitteams
-server.dll!0x993fc0 ConVar mp_logdetail
-server.dll!0x994018 ConVar mp_logdetail_items
-server.dll!0x99dcf0 ConVar mp_logdistance_2d
-server.dll!0x99dd48 ConVar mp_logdistance_sec
-server.dll!0x99dda0 ConVar mp_logloadouts
-server.dll!0x99dc98 ConVar mp_logmoney
-server.dll!0x997928 ConVar mp_match_can_clinch
-server.dll!0x998638 ConVar mp_match_end_changelevel
-server.dll!0x9985e0 ConVar mp_match_end_restart
-server.dll!0x98e648 ConVar mp_match_restart_delay
-server.dll!0x99d030 ConVar mp_max_armor
-server.dll!0x996df0 ConVar mp_maxmoney
-server.dll!0x9927e8 ConVar mp_maxrounds
-server.dll!0x9980b8 ConVar mp_molotovusedelay
-server.dll!0x9a4590 ConVar mp_only_cts_rescue_hostages
-server.dll!0x996f50 ConVar mp_overtime_enable
-server.dll!0x9976c0 ConVar mp_overtime_halftime_pausetimer
-server.dll!0x996fa8 ConVar mp_overtime_maxrounds
-server.dll!0x997000 ConVar mp_overtime_startmoney
-server.dll!0x9a5488 ConVar mp_plant_c4_anywhere
-server.dll!0x99a950 ConVar mp_player_healthbuffer_decay_rate
-server.dll!0x996ea0 ConVar mp_playercashawards
-server.dll!0x997770 ConVar mp_playerid
-server.dll!0x9977c8 ConVar mp_playerid_delay
-server.dll!0x997820 ConVar mp_playerid_hold
-server.dll!0x98d400 ConVar mp_radar_showall
-server.dll!0x99d0e0 ConVar mp_randomspawn
-server.dll!0x99d190 ConVar mp_randomspawn_dist
-server.dll!0x99d138 ConVar mp_randomspawn_los
-server.dll!0x998740 ConVar mp_require_gun_use_to_acquire
-server.dll!0x997718 ConVar mp_respawn_immunitytime
-server.dll!0x999030 ConVar mp_respawn_on_death_ct
-server.dll!0x998fd8 ConVar mp_respawn_on_death_t
-server.dll!0x992688 ConVar mp_respawnwavetime
-server.dll!0x98e800 ConVar mp_restartgame
-server.dll!0x997878 ConVar mp_round_restart_delay
-server.dll!0x999cf0 ConVar mp_roundtime
-server.dll!0x999df8 ConVar mp_roundtime_defuse
-server.dll!0x999d48 ConVar mp_roundtime_deployment
-server.dll!0x999da0 ConVar mp_roundtime_hostage
-server.dll!0x9929f8 ConVar mp_showcleanedupents
-server.dll!0x992948 ConVar mp_showroundtransitions
-server.dll!0x99d2c8 ConVar mp_solid_teammates
-server.dll!0x999fb0 ConVar mp_spawnprotectiontime
-server.dll!0x9969d0 ConVar mp_spec_swapplayersides
-server.dll!0x996b88 ConVar mp_spectators_max
-server.dll!0x992bb0 ConVar mp_stalemate_at_timelimit
-server.dll!0x992b58 ConVar mp_stalemate_enable
-server.dll!0x992aa8 ConVar mp_stalemate_timelimit
-server.dll!0x99ab08 ConVar mp_starting_losses
-server.dll!0x996d98 ConVar mp_startmoney
-server.dll!0x990168 ConVar mp_suicide_time
-server.dll!0x997e50 ConVar mp_t_default_grenades
-server.dll!0x997d48 ConVar mp_t_default_melee
-server.dll!0x997df8 ConVar mp_t_default_primary
-server.dll!0x997da0 ConVar mp_t_default_secondary
-server.dll!0x99e888 ConVar mp_tagging_scale
-server.dll!0x9a67f0 ConVar mp_taser_recharge_time
-server.dll!0x99a0b8 ConVar mp_td_dmgtokick
-server.dll!0x99a060 ConVar mp_td_dmgtowarn
-server.dll!0x99a008 ConVar mp_td_spawndmgthreshold
-server.dll!0x9950c0 ConVar mp_team_timeout_max
-server.dll!0x995068 ConVar mp_team_timeout_time
-server.dll!0x996ef8 ConVar mp_teamcashawards
-server.dll!0x9953b8 ConVar mp_teamflag_1
-server.dll!0x995410 ConVar mp_teamflag_2
-server.dll!0x98c3d8 ConVar mp_teamlist
-server.dll!0x995468 ConVar mp_teamlogo_1
-server.dll!0x9954c0 ConVar mp_teamlogo_2
-server.dll!0x995620 ConVar mp_teammatchstat_1
-server.dll!0x995678 ConVar mp_teammatchstat_2
-server.dll!0x995830 ConVar mp_teammatchstat_cycletime
-server.dll!0x9957d8 ConVar mp_teammatchstat_holdtime
-server.dll!0x9955c8 ConVar mp_teammatchstat_txt
-server.dll!0x98d508 ConVar mp_teammates_are_enemies
-server.dll!0x995308 ConVar mp_teamname_1
-server.dll!0x995360 ConVar mp_teamname_2
-server.dll!0x98c170 ConVar mp_teamplay
-server.dll!0x995570 ConVar mp_teamprediction_pct
-server.dll!0x995518 ConVar mp_teamprediction_txt
-server.dll!0x992790 ConVar mp_teams_unbalance_limit
-server.dll!0x9956d0 ConVar mp_teamscore_1
-server.dll!0x995728 ConVar mp_teamscore_2
-server.dll!0x999f00 ConVar mp_tkpunish
-server.dll!0x992738 ConVar mp_tournament
-server.dll!0x999088 ConVar mp_use_respawn_waves
-server.dll!0x99d378 ConVar mp_verbose_changelevel_spew
-server.dll!0x9975b8 ConVar mp_warmup_pausetimer
-server.dll!0x997508 ConVar mp_warmuptime_all_players_connected
-server.dll!0x9a63b8 ConVar mp_weapon_melee_touch_time_after_hit
-server.dll!0x9a5a68 ConVar mp_weapon_next_owner_touch_time
-server.dll!0x9a5a10 ConVar mp_weapon_prev_owner_touch_time
-server.dll!0x99aa00 ConVar mp_weapon_self_inflict_amount
-server.dll!0x998d70 ConVar mp_weapons_allow_heavy
-server.dll!0x99d480 ConVar mp_weapons_allow_map_placed
-server.dll!0x998cc0 ConVar mp_weapons_allow_pistols
-server.dll!0x998dc8 ConVar mp_weapons_allow_rifles
-server.dll!0x998d18 ConVar mp_weapons_allow_smgs
-server.dll!0x998ed0 ConVar mp_weapons_allow_typecount
-server.dll!0x998c68 ConVar mp_weapons_allow_zeus
-server.dll!0x998f80 ConVar mp_weapons_glow_on_ground
-server.dll!0x995118 ConVar mp_weapons_max_gun_purchases_per_weapon_per_match
-server.dll!0x98c220 ConVar mp_weaponstay
-server.dll!0x997f00 ConVar mp_win_panel_display_time
-server.dll!0x992840 ConVar mp_winlimit
-server.dll!0x9a6cc8 ConVar nav_area_bgcolor
-server.dll!0x9a7838 ConVar nav_area_max_size
-server.dll!0x9a6bc0 ConVar nav_coplanar_slope_limit
-server.dll!0x9a6c18 ConVar nav_coplanar_slope_limit_displacement
-server.dll!0x9a6d20 ConVar nav_corner_adjust_adjacent
-server.dll!0x9a7350 ConVar nav_create_area_at_feet
-server.dll!0x9a72a0 ConVar nav_create_place_on_ground
-server.dll!0x9a6dd0 ConVar nav_debug_blocked
-server.dll!0x9a7680 ConVar nav_displacement_test
-server.dll!0x9a73a8 ConVar nav_drag_selection_volume_zmax_offset
-server.dll!0x9a7400 ConVar nav_drag_selection_volume_zmin_offset
-server.dll!0x9a72f8 ConVar nav_draw_limit
-server.dll!0x9a8750 ConVar nav_edit
-server.dll!0x9a76d8 ConVar nav_generate_fencetops
-server.dll!0x9a7730 ConVar nav_generate_fixup_jump_areas
-server.dll!0x9a7788 ConVar nav_generate_incremental_range
-server.dll!0x9a77e0 ConVar nav_generate_incremental_tolerance
-server.dll!0x9a6e80 ConVar nav_max_view_distance
-server.dll!0x9a7a88 ConVar nav_max_vis_delta_list_length
-server.dll!0x9a6f30 ConVar nav_potentially_visible_dot_tolerance
-server.dll!0x9a86f8 ConVar nav_quicksave
-server.dll!0x9a7980 ConVar nav_show_approach_points
-server.dll!0x9a71f0 ConVar nav_show_area_info
-server.dll!0x9a7470 ConVar nav_show_compass
-server.dll!0x9a6e28 ConVar nav_show_continguous
-server.dll!0x9a79d8 ConVar nav_show_danger
-server.dll!0x9a6d78 ConVar nav_show_light_intensity
-server.dll!0x9a8910 ConVar nav_show_node_grid
-server.dll!0x9a87b0 ConVar nav_show_node_id
-server.dll!0x9a8968 ConVar nav_show_nodes
-server.dll!0x9a7a30 ConVar nav_show_player_counts
-server.dll!0x9a6f88 ConVar nav_show_potentially_visible
-server.dll!0x9a75d0 ConVar nav_slope_limit
-server.dll!0x9a7628 ConVar nav_slope_tolerance
-server.dll!0x9a7248 ConVar nav_snap_to_grid
-server.dll!0x9a7538 ConVar nav_solid_props
-server.dll!0x9a6c70 ConVar nav_split_place_on_ground
-server.dll!0x9a8808 ConVar nav_test_node
-server.dll!0x9a8860 ConVar nav_test_node_crouch
-server.dll!0x9a88b8 ConVar nav_test_node_crouch_dir
-server.dll!0x9a6ed8 ConVar nav_update_visibility_on_edit
-server.dll!0x98ea90 ConVar nextlevel
-server.dll!0x98ea38 ConVar nextmap_print_enabled
-server.dll!0x98eae8 ConVar nextmode
-server.dll!0x986a08 ConVar noclip_fixup
-server.dll!0x984990 ConVar npc_ally_deathmessage
-server.dll!0x9851d0 ConVar npc_height_adjust
-server.dll!0x98c600 ConVar occlusion_test_camera_margins
-server.dll!0x98c658 ConVar occlusion_test_jump_margin
-server.dll!0x98c5a8 ConVar occlusion_test_shadow_length
-server.dll!0x98d1a8 ConVar old_radiusdamage
-server.dll!0x9aa888 ConVar panel_test_title_safe
-server.dll!0x98ef40 ConVar particle_test_attach_attachment
-server.dll!0x98eee8 ConVar particle_test_attach_mode
-server.dll!0x98ee90 ConVar particle_test_file
-server.dll!0x98f108 ConVar phys_debug_check_contacts
-server.dll!0x99de50 ConVar phys_headshotscale
-server.dll!0x99ddf8 ConVar phys_playerscale
-server.dll!0x992518 ConVar phys_pushscale
-server.dll!0x98f0b0 ConVar phys_show_active
-server.dll!0x990378 ConVar player_debug_print_damage
-server.dll!0x99f2c0 ConVar post_jump_crouch
-server.dll!0x991250 ConVar props_break_max_pieces
-server.dll!0x9912a8 ConVar props_break_max_pieces_perframe
-server.dll!0x98c6b0 ConVar pvs_min_player_distance
-server.dll!0x98def0 ConVar r_AirboatViewDampenDamp
-server.dll!0x98de98 ConVar r_AirboatViewDampenFreq
-server.dll!0x98df48 ConVar r_AirboatViewZHeight
-server.dll!0x993418 ConVar r_JeepFOV
-server.dll!0x98dde8 ConVar r_JeepViewDampenDamp
-server.dll!0x98dd90 ConVar r_JeepViewDampenFreq
-server.dll!0x98de40 ConVar r_JeepViewZHeight
-server.dll!0x98dd38 ConVar r_VehicleViewDampen
-server.dll!0x98bb40 ConVar r_vehicleBrakeRate
-server.dll!0x9932d8 ConVar r_visualizetraces
-server.dll!0x993f10 ConVar radarvisdistance
-server.dll!0x993f68 ConVar radarvismaxdot
-server.dll!0x993e60 ConVar radarvismethod
-server.dll!0x993eb8 ConVar radarvispow
-server.dll!0x984c58 ConVar rr_followup_maxdist
-server.dll!0x9823b0 ConVar rr_remarkable_max_distance
-server.dll!0x982300 ConVar rr_remarkable_world_entities_replay_limit
-server.dll!0x982358 ConVar rr_remarkables_enabled
-server.dll!0x984cb0 ConVar rr_thenany_score_slop
-server.dll!0x991b38 ConVar scene_clientflex
-server.dll!0x991b90 ConVar scene_print
-server.dll!0x982250 ConVar scene_showfaceto
-server.dll!0x985fa0 ConVar scene_showlook
-server.dll!0x985ff8 ConVar scene_showmoveto
-server.dll!0x986050 ConVar scene_showunlock
-server.dll!0x98c0c0 ConVar servercfgfile
-server.dll!0x992f50 ConVar showtriggers
-server.dll!0x98d0d0 ConVar sk_autoaim_mode
-server.dll!0x98d200 ConVar skill
-server.dll!0x986590 ConVar smoothstairs
-server.dll!0x999450 ConVar snd_music_boost
-server.dll!0x991ee8 ConVar snd_prevent_ss_duplicates
-server.dll!0x991f40 ConVar snd_sos_show_server_xmit
-server.dll!0x992170 ConVar soundpatch_captionlength
-server.dll!0x992250 ConVar soundscape_debug
-server.dll!0x98ff00 ConVar spec_allow_roaming
-server.dll!0x98fdf8 ConVar spec_freeze_deathanim_time
-server.dll!0x98fda0 ConVar spec_freeze_panel_extended_time
-server.dll!0x98fea8 ConVar spec_freeze_target_fov
-server.dll!0x98fe50 ConVar spec_freeze_target_fov_long
-server.dll!0x98fc98 ConVar spec_freeze_time
-server.dll!0x98fcf0 ConVar spec_freeze_time_lock
-server.dll!0x98fd48 ConVar spec_freeze_traveltime
-server.dll!0x98eb40 ConVar spec_replay_bot
-server.dll!0x98fb90 ConVar spec_replay_cam_delay
-server.dll!0x98fbe8 ConVar spec_replay_cam_options
-server.dll!0x9948d8 ConVar spec_replay_round_delay
-server.dll!0x98fc40 ConVar spec_replay_winddown_time
-server.dll!0x9a1eb8 ConVar steam_controller_haptics
-server.dll!0x992370 ConVar steamworks_sessionid_server
-server.dll!0x98c538 ConVar suitvolume
-server.dll!0x98dff8 ConVar sv_accelerate
-server.dll!0x98db28 ConVar sv_accelerate_debug_speed
-server.dll!0x98dad0 ConVar sv_accelerate_use_weapon_speed
-server.dll!0x98cd70 ConVar sv_air_max_horizontal_parachute_ratio
-server.dll!0x98cd18 ConVar sv_air_max_horizontal_parachute_speed
-server.dll!0x98ccc0 ConVar sv_air_max_wishspeed
-server.dll!0x98cdc8 ConVar sv_air_pushaway_dist
-server.dll!0x98e158 ConVar sv_airaccelerate
-server.dll!0x98e100 ConVar sv_airaccelerate_parachute
-server.dll!0x98e0a8 ConVar sv_airaccelerate_rappel
-server.dll!0x986250 ConVar sv_allchat
-server.dll!0x997268 ConVar sv_allow_thirdperson
-server.dll!0x993800 ConVar sv_allow_votes
-server.dll!0x9999d0 ConVar sv_alltalk
-server.dll!0x9a0a78 ConVar sv_arms_race_vote_to_restart_disallowed_after
-server.dll!0x994f08 ConVar sv_auto_adjust_bot_difficulty
-server.dll!0x999b88 ConVar sv_auto_full_alltalk_during_warmup_half_end
-server.dll!0x994690 ConVar sv_autobunnyhopping
-server.dll!0x99e4d8 ConVar sv_autobuyammo
-server.dll!0x98dc88 ConVar sv_backspeed
-server.dll!0x98ff58 ConVar sv_bonus_challenge
-server.dll!0x9a39c0 ConVar sv_bot_buy_decoy_weight
-server.dll!0x9a3968 ConVar sv_bot_buy_flash_weight
-server.dll!0x9a38b8 ConVar sv_bot_buy_grenade_chance
-server.dll!0x9a3a70 ConVar sv_bot_buy_hegrenade_weight
-server.dll!0x9a3a18 ConVar sv_bot_buy_molotov_weight
-server.dll!0x9a3910 ConVar sv_bot_buy_smoke_weight
-server.dll!0x999768 ConVar sv_bot_difficulty_gamepad
-server.dll!0x999818 ConVar sv_bot_difficulty_hydra
-server.dll!0x999710 ConVar sv_bot_difficulty_kbm
-server.dll!0x9997c0 ConVar sv_bot_difficulty_ps3move
-server.dll!0x999870 ConVar sv_bot_difficulty_sharpshooter
-server.dll!0x995010 ConVar sv_bots_force_rebuy_every_round
-server.dll!0x994f60 ConVar sv_bots_get_easier_each_win
-server.dll!0x994fb8 ConVar sv_bots_get_harder_after_each_wave
-server.dll!0x98e310 ConVar sv_bounce
-server.dll!0x9a53e8 ConVar sv_breachcharge_arm_delay
-server.dll!0x9a52e0 ConVar sv_breachcharge_delay_max
-server.dll!0x9a5288 ConVar sv_breachcharge_delay_min
-server.dll!0x9a5230 ConVar sv_breachcharge_distance_max
-server.dll!0x9a51d8 ConVar sv_breachcharge_distance_min
-server.dll!0x9a5390 ConVar sv_breachcharge_fuse_max
-server.dll!0x9a5338 ConVar sv_breachcharge_fuse_min
-server.dll!0x9a19a8 ConVar sv_broadcast_ugc_download_progress_interval
-server.dll!0x9a1950 ConVar sv_broadcast_ugc_downloads
-server.dll!0x994e58 ConVar sv_buy_status_override
-server.dll!0x994d50 ConVar sv_chat_proximity
-server.dll!0x985de8 ConVar sv_clamp_unsafe_velocities
-server.dll!0x99ef90 ConVar sv_clip_penetration_traces_to_players
-server.dll!0x990558 ConVar sv_clockcorrection_msecs
-server.dll!0x997210 ConVar sv_coach_comm_unrestricted
-server.dll!0x99d5e0 ConVar sv_coaching_enabled
-server.dll!0x99d1e8 ConVar sv_competitive_minspec
-server.dll!0x9998c8 ConVar sv_competitive_official_5v5
-server.dll!0x999660 ConVar sv_compute_per_bot_difficulty
-server.dll!0x99eee0 ConVar sv_cs_player_speed_has_hostage
-server.dll!0x994eb0 ConVar sv_ct_spawn_on_bombsite
-server.dll!0x99dea8 ConVar sv_damage_print_enable
-server.dll!0x98c8a0 ConVar sv_dc_friends_reqd
-server.dll!0x99d320 ConVar sv_deadtalk
-server.dll!0x9864e0 ConVar sv_debug_player_use
-server.dll!0x9a18f8 ConVar sv_debug_ugc_downloads
-server.dll!0x999978 ConVar sv_disable_immunity_alpha
-server.dll!0x9951c8 ConVar sv_disable_motd
-server.dll!0x994930 ConVar sv_disable_observer_interpolation
-server.dll!0x9914b0 ConVar sv_disable_pas
-server.dll!0x991300 ConVar sv_disable_querycache
-server.dll!0x994c48 ConVar sv_disable_radar
-server.dll!0x99e218 ConVar sv_disablefreezecam
-server.dll!0x990450 ConVar sv_drowning_damage_initial
-server.dll!0x9904a8 ConVar sv_drowning_damage_max
-server.dll!0x9a4a40 ConVar sv_dz_autojointeam
-server.dll!0x99eb38 ConVar sv_dz_cash_bundle_size
-server.dll!0x99e690 ConVar sv_dz_contractkill_reward
-server.dll!0x9a6770 ConVar sv_dz_exploration_payment_amount
-server.dll!0x997318 ConVar sv_dz_hostage_rescue_reward
-server.dll!0x9a49e8 ConVar sv_dz_jointeam_allowed
-server.dll!0x9a4990 ConVar sv_dz_player_max_health
-server.dll!0x9a4938 ConVar sv_dz_player_spawn_armor
-server.dll!0x9a48e0 ConVar sv_dz_player_spawn_health
-server.dll!0x9a4ba0 ConVar sv_dz_show_enemy_name_scope_range
-server.dll!0x9a4da0 ConVar sv_dz_team_count
-server.dll!0x9a4b48 ConVar sv_dz_warmup_tablet
-server.dll!0x9a4af0 ConVar sv_dz_warmup_weapon
-server.dll!0x986f68 ConVar sv_dz_zone_bombdrop_money_reward
-server.dll!0x986fc0 ConVar sv_dz_zone_damage
-server.dll!0x986f10 ConVar sv_dz_zone_hex_radius
-server.dll!0x994638 ConVar sv_enablebunnyhopping
-server.dll!0x9994a8 ConVar sv_endmatch_item_drop_interval
-server.dll!0x999608 ConVar sv_endmatch_item_drop_interval_ancient
-server.dll!0x9995b0 ConVar sv_endmatch_item_drop_interval_legendary
-server.dll!0x999558 ConVar sv_endmatch_item_drop_interval_mythical
-server.dll!0x999500 ConVar sv_endmatch_item_drop_interval_rare
-server.dll!0x98b400 ConVar sv_env_entity_makers_enabled
-server.dll!0x9863d8 ConVar sv_extract_ammo_from_dropped_weapons
-server.dll!0x994470 ConVar sv_extreme_strafe_accuracy_fishtail
-server.dll!0x994cf8 ConVar sv_falldamage_scale
-server.dll!0x99d428 ConVar sv_falldamage_to_below_player_multiplier
-server.dll!0x99d3d0 ConVar sv_falldamage_to_below_player_ratio
-server.dll!0x9a6110 ConVar sv_fistpoint_delay
-server.dll!0x9a60b8 ConVar sv_fistpunch_blocked_damage
-server.dll!0x9a5fb0 ConVar sv_fistpunch_damage
-server.dll!0x9a61e8 ConVar sv_fistpunch_damage_hard
-server.dll!0x9a6008 ConVar sv_fistpunch_damage_to_player_multiplier
-server.dll!0x9a6168 ConVar sv_fistpunch_impact_sounds
-server.dll!0x9a6060 ConVar sv_fistpunch_viewmove
-server.dll!0x9a1ba8 ConVar sv_flashbang_strength
-server.dll!0x986380 ConVar sv_footstep_sound_frequency
-server.dll!0x98e470 ConVar sv_footsteps
-server.dll!0x9a4a98 ConVar sv_force_reflections
-server.dll!0x98c798 ConVar sv_force_transmit_ents
-server.dll!0x98ffb0 ConVar sv_force_transmit_players
-server.dll!0x98dfa0 ConVar sv_friction
-server.dll!0x999a28 ConVar sv_full_alltalk
-server.dll!0x996a80 ConVar sv_gameinstructor_disable
-server.dll!0x98d7a8 ConVar sv_grassburn
-server.dll!0x98f780 ConVar sv_grenade_trajectory
-server.dll!0x98f8e0 ConVar sv_grenade_trajectory_dash
-server.dll!0x98f888 ConVar sv_grenade_trajectory_thickness
-server.dll!0x98f7d8 ConVar sv_grenade_trajectory_time
-server.dll!0x98f830 ConVar sv_grenade_trajectory_time_spectator
-server.dll!0x99e168 ConVar sv_guardian_heavy_all
-server.dll!0x99eae0 ConVar sv_guardian_heavy_count
-server.dll!0x99e110 ConVar sv_guardian_max_wave_for_heavy
-server.dll!0x99e0b8 ConVar sv_guardian_min_wave_for_heavy
-server.dll!0x9852f0 ConVar sv_health_approach_enabled
-server.dll!0x985348 ConVar sv_health_approach_speed
-server.dll!0x9a2308 ConVar sv_hegrenade_damage_multiplier
-server.dll!0x9a2360 ConVar sv_hegrenade_radius_multiplier
-server.dll!0x9949e0 ConVar sv_holiday_mode
-server.dll!0x9a5168 ConVar sv_ignoregrenaderadio
-server.dll!0x9865e8 ConVar sv_infinite_ammo
-server.dll!0x9944c8 ConVar sv_jump_impulse
-server.dll!0x999920 ConVar sv_kick_ban_duration
-server.dll!0x994da8 ConVar sv_kick_players_with_cooldown
-server.dll!0x9a6268 ConVar sv_knife_attack_extend_from_player_aabb
-server.dll!0x98cfc8 ConVar sv_ladder_angle
-server.dll!0x98cf70 ConVar sv_ladder_dampen
-server.dll!0x98d020 ConVar sv_ladder_scale_speed
-server.dll!0x990a90 ConVar sv_lagcompensateself
-server.dll!0x990988 ConVar sv_lagcompensationforcerestore
-server.dll!0x994520 ConVar sv_ledge_mantle_helper
-server.dll!0x9945d0 ConVar sv_ledge_mantle_helper_debug
-server.dll!0x994578 ConVar sv_ledge_mantle_helper_dzonly
-server.dll!0x994e00 ConVar sv_matchend_drops_enabled
-server.dll!0x996b30 ConVar sv_matchpause_auto_5v5
-server.dll!0x986488 ConVar sv_max_distance_transmit_footsteps
-server.dll!0x98e418 ConVar sv_maxspeed
-server.dll!0x990b40 ConVar sv_maxunlag
-server.dll!0x990060 ConVar sv_maxusrcmdprocessticks
-server.dll!0x9907d0 ConVar sv_maxusrcmdprocessticks_holdaim
-server.dll!0x990778 ConVar sv_maxusrcmdprocessticks_warning
-server.dll!0x98e2b8 ConVar sv_maxvelocity
-server.dll!0x99ee88 ConVar sv_min_jump_landing_sound
-server.dll!0x985698 ConVar sv_netvisdist
-server.dll!0x98e368 ConVar sv_noclipaccelerate
-server.dll!0x990110 ConVar sv_noclipduringpause
-server.dll!0x98e3c0 ConVar sv_noclipspeed
-server.dll!0x98ca28 ConVar sv_occlude_players
-server.dll!0x98d078 ConVar sv_optimizedmovement
-server.dll!0x994ca0 ConVar sv_outofammo_indicator
-server.dll!0x9972c0 ConVar sv_party_mode
-server.dll!0x99f268 ConVar sv_penetration_type
-server.dll!0x99e830 ConVar sv_player_parachute_velocity
-server.dll!0x994198 ConVar sv_prime_accounts_only
-server.dll!0x990f40 ConVar sv_prop_door_open_speed_scale
-server.dll!0x98ecd8 ConVar sv_pushaway_clientside
-server.dll!0x9911f8 ConVar sv_pushaway_clientside_size
-server.dll!0x98ede0 ConVar sv_pushaway_force
-server.dll!0x9a4488 ConVar sv_pushaway_hostage_force
-server.dll!0x98ee38 ConVar sv_pushaway_max_force
-server.dll!0x9a44e0 ConVar sv_pushaway_max_hostage_force
-server.dll!0x98ed88 ConVar sv_pushaway_max_player_force
-server.dll!0x98ec80 ConVar sv_pushaway_min_player_speed
-server.dll!0x98ed30 ConVar sv_pushaway_player_force
-server.dll!0x9850c0 ConVar sv_pvsskipanimation
-server.dll!0x990008 ConVar sv_regeneration_wait_time
-server.dll!0x9a1a58 ConVar sv_remove_old_ugc_downloads
-server.dll!0x994988 ConVar sv_reward_drop_delay
-server.dll!0x98e520 ConVar sv_rollangle
-server.dll!0x98e4c8 ConVar sv_rollspeed
-server.dll!0x99d530 ConVar sv_server_graphic1
-server.dll!0x99d588 ConVar sv_server_graphic2
-server.dll!0x99f040 ConVar sv_server_verify_blood_on_player
-server.dll!0x9996b8 ConVar sv_show_bot_difficulty_in_name
-server.dll!0x994ae8 ConVar sv_show_team_equipment_force_on
-server.dll!0x994a90 ConVar sv_show_team_equipment_prohibit
-server.dll!0x99e2c8 ConVar sv_show_voip_indicator_for_enemies
-server.dll!0x984e98 ConVar sv_showanimstate
-server.dll!0x984f48 ConVar sv_showanimstate_activities
-server.dll!0x984ef0 ConVar sv_showanimstate_log
-server.dll!0x99ec78 ConVar sv_showbullethits
-server.dll!0x99ecd0 ConVar sv_showimpacts
-server.dll!0x99ec20 ConVar sv_showimpacts_penetration
-server.dll!0x99ed28 ConVar sv_showimpacts_time
-server.dll!0x9908d8 ConVar sv_showlagcompensation
-server.dll!0x990930 ConVar sv_showlagcompensation_duration
-server.dll!0x99ed80 ConVar sv_showplayerhitboxes
-server.dll!0x99d4d8 ConVar sv_skirmish_id
-server.dll!0x98dc30 ConVar sv_skyname
-server.dll!0x9a2558 ConVar sv_snowball_strength
-server.dll!0x991f98 ConVar sv_soundemitter_trace
-server.dll!0x991e90 ConVar sv_soundemitter_version
-server.dll!0x99df00 ConVar sv_spawn_afk_bomb_drop_time
-server.dll!0x99ef38 ConVar sv_spawn_rappel_min_duration
-server.dll!0x999be0 ConVar sv_spec_hear
-server.dll!0x990500 ConVar sv_spec_post_death_additional_time
-server.dll!0x99ee30 ConVar sv_spec_use_tournament_content_standards
-server.dll!0x98e208 ConVar sv_specaccelerate
-server.dll!0x98e1b0 ConVar sv_specnoclip
-server.dll!0x98e260 ConVar sv_specspeed
-server.dll!0x9942b8 ConVar sv_staminajumpcost
-server.dll!0x994310 ConVar sv_staminalandcost
-server.dll!0x9943c0 ConVar sv_staminamax
-server.dll!0x994368 ConVar sv_staminarecoveryrate
-server.dll!0x98ce78 ConVar sv_standable_normal
-server.dll!0x98e5d0 ConVar sv_stepsize
-server.dll!0x98e050 ConVar sv_stopspeed
-server.dll!0x986538 ConVar sv_suppress_viewpunch
-server.dll!0x9a6718 ConVar sv_tablet_show_path_to_nearest_resq
-server.dll!0x999b30 ConVar sv_talk_after_dying_time
-server.dll!0x999a80 ConVar sv_talk_enemy_dead
-server.dll!0x999ad8 ConVar sv_talk_enemy_living
-server.dll!0x994bf0 ConVar sv_teamid_overhead
-server.dll!0x994a38 ConVar sv_teamid_overhead_always_prohibit
-server.dll!0x994b98 ConVar sv_teamid_overhead_maxdist
-server.dll!0x994b40 ConVar sv_teamid_overhead_maxdist_spec
-server.dll!0x994418 ConVar sv_timebetweenducks
-server.dll!0x9911a0 ConVar sv_turbophysics
-server.dll!0x9a5928 ConVar sv_turning_inaccuracy_angle_min
-server.dll!0x9a5980 ConVar sv_turning_inaccuracy_decay
-server.dll!0x9a58d0 ConVar sv_turning_inaccuracy_enabled
-server.dll!0x9a1a00 ConVar sv_ugc_manager_max_new_file_check_interval_secs
-server.dll!0x98caf8 ConVar sv_unlockedchapters
-server.dll!0x990608 ConVar sv_usercmd_custom_random_seed
-server.dll!0x993658 ConVar sv_voice_proximity
-server.dll!0x9936b0 ConVar sv_voice_proximity_positional
-server.dll!0x993a10 ConVar sv_vote_allow_in_warmup
-server.dll!0x993960 ConVar sv_vote_allow_spectators
-server.dll!0x9937a8 ConVar sv_vote_command_delay
-server.dll!0x9939b8 ConVar sv_vote_count_spectator_votes
-server.dll!0x9938b0 ConVar sv_vote_creation_timer
-server.dll!0x993a68 ConVar sv_vote_disallow_kick_on_match_point
-server.dll!0x993858 ConVar sv_vote_failure_timer
-server.dll!0x9a0ad0 ConVar sv_vote_issue_kick_allowed
-server.dll!0x9a0b80 ConVar sv_vote_issue_loadbackup_allowed
-server.dll!0x9a0c88 ConVar sv_vote_issue_loadbackup_spec_authoritative
-server.dll!0x9a0bd8 ConVar sv_vote_issue_loadbackup_spec_only
-server.dll!0x9a0c30 ConVar sv_vote_issue_loadbackup_spec_safe
-server.dll!0x9a0fa0 ConVar sv_vote_issue_pause_match_spec_only
-server.dll!0x9a0a20 ConVar sv_vote_issue_restart_game_allowed
-server.dll!0x9a0b28 ConVar sv_vote_kick_ban_duration
-server.dll!0x993908 ConVar sv_vote_quorum_ratio
-server.dll!0x993750 ConVar sv_vote_timer_duration
-server.dll!0x9a0d38 ConVar sv_vote_to_changelevel_before_match_point
-server.dll!0x98ce20 ConVar sv_walkable_normal
-server.dll!0x98cc10 ConVar sv_water_movespeed_multiplier
-server.dll!0x98cc68 ConVar sv_water_swim_mode
-server.dll!0x98db80 ConVar sv_wateraccelerate
-server.dll!0x98dce0 ConVar sv_waterdist
-server.dll!0x98dbd8 ConVar sv_waterfriction
-server.dll!0x99efe8 ConVar sv_weapon_encumbrance_per_item
-server.dll!0x9946e8 ConVar sv_weapon_encumbrance_scale
-server.dll!0x99e988 ConVar sv_weapon_require_use_grace_period
-server.dll!0x994090 ConVar sv_workshop_allow_other_maps
-server.dll!0x9a66a8 ConVar tablet_c4_dist_max
-server.dll!0x9a6650 ConVar tablet_c4_dist_min
-server.dll!0x98f990 ConVar think_limit
-server.dll!0x999240 ConVar tr_best_course_time
-server.dll!0x9991e8 ConVar tr_completed_training
-server.dll!0x98d960 ConVar tv_allow_autorecording_index
-server.dll!0x9940e8 ConVar tv_allow_camera_man_steamid
-server.dll!0x994140 ConVar tv_allow_camera_man_steamid2
-server.dll!0x98d908 ConVar tv_allow_static_shots
-server.dll!0x98d858 ConVar tv_delay
-server.dll!0x98d8b0 ConVar tv_delay1
-server.dll!0x98e7a8 ConVar tv_delaymapchange
-server.dll!0x99e008 ConVar tv_relayradio
-server.dll!0x986780 ConVar tv_relaytextchat
-server.dll!0x9862d0 ConVar view_punch_decay
-server.dll!0x986328 ConVar view_recoil_tracking
-server.dll!0x9903f8 ConVar vis_force
-server.dll!0x986e58 ConVar vismon_poll_frequency
-server.dll!0x986eb0 ConVar vismon_trace_limit
-server.dll!0x990bb0 ConVar voice_player_speaking_delay_threshold
-server.dll!0x9a5668 ConVar weapon_accuracy_forcespread
-server.dll!0x9a1e60 ConVar weapon_accuracy_logging
-server.dll!0x9a56c0 ConVar weapon_accuracy_nospread
-server.dll!0x9a2070 ConVar weapon_accuracy_shotgun_spread_patterns
-server.dll!0x9a5770 ConVar weapon_air_spread_scale
-server.dll!0x9a5820 ConVar weapon_auto_cleanup_time
-server.dll!0x9a1fc0 ConVar weapon_debug_inaccuracy_only_up
-server.dll!0x9a1f68 ConVar weapon_debug_max_inaccuracy
-server.dll!0x9a5560 ConVar weapon_land_dip_amt
-server.dll!0x9a5b70 ConVar weapon_max_before_cleanup
-server.dll!0x9a2438 ConVar weapon_molotov_maxdetonateslope
-server.dll!0x9a1f10 ConVar weapon_near_empty_sound
-server.dll!0x9a5718 ConVar weapon_recoil_cooldown
-server.dll!0x9a55b8 ConVar weapon_recoil_decay1_exp
-server.dll!0x9a5c20 ConVar weapon_recoil_decay2_exp
-server.dll!0x9a5bc8 ConVar weapon_recoil_decay2_lin
-server.dll!0x9a5610 ConVar weapon_recoil_decay_coefficient
-server.dll!0x9a5b18 ConVar weapon_recoil_scale
-server.dll!0x9a5ac0 ConVar weapon_recoil_scale_motion_controller
-server.dll!0x9a11b0 ConVar weapon_recoil_suppression_factor
-server.dll!0x9a1158 ConVar weapon_recoil_suppression_shots
-server.dll!0x9a1208 ConVar weapon_recoil_variance
-server.dll!0x9a5c78 ConVar weapon_recoil_vel_decay
-server.dll!0x99f098 ConVar weapon_recoil_view_punch_extra
-server.dll!0x9a57c8 ConVar weapon_reticle_knife_show
-server.dll!0x9a5878 ConVar weapon_sound_falloff_multiplier
-server.dll!0x98bc48 ConVar xbox_autothrottle
-server.dll!0x98bb98 ConVar xbox_throttlebias
-server.dll!0x98bbf0 ConVar xbox_throttlespoof
+server.dll!0x009a9040 ConVar BlendBonesMode
+server.dll!0x0099e060 ConVar CS_WarnFriendlyDamageInterval
+server.dll!0x00981f18 ConVar achievement_debug
+server.dll!0x00981f70 ConVar achievement_disable
+server.dll!0x009830b0 ConVar ai_LOS_mode
+server.dll!0x00985e40 ConVar ai_debug_shoot_positions
+server.dll!0x00983440 ConVar ai_drawbattlelines
+server.dll!0x00982f90 ConVar ai_report_task_timings_on_limit
+server.dll!0x00985ef0 ConVar ai_shot_bias_max
+server.dll!0x00985e98 ConVar ai_shot_bias_min
+server.dll!0x00982fe8 ConVar ai_think_limit_label
+server.dll!0x00984478 ConVar ai_vehicle_avoidance
+server.dll!0x009967c0 ConVar ammo_338mag_headshot_mult
+server.dll!0x00996450 ConVar ammo_338mag_impulse
+server.dll!0x00995dc8 ConVar ammo_338mag_max
+server.dll!0x00996920 ConVar ammo_357sig_headshot_mult
+server.dll!0x009965b0 ConVar ammo_357sig_impulse
+server.dll!0x00995f28 ConVar ammo_357sig_max
+server.dll!0x00996030 ConVar ammo_357sig_min_max
+server.dll!0x00995f80 ConVar ammo_357sig_p250_max
+server.dll!0x00995fd8 ConVar ammo_357sig_small_max
+server.dll!0x009968c8 ConVar ammo_45acp_headshot_mult
+server.dll!0x00996558 ConVar ammo_45acp_impulse
+server.dll!0x00995ed0 ConVar ammo_45acp_max
+server.dll!0x00996660 ConVar ammo_50AE_headshot_mult
+server.dll!0x009962f0 ConVar ammo_50AE_impulse
+server.dll!0x00995c10 ConVar ammo_50AE_max
+server.dll!0x00996768 ConVar ammo_556mm_box_headshot_mult
+server.dll!0x009963f8 ConVar ammo_556mm_box_impulse
+server.dll!0x00995d70 ConVar ammo_556mm_box_max
+server.dll!0x00996710 ConVar ammo_556mm_headshot_mult
+server.dll!0x009963a0 ConVar ammo_556mm_impulse
+server.dll!0x00995cc0 ConVar ammo_556mm_max
+server.dll!0x00995d18 ConVar ammo_556mm_small_max
+server.dll!0x00996978 ConVar ammo_57mm_headshot_mult
+server.dll!0x00996608 ConVar ammo_57mm_impulse
+server.dll!0x00996088 ConVar ammo_57mm_max
+server.dll!0x009966b8 ConVar ammo_762mm_headshot_mult
+server.dll!0x00996348 ConVar ammo_762mm_impulse
+server.dll!0x00995c68 ConVar ammo_762mm_max
+server.dll!0x00996818 ConVar ammo_9mm_headshot_mult
+server.dll!0x009964a8 ConVar ammo_9mm_impulse
+server.dll!0x00995e20 ConVar ammo_9mm_max
+server.dll!0x00996870 ConVar ammo_buckshot_headshot_mult
+server.dll!0x00996500 ConVar ammo_buckshot_impulse
+server.dll!0x00995e78 ConVar ammo_buckshot_max
+server.dll!0x00996298 ConVar ammo_grenade_limit_breachcharge
+server.dll!0x009960e0 ConVar ammo_grenade_limit_default
+server.dll!0x00996138 ConVar ammo_grenade_limit_flashbang
+server.dll!0x009961e8 ConVar ammo_grenade_limit_snowballs
+server.dll!0x00996190 ConVar ammo_grenade_limit_total
+server.dll!0x00996240 ConVar ammo_item_limit_healthshot
+server.dll!0x009a9098 ConVar anim_3wayblend
+server.dll!0x009a90f0 ConVar anim_twistbones_enabled
+server.dll!0x009a2ac0 ConVar bot_allow_grenades
+server.dll!0x009a2a68 ConVar bot_allow_machine_guns
+server.dll!0x009a2908 ConVar bot_allow_pistols
+server.dll!0x009a2a10 ConVar bot_allow_rifles
+server.dll!0x009a2dd8 ConVar bot_allow_rogues
+server.dll!0x009a2960 ConVar bot_allow_shotguns
+server.dll!0x009a2b18 ConVar bot_allow_snipers
+server.dll!0x009a29b8 ConVar bot_allow_sub_machine_guns
+server.dll!0x009a2cd0 ConVar bot_auto_follow
+server.dll!0x009a2f38 ConVar bot_auto_vacate
+server.dll!0x00998b60 ConVar bot_autodifficulty_threshold_high
+server.dll!0x00998b08 ConVar bot_autodifficulty_threshold_low
+server.dll!0x009a2d80 ConVar bot_chatter
+server.dll!0x009a2f90 ConVar bot_controllable
+server.dll!0x009a3b58 ConVar bot_coop_force_throw_grenade_chance
+server.dll!0x009a3660 ConVar bot_coop_idle_max_vision_distance
+server.dll!0x0099e3d0 ConVar bot_crouch
+server.dll!0x009a2e88 ConVar bot_debug
+server.dll!0x009a2ee0 ConVar bot_debug_target
+server.dll!0x009a2e30 ConVar bot_defer_to_human_goals
+server.dll!0x009a3040 ConVar bot_defer_to_human_items
+server.dll!0x009a2fe8 ConVar bot_difficulty
+server.dll!0x009a2c20 ConVar bot_dont_shoot
+server.dll!0x009a2c78 ConVar bot_eco_limit
+server.dll!0x009a2d28 ConVar bot_flipout
+server.dll!0x0099e378 ConVar bot_freeze
+server.dll!0x009a3608 ConVar bot_ignore_players
+server.dll!0x009a3148 ConVar bot_join_after_player
+server.dll!0x009a31a0 ConVar bot_join_team
+server.dll!0x009a3758 ConVar bot_loadout
+server.dll!0x009a35b0 ConVar bot_max_vision_distance_override
+server.dll!0x0099e320 ConVar bot_mimic
+server.dll!0x0099e428 ConVar bot_mimic_yaw_offset
+server.dll!0x009a2bc8 ConVar bot_profile_db
+server.dll!0x009a3098 ConVar bot_quota
+server.dll!0x009a30f0 ConVar bot_quota_mode
+server.dll!0x009a37b0 ConVar bot_randombuy
+server.dll!0x009a3270 ConVar bot_show_battlefront
+server.dll!0x009a2800 ConVar bot_show_nav
+server.dll!0x009a3218 ConVar bot_show_occupy_time
+server.dll!0x009a27a8 ConVar bot_stop
+server.dll!0x009a2750 ConVar bot_traceview
+server.dll!0x009a2858 ConVar bot_walk
+server.dll!0x009a2b70 ConVar bot_zombie
+server.dll!0x0099c4f8 ConVar cash_player_bomb_defused
+server.dll!0x0099c4a0 ConVar cash_player_bomb_planted
+server.dll!0x0099c600 ConVar cash_player_damage_hostage
+server.dll!0x0099c708 ConVar cash_player_get_killed
+server.dll!0x0099c5a8 ConVar cash_player_interact_with_hostage
+server.dll!0x0099c448 ConVar cash_player_killed_enemy_default
+server.dll!0x0099c3f0 ConVar cash_player_killed_enemy_factor
+server.dll!0x0099c658 ConVar cash_player_killed_hostage
+server.dll!0x0099c398 ConVar cash_player_killed_teammate
+server.dll!0x0099c550 ConVar cash_player_rescued_hostage
+server.dll!0x0099c6b0 ConVar cash_player_respawn_amount
+server.dll!0x0099bf20 ConVar cash_team_elimination_bomb_map
+server.dll!0x0099bec8 ConVar cash_team_elimination_hostage_map_ct
+server.dll!0x0099be70 ConVar cash_team_elimination_hostage_map_t
+server.dll!0x0099c290 ConVar cash_team_hostage_alive
+server.dll!0x0099c340 ConVar cash_team_hostage_interaction
+server.dll!0x0099c130 ConVar cash_team_loser_bonus
+server.dll!0x0099c188 ConVar cash_team_loser_bonus_consecutive_rounds
+server.dll!0x0099c2e8 ConVar cash_team_planted_bomb_but_defused
+server.dll!0x0099c238 ConVar cash_team_rescued_hostage
+server.dll!0x0099bf78 ConVar cash_team_survive_guardian_wave
+server.dll!0x0099be18 ConVar cash_team_terrorist_win_bomb
+server.dll!0x0099c080 ConVar cash_team_win_by_defusing_bomb
+server.dll!0x0099c0d8 ConVar cash_team_win_by_hostage_rescue
+server.dll!0x0099c028 ConVar cash_team_win_by_time_running_out_bomb
+server.dll!0x0099bfd0 ConVar cash_team_win_by_time_running_out_hostage
+server.dll!0x0099c1e0 ConVar cash_team_winner_bonus_consecutive_rounds
+server.dll!0x00991ff0 ConVar cc_showmissing
+server.dll!0x00983e58 ConVar chet_debug_idle
+server.dll!0x009a9148 ConVar choreo_spew_filter
+server.dll!0x00992fa8 ConVar cl_remove_old_ugc_downloads
+server.dll!0x009a8fe8 ConVar cl_simdbones
+server.dll!0x009a8f90 ConVar cl_use_simd_bones
+server.dll!0x0099b718 ConVar contributionscore_assist
+server.dll!0x0099b928 ConVar contributionscore_bomb_defuse_major
+server.dll!0x0099b8d0 ConVar contributionscore_bomb_defuse_minor
+server.dll!0x0099b9d8 ConVar contributionscore_bomb_exploded
+server.dll!0x0099b980 ConVar contributionscore_bomb_planted
+server.dll!0x0099bb38 ConVar contributionscore_cash_bundle
+server.dll!0x0099bb90 ConVar contributionscore_crate_break
+server.dll!0x0099bae0 ConVar contributionscore_hostage_kill
+server.dll!0x0099b878 ConVar contributionscore_hostage_rescue_major
+server.dll!0x0099b820 ConVar contributionscore_hostage_rescue_minor
+server.dll!0x0099b770 ConVar contributionscore_kill
+server.dll!0x0099bbe8 ConVar contributionscore_kill_factor
+server.dll!0x0099b7c8 ConVar contributionscore_objective_kill
+server.dll!0x0099ba30 ConVar contributionscore_suicide
+server.dll!0x0099ba88 ConVar contributionscore_team_kill
+server.dll!0x0099dbe8 ConVar cs_ShowStateTransitions
+server.dll!0x0099e5e0 ConVar cs_enable_player_physics_box
+server.dll!0x0099e588 ConVar cs_hostage_near_rescue_music_distance
+server.dll!0x009a2150 ConVar custom_bot_difficulty
+server.dll!0x009a20c8 ConVar debug_aim_angle
+server.dll!0x00986e00 ConVar debug_visibility_monitor
+server.dll!0x00999c98 ConVar dev_reportmoneychanges
+server.dll!0x00993330 ConVar developer
+server.dll!0x009858d0 ConVar ent_messages_draw
+server.dll!0x0099edd8 ConVar ff_damage_bullet_penetration
+server.dll!0x0099f210 ConVar ff_damage_reduction_bullets
+server.dll!0x0099f160 ConVar ff_damage_reduction_grenade
+server.dll!0x0099f108 ConVar ff_damage_reduction_grenade_self
+server.dll!0x0099f1b8 ConVar ff_damage_reduction_other
+server.dll!0x0098b990 ConVar fish_dormant
+server.dll!0x0098bd28 ConVar func_break_max_pieces
+server.dll!0x0098b5b0 ConVar fx_new_sparks
+server.dll!0x0098d258 ConVar g_Language
+server.dll!0x00990ca0 ConVar g_debug_angularsensor
+server.dll!0x0098eff8 ConVar g_debug_constraint_sounds
+server.dll!0x009913e8 ConVar g_debug_ragdoll_removal
+server.dll!0x00984db8 ConVar g_debug_trackpather
+server.dll!0x00993388 ConVar g_debug_vehiclebase
+server.dll!0x0098ebc0 ConVar g_debug_vehicledriver
+server.dll!0x009934c8 ConVar g_debug_vehicleexit
+server.dll!0x00993470 ConVar g_debug_vehiclesound
+server.dll!0x009a09b0 ConVar g_jeepexitspeed
+server.dll!0x00991440 ConVar g_ragdoll_important_maxcount
+server.dll!0x00991390 ConVar g_ragdoll_maxcount
+server.dll!0x009a2258 ConVar game_mode
+server.dll!0x009a2200 ConVar game_online
+server.dll!0x009a21a8 ConVar game_public
+server.dll!0x009a22b0 ConVar game_type
+server.dll!0x0099e530 ConVar gg_knife_kill_demotes
+server.dll!0x0098d700 ConVar global_event_log_enabled
+server.dll!0x009a50a0 ConVar healthshot_allow_use_at_full
+server.dll!0x009a4ff0 ConVar healthshot_health
+server.dll!0x0099e6e8 ConVar healthshot_healthboost_damage_multiplier
+server.dll!0x009a50f8 ConVar healthshot_healthboost_speed_multiplier
+server.dll!0x009a5048 ConVar healthshot_healthboost_time
+server.dll!0x00985f48 ConVar hl2_episodic
+server.dll!0x009a4648 ConVar hostage_debug
+server.dll!0x0099f318 ConVar hostage_feetyawrate
+server.dll!0x009a4430 ConVar hostage_is_silent
+server.dll!0x009a3d40 ConVar inferno_child_spawn_interval_multiplier
+server.dll!0x009a4210 ConVar inferno_child_spawn_max_depth
+server.dll!0x009a4000 ConVar inferno_damage
+server.dll!0x009a3fa8 ConVar inferno_debug
+server.dll!0x009a3ef8 ConVar inferno_flame_lifetime
+server.dll!0x009a3ea0 ConVar inferno_flame_spacing
+server.dll!0x009a4318 ConVar inferno_forward_reduction_factor
+server.dll!0x009a3f50 ConVar inferno_friendly_fire_duration
+server.dll!0x009a3ce8 ConVar inferno_initial_spawn_interval
+server.dll!0x009a3d98 ConVar inferno_max_child_spawn_interval
+server.dll!0x009a3e48 ConVar inferno_max_flames
+server.dll!0x009a4058 ConVar inferno_max_range
+server.dll!0x009a3c90 ConVar inferno_per_flame_spawn_duration
+server.dll!0x009a4268 ConVar inferno_scorch_decals
+server.dll!0x009a3df0 ConVar inferno_spawn_angle
+server.dll!0x009a41b8 ConVar inferno_surface_offset
+server.dll!0x009a4108 ConVar inferno_velocity_decay_factor
+server.dll!0x009a40b0 ConVar inferno_velocity_factor
+server.dll!0x009a4160 ConVar inferno_velocity_normal_factor
+server.dll!0x0098c068 ConVar loopsingleplayermaps
+server.dll!0x0098e6a0 ConVar mapcycledisabled
+server.dll!0x009a23e0 ConVar molotov_throw_detonate_time
+server.dll!0x00996e48 ConVar mp_afterroundmoney
+server.dll!0x0098c4e0 ConVar mp_allowNPCs
+server.dll!0x0098d458 ConVar mp_allowspectators
+server.dll!0x00997160 ConVar mp_anyone_can_pickup_c4
+server.dll!0x0098c380 ConVar mp_autocrosshair
+server.dll!0x00999f58 ConVar mp_autokick
+server.dll!0x00992b00 ConVar mp_autoteambalance
+server.dll!0x00995b90 ConVar mp_backup_restore_load_autopause
+server.dll!0x009959e8 ConVar mp_backup_round_auto
+server.dll!0x00995a40 ConVar mp_backup_round_file
+server.dll!0x00995af0 ConVar mp_backup_round_file_last
+server.dll!0x00995a98 ConVar mp_backup_round_file_pattern
+server.dll!0x00992630 ConVar mp_blockstyle
+server.dll!0x009928f0 ConVar mp_bonusroundtime
+server.dll!0x00996c38 ConVar mp_buy_allow_grenades
+server.dll!0x00996c90 ConVar mp_buy_allow_guns
+server.dll!0x0098d560 ConVar mp_buy_anywhere
+server.dll!0x0098d5b8 ConVar mp_buy_during_immunity
+server.dll!0x00996be0 ConVar mp_buytime
+server.dll!0x009971b8 ConVar mp_c4_cannot_be_defused
+server.dll!0x00999c38 ConVar mp_c4timer
+server.dll!0x009926e0 ConVar mp_capdeteriorate_time
+server.dll!0x009925d8 ConVar mp_capstyle
+server.dll!0x009992f0 ConVar mp_competitive_endofmatch_extra_time
+server.dll!0x0099ab60 ConVar mp_consecutive_loss_aversion
+server.dll!0x0099abb8 ConVar mp_consecutive_loss_max
+server.dll!0x00998a00 ConVar mp_coop_force_join_ct
+server.dll!0x009a26f8 ConVar mp_coopmission_bot_difficulty_offset
+server.dll!0x00998a58 ConVar mp_coopmission_mission_number
+server.dll!0x00997cf0 ConVar mp_ct_default_grenades
+server.dll!0x00997be8 ConVar mp_ct_default_melee
+server.dll!0x00997c98 ConVar mp_ct_default_primary
+server.dll!0x00997c40 ConVar mp_ct_default_secondary
+server.dll!0x0099a9a8 ConVar mp_damage_headshot_only
+server.dll!0x0099a7f0 ConVar mp_damage_scale_ct_body
+server.dll!0x0099a848 ConVar mp_damage_scale_ct_head
+server.dll!0x0099a8a0 ConVar mp_damage_scale_t_body
+server.dll!0x0099a8f8 ConVar mp_damage_scale_t_head
+server.dll!0x0099aa58 ConVar mp_damage_vampiric_amount
+server.dll!0x00998950 ConVar mp_death_drop_breachcharge
+server.dll!0x009987f0 ConVar mp_death_drop_c4
+server.dll!0x009988a0 ConVar mp_death_drop_defuser
+server.dll!0x00998848 ConVar mp_death_drop_grenade
+server.dll!0x00998798 ConVar mp_death_drop_gun
+server.dll!0x009989a8 ConVar mp_death_drop_healthshot
+server.dll!0x009988f8 ConVar mp_death_drop_taser
+server.dll!0x0099e638 ConVar mp_deathcam_skippable
+server.dll!0x00998f28 ConVar mp_default_team_winner_no_objective
+server.dll!0x00998690 ConVar mp_defuser_allocation
+server.dll!0x00992898 ConVar mp_disable_respawn_times
+server.dll!0x009973c8 ConVar mp_disconnect_kills_bots
+server.dll!0x00997370 ConVar mp_disconnect_kills_players
+server.dll!0x00998588 ConVar mp_display_kill_assists
+server.dll!0x0099a690 ConVar mp_dm_bonus_length_max
+server.dll!0x0099a638 ConVar mp_dm_bonus_length_min
+server.dll!0x009982c8 ConVar mp_dm_bonus_percent
+server.dll!0x00998320 ConVar mp_dm_bonus_respawn
+server.dll!0x00998530 ConVar mp_dm_bonusweapon_dogtags
+server.dll!0x00998378 ConVar mp_dm_dogtag_score
+server.dll!0x00998270 ConVar mp_dm_kill_base_score
+server.dll!0x009983d0 ConVar mp_dm_teammode
+server.dll!0x00998480 ConVar mp_dm_teammode_bonus_score
+server.dll!0x009984d8 ConVar mp_dm_teammode_dogtag_score
+server.dll!0x00998428 ConVar mp_dm_teammode_kill_score
+server.dll!0x0099a5e0 ConVar mp_dm_time_between_bonus_max
+server.dll!0x0099a588 ConVar mp_dm_time_between_bonus_min
+server.dll!0x00996d40 ConVar mp_do_warmup_offine
+server.dll!0x00996ce8 ConVar mp_do_warmup_period
+server.dll!0x0099a740 ConVar mp_dogtag_despawn_on_killer_death
+server.dll!0x0099a798 ConVar mp_dogtag_despawn_time
+server.dll!0x0099a6e8 ConVar mp_dogtag_pickup_rule
+server.dll!0x0099dfb0 ConVar mp_drop_grenade_enable
+server.dll!0x0099df58 ConVar mp_drop_knife_enable
+server.dll!0x00998c10 ConVar mp_economy_reset_rounds
+server.dll!0x009929a0 ConVar mp_enableroundwaittime
+server.dll!0x009993f8 ConVar mp_endmatch_votenextleveltime
+server.dll!0x00999348 ConVar mp_endmatch_votenextmap
+server.dll!0x009993a0 ConVar mp_endmatch_votenextmap_keepcurrent
+server.dll!0x0099bd10 ConVar mp_endmatch_votenextmap_wargames_modes
+server.dll!0x0099bd68 ConVar mp_endmatch_votenextmap_wargames_nummaps
+server.dll!0x0099bdc0 ConVar mp_endmatch_votenextmap_wargames_nummodes
+server.dll!0x00997560 ConVar mp_endwarmup_player_count
+server.dll!0x00998bb8 ConVar mp_equipment_reset_rounds
+server.dll!0x00984ff8 ConVar mp_facefronttime
+server.dll!0x0098c1c8 ConVar mp_falldamage
+server.dll!0x00984fa0 ConVar mp_feetyawrate
+server.dll!0x0098c328 ConVar mp_flashlight
+server.dll!0x0099e908 ConVar mp_flinch_punch_scale
+server.dll!0x0098c2d0 ConVar mp_footsteps
+server.dll!0x00996a28 ConVar mp_force_assign_teams
+server.dll!0x00998ab0 ConVar mp_force_pick_time
+server.dll!0x0098c278 ConVar mp_forcerespawn
+server.dll!0x0098e750 ConVar mp_fraglimit
+server.dll!0x0099cfd8 ConVar mp_free_armor
+server.dll!0x00999e50 ConVar mp_freezetime
+server.dll!0x0098d4b0 ConVar mp_friendlyfire
+server.dll!0x00997b38 ConVar mp_ggprogressive_random_weapon_kills_needed
+server.dll!0x00997a88 ConVar mp_ggprogressive_round_restart_delay
+server.dll!0x00997ae0 ConVar mp_ggprogressive_use_random_weapons
+server.dll!0x00997980 ConVar mp_ggtr_always_upgrade
+server.dll!0x009981c0 ConVar mp_ggtr_bomb_defuse_bonus
+server.dll!0x00998218 ConVar mp_ggtr_bomb_detonation_bonus
+server.dll!0x00998008 ConVar mp_ggtr_bomb_pts_for_flash
+server.dll!0x00997fb0 ConVar mp_ggtr_bomb_pts_for_he
+server.dll!0x00998060 ConVar mp_ggtr_bomb_pts_for_molotov
+server.dll!0x00997f58 ConVar mp_ggtr_bomb_pts_for_upgrade
+server.dll!0x00998168 ConVar mp_ggtr_bomb_respawn_delay
+server.dll!0x009979d8 ConVar mp_ggtr_end_round_kill_bonus
+server.dll!0x00998110 ConVar mp_ggtr_halftime_delay
+server.dll!0x00997a30 ConVar mp_ggtr_last_weapon_kill_ends_half
+server.dll!0x00997b90 ConVar mp_ggtr_num_rounds_autoprogress
+server.dll!0x009986e8 ConVar mp_give_player_c4
+server.dll!0x0099aab0 ConVar mp_global_damage_per_second
+server.dll!0x0099a2c8 ConVar mp_guardian_bot_money_per_wave
+server.dll!0x0099a428 ConVar mp_guardian_loc_adjective
+server.dll!0x0099a480 ConVar mp_guardian_loc_condition
+server.dll!0x0099a4d8 ConVar mp_guardian_loc_icon
+server.dll!0x0099a378 ConVar mp_guardian_loc_mission
+server.dll!0x0099a320 ConVar mp_guardian_loc_override
+server.dll!0x0099a3d0 ConVar mp_guardian_loc_weapon
+server.dll!0x0099a270 ConVar mp_guardian_player_dist_max
+server.dll!0x0099a218 ConVar mp_guardian_player_dist_min
+server.dll!0x0099a168 ConVar mp_guardian_special_kills_needed
+server.dll!0x0099a1c0 ConVar mp_guardian_special_weapon_needed
+server.dll!0x009a4880 ConVar mp_guardian_target_site
+server.dll!0x0099d088 ConVar mp_halftime
+server.dll!0x009978d0 ConVar mp_halftime_duration
+server.dll!0x00997668 ConVar mp_halftime_pausematch
+server.dll!0x00997610 ConVar mp_halftime_pausetimer
+server.dll!0x00995990 ConVar mp_heavyassaultsuit_aimpunch
+server.dll!0x00998e78 ConVar mp_heavyassaultsuit_cooldown
+server.dll!0x00995938 ConVar mp_heavyassaultsuit_deploy_timescale
+server.dll!0x00995888 ConVar mp_heavyassaultsuit_speed
+server.dll!0x009958e0 ConVar mp_heavybot_damage_reduction_scale
+server.dll!0x009a4380 ConVar mp_hostagepenalty
+server.dll!0x009a46a0 ConVar mp_hostages_max
+server.dll!0x00997108 ConVar mp_hostages_rescuetime
+server.dll!0x009970b0 ConVar mp_hostages_rescuetowin
+server.dll!0x009a4538 ConVar mp_hostages_run_speed_modifier
+server.dll!0x009a47a8 ConVar mp_hostages_spawn_farthest
+server.dll!0x009a4750 ConVar mp_hostages_spawn_force_positions
+server.dll!0x009a46f8 ConVar mp_hostages_spawn_same_every_round
+server.dll!0x00997058 ConVar mp_hostages_takedamage
+server.dll!0x0099a110 ConVar mp_humanteam
+server.dll!0x0099a530 ConVar mp_ignore_round_win_conditions
+server.dll!0x00985050 ConVar mp_ik
+server.dll!0x00997ea8 ConVar mp_join_grace_time
+server.dll!0x00999ea8 ConVar mp_limitteams
+server.dll!0x00993fc0 ConVar mp_logdetail
+server.dll!0x00994018 ConVar mp_logdetail_items
+server.dll!0x0099dcf0 ConVar mp_logdistance_2d
+server.dll!0x0099dd48 ConVar mp_logdistance_sec
+server.dll!0x0099dda0 ConVar mp_logloadouts
+server.dll!0x0099dc98 ConVar mp_logmoney
+server.dll!0x00997928 ConVar mp_match_can_clinch
+server.dll!0x00998638 ConVar mp_match_end_changelevel
+server.dll!0x009985e0 ConVar mp_match_end_restart
+server.dll!0x0098e648 ConVar mp_match_restart_delay
+server.dll!0x0099d030 ConVar mp_max_armor
+server.dll!0x00996df0 ConVar mp_maxmoney
+server.dll!0x009927e8 ConVar mp_maxrounds
+server.dll!0x009980b8 ConVar mp_molotovusedelay
+server.dll!0x009a4590 ConVar mp_only_cts_rescue_hostages
+server.dll!0x00996f50 ConVar mp_overtime_enable
+server.dll!0x009976c0 ConVar mp_overtime_halftime_pausetimer
+server.dll!0x00996fa8 ConVar mp_overtime_maxrounds
+server.dll!0x00997000 ConVar mp_overtime_startmoney
+server.dll!0x009a5488 ConVar mp_plant_c4_anywhere
+server.dll!0x0099a950 ConVar mp_player_healthbuffer_decay_rate
+server.dll!0x00996ea0 ConVar mp_playercashawards
+server.dll!0x00997770 ConVar mp_playerid
+server.dll!0x009977c8 ConVar mp_playerid_delay
+server.dll!0x00997820 ConVar mp_playerid_hold
+server.dll!0x0098d400 ConVar mp_radar_showall
+server.dll!0x0099d0e0 ConVar mp_randomspawn
+server.dll!0x0099d190 ConVar mp_randomspawn_dist
+server.dll!0x0099d138 ConVar mp_randomspawn_los
+server.dll!0x00998740 ConVar mp_require_gun_use_to_acquire
+server.dll!0x00997718 ConVar mp_respawn_immunitytime
+server.dll!0x00999030 ConVar mp_respawn_on_death_ct
+server.dll!0x00998fd8 ConVar mp_respawn_on_death_t
+server.dll!0x00992688 ConVar mp_respawnwavetime
+server.dll!0x0098e800 ConVar mp_restartgame
+server.dll!0x00997878 ConVar mp_round_restart_delay
+server.dll!0x00999cf0 ConVar mp_roundtime
+server.dll!0x00999df8 ConVar mp_roundtime_defuse
+server.dll!0x00999d48 ConVar mp_roundtime_deployment
+server.dll!0x00999da0 ConVar mp_roundtime_hostage
+server.dll!0x009929f8 ConVar mp_showcleanedupents
+server.dll!0x00992948 ConVar mp_showroundtransitions
+server.dll!0x0099d2c8 ConVar mp_solid_teammates
+server.dll!0x00999fb0 ConVar mp_spawnprotectiontime
+server.dll!0x009969d0 ConVar mp_spec_swapplayersides
+server.dll!0x00996b88 ConVar mp_spectators_max
+server.dll!0x00992bb0 ConVar mp_stalemate_at_timelimit
+server.dll!0x00992b58 ConVar mp_stalemate_enable
+server.dll!0x00992aa8 ConVar mp_stalemate_timelimit
+server.dll!0x0099ab08 ConVar mp_starting_losses
+server.dll!0x00996d98 ConVar mp_startmoney
+server.dll!0x00990168 ConVar mp_suicide_time
+server.dll!0x00997e50 ConVar mp_t_default_grenades
+server.dll!0x00997d48 ConVar mp_t_default_melee
+server.dll!0x00997df8 ConVar mp_t_default_primary
+server.dll!0x00997da0 ConVar mp_t_default_secondary
+server.dll!0x0099e888 ConVar mp_tagging_scale
+server.dll!0x009a67f0 ConVar mp_taser_recharge_time
+server.dll!0x0099a0b8 ConVar mp_td_dmgtokick
+server.dll!0x0099a060 ConVar mp_td_dmgtowarn
+server.dll!0x0099a008 ConVar mp_td_spawndmgthreshold
+server.dll!0x009950c0 ConVar mp_team_timeout_max
+server.dll!0x00995068 ConVar mp_team_timeout_time
+server.dll!0x00996ef8 ConVar mp_teamcashawards
+server.dll!0x009953b8 ConVar mp_teamflag_1
+server.dll!0x00995410 ConVar mp_teamflag_2
+server.dll!0x0098c3d8 ConVar mp_teamlist
+server.dll!0x00995468 ConVar mp_teamlogo_1
+server.dll!0x009954c0 ConVar mp_teamlogo_2
+server.dll!0x00995620 ConVar mp_teammatchstat_1
+server.dll!0x00995678 ConVar mp_teammatchstat_2
+server.dll!0x00995830 ConVar mp_teammatchstat_cycletime
+server.dll!0x009957d8 ConVar mp_teammatchstat_holdtime
+server.dll!0x009955c8 ConVar mp_teammatchstat_txt
+server.dll!0x0098d508 ConVar mp_teammates_are_enemies
+server.dll!0x00995308 ConVar mp_teamname_1
+server.dll!0x00995360 ConVar mp_teamname_2
+server.dll!0x0098c170 ConVar mp_teamplay
+server.dll!0x00995570 ConVar mp_teamprediction_pct
+server.dll!0x00995518 ConVar mp_teamprediction_txt
+server.dll!0x00992790 ConVar mp_teams_unbalance_limit
+server.dll!0x009956d0 ConVar mp_teamscore_1
+server.dll!0x00995728 ConVar mp_teamscore_2
+server.dll!0x00999f00 ConVar mp_tkpunish
+server.dll!0x00992738 ConVar mp_tournament
+server.dll!0x00999088 ConVar mp_use_respawn_waves
+server.dll!0x0099d378 ConVar mp_verbose_changelevel_spew
+server.dll!0x009975b8 ConVar mp_warmup_pausetimer
+server.dll!0x00997508 ConVar mp_warmuptime_all_players_connected
+server.dll!0x009a63b8 ConVar mp_weapon_melee_touch_time_after_hit
+server.dll!0x009a5a68 ConVar mp_weapon_next_owner_touch_time
+server.dll!0x009a5a10 ConVar mp_weapon_prev_owner_touch_time
+server.dll!0x0099aa00 ConVar mp_weapon_self_inflict_amount
+server.dll!0x00998d70 ConVar mp_weapons_allow_heavy
+server.dll!0x0099d480 ConVar mp_weapons_allow_map_placed
+server.dll!0x00998cc0 ConVar mp_weapons_allow_pistols
+server.dll!0x00998dc8 ConVar mp_weapons_allow_rifles
+server.dll!0x00998d18 ConVar mp_weapons_allow_smgs
+server.dll!0x00998ed0 ConVar mp_weapons_allow_typecount
+server.dll!0x00998c68 ConVar mp_weapons_allow_zeus
+server.dll!0x00998f80 ConVar mp_weapons_glow_on_ground
+server.dll!0x00995118 ConVar mp_weapons_max_gun_purchases_per_weapon_per_match
+server.dll!0x0098c220 ConVar mp_weaponstay
+server.dll!0x00997f00 ConVar mp_win_panel_display_time
+server.dll!0x00992840 ConVar mp_winlimit
+server.dll!0x009a6cc8 ConVar nav_area_bgcolor
+server.dll!0x009a7838 ConVar nav_area_max_size
+server.dll!0x009a6bc0 ConVar nav_coplanar_slope_limit
+server.dll!0x009a6c18 ConVar nav_coplanar_slope_limit_displacement
+server.dll!0x009a6d20 ConVar nav_corner_adjust_adjacent
+server.dll!0x009a7350 ConVar nav_create_area_at_feet
+server.dll!0x009a72a0 ConVar nav_create_place_on_ground
+server.dll!0x009a6dd0 ConVar nav_debug_blocked
+server.dll!0x009a7680 ConVar nav_displacement_test
+server.dll!0x009a73a8 ConVar nav_drag_selection_volume_zmax_offset
+server.dll!0x009a7400 ConVar nav_drag_selection_volume_zmin_offset
+server.dll!0x009a72f8 ConVar nav_draw_limit
+server.dll!0x009a8750 ConVar nav_edit
+server.dll!0x009a76d8 ConVar nav_generate_fencetops
+server.dll!0x009a7730 ConVar nav_generate_fixup_jump_areas
+server.dll!0x009a7788 ConVar nav_generate_incremental_range
+server.dll!0x009a77e0 ConVar nav_generate_incremental_tolerance
+server.dll!0x009a6e80 ConVar nav_max_view_distance
+server.dll!0x009a7a88 ConVar nav_max_vis_delta_list_length
+server.dll!0x009a6f30 ConVar nav_potentially_visible_dot_tolerance
+server.dll!0x009a86f8 ConVar nav_quicksave
+server.dll!0x009a7980 ConVar nav_show_approach_points
+server.dll!0x009a71f0 ConVar nav_show_area_info
+server.dll!0x009a7470 ConVar nav_show_compass
+server.dll!0x009a6e28 ConVar nav_show_continguous
+server.dll!0x009a79d8 ConVar nav_show_danger
+server.dll!0x009a6d78 ConVar nav_show_light_intensity
+server.dll!0x009a8910 ConVar nav_show_node_grid
+server.dll!0x009a87b0 ConVar nav_show_node_id
+server.dll!0x009a8968 ConVar nav_show_nodes
+server.dll!0x009a7a30 ConVar nav_show_player_counts
+server.dll!0x009a6f88 ConVar nav_show_potentially_visible
+server.dll!0x009a75d0 ConVar nav_slope_limit
+server.dll!0x009a7628 ConVar nav_slope_tolerance
+server.dll!0x009a7248 ConVar nav_snap_to_grid
+server.dll!0x009a7538 ConVar nav_solid_props
+server.dll!0x009a6c70 ConVar nav_split_place_on_ground
+server.dll!0x009a8808 ConVar nav_test_node
+server.dll!0x009a8860 ConVar nav_test_node_crouch
+server.dll!0x009a88b8 ConVar nav_test_node_crouch_dir
+server.dll!0x009a6ed8 ConVar nav_update_visibility_on_edit
+server.dll!0x0098ea90 ConVar nextlevel
+server.dll!0x0098ea38 ConVar nextmap_print_enabled
+server.dll!0x0098eae8 ConVar nextmode
+server.dll!0x00986a08 ConVar noclip_fixup
+server.dll!0x00984990 ConVar npc_ally_deathmessage
+server.dll!0x009851d0 ConVar npc_height_adjust
+server.dll!0x0098c600 ConVar occlusion_test_camera_margins
+server.dll!0x0098c658 ConVar occlusion_test_jump_margin
+server.dll!0x0098c5a8 ConVar occlusion_test_shadow_length
+server.dll!0x0098d1a8 ConVar old_radiusdamage
+server.dll!0x009aa888 ConVar panel_test_title_safe
+server.dll!0x0098ef40 ConVar particle_test_attach_attachment
+server.dll!0x0098eee8 ConVar particle_test_attach_mode
+server.dll!0x0098ee90 ConVar particle_test_file
+server.dll!0x0098f108 ConVar phys_debug_check_contacts
+server.dll!0x0099de50 ConVar phys_headshotscale
+server.dll!0x0099ddf8 ConVar phys_playerscale
+server.dll!0x00992518 ConVar phys_pushscale
+server.dll!0x0098f0b0 ConVar phys_show_active
+server.dll!0x00990378 ConVar player_debug_print_damage
+server.dll!0x0099f2c0 ConVar post_jump_crouch
+server.dll!0x00991250 ConVar props_break_max_pieces
+server.dll!0x009912a8 ConVar props_break_max_pieces_perframe
+server.dll!0x0098c6b0 ConVar pvs_min_player_distance
+server.dll!0x0098def0 ConVar r_AirboatViewDampenDamp
+server.dll!0x0098de98 ConVar r_AirboatViewDampenFreq
+server.dll!0x0098df48 ConVar r_AirboatViewZHeight
+server.dll!0x00993418 ConVar r_JeepFOV
+server.dll!0x0098dde8 ConVar r_JeepViewDampenDamp
+server.dll!0x0098dd90 ConVar r_JeepViewDampenFreq
+server.dll!0x0098de40 ConVar r_JeepViewZHeight
+server.dll!0x0098dd38 ConVar r_VehicleViewDampen
+server.dll!0x0098bb40 ConVar r_vehicleBrakeRate
+server.dll!0x009932d8 ConVar r_visualizetraces
+server.dll!0x00993f10 ConVar radarvisdistance
+server.dll!0x00993f68 ConVar radarvismaxdot
+server.dll!0x00993e60 ConVar radarvismethod
+server.dll!0x00993eb8 ConVar radarvispow
+server.dll!0x00984c58 ConVar rr_followup_maxdist
+server.dll!0x009823b0 ConVar rr_remarkable_max_distance
+server.dll!0x00982300 ConVar rr_remarkable_world_entities_replay_limit
+server.dll!0x00982358 ConVar rr_remarkables_enabled
+server.dll!0x00984cb0 ConVar rr_thenany_score_slop
+server.dll!0x00991b38 ConVar scene_clientflex
+server.dll!0x00991b90 ConVar scene_print
+server.dll!0x00982250 ConVar scene_showfaceto
+server.dll!0x00985fa0 ConVar scene_showlook
+server.dll!0x00985ff8 ConVar scene_showmoveto
+server.dll!0x00986050 ConVar scene_showunlock
+server.dll!0x0098c0c0 ConVar servercfgfile
+server.dll!0x00992f50 ConVar showtriggers
+server.dll!0x0098d0d0 ConVar sk_autoaim_mode
+server.dll!0x0098d200 ConVar skill
+server.dll!0x00986590 ConVar smoothstairs
+server.dll!0x00999450 ConVar snd_music_boost
+server.dll!0x00991ee8 ConVar snd_prevent_ss_duplicates
+server.dll!0x00991f40 ConVar snd_sos_show_server_xmit
+server.dll!0x00992170 ConVar soundpatch_captionlength
+server.dll!0x00992250 ConVar soundscape_debug
+server.dll!0x0098ff00 ConVar spec_allow_roaming
+server.dll!0x0098fdf8 ConVar spec_freeze_deathanim_time
+server.dll!0x0098fda0 ConVar spec_freeze_panel_extended_time
+server.dll!0x0098fea8 ConVar spec_freeze_target_fov
+server.dll!0x0098fe50 ConVar spec_freeze_target_fov_long
+server.dll!0x0098fc98 ConVar spec_freeze_time
+server.dll!0x0098fcf0 ConVar spec_freeze_time_lock
+server.dll!0x0098fd48 ConVar spec_freeze_traveltime
+server.dll!0x0098eb40 ConVar spec_replay_bot
+server.dll!0x0098fb90 ConVar spec_replay_cam_delay
+server.dll!0x0098fbe8 ConVar spec_replay_cam_options
+server.dll!0x009948d8 ConVar spec_replay_round_delay
+server.dll!0x0098fc40 ConVar spec_replay_winddown_time
+server.dll!0x009a1eb8 ConVar steam_controller_haptics
+server.dll!0x00992370 ConVar steamworks_sessionid_server
+server.dll!0x0098c538 ConVar suitvolume
+server.dll!0x0098dff8 ConVar sv_accelerate
+server.dll!0x0098db28 ConVar sv_accelerate_debug_speed
+server.dll!0x0098dad0 ConVar sv_accelerate_use_weapon_speed
+server.dll!0x0098cd70 ConVar sv_air_max_horizontal_parachute_ratio
+server.dll!0x0098cd18 ConVar sv_air_max_horizontal_parachute_speed
+server.dll!0x0098ccc0 ConVar sv_air_max_wishspeed
+server.dll!0x0098cdc8 ConVar sv_air_pushaway_dist
+server.dll!0x0098e158 ConVar sv_airaccelerate
+server.dll!0x0098e100 ConVar sv_airaccelerate_parachute
+server.dll!0x0098e0a8 ConVar sv_airaccelerate_rappel
+server.dll!0x00986250 ConVar sv_allchat
+server.dll!0x00997268 ConVar sv_allow_thirdperson
+server.dll!0x00993800 ConVar sv_allow_votes
+server.dll!0x009999d0 ConVar sv_alltalk
+server.dll!0x009a0a78 ConVar sv_arms_race_vote_to_restart_disallowed_after
+server.dll!0x00994f08 ConVar sv_auto_adjust_bot_difficulty
+server.dll!0x00999b88 ConVar sv_auto_full_alltalk_during_warmup_half_end
+server.dll!0x00994690 ConVar sv_autobunnyhopping
+server.dll!0x0099e4d8 ConVar sv_autobuyammo
+server.dll!0x0098dc88 ConVar sv_backspeed
+server.dll!0x0098ff58 ConVar sv_bonus_challenge
+server.dll!0x009a39c0 ConVar sv_bot_buy_decoy_weight
+server.dll!0x009a3968 ConVar sv_bot_buy_flash_weight
+server.dll!0x009a38b8 ConVar sv_bot_buy_grenade_chance
+server.dll!0x009a3a70 ConVar sv_bot_buy_hegrenade_weight
+server.dll!0x009a3a18 ConVar sv_bot_buy_molotov_weight
+server.dll!0x009a3910 ConVar sv_bot_buy_smoke_weight
+server.dll!0x00999768 ConVar sv_bot_difficulty_gamepad
+server.dll!0x00999818 ConVar sv_bot_difficulty_hydra
+server.dll!0x00999710 ConVar sv_bot_difficulty_kbm
+server.dll!0x009997c0 ConVar sv_bot_difficulty_ps3move
+server.dll!0x00999870 ConVar sv_bot_difficulty_sharpshooter
+server.dll!0x00995010 ConVar sv_bots_force_rebuy_every_round
+server.dll!0x00994f60 ConVar sv_bots_get_easier_each_win
+server.dll!0x00994fb8 ConVar sv_bots_get_harder_after_each_wave
+server.dll!0x0098e310 ConVar sv_bounce
+server.dll!0x009a53e8 ConVar sv_breachcharge_arm_delay
+server.dll!0x009a52e0 ConVar sv_breachcharge_delay_max
+server.dll!0x009a5288 ConVar sv_breachcharge_delay_min
+server.dll!0x009a5230 ConVar sv_breachcharge_distance_max
+server.dll!0x009a51d8 ConVar sv_breachcharge_distance_min
+server.dll!0x009a5390 ConVar sv_breachcharge_fuse_max
+server.dll!0x009a5338 ConVar sv_breachcharge_fuse_min
+server.dll!0x009a19a8 ConVar sv_broadcast_ugc_download_progress_interval
+server.dll!0x009a1950 ConVar sv_broadcast_ugc_downloads
+server.dll!0x00994e58 ConVar sv_buy_status_override
+server.dll!0x00994d50 ConVar sv_chat_proximity
+server.dll!0x00985de8 ConVar sv_clamp_unsafe_velocities
+server.dll!0x0099ef90 ConVar sv_clip_penetration_traces_to_players
+server.dll!0x00990558 ConVar sv_clockcorrection_msecs
+server.dll!0x00997210 ConVar sv_coach_comm_unrestricted
+server.dll!0x0099d5e0 ConVar sv_coaching_enabled
+server.dll!0x0099d1e8 ConVar sv_competitive_minspec
+server.dll!0x009998c8 ConVar sv_competitive_official_5v5
+server.dll!0x00999660 ConVar sv_compute_per_bot_difficulty
+server.dll!0x0099eee0 ConVar sv_cs_player_speed_has_hostage
+server.dll!0x00994eb0 ConVar sv_ct_spawn_on_bombsite
+server.dll!0x0099dea8 ConVar sv_damage_print_enable
+server.dll!0x0098c8a0 ConVar sv_dc_friends_reqd
+server.dll!0x0099d320 ConVar sv_deadtalk
+server.dll!0x009864e0 ConVar sv_debug_player_use
+server.dll!0x009a18f8 ConVar sv_debug_ugc_downloads
+server.dll!0x00999978 ConVar sv_disable_immunity_alpha
+server.dll!0x009951c8 ConVar sv_disable_motd
+server.dll!0x00994930 ConVar sv_disable_observer_interpolation
+server.dll!0x009914b0 ConVar sv_disable_pas
+server.dll!0x00991300 ConVar sv_disable_querycache
+server.dll!0x00994c48 ConVar sv_disable_radar
+server.dll!0x0099e218 ConVar sv_disablefreezecam
+server.dll!0x00990450 ConVar sv_drowning_damage_initial
+server.dll!0x009904a8 ConVar sv_drowning_damage_max
+server.dll!0x009a4a40 ConVar sv_dz_autojointeam
+server.dll!0x0099eb38 ConVar sv_dz_cash_bundle_size
+server.dll!0x0099e690 ConVar sv_dz_contractkill_reward
+server.dll!0x009a6770 ConVar sv_dz_exploration_payment_amount
+server.dll!0x00997318 ConVar sv_dz_hostage_rescue_reward
+server.dll!0x009a49e8 ConVar sv_dz_jointeam_allowed
+server.dll!0x009a4990 ConVar sv_dz_player_max_health
+server.dll!0x009a4938 ConVar sv_dz_player_spawn_armor
+server.dll!0x009a48e0 ConVar sv_dz_player_spawn_health
+server.dll!0x009a4ba0 ConVar sv_dz_show_enemy_name_scope_range
+server.dll!0x009a4da0 ConVar sv_dz_team_count
+server.dll!0x009a4b48 ConVar sv_dz_warmup_tablet
+server.dll!0x009a4af0 ConVar sv_dz_warmup_weapon
+server.dll!0x00986f68 ConVar sv_dz_zone_bombdrop_money_reward
+server.dll!0x00986fc0 ConVar sv_dz_zone_damage
+server.dll!0x00986f10 ConVar sv_dz_zone_hex_radius
+server.dll!0x00994638 ConVar sv_enablebunnyhopping
+server.dll!0x009994a8 ConVar sv_endmatch_item_drop_interval
+server.dll!0x00999608 ConVar sv_endmatch_item_drop_interval_ancient
+server.dll!0x009995b0 ConVar sv_endmatch_item_drop_interval_legendary
+server.dll!0x00999558 ConVar sv_endmatch_item_drop_interval_mythical
+server.dll!0x00999500 ConVar sv_endmatch_item_drop_interval_rare
+server.dll!0x0098b400 ConVar sv_env_entity_makers_enabled
+server.dll!0x009863d8 ConVar sv_extract_ammo_from_dropped_weapons
+server.dll!0x00994470 ConVar sv_extreme_strafe_accuracy_fishtail
+server.dll!0x00994cf8 ConVar sv_falldamage_scale
+server.dll!0x0099d428 ConVar sv_falldamage_to_below_player_multiplier
+server.dll!0x0099d3d0 ConVar sv_falldamage_to_below_player_ratio
+server.dll!0x009a6110 ConVar sv_fistpoint_delay
+server.dll!0x009a60b8 ConVar sv_fistpunch_blocked_damage
+server.dll!0x009a5fb0 ConVar sv_fistpunch_damage
+server.dll!0x009a61e8 ConVar sv_fistpunch_damage_hard
+server.dll!0x009a6008 ConVar sv_fistpunch_damage_to_player_multiplier
+server.dll!0x009a6168 ConVar sv_fistpunch_impact_sounds
+server.dll!0x009a6060 ConVar sv_fistpunch_viewmove
+server.dll!0x009a1ba8 ConVar sv_flashbang_strength
+server.dll!0x00986380 ConVar sv_footstep_sound_frequency
+server.dll!0x0098e470 ConVar sv_footsteps
+server.dll!0x009a4a98 ConVar sv_force_reflections
+server.dll!0x0098c798 ConVar sv_force_transmit_ents
+server.dll!0x0098ffb0 ConVar sv_force_transmit_players
+server.dll!0x0098dfa0 ConVar sv_friction
+server.dll!0x00999a28 ConVar sv_full_alltalk
+server.dll!0x00996a80 ConVar sv_gameinstructor_disable
+server.dll!0x0098d7a8 ConVar sv_grassburn
+server.dll!0x0098f780 ConVar sv_grenade_trajectory
+server.dll!0x0098f8e0 ConVar sv_grenade_trajectory_dash
+server.dll!0x0098f888 ConVar sv_grenade_trajectory_thickness
+server.dll!0x0098f7d8 ConVar sv_grenade_trajectory_time
+server.dll!0x0098f830 ConVar sv_grenade_trajectory_time_spectator
+server.dll!0x0099e168 ConVar sv_guardian_heavy_all
+server.dll!0x0099eae0 ConVar sv_guardian_heavy_count
+server.dll!0x0099e110 ConVar sv_guardian_max_wave_for_heavy
+server.dll!0x0099e0b8 ConVar sv_guardian_min_wave_for_heavy
+server.dll!0x009852f0 ConVar sv_health_approach_enabled
+server.dll!0x00985348 ConVar sv_health_approach_speed
+server.dll!0x009a2308 ConVar sv_hegrenade_damage_multiplier
+server.dll!0x009a2360 ConVar sv_hegrenade_radius_multiplier
+server.dll!0x009949e0 ConVar sv_holiday_mode
+server.dll!0x009a5168 ConVar sv_ignoregrenaderadio
+server.dll!0x009865e8 ConVar sv_infinite_ammo
+server.dll!0x009944c8 ConVar sv_jump_impulse
+server.dll!0x00999920 ConVar sv_kick_ban_duration
+server.dll!0x00994da8 ConVar sv_kick_players_with_cooldown
+server.dll!0x009a6268 ConVar sv_knife_attack_extend_from_player_aabb
+server.dll!0x0098cfc8 ConVar sv_ladder_angle
+server.dll!0x0098cf70 ConVar sv_ladder_dampen
+server.dll!0x0098d020 ConVar sv_ladder_scale_speed
+server.dll!0x00990a90 ConVar sv_lagcompensateself
+server.dll!0x00990988 ConVar sv_lagcompensationforcerestore
+server.dll!0x00994520 ConVar sv_ledge_mantle_helper
+server.dll!0x009945d0 ConVar sv_ledge_mantle_helper_debug
+server.dll!0x00994578 ConVar sv_ledge_mantle_helper_dzonly
+server.dll!0x00994e00 ConVar sv_matchend_drops_enabled
+server.dll!0x00996b30 ConVar sv_matchpause_auto_5v5
+server.dll!0x00986488 ConVar sv_max_distance_transmit_footsteps
+server.dll!0x0098e418 ConVar sv_maxspeed
+server.dll!0x00990b40 ConVar sv_maxunlag
+server.dll!0x00990060 ConVar sv_maxusrcmdprocessticks
+server.dll!0x009907d0 ConVar sv_maxusrcmdprocessticks_holdaim
+server.dll!0x00990778 ConVar sv_maxusrcmdprocessticks_warning
+server.dll!0x0098e2b8 ConVar sv_maxvelocity
+server.dll!0x0099ee88 ConVar sv_min_jump_landing_sound
+server.dll!0x00985698 ConVar sv_netvisdist
+server.dll!0x0098e368 ConVar sv_noclipaccelerate
+server.dll!0x00990110 ConVar sv_noclipduringpause
+server.dll!0x0098e3c0 ConVar sv_noclipspeed
+server.dll!0x0098ca28 ConVar sv_occlude_players
+server.dll!0x0098d078 ConVar sv_optimizedmovement
+server.dll!0x00994ca0 ConVar sv_outofammo_indicator
+server.dll!0x009972c0 ConVar sv_party_mode
+server.dll!0x0099f268 ConVar sv_penetration_type
+server.dll!0x0099e830 ConVar sv_player_parachute_velocity
+server.dll!0x00994198 ConVar sv_prime_accounts_only
+server.dll!0x00990f40 ConVar sv_prop_door_open_speed_scale
+server.dll!0x0098ecd8 ConVar sv_pushaway_clientside
+server.dll!0x009911f8 ConVar sv_pushaway_clientside_size
+server.dll!0x0098ede0 ConVar sv_pushaway_force
+server.dll!0x009a4488 ConVar sv_pushaway_hostage_force
+server.dll!0x0098ee38 ConVar sv_pushaway_max_force
+server.dll!0x009a44e0 ConVar sv_pushaway_max_hostage_force
+server.dll!0x0098ed88 ConVar sv_pushaway_max_player_force
+server.dll!0x0098ec80 ConVar sv_pushaway_min_player_speed
+server.dll!0x0098ed30 ConVar sv_pushaway_player_force
+server.dll!0x009850c0 ConVar sv_pvsskipanimation
+server.dll!0x00990008 ConVar sv_regeneration_wait_time
+server.dll!0x009a1a58 ConVar sv_remove_old_ugc_downloads
+server.dll!0x00994988 ConVar sv_reward_drop_delay
+server.dll!0x0098e520 ConVar sv_rollangle
+server.dll!0x0098e4c8 ConVar sv_rollspeed
+server.dll!0x0099d530 ConVar sv_server_graphic1
+server.dll!0x0099d588 ConVar sv_server_graphic2
+server.dll!0x0099f040 ConVar sv_server_verify_blood_on_player
+server.dll!0x009996b8 ConVar sv_show_bot_difficulty_in_name
+server.dll!0x00994ae8 ConVar sv_show_team_equipment_force_on
+server.dll!0x00994a90 ConVar sv_show_team_equipment_prohibit
+server.dll!0x0099e2c8 ConVar sv_show_voip_indicator_for_enemies
+server.dll!0x00984e98 ConVar sv_showanimstate
+server.dll!0x00984f48 ConVar sv_showanimstate_activities
+server.dll!0x00984ef0 ConVar sv_showanimstate_log
+server.dll!0x0099ec78 ConVar sv_showbullethits
+server.dll!0x0099ecd0 ConVar sv_showimpacts
+server.dll!0x0099ec20 ConVar sv_showimpacts_penetration
+server.dll!0x0099ed28 ConVar sv_showimpacts_time
+server.dll!0x009908d8 ConVar sv_showlagcompensation
+server.dll!0x00990930 ConVar sv_showlagcompensation_duration
+server.dll!0x0099ed80 ConVar sv_showplayerhitboxes
+server.dll!0x0099d4d8 ConVar sv_skirmish_id
+server.dll!0x0098dc30 ConVar sv_skyname
+server.dll!0x009a2558 ConVar sv_snowball_strength
+server.dll!0x00991f98 ConVar sv_soundemitter_trace
+server.dll!0x00991e90 ConVar sv_soundemitter_version
+server.dll!0x0099df00 ConVar sv_spawn_afk_bomb_drop_time
+server.dll!0x0099ef38 ConVar sv_spawn_rappel_min_duration
+server.dll!0x00999be0 ConVar sv_spec_hear
+server.dll!0x00990500 ConVar sv_spec_post_death_additional_time
+server.dll!0x0099ee30 ConVar sv_spec_use_tournament_content_standards
+server.dll!0x0098e208 ConVar sv_specaccelerate
+server.dll!0x0098e1b0 ConVar sv_specnoclip
+server.dll!0x0098e260 ConVar sv_specspeed
+server.dll!0x009942b8 ConVar sv_staminajumpcost
+server.dll!0x00994310 ConVar sv_staminalandcost
+server.dll!0x009943c0 ConVar sv_staminamax
+server.dll!0x00994368 ConVar sv_staminarecoveryrate
+server.dll!0x0098ce78 ConVar sv_standable_normal
+server.dll!0x0098e5d0 ConVar sv_stepsize
+server.dll!0x0098e050 ConVar sv_stopspeed
+server.dll!0x00986538 ConVar sv_suppress_viewpunch
+server.dll!0x009a6718 ConVar sv_tablet_show_path_to_nearest_resq
+server.dll!0x00999b30 ConVar sv_talk_after_dying_time
+server.dll!0x00999a80 ConVar sv_talk_enemy_dead
+server.dll!0x00999ad8 ConVar sv_talk_enemy_living
+server.dll!0x00994bf0 ConVar sv_teamid_overhead
+server.dll!0x00994a38 ConVar sv_teamid_overhead_always_prohibit
+server.dll!0x00994b98 ConVar sv_teamid_overhead_maxdist
+server.dll!0x00994b40 ConVar sv_teamid_overhead_maxdist_spec
+server.dll!0x00994418 ConVar sv_timebetweenducks
+server.dll!0x009911a0 ConVar sv_turbophysics
+server.dll!0x009a5928 ConVar sv_turning_inaccuracy_angle_min
+server.dll!0x009a5980 ConVar sv_turning_inaccuracy_decay
+server.dll!0x009a58d0 ConVar sv_turning_inaccuracy_enabled
+server.dll!0x009a1a00 ConVar sv_ugc_manager_max_new_file_check_interval_secs
+server.dll!0x0098caf8 ConVar sv_unlockedchapters
+server.dll!0x00990608 ConVar sv_usercmd_custom_random_seed
+server.dll!0x00993658 ConVar sv_voice_proximity
+server.dll!0x009936b0 ConVar sv_voice_proximity_positional
+server.dll!0x00993a10 ConVar sv_vote_allow_in_warmup
+server.dll!0x00993960 ConVar sv_vote_allow_spectators
+server.dll!0x009937a8 ConVar sv_vote_command_delay
+server.dll!0x009939b8 ConVar sv_vote_count_spectator_votes
+server.dll!0x009938b0 ConVar sv_vote_creation_timer
+server.dll!0x00993a68 ConVar sv_vote_disallow_kick_on_match_point
+server.dll!0x00993858 ConVar sv_vote_failure_timer
+server.dll!0x009a0ad0 ConVar sv_vote_issue_kick_allowed
+server.dll!0x009a0b80 ConVar sv_vote_issue_loadbackup_allowed
+server.dll!0x009a0c88 ConVar sv_vote_issue_loadbackup_spec_authoritative
+server.dll!0x009a0bd8 ConVar sv_vote_issue_loadbackup_spec_only
+server.dll!0x009a0c30 ConVar sv_vote_issue_loadbackup_spec_safe
+server.dll!0x009a0fa0 ConVar sv_vote_issue_pause_match_spec_only
+server.dll!0x009a0a20 ConVar sv_vote_issue_restart_game_allowed
+server.dll!0x009a0b28 ConVar sv_vote_kick_ban_duration
+server.dll!0x00993908 ConVar sv_vote_quorum_ratio
+server.dll!0x00993750 ConVar sv_vote_timer_duration
+server.dll!0x009a0d38 ConVar sv_vote_to_changelevel_before_match_point
+server.dll!0x0098ce20 ConVar sv_walkable_normal
+server.dll!0x0098cc10 ConVar sv_water_movespeed_multiplier
+server.dll!0x0098cc68 ConVar sv_water_swim_mode
+server.dll!0x0098db80 ConVar sv_wateraccelerate
+server.dll!0x0098dce0 ConVar sv_waterdist
+server.dll!0x0098dbd8 ConVar sv_waterfriction
+server.dll!0x0099efe8 ConVar sv_weapon_encumbrance_per_item
+server.dll!0x009946e8 ConVar sv_weapon_encumbrance_scale
+server.dll!0x0099e988 ConVar sv_weapon_require_use_grace_period
+server.dll!0x00994090 ConVar sv_workshop_allow_other_maps
+server.dll!0x009a66a8 ConVar tablet_c4_dist_max
+server.dll!0x009a6650 ConVar tablet_c4_dist_min
+server.dll!0x0098f990 ConVar think_limit
+server.dll!0x00999240 ConVar tr_best_course_time
+server.dll!0x009991e8 ConVar tr_completed_training
+server.dll!0x0098d960 ConVar tv_allow_autorecording_index
+server.dll!0x009940e8 ConVar tv_allow_camera_man_steamid
+server.dll!0x00994140 ConVar tv_allow_camera_man_steamid2
+server.dll!0x0098d908 ConVar tv_allow_static_shots
+server.dll!0x0098d858 ConVar tv_delay
+server.dll!0x0098d8b0 ConVar tv_delay1
+server.dll!0x0098e7a8 ConVar tv_delaymapchange
+server.dll!0x0099e008 ConVar tv_relayradio
+server.dll!0x00986780 ConVar tv_relaytextchat
+server.dll!0x009862d0 ConVar view_punch_decay
+server.dll!0x00986328 ConVar view_recoil_tracking
+server.dll!0x009903f8 ConVar vis_force
+server.dll!0x00986e58 ConVar vismon_poll_frequency
+server.dll!0x00986eb0 ConVar vismon_trace_limit
+server.dll!0x00990bb0 ConVar voice_player_speaking_delay_threshold
+server.dll!0x009a5668 ConVar weapon_accuracy_forcespread
+server.dll!0x009a1e60 ConVar weapon_accuracy_logging
+server.dll!0x009a56c0 ConVar weapon_accuracy_nospread
+server.dll!0x009a2070 ConVar weapon_accuracy_shotgun_spread_patterns
+server.dll!0x009a5770 ConVar weapon_air_spread_scale
+server.dll!0x009a5820 ConVar weapon_auto_cleanup_time
+server.dll!0x009a1fc0 ConVar weapon_debug_inaccuracy_only_up
+server.dll!0x009a1f68 ConVar weapon_debug_max_inaccuracy
+server.dll!0x009a5560 ConVar weapon_land_dip_amt
+server.dll!0x009a5b70 ConVar weapon_max_before_cleanup
+server.dll!0x009a2438 ConVar weapon_molotov_maxdetonateslope
+server.dll!0x009a1f10 ConVar weapon_near_empty_sound
+server.dll!0x009a5718 ConVar weapon_recoil_cooldown
+server.dll!0x009a55b8 ConVar weapon_recoil_decay1_exp
+server.dll!0x009a5c20 ConVar weapon_recoil_decay2_exp
+server.dll!0x009a5bc8 ConVar weapon_recoil_decay2_lin
+server.dll!0x009a5610 ConVar weapon_recoil_decay_coefficient
+server.dll!0x009a5b18 ConVar weapon_recoil_scale
+server.dll!0x009a5ac0 ConVar weapon_recoil_scale_motion_controller
+server.dll!0x009a11b0 ConVar weapon_recoil_suppression_factor
+server.dll!0x009a1158 ConVar weapon_recoil_suppression_shots
+server.dll!0x009a1208 ConVar weapon_recoil_variance
+server.dll!0x009a5c78 ConVar weapon_recoil_vel_decay
+server.dll!0x0099f098 ConVar weapon_recoil_view_punch_extra
+server.dll!0x009a57c8 ConVar weapon_reticle_knife_show
+server.dll!0x009a5878 ConVar weapon_sound_falloff_multiplier
+server.dll!0x0098bc48 ConVar xbox_autothrottle
+server.dll!0x0098bb98 ConVar xbox_throttlebias
+server.dll!0x0098bbf0 ConVar xbox_throttlespoof
 ```
 
-## ConCommands
+### ConCommands
 
 <details>
 <summary><code>CreatePredictionError</code></summary>
@@ -33588,7 +34476,7 @@ Sets the first map to load once a workshop collection been hosted. Takes the fil
 flags: `0x0`  
 </details>
 
-### Addresses
+#### Addresses
 
 ```
 server.dll!0x0099e7b0 ConCommand CreatePredictionError
@@ -33978,16 +34866,16 @@ server.dll!0x009a868c ConCommand wipe_nav_attributes
 server.dll!0x009a1b08 ConCommand workshop_start_map
 ```
 
-# Interfaces
+## Other
 
-## Interfaces
+### Interfaces
 
 ```
 inputsystem.dll!0x0002ed28 InputStackSystemVersion001
 inputsystem.dll!0x00031188 InputSystemVersion001
 ```
 
-## Interfaces
+### Interfaces
 
 ```
 materialsystemd.dll!0x000bae10 COLORCORRECTION_VERSION_1
@@ -33997,7 +34885,7 @@ materialsystemd.dll!0x000bc468 VMaterialSystemConfig004
 materialsystemd.dll!0x000bc960 VMaterialSystemStub001
 ```
 
-## Interfaces
+### Interfaces
 
 ```
 shaderapidx9.dll!0x000a5a90 DebugTextureInfo001
@@ -34009,7 +34897,7 @@ shaderapidx9.dll!0x0008a9a8 ShaderShadow010
 shaderapidx9.dll!0x00089304 VBAllocTracker001
 ```
 
-## Interfaces
+### Interfaces
 
 ```
 vgui2.dll!0x0006c314 SchemeSurface001
@@ -34022,14 +34910,14 @@ vgui2.dll!0x00060670 VGUI_System010
 vgui2.dll!0x0006c498 VGUI_ivgui008
 ```
 
-## Interfaces
+### Interfaces
 
 ```
 vguimatsurface.dll!0x000f47c4 SchemeSurface001
 vguimatsurface.dll!0x000f47c0 VGUI_Surface031
 ```
 
-## Interfaces
+### Interfaces
 
 ```
 vphysics.dll!0x0010aa20 VPhysics031
@@ -34037,7 +34925,7 @@ vphysics.dll!0x0010aa5c VPhysicsCollision007
 vphysics.dll!0x00116018 VPhysicsSurfaceProps001
 ```
 
-## Interfaces
+### Interfaces
 
 ```
 vstdlib.dll!0x00038a10 EventSystem001
@@ -34045,7 +34933,7 @@ vstdlib.dll!0x0003c270 VEngineCvar007
 vstdlib.dll!0x0003e608 VProcessUtils002
 ```
 
-## Interfaces
+### Interfaces
 
 ```
 matchmaking.dll!0x000831e0 MATCHFRAMEWORK_001

@@ -12,10 +12,10 @@ use pelite::pattern as pat;
 pub fn print(client: PeFile, dll_name: &str) {
 	let classes = classes(client);
 
-	println!("## ClientClasses\n");
+	println!("### ClientClasses\n");
 	for cls in &classes {
 		println!("<details>");
-		println!("<summary>client_class {}</summary>\n", cls.network_name);
+		println!("<summary><code>client_class {}</code></summary>\n", cls.network_name);
 		println!("sizeof: `{}`  ", cls.size_of);
 		println!("</details>");
 	}

@@ -14,7 +14,7 @@ pub fn print(bin: PeFile, dll_name: &str) {
 	let cvars = convars(bin);
 	let cmds = concommands(bin);
 
-	println!("## ConVars\n");
+	println!("### ConVars\n");
 	for cvar in &cvars {
 		println!("<details>");
 		println!("<summary><code>{}</code></summary>\n", cvar.name);
@@ -31,13 +31,13 @@ pub fn print(bin: PeFile, dll_name: &str) {
 		}
 		println!("</details>");
 	}
-	println!("\n### Addresses\n\n```");
+	println!("\n#### Addresses\n\n```");
 	for cvar in &cvars {
-		println!("{}!{:#08x} ConVar {}", dll_name, cvar.address, cvar.name);
+		println!("{}!{:#010x} ConVar {}", dll_name, cvar.address, cvar.name);
 	}
 	println!("```\n");
 
-	println!("## ConCommands\n");
+	println!("### ConCommands\n");
 	for cmd in &cmds {
 		println!("<details>");
 		println!("<summary><code>{}</code></summary>\n", cmd.name);
@@ -47,7 +47,7 @@ pub fn print(bin: PeFile, dll_name: &str) {
 		println!("flags: `{:#x}`  ", cmd.flags);
 		println!("</details>");
 	}
-	println!("\n### Addresses\n\n```");
+	println!("\n#### Addresses\n\n```");
 	for cmd in &cmds {
 		println!("{}!{:#010x} ConCommand {}", dll_name, cmd.address, cmd.name);
 	}

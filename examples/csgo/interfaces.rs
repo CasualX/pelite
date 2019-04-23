@@ -19,7 +19,7 @@ use pelite::pe32::*;
 pub fn print(file: PeFile, dll_name: &str) {
 	let ifaces = interfaces(file);
 
-	println!("## Interfaces\n\n```");
+	println!("### Interfaces\n\n```");
 	for iface in &ifaces {
 		println!("{}!{:#010x} {}", dll_name, iface.address, iface.name);
 	}

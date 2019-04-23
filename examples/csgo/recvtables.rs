@@ -7,26 +7,34 @@ RecvTables for networking entity data.
 use std::mem;
 
 use pelite;
-use pelite::pe32::{Rva, Va, Ptr, Pe, PeFile};
-use pelite::{util::CStr, Pod};
 use pelite::pattern as pat;
+use pelite::{util::CStr, Pod};
+use pelite::pe32::*;
 use lde;
 
 //----------------------------------------------------------------
 
 pub fn print(client: PeFile) {
-	for class in &recvtables(client).unwrap() {
-		print!("class {}", class.name);
-		if let Some(base) = class.base {
+	let classes = recvtables(client).unwrap();
+
+	println!("### Recvtables\n");
+	for cls in &classes {
+		println!("<details>");
+		print!("<summary><code>class {}", cls.name);
+		if let Some(base) = cls.base {
 			print!(" extends {}", base);
 		}
-		println!(" {{");
-		for prop in &class.props {
-			println!("\t// field offset: {:#x}", prop.offset);
+		println!("</code></summary>\n\n```\n{{");
+		for prop in &cls.props {
 			println!("\t{}: {},", prop.name, prop.ty);
 		}
-		println!("}}");
+		println!("}}\n```\n\n#### Offsets\n\n```");
+		for prop in &cls.props {
+			println!("{}!{:#06x} {}", cls.name, prop.offset, prop.name);
+		}
+		println!("```\n</details>");
 	}
+	println!();
 }
 
 //----------------------------------------------------------------
@@ -115,6 +123,7 @@ pub fn recvtables<'a>(client: PeFile<'a>) -> pelite::Result<Vec<Class<'a>>> {
 		}
 	}
 
+	classes.sort_unstable_by_key(|cls| cls.name);
 	Ok(classes)
 }
 
@@ -154,9 +163,12 @@ fn recvtable<'a>(client: PeFile<'a>, save: &[Rva; 8]) -> pelite::Result<Class<'a
 		if let Ok(name) = client.deref_c_str(recv_prop.pVarName).and_then(|s| s.to_str().map_err(|_| pelite::Error::Encoding)) {
 			let ty = *PROP_TYPES.get(recv_prop.RecvType as usize).unwrap_or(&"?");
 			let offset = recv_prop.Offset;
-			props.push(Prop { name, ty, offset });
+			if name != "baseclass" {
+				props.push(Prop { name, ty, offset });
+			}
 		}
 	}
+	props.sort_unstable_by_key(|prop| prop.offset);
 
 	Ok(Class {
 		base: None,

@@ -60,11 +60,14 @@ fn main() {
 	let matchmaking_file    = PeFile::from_bytes(&matchmaking_dll).unwrap();
 	let server_file         = PeFile::from_bytes(&server_dll).unwrap();
 
-	println!("# Engine\n");
+	println!("# Counter-Strike Global Offensive\n");
+	println!("Demonstrates static analysis by dumping Counter-Strike Global Offensive offsets.\n");
+
+	println!("## Engine.dll\n");
 	interfaces::print(engine_file, "engine.dll");
 	cvars::print(engine_file, "engine.dll");
 
-	println!("# Client\n");
+	println!("## Client.dll\n");
 	interfaces::print(client_file, "client_panorama.dll");
 	cvars::print(client_file, "client_panorama.dll");
 	kbutton::print(client_file, "client_panorama.dll");
@@ -73,11 +76,11 @@ fn main() {
 	recvtables::print(client_file);
 	weapondata::print(client_file);
 
-	println!("# Server\n");
+	println!("## Server.dll\n");
 	interfaces::print(server_file, "server.dll");
 	cvars::print(server_file, "server.dll");
 
-	println!("# Interfaces\n");
+	println!("## Other\n");
 	interfaces::print(inputsystem_file, "inputsystem.dll");
 	interfaces::print(materialsystem_file, "materialsystemd.dll");
 	interfaces::print(shaderapidx9_file, "shaderapidx9.dll");
