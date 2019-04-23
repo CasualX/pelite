@@ -32,7 +32,7 @@ fn example(file: PeFile<'_>) -> pelite::Result<()> {
 use std::{cmp, fmt, iter, mem, slice};
 
 use crate::image::{IMAGE_BASE_RELOCATION, IMAGE_REL_BASED_ABSOLUTE};
-use crate::util::{align_to, extend_in_place};
+use crate::util::{AlignTo, extend_in_place};
 use crate::{Result, Error};
 
 /// Base Relocations Directory.
@@ -122,7 +122,7 @@ impl<'a> Iterator for IterBlocks<'a> {
 			// Avoid infinite loop by skipping at least the image base relocation header
 			let block_size = cmp::max(block_size, mem::size_of::<IMAGE_BASE_RELOCATION>() as u32);
 			// Ensure that the data pointer remains dword aligned
-			let block_size = align_to(block_size, 4); // $1
+			let block_size = block_size.align_to(4); // $1
 			// Clamp the length to the data size
 			let block_size = cmp::min(block_size as usize, self.data.len());
 			self.data = &self.data[block_size..];
@@ -226,7 +226,7 @@ pub fn build(mut rvas: &[u32], mut types: &[u8]) -> Vec<u8> {
 		}
 
 		// Size of block should be multiple of 4 to ensure alignment
-		let size = align_to(8 + 2 * n, 4);
+		let size = (8 + 2 * n).align_to(4);
 
 		unsafe {
 			extend_in_place(&mut result, size, |bytes| {
@@ -235,7 +235,7 @@ pub fn build(mut rvas: &[u32], mut types: &[u8]) -> Vec<u8> {
 				(*block_ptr).VirtualAddress = start;
 				(*block_ptr).SizeOfBlock = size as u32;
 				// Encode the type and offsets
-				let words = slice::from_raw_parts_mut(block_ptr.offset(1) as *mut u16, align_to(n, 2));
+				let words = slice::from_raw_parts_mut(block_ptr.offset(1) as *mut u16, n.align_to(2));
 				for i in 0..n {
 					let rva = *rvas.get_unchecked(i);
 					let ty = *types.get_unchecked(i);

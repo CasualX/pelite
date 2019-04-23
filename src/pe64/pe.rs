@@ -635,7 +635,7 @@ unsafe fn slice_section(image: &[u8], rva: Rva, min_size_of: usize, align_of: us
 	if rva == 0 {
 		Err(Error::Null)
 	}
-	else if !usize::wrapping_add(image.as_ptr() as usize, start).is_aligned_to(align_of) {
+	else if !usize::wrapping_add(image.as_ptr() as usize, start).aligned_to(align_of) {
 		Err(Error::Misaligned)
 	}
 	else {
@@ -658,7 +658,7 @@ unsafe fn read_section(image: &[u8], va: Va, min_size_of: usize, align_of: usize
 	}
 	else {
 		let start = (va - image_base) as usize;
-		if !usize::wrapping_add(image.as_ptr() as usize, start).is_aligned_to(align_of) {
+		if !usize::wrapping_add(image.as_ptr() as usize, start).aligned_to(align_of) {
 			Err(Error::Misaligned)
 		}
 		else {
@@ -698,7 +698,7 @@ unsafe fn slice_file(image: &[u8], rva: Rva, min_size_of: usize, align_of: usize
 	if rva == 0 {
 		Err(Error::Null)
 	}
-	else if !usize::wrapping_add(image.as_ptr() as usize, rva as usize).is_aligned_to(align_of) {
+	else if !usize::wrapping_add(image.as_ptr() as usize, rva as usize).aligned_to(align_of) {
 		Err(Error::Misaligned)
 	}
 	else {
@@ -719,7 +719,7 @@ unsafe fn read_file(image: &[u8], va: Va, min_size_of: usize, align_of: usize) -
 	}
 	else {
 		let rva = (va - image_base) as Rva;
-		if !usize::wrapping_add(image.as_ptr() as usize, rva as usize).is_aligned_to(align_of) {
+		if !usize::wrapping_add(image.as_ptr() as usize, rva as usize).aligned_to(align_of) {
 			Err(Error::Misaligned)
 		}
 		else {
