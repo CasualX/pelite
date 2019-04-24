@@ -5,25 +5,33 @@ Datamaps manage entity state.
 #![allow(bad_style)]
 
 use pelite;
-use pelite::pe32::{Va, Ptr, Pe, PeFile};
-use pelite::{util::CStr, Pod};
 use pelite::pattern as pat;
+use pelite::{util::CStr, Pod};
+use pelite::pe32::*;
 
 //----------------------------------------------------------------
 
 pub fn print(client: PeFile) {
-	for class in &datamaps(client).unwrap() {
-		print!("class {}", class.name);
+	let datamaps = datamaps(client).unwrap();
+
+	println!("### Datamaps\n");
+	for class in &datamaps {
+		println!("<details>");
+		print!("<summary><code>class {}", class.name);
 		if let Some(base) = class.base {
 			print!(" extends {}", base);
 		}
-		println!(" {{");
+		println!("</code></summary>\n\n```\n{{");
 		for field in &class.fields {
-			println!("\t// field offset: {:#x}", field.offset);
 			println!("\t{}: {},", field.name, field.ty);
 		}
-		println!("}}");
+		println!("}}\n```\n\n#### Offsets\n\n```");
+		for field in &class.fields {
+			println!("{}!{:#06x} {}", class.name, field.offset, field.name);
+		}
+		println!("```\n</details>");
 	}
+	println!();
 }
 
 //----------------------------------------------------------------
@@ -133,6 +141,7 @@ pub fn datamaps<'a>(client: PeFile<'a>) -> pelite::Result<Vec<Class<'a>>> {
 			}
 		}
 	}
+	classes.sort_unstable_by_key(|cls| cls.name);
 	Ok(classes)
 }
 

@@ -9,10 +9,21 @@ use pelite::pattern as pat;
 
 //----------------------------------------------------------------
 
-pub fn print(client: PeFile) {
-	for class in classes(client).unwrap() {
-		println!("{:?}", class);
+pub fn print(client: PeFile, dll_name: &str) {
+	let classes = classes(client);
+
+	println!("### ClientClasses\n");
+	for cls in &classes {
+		println!("<details>");
+		println!("<summary><code>client_class {}</code></summary>\n", cls.network_name);
+		println!("sizeof: `{}`  ", cls.size_of);
+		println!("</details>");
 	}
+	println!("\n```");
+	for cls in &classes {
+		println!("{}!{:#010x} ClientClass {}", dll_name, cls.address, cls.network_name);
+	}
+	println!("```\n");
 }
 
 //----------------------------------------------------------------
@@ -34,11 +45,12 @@ struct ClientClass {
 #[derive(Debug)]
 pub struct Class<'a> {
 	pub network_name: &'a str,
+	pub address: u32,
 	pub class_id: i32,
 	pub size_of: u32,
 }
 
-pub fn classes<'a>(client: PeFile<'a>) -> pelite::Result<Vec<Class<'a>>> {
+pub fn classes<'a>(client: PeFile<'a>) -> Vec<Class<'a>> {
 	let mut save = [0; 8];
 	let mut list = Vec::new();
 
@@ -57,15 +69,17 @@ pub fn classes<'a>(client: PeFile<'a>) -> pelite::Result<Vec<Class<'a>>> {
 			continue;
 		}
 		// Now dealing with a ClientClass
-		let client_class: &ClientClass = client.derva(save[4]).unwrap();
+		let address = save[4];
+		let client_class: &ClientClass = client.derva(address).unwrap();
 		let network_name = client.deref_c_str(client_class.pNetworkName).unwrap().to_str().unwrap();
 		// Figure out the size of the entity type:
 		// The CreateFn is a function to create instances of this entity type, it allocates memory and thus includes its size
 		let size_of = client.deref_copy::<u32>(client_class.pCreateFn.offset(39)).unwrap_or(0);
 		// Class ids are initialized somewhere else...
 		let class_id = 0;
-		list.push(Class { network_name, class_id, size_of })
+		list.push(Class { network_name, address, class_id, size_of })
 	}
 
-	Ok(list)
+	list.sort_unstable_by_key(|cls| cls.network_name);
+	return list;
 }

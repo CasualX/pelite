@@ -60,29 +60,34 @@ fn main() {
 	let matchmaking_file    = PeFile::from_bytes(&matchmaking_dll).unwrap();
 	let server_file         = PeFile::from_bytes(&server_dll).unwrap();
 
-	interfaces::print(engine_file);
-	interfaces::print(inputsystem_file);
-	interfaces::print(materialsystem_file);
-	interfaces::print(shaderapidx9_file);
-	interfaces::print(vgui2_file);
-	interfaces::print(vguimatsurface_file);
-	interfaces::print(vphysics_file);
-	interfaces::print(vstdlib_file);
-	interfaces::print(client_file);
-	interfaces::print(matchmaking_file);
-	interfaces::print(server_file);
+	println!("# Counter-Strike Global Offensive\n");
+	println!("Demonstrates static analysis by dumping Counter-Strike Global Offensive offsets.\n");
 
-	kbutton::print(client_file);
+	println!("## Engine.dll\n");
+	interfaces::print(engine_file, "engine.dll");
+	cvars::print(engine_file, "engine.dll");
 
-	classes::print(client_file);
-
+	println!("## Client.dll\n");
+	interfaces::print(client_file, "client_panorama.dll");
+	cvars::print(client_file, "client_panorama.dll");
+	kbutton::print(client_file, "client_panorama.dll");
+	classes::print(client_file, "client_panorama.dll");
 	datamaps::print(client_file);
-
-	cvars::print(engine_file);
-	cvars::print(client_file);
-	cvars::print(server_file);
-
 	recvtables::print(client_file);
-
 	weapondata::print(client_file);
+
+	println!("## Server.dll\n");
+	interfaces::print(server_file, "server.dll");
+	cvars::print(server_file, "server.dll");
+
+	println!("## Other\n");
+	interfaces::print(inputsystem_file, "inputsystem.dll");
+	interfaces::print(materialsystem_file, "materialsystemd.dll");
+	interfaces::print(shaderapidx9_file, "shaderapidx9.dll");
+	interfaces::print(vgui2_file, "vgui2.dll");
+	interfaces::print(vguimatsurface_file, "vguimatsurface.dll");
+	interfaces::print(vphysics_file, "vphysics.dll");
+	interfaces::print(vstdlib_file, "vstdlib.dll");
+	interfaces::print(matchmaking_file, "matchmaking.dll");
+
 }

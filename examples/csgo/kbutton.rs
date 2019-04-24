@@ -10,6 +10,16 @@ use pelite::Pod;
 use pelite::pattern as pat;
 use pelite::pe32::*;
 
+pub fn print(bin: PeFile<'_>, dll_name: &str) {
+	let btns = buttons(bin);
+
+	println!("### Buttons\n\n```");
+	for btn in &btns {
+		println!("{}!{:#010x} kbutton_t {}", dll_name, btn.kbutton, btn.name);
+	}
+	println!("```\n");
+}
+
 #[derive(Copy, Clone, Pod, Debug)]
 #[repr(C)]
 struct kbutton_t {
@@ -17,28 +27,26 @@ struct kbutton_t {
 	state: i32,
 }
 
-pub fn print(file: PeFile<'_>) {
-	for cmd in &cmds(file) {
-		println!("client.dll!{:08x} kbutton_t {}", cmd.kbutton, cmd.name);
-	}
-}
-
-struct Cmd<'a> {
+struct Button<'a> {
 	name: &'a str,
 	kbutton: u32,
 }
-fn cmds<'a>(file: PeFile<'a>) -> Vec<Cmd<'a>> {
+
+fn buttons<'a>(file: PeFile<'a>) -> Vec<Button<'a>> {
+	let mut save = [0; 4];
+	let mut btns = Vec::new();
+
 	// Match the ConCommand in .data section...
-	let mut cmds = Vec::new();
 	let pat = pat!("00000000 00000000 *{'\"+\"} *{} 00000000 *55 8BEC [8-80] B9*{'}");
 	let section = file.section_headers().iter().find(|sect| &sect.Name == b".data\0\0\0").unwrap();
-	let mut save = [0; 4];
 	let mut matches = file.scanner().matches_section(pat, section);
 	while matches.next(&mut save) {
 		let name = file.derva_c_str(save[1]).unwrap().to_str().unwrap();
 		let kbutton = save[2];
-		cmds.push(Cmd { name, kbutton });
+		btns.push(Button { name, kbutton });
 	}
-	cmds.sort_unstable_by_key(|cmd| cmd.name);
-	cmds
+
+	// Sort the list by name for improved diff viewer experience
+	btns.sort_unstable_by_key(|cmd| cmd.name);
+	return btns;
 }
