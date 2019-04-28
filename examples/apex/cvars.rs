@@ -3,35 +3,48 @@ use pelite::pe64::*;
 use pelite::{util::CStr, Pod};
 use pelite::pattern as pat;
 
-pub fn print(bin: PeFile) {
-	for cvar in convars(bin) {
-		println!("[ConVar.{:?}]", cvar.name);
-		println!("\taddress = {:#x}", cvar.address);
-		if cvar.description.len() > 0 {
-			println!("\tdescription = {:?}", cvar.description);
+pub fn print(bin: PeFile, dll_name: &str) {
+	let cvars = convars(bin);
+	let cmds = concommands(bin);
+
+	println!("## ConVars\n");
+	for cvar in &cvars {
+		println!("<details>");
+		println!("<summary><code>{}</code></summary>\n", cvar.name);
+		if let Some(desc) = cvar.desc {
+			println!("{}\n", desc);
 		}
-		if cvar.data_type.len() > 0 {
-			println!("\tdata_type = {:?}", cvar.data_type);
+		println!("default: `{:?}`  ", cvar.default);
+		println!("flags: `{:#x}`  ", cvar.flags);
+		if let Some(min_value) = cvar.min_value {
+			println!("min value: `{}`  ", min_value);
 		}
-		println!("\tflags = {:#x}", cvar.flags);
-		println!("\tdefault_value = {:?}", cvar.default_value);
-		if let Some(min_val) = cvar.min_val {
-			println!("\tmin_val: {}", min_val);
+		if let Some(max_value) = cvar.max_value {
+			println!("max value: `{}`  ", max_value);
 		}
-		if let Some(max_val) = cvar.max_val {
-			println!("\tmax_val: {}", max_val);
-		}
+		println!("</details>");
 	}
-	for cmd in concommands(bin) {
-		println!("[ConCommand.{:?}]", cmd.name);
-		if cmd.description.len() > 0 {
-			println!("\tdescription = {:?}", cmd.description);
-		}
-		println!("\tflags = {:#x}", cmd.flags);
-		if cmd.callback > 0 {
-			println!("\tcallback = {:#x}", cmd.callback);
-		}
+	println!("\n### Addresses\n\n```");
+	for cvar in &cvars {
+		println!("{}!{:#010x} ConVar {}", dll_name, cvar.address, cvar.name);
 	}
+	println!("```\n");
+
+	println!("## ConCommands\n");
+	for cmd in &cmds {
+		println!("<details>");
+		println!("<summary><code>{}</code></summary>\n", cmd.name);
+		if let Some(desc) = cmd.desc {
+			println!("{}\n", desc);
+		}
+		println!("flags: `{:#x}`  ", cmd.flags);
+		println!("</details>");
+	}
+	println!("\n### Addresses\n\n```");
+	for cmd in &cmds {
+		println!("{}!{:#010x} ConCommand {}", dll_name, cmd.address, cmd.name);
+	}
+	println!("```\n");
 }
 
 // Find information in the 'setinfo' command
@@ -55,8 +68,7 @@ pub struct RawConVar {
 	pub pParent: Ptr<RawConVar>,
 	pub pszDefaultValue: Ptr<CStr>,
 	pub pszString: u64, // Allocated
-	pub StringLength: i32,
-	unk_u32: u32,
+	pub StringLength: u64, // Length of allocated string
 	pub fValue: f32,
 	pub nValue: i32,
 	pub bHasMin: u8,
@@ -70,12 +82,12 @@ pub struct RawConVar {
 pub struct ConVar<'a> {
 	pub address: u32,
 	pub name: &'a str,
-	pub description: &'a str,
+	pub desc: Option<&'a str>,
 	pub data_type: &'a str,
-	pub default_value: &'a str,
+	pub default: &'a str,
 	pub flags: u32,
-	pub min_val: Option<f32>,
-	pub max_val: Option<f32>,
+	pub min_value: Option<f32>,
+	pub max_value: Option<f32>,
 }
 
 pub fn convars(bin: PeFile<'_>) -> Vec<ConVar<'_>> {
@@ -96,13 +108,13 @@ pub fn convars(bin: PeFile<'_>) -> Vec<ConVar<'_>> {
 		let address = data_section.VirtualAddress + (i * 8) as u32;
 		let raw = bin.derva::<RawConVar>(address).unwrap();
 		let name = bin.deref_c_str(raw.pszName).unwrap_or(CStr::empty()).to_str().unwrap();
-		let description = bin.deref_c_str(raw.pszHelpString).unwrap_or(CStr::empty()).to_str().unwrap();
+		let desc = bin.deref_c_str(raw.pszHelpString).ok().map(|desc| desc.to_str().unwrap());
 		let data_type = bin.deref_c_str(raw.pszDataType).unwrap_or(CStr::empty()).to_str().unwrap();
-		let default_value = bin.deref_c_str(raw.pszDefaultValue).unwrap_or(CStr::empty()).to_str().unwrap();
+		let default = bin.deref_c_str(raw.pszDefaultValue).unwrap_or(CStr::empty()).to_str().unwrap();
 		let flags = raw.fFlags;
-		let min_val = if raw.bHasMin != 0 { Some(raw.fMinVal) } else { None };
-		let max_val = if raw.bHasMax != 0 { Some(raw.fMaxVal) } else { None };
-		convars.push(ConVar { address, name, description, data_type, default_value, flags, min_val, max_val });
+		let min_value = if raw.bHasMin != 0 { Some(raw.fMinVal) } else { None };
+		let max_value = if raw.bHasMax != 0 { Some(raw.fMaxVal) } else { None };
+		convars.push(ConVar { address, name, desc, data_type, default, flags, min_value, max_value });
 	}
 
 	// Sort to make a nice diff
@@ -134,7 +146,7 @@ pub struct RawConCommand {
 pub struct ConCommand<'a> {
 	pub address: u32,
 	pub name: &'a str,
-	pub description: &'a str,
+	pub desc: Option<&'a str>,
 	pub flags: u32,
 	pub callback: u32,
 }
@@ -152,10 +164,10 @@ pub fn concommands(bin: PeFile<'_>) -> Vec<ConCommand<'_>> {
 		let address = save[1];
 		let raw = bin.derva::<RawConCommand>(address).unwrap();
 		let name = bin.deref_c_str(raw.pszName).unwrap_or(CStr::empty()).to_str().unwrap();
-		let description = bin.deref_c_str(raw.pszHelpString).unwrap_or(CStr::empty()).to_str().unwrap();
+		let desc = bin.deref_c_str(raw.pszHelpString).ok().map(|desc| desc.to_str().unwrap());
 		let flags = raw.fFlags;
 		let callback = bin.va_to_rva(raw.fnCommandCallback).unwrap_or(0);
-		concommands.push(ConCommand { address, name, description, flags, callback })
+		concommands.push(ConCommand { address, name, desc, flags, callback })
 	}
 	concommands.sort_by_key(|concommand| concommand.name);
 	concommands

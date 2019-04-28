@@ -23,6 +23,7 @@ fn main() {
 
 mod interfaces;
 mod classes;
+mod recvtables;
 mod misc;
 mod cvars;
 mod globals;
@@ -30,9 +31,11 @@ mod globals;
 fn parse(image: &[u8]) {
 	use pelite::pe64::*;
 	let bin = PeFile::from_bytes(image).unwrap();
-	interfaces::print(bin);
-	misc::print(bin);
-	classes::print(bin);
-	cvars::print(bin);
-	globals::print(bin);
+	let dll_name = bin.exports().unwrap().dll_name().unwrap().to_str().unwrap();
+	interfaces::print(bin, dll_name);
+	misc::print(bin, dll_name);
+	classes::print(bin, dll_name);
+	recvtables::print(bin, dll_name);
+	cvars::print(bin, dll_name);
+	globals::print(bin, dll_name);
 }

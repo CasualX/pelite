@@ -1,11 +1,14 @@
 use pelite;
 use pelite::pe64::*;
 
-pub fn print(bin: PeFile) {
-	for g in globals(bin) {
-		println!("[Global.{:?}]", g.ty_name);
-		println!("\taddress = {:#x}", g.address);
+pub fn print(bin: PeFile, dll_name: &str) {
+	let globals = globals(bin);
+
+	println!("## Globals\n\nList of global variables with an associated vtable and their type name.\n\n```");
+	for g in &globals {
+		println!("{}!{:#010x} {}", dll_name, g.address, g.ty_name);
 	}
+	println!("```\n");
 }
 
 pub struct Global<'a> {

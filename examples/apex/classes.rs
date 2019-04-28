@@ -6,10 +6,22 @@ use pelite::pattern as pat;
 
 //----------------------------------------------------------------
 
-pub fn print(bin: PeFile) {
-	for class in classes(bin).unwrap() {
-		print!("[ClientClass.{:?}]\n\taddress = {:#x}\n\tsize = {}\n", class.name, class.address, class.size);
+pub fn print(bin: PeFile, dll_name: &str) {
+	let classes = classes(bin);
+
+	println!("## ClientClasses\n");
+	for cls in &classes {
+		println!("<details>");
+		println!("<summary><code>client_class {}</code></summary>\n", cls.name);
+		println!("class_id: `{}`  ", cls.id);
+		println!("sizeof: `{}`  ", cls.size);
+		println!("</details>");
 	}
+	println!("\n### Addresses\n\n```");
+	for cls in &classes {
+		println!("{}!{:#010x} ClientClass {}", dll_name, cls.address, cls.name);
+	}
+	println!("```\n");
 }
 
 //----------------------------------------------------------------
@@ -33,10 +45,11 @@ struct ClientClass {
 pub struct Class<'a> {
 	pub name: &'a str,
 	pub address: u32,
+	pub id: i32,
 	pub size: u32,
 }
 
-pub fn classes<'a>(bin: PeFile<'a>) -> pelite::Result<Vec<Class<'a>>> {
+pub fn classes<'a>(bin: PeFile<'a>) -> Vec<Class<'a>> {
 	let mut save = [0; 8];
 	let mut list = Vec::new();
 
@@ -58,10 +71,11 @@ pub fn classes<'a>(bin: PeFile<'a>) -> pelite::Result<Vec<Class<'a>>> {
 		let address = save[3];
 		let client_class: &ClientClass = bin.derva(address).unwrap();
 		let name = bin.deref_c_str(client_class.pNetworkName).unwrap().to_str().unwrap();
+		let id = client_class.ClassID;
 		let size = client_class.SizeOfClass;
-		list.push(Class { name, address, size })
+		list.push(Class { name, address, id, size })
 	}
 
 	list.sort_by_key(|item| item.name);
-	Ok(list)
+	list
 }
