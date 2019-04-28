@@ -3,16 +3,20 @@ use pelite;
 use pelite::pe64::*;
 use pelite::pattern as pat;
 
-pub fn print(bin: PeFile) {
-	for item in interfaces(bin) {
-		print!("[Interface.{:?}]\n\taddress = {:#x}\n", item.name, item.offset);
+pub fn print(bin: PeFile, dll_name: &str) {
+	let ifaces = interfaces(bin);
+
+	println!("## Interfaces\n\n```");
+	for iface in &ifaces {
+		println!("{}!{:#010x} {}", dll_name, iface.address, iface.name);
 	}
+	println!("```\n");
 }
 
 #[derive(Copy, Clone, Debug)]
 pub struct Interface<'a> {
 	pub name: &'a str,
-	pub offset: Rva,
+	pub address: u32,
 }
 
 pub fn interfaces(bin: PeFile<'_>) -> Vec<Interface<'_>> {
@@ -21,9 +25,9 @@ pub fn interfaces(bin: PeFile<'_>) -> Vec<Interface<'_>> {
 
 	let mut matches = bin.scanner().matches_code(pat!("488B05${} 488905${} 488D05${*{488D05$'}*'} 488905${} C3"));
 	while matches.next(&mut save) {
-		let offset = save[1];
+		let address = save[1];
 		let name = bin.derva_c_str(save[2]).unwrap().to_str().unwrap();
-		list.push(Interface { name, offset });
+		list.push(Interface { name, address });
 	}
 
 	if list.is_empty() {
