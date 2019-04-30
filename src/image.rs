@@ -15,6 +15,7 @@ Sources:
 #![allow(non_camel_case_types)]
 
 use crate::_Pod as Pod;
+use crate::util::StringN;
 
 #[cfg(windows)]
 extern "C" {
@@ -351,8 +352,7 @@ pub const IMAGE_SCN_MEM_WRITE: u32              = 0x80000000;
 #[cfg_attr(feature = "serde", derive(::serde::Serialize))]
 #[repr(C)]
 pub struct IMAGE_SECTION_HEADER {
-	#[cfg_attr(feature = "serde", serde(serialize_with = "crate::util::serde_helper::serde_strn"))]
-	pub Name: [u8; IMAGE_SIZEOF_SHORT_NAME],
+	pub Name: StringN<[u8; IMAGE_SIZEOF_SHORT_NAME]>,
 	pub VirtualSize: u32,
 	pub VirtualAddress: u32,
 	pub SizeOfRawData: u32,
