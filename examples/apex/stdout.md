@@ -5477,6 +5477,2472 @@ DT_ZiplinePhysics!0x0344 m_ziplineOwner
 ```
 </details>
 
+## Datamaps
+
+<details>
+<summary><code>class CBaseGrenade extends C_BaseAnimating</code></summary>
+
+```
+{
+	m_vecVelocity: Vector,
+	m_doesExplode: Bool,
+	m_DmgRadius: Bool,
+	m_grenadeCreationTime: Float,
+	m_grenadeCreationOrigin: Vector,
+	m_flDamage: Float,
+	m_hThrower: EHANDLE,
+}
+```
+
+### Offsets
+
+```
+CBaseGrenade!0x0408 m_vecVelocity
+CBaseGrenade!0x26c1 m_doesExplode
+CBaseGrenade!0x26c4 m_DmgRadius
+CBaseGrenade!0x26d4 m_grenadeCreationTime
+CBaseGrenade!0x26d8 m_grenadeCreationOrigin
+CBaseGrenade!0x2768 m_flDamage
+CBaseGrenade!0x276c m_hThrower
+```
+</details>
+<details>
+<summary><code>class CBaseViewModel</code></summary>
+
+```
+{
+	m_currentFrame.modelIndex: Short,
+	m_currentFrame.animCycle: Float,
+	m_angAbsRotation: Vector,
+	m_vecAbsOrigin: Vector,
+	m_localOrigin: Vector,
+	m_localAngles: Vector,
+	m_fEffects: Int,
+	m_angNetworkAngles: Vector,
+	m_nBody: Int,
+	m_nResetEventsParity: Int,
+	m_bSequenceFinished: Bool,
+	m_currentFrameBaseAnimating.animStartTime: Float,
+	m_currentFrameBaseAnimating.animStartCycle: Float,
+	m_currentFrameBaseAnimating.animPlaybackRate: Float,
+	m_currentFrameBaseAnimating.animModelIndex: Int,
+	m_currentFrameBaseAnimating.animSequence: Int,
+	m_currentFrameBaseAnimating.animSequenceParity: Int,
+	m_currentFrameBaseAnimating.m_flPoseParameters: Float,
+	m_currentFrameAnimatingOverlay.animOverlayIsActive: Bool,
+	m_currentFrameAnimatingOverlay.animOverlayStartTime: Float,
+	m_currentFrameAnimatingOverlay.animOverlayStartCycle: Float,
+	m_currentFrameAnimatingOverlay.animOverlayPlaybackRate: Float,
+	m_currentFrameAnimatingOverlay.animOverlayModelIndex: Int,
+	m_currentFrameAnimatingOverlay.animOverlaySequence: Int,
+	m_currentFrameAnimatingOverlay.animOverlayWeight: Float,
+	m_currentFrameAnimatingOverlay.animOverlayAnimTime: Float,
+	m_currentFrameAnimatingOverlay.animOverlayFadeInDuration: Float,
+	m_currentFrameAnimatingOverlay.animOverlayFadeOutDuration: Float,
+	m_currentFrameAnimatingOverlay.animOverlayCycle: Float,
+	m_viewModelOwner: EHANDLE,
+	m_projectileIsVisible: Bool,
+	m_isAdsTransition: Bool,
+	m_hWeapon: EHANDLE,
+	m_tracerAttachments: Int,
+	m_tracerAttachments: Int,
+	m_tracerAttachmentsScoped: Int,
+	m_tracerAttachmentsScoped: Int,
+}
+```
+
+### Offsets
+
+```
+CBaseViewModel!0x009c m_currentFrame.modelIndex
+CBaseViewModel!0x00b8 m_currentFrame.animCycle
+CBaseViewModel!0x0114 m_angAbsRotation
+CBaseViewModel!0x012c m_vecAbsOrigin
+CBaseViewModel!0x0138 m_localOrigin
+CBaseViewModel!0x0144 m_localAngles
+CBaseViewModel!0x03e0 m_fEffects
+CBaseViewModel!0x0414 m_angNetworkAngles
+CBaseViewModel!0x0e4c m_nBody
+CBaseViewModel!0x0e58 m_nResetEventsParity
+CBaseViewModel!0x0ef0 m_bSequenceFinished
+CBaseViewModel!0x0f08 m_currentFrameBaseAnimating.animStartTime
+CBaseViewModel!0x0f0c m_currentFrameBaseAnimating.animStartCycle
+CBaseViewModel!0x0f10 m_currentFrameBaseAnimating.animPlaybackRate
+CBaseViewModel!0x0f18 m_currentFrameBaseAnimating.animModelIndex
+CBaseViewModel!0x0f1c m_currentFrameBaseAnimating.animSequence
+CBaseViewModel!0x0f20 m_currentFrameBaseAnimating.animSequenceParity
+CBaseViewModel!0x0f24 m_currentFrameBaseAnimating.m_flPoseParameters
+CBaseViewModel!0x13c4 m_currentFrameAnimatingOverlay.animOverlayIsActive
+CBaseViewModel!0x13cc m_currentFrameAnimatingOverlay.animOverlayStartTime
+CBaseViewModel!0x13ec m_currentFrameAnimatingOverlay.animOverlayStartCycle
+CBaseViewModel!0x140c m_currentFrameAnimatingOverlay.animOverlayPlaybackRate
+CBaseViewModel!0x142c m_currentFrameAnimatingOverlay.animOverlayModelIndex
+CBaseViewModel!0x144c m_currentFrameAnimatingOverlay.animOverlaySequence
+CBaseViewModel!0x146c m_currentFrameAnimatingOverlay.animOverlayWeight
+CBaseViewModel!0x14ac m_currentFrameAnimatingOverlay.animOverlayAnimTime
+CBaseViewModel!0x14cc m_currentFrameAnimatingOverlay.animOverlayFadeInDuration
+CBaseViewModel!0x14ec m_currentFrameAnimatingOverlay.animOverlayFadeOutDuration
+CBaseViewModel!0x150c m_currentFrameAnimatingOverlay.animOverlayCycle
+CBaseViewModel!0x1618 m_viewModelOwner
+CBaseViewModel!0x161c m_projectileIsVisible
+CBaseViewModel!0x1a00 m_isAdsTransition
+CBaseViewModel!0x1a04 m_hWeapon
+CBaseViewModel!0x1a08 m_tracerAttachments
+CBaseViewModel!0x1a08 m_tracerAttachments
+CBaseViewModel!0x1a10 m_tracerAttachmentsScoped
+CBaseViewModel!0x1a10 m_tracerAttachmentsScoped
+```
+</details>
+<details>
+<summary><code>class CBeam extends C_BaseEntity</code></summary>
+
+```
+{
+	m_clrRender: Int,
+	m_currentFrame.modelIndex: Int,
+	m_localOrigin: Vector,
+	m_nRenderFX: Int,
+	m_nRenderMode: Int,
+	m_flFrameRate: Float,
+	m_nNumBeamEnts: Int,
+	m_nHaloIndex: Int,
+	m_nBeamType: Int,
+	m_hAttachEntity: EHANDLE,
+	m_nAttachIndex: Int,
+	m_fWidth: Float,
+	m_fEndWidth: Float,
+	m_fFadeLength: Float,
+	m_fHaloScale: Float,
+	m_fAmplitude: Float,
+	m_fStartFrame: Float,
+	m_fSpeed: Float,
+	m_flFrame: Float,
+	m_vecEndPos: Vector,
+}
+```
+
+### Offsets
+
+```
+CBeam!0x0048 m_clrRender
+CBeam!0x009c m_currentFrame.modelIndex
+CBeam!0x0138 m_localOrigin
+CBeam!0x042d m_nRenderFX
+CBeam!0x0439 m_nRenderMode
+CBeam!0x0a00 m_flFrameRate
+CBeam!0x0a14 m_nNumBeamEnts
+CBeam!0x0a1c m_nHaloIndex
+CBeam!0x0a20 m_nBeamType
+CBeam!0x0a28 m_hAttachEntity
+CBeam!0x0a50 m_nAttachIndex
+CBeam!0x0a78 m_fWidth
+CBeam!0x0a7c m_fEndWidth
+CBeam!0x0a80 m_fFadeLength
+CBeam!0x0a84 m_fHaloScale
+CBeam!0x0a88 m_fAmplitude
+CBeam!0x0a8c m_fStartFrame
+CBeam!0x0a90 m_fSpeed
+CBeam!0x0a94 m_flFrame
+CBeam!0x0a9c m_vecEndPos
+```
+</details>
+<details>
+<summary><code>class CCollisionProperty</code></summary>
+
+```
+{
+	m_vecMins: Vector,
+	m_vecMaxs: Vector,
+	m_usSolidFlags: Int,
+	m_nSolidType: Char,
+	m_triggerBloat: Char,
+	m_collisionDetailLevel: Char,
+}
+```
+
+### Offsets
+
+```
+CCollisionProperty!0x0010 m_vecMins
+CCollisionProperty!0x001c m_vecMaxs
+CCollisionProperty!0x0028 m_usSolidFlags
+CCollisionProperty!0x002c m_nSolidType
+CCollisionProperty!0x002d m_triggerBloat
+CCollisionProperty!0x002e m_collisionDetailLevel
+```
+</details>
+<details>
+<summary><code>class CGrappleHook</code></summary>
+
+```
+{
+	m_pMoveParent: EHANDLE,
+	m_localOrigin: Vector,
+	m_localAngles: Vector,
+	m_visibilityFlags: Int,
+	m_parentAttachmentType: Int,
+	m_parentAttachmentIndex: Int,
+	m_parentAttachmentHitbox: Int,
+}
+```
+
+### Offsets
+
+```
+CGrappleHook!0x00f8 m_pMoveParent
+CGrappleHook!0x0138 m_localOrigin
+CGrappleHook!0x0144 m_localAngles
+CGrappleHook!0x03dc m_visibilityFlags
+CGrappleHook!0x07d8 m_parentAttachmentType
+CGrappleHook!0x07dc m_parentAttachmentIndex
+CGrappleHook!0x07e0 m_parentAttachmentHitbox
+```
+</details>
+<details>
+<summary><code>class CMovementSpeedMod extends CBaseEntity</code></summary>
+
+```
+{
+	InputSpeedMod: Float,
+}
+```
+
+### Offsets
+
+```
+CMovementSpeedMod!0x0000 InputSpeedMod
+```
+</details>
+<details>
+<summary><code>class CPlayerShared</code></summary>
+
+```
+{
+	m_nPlayerCond: Int,
+}
+```
+
+### Offsets
+
+```
+CPlayerShared!0x0008 m_nPlayerCond
+```
+</details>
+<details>
+<summary><code>class CPlayerState</code></summary>
+
+```
+{
+	deadflag: Bool,
+}
+```
+
+### Offsets
+
+```
+CPlayerState!0x006c deadflag
+```
+</details>
+<details>
+<summary><code>class CPointBroadcastClientCommand extends CBaseEntity</code></summary>
+
+```
+{
+	InputCommand: String,
+}
+```
+
+### Offsets
+
+```
+CPointBroadcastClientCommand!0x0000 InputCommand
+```
+</details>
+<details>
+<summary><code>class CPointClientCommand extends CBaseEntity</code></summary>
+
+```
+{
+	InputCommand: String,
+}
+```
+
+### Offsets
+
+```
+CPointClientCommand!0x0000 InputCommand
+```
+</details>
+<details>
+<summary><code>class CPointServerCommand extends CBaseEntity</code></summary>
+
+```
+{
+	InputCommand: String,
+}
+```
+
+### Offsets
+
+```
+CPointServerCommand!0x0000 InputCommand
+```
+</details>
+<details>
+<summary><code>class CPredictedFirstPersonProxy extends C_BaseAnimating</code></summary>
+
+```
+{
+	m_localOrigin: Vector,
+	m_localAngles: Vector,
+	m_vecVelocity: Vector,
+	m_angNetworkAngles: Vector,
+	m_SequenceTransitioner: C_SequenceTransitioner,
+}
+```
+
+### Offsets
+
+```
+CPredictedFirstPersonProxy!0x0138 m_localOrigin
+CPredictedFirstPersonProxy!0x0144 m_localAngles
+CPredictedFirstPersonProxy!0x0408 m_vecVelocity
+CPredictedFirstPersonProxy!0x0414 m_angNetworkAngles
+CPredictedFirstPersonProxy!0x0bc0 m_SequenceTransitioner
+```
+</details>
+<details>
+<summary><code>class CSprite extends C_BaseEntity</code></summary>
+
+```
+{
+	m_hAttachedToEntity: EHANDLE,
+	m_nAttachment: Int,
+	m_flSpriteFramerate: Float,
+	m_flFrame: Float,
+	m_flDieTime: Float,
+	m_nBrightness: Int,
+	m_flBrightnessDuration: Float,
+	m_flSpriteScale: Float,
+	m_flScaleDuration: Float,
+	m_flLastTime: Float,
+	m_flMaxFrame: Float,
+}
+```
+
+### Offsets
+
+```
+CSprite!0x0a18 m_hAttachedToEntity
+CSprite!0x0a1c m_nAttachment
+CSprite!0x0a20 m_flSpriteFramerate
+CSprite!0x0a24 m_flFrame
+CSprite!0x0a28 m_flDieTime
+CSprite!0x0a30 m_nBrightness
+CSprite!0x0a34 m_flBrightnessDuration
+CSprite!0x0a38 m_flSpriteScale
+CSprite!0x0a3c m_flScaleDuration
+CSprite!0x0a4c m_flLastTime
+CSprite!0x0a50 m_flMaxFrame
+```
+</details>
+<details>
+<summary><code>class CTurret extends C_BaseCombatCharacter</code></summary>
+
+```
+{
+	m_aimAngle: Float,
+}
+```
+
+### Offsets
+
+```
+CTurret!0x17a4 m_aimAngle
+```
+</details>
+<details>
+<summary><code>class CWeaponX extends C_BaseAnimating</code></summary>
+
+```
+{
+	m_localOrigin: Vector,
+	m_nNextThinkTick: Int,
+	m_SequenceTransitioner: C_SequenceTransitioner,
+	m_weaponOwner: EHANDLE,
+	m_lastPrimaryAttack: Time,
+	m_nextReadyTime: Time,
+	m_nextPrimaryAttackTime: Time,
+	m_attackTimeThisFrame: Time,
+	m_worldModelIndexOverride: Int,
+	m_iWorldModelIndex: Int,
+	m_holsterModelIndex: Int,
+	m_droppedModelIndex: Int,
+	m_nIdealSequence: Int,
+	m_IdealActivity: Int,
+	m_weaponActivity: Int,
+	m_ActiveState: Int,
+	m_ammoInClip: Int,
+	m_ammoInStockpile: Int,
+	m_lifetimeShots: Int,
+	m_flTimeWeaponIdle: Time,
+	m_weapState: Int,
+	m_discarded: Bool,
+	m_bInReload: Bool,
+	m_tossRelease: Int,
+	m_customActivity: Int,
+	m_customActivitySequence: Int,
+	m_customActivityOwner: EHANDLE,
+	m_customActivityEndTime: Time,
+	m_customActivityFlags: Char,
+	m_playerData: WeaponPlayerData,
+	m_smartAmmoEnable: Bool,
+	m_smartAmmo: SmartAmmo_WeaponData,
+	m_needsReloadCheck: Bool,
+	m_needsEmptyCycleCheck: Bool,
+	m_skinOverride: Int,
+	m_skinOverrideIsValid: Bool,
+	m_chargeStartTime: Time,
+	m_chargeEndTime: Time,
+	m_lastChargeFrac: Float,
+	m_lastRegenTime: Time,
+	m_cooldownEndTime: Time,
+	m_stockPileWasDraining: Bool,
+	m_lastChargeLevel: Int,
+	m_chargeEnergyDepleteStepCounter: Int,
+	m_burstFireCount: Int,
+	m_burstFireIndex: Int,
+	m_shotCount: Int,
+	m_sustainedDischargeEndTime: Time,
+	m_modBitfieldFromPlayer: Int,
+	m_modBitfieldInternal: Int,
+	m_modBitfieldCurrent: Int,
+	m_curSharedEnergyCost: Int,
+	m_grappleWeaponNeedsDryfire: Bool,
+	m_scriptActivated: Bool,
+	m_flNextEmptySoundTime: Float,
+	m_bRemoveable: Bool,
+}
+```
+
+### Offsets
+
+```
+CWeaponX!0x0138 m_localOrigin
+CWeaponX!0x04f8 m_nNextThinkTick
+CWeaponX!0x0bc0 m_SequenceTransitioner
+CWeaponX!0x12c0 m_weaponOwner
+CWeaponX!0x12c4 m_lastPrimaryAttack
+CWeaponX!0x12c8 m_nextReadyTime
+CWeaponX!0x12cc m_nextPrimaryAttackTime
+CWeaponX!0x12d0 m_attackTimeThisFrame
+CWeaponX!0x12d4 m_worldModelIndexOverride
+CWeaponX!0x12d8 m_iWorldModelIndex
+CWeaponX!0x12dc m_holsterModelIndex
+CWeaponX!0x12e0 m_droppedModelIndex
+CWeaponX!0x12e4 m_nIdealSequence
+CWeaponX!0x12e8 m_IdealActivity
+CWeaponX!0x12ec m_weaponActivity
+CWeaponX!0x12f0 m_ActiveState
+CWeaponX!0x12f4 m_ammoInClip
+CWeaponX!0x12f8 m_ammoInStockpile
+CWeaponX!0x12fc m_lifetimeShots
+CWeaponX!0x1300 m_flTimeWeaponIdle
+CWeaponX!0x1304 m_weapState
+CWeaponX!0x1309 m_discarded
+CWeaponX!0x130a m_bInReload
+CWeaponX!0x1310 m_tossRelease
+CWeaponX!0x1314 m_customActivity
+CWeaponX!0x1318 m_customActivitySequence
+CWeaponX!0x131c m_customActivityOwner
+CWeaponX!0x1320 m_customActivityEndTime
+CWeaponX!0x1324 m_customActivityFlags
+CWeaponX!0x1328 m_playerData
+CWeaponX!0x13f8 m_smartAmmoEnable
+CWeaponX!0x1400 m_smartAmmo
+CWeaponX!0x15f0 m_needsReloadCheck
+CWeaponX!0x15f1 m_needsEmptyCycleCheck
+CWeaponX!0x15f4 m_skinOverride
+CWeaponX!0x15f8 m_skinOverrideIsValid
+CWeaponX!0x15fc m_chargeStartTime
+CWeaponX!0x1600 m_chargeEndTime
+CWeaponX!0x1604 m_lastChargeFrac
+CWeaponX!0x1608 m_lastRegenTime
+CWeaponX!0x160c m_cooldownEndTime
+CWeaponX!0x1610 m_stockPileWasDraining
+CWeaponX!0x1614 m_lastChargeLevel
+CWeaponX!0x1618 m_chargeEnergyDepleteStepCounter
+CWeaponX!0x161c m_burstFireCount
+CWeaponX!0x1620 m_burstFireIndex
+CWeaponX!0x1624 m_shotCount
+CWeaponX!0x1628 m_sustainedDischargeEndTime
+CWeaponX!0x162c m_modBitfieldFromPlayer
+CWeaponX!0x1630 m_modBitfieldInternal
+CWeaponX!0x1634 m_modBitfieldCurrent
+CWeaponX!0x1638 m_curSharedEnergyCost
+CWeaponX!0x163c m_grappleWeaponNeedsDryfire
+CWeaponX!0x163d m_scriptActivated
+CWeaponX!0x2860 m_flNextEmptySoundTime
+CWeaponX!0x2886 m_bRemoveable
+```
+</details>
+<details>
+<summary><code>class C_BaseAnimating extends C_BaseEntity</code></summary>
+
+```
+{
+	m_currentFrame.animCycle: Float,
+	m_animNetworkFlags: Int,
+	m_networkAnimActive: Bool,
+	m_animActive: Bool,
+	m_animCollisionEnabled: Bool,
+	m_animPlantingEnabled: Bool,
+	m_predictedAnimEventData: PredictedAnimEventData,
+	m_SequenceTransitioner: C_SequenceTransitioner,
+	m_nSkin: Int,
+	m_nBody: Int,
+	m_nResetEventsParity: Int,
+	m_bSequenceFinished: Bool,
+	m_bSequenceLooped: Bool,
+	m_bSequenceLoops: Bool,
+	m_flModelScale: Float,
+	m_currentFrameBaseAnimating.animStartTime: Float,
+	m_currentFrameBaseAnimating.animStartCycle: Float,
+	m_currentFrameBaseAnimating.animPlaybackRate: Float,
+	m_currentFrameBaseAnimating.animModelIndex: Int,
+	m_currentFrameBaseAnimating.animSequence: Int,
+	m_currentFrameBaseAnimating.animSequenceParity: Int,
+	m_currentFrameBaseAnimating.m_flPoseParameters: Float,
+}
+```
+
+### Offsets
+
+```
+C_BaseAnimating!0x00b8 m_currentFrame.animCycle
+C_BaseAnimating!0x0a28 m_animNetworkFlags
+C_BaseAnimating!0x0a2c m_networkAnimActive
+C_BaseAnimating!0x0a2e m_animActive
+C_BaseAnimating!0x0a2f m_animCollisionEnabled
+C_BaseAnimating!0x0a30 m_animPlantingEnabled
+C_BaseAnimating!0x0b28 m_predictedAnimEventData
+C_BaseAnimating!0x0bc0 m_SequenceTransitioner
+C_BaseAnimating!0x0e48 m_nSkin
+C_BaseAnimating!0x0e4c m_nBody
+C_BaseAnimating!0x0e58 m_nResetEventsParity
+C_BaseAnimating!0x0ef0 m_bSequenceFinished
+C_BaseAnimating!0x0ef8 m_bSequenceLooped
+C_BaseAnimating!0x0ef9 m_bSequenceLoops
+C_BaseAnimating!0x0efc m_flModelScale
+C_BaseAnimating!0x0f08 m_currentFrameBaseAnimating.animStartTime
+C_BaseAnimating!0x0f0c m_currentFrameBaseAnimating.animStartCycle
+C_BaseAnimating!0x0f10 m_currentFrameBaseAnimating.animPlaybackRate
+C_BaseAnimating!0x0f18 m_currentFrameBaseAnimating.animModelIndex
+C_BaseAnimating!0x0f1c m_currentFrameBaseAnimating.animSequence
+C_BaseAnimating!0x0f20 m_currentFrameBaseAnimating.animSequenceParity
+C_BaseAnimating!0x0f24 m_currentFrameBaseAnimating.m_flPoseParameters
+```
+</details>
+<details>
+<summary><code>class C_BaseAnimatingOverlay extends C_BaseAnimating</code></summary>
+
+```
+{
+	m_AnimOverlay: C_AnimationLayer,
+	m_AnimOverlayCount: Int,
+	m_currentFrameAnimatingOverlay.animOverlayIsActive: Bool,
+	m_currentFrameAnimatingOverlay.animOverlayStartTime: Float,
+	m_currentFrameAnimatingOverlay.animOverlayStartCycle: Float,
+	m_currentFrameAnimatingOverlay.animOverlayPlaybackRate: Float,
+	m_currentFrameAnimatingOverlay.animOverlayModelIndex: Int,
+	m_currentFrameAnimatingOverlay.animOverlaySequence: Int,
+	m_currentFrameAnimatingOverlay.animOverlayWeight: Float,
+	m_currentFrameAnimatingOverlay.animOverlayOrder: Int,
+	m_currentFrameAnimatingOverlay.animOverlayAnimTime: Float,
+	m_currentFrameAnimatingOverlay.animOverlayFadeInDuration: Float,
+	m_currentFrameAnimatingOverlay.animOverlayFadeOutDuration: Float,
+	m_currentFrameAnimatingOverlay.animOverlayCycle: Float,
+}
+```
+
+### Offsets
+
+```
+C_BaseAnimatingOverlay!0x12c8 m_AnimOverlay
+C_BaseAnimatingOverlay!0x1388 m_AnimOverlayCount
+C_BaseAnimatingOverlay!0x13c4 m_currentFrameAnimatingOverlay.animOverlayIsActive
+C_BaseAnimatingOverlay!0x13cc m_currentFrameAnimatingOverlay.animOverlayStartTime
+C_BaseAnimatingOverlay!0x13ec m_currentFrameAnimatingOverlay.animOverlayStartCycle
+C_BaseAnimatingOverlay!0x140c m_currentFrameAnimatingOverlay.animOverlayPlaybackRate
+C_BaseAnimatingOverlay!0x142c m_currentFrameAnimatingOverlay.animOverlayModelIndex
+C_BaseAnimatingOverlay!0x144c m_currentFrameAnimatingOverlay.animOverlaySequence
+C_BaseAnimatingOverlay!0x146c m_currentFrameAnimatingOverlay.animOverlayWeight
+C_BaseAnimatingOverlay!0x148c m_currentFrameAnimatingOverlay.animOverlayOrder
+C_BaseAnimatingOverlay!0x14ac m_currentFrameAnimatingOverlay.animOverlayAnimTime
+C_BaseAnimatingOverlay!0x14cc m_currentFrameAnimatingOverlay.animOverlayFadeInDuration
+C_BaseAnimatingOverlay!0x14ec m_currentFrameAnimatingOverlay.animOverlayFadeOutDuration
+C_BaseAnimatingOverlay!0x150c m_currentFrameAnimatingOverlay.animOverlayCycle
+```
+</details>
+<details>
+<summary><code>class C_BaseCombatCharacter extends C_BaseAnimatingOverlay</code></summary>
+
+```
+{
+	m_currentFrame.weaponGettingSwitchedOut: EHANDLE,
+	m_currentFrame.showActiveWeapon3p: Bool,
+	m_deathVelocity: Float,
+	m_phaseShiftFlags: Int,
+	m_flNextAttack: Time,
+	m_lastFiredTime: Time,
+	m_lastFiredWeapon: EHANDLE,
+	m_raiseFromMeleeEndTime: Time,
+	m_sharedEnergyCount: Int,
+	m_sharedEnergyTotal: Int,
+	m_sharedEnergyLockoutThreshold: Int,
+	m_lastSharedEnergyRegenTime: Time,
+	m_sharedEnergyRegenRate: Time,
+	m_sharedEnergyRegenDelay: Float,
+	m_lastSharedEnergyTakeTime: Time,
+	m_inventory: WeaponInventory_Client,
+	m_selectedWeapons: Char,
+	m_latestPrimaryWeapons: EHANDLE,
+	m_latestNonOffhandWeapons: Char,
+	m_selectedOffhands: Char,
+	m_selectedOffhandsPendingHybridAction: Char,
+	m_lastCycleSlot: Char,
+	m_latestMeleeWeapon: EHANDLE,
+	m_weaponPermission: Int,
+	m_weaponDelayEnableTime: Time,
+	m_weaponDisabledFlags: Char,
+	m_hudInfo_visibilityTestAlwaysPasses: Bool,
+	m_contextAction: Int,
+	m_phaseShiftTimeStart: Time,
+	m_phaseShiftTimeEnd: Time,
+}
+```
+
+### Offsets
+
+```
+C_BaseCombatCharacter!0x00bc m_currentFrame.weaponGettingSwitchedOut
+C_BaseCombatCharacter!0x00c4 m_currentFrame.showActiveWeapon3p
+C_BaseCombatCharacter!0x03fc m_deathVelocity
+C_BaseCombatCharacter!0x0734 m_phaseShiftFlags
+C_BaseCombatCharacter!0x15c0 m_flNextAttack
+C_BaseCombatCharacter!0x15c4 m_lastFiredTime
+C_BaseCombatCharacter!0x15c8 m_lastFiredWeapon
+C_BaseCombatCharacter!0x15cc m_raiseFromMeleeEndTime
+C_BaseCombatCharacter!0x15d0 m_sharedEnergyCount
+C_BaseCombatCharacter!0x15d4 m_sharedEnergyTotal
+C_BaseCombatCharacter!0x15d8 m_sharedEnergyLockoutThreshold
+C_BaseCombatCharacter!0x15dc m_lastSharedEnergyRegenTime
+C_BaseCombatCharacter!0x15e0 m_sharedEnergyRegenRate
+C_BaseCombatCharacter!0x15e4 m_sharedEnergyRegenDelay
+C_BaseCombatCharacter!0x15e8 m_lastSharedEnergyTakeTime
+C_BaseCombatCharacter!0x15f0 m_inventory
+C_BaseCombatCharacter!0x1638 m_selectedWeapons
+C_BaseCombatCharacter!0x163c m_latestPrimaryWeapons
+C_BaseCombatCharacter!0x1644 m_latestNonOffhandWeapons
+C_BaseCombatCharacter!0x1646 m_selectedOffhands
+C_BaseCombatCharacter!0x1649 m_selectedOffhandsPendingHybridAction
+C_BaseCombatCharacter!0x164c m_lastCycleSlot
+C_BaseCombatCharacter!0x1650 m_latestMeleeWeapon
+C_BaseCombatCharacter!0x1654 m_weaponPermission
+C_BaseCombatCharacter!0x1658 m_weaponDelayEnableTime
+C_BaseCombatCharacter!0x167d m_weaponDisabledFlags
+C_BaseCombatCharacter!0x167e m_hudInfo_visibilityTestAlwaysPasses
+C_BaseCombatCharacter!0x1690 m_contextAction
+C_BaseCombatCharacter!0x16bc m_phaseShiftTimeStart
+C_BaseCombatCharacter!0x16c0 m_phaseShiftTimeEnd
+```
+</details>
+<details>
+<summary><code>class C_BaseEntity</code></summary>
+
+```
+{
+	m_fFlags: Int,
+	m_angAbsRotation: Vector,
+	m_vecAbsOrigin: PositionVector,
+	m_vecPrevAbsOrigin: PositionVector,
+	m_flGravity: Float,
+	m_ModelName: String,
+	m_rgflCoordinateFrame: Float,
+}
+```
+
+### Offsets
+
+```
+C_BaseEntity!0x008c m_fFlags
+C_BaseEntity!0x0114 m_angAbsRotation
+C_BaseEntity!0x012c m_vecAbsOrigin
+C_BaseEntity!0x03b0 m_vecPrevAbsOrigin
+C_BaseEntity!0x03bc m_flGravity
+C_BaseEntity!0x0810 m_ModelName
+C_BaseEntity!0x0860 m_rgflCoordinateFrame
+```
+</details>
+<details>
+<summary><code>class C_BaseEntity</code></summary>
+
+```
+{
+	m_iEFlags: Int,
+	m_fFlags: Int,
+	m_currentFrame.modelIndex: Short,
+	m_currentFrame.viewOffset: Vector,
+	m_vecAngVelocity: Vector,
+	m_angAbsRotation: Vector,
+	m_vecAbsVelocity: Vector,
+	m_vecAbsOrigin: Vector,
+	m_localOrigin: Vector,
+	m_localAngles: Vector,
+	m_flGravity: Float,
+	m_flProxyRandomValue: Float,
+	m_vecBaseVelocity: Vector,
+	m_hGroundEntity: EHANDLE,
+	m_flMaxspeed: Float,
+	m_visibilityFlags: Int,
+	m_fEffects: Int,
+	m_iTeamNum: Int,
+	m_passThroughFlags: Int,
+	m_passThroughThickness: Int,
+	m_passThroughDirection: Float,
+	m_deathVelocity: Vector,
+	m_vecVelocity: Vector,
+	m_angNetworkAngles: Vector,
+	m_flFriction: Float,
+	m_hOwnerEntity: EHANDLE,
+	m_bRenderWithViewModels: Bool,
+	m_nRenderFX: Char,
+	m_nRenderMode: Char,
+	m_MoveType: Char,
+	m_MoveCollide: Char,
+	m_Collision: CCollisionProperty,
+}
+```
+
+### Offsets
+
+```
+C_BaseEntity!0x0050 m_iEFlags
+C_BaseEntity!0x008c m_fFlags
+C_BaseEntity!0x009c m_currentFrame.modelIndex
+C_BaseEntity!0x00ac m_currentFrame.viewOffset
+C_BaseEntity!0x0108 m_vecAngVelocity
+C_BaseEntity!0x0114 m_angAbsRotation
+C_BaseEntity!0x0120 m_vecAbsVelocity
+C_BaseEntity!0x012c m_vecAbsOrigin
+C_BaseEntity!0x0138 m_localOrigin
+C_BaseEntity!0x0144 m_localAngles
+C_BaseEntity!0x03bc m_flGravity
+C_BaseEntity!0x03c0 m_flProxyRandomValue
+C_BaseEntity!0x03c4 m_vecBaseVelocity
+C_BaseEntity!0x03d0 m_hGroundEntity
+C_BaseEntity!0x03d8 m_flMaxspeed
+C_BaseEntity!0x03dc m_visibilityFlags
+C_BaseEntity!0x03e0 m_fEffects
+C_BaseEntity!0x03e4 m_iTeamNum
+C_BaseEntity!0x03f0 m_passThroughFlags
+C_BaseEntity!0x03f4 m_passThroughThickness
+C_BaseEntity!0x03f8 m_passThroughDirection
+C_BaseEntity!0x03fc m_deathVelocity
+C_BaseEntity!0x0408 m_vecVelocity
+C_BaseEntity!0x0414 m_angNetworkAngles
+C_BaseEntity!0x0420 m_flFriction
+C_BaseEntity!0x0428 m_hOwnerEntity
+C_BaseEntity!0x042c m_bRenderWithViewModels
+C_BaseEntity!0x042d m_nRenderFX
+C_BaseEntity!0x0439 m_nRenderMode
+C_BaseEntity!0x043a m_MoveType
+C_BaseEntity!0x043b m_MoveCollide
+C_BaseEntity!0x0440 m_Collision
+```
+</details>
+<details>
+<summary><code>class C_BreakableSurface extends C_BaseEntity</code></summary>
+
+```
+{
+	m_nPanelBits: Char,
+}
+```
+
+### Offsets
+
+```
+C_BreakableSurface!0x0c88 m_nPanelBits
+```
+</details>
+<details>
+<summary><code>class C_ClientRagdoll extends C_BaseEntity</code></summary>
+
+```
+{
+	m_clrRender: Color32,
+	m_nRenderFX: Char,
+	m_nRenderMode: Char,
+	m_pRagdoll: CRagdoll,
+	m_nSkin: Int,
+	m_nBody: Int,
+	m_bFadeOut: Bool,
+	m_bImportant: Bool,
+	m_flEffectTime: Time,
+	m_iCurrentFriction: Int,
+	m_iMinFriction: Int,
+	m_iMaxFriction: Int,
+	m_flFrictionModTime: Float,
+	m_flFrictionTime: Time,
+	m_iFrictionAnimState: Int,
+	m_bReleaseRagdoll: Bool,
+	m_bFadingOut: Bool,
+	m_flScaleEnd: Float,
+	m_flScaleTimeStart: Float,
+	m_flScaleTimeEnd: Float,
+}
+```
+
+### Offsets
+
+```
+C_ClientRagdoll!0x0048 m_clrRender
+C_ClientRagdoll!0x042d m_nRenderFX
+C_ClientRagdoll!0x0439 m_nRenderMode
+C_ClientRagdoll!0x0b88 m_pRagdoll
+C_ClientRagdoll!0x0e48 m_nSkin
+C_ClientRagdoll!0x0e4c m_nBody
+C_ClientRagdoll!0x12c0 m_bFadeOut
+C_ClientRagdoll!0x12c1 m_bImportant
+C_ClientRagdoll!0x12c4 m_flEffectTime
+C_ClientRagdoll!0x12c8 m_iCurrentFriction
+C_ClientRagdoll!0x12cc m_iMinFriction
+C_ClientRagdoll!0x12d0 m_iMaxFriction
+C_ClientRagdoll!0x12d4 m_flFrictionModTime
+C_ClientRagdoll!0x12d8 m_flFrictionTime
+C_ClientRagdoll!0x12dc m_iFrictionAnimState
+C_ClientRagdoll!0x12e0 m_bReleaseRagdoll
+C_ClientRagdoll!0x12e1 m_bFadingOut
+C_ClientRagdoll!0x12e4 m_flScaleEnd
+C_ClientRagdoll!0x130c m_flScaleTimeStart
+C_ClientRagdoll!0x1334 m_flScaleTimeEnd
+```
+</details>
+<details>
+<summary><code>class C_CrossbowBolt extends C_Projectile</code></summary>
+
+```
+{
+	m_bounceCount: Int,
+	m_maxBounceCount: Int,
+	m_doesGrow: Bool,
+	m_growStartSize: Float,
+	m_growStage1Tick: Tick,
+	m_growStage1Size: Float,
+	m_growStage2Tick: Tick,
+	m_growStage2Size: Float,
+	m_growStageFinalTick: Tick,
+	m_growStageFinalSize: Float,
+}
+```
+
+### Offsets
+
+```
+C_CrossbowBolt!0x26c0 m_bounceCount
+C_CrossbowBolt!0x26c4 m_maxBounceCount
+C_CrossbowBolt!0x26c8 m_doesGrow
+C_CrossbowBolt!0x26cc m_growStartSize
+C_CrossbowBolt!0x26d0 m_growStage1Tick
+C_CrossbowBolt!0x26d4 m_growStage1Size
+C_CrossbowBolt!0x26d8 m_growStage2Tick
+C_CrossbowBolt!0x26dc m_growStage2Size
+C_CrossbowBolt!0x26e0 m_growStageFinalTick
+C_CrossbowBolt!0x26e4 m_growStageFinalSize
+```
+</details>
+<details>
+<summary><code>class C_DynamicProp extends C_BaseEntity</code></summary>
+
+```
+{
+	m_bClientSide: Bool,
+}
+```
+
+### Offsets
+
+```
+C_DynamicProp!0x1300 m_bClientSide
+```
+</details>
+<details>
+<summary><code>class C_EnvWindShared</code></summary>
+
+```
+{
+	m_flStartTime: Float,
+	m_iWindSeed: Int,
+	m_iMinWind: Int,
+	m_iMaxWind: Int,
+	m_windRadius: Int,
+	m_iMinGust: Int,
+	m_iMaxGust: Int,
+	m_flMinGustDelay: Float,
+	m_flMaxGustDelay: Float,
+	m_flGustDuration: Float,
+	m_iGustDirChange: Int,
+	m_location: Vector,
+	m_iszGustSound: Int,
+	m_iWindDir: Int,
+	m_flWindSpeed: Float,
+	m_currentWindVector: Vector,
+	m_CurrentSwayVector: Vector,
+	m_PrevSwayVector: Vector,
+	m_iInitialWindDir: Int,
+	m_flInitialWindSpeed: Float,
+	m_flVariationTime: Float,
+	m_flSimTime: Float,
+	m_flSwitchTime: Float,
+	m_flAveWindSpeed: Float,
+	m_bGusting: Bool,
+	m_flWindAngleVariation: Float,
+	m_flWindSpeedVariation: Float,
+	m_iEntIndex: Int,
+	m_Stream: Void,
+	m_WindVariationStream: Void,
+	m_WindAveQueue: Void,
+	m_WindVariationQueue: Void,
+}
+```
+
+### Offsets
+
+```
+C_EnvWindShared!0x0008 m_flStartTime
+C_EnvWindShared!0x000c m_iWindSeed
+C_EnvWindShared!0x0010 m_iMinWind
+C_EnvWindShared!0x0014 m_iMaxWind
+C_EnvWindShared!0x0018 m_windRadius
+C_EnvWindShared!0x001c m_iMinGust
+C_EnvWindShared!0x0020 m_iMaxGust
+C_EnvWindShared!0x0024 m_flMinGustDelay
+C_EnvWindShared!0x0028 m_flMaxGustDelay
+C_EnvWindShared!0x002c m_flGustDuration
+C_EnvWindShared!0x0030 m_iGustDirChange
+C_EnvWindShared!0x0034 m_location
+C_EnvWindShared!0x0040 m_iszGustSound
+C_EnvWindShared!0x0044 m_iWindDir
+C_EnvWindShared!0x0048 m_flWindSpeed
+C_EnvWindShared!0x004c m_currentWindVector
+C_EnvWindShared!0x0058 m_CurrentSwayVector
+C_EnvWindShared!0x0064 m_PrevSwayVector
+C_EnvWindShared!0x0070 m_iInitialWindDir
+C_EnvWindShared!0x0074 m_flInitialWindSpeed
+C_EnvWindShared!0x0078 m_flVariationTime
+C_EnvWindShared!0x007c m_flSimTime
+C_EnvWindShared!0x0080 m_flSwitchTime
+C_EnvWindShared!0x0084 m_flAveWindSpeed
+C_EnvWindShared!0x0088 m_bGusting
+C_EnvWindShared!0x008c m_flWindAngleVariation
+C_EnvWindShared!0x0090 m_flWindSpeedVariation
+C_EnvWindShared!0x0094 m_iEntIndex
+C_EnvWindShared!0x0098 m_Stream
+C_EnvWindShared!0x00d0 m_WindVariationStream
+C_EnvWindShared!0x0108 m_WindAveQueue
+C_EnvWindShared!0x0140 m_WindVariationQueue
+```
+</details>
+<details>
+<summary><code>class C_GlobalNonRewinding extends C_BaseEntity</code></summary>
+
+```
+{
+	m_playerObserver: C_ObserverMode,
+}
+```
+
+### Offsets
+
+```
+C_GlobalNonRewinding!0x0a00 m_playerObserver
+```
+</details>
+<details>
+<summary><code>class C_KnockBack</code></summary>
+
+```
+{
+	velocity: Vector,
+	beginTime: Time,
+	endTime: Time,
+}
+```
+
+### Offsets
+
+```
+C_KnockBack!0x0008 velocity
+C_KnockBack!0x0014 beginTime
+C_KnockBack!0x0018 endTime
+```
+</details>
+<details>
+<summary><code>class C_Missile extends C_Projectile</code></summary>
+
+```
+{
+	m_hasPlayedWhizby: Bool,
+	m_whizByStart: Vector,
+	m_whizBySoundName: Char,
+	m_homingSpeed: Float,
+	m_homingSpeedDodgingPlayer: Float,
+	m_launchDir: Vector,
+	m_hSpecificTarget: EHANDLE,
+	m_targetOffset: Vector,
+	m_targetPosition: Vector,
+	m_useTargetPosition: Bool,
+	m_postIgnitionSpeed: Float,
+	m_flGracePeriodEndsAt: Time,
+	m_pathSettingsInitialized: Bool,
+	m_expandContractMissile: Bool,
+	m_spiralMissile: Bool,
+	m_spiralSettings: Void,
+	m_expandContractSettings: MissilePathExpandContractSettings_Client,
+	m_lastThinkTime: Time,
+	m_explosionIgnoreEntity: EHANDLE,
+}
+```
+
+### Offsets
+
+```
+C_Missile!0x26c0 m_hasPlayedWhizby
+C_Missile!0x26c4 m_whizByStart
+C_Missile!0x26d0 m_whizBySoundName
+C_Missile!0x2710 m_homingSpeed
+C_Missile!0x2714 m_homingSpeedDodgingPlayer
+C_Missile!0x2718 m_launchDir
+C_Missile!0x2724 m_hSpecificTarget
+C_Missile!0x2728 m_targetOffset
+C_Missile!0x2734 m_targetPosition
+C_Missile!0x2740 m_useTargetPosition
+C_Missile!0x2744 m_postIgnitionSpeed
+C_Missile!0x2748 m_flGracePeriodEndsAt
+C_Missile!0x274c m_pathSettingsInitialized
+C_Missile!0x274d m_expandContractMissile
+C_Missile!0x274e m_spiralMissile
+C_Missile!0x2750 m_spiralSettings
+C_Missile!0x2774 m_expandContractSettings
+C_Missile!0x27ac m_lastThinkTime
+C_Missile!0x27b0 m_explosionIgnoreEntity
+```
+</details>
+<details>
+<summary><code>class C_NPC_SentryTurret extends C_BaseEntity</code></summary>
+
+```
+{
+	m_killCount: Int,
+	m_titanKillCount: Int,
+}
+```
+
+### Offsets
+
+```
+C_NPC_SentryTurret!0x1944 m_killCount
+C_NPC_SentryTurret!0x1948 m_titanKillCount
+```
+</details>
+<details>
+<summary><code>class C_ParticleSystem extends C_BaseEntity</code></summary>
+
+```
+{
+	m_bClientSide: Bool,
+	m_bActive: Bool,
+	m_warmUpTime: Float,
+	m_pauseAfterWarmup: Bool,
+	m_bInSkybox: Bool,
+	m_killForReplay: Bool,
+	m_killIfOverLimit: Bool,
+}
+```
+
+### Offsets
+
+```
+C_ParticleSystem!0x0a08 m_bClientSide
+C_ParticleSystem!0x0a09 m_bActive
+C_ParticleSystem!0x0a10 m_warmUpTime
+C_ParticleSystem!0x0a14 m_pauseAfterWarmup
+C_ParticleSystem!0x0a15 m_bInSkybox
+C_ParticleSystem!0x0a16 m_killForReplay
+C_ParticleSystem!0x0a17 m_killIfOverLimit
+```
+</details>
+<details>
+<summary><code>class C_Player extends C_BaseCombatCharacter</code></summary>
+
+```
+{
+	m_fFlags: Int,
+	m_vecAbsVelocity: Vector,
+	m_vecBaseVelocity: Vector,
+	m_hGroundEntity: EHANDLE,
+	m_flMaxspeed: Int,
+	m_vecVelocity: Vector,
+	m_flFriction: Float,
+	m_nNextThinkTick: Int,
+	m_SequenceTransitioner: C_SequenceTransitioner,
+	m_bZooming: Bool,
+	m_zoomToggleOn: Bool,
+	m_zoomBaseFrac: Float,
+	m_zoomBaseTime: Time,
+	m_zoomFullStartTime: Time,
+	m_lastUCmdSimulationTicks: Int,
+	m_lastUCmdSimulationRemainderTime: Float,
+	m_Local: C_PlayerLocalData,
+	m_currentFramePlayer.timeBase: Float,
+	m_currentFramePlayer.statusEffectsTimedPlayerCUR: StatusEffectTimedData,
+	m_currentFramePlayer.statusEffectsEndlessPlayerCUR: StatusEffectEndlessData,
+	m_currentFramePlayer.m_flHullHeight: Float,
+	m_currentFramePlayer.m_traversalAnimProgress: Float,
+	m_currentFramePlayer.m_sprintTiltFrac: Float,
+	m_currentFramePlayer.m_ammoPoolCount: Int,
+	m_currentFrameLocalPlayer.m_stepSmoothingOffset: Vector,
+	m_currentFrameLocalPlayer.m_vecPunchBase_Angle: Vector,
+	m_currentFrameLocalPlayer.m_vecPunchBase_AngleVel: Vector,
+	m_currentFrameLocalPlayer.m_vecPunchWeapon_Angle: Vector,
+	m_currentFrameLocalPlayer.m_vecPunchWeapon_AngleVel.x: Float,
+	m_currentFrameLocalPlayer.m_vecPunchWeapon_AngleVel.y: Float,
+	m_currentFrameLocalPlayer.m_vecPunchWeapon_AngleVel.z: Float,
+	m_currentFrameLocalPlayer.m_localGravityRotation: Quaternion,
+	pl: CPlayerState,
+	m_rodeo: Rodeo_PlayerData,
+	m_ammoPoolCapacity: Int,
+	m_gestureSequences: Int,
+	m_gestureStartTimes: Time,
+	m_gestureBlendInDuration: Float,
+	m_gestureBlendOutDuration: Float,
+	m_gestureFadeOutStartTime: Time,
+	m_gestureFadeOutDuration: Float,
+	m_gestureAutoKillBitfield: Int,
+	m_afButtonLast: Int,
+	m_afButtonPressed: Int,
+	m_afButtonReleased: Int,
+	m_nButtons: Int,
+	m_nImpulse: Int,
+	m_flPhysics: Int,
+	m_flStepSoundTime: Float,
+	m_flTimeAllSuitDevicesOff: Float,
+	m_fStickySprintMinTime: Float,
+	m_bPlayedSprintStartEffects: Bool,
+	m_fIsSprinting: Bool,
+	m_fIsWalking: Bool,
+	m_sprintStartedTime: Time,
+	m_sprintStartedFrac: Float,
+	m_sprintEndedTime: Time,
+	m_sprintEndedFrac: Float,
+	m_stickySprintStartTime: Time,
+	m_damageImpulseNoDecelEndTime: Time,
+	m_duckState: Int,
+	m_leanState: Int,
+	m_doingHalfDuck: Bool,
+	m_canStand: Bool,
+	m_StandHullMin: Vector,
+	m_StandHullMax: Vector,
+	m_DuckHullMin: Vector,
+	m_DuckHullMax: Vector,
+	m_upDir: Vector,
+	m_upDirPredicted: Vector,
+	m_lastWallRunStartPos: Vector,
+	m_wallRunCount: Int,
+	m_wallRunWeak: Bool,
+	m_shouldBeOneHanded: Bool,
+	m_oneHandFraction: Float,
+	m_animAimPitch: Float,
+	m_animAimYaw: Float,
+	m_wallRunPushAwayTime: Float,
+	m_wallrunRetryTime: Time,
+	m_wallrunRetryPos: Vector,
+	m_wallrunRetryNormal: Vector,
+	m_wallHangTime: Float,
+	m_traversalState: Int,
+	m_traversalType: Int,
+	m_traversalBegin: Vector,
+	m_traversalMid: Vector,
+	m_traversalEnd: Vector,
+	m_traversalMidFrac: Float,
+	m_traversalForwardDir: Vector,
+	m_traversalRefPos: Vector,
+	m_traversalProgress: Float,
+	m_traversalStartTime: Time,
+	m_traversalHandAppearTime: Time,
+	m_traversalReleaseTime: Time,
+	m_traversalBlendOutStartTime: Time,
+	m_traversalBlendOutStartOffset: Vector,
+	m_traversalYawDelta: Float,
+	m_wallDangleJumpOffTime: Time,
+	m_wallDangleMayHangHere: Bool,
+	m_wallDangleForceFallOff: Bool,
+	m_wallDangleLastPushedForward: Bool,
+	m_wallDangleDisableWeapon: Int,
+	m_wallDangleClimbProgressFloor: Float,
+	m_wallClimbSetUp: Bool,
+	m_wallHanging: Bool,
+	m_grapple: GrappleData,
+	m_grapple: GrappleData,
+	m_grappleActive: Bool,
+	m_grappleActive: Bool,
+	m_grappleNeedWindowCheck: Bool,
+	m_grappleNextWindowHint: EHANDLE,
+	m_slowMoEnabled: Bool,
+	m_sliding: Bool,
+	m_slideLongJumpAllowed: Bool,
+	m_lastSlideTime: Time,
+	m_lastSlideBoost: Float,
+	m_gravityGrenadeStatusEffect: Int,
+	m_bIsStickySprinting: Bool,
+	m_prevMoveYaw: Float,
+	m_sprintTiltVel: Float,
+	m_remoteTurret: EHANDLE,
+	m_hViewModels: EHANDLE,
+	m_viewOffsetEntity: Player_ViewOffsetEntityData,
+	m_activeZipline: EHANDLE,
+	m_lastZipline: EHANDLE,
+	m_useLastZiplineCooldown: Float,
+	m_ziplineValid3pWeaponLayerAnim: Bool,
+	m_ziplineState: Int,
+	m_zipline: PlayerZiplineData_Client,
+	m_ziplineViewOffsetPosition: Vector,
+	m_ziplineViewOffsetVelocity: Vector,
+	m_ziplineGrenadeEntity: EHANDLE,
+	m_ziplineGrenadeBeginStationEntity: EHANDLE,
+	m_ziplineGrenadeBeginStationAttachmentIndex: Int,
+	m_playAnimationType: Int,
+	m_detachGrappleOnPlayAnimationEnd: Bool,
+	m_playAnimationNext: Int,
+	m_boosting: Bool,
+	m_repeatedBoost: Bool,
+	m_boostMeter: Float,
+	m_jetpack: Bool,
+	m_jetpackAfterburner: Bool,
+	m_gliding: Bool,
+	m_glideMeter: Float,
+	m_glideRechargeDelayAccumulator: Float,
+	m_hovering: Bool,
+	m_isPerformingBoostAction: Bool,
+	m_lastJumpHeight: Float,
+	m_slipAirRestrictDirection: Vector,
+	m_slipAirRestrictTime: Time,
+	m_melee: PlayerMelee_PlayerData,
+	m_useCredit: Bool,
+	m_wallRunStartTime: Time,
+	m_wallRunClearTime: Time,
+	m_onSlopeTime: Float,
+	m_lastWallNormal: Vector,
+	m_dodging: Bool,
+	m_lastDodgeTime: Time,
+	m_vecPreviouslyPredictedOrigin: Vector,
+	m_flTimeLastTouchedWall: Float,
+	m_timeJetpackHeightActivateCheckPassed: Time,
+	m_flTimeLastTouchedGround: Float,
+	m_flTimeLastJumped: Float,
+	m_flTimeLastLanded: Float,
+	m_flLastLandFromHeight: Float,
+	m_usePressedTime: Float,
+	m_lastUseTime: Float,
+	m_lastFakeFloorPos: Vector,
+	m_bHasJumpedSinceTouchedGround: Bool,
+	m_bDoMultiJumpPenalty: Bool,
+	m_dodgingInAir: Bool,
+	m_activeViewmodelModifiers: Bool,
+	m_lastMoveInputTime: Time,
+	m_ignoreEntityForMovementUntilNotTouching: EHANDLE,
+	m_gameMovementUtil.m_surfaceFriction: Float,
+	m_lungeTargetEntity: EHANDLE,
+	m_isLungingToPosition: Bool,
+	m_lungeTargetPosition: Vector,
+	m_lungeStartPositionOffset: Vector,
+	m_lungeEndPositionOffset: Vector,
+	m_lungeStartTime: Time,
+	m_lungeEndTime: Time,
+	m_lungeCanFly: Bool,
+	m_lungeLockPitch: Bool,
+	m_lungeStartPitch: Float,
+	m_lungeSmoothTime: Float,
+	m_lungeMaxTime: Float,
+	m_lungeMaxEndSpeed: Float,
+	m_vPrevGroundNormal: Vector,
+	m_pushAwayFromTopAcceleration: Vector,
+	m_controllerModeActive: Bool,
+	m_playerKnockBacks: C_KnockBack,
+}
+```
+
+### Offsets
+
+```
+C_Player!0x008c m_fFlags
+C_Player!0x0120 m_vecAbsVelocity
+C_Player!0x03c4 m_vecBaseVelocity
+C_Player!0x03d0 m_hGroundEntity
+C_Player!0x03d8 m_flMaxspeed
+C_Player!0x0408 m_vecVelocity
+C_Player!0x0420 m_flFriction
+C_Player!0x04f8 m_nNextThinkTick
+C_Player!0x0bc0 m_SequenceTransitioner
+C_Player!0x1781 m_bZooming
+C_Player!0x1782 m_zoomToggleOn
+C_Player!0x1784 m_zoomBaseFrac
+C_Player!0x1788 m_zoomBaseTime
+C_Player!0x178c m_zoomFullStartTime
+C_Player!0x17d4 m_lastUCmdSimulationTicks
+C_Player!0x17d8 m_lastUCmdSimulationRemainderTime
+C_Player!0x1998 m_Local
+C_Player!0x1c78 m_currentFramePlayer.timeBase
+C_Player!0x1c80 m_currentFramePlayer.statusEffectsTimedPlayerCUR
+C_Player!0x1d70 m_currentFramePlayer.statusEffectsEndlessPlayerCUR
+C_Player!0x1e10 m_currentFramePlayer.m_flHullHeight
+C_Player!0x1e14 m_currentFramePlayer.m_traversalAnimProgress
+C_Player!0x1e18 m_currentFramePlayer.m_sprintTiltFrac
+C_Player!0x1e28 m_currentFramePlayer.m_ammoPoolCount
+C_Player!0x1ff0 m_currentFrameLocalPlayer.m_stepSmoothingOffset
+C_Player!0x1ffc m_currentFrameLocalPlayer.m_vecPunchBase_Angle
+C_Player!0x2008 m_currentFrameLocalPlayer.m_vecPunchBase_AngleVel
+C_Player!0x2014 m_currentFrameLocalPlayer.m_vecPunchWeapon_Angle
+C_Player!0x2020 m_currentFrameLocalPlayer.m_vecPunchWeapon_AngleVel.x
+C_Player!0x2024 m_currentFrameLocalPlayer.m_vecPunchWeapon_AngleVel.y
+C_Player!0x2028 m_currentFrameLocalPlayer.m_vecPunchWeapon_AngleVel.z
+C_Player!0x202c m_currentFrameLocalPlayer.m_localGravityRotation
+C_Player!0x2048 pl
+C_Player!0x20c8 m_rodeo
+C_Player!0x21bc m_ammoPoolCapacity
+C_Player!0x251c m_gestureSequences
+C_Player!0x2534 m_gestureStartTimes
+C_Player!0x254c m_gestureBlendInDuration
+C_Player!0x2564 m_gestureBlendOutDuration
+C_Player!0x257c m_gestureFadeOutStartTime
+C_Player!0x2594 m_gestureFadeOutDuration
+C_Player!0x25ac m_gestureAutoKillBitfield
+C_Player!0x25c8 m_afButtonLast
+C_Player!0x25cc m_afButtonPressed
+C_Player!0x25d0 m_afButtonReleased
+C_Player!0x25d4 m_nButtons
+C_Player!0x25d8 m_nImpulse
+C_Player!0x25dc m_flPhysics
+C_Player!0x25e0 m_flStepSoundTime
+C_Player!0x25e4 m_flTimeAllSuitDevicesOff
+C_Player!0x25e8 m_fStickySprintMinTime
+C_Player!0x25ec m_bPlayedSprintStartEffects
+C_Player!0x25f4 m_fIsSprinting
+C_Player!0x25f5 m_fIsWalking
+C_Player!0x25f8 m_sprintStartedTime
+C_Player!0x25fc m_sprintStartedFrac
+C_Player!0x2600 m_sprintEndedTime
+C_Player!0x2604 m_sprintEndedFrac
+C_Player!0x2608 m_stickySprintStartTime
+C_Player!0x260c m_damageImpulseNoDecelEndTime
+C_Player!0x2620 m_duckState
+C_Player!0x2624 m_leanState
+C_Player!0x2628 m_doingHalfDuck
+C_Player!0x2629 m_canStand
+C_Player!0x262c m_StandHullMin
+C_Player!0x2638 m_StandHullMax
+C_Player!0x2644 m_DuckHullMin
+C_Player!0x2650 m_DuckHullMax
+C_Player!0x2660 m_upDir
+C_Player!0x266c m_upDirPredicted
+C_Player!0x2678 m_lastWallRunStartPos
+C_Player!0x2684 m_wallRunCount
+C_Player!0x2688 m_wallRunWeak
+C_Player!0x2689 m_shouldBeOneHanded
+C_Player!0x268c m_oneHandFraction
+C_Player!0x2690 m_animAimPitch
+C_Player!0x2694 m_animAimYaw
+C_Player!0x2698 m_wallRunPushAwayTime
+C_Player!0x26a4 m_wallrunRetryTime
+C_Player!0x26a8 m_wallrunRetryPos
+C_Player!0x26b4 m_wallrunRetryNormal
+C_Player!0x26d8 m_wallHangTime
+C_Player!0x26dc m_traversalState
+C_Player!0x26e0 m_traversalType
+C_Player!0x26e4 m_traversalBegin
+C_Player!0x26f0 m_traversalMid
+C_Player!0x26fc m_traversalEnd
+C_Player!0x2708 m_traversalMidFrac
+C_Player!0x270c m_traversalForwardDir
+C_Player!0x2718 m_traversalRefPos
+C_Player!0x2724 m_traversalProgress
+C_Player!0x2728 m_traversalStartTime
+C_Player!0x272c m_traversalHandAppearTime
+C_Player!0x2730 m_traversalReleaseTime
+C_Player!0x2734 m_traversalBlendOutStartTime
+C_Player!0x2738 m_traversalBlendOutStartOffset
+C_Player!0x2744 m_traversalYawDelta
+C_Player!0x2750 m_wallDangleJumpOffTime
+C_Player!0x2754 m_wallDangleMayHangHere
+C_Player!0x2755 m_wallDangleForceFallOff
+C_Player!0x2756 m_wallDangleLastPushedForward
+C_Player!0x2758 m_wallDangleDisableWeapon
+C_Player!0x275c m_wallDangleClimbProgressFloor
+C_Player!0x2760 m_wallClimbSetUp
+C_Player!0x2761 m_wallHanging
+C_Player!0x2768 m_grapple
+C_Player!0x2768 m_grapple
+C_Player!0x27f8 m_grappleActive
+C_Player!0x27f8 m_grappleActive
+C_Player!0x27f9 m_grappleNeedWindowCheck
+C_Player!0x27fc m_grappleNextWindowHint
+C_Player!0x2808 m_slowMoEnabled
+C_Player!0x2809 m_sliding
+C_Player!0x280a m_slideLongJumpAllowed
+C_Player!0x280c m_lastSlideTime
+C_Player!0x2810 m_lastSlideBoost
+C_Player!0x2814 m_gravityGrenadeStatusEffect
+C_Player!0x2818 m_bIsStickySprinting
+C_Player!0x281c m_prevMoveYaw
+C_Player!0x2820 m_sprintTiltVel
+C_Player!0x283c m_remoteTurret
+C_Player!0x2840 m_hViewModels
+C_Player!0x2850 m_viewOffsetEntity
+C_Player!0x2990 m_activeZipline
+C_Player!0x2994 m_lastZipline
+C_Player!0x2998 m_useLastZiplineCooldown
+C_Player!0x299c m_ziplineValid3pWeaponLayerAnim
+C_Player!0x29a0 m_ziplineState
+C_Player!0x29a8 m_zipline
+C_Player!0x2a18 m_ziplineViewOffsetPosition
+C_Player!0x2a24 m_ziplineViewOffsetVelocity
+C_Player!0x2a30 m_ziplineGrenadeEntity
+C_Player!0x2a34 m_ziplineGrenadeBeginStationEntity
+C_Player!0x2a38 m_ziplineGrenadeBeginStationAttachmentIndex
+C_Player!0x2a44 m_playAnimationType
+C_Player!0x2a48 m_detachGrappleOnPlayAnimationEnd
+C_Player!0x2a4c m_playAnimationNext
+C_Player!0x2a60 m_boosting
+C_Player!0x2a61 m_repeatedBoost
+C_Player!0x2a64 m_boostMeter
+C_Player!0x2a68 m_jetpack
+C_Player!0x2a69 m_jetpackAfterburner
+C_Player!0x2a6a m_gliding
+C_Player!0x2a6c m_glideMeter
+C_Player!0x2a70 m_glideRechargeDelayAccumulator
+C_Player!0x2a74 m_hovering
+C_Player!0x2a75 m_isPerformingBoostAction
+C_Player!0x2a78 m_lastJumpHeight
+C_Player!0x2ac8 m_slipAirRestrictDirection
+C_Player!0x2ad4 m_slipAirRestrictTime
+C_Player!0x2c38 m_melee
+C_Player!0x2c68 m_useCredit
+C_Player!0x2fc4 m_wallRunStartTime
+C_Player!0x2fc8 m_wallRunClearTime
+C_Player!0x2fcc m_onSlopeTime
+C_Player!0x2fd0 m_lastWallNormal
+C_Player!0x2fdc m_dodging
+C_Player!0x2fe0 m_lastDodgeTime
+C_Player!0x2fe4 m_vecPreviouslyPredictedOrigin
+C_Player!0x2ffc m_flTimeLastTouchedWall
+C_Player!0x3000 m_timeJetpackHeightActivateCheckPassed
+C_Player!0x3004 m_flTimeLastTouchedGround
+C_Player!0x3008 m_flTimeLastJumped
+C_Player!0x300c m_flTimeLastLanded
+C_Player!0x3010 m_flLastLandFromHeight
+C_Player!0x3014 m_usePressedTime
+C_Player!0x3018 m_lastUseTime
+C_Player!0x3028 m_lastFakeFloorPos
+C_Player!0x3034 m_bHasJumpedSinceTouchedGround
+C_Player!0x3035 m_bDoMultiJumpPenalty
+C_Player!0x3036 m_dodgingInAir
+C_Player!0x31f4 m_activeViewmodelModifiers
+C_Player!0x3460 m_lastMoveInputTime
+C_Player!0x3464 m_ignoreEntityForMovementUntilNotTouching
+C_Player!0x3590 m_gameMovementUtil.m_surfaceFriction
+C_Player!0x3744 m_lungeTargetEntity
+C_Player!0x3748 m_isLungingToPosition
+C_Player!0x374c m_lungeTargetPosition
+C_Player!0x3758 m_lungeStartPositionOffset
+C_Player!0x3764 m_lungeEndPositionOffset
+C_Player!0x3770 m_lungeStartTime
+C_Player!0x3774 m_lungeEndTime
+C_Player!0x3778 m_lungeCanFly
+C_Player!0x3779 m_lungeLockPitch
+C_Player!0x377c m_lungeStartPitch
+C_Player!0x3780 m_lungeSmoothTime
+C_Player!0x3784 m_lungeMaxTime
+C_Player!0x3788 m_lungeMaxEndSpeed
+C_Player!0x3b0c m_vPrevGroundNormal
+C_Player!0x3cdc m_pushAwayFromTopAcceleration
+C_Player!0x3d04 m_controllerModeActive
+C_Player!0x3d40 m_playerKnockBacks
+```
+</details>
+<details>
+<summary><code>class C_PlayerLocalData</code></summary>
+
+```
+{
+	m_nStepside: Int,
+	m_nOldButtons: Int,
+	m_iHideHUD: Int,
+	m_nDuckTransitionTimeMsecs: Int,
+	m_superJumpsUsed: Int,
+	m_jumpedOffRodeo: Bool,
+	m_jumpPressTime: Time,
+	m_jetpackActivateTime: Time,
+	m_flSuitPower: Float,
+	m_flSuitJumpPower: Float,
+	m_flSuitGrapplePower: Float,
+	m_flFallVelocity: Float,
+	m_flStepSize: Float,
+	m_airSlowMoFrac: Float,
+	predictableFlags: Int,
+	m_bitsActiveDevices: Int,
+	m_forceStance: Int,
+	m_duckToggleOn: Bool,
+	m_bDrawViewmodel: Bool,
+	m_bAllowAutoMovement: Bool,
+	m_airMoveBlockPlanes: Vector,
+	m_airMoveBlockPlaneTime: Time,
+	m_airMoveBlockPlaneCount: Int,
+	m_queuedMeleePressTime: Time,
+	m_queuedGrappleMeleeTime: Time,
+	m_disableMeleeUntilRelease: Bool,
+	m_meleePressTime: Time,
+	m_meleeDisabledCounter: Int,
+	m_meleeInputIndex: Int,
+	m_oneHandedWeaponUsage: Bool,
+	m_prevOneHandedWeaponUsage: Bool,
+	m_titanEmbarkEnabled: Bool,
+	m_titanDisembarkEnabled: Bool,
+	m_playerAnimStationaryGoalFeetYaw: Float,
+	m_playerAnimJumping: Bool,
+	m_playerAnimJumpStartTime: Time,
+	m_playerAnimFirstJumpFrame: Bool,
+	m_playerAnimDodging: Bool,
+	m_playerAnimJumpActivity: Int,
+	m_playerAnimLanding: Bool,
+	m_playerAnimShouldLand: Bool,
+	m_playerAnimLandStartTime: Time,
+	m_playerAnimInAirWalk: Bool,
+	m_playerAnimPrevFrameSequenceMotionYaw: Float,
+	m_playerLocalGravityToWorldTransform: Quaternion,
+	m_playerLocalGravityBlendStartRotation: Quaternion,
+	m_playerLocalGravityBlendEndRotation: Quaternion,
+	m_playerLocalGravityBlendEndDirection: Vector,
+	m_playerLocalGravityBlendStartTime: Time,
+	m_playerLocalGravityBlendEndTime: Time,
+	m_playerLocalGravityBlendStrength: Float,
+	m_playerLocalGravityStrength: Float,
+	m_playerLocalGravityType: Int,
+	m_playerLocalGravityPoint: Vector,
+	m_playerLocalGravityLineStart: Vector,
+	m_playerLocalGravityLineEnd: Vector,
+	m_playerLocalGravityEntity: EHANDLE,
+	m_playerLocalGravityLineStartEntity: EHANDLE,
+	m_playerLocalGravityLineEndEntity: EHANDLE,
+	m_playerFloatLookStartTime: Time,
+	m_playerFloatLookEndTime: Time,
+	m_wallrunLatestFloorHeight: Float,
+	m_groundNormal: Vector,
+	m_continuousUseBlocked: Bool,
+	m_useEnt: EHANDLE,
+}
+```
+
+### Offsets
+
+```
+C_PlayerLocalData!0x0008 m_nStepside
+C_PlayerLocalData!0x000c m_nOldButtons
+C_PlayerLocalData!0x0010 m_iHideHUD
+C_PlayerLocalData!0x0014 m_nDuckTransitionTimeMsecs
+C_PlayerLocalData!0x0018 m_superJumpsUsed
+C_PlayerLocalData!0x001c m_jumpedOffRodeo
+C_PlayerLocalData!0x0020 m_jumpPressTime
+C_PlayerLocalData!0x0024 m_jetpackActivateTime
+C_PlayerLocalData!0x0028 m_flSuitPower
+C_PlayerLocalData!0x002c m_flSuitJumpPower
+C_PlayerLocalData!0x0030 m_flSuitGrapplePower
+C_PlayerLocalData!0x0034 m_flFallVelocity
+C_PlayerLocalData!0x0038 m_flStepSize
+C_PlayerLocalData!0x003c m_airSlowMoFrac
+C_PlayerLocalData!0x0040 predictableFlags
+C_PlayerLocalData!0x0044 m_bitsActiveDevices
+C_PlayerLocalData!0x0048 m_forceStance
+C_PlayerLocalData!0x004c m_duckToggleOn
+C_PlayerLocalData!0x004d m_bDrawViewmodel
+C_PlayerLocalData!0x004e m_bAllowAutoMovement
+C_PlayerLocalData!0x0180 m_airMoveBlockPlanes
+C_PlayerLocalData!0x0198 m_airMoveBlockPlaneTime
+C_PlayerLocalData!0x019c m_airMoveBlockPlaneCount
+C_PlayerLocalData!0x01a0 m_queuedMeleePressTime
+C_PlayerLocalData!0x01a4 m_queuedGrappleMeleeTime
+C_PlayerLocalData!0x01a9 m_disableMeleeUntilRelease
+C_PlayerLocalData!0x01ac m_meleePressTime
+C_PlayerLocalData!0x01b0 m_meleeDisabledCounter
+C_PlayerLocalData!0x01b4 m_meleeInputIndex
+C_PlayerLocalData!0x01bc m_oneHandedWeaponUsage
+C_PlayerLocalData!0x01bd m_prevOneHandedWeaponUsage
+C_PlayerLocalData!0x01f0 m_titanEmbarkEnabled
+C_PlayerLocalData!0x01f1 m_titanDisembarkEnabled
+C_PlayerLocalData!0x01f8 m_playerAnimStationaryGoalFeetYaw
+C_PlayerLocalData!0x01fc m_playerAnimJumping
+C_PlayerLocalData!0x0200 m_playerAnimJumpStartTime
+C_PlayerLocalData!0x0204 m_playerAnimFirstJumpFrame
+C_PlayerLocalData!0x0205 m_playerAnimDodging
+C_PlayerLocalData!0x0208 m_playerAnimJumpActivity
+C_PlayerLocalData!0x020c m_playerAnimLanding
+C_PlayerLocalData!0x020d m_playerAnimShouldLand
+C_PlayerLocalData!0x0210 m_playerAnimLandStartTime
+C_PlayerLocalData!0x0214 m_playerAnimInAirWalk
+C_PlayerLocalData!0x0218 m_playerAnimPrevFrameSequenceMotionYaw
+C_PlayerLocalData!0x021c m_playerLocalGravityToWorldTransform
+C_PlayerLocalData!0x024c m_playerLocalGravityBlendStartRotation
+C_PlayerLocalData!0x025c m_playerLocalGravityBlendEndRotation
+C_PlayerLocalData!0x026c m_playerLocalGravityBlendEndDirection
+C_PlayerLocalData!0x0278 m_playerLocalGravityBlendStartTime
+C_PlayerLocalData!0x027c m_playerLocalGravityBlendEndTime
+C_PlayerLocalData!0x0280 m_playerLocalGravityBlendStrength
+C_PlayerLocalData!0x0284 m_playerLocalGravityStrength
+C_PlayerLocalData!0x0288 m_playerLocalGravityType
+C_PlayerLocalData!0x028c m_playerLocalGravityPoint
+C_PlayerLocalData!0x0298 m_playerLocalGravityLineStart
+C_PlayerLocalData!0x02a4 m_playerLocalGravityLineEnd
+C_PlayerLocalData!0x02b0 m_playerLocalGravityEntity
+C_PlayerLocalData!0x02b4 m_playerLocalGravityLineStartEntity
+C_PlayerLocalData!0x02b8 m_playerLocalGravityLineEndEntity
+C_PlayerLocalData!0x02bc m_playerFloatLookStartTime
+C_PlayerLocalData!0x02c0 m_playerFloatLookEndTime
+C_PlayerLocalData!0x02c4 m_wallrunLatestFloorHeight
+C_PlayerLocalData!0x02c8 m_groundNormal
+C_PlayerLocalData!0x02d4 m_continuousUseBlocked
+C_PlayerLocalData!0x02d8 m_useEnt
+```
+</details>
+<details>
+<summary><code>class C_PlayerResource extends C_BaseEntity</code></summary>
+
+```
+{
+	m_szName: String,
+	m_boolStats: Int,
+	m_killStats: Int,
+	m_scoreStats: Int,
+	m_iPing: Int,
+	m_bConnected: Bool,
+}
+```
+
+### Offsets
+
+```
+C_PlayerResource!0x0a00 m_szName
+C_PlayerResource!0x1410 m_boolStats
+C_PlayerResource!0x1614 m_killStats
+C_PlayerResource!0x222c m_scoreStats
+C_PlayerResource!0x2c40 m_iPing
+C_PlayerResource!0x2e44 m_bConnected
+```
+</details>
+<details>
+<summary><code>class C_PlayerVehicle extends C_BaseAnimating</code></summary>
+
+```
+{
+	m_localOrigin: Vector,
+	m_vehicleDriver: EHANDLE,
+	m_vehicleActivated: Bool,
+	m_vehicleLaunchTime: Float,
+}
+```
+
+### Offsets
+
+```
+C_PlayerVehicle!0x0138 m_localOrigin
+C_PlayerVehicle!0x12c4 m_vehicleDriver
+C_PlayerVehicle!0x12e0 m_vehicleActivated
+C_PlayerVehicle!0x12e8 m_vehicleLaunchTime
+```
+</details>
+<details>
+<summary><code>class C_Projectile extends C_BaseEntity</code></summary>
+
+```
+{
+	m_weaponDataIsSet: Bool,
+	m_forceAdjustToGunBarrelDisabled: Bool,
+	m_weaponClassIndex: Int,
+	m_destructionDistance: Float,
+	m_passThroughDepthTotal: Int,
+	m_modBitfield: Int,
+	m_overrideMods: Int,
+	m_projectileTrailIndex: Int,
+	m_impactEffectTable: Int,
+	m_reducedEffects: Bool,
+	m_projectileCreationTimeServer: Float,
+	m_weaponSource: EHANDLE,
+	m_wpnData: Outer,
+	m_hWeaponFileInfo: Short,
+	m_weaponChargeLevel: Int,
+	m_modVars: Void,
+	m_modVarsAreValid: Bool,
+	m_launchOrigin: Vector,
+	m_scriptCB: Void,
+	m_hasPlayedTrailEffect: Bool,
+	m_projectileLifeTimeEndTick: Tick,
+	m_projectileCreationTime: Float,
+	m_isVortexRefired: Bool,
+	m_damageAliveOnly: Bool,
+	m_usesPositionFunction: Bool,
+	m_lastCollisionNormal: Vector,
+	m_bounceIndex: Int,
+	m_randomInt: Int,
+	m_thrownByAI: Bool,
+	m_perPolyRadius: Float,
+	m_posBeforePhysicsSimulate: Vector,
+	m_hasIgnited: Bool,
+	m_inLagCompensation: Bool,
+	m_passEntities: EHANDLE,
+	m_projectileSpeed: Float,
+	m_wantStartTrailEffect: Bool,
+	m_hasCalledPostDataUpdate: Bool,
+}
+```
+
+### Offsets
+
+```
+C_Projectile!0x12c0 m_weaponDataIsSet
+C_Projectile!0x12c1 m_forceAdjustToGunBarrelDisabled
+C_Projectile!0x12c4 m_weaponClassIndex
+C_Projectile!0x12c8 m_destructionDistance
+C_Projectile!0x12cc m_passThroughDepthTotal
+C_Projectile!0x12d0 m_modBitfield
+C_Projectile!0x12d4 m_overrideMods
+C_Projectile!0x12d8 m_projectileTrailIndex
+C_Projectile!0x12dc m_impactEffectTable
+C_Projectile!0x12e0 m_reducedEffects
+C_Projectile!0x12e4 m_projectileCreationTimeServer
+C_Projectile!0x12e8 m_weaponSource
+C_Projectile!0x12f0 m_wpnData
+C_Projectile!0x12f8 m_hWeaponFileInfo
+C_Projectile!0x12fc m_weaponChargeLevel
+C_Projectile!0x1300 m_modVars
+C_Projectile!0x2398 m_modVarsAreValid
+C_Projectile!0x239c m_launchOrigin
+C_Projectile!0x23a8 m_scriptCB
+C_Projectile!0x23d0 m_hasPlayedTrailEffect
+C_Projectile!0x23d4 m_projectileLifeTimeEndTick
+C_Projectile!0x23d8 m_projectileCreationTime
+C_Projectile!0x23dc m_isVortexRefired
+C_Projectile!0x23dd m_damageAliveOnly
+C_Projectile!0x23de m_usesPositionFunction
+C_Projectile!0x23e0 m_lastCollisionNormal
+C_Projectile!0x23ec m_bounceIndex
+C_Projectile!0x23f0 m_randomInt
+C_Projectile!0x23f4 m_thrownByAI
+C_Projectile!0x23f8 m_perPolyRadius
+C_Projectile!0x2400 m_posBeforePhysicsSimulate
+C_Projectile!0x240c m_hasIgnited
+C_Projectile!0x240d m_inLagCompensation
+C_Projectile!0x2410 m_passEntities
+C_Projectile!0x2478 m_projectileSpeed
+C_Projectile!0x247c m_wantStartTrailEffect
+C_Projectile!0x247e m_hasCalledPostDataUpdate
+```
+</details>
+<details>
+<summary><code>class C_PropDoor</code></summary>
+
+```
+{
+	m_localOrigin: Vector,
+	m_localAngles: Vector,
+	m_nNextThinkTick: Int,
+	m_angle: Float,
+	m_startAngle: Float,
+	m_startAngleVel: Float,
+	m_startMoveTime: Float,
+	m_nextHitSoundTime: Float,
+	m_lastThinkTime: Float,
+	m_interactingPlayer: EHANDLE,
+	m_interactingPlayerWantsOpen: Bool,
+	m_useDebounceEndTime: Time,
+	m_prevAngle: Float,
+}
+```
+
+### Offsets
+
+```
+C_PropDoor!0x0138 m_localOrigin
+C_PropDoor!0x0144 m_localAngles
+C_PropDoor!0x04f8 m_nNextThinkTick
+C_PropDoor!0x1374 m_angle
+C_PropDoor!0x1378 m_startAngle
+C_PropDoor!0x137c m_startAngleVel
+C_PropDoor!0x1380 m_startMoveTime
+C_PropDoor!0x138c m_nextHitSoundTime
+C_PropDoor!0x1390 m_lastThinkTime
+C_PropDoor!0x13d8 m_interactingPlayer
+C_PropDoor!0x13dc m_interactingPlayerWantsOpen
+C_PropDoor!0x13e0 m_useDebounceEndTime
+C_PropDoor!0x13e8 m_prevAngle
+```
+</details>
+<details>
+<summary><code>class C_SequenceTransitioner</code></summary>
+
+```
+{
+	m_sequenceTransitionerLayers: C_SequenceTransitionerLayer,
+	m_sequenceTransitionerLayerCount: Int,
+}
+```
+
+### Offsets
+
+```
+C_SequenceTransitioner!0x0050 m_sequenceTransitionerLayers
+C_SequenceTransitioner!0x01a0 m_sequenceTransitionerLayerCount
+```
+</details>
+<details>
+<summary><code>class C_SequenceTransitionerLayer</code></summary>
+
+```
+{
+	m_sequenceTransitionerLayerActive: Bool,
+	m_sequenceTransitionerLayerStartCycle: Float,
+	m_sequenceTransitionerLayerSequence: Int,
+	m_weight: Float,
+	m_sequenceTransitionerLayerPlaybackRate: Float,
+	m_sequenceTransitionerLayerStartTime: Float,
+	m_sequenceTransitionerLayerFadeOutDuration: Float,
+}
+```
+
+### Offsets
+
+```
+C_SequenceTransitionerLayer!0x0018 m_sequenceTransitionerLayerActive
+C_SequenceTransitionerLayer!0x001c m_sequenceTransitionerLayerStartCycle
+C_SequenceTransitionerLayer!0x0020 m_sequenceTransitionerLayerSequence
+C_SequenceTransitionerLayer!0x0024 m_weight
+C_SequenceTransitionerLayer!0x0028 m_sequenceTransitionerLayerPlaybackRate
+C_SequenceTransitionerLayer!0x002c m_sequenceTransitionerLayerStartTime
+C_SequenceTransitionerLayer!0x0030 m_sequenceTransitionerLayerFadeOutDuration
+```
+</details>
+<details>
+<summary><code>class C_Team extends C_BaseEntity</code></summary>
+
+```
+{
+	m_score: Int,
+	m_score2: Int,
+	m_kills: Int,
+	m_deaths: Int,
+	m_iRoundsWon: Int,
+	m_iTeamTeamNum: Int,
+	m_szTeamname: Char,
+}
+```
+
+### Offsets
+
+```
+C_Team!0x0a00 m_score
+C_Team!0x0a04 m_score2
+C_Team!0x0a08 m_kills
+C_Team!0x0a0c m_deaths
+C_Team!0x0a10 m_iRoundsWon
+C_Team!0x0a14 m_iTeamTeamNum
+C_Team!0x0a38 m_szTeamname
+```
+</details>
+<details>
+<summary><code>class C_VortexSphere extends C_BaseEntity</code></summary>
+
+```
+{
+	m_enabled: Bool,
+	m_radius: Float,
+	m_height: Float,
+	m_bulletFov: Float,
+	m_bulletAbsorbedCount: Int,
+	m_projectileAbsorbedCount: Int,
+	m_ownerWeapon: EHANDLE,
+	m_vortexEffect: EHANDLE,
+	m_vortexLocalAngles: Vector,
+	m_gunAttachment: String,
+	m_listPrev: Outer,
+	m_listNext: Outer,
+}
+```
+
+### Offsets
+
+```
+C_VortexSphere!0x0a00 m_enabled
+C_VortexSphere!0x0a04 m_radius
+C_VortexSphere!0x0a08 m_height
+C_VortexSphere!0x0a0c m_bulletFov
+C_VortexSphere!0x0a10 m_bulletAbsorbedCount
+C_VortexSphere!0x0a14 m_projectileAbsorbedCount
+C_VortexSphere!0x0a18 m_ownerWeapon
+C_VortexSphere!0x0a1c m_vortexEffect
+C_VortexSphere!0x0a20 m_vortexLocalAngles
+C_VortexSphere!0x0a30 m_gunAttachment
+C_VortexSphere!0x0a38 m_listPrev
+C_VortexSphere!0x0a40 m_listNext
+```
+</details>
+<details>
+<summary><code>class C_WallrunCurve extends C_GameplayHint</code></summary>
+
+```
+{
+	width: Int,
+	height: Int,
+}
+```
+
+### Offsets
+
+```
+C_WallrunCurve!0x0a40 width
+C_WallrunCurve!0x0a44 height
+```
+</details>
+<details>
+<summary><code>class C_WindowHint extends C_GameplayHint</code></summary>
+
+```
+{
+	normal: Vector,
+	right: Vector,
+	halfSize: Float,
+	halfSize[0]: Float,
+	halfSize[1]: Float,
+}
+```
+
+### Offsets
+
+```
+C_WindowHint!0x0a40 normal
+C_WindowHint!0x0a4c right
+C_WindowHint!0x0a58 halfSize
+C_WindowHint!0x0a58 halfSize[0]
+C_WindowHint!0x0a5c halfSize[1]
+```
+</details>
+<details>
+<summary><code>class C_Zipline extends C_BaseEntity</code></summary>
+
+```
+{
+	m_ziplinePhysics: C_ZiplinePhysics,
+	m_detachEndOnUse: Bool,
+	m_currentFrameZipline.numZiplinePoints: Int,
+	m_currentFrameZipline.ziplinePositions: Vector,
+	m_currentFrameZipline.ziplinePreviousPositions: Vector,
+	m_currentFrameZipline.ziplineDistances: Float,
+}
+```
+
+### Offsets
+
+```
+C_Zipline!0x0a00 m_ziplinePhysics
+C_Zipline!0x0d54 m_detachEndOnUse
+C_Zipline!0x0e38 m_currentFrameZipline.numZiplinePoints
+C_Zipline!0x0e3c m_currentFrameZipline.ziplinePositions
+C_Zipline!0x0efc m_currentFrameZipline.ziplinePreviousPositions
+C_Zipline!0x0fbc m_currentFrameZipline.ziplineDistances
+```
+</details>
+<details>
+<summary><code>class C_ZiplinePhysics</code></summary>
+
+```
+{
+	m_ziplineType: Int,
+	m_ziplineStart: Vector,
+	m_ziplineEnd: Vector,
+	m_springDistance: Int,
+	m_remainingUnsimulatedTime: Float,
+	m_attachedEntities: C_ZiplinePhysicsAttachedEntity,
+	m_numAttachedEntities: Int,
+	m_ziplineOwner: EHANDLE,
+}
+```
+
+### Offsets
+
+```
+C_ZiplinePhysics!0x000c m_ziplineType
+C_ZiplinePhysics!0x0010 m_ziplineStart
+C_ZiplinePhysics!0x001c m_ziplineEnd
+C_ZiplinePhysics!0x022c m_springDistance
+C_ZiplinePhysics!0x0234 m_remainingUnsimulatedTime
+C_ZiplinePhysics!0x0240 m_attachedEntities
+C_ZiplinePhysics!0x0340 m_numAttachedEntities
+C_ZiplinePhysics!0x0344 m_ziplineOwner
+```
+</details>
+<details>
+<summary><code>class C_ZiplinePhysicsAttachedEntity</code></summary>
+
+```
+{
+	entity: EHANDLE,
+	attachAcceleration: Vector,
+	attachTime: Float,
+}
+```
+
+### Offsets
+
+```
+C_ZiplinePhysicsAttachedEntity!0x0008 entity
+C_ZiplinePhysicsAttachedEntity!0x000c attachAcceleration
+C_ZiplinePhysicsAttachedEntity!0x0018 attachTime
+```
+</details>
+<details>
+<summary><code>class C_ZiplinePhysicsNode</code></summary>
+
+```
+{
+	position: Vector,
+	prevPosition: Vector,
+}
+```
+
+### Offsets
+
+```
+C_ZiplinePhysicsNode!0x0008 position
+C_ZiplinePhysicsNode!0x0014 prevPosition
+```
+</details>
+<details>
+<summary><code>class GrappleData</code></summary>
+
+```
+{
+	m_grappleVel: Vector,
+	m_grapplePoints: Vector,
+	m_grapplePointCount: Int,
+	m_grappleAttached: Bool,
+	m_grapplePulling: Bool,
+	m_grappleSwinging: Bool,
+	m_grappleRetracting: Bool,
+	m_grappleForcedRetracting: Bool,
+	m_grappleGracePeriodFinished: Bool,
+	m_grappleUsedPower: Float,
+	m_grappleActivateTime: Time,
+	m_grapplePullTime: Time,
+	m_grappleAttachTime: Time,
+	m_grappleDetachTime: Time,
+	m_grappleMeleeTarget: EHANDLE,
+	m_grappleAutoAimTarget: EHANDLE,
+	m_grappleSwingDetachLowSpeed: Float,
+	m_grappleSwingHoldTime: Time,
+}
+```
+
+### Offsets
+
+```
+GrappleData!0x0008 m_grappleVel
+GrappleData!0x0014 m_grapplePoints
+GrappleData!0x0044 m_grapplePointCount
+GrappleData!0x0048 m_grappleAttached
+GrappleData!0x0049 m_grapplePulling
+GrappleData!0x004a m_grappleSwinging
+GrappleData!0x004b m_grappleRetracting
+GrappleData!0x004c m_grappleForcedRetracting
+GrappleData!0x004d m_grappleGracePeriodFinished
+GrappleData!0x0050 m_grappleUsedPower
+GrappleData!0x0054 m_grappleActivateTime
+GrappleData!0x0058 m_grapplePullTime
+GrappleData!0x005c m_grappleAttachTime
+GrappleData!0x0060 m_grappleDetachTime
+GrappleData!0x0064 m_grappleMeleeTarget
+GrappleData!0x0068 m_grappleAutoAimTarget
+GrappleData!0x0074 m_grappleSwingDetachLowSpeed
+GrappleData!0x0078 m_grappleSwingHoldTime
+```
+</details>
+<details>
+<summary><code>class PlayerMelee_PlayerData</code></summary>
+
+```
+{
+	attackActive: Bool,
+	attackRecoveryShouldBeQuick: Bool,
+	attackStartTime: Float,
+	attackHitEntity: EHANDLE,
+	attackHitEntityTime: Time,
+	attackLastHitNonWorldEntity: Time,
+	scriptedState: Int,
+	pendingMeleePress: Bool,
+	lungeBoost: Vector,
+}
+```
+
+### Offsets
+
+```
+PlayerMelee_PlayerData!0x0008 attackActive
+PlayerMelee_PlayerData!0x0009 attackRecoveryShouldBeQuick
+PlayerMelee_PlayerData!0x000c attackStartTime
+PlayerMelee_PlayerData!0x0010 attackHitEntity
+PlayerMelee_PlayerData!0x0014 attackHitEntityTime
+PlayerMelee_PlayerData!0x0018 attackLastHitNonWorldEntity
+PlayerMelee_PlayerData!0x001c scriptedState
+PlayerMelee_PlayerData!0x0020 pendingMeleePress
+PlayerMelee_PlayerData!0x0024 lungeBoost
+```
+</details>
+<details>
+<summary><code>class PlayerZiplineData_Client</code></summary>
+
+```
+{
+	m_ziplineReenableWeapons: Bool,
+	m_mountingZiplineDuration: Float,
+	m_mountingZiplineAlpha: Float,
+	m_ziplineStartTime: Time,
+	m_ziplineEndTime: Time,
+	m_mountingZiplineSourcePosition: Vector,
+	m_mountingZiplineSourceVelocity: Vector,
+	m_mountingZiplineTargetPosition: Vector,
+	m_ziplineUsePosition: Vector,
+	m_slidingZiplineAlpha: Float,
+	m_lastMoveDir2D: Vector,
+	m_ziplineReverse: Bool,
+}
+```
+
+### Offsets
+
+```
+PlayerZiplineData_Client!0x0008 m_ziplineReenableWeapons
+PlayerZiplineData_Client!0x000c m_mountingZiplineDuration
+PlayerZiplineData_Client!0x0010 m_mountingZiplineAlpha
+PlayerZiplineData_Client!0x0014 m_ziplineStartTime
+PlayerZiplineData_Client!0x0018 m_ziplineEndTime
+PlayerZiplineData_Client!0x001c m_mountingZiplineSourcePosition
+PlayerZiplineData_Client!0x0028 m_mountingZiplineSourceVelocity
+PlayerZiplineData_Client!0x0034 m_mountingZiplineTargetPosition
+PlayerZiplineData_Client!0x004c m_ziplineUsePosition
+PlayerZiplineData_Client!0x0058 m_slidingZiplineAlpha
+PlayerZiplineData_Client!0x005c m_lastMoveDir2D
+PlayerZiplineData_Client!0x0068 m_ziplineReverse
+```
+</details>
+<details>
+<summary><code>class Player_ViewOffsetEntityData</code></summary>
+
+```
+{
+	viewOffsetEntityHandle: EHANDLE,
+	lerpInDuration: Float,
+	lerpOutDuration: Float,
+	stabilizePlayerEyeAngles: Bool,
+}
+```
+
+### Offsets
+
+```
+Player_ViewOffsetEntityData!0x0008 viewOffsetEntityHandle
+Player_ViewOffsetEntityData!0x000c lerpInDuration
+Player_ViewOffsetEntityData!0x0010 lerpOutDuration
+Player_ViewOffsetEntityData!0x0014 stabilizePlayerEyeAngles
+```
+</details>
+<details>
+<summary><code>class PredictedAnimEventData</code></summary>
+
+```
+{
+	m_predictedAnimEventTimes: Time,
+	m_predictedAnimEventIndices: Int,
+	m_predictedAnimEventCount: Int,
+	m_predictedAnimEventTarget: EHANDLE,
+	m_predictedAnimEventSequence: Int,
+	m_predictedAnimEventModel: Int,
+	m_predictedAnimEventsReadyToFireTime: Time,
+}
+```
+
+### Offsets
+
+```
+PredictedAnimEventData!0x0008 m_predictedAnimEventTimes
+PredictedAnimEventData!0x0028 m_predictedAnimEventIndices
+PredictedAnimEventData!0x0048 m_predictedAnimEventCount
+PredictedAnimEventData!0x004c m_predictedAnimEventTarget
+PredictedAnimEventData!0x0050 m_predictedAnimEventSequence
+PredictedAnimEventData!0x0054 m_predictedAnimEventModel
+PredictedAnimEventData!0x0058 m_predictedAnimEventsReadyToFireTime
+```
+</details>
+<details>
+<summary><code>class Rodeo_PlayerData</code></summary>
+
+```
+{
+	stage: Int,
+	canRodeo: Bool,
+	rodeoCountParity: Int,
+	startTime: Time,
+	endTime: Time,
+	targetEnt: EHANDLE,
+	prevEnt: EHANDLE,
+	prevEntCooldown: Time,
+	pilot1pSequenceIndex: Int,
+	pilot3pSequenceIndex: Int,
+	targetAttachmentIndex: Int,
+}
+```
+
+### Offsets
+
+```
+Rodeo_PlayerData!0x0008 stage
+Rodeo_PlayerData!0x000c canRodeo
+Rodeo_PlayerData!0x0010 rodeoCountParity
+Rodeo_PlayerData!0x0014 startTime
+Rodeo_PlayerData!0x0018 endTime
+Rodeo_PlayerData!0x001c targetEnt
+Rodeo_PlayerData!0x0020 prevEnt
+Rodeo_PlayerData!0x0024 prevEntCooldown
+Rodeo_PlayerData!0x0028 pilot1pSequenceIndex
+Rodeo_PlayerData!0x002c pilot3pSequenceIndex
+Rodeo_PlayerData!0x0030 targetAttachmentIndex
+```
+</details>
+<details>
+<summary><code>class SmartAmmo_WeaponData</code></summary>
+
+```
+{
+	numTargetEntities: Int,
+	targetEntities: EHANDLE,
+	currentFrameSmartAmmoFractions: Float,
+	visiblePoints: Int,
+	lastVisibleTimes: Time,
+	lastFullLockTimes: Time,
+	storedTargets: EHANDLE,
+	lastNewTargetTime: Time,
+	trackerCount: Int,
+	trackerEntities: EHANDLE,
+	trackerLocks: Int,
+	trackerTimes: Time,
+}
+```
+
+### Offsets
+
+```
+SmartAmmo_WeaponData!0x0008 numTargetEntities
+SmartAmmo_WeaponData!0x000c targetEntities
+SmartAmmo_WeaponData!0x002c currentFrameSmartAmmoFractions
+SmartAmmo_WeaponData!0x008c visiblePoints
+SmartAmmo_WeaponData!0x00ac lastVisibleTimes
+SmartAmmo_WeaponData!0x00cc lastFullLockTimes
+SmartAmmo_WeaponData!0x00ec storedTargets
+SmartAmmo_WeaponData!0x010c lastNewTargetTime
+SmartAmmo_WeaponData!0x0110 trackerCount
+SmartAmmo_WeaponData!0x0114 trackerEntities
+SmartAmmo_WeaponData!0x0134 trackerLocks
+SmartAmmo_WeaponData!0x0154 trackerTimes
+```
+</details>
+<details>
+<summary><code>class StatusEffectEndlessData</code></summary>
+
+```
+{
+	seComboVars: Int,
+}
+```
+
+### Offsets
+
+```
+StatusEffectEndlessData!0x0008 seComboVars
+```
+</details>
+<details>
+<summary><code>class StatusEffectTimedData</code></summary>
+
+```
+{
+	seComboVars: Int,
+	seTimeEnd: Float,
+	seEaseOut: Float,
+}
+```
+
+### Offsets
+
+```
+StatusEffectTimedData!0x0008 seComboVars
+StatusEffectTimedData!0x000c seTimeEnd
+StatusEffectTimedData!0x0010 seEaseOut
+```
+</details>
+<details>
+<summary><code>class WeaponInventory_Client</code></summary>
+
+```
+{
+	weapons: EHANDLE,
+	activeWeapons: EHANDLE,
+}
+```
+
+### Offsets
+
+```
+WeaponInventory_Client!0x0008 weapons
+WeaponInventory_Client!0x003c activeWeapons
+```
+</details>
+<details>
+<summary><code>class WeaponPlayerData</code></summary>
+
+```
+{
+	m_moveSpread: Float,
+	m_spreadStartTime: Time,
+	m_spreadStartFracHip: Float,
+	m_spreadStartFracADS: Float,
+	m_kickSpreadHipfire: Float,
+	m_kickSpreadADS: Float,
+	m_kickTime: Time,
+	m_kickScaleBasePitch: Float,
+	m_kickScaleBaseYaw: Float,
+	m_kickPatternScaleBase: Float,
+	m_kickSpringHeatBaseTime: Time,
+	m_kickSpringHeatBaseValue: Float,
+	m_semiAutoTriggerHoldTime: Time,
+	m_semiAutoTriggerDown: Bool,
+	m_pendingTriggerPull: Bool,
+	m_semiAutoNeedsRechamber: Bool,
+	m_pendingReloadAttempt: Bool,
+	m_offhandHybridNormalMode: Bool,
+	m_pendingoffhandHybridToss: Bool,
+	m_fastHolster: Bool,
+	m_didFirstDeploy: Bool,
+	m_shouldCatch: Bool,
+	m_clipModelIsHidden: Bool,
+	m_segmentedReloadEndSeqRequired: Bool,
+	m_segmentedReloadStartedEmpty: Bool,
+	m_segmentedAnimStartedOneHanded: Bool,
+	m_segmentedReloadCanRestartLoop: Bool,
+	m_segmentedReloadLoopFireLocked: Bool,
+	m_realtimeModCmds: Char,
+	m_realtimeModCmdHead: Char,
+	m_realtimeModCmdCount: Char,
+	m_customActivityAttachedModelIndex: Int,
+	m_customActivityAttachedModelAttachmentIndex: Int,
+	m_fireRateLerp_startTime: Time,
+	m_fireRateLerp_startFraction: Float,
+	m_fireRateLerp_stopTime: Time,
+	m_fireRateLerp_stopFraction: Float,
+	m_chargeAnimIndex: Int,
+	m_chargeAnimIndexOld: Int,
+	m_reloadMilestone: Int,
+	m_rechamberMilestone: Int,
+	m_cooldownMilestone: Int,
+	m_fullReloadStartTime: Time,
+	m_scriptTime0: Time,
+	m_scriptFlags0: Int,
+	m_scriptInt0: Int,
+	m_curZoomFOV: Float,
+	m_targetZoomFOV: Float,
+	m_zoomFOVLerpTime: Float,
+	m_zoomFOVLerpEndTime: Time,
+	m_latestDryfireTime: Time,
+	m_requestedAttackEndTime: Time,
+	m_currentAltFireAnimIndex: Int,
+	m_legendaryModelIndex: Int,
+}
+```
+
+### Offsets
+
+```
+WeaponPlayerData!0x0008 m_moveSpread
+WeaponPlayerData!0x000c m_spreadStartTime
+WeaponPlayerData!0x0010 m_spreadStartFracHip
+WeaponPlayerData!0x0014 m_spreadStartFracADS
+WeaponPlayerData!0x0018 m_kickSpreadHipfire
+WeaponPlayerData!0x001c m_kickSpreadADS
+WeaponPlayerData!0x0020 m_kickTime
+WeaponPlayerData!0x0024 m_kickScaleBasePitch
+WeaponPlayerData!0x0028 m_kickScaleBaseYaw
+WeaponPlayerData!0x002c m_kickPatternScaleBase
+WeaponPlayerData!0x0030 m_kickSpringHeatBaseTime
+WeaponPlayerData!0x0034 m_kickSpringHeatBaseValue
+WeaponPlayerData!0x0038 m_semiAutoTriggerHoldTime
+WeaponPlayerData!0x003c m_semiAutoTriggerDown
+WeaponPlayerData!0x003d m_pendingTriggerPull
+WeaponPlayerData!0x003e m_semiAutoNeedsRechamber
+WeaponPlayerData!0x003f m_pendingReloadAttempt
+WeaponPlayerData!0x0040 m_offhandHybridNormalMode
+WeaponPlayerData!0x0041 m_pendingoffhandHybridToss
+WeaponPlayerData!0x0042 m_fastHolster
+WeaponPlayerData!0x0043 m_didFirstDeploy
+WeaponPlayerData!0x0044 m_shouldCatch
+WeaponPlayerData!0x0045 m_clipModelIsHidden
+WeaponPlayerData!0x0046 m_segmentedReloadEndSeqRequired
+WeaponPlayerData!0x0047 m_segmentedReloadStartedEmpty
+WeaponPlayerData!0x0048 m_segmentedAnimStartedOneHanded
+WeaponPlayerData!0x0049 m_segmentedReloadCanRestartLoop
+WeaponPlayerData!0x004a m_segmentedReloadLoopFireLocked
+WeaponPlayerData!0x004b m_realtimeModCmds
+WeaponPlayerData!0x0053 m_realtimeModCmdHead
+WeaponPlayerData!0x0054 m_realtimeModCmdCount
+WeaponPlayerData!0x0058 m_customActivityAttachedModelIndex
+WeaponPlayerData!0x005c m_customActivityAttachedModelAttachmentIndex
+WeaponPlayerData!0x0060 m_fireRateLerp_startTime
+WeaponPlayerData!0x0064 m_fireRateLerp_startFraction
+WeaponPlayerData!0x0068 m_fireRateLerp_stopTime
+WeaponPlayerData!0x006c m_fireRateLerp_stopFraction
+WeaponPlayerData!0x0070 m_chargeAnimIndex
+WeaponPlayerData!0x0074 m_chargeAnimIndexOld
+WeaponPlayerData!0x0094 m_reloadMilestone
+WeaponPlayerData!0x0098 m_rechamberMilestone
+WeaponPlayerData!0x009c m_cooldownMilestone
+WeaponPlayerData!0x00a0 m_fullReloadStartTime
+WeaponPlayerData!0x00a4 m_scriptTime0
+WeaponPlayerData!0x00a8 m_scriptFlags0
+WeaponPlayerData!0x00ac m_scriptInt0
+WeaponPlayerData!0x00b0 m_curZoomFOV
+WeaponPlayerData!0x00b4 m_targetZoomFOV
+WeaponPlayerData!0x00b8 m_zoomFOVLerpTime
+WeaponPlayerData!0x00bc m_zoomFOVLerpEndTime
+WeaponPlayerData!0x00c0 m_latestDryfireTime
+WeaponPlayerData!0x00c4 m_requestedAttackEndTime
+WeaponPlayerData!0x00c8 m_currentAltFireAnimIndex
+WeaponPlayerData!0x00cc m_legendaryModelIndex
+```
+</details>
+
 ## ConVars
 
 <details>

@@ -24,6 +24,7 @@ fn main() {
 mod interfaces;
 mod classes;
 mod recvtables;
+mod datamaps;
 mod misc;
 mod cvars;
 mod globals;
@@ -36,6 +37,7 @@ fn parse(image: &[u8]) {
 	misc::print(bin, dll_name);
 	classes::print(bin, dll_name);
 	recvtables::print(bin, dll_name);
+	datamaps::print(bin, dll_name);
 	cvars::print(bin, dll_name);
 	globals::print(bin, dll_name);
 }
