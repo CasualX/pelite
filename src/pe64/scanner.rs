@@ -36,6 +36,7 @@ use std::{cmp, mem, ptr};
 use std::ops::Range;
 
 use crate::{Pod, pattern as pat};
+use crate::util::AlignTo;
 
 use super::{Align, Rva, Pe, image::*};
 
@@ -254,6 +255,11 @@ impl<'a, 'u, P: Scan<'a>> Exec<'u, P> {
 					match save.get(slot as usize) {
 						Some(&rva) if rva == self.cursor => (),
 						_ => return false,
+					}
+				},
+				pat::Atom::Aligned(align) => {
+					if !self.cursor.aligned_to(1 << align as u32) {
+						return false;
 					}
 				},
 				pat::Atom::ReadU8(slot) => {
