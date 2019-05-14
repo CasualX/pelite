@@ -68,6 +68,7 @@ impl error::Error for ParsePatError {
 			PatError::StackError => "Stack unbalanced",
 			PatError::StackInvalid => "Stack must follow jump",
 			PatError::UnclosedQuote => "String missing end quote",
+			PatError::AlignedOperand => "Aligned operand error",
 			PatError::ReadOperand => "Read operand error",
 			PatError::SubPattern => "Sub pattern error",
 			PatError::SubOverflow => "Sub pattern too large",
@@ -85,6 +86,7 @@ enum PatError {
 	StackError,
 	StackInvalid,
 	UnclosedQuote,
+	AlignedOperand,
 	ReadOperand,
 	SubPattern,
 	SubOverflow,
@@ -133,6 +135,8 @@ pub enum Atom {
 	Pir(u8),
 	/// Compares the cursor with the value in the given save slot and fails if they're not equal.
 	Check(u8),
+	/// Checks if the cursor is aligned to `(1 << value)`.
+	Aligned(u8),
 	/// Reads and sign-extends the byte under the cursor, writes to the given slot and advances the cursor by 1.
 	ReadI8(u8),
 	/// Reads and zero-extends the byte under the cursor, writes to the given slot and advances the cursor by 1.
@@ -228,6 +232,13 @@ pub type Pattern = Vec<Atom>;
 /// The sub pattern enclosed within the curly braces is matched at the destination after following the jump.
 /// After the pattern successfully matched, the cursor returns to before the jump was followed.
 /// The bytes defining the jump are skipped and matching continues again from here.
+///
+/// ```text
+/// e8 $ @4
+/// ```
+///
+/// Checks that the cursor is aligned at this point in the scan.
+/// The align value is `(1 << arg)`, in this example the cursor is checked to be aligned to 16.
 ///
 /// ```text
 /// e8 i1 a0 u4
@@ -466,6 +477,22 @@ fn parse_helper(pat: &mut &str, result: &mut Vec<Atom>) -> Result<(), PatError> 
 				}
 				result.push(Atom::Skip(1));
 			},
+			b'@' => {
+				let op = iter.next().cloned().ok_or(PatError::AlignedOperand)?;
+				let atom = if op >= b'0' && op <= b'9' {
+					Atom::Aligned(op - b'0')
+				}
+				else if op >= b'A' && op <= b'Z' {
+					Atom::Aligned(10 + (op - b'A'))
+				}
+				else if op >= b'a' && op <= b'z' {
+					Atom::Aligned(10 + (op - b'a'))
+				}
+				else {
+					return Err(PatError::AlignedOperand);
+				};
+				result.push(atom);
+			},
 			b'i' => {
 				let atom = match iter.next().cloned() {
 					Some(b'1') => Atom::ReadI8(save),
@@ -579,6 +606,10 @@ mod tests {
 			Save(0), Byte(0xb8), Skip(16), Byte(0x50), Skip(13), Many(29), Byte(0xff)
 		]));
 
+		assert_eq!(parse("e9 $ @4"), Ok(vec![
+			Save(0), Byte(0xe9), Jump4, Aligned(4)
+		]));
+
 		assert_eq!(parse("83 c0 2a ( 6a ? | 68 ? ? ? ? ) e8"), Ok(vec![
 			Save(0), Byte(0x83), Byte(0xc0), Byte(0x2a),
 			Case(3), Byte(0x6a), Skip(1), Break(3),
@@ -595,7 +626,8 @@ mod tests {
 		assert_eq!(Err(ParsePatError { kind: UnpairedHexDigit, position: 2 }), parse("123"));
 		assert_eq!(Err(ParsePatError { kind: UnpairedHexDigit, position: 3 }), parse("EE BZ"));
 		assert_eq!(Err(ParsePatError { kind: UnpairedHexDigit, position: 0 }), parse("A?"));
-		assert_eq!(Err(ParsePatError { kind: UnknownChar, position: 0 }), parse("@"));
+		assert_eq!(Err(ParsePatError { kind: UnknownChar, position: 0 }), parse("é"));
+		assert_eq!(Err(ParsePatError { kind: AlignedOperand, position: 0 }), parse("@"));
 		assert_eq!(Err(ParsePatError { kind: UnclosedQuote, position: 0 }), parse("\"unbalanced"));
 		assert_eq!(Err(ParsePatError { kind: ManyInvalid, position: 0 }), parse("[-2]"));
 		assert_eq!(Err(ParsePatError { kind: ManyInvalid, position: 0 }), parse("[-]"));
@@ -604,6 +636,5 @@ mod tests {
 		assert_eq!(Err(ParsePatError { kind: ManyRange, position: 0 }), parse("[0-0]"));
 		assert_eq!(Err(ParsePatError { kind: ManyRange, position: 0 }), parse("[20-1]"));
 		assert_eq!(Err(ParsePatError { kind: ManyOverflow, position: 0 }), parse("[20000-40000]"));
-
 	}
 }
