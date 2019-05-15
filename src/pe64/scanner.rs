@@ -67,51 +67,34 @@ impl<'a, P: Pe<'a>> Scanner<P> {
 	/// Returns `false` if no match is found or multiple matches are found to prevent subtle bugs where a pattern goes stale by not being unique any more.
 	///
 	/// Use `matches(pat, range).next(save)` if just the first match is desired.
-	pub fn finds(self, pat: &[pat::Atom], range: Range<Rva>, save: &mut [Rva]) -> bool {
+	pub fn finds(&self, pat: &[pat::Atom], range: Range<Rva>, save: &mut [Rva]) -> bool {
 		let mut matches = self.matches(pat, range);
-		if matches.next(save) {
-			// Disallow more than one match as it indicates the signature isn't unique enough
-			let cursor = matches.cursor;
-			!matches.next(save) && matches.scanner.exec(cursor, pat, save)
+		if !matches.next(save) {
+			return false;
 		}
-		else {
-			false
-		}
+		// Disallow more than one match as it indicates the signature isn't unique enough
+		// HOTFIX: It is important to not disturb the caller's save array for this check
+		// It is hard to recover the actual cursor used to match the pattern:
+		// * Store the actual cursor used in the matches object
+		// * Assume the first element in the save array is the cursor
+		// * Pass empty save array as a dummy
+		!matches.next(&mut save[..0])
 	}
 	/// Finds the unique code match for the pattern.
 	///
 	/// Restricts the range to the code section. See [`finds`](#finds) for more information.
-	pub fn finds_code(self, pat: &[pat::Atom], save: &mut [Rva]) -> bool {
-		let optional_header = self.pe.optional_header();
-		let range = optional_header.BaseOfCode..u32::wrapping_add(optional_header.BaseOfCode, optional_header.SizeOfCode);
-		self.finds(pat, range, save)
-	}
-	/// Finds the unique match for the pattern in the specified section.
-	///
-	/// Restricts the range to the specified section. See [`finds`](#finds) for more information.
-	pub fn finds_section(self, pat: &[pat::Atom], section: &IMAGE_SECTION_HEADER, save: &mut [Rva]) -> bool {
-		let range = section.VirtualAddress..section.VirtualAddress + section.VirtualSize;
-		self.finds(pat, range, save)
+	pub fn finds_code(&self, pat: &[pat::Atom], save: &mut [Rva]) -> bool {
+		self.finds(pat, self.pe.headers().code_range(), save)
 	}
 	/// Returns an iterator over the matches of a pattern within the given range.
-	pub fn matches<'u>(self, pat: &'u [pat::Atom], range: Range<Rva>) -> Matches<'u, P> {
-		let cursor = range.start;
-		Matches { scanner: self, pat, range, cursor, hits: 0 }
+	pub fn matches<'pat>(&self, pat: &'pat [pat::Atom], range: Range<Rva>) -> Matches<'pat, P> {
+		Matches { scanner: *self, pat, range, hits: 0 }
 	}
 	/// Returns an iterator over the code matches of a pattern.
 	///
 	/// Restricts the range to the code section. See [`matches`](#matches) for more information.
-	pub fn matches_code<'u>(self, pat: &'u [pat::Atom]) -> Matches<'u, P> {
-		let optional_header = self.pe.optional_header();
-		let range = optional_header.BaseOfCode..u32::wrapping_add(optional_header.BaseOfCode, optional_header.SizeOfCode);
-		self.matches(pat, range)
-	}
-	/// Returns an iterator over the matches of a pattern in the specified section.
-	///
-	/// Restricts the range to the specified section. See [`matches`](#matches) for more information.
-	pub fn matches_section<'u>(self, pat: &'u [pat::Atom], section: &IMAGE_SECTION_HEADER) -> Matches<'u, P> {
-		let range = section.VirtualAddress..section.VirtualAddress + section.VirtualSize;
-		self.matches(pat, range)
+	pub fn matches_code<'pat>(&self, pat: &'pat [pat::Atom]) -> Matches<'pat, P> {
+		self.matches(pat, self.pe.headers().code_range())
 	}
 	/// Pattern interpreter, returns if the pattern matches the binary image at the given rva.
 	///
@@ -120,7 +103,7 @@ impl<'a, P: Pe<'a>> Scanner<P> {
 	///
 	/// In case of mismatch, ie. returns false, the save array is still overwritten with temporary data and should be considered trashed.
 	/// Keep a copy, invoke with a fresh save array or reexecute the pattern at the saved cursor to get around this.
-	pub fn exec(self, cursor: Rva, pat: &[pat::Atom], save: &mut [Rva]) -> bool {
+	pub fn exec(&self, cursor: Rva, pat: &[pat::Atom], save: &mut [Rva]) -> bool {
 		Exec { pe: self.pe, pat, cursor, pc: 0 }.exec(save)
 	}
 }
@@ -160,13 +143,13 @@ impl<'a> Scan<'a> for &'a [u8] {
 }
 
 #[derive(Clone)]
-struct Exec<'u, P> {
+struct Exec<'pat, P> {
 	pe: P,
-	pat: &'u [pat::Atom],
+	pat: &'pat [pat::Atom],
 	cursor: Rva,
 	pc: usize,
 }
-impl<'a, 'u, P: Scan<'a>> Exec<'u, P> {
+impl<'a, 'pat, P: Scan<'a>> Exec<'pat, P> {
 	fn exec(&mut self, save: &mut [Rva]) -> bool {
 		const SKIP_VA: u32 = mem::size_of::<Va>() as u32;
 		let mut mask = 0xff;
@@ -252,9 +235,10 @@ impl<'a, 'u, P: Scan<'a>> Exec<'u, P> {
 					}
 				},
 				pat::Atom::Check(slot) => {
-					match save.get(slot as usize) {
-						Some(&rva) if rva == self.cursor => (),
-						_ => return false,
+					if let Some(&rva) = save.get(slot as usize) {
+						if rva != self.cursor {
+							return false;
+						}
 					}
 				},
 				pat::Atom::Aligned(align) => {
@@ -395,30 +379,25 @@ impl<'a, 'u, P: Scan<'a>> Exec<'u, P> {
 ///
 /// Created with the method [`matches`](struct.Scanner.html#method.matches).
 #[derive(Clone)]
-pub struct Matches<'u, P> {
+pub struct Matches<'pat, P> {
 	scanner: Scanner<P>,
-	pat: &'u [pat::Atom],
+	pat: &'pat [pat::Atom],
 	range: Range<Rva>,
-	cursor: Rva,
 	hits: u32,
 }
 
-impl<'a, 'u, P: Pe<'a>> Matches<'u, P> {
+impl<'a, 'pat, P: Pe<'a>> Matches<'pat, P> {
 	/// Gets the scanner instance.
 	pub fn scanner(&self) -> Scanner<P> {
 		self.scanner
 	}
 	/// Gets the pattern.
-	pub fn pattern(&self) -> &'u [pat::Atom] {
+	pub fn pattern(&self) -> &'pat [pat::Atom] {
 		self.pat
 	}
-	/// Gets the remaining RVA range to scan.
+	/// Gets the remaining range to scan.
 	pub fn range(&self) -> Range<Rva> {
 		self.range.clone()
-	}
-	/// The RVA where the last match was found.
-	pub fn cursor(&self) -> Rva {
-		self.cursor
 	}
 	/// Performance counter.
 	///
@@ -429,8 +408,8 @@ impl<'a, 'u, P: Pe<'a>> Matches<'u, P> {
 	// Extract the prefix of bytes for optimizing the search
 	fn setup<'b>(&self, qsbuf: &'b mut [u8; QS_BUF_LEN]) -> &'b [u8] {
 		let mut qslen = 0usize;
-		for unit in self.pat {
-			match *unit {
+		for &atom in self.pat {
+			match atom {
 				pat::Atom::Byte(byte) => {
 					if qslen >= QS_BUF_LEN {
 						break;
@@ -438,15 +417,18 @@ impl<'a, 'u, P: Pe<'a>> Matches<'u, P> {
 					qsbuf[qslen] = byte;
 					qslen += 1;
 				},
+				// These atoms do not interfere with optimizing search
 				pat::Atom::Save(_) => {},
+				pat::Atom::Aligned(_) => {},
+				pat::Atom::Nop => {},
+				// All other atoms interfere with optimizing search
 				_ => break,
 			}
 		}
 		&qsbuf[..qslen]
 	}
 	// Select the search strategy and execute the query.
-	fn strategy(&mut self, cursor: u32, qsbuf: &[u8], slice: &'a [u8], save: &mut [Rva]) -> bool {
-		self.cursor = cursor;
+	fn strategy(&mut self, qsbuf: &[u8], slice: &'a [u8], save: &mut [Rva]) -> bool {
 		// FIXME! Profile the performance!
 		if qsbuf.len() == 0 {
 			self.strategy0(qsbuf, slice, save)
@@ -459,44 +441,36 @@ impl<'a, 'u, P: Pe<'a>> Matches<'u, P> {
 		}
 	}
 	// Strategy:
-	//  Cannot optimize the search, just brute-force it.
-	//  Note that this is (relatively) slow...
+	//  Cannot optimize the search, just (slowly) brute-force it.
 	fn strategy0(&mut self, _qsbuf: &[u8], slice: &'a [u8], save: &mut [Rva]) -> bool {
-		let mut it = self.cursor;
-		let end = it + slice.len() as Rva;
-		while it < end {
+		let end = self.range.start + slice.len() as u32;
+		while self.range.start < end {
+			let cursor = self.range.start;
 			self.hits += 1;
-			if self.scanner.exec(it, self.pat, save) {
-				self.cursor = it;
-				self.range.start = it + 1;
+			self.range.start += 1;
+			if self.scanner.exec(cursor, self.pat, save) {
 				return true;
 			}
-			it += 1;
 		}
-		self.cursor = it;
-		self.range.start = it;
-		false
+		return false;
 	}
 	// Strategy:
 	//  Prefix is too small for full blown quicksearch.
 	//  Memchr for the first byte and only eval pattern on potential matches.
 	fn strategy1(&mut self, qsbuf: &[u8], slice: &'a [u8], save: &mut [Rva]) -> bool {
 		let byte = qsbuf[0];
-		let it = self.cursor;
 		// Find all places with matching byte
 		// TODO! Replace with actual memchr
-		for cursor in slice.iter().enumerate().filter_map(|(i, &a)| if a == byte { Some(it + i as Rva) } else { None }) {
+		for i in slice.iter().enumerate().filter_map(|(i, &a)| if a == byte { Some(i as u32) } else { None }) {
 			self.hits += 1;
+			let cursor = self.range.start + i;
 			if self.scanner.exec(cursor, self.pat, save) {
-				self.cursor = cursor;
 				self.range.start = cursor + 1;
 				return true;
 			}
 		}
-		let end = it + slice.len() as Rva;
-		self.cursor = end;
-		self.range.start = end;
-		false
+		self.range.start += slice.len() as u32;
+		return false;
 	}
 	// Strategy:
 	//  Full blown quicksearch for the prefix.
@@ -508,18 +482,16 @@ impl<'a, 'u, P: Pe<'a>> Matches<'u, P> {
 		for i in 0..qslen - 1 {
 			jumps[qsbuf[i] as usize] = qslen as u8 - i as u8 - 1;
 		}
-		let jumps = jumps;
 		// Quicksearch baby!
 		let mut i = 0;
 		while i + qslen <= slice.len() {
 			let tbuf = &slice[i..i + qslen];
 			let last = tbuf[qslen - 1];
-			let jump = jumps[last as usize] as Rva;
+			let jump = jumps[last as usize] as u32;
 			if qsbuf[qslen - 1] == last && tbuf == qsbuf {
 				self.hits += 1;
-				let cursor = self.cursor + i as Rva;
+				let cursor = self.range.start + i as u32;
 				if self.scanner.exec(cursor, self.pat, save) {
-					self.cursor = cursor;
 					self.range.start = cursor + jump;
 					return true;
 				}
@@ -530,10 +502,8 @@ impl<'a, 'u, P: Pe<'a>> Matches<'u, P> {
 		// It assumes there can't be another match in the last `qsbuf.len()` bytes
 		// Even though there clearly can since the scan range can be artificially limited
 		// For now let's ignore this edge case...
-		let end = self.cursor + slice.len() as Rva;
-		self.cursor = end;
-		self.range.start = end;
-		false
+		self.range.start += slice.len() as u32;
+		return false;
 	}
 	/// Finds the next match with the given save array.
 	pub fn next(&mut self, save: &mut [Rva]) -> bool {
@@ -541,55 +511,34 @@ impl<'a, 'u, P: Pe<'a>> Matches<'u, P> {
 		let mut qsbuf = [0u8; QS_BUF_LEN];
 		let qsbuf = self.setup(&mut qsbuf);
 
-		// Take care of unmapped PE files.
-		// Their sections aren't continous and need to be scanned separately.
-		finder_section(self.scanner.pe, self.range.clone(), |it, slice| self.strategy(it, qsbuf, slice, save))
-	}
-}
-
-/// Map over continuous pe memory.
-///
-/// For PeFiles this means providing each section separately.
-/// For PeViews this means just provide the whole image at once.
-fn for_each_section<'a, P, F>(pe: P, mut f: F) -> bool where
-	P: Pe<'a>,
-	F: FnMut(Rva, &'a [u8]) -> bool
-{
-	let image = pe.image();
-	match pe.align() {
-		Align::File => {
-			for section in pe.section_headers() {
-				let start = section.PointerToRawData as usize;
-				let end = section.PointerToRawData as usize + section.SizeOfRawData as usize;
-				if let Some(slice) = image.get(start..end) {
-					if f(section.VirtualAddress, slice) {
-						return true;
+		let image = self.scanner.pe.image();
+		match self.scanner.pe.align() {
+			Align::File => {
+				for section in self.scanner.pe.section_headers() {
+					// If section overlaps with the scanning range
+					if section.VirtualAddress < self.range.end && u32::wrapping_add(section.VirtualAddress, section.VirtualSize) > self.range.start {
+						// Get the image slice for this section for further processing, skipping corrupt section headers
+						if let Some(slice) = image.get(section.PointerToRawData as usize..u32::wrapping_add(section.PointerToRawData, section.SizeOfRawData) as usize) {
+							if self.next_section(qsbuf, section.VirtualAddress, slice, save) {
+								return true;
+							}
+						}
 					}
 				}
-			}
-			return false;
-		},
-		Align::Section => f(0, image),
-	}
-}
-/// Map over continuous pe memory in the given range.
-fn finder_section<'a, P, F>(pe: P, range: Range<Rva>, mut f: F) -> bool where
-	P: Pe<'a>,
-	F: FnMut(Rva, &'a [u8]) -> bool
-{
-	for_each_section(pe, |rva, bytes| {
-		if range.start < rva + bytes.len() as Rva && range.end >= rva {
-			let start = cmp::max(range.start, rva);
-			let end = cmp::min(range.end, rva + bytes.len() as Rva);
-			if let Some(slice) = bytes.get((start - rva) as usize..(end - rva) as usize) {
-				let result = f(start, slice);
-				if result {
-					return result;
-				}
-			}
+				false
+			},
+			Align::Section => {
+				self.next_section(qsbuf, 0, image, save)
+			},
 		}
-		return false;
-	})
+	}
+	fn next_section(&mut self, qsbuf: &[u8], base: Rva, slice: &'a [u8], save: &mut [Rva]) -> bool {
+		// Clamp the slice to the expected input scan range
+		let start = cmp::max(base, self.range.start) - base;
+		let end = cmp::min(base + slice.len() as u32, self.range.end) - base;
+
+		self.strategy(qsbuf, &slice[start as usize..end as usize], save)
+	}
 }
 
 //----------------------------------------------------------------

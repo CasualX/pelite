@@ -235,7 +235,7 @@ fn scanner() {
 	let file_map = FileMap::open(FILE_NAME).unwrap();
 	let file = PeFile::from_bytes(&file_map).unwrap();
 
-	let pat = pelite::pattern::parse("4C8B41'? 4C2BC2 ????????? 0FB60A 420FB60402 2BC8 75% 8B15${'} 85 C9").unwrap();
+	let pat = pelite::pattern!("4C8B41'? 4C2BC2 ????????? 0FB60A 420FB60402 2BC8 75% 8B15${'} 85 C9");
 	assert!(file.scanner().finds_code(&pat, &mut save));
 	assert_eq!(save[0], 0x12F0);
 	assert_eq!(save[1], 0x12F3);
@@ -243,7 +243,7 @@ fn scanner() {
 
 	// Test the edge cases of quicksearch
 	// See scanner code for an unfortunate edge case...
-	let pat = pelite::pattern::parse("0F1002 488BC1 0F1101 F20F104A10 F20F114910 C3").unwrap();
+	let pat = pelite::pattern!("0F1002 488BC1 0F1101 F20F104A10 F20F114910 C3");
 	assert!(file.scanner().finds(&pat, 0x148F..0x14A3, &mut save));
 	assert_eq!(save[0], 0x1490);
 

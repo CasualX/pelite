@@ -156,7 +156,7 @@ pub fn concommands<'a>(bin: PeFile<'a>) -> Vec<ConCommand<'a>> {
 	// The ConCommand constructors are already evaluated by the compiler and the global data structures already filled in
 	// Perform a fairly slow signature scan for these instances...
 	let data_section = bin.section_headers().iter().find(|sect| &sect.Name == b".data\0\0\0").unwrap();
-	let mut matches = bin.scanner().matches_section(pat!("*{*{}*{}*{}*} 00000000 00000000 *{'} (*{'}|00000000) u4 *{'}"), data_section);
+	let mut matches = bin.scanner().matches(pat!("@2 *{*{}*{}*{}*} 00000000 00000000 *{'} (*{'}|00000000) u4 *{'}"), data_section.virtual_range());
 	while matches.next(&mut save) {
 		// Filter false-positives...
 		if let Ok(cmd) = concommand(bin, &save) {

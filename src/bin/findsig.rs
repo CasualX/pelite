@@ -37,7 +37,7 @@ fn main() {
 		match pelite::PeFile::from_bytes(&file_map) {
 			Ok(file) => {
 				process_patterns(args, &mut |pattern, save| {
-					let mut matches = file.scanner().matches_code(pattern);
+					let mut matches = file.scanner().matches(pattern, file.headers().image_range());
 					while matches.next(save) {
 						print_match(file_name, save);
 					}
