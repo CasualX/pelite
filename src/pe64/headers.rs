@@ -2,7 +2,8 @@
 PE headers.
  */
 
-use std::{slice};
+use std::slice;
+use std::ops::Range;
 
 use super::Pe;
 use super::image::*;
@@ -49,6 +50,16 @@ impl<'a, P: Pe<'a>> Headers<P> {
 		check_sum += image.len() as u64;
 
 		check_sum as u32
+	}
+	/// Gets the code range from the optional header.
+	pub fn code_range(&self) -> Range<Rva> {
+		let optional_header = self.pe.optional_header();
+		optional_header.BaseOfCode..u32::wrapping_add(optional_header.BaseOfCode, optional_header.SizeOfCode)
+	}
+	/// Gets the full image range excluding the PE headers.
+	pub fn image_range(&self) -> Range<Rva> {
+		let optional_header = self.pe.optional_header();
+		optional_header.SizeOfHeaders..optional_header.SizeOfImage
 	}
 }
 

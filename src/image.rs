@@ -364,6 +364,15 @@ pub struct IMAGE_SECTION_HEADER {
 	pub Characteristics: u32,
 }
 
+impl IMAGE_SECTION_HEADER {
+	pub fn virtual_range(&self) -> std::ops::Range<u32> {
+		self.VirtualAddress..u32::wrapping_add(self.VirtualAddress, self.VirtualSize)
+	}
+	pub fn raw_range(&self) -> std::ops::Range<u32> {
+		self.PointerToRawData..u32::wrapping_add(self.PointerToRawData, self.SizeOfRawData)
+	}
+}
+
 //----------------------------------------------------------------
 
 #[derive(Copy, Clone, Pod, Debug)]
