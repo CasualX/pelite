@@ -1,5 +1,6 @@
 use crate::{Error, Result};
 use crate::security::Security;
+use crate::util::AlignTo;
 
 use super::image::*;
 use super::{Align, Pe};
@@ -14,7 +15,7 @@ pub(crate) fn try_from<'a, P: Pe<'a>>(pe: P) -> Result<Security<'a>> {
 	if datadir.VirtualAddress == 0 {
 		return Err(Error::Null);
 	}
-	if datadir.VirtualAddress % 8 != 0 || datadir.Size % 8 != 0 {
+	if !datadir.VirtualAddress.aligned_to(8) || !datadir.Size.aligned_to(8) {
 		return Err(Error::Misaligned);
 	}
 	if datadir.Size == 0 {

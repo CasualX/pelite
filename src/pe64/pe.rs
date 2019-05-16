@@ -738,7 +738,7 @@ pub(crate) fn validate_headers(image: &[u8]) -> Result<u32> {
 		return Err(Error::Bounds);
 	}
 	// Check basic alignment of the image bytes
-	if image.as_ptr() as usize % 4 != 0 {
+	if !image.as_ptr().aligned_to(4) {
 		return Err(Error::Misaligned);
 	}
 	let dos = unsafe { &*(image.as_ptr() as *const IMAGE_DOS_HEADER) };
@@ -747,7 +747,7 @@ pub(crate) fn validate_headers(image: &[u8]) -> Result<u32> {
 		return Err(Error::BadMagic);
 	}
 	// "According to the PE specification, the PE header must be aligned on a 8 byte boundary, but the Windows loader requires only a 4 byte alignment."
-	if dos.e_lfanew % 4 != 0 {
+	if !dos.e_lfanew.aligned_to(4) {
 		return Err(Error::Misaligned);
 	}
 	// Prevent overflow the easy way...
