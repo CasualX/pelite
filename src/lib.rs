@@ -44,7 +44,9 @@ pub mod pe32;
 pub(crate) mod wrap;
 pub use self::wrap::*;
 
+#[cfg(feature = "unstable")]
 mod pir;
+#[cfg(feature = "unstable")]
 pub use self::pir::Pir;
 
 mod pod;
