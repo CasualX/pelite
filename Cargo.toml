@@ -23,6 +23,7 @@ members = [".", "./macros"]
 default = ["mmap"]
 unsafe_alignment = []
 mmap = ["libc", "winapi"]
+unstable = []
 
 [badges]
 appveyor = { repository = "CasualX/pelite", branch = "master", service = "github" }
