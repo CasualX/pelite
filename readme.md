@@ -41,13 +41,13 @@ In your Cargo.toml, put
 
 ```
 [dependencies]
-pelite = "0.7"
+pelite = "0.8"
 ```
 
 Examples
 --------
 
-Try this example out: `cargo run --example readme`.
+Try this example: `cargo run --example readme`.
 
 ```rust
 use pelite::FileMap;
