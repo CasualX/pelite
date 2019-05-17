@@ -810,6 +810,7 @@ pub(crate) fn validate_headers(image: &[u8]) -> Result<u32> {
 /// # Safety
 ///
 /// No checks of any kind are performed, before calling this function ensure the byte slice points to a valid PE image by running it through the `PeFile::from_bytes` constructor.
+#[cfg(feature = "unstable")]
 pub unsafe fn headers_mut(image: &mut [u8]) -> (&mut IMAGE_DOS_HEADER, &mut IMAGE_NT_HEADERS, &mut [IMAGE_DATA_DIRECTORY], &mut [IMAGE_SECTION_HEADER]) {
 	let dos = &mut *(image.as_mut_ptr() as *mut IMAGE_DOS_HEADER);
 	let nt = &mut *(image.as_mut_ptr().offset(dos.e_lfanew as isize) as *mut IMAGE_NT_HEADERS);

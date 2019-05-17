@@ -139,7 +139,10 @@ pub mod scanner;
 pub mod msvc;
 
 pub use self::image::{Va, Rva};
-pub use self::pe::{Align, Pe, PeObject, headers_mut};
+pub use self::pe::{Align, Pe, PeObject};
 pub use self::view::{PeView};
 pub use self::file::{PeFile};
 pub use self::ptr::Ptr;
+
+#[cfg(feature = "unstable")]
+pub use self::pe::headers_mut;
