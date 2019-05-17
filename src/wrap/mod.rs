@@ -31,6 +31,18 @@ impl<T32, T64> Wrap<Result<T32>, Result<T64>> {
 		}
 	}
 }
+impl<T32, T64> Wrap<Option<T32>, Option<T64>> {
+	/// Transposes a wrap of options in an option of a wrap.
+	#[inline]
+	pub fn transpose(self) -> Option<Wrap<T32, T64>> {
+		match self {
+			Wrap::T32(Some(some)) => Some(Wrap::T32(some)),
+			Wrap::T32(None) => None,
+			Wrap::T64(Some(some)) => Some(Wrap::T64(some)),
+			Wrap::T64(None) => None,
+		}
+	}
+}
 impl<T> Wrap<T, T> {
 	/// Unwraps the wrapped value of equal types.
 	#[inline]
