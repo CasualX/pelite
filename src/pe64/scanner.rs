@@ -194,6 +194,13 @@ impl<'a, 'pat, P: Scan<'a>> Exec<'pat, P> {
 					ext_range = 0;
 					self.cursor = cursor;
 				},
+				pat::Atom::Back(back) => {
+					let rewind = ext_range + back as u32;
+					let rewind = if rewind == 0 { SKIP_VA } else { rewind };
+					let cursor = self.cursor.wrapping_sub(rewind);
+					ext_range = 0;
+					self.cursor = cursor;
+				},
 				pat::Atom::Rangext(ext) => {
 					ext_range = ext as u32 * 256;
 				},

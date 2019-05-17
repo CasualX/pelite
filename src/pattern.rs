@@ -111,7 +111,9 @@ pub enum Atom {
 	Fuzzy(u8),
 	/// Skips a fixed number of bytes.
 	Skip(u8),
-	/// Extends the push, skip and many range by `argument * 256`.
+	/// Rewinds the cursor a fixed number of bytes.
+	Back(u8),
+	/// Extends the push, skip, back and many range by `argument * 256`.
 	Rangext(u8),
 	/// Looks for the next pattern at most a certain number of bytes ahead.
 	Many(u8),
