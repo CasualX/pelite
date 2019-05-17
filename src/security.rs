@@ -25,6 +25,7 @@ fn example(file: PeFile<'_>) -> pelite::Result<()> {
 
 use std::{fmt, mem};
 use crate::image::WIN_CERTIFICATE;
+use crate::util::AlignTo;
 
 /// Security Directory.
 ///
@@ -34,7 +35,7 @@ pub struct Security<'a> {
 }
 impl<'a> Security<'a> {
 	pub(crate) unsafe fn new(image: &'a [u8]) -> Security<'a> {
-		debug_assert_eq!(image.as_ptr() as usize % mem::align_of::<WIN_CERTIFICATE>(), 0);
+		debug_assert!(image.as_ptr().aligned_to(mem::align_of::<WIN_CERTIFICATE>()));
 		debug_assert!(image.len() >= 8);
 		Security { image }
 	}

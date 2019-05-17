@@ -44,14 +44,14 @@ pub struct BaseRelocs<'a> {
 }
 impl<'a> BaseRelocs<'a> {
 	pub(crate) unsafe fn new(relocs: &'a [u8]) -> BaseRelocs<'a> {
-		debug_assert_eq!(relocs.as_ptr() as usize % 4, 0); // $1
+		debug_assert!(relocs.as_ptr().aligned_to(4), 0); // $1
 		BaseRelocs { relocs }
 	}
 	/// Parse a base relocations directory.
 	///
 	/// Requires relocs argument pointer to have an alignment of 4 or an error is returned.
 	pub fn parse(relocs: &'a [u8]) -> Result<BaseRelocs<'a>> {
-		if !cfg!(feature = "unsafe_alignment") && relocs.as_ptr() as usize % 4 != 0 { // $1
+		if !(cfg!(feature = "unsafe_alignment") || relocs.as_ptr().aligned_to(4)) { // $1
 			return Err(Error::Misaligned);
 		}
 		Ok(BaseRelocs { relocs })

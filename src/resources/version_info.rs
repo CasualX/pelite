@@ -9,7 +9,7 @@ use std::collections::HashMap;
 
 use crate::image::VS_FIXEDFILEINFO;
 use crate::{Error, Result};
-use crate::util::wstrn;
+use crate::util::{AlignTo, wstrn};
 
 //----------------------------------------------------------------
 
@@ -22,7 +22,7 @@ impl<'a> VersionInfo<'a> {
 	pub fn try_from(bytes: &'a [u8]) -> Result<VersionInfo<'a>> {
 		// Alignment of 4 bytes is assumed everywhere,
 		// unsafe code in this module relies on this
-		if bytes.as_ptr() as usize % 4 != 0 {
+		if !bytes.as_ptr().aligned_to(4) {
 			return Err(Error::Misaligned);
 		}
 		Ok(VersionInfo { bytes })
@@ -324,7 +324,7 @@ fn parse_tlv<'a>(state: &mut Parser<'a>) -> Result<TLV<'a>> {
 	// This is tricky, the struct contains a fixed and variable length parts
 	// However the length field includes the size of the fixed part
 	// Further complicating things, if the variable length part is absent the total length is set to zero (?!)
-	let length = dwordalign(cmp::max(4, words[0] as usize / 2));
+	let length = cmp::max(4, words[0] as usize / 2).align_to(2);
 	// Oh god why, interpret the value_length
 	let value_length = match state.vlt {
 		ValueLengthType::Zero if words[1] == 0 => 0,
@@ -348,22 +348,17 @@ fn parse_tlv<'a>(state: &mut Parser<'a>) -> Result<TLV<'a>> {
 	}
 
 	// Padding for the Value
-	words = &words[dwordalign(key.len() + 4)..];
+	words = &words[key.len().align_to(2) + 4..];
 
 	// Split the remaining words between the Value and Children
 	if value_length > words.len() {
 		return Err(Error::Invalid);
 	}
 	let value = &words[..value_length];
-	let children = &words[dwordalign(value.len())..];
+	let children = &words[value.len().align_to(2)..];
 
 	Ok(TLV { key, value, children })
 }
-
-// Aligns the input to a multiple of two
-// Note that the input is already aligned to words
-#[inline(always)]
-fn dwordalign(n: usize) -> usize { (n + 1) & !1 }
 
 #[test]
 fn test_parse_tlv_oob()
