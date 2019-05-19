@@ -540,8 +540,18 @@ impl<'a, 'pat, P: Pe<'a>> Matches<'pat, P> {
 		}
 	}
 	fn next_section(&mut self, qsbuf: &[u8], base: Rva, slice: &'a [u8], save: &mut [Rva]) -> bool {
+		// Let's talk about this code for a sec, for it has a problem.
+		// This method gets called for every section and is supposed to find matches in that section.
+		// A match is found, true is returned, all is well?
+		// Unfortunately, no, the caller is going to want to find the next match and calls us again.
+		// We have to continue from where we left off but that is currently not really possible.
+		// It is implicitly assumed that all sections are sorted by their virtual addresses.
+		// If this is not the case the code below will incorrectly clamp self.range.start and the section with lower virtual address will be skipped.
+		// Plz fix.
+
 		// Clamp the slice to the expected input scan range
-		let start = cmp::max(base, self.range.start) - base;
+		self.range.start = cmp::max(base, self.range.start);
+		let start = self.range.start - base;
 		let end = cmp::min(base + slice.len() as u32, self.range.end) - base;
 
 		self.strategy(qsbuf, &slice[start as usize..end as usize], save)
