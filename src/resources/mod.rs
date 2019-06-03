@@ -16,6 +16,7 @@ pub use self::find::FindError;
 mod art;
 
 pub mod version_info;
+pub mod group;
 
 //----------------------------------------------------------------
 
@@ -201,6 +202,8 @@ pub enum Name<'a> {
 impl<'a> Name<'a> {
 	pub const MANIFEST: Name<'a> = Name::Id(crate::image::RT_MANIFEST as u32);
 	pub const VERSION: Name<'a> = Name::Id(crate::image::RT_VERSION as u32);
+	pub const GROUP_ICON: Name<'a> = Name::Id(crate::image::RT_GROUP_ICON as u32);
+	pub const GROUP_CURSOR: Name<'a> = Name::Id(crate::image::RT_GROUP_CURSOR as u32);
 }
 impl<'a> From<u16> for Name<'a> {
 	fn from(id: u16) -> Name<'a> {
@@ -210,6 +213,14 @@ impl<'a> From<u16> for Name<'a> {
 impl<'a> From<&'a WideStr> for Name<'a> {
 	fn from(ws: &'a WideStr) -> Name<'a> {
 		Name::Str(ws)
+	}
+}
+impl fmt::Display for Name<'_> {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		match self {
+			Name::Id(id) => write!(f, "#{}", id),
+			Name::Str(s) => s.fmt(f),
+		}
 	}
 }
 
