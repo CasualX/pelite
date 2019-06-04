@@ -66,33 +66,62 @@ impl error::Error for FindError {
 //------------------------------------------------
 
 impl<'a> Resources<'a> {
-	/// Finds a resource by its type, name and language.
-	pub fn find_resource<'n>(&self, ty: impl Into<Name<'n>>, name: impl Into<Name<'n>>, lang: impl Into<Name<'n>>) -> Result<&'a [u8], FindError> {
-		self.find_resource_internal(ty.into(), name.into(), lang.into())
+	/// Finds a resource by its type and name.
+	pub fn find_resource(&self, ty: Name<'_>, name: Name<'_>) -> Result<&'a [u8], FindError> {
+		Ok(self.root()?.get_dir(ty)?.get_dir(name)?.first_data()?.bytes()?)
+	}
+	/// Finds the language directory for a resource with given type and name.
+	pub fn find_resources(&self, ty: Name<'_>, name: Name<'_>) -> Result<Directory<'a>, FindError> {
+		self.root()?.get_dir(ty)?.get_dir(name)
+	}
+	/// Finds the resource with specified type, name and language.
+	pub fn find_resource_ex(&self, ty: Name<'_>, name: Name<'_>, lang: Name<'_>) -> Result<&'a [u8], FindError> {
+		Ok(self.root()?.get_dir(ty)?.get_dir(name)?.get_data(lang)?.bytes()?)
 	}
 	/// Gets the Version Information.
 	pub fn version_info(&self) -> Result<super::version_info::VersionInfo<'a>, FindError> {
-		self.find_resource(crate::image::RT_VERSION, 1, 1033)
-			.and_then(|bytes| super::version_info::VersionInfo::try_from(bytes).map_err(FindError::Pe))
+		let bytes = self.find_resource(Name::VERSION, 1.into())?;
+		let version_info = super::version_info::VersionInfo::try_from(bytes)?;
+		Ok(version_info)
 	}
 	/// Gets the Application Manifest.
 	pub fn manifest(&self) -> Result<&'a str, FindError> {
-		self.find_resource(crate::image::RT_MANIFEST, 2, 1033)
-			.and_then(|bytes| str::from_utf8(bytes).map_err(|_| FindError::Pe(crate::Error::Encoding)))
+		// Assumption: This appears to be always the same...
+		let bytes = self.find_resource_ex(Name::MANIFEST, 2.into(), 1033.into())?;
+		let manifest = str::from_utf8(bytes).map_err(|_| FindError::Pe(crate::Error::Encoding))?;
+		Ok(manifest)
 	}
-	#[inline(never)]
-	fn find_resource_internal(&self, ty: Name<'_>, name: Name<'_>, lang: Name<'_>) -> Result<&'a [u8], FindError> {
-		let path = [ty, name, lang];
-		path.iter().try_fold(Entry::Directory(self.root()?), |e, &name| Ok(
-			e.dir()
-				.ok_or(FindError::UnDataEntry)?
-				.entries()
-				.find(|child| child.name() == Ok(name))
-				.ok_or(FindError::NotFound)?
-				.entry()?
-		)).and_then(|e| Ok(e.data().ok_or(FindError::UnDirectory)?.bytes()?))
+}
+impl<'a> Directory<'a> {
+	/// Looks up the entry by name.
+	pub fn get(&self, name: Name<'_>) -> Result<Entry<'a>, FindError> {
+		self.entries().find(|de| de.name() == Ok(name)).ok_or(FindError::NotFound)?.entry().map_err(FindError::Pe)
 	}
+	/// Looks up the data entry by name.
+	pub fn get_data(&self, name: Name<'_>) -> Result<DataEntry<'a>, FindError> {
+		self.entries().find(|de| de.name() == Ok(name)).ok_or(FindError::NotFound)?.entry().map_err(FindError::Pe)?.data().ok_or(FindError::UnDirectory)
+	}
+	/// Looks up the directory by name.
+	pub fn get_dir(&self, name: Name<'_>) -> Result<Directory<'a>, FindError> {
+		self.entries().find(|de| de.name() == Ok(name)).ok_or(FindError::NotFound)?.entry().map_err(FindError::Pe)?.dir().ok_or(FindError::UnDataEntry)
+	}
+	/// Gets the first entry.
+	pub fn first(&self) -> Result<Entry<'a>, FindError> {
+		self.entries().next().ok_or(FindError::NotFound)?.entry().map_err(FindError::Pe)
+	}
+	/// Gets the first data entry.
+	pub fn first_data(&self) -> Result<DataEntry<'a>, FindError> {
+		self.entries().next().ok_or(FindError::NotFound)?.entry().map_err(FindError::Pe)?.data().ok_or(FindError::UnDirectory)
+	}
+	/// Gets the first directory.
+	pub fn first_dir(&self) -> Result<Directory<'a>, FindError> {
+		self.entries().next().ok_or(FindError::NotFound)?.entry().map_err(FindError::Pe)?.dir().ok_or(FindError::UnDataEntry)
+	}
+}
 
+//------------------------------------------------
+
+impl<'a> Resources<'a> {
 	/// Finds a file or directory by its path.
 	pub fn find<P: AsRef<Path> + ?Sized>(&self, path: &P) -> Result<Entry<'a>, FindError> {
 		self.find_internal(path.as_ref())
@@ -123,7 +152,6 @@ impl<'a> Resources<'a> {
 		}
 	}
 }
-
 impl<'a> Directory<'a> {
 	/// Finds a file or directory by its path.
 	pub fn find<P: AsRef<Path> + ?Sized>(&self, path: &P) -> Result<Entry<'a>, FindError> {

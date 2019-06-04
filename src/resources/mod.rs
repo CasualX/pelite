@@ -157,7 +157,7 @@ impl<'a> Directory<'a> {
 		// Validated by the constructor
 		let slice = unsafe {
 			// Id entries come last in the array
-			let p = (self.image as *const IMAGE_RESOURCE_DIRECTORY).offset(1 + self.image.NumberOfNamedEntries as isize) as *const IMAGE_RESOURCE_DIRECTORY_ENTRY;
+			let p = ((self.image as *const IMAGE_RESOURCE_DIRECTORY).offset(1) as *const IMAGE_RESOURCE_DIRECTORY_ENTRY).offset(self.image.NumberOfNamedEntries as isize);
 			let len = self.image.NumberOfIdEntries as usize;
 			slice::from_raw_parts(p, len)
 		};
@@ -196,6 +196,11 @@ pub enum Name<'a> {
 	Id(u32),
 	/// UTF-16 named resource.
 	Str(&'a WideStr),
+}
+/// Predefined resource name constants.
+impl<'a> Name<'a> {
+	pub const MANIFEST: Name<'a> = Name::Id(crate::image::RT_MANIFEST as u32);
+	pub const VERSION: Name<'a> = Name::Id(crate::image::RT_VERSION as u32);
 }
 impl<'a> From<u16> for Name<'a> {
 	fn from(id: u16) -> Name<'a> {
