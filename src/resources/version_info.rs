@@ -4,12 +4,52 @@ Version Information.
 See [Microsoft's documentation](https://docs.microsoft.com/en-us/windows/desktop/menurc/version-information) for more information.
  */
 
-use std::{char, cmp, mem, slice};
+use std::{char, cmp, fmt, mem, slice};
 use std::collections::HashMap;
 
 use crate::image::VS_FIXEDFILEINFO;
-use crate::{Error, Result};
+use crate::{Error, Result, _Pod as Pod};
 use crate::util::{AlignTo, wstrn};
+
+//----------------------------------------------------------------
+
+/// Language and charset pair.
+///
+/// References [langID](https://docs.microsoft.com/en-us/windows/desktop/menurc/versioninfo-resource#langID) and [charsetID](https://docs.microsoft.com/en-us/windows/desktop/menurc/versioninfo-resource#charsetID).
+#[derive(Copy, Clone, Debug, Pod, Eq, PartialEq)]
+#[repr(C)]
+pub struct Language {
+	pub lang_id: u16,
+	pub charset_id: u16,
+}
+impl Language {
+	/// Parse language hex strings.
+	pub fn parse(lang: &[u16]) -> std::result::Result<Language, &[u16]> {
+		if lang.len() != 8 {
+			return Err(lang);
+		}
+		fn digit(word: u16) -> u16 {
+			let num = word.wrapping_sub('0' as u16);
+			let upper = word.wrapping_sub('A' as u16).wrapping_add(10);
+			let lower = word.wrapping_sub('a' as u16).wrapping_add(10);
+			if word >= 'a' as u16 { lower }
+			else if word >= 'A' as u16 { upper }
+			else { num }
+		}
+		let mut digits = [0u16; 8];
+		for i in 0..8 {
+			digits[i] = digit(lang[i]);
+		}
+		let lang_id = (digits[0] << 12) | (digits[1] << 8) | (digits[2] << 4) | digits[3];
+		let charset_id = (digits[4] << 12) | (digits[5] << 8) | (digits[6] << 4) | digits[7];
+		Ok(Language { lang_id, charset_id })
+	}
+}
+impl fmt::Display for Language {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		write!(f, "{:04X}{:04X}", self.lang_id, self.charset_id)
+	}
+}
 
 //----------------------------------------------------------------
 
