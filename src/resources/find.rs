@@ -91,6 +91,34 @@ impl<'a> Resources<'a> {
 		let manifest = str::from_utf8(bytes).map_err(|_| FindError::Pe(crate::Error::Encoding))?;
 		Ok(manifest)
 	}
+	/// Gets the group icons.
+	pub fn group_icons(&self) -> impl 'a + Iterator<Item = Result<(Name<'a>, super::group::GroupIcon<'a>), FindError>> + Clone {
+		let resources = *self;
+		let group_icons = self.root().map_err(FindError::Pe)
+			.and_then(|root| root.get_dir(Name::GROUP_ICON));
+
+		group_icons.into_iter().flat_map(move |group_icons| group_icons.entries().map(move |de| {
+			let name = de.name()?;
+			// A lot of assumptions being made here...
+			let bytes = de.entry()?.dir().ok_or(FindError::UnDataEntry)?.first_data()?.bytes()?;
+			let group_icon = super::group::GroupIcon::new(resources, bytes)?;
+			Ok((name, group_icon))
+		}))
+	}
+	/// Gets the group cursors.
+	pub fn group_cursors(&self) -> impl 'a + Iterator<Item = Result<(Name<'a>, super::group::GroupCursor<'a>), FindError>> + Clone {
+		let resources = *self;
+		let group_cursors = self.root().map_err(FindError::Pe)
+			.and_then(|root| root.get_dir(Name::GROUP_CURSOR));
+
+		group_cursors.into_iter().flat_map(move |group_cursors| group_cursors.entries().map(move |de| {
+			let name = de.name()?;
+			// A lot of assumptions being made here...
+			let bytes = de.entry()?.dir().ok_or(FindError::UnDataEntry)?.first_data()?.bytes()?;
+			let group_cursor = super::group::GroupCursor::new(resources, bytes)?;
+			Ok((name, group_cursor))
+		}))
+	}
 }
 impl<'a> Directory<'a> {
 	/// Looks up the entry by name.
