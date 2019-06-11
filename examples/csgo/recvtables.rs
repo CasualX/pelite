@@ -160,7 +160,7 @@ fn recvtable<'a>(client: PeFile<'a>, save: &[Rva; 8]) -> pelite::Result<Class<'a
 
 	let mut props = Vec::new();
 	for recv_prop in &recv_props {
-		if let Ok(name) = client.deref_c_str(recv_prop.pVarName).and_then(|s| s.to_str().map_err(|_| pelite::Error::Encoding)) {
+		if let Ok(name) = client.deref_c_str(recv_prop.pVarName).and_then(|s| Ok(s.to_str()?)) {
 			let ty = *PROP_TYPES.get(recv_prop.RecvType as usize).unwrap_or(&"?");
 			let offset = recv_prop.Offset;
 			if name != "baseclass" {

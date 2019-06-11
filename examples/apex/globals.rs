@@ -52,6 +52,6 @@ fn global(bin: PeFile<'_>, offset: usize) -> pelite::Result<Global<'_>> {
 	if type_info.spare != Ptr::null() {
 		return Err(pelite::Error::Null);
 	}
-	let ty_name = bin.derva_c_str(col.type_descriptor + 16)?.to_str().map_err(|_| pelite::Error::Encoding)?;
+	let ty_name = bin.derva_c_str(col.type_descriptor + 16)?.to_str()?;
 	Ok(Global { address, ty_name })
 }

@@ -39,6 +39,11 @@ impl From<crate::Error> for FindError {
 		FindError::Pe(err)
 	}
 }
+impl From<str::Utf8Error> for FindError {
+	fn from(_err: str::Utf8Error) -> FindError {
+		FindError::Pe(crate::Error::Encoding)
+	}
+}
 impl fmt::Display for FindError {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		error::Error::description(self).fmt(f)
@@ -88,7 +93,7 @@ impl<'a> Resources<'a> {
 	pub fn manifest(&self) -> Result<&'a str, FindError> {
 		// Assumption: This appears to be always the same...
 		let bytes = self.find_resource_ex(Name::MANIFEST, 2.into(), 1033.into())?;
-		let manifest = str::from_utf8(bytes).map_err(|_| FindError::Pe(crate::Error::Encoding))?;
+		let manifest = str::from_utf8(bytes)?;
 		Ok(manifest)
 	}
 	/// Gets the group icons.
@@ -127,11 +132,11 @@ impl<'a> Directory<'a> {
 	}
 	/// Looks up the data entry by name.
 	pub fn get_data(&self, name: Name<'_>) -> Result<DataEntry<'a>, FindError> {
-		self.entries().find(|de| de.name() == Ok(name)).ok_or(FindError::NotFound)?.entry().map_err(FindError::Pe)?.data().ok_or(FindError::UnDirectory)
+		self.entries().find(|de| de.name() == Ok(name)).ok_or(FindError::NotFound)?.entry()?.data().ok_or(FindError::UnDirectory)
 	}
 	/// Looks up the directory by name.
 	pub fn get_dir(&self, name: Name<'_>) -> Result<Directory<'a>, FindError> {
-		self.entries().find(|de| de.name() == Ok(name)).ok_or(FindError::NotFound)?.entry().map_err(FindError::Pe)?.dir().ok_or(FindError::UnDataEntry)
+		self.entries().find(|de| de.name() == Ok(name)).ok_or(FindError::NotFound)?.entry()?.dir().ok_or(FindError::UnDataEntry)
 	}
 	/// Gets the first entry.
 	pub fn first(&self) -> Result<Entry<'a>, FindError> {
@@ -139,11 +144,11 @@ impl<'a> Directory<'a> {
 	}
 	/// Gets the first data entry.
 	pub fn first_data(&self) -> Result<DataEntry<'a>, FindError> {
-		self.entries().next().ok_or(FindError::NotFound)?.entry().map_err(FindError::Pe)?.data().ok_or(FindError::UnDirectory)
+		self.entries().next().ok_or(FindError::NotFound)?.entry()?.data().ok_or(FindError::UnDirectory)
 	}
 	/// Gets the first directory.
 	pub fn first_dir(&self) -> Result<Directory<'a>, FindError> {
-		self.entries().next().ok_or(FindError::NotFound)?.entry().map_err(FindError::Pe)?.dir().ok_or(FindError::UnDataEntry)
+		self.entries().next().ok_or(FindError::NotFound)?.entry()?.dir().ok_or(FindError::UnDataEntry)
 	}
 }
 
