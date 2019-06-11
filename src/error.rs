@@ -2,7 +2,7 @@
 Errors and Results.
 */
 
-use std::{error, fmt, result};
+use std::{error, fmt, result, str};
 
 /// Errors while parsing the PE binary.
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Hash)]
@@ -58,6 +58,12 @@ pub enum Error {
 	///
 	/// Request cannot be fulfilled because it would alias with an existing borrow.
 	Aliasing,
+}
+
+impl From<str::Utf8Error> for Error {
+	fn from(_err: str::Utf8Error) -> Error {
+		Error::Encoding
+	}
 }
 
 impl Error {
