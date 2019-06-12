@@ -5,6 +5,7 @@ use pelite::pattern as pat;
 pub fn print(bin: PeFile<'_>, dll_name: &str) {
 	println!("## Miscellaneous\n\n```");
 	header(bin);
+	game_version(bin);
 	entity_list(bin, dll_name);
 	local_entity_handle(bin, dll_name);
 	global_vars(bin, dll_name);
@@ -72,5 +73,17 @@ fn player_resource(bin: PeFile<'_>, dll_name: &str) {
 	}
 	else {
 		eprintln!("unable to find PlayerResource!");
+	}
+}
+
+fn game_version(bin: PeFile<'_>) {
+	// References "gameversion.txt"
+	let mut save = [0; 4];
+	if bin.scanner().finds_code(pat!("488D1D${'} C605????01 488BD3 488D0D$\"gameversion.txt\"00"), &mut save) {
+		let game_version = bin.derva_c_str(save[1]).unwrap().to_str().unwrap();
+		println!("GameVersion = {:?}", game_version);
+	}
+	else {
+		eprintln!("unable to find GameVersion!");
 	}
 }

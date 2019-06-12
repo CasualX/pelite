@@ -26,7 +26,9 @@ mod classes;
 mod recvtables;
 mod datamaps;
 mod misc;
-mod cvars;
+mod kbuttons;
+mod convars;
+mod concommands;
 mod globals;
 
 fn parse(image: &[u8]) {
@@ -35,9 +37,11 @@ fn parse(image: &[u8]) {
 	let dll_name = bin.exports().unwrap().dll_name().unwrap().to_str().unwrap();
 	interfaces::print(bin, dll_name);
 	misc::print(bin, dll_name);
+	kbuttons::print(bin, dll_name);
 	classes::print(bin, dll_name);
 	recvtables::print(bin, dll_name);
 	datamaps::print(bin, dll_name);
-	cvars::print(bin, dll_name);
+	convars::print(bin, dll_name);
+	concommands::print(bin, dll_name);
 	globals::print(bin, dll_name);
 }
