@@ -5,7 +5,6 @@ use pelite::pattern as pat;
 
 pub fn print(bin: PeFile, dll_name: &str) {
 	let cvars = convars(bin);
-	let cmds = concommands(bin);
 
 	println!("## ConVars\n");
 	for cvar in &cvars {
@@ -27,22 +26,6 @@ pub fn print(bin: PeFile, dll_name: &str) {
 	println!("\n### Addresses\n\n```");
 	for cvar in &cvars {
 		println!("{}!{:#010x} ConVar {}", dll_name, cvar.address, cvar.name);
-	}
-	println!("```\n");
-
-	println!("## ConCommands\n");
-	for cmd in &cmds {
-		println!("<details>");
-		println!("<summary><code>{}</code></summary>\n", cmd.name);
-		if let Some(desc) = cmd.desc {
-			println!("{}\n", desc);
-		}
-		println!("flags: `{:#x}`  ", cmd.flags);
-		println!("</details>");
-	}
-	println!("\n### Addresses\n\n```");
-	for cmd in &cmds {
-		println!("{}!{:#010x} ConCommand {}", dll_name, cmd.address, cmd.name);
 	}
 	println!("```\n");
 }
@@ -120,55 +103,4 @@ pub fn convars(bin: PeFile<'_>) -> Vec<ConVar<'_>> {
 	// Sort to make a nice diff
 	convars.sort_by_key(|convar| convar.name);
 	convars
-}
-
-#[allow(non_snake_case)]
-#[derive(Pod, Debug)]
-#[repr(C)]
-pub struct RawConCommand {
-	// ConCommandBase
-	pub vtable: u64,
-	pub pNext: Ptr<RawConVar>,
-	pub bRegistered: u8,
-	pub pszName: Ptr<CStr>,
-	pub pszHelpString: Ptr<CStr>,
-	pub pszDataType: Ptr<CStr>, // Some string indicating the data type and min/max range in string form
-	unk_u64: u64,
-	pub fFlags: u32,
-	// ConCommand
-	unk_fn: u64,
-	unk_zero: u64,
-	pub fnCommandCallback: u64,
-	pub fnCompletionCallback: u64,
-	pub fnCommandType: u32,
-}
-
-pub struct ConCommand<'a> {
-	pub address: u32,
-	pub name: &'a str,
-	pub desc: Option<&'a str>,
-	pub flags: u32,
-	pub callback: u32,
-}
-
-pub fn concommands(bin: PeFile<'_>) -> Vec<ConCommand<'_>> {
-	// Find ConCommand constructor thingy
-	let mut save = [0; 4];
-	let pat = pat!("488D05${} 488D0D${'} 488905${'} E9$ 4053 4883EC20");
-	let mut matches = bin.scanner().matches_code(pat);
-	let mut concommands = Vec::new();
-	while matches.next(&mut save) {
-		if save[1] != save[2] {
-			continue;
-		}
-		let address = save[1];
-		let raw = bin.derva::<RawConCommand>(address).unwrap();
-		let name = bin.deref_c_str(raw.pszName).unwrap_or(CStr::empty()).to_str().unwrap();
-		let desc = bin.deref_c_str(raw.pszHelpString).ok().map(|desc| desc.to_str().unwrap());
-		let flags = raw.fFlags;
-		let callback = bin.va_to_rva(raw.fnCommandCallback).unwrap_or(0);
-		concommands.push(ConCommand { address, name, desc, flags, callback })
-	}
-	concommands.sort_by_key(|concommand| concommand.name);
-	concommands
 }
