@@ -41,59 +41,59 @@ r5apex.exe!0x181f4e0 GlobalVars
 r5apex.exe!0xc5f0858 PlayerResource
 ```
 
-### Buttons
+## Buttons
 
 These are addresses to global instances of the [`kbutton_t`](https://github.com/ValveSoftware/source-sdk-2013/blob/master/mp/src/game/client/kbutton.h#L14-L20) struct.
 
 ```
-r5apex.exe!0x0c5f1210 kbutton_t +attack
-r5apex.exe!0x0c5f11a0 kbutton_t +backward
-r5apex.exe!0x2771b5a0 kbutton_t +break
-r5apex.exe!0x27af5930 kbutton_t +camin
-r5apex.exe!0x2771b8d0 kbutton_t +camout
-r5apex.exe!0x2771b880 kbutton_t +campitchdown
-r5apex.exe!0x27af59b8 kbutton_t +campitchup
-r5apex.exe!0x2771b910 kbutton_t +camyawleft
-r5apex.exe!0x2771b8b0 kbutton_t +camyawright
-r5apex.exe!0x0c5f11c8 kbutton_t +commandermousemove
-r5apex.exe!0x0c5f12a8 kbutton_t +dodge
-r5apex.exe!0x2771b5c0 kbutton_t +duck
-r5apex.exe!0x0c5f1178 kbutton_t +forward
-r5apex.exe!0x0c5f1220 kbutton_t +graph
-r5apex.exe!0x0c5f1290 kbutton_t +jump
-r5apex.exe!0x27af5998 kbutton_t +klook
-r5apex.exe!0x2771b8f8 kbutton_t +left
-r5apex.exe!0x2771b8a0 kbutton_t +lookdown
-r5apex.exe!0x2771b5b0 kbutton_t +lookup
-r5apex.exe!0x27af59a8 kbutton_t +melee
-r5apex.exe!0x2771b920 kbutton_t +movedown
-r5apex.exe!0x0c5f1168 kbutton_t +moveleft
-r5apex.exe!0x0c5f1190 kbutton_t +moveright
-r5apex.exe!0x27af5978 kbutton_t +moveup
-r5apex.exe!0x27af5988 kbutton_t +offhand0
-r5apex.exe!0x2771b8e8 kbutton_t +offhand1
-r5apex.exe!0x2771b6b0 kbutton_t +offhand2
-r5apex.exe!0x2771b690 kbutton_t +offhand3
-r5apex.exe!0x2771b650 kbutton_t +offhand4
-r5apex.exe!0x0c5f1278 kbutton_t +pause_menu
-r5apex.exe!0x0c5f1200 kbutton_t +ping
-r5apex.exe!0x0c5f1230 kbutton_t +reload
-r5apex.exe!0x2771b8c0 kbutton_t +right
-r5apex.exe!0x2771b6c0 kbutton_t +score
-r5apex.exe!0x2771b6c0 kbutton_t +showscores
-r5apex.exe!0x0c5f11b0 kbutton_t +speed
-r5apex.exe!0x0c5f1248 kbutton_t +strafe
-r5apex.exe!0x27af5950 kbutton_t +toggle_duck
-r5apex.exe!0x27af5940 kbutton_t +toggle_zoom
-r5apex.exe!0x2771b6a0 kbutton_t +use
-r5apex.exe!0x2771b640 kbutton_t +useAndReload
-r5apex.exe!0x27af5960 kbutton_t +use_alt
-r5apex.exe!0x2771b630 kbutton_t +use_long
-r5apex.exe!0x0c5f1258 kbutton_t +variableScopeToggle
-r5apex.exe!0x2771b670 kbutton_t +walk
-r5apex.exe!0x2771b890 kbutton_t +weaponCycle
-r5apex.exe!0x2771b660 kbutton_t +weapon_discard
-r5apex.exe!0x2771b680 kbutton_t +zoom
+r5apex.exe!0x0c5f1210 kbutton_t in_attack
+r5apex.exe!0x0c5f11a0 kbutton_t in_backward
+r5apex.exe!0x2771b5a0 kbutton_t in_break
+r5apex.exe!0x27af5930 kbutton_t in_camin
+r5apex.exe!0x2771b8d0 kbutton_t in_camout
+r5apex.exe!0x2771b880 kbutton_t in_campitchdown
+r5apex.exe!0x27af59b8 kbutton_t in_campitchup
+r5apex.exe!0x2771b910 kbutton_t in_camyawleft
+r5apex.exe!0x2771b8b0 kbutton_t in_camyawright
+r5apex.exe!0x0c5f11c8 kbutton_t in_commandermousemove
+r5apex.exe!0x0c5f12a8 kbutton_t in_dodge
+r5apex.exe!0x2771b5c0 kbutton_t in_duck
+r5apex.exe!0x0c5f1178 kbutton_t in_forward
+r5apex.exe!0x0c5f1220 kbutton_t in_graph
+r5apex.exe!0x0c5f1290 kbutton_t in_jump
+r5apex.exe!0x27af5998 kbutton_t in_klook
+r5apex.exe!0x2771b8f8 kbutton_t in_left
+r5apex.exe!0x2771b8a0 kbutton_t in_lookdown
+r5apex.exe!0x2771b5b0 kbutton_t in_lookup
+r5apex.exe!0x27af59a8 kbutton_t in_melee
+r5apex.exe!0x2771b920 kbutton_t in_movedown
+r5apex.exe!0x0c5f1168 kbutton_t in_moveleft
+r5apex.exe!0x0c5f1190 kbutton_t in_moveright
+r5apex.exe!0x27af5978 kbutton_t in_moveup
+r5apex.exe!0x27af5988 kbutton_t in_offhand0
+r5apex.exe!0x2771b8e8 kbutton_t in_offhand1
+r5apex.exe!0x2771b6b0 kbutton_t in_offhand2
+r5apex.exe!0x2771b690 kbutton_t in_offhand3
+r5apex.exe!0x2771b650 kbutton_t in_offhand4
+r5apex.exe!0x0c5f1278 kbutton_t in_pause_menu
+r5apex.exe!0x0c5f1200 kbutton_t in_ping
+r5apex.exe!0x0c5f1230 kbutton_t in_reload
+r5apex.exe!0x2771b8c0 kbutton_t in_right
+r5apex.exe!0x2771b6c0 kbutton_t in_score
+r5apex.exe!0x2771b6c0 kbutton_t in_showscores
+r5apex.exe!0x0c5f11b0 kbutton_t in_speed
+r5apex.exe!0x0c5f1248 kbutton_t in_strafe
+r5apex.exe!0x27af5950 kbutton_t in_toggle_duck
+r5apex.exe!0x27af5940 kbutton_t in_toggle_zoom
+r5apex.exe!0x2771b6a0 kbutton_t in_use
+r5apex.exe!0x2771b640 kbutton_t in_useAndReload
+r5apex.exe!0x27af5960 kbutton_t in_use_alt
+r5apex.exe!0x2771b630 kbutton_t in_use_long
+r5apex.exe!0x0c5f1258 kbutton_t in_variableScopeToggle
+r5apex.exe!0x2771b670 kbutton_t in_walk
+r5apex.exe!0x2771b890 kbutton_t in_weaponCycle
+r5apex.exe!0x2771b660 kbutton_t in_weapon_discard
+r5apex.exe!0x2771b680 kbutton_t in_zoom
 ```
 
 ## ClientClasses
