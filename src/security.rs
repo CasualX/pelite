@@ -30,6 +30,7 @@ use crate::util::AlignTo;
 /// Security Directory.
 ///
 /// For more information see the [module-level documentation](index.html).
+#[derive(Copy, Clone)]
 pub struct Security<'a> {
 	image: &'a [u8], // unsafe: MUST BE DWORD ALIGNED!
 }

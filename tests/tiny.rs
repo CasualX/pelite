@@ -1,5 +1,5 @@
 use pelite::pe32::{image, Pe, PeFile};
-use pelite::FileMap;
+use pelite::{FileMap, Pod};
 
 // For fun let's try loading tiny PE files.
 // The examples are sourced from:
@@ -8,10 +8,9 @@ use pelite::FileMap;
 //
 // I used Internet Archive's Wayback Machine to download the samples since the original links 404'd
 
-fn assert_memcmp<T: std::fmt::Debug>(lhs: &T, rhs: &T) {
-	let size_of = std::mem::size_of::<T>();
-	let lhs_bytes = unsafe { std::slice::from_raw_parts(lhs as *const _ as *const u8, size_of) };
-	let rhs_bytes = unsafe { std::slice::from_raw_parts(rhs as *const _ as *const u8, size_of) };
+fn assert_memcmp<T: std::fmt::Debug + Pod>(lhs: &T, rhs: &T) {
+	let lhs_bytes = lhs.as_bytes();
+	let rhs_bytes = rhs.as_bytes();
 	assert_eq!(lhs_bytes, rhs_bytes, "lhs: {:?} rhs: {:?}", lhs, rhs);
 }
 
