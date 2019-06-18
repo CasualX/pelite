@@ -175,10 +175,13 @@ fn find_data() {
 	let file_map = FileMap::open(FILE_NAME).unwrap();
 	let file = PeFile::from_bytes(&file_map).unwrap();
 	let resources = file.resources().unwrap();
-	let data = resources.find_data("/Manifest/2/1033").unwrap();
+	let data = resources.find_data("/Manifest/#2/#1033").unwrap();
 	let bytes = data.bytes().unwrap();
 	let manifest = std::str::from_utf8(bytes).unwrap();
 	println!("\n{}", manifest);
+
+	let data2 = resources.find_dir("/Manifest").unwrap().get_dir("#2".into()).unwrap().get_data("#1033".into()).unwrap();
+	assert!(std::ptr::eq(data.image(), data2.image()));
 }
 
 //----------------------------------------------------------------

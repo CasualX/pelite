@@ -23,6 +23,7 @@ macro_rules! offset_of {
 }
 
 mod c_str;
+#[allow(dead_code)]
 mod wide_str;
 mod guid;
 mod align;
@@ -32,7 +33,7 @@ mod string_n;
 pub(crate) mod serde_helper;
 
 pub use self::c_str::CStr;
-pub use self::wide_str::WideStr;
+// pub use self::wide_str::WideStr;
 pub use self::align::*;
 pub use self::string_n::StringN;
 

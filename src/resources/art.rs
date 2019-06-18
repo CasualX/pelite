@@ -1,5 +1,5 @@
 use std::fmt;
-use super::{Resources, Directory, Entry, Name};
+use super::{Resources, Directory, Entry};
 use crate::stringify::RSRC_TYPES;
 
 /// Art used to format a directory tree.
@@ -87,20 +87,7 @@ impl<'a, 'd> TreeFmt<'a, 'd> {
 			f.write_str(prefix)?;
 			// Print the file_name
 			match e.name() {
-				Ok(Name::Id(id)) => {
-					// At root level some resource ids have special names
-					let get_rsrc_name = || {
-						if root { RSRC_TYPES.get(id as usize).and_then(|&a| a) }
-						else { None }
-					};
-					if let Some(name) = get_rsrc_name() {
-						write!(f, "{}", name)
-					}
-					else {
-						write!(f, "{}", id)
-					}
-				},
-				Ok(Name::Str(s)) => write!(f, "{}", s),
+				Ok(name) => name.display(f, if root { &RSRC_TYPES } else { &[] }),
 				Err(err) => write!(f, "{}", err),
 			}.and_then(|_| {
 				f.write_str(if e.is_dir() { "/\n" } else { "\n" })
