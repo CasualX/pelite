@@ -51,8 +51,8 @@ impl fmt::Display for FindError {
 }
 impl error::Error for FindError {
 	fn description(&self) -> &str {
-		match *self {
-			FindError::Pe(ref e) => e.description(),
+		match self {
+			FindError::Pe(err) => err.description(),
 			FindError::Bad8Path => "invalid utf8 path",
 			FindError::NotFound => "entry not found",
 			FindError::NoRootPath => "missing '/' root",
@@ -61,8 +61,8 @@ impl error::Error for FindError {
 		}
 	}
 	fn cause(&self) -> Option<&error::Error> {
-		match *self {
-			FindError::Pe(ref e) => Some(e),
+		match self {
+			FindError::Pe(err) => Some(err),
 			_ => None,
 		}
 	}
@@ -198,37 +198,19 @@ impl<'a> Directory<'a> {
 	pub fn find_dir<P: AsRef<Path> + ?Sized>(&self, path: &P) -> Result<Directory<'a>, FindError> {
 		self.find(path).and_then(|e| e.dir().ok_or(FindError::UnDataEntry))
 	}
-	fn find_internal(&self, path: &Path, id_names: &[Option<&str>]) -> Result<Entry<'a>, FindError> {
+	fn find_internal(&self, path: &Path, mut id_names: &[Option<&str>]) -> Result<Entry<'a>, FindError> {
 		let mut e = Entry::Directory(*self);
 		'parts: for part in path {
 			// The names of resources are UTF16
 			let part_name = part.to_str().ok_or(FindError::Bad8Path)?;
-			// For comparison with resource ids
-			let part_id = part_name.parse::<u32>().ok();
 			match e {
 				Entry::Directory(dir) => {
 					// Find a child with matching name for this part of the path
 					for child in dir.entries() {
-						let mut equal = false;
-						match child.name()? {
-							Name::Id(id) => {
-								if Some(id) == part_id {
-									equal = true;
-								}
-								else if let Some(&Some(id_name)) = id_names.get(id as usize) {
-									if id_name == part_name {
-										equal = true;
-									}
-								}
-							},
-							Name::Str(s) => {
-								if s == part_name {
-									equal = true;
-								}
-							},
-						};
-						if equal {
+						if child.name()?.eq_find(part_name, id_names) {
 							e = child.entry()?;
+							// After one level forget any id names
+							id_names = &id_names[..0];
 							continue 'parts;
 						}
 					}

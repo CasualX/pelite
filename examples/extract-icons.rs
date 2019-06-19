@@ -1,8 +1,7 @@
 use std::env;
-use std::path::{Path, PathBuf};
+use std::path::{PathBuf};
 
 use pelite::{FileMap, PeFile};
-use pelite::resources::*;
 
 const HELP_TEXT: &str = "\
 EXTRACT-ICONS <BINARY> <DEST>

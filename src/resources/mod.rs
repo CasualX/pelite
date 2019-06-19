@@ -2,11 +2,10 @@
 Resources.
 */
 
-use std::{fmt, iter, mem, slice};
+use std::{char, fmt, iter, mem, slice};
 
 use crate::{Pod, Error, Result};
 use crate::image::*;
-use crate::util::{WideStr};
 
 //----------------------------------------------------------------
 
@@ -75,7 +74,7 @@ impl<'a> Resources<'a> {
 		Ok(unsafe { slice::from_raw_parts(bytes.as_ptr() as *const T, len) })
 	}
 	#[inline]
-	fn slice_ws(&self, offset: u32) -> Result<&'a WideStr> {
+	fn slice_ws(&self, offset: u32) -> Result<&'a [u16]> {
 		let offset = offset as usize;
 		// Alignment checking
 		if !cfg!(feature = "unsafe_alignment") && offset & 1 != 0 {
@@ -85,9 +84,8 @@ impl<'a> Resources<'a> {
 		let len = self.section.get(offset..offset + 2).ok_or(Error::Bounds)?;
 		let len = unsafe { *(len.as_ptr() as *const u16) } as usize;
 		// Extract the name given its length
-		let name = self.section.get(offset..offset + (len + 1) * 2).ok_or(Error::Bounds)?;
-		let name = unsafe { slice::from_raw_parts(name.as_ptr() as *const u16, len + 1) };
-		let name = unsafe { WideStr::from_words_unchecked(name) };
+		let name = self.section.get(offset + 2..offset + 2 + len * 2).ok_or(Error::Bounds)?;
+		let name = unsafe { slice::from_raw_parts(name.as_ptr() as *const u16, len) };
 		Ok(name)
 	}
 }
@@ -188,7 +186,7 @@ pub type Entries<'a, F> = iter::Map<slice::Iter<'a, IMAGE_RESOURCE_DIRECTORY_ENT
 //----------------------------------------------------------------
 
 /// Represents a resource name.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Debug, Eq)]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize), serde(untagged))]
 pub enum Name<'a> {
 	/// Resource ID.
@@ -196,7 +194,13 @@ pub enum Name<'a> {
 	/// Technically allows `u32` ids, but some Windows APIs will be unable to use resources with an id which isn't `u16`.
 	Id(u32),
 	/// UTF-16 named resource.
-	Str(&'a WideStr),
+	WideStr(&'a [u16]),
+	/// UTF-8 named resource.
+	///
+	/// This variant is used when accepting user input and will be interpreted liberally when compared against other names:
+	/// When prefixed with '#' the string is parsed as a u32 and compared to resource ids.
+	/// Otherwise compares against wide strings by doing an unicode aware case sensitive comparison.
+	Str(&'a str),
 }
 /// Predefined resource name constants.
 impl<'a> Name<'a> {
@@ -205,22 +209,90 @@ impl<'a> Name<'a> {
 	pub const GROUP_ICON: Name<'a> = Name::Id(crate::image::RT_GROUP_ICON as u32);
 	pub const GROUP_CURSOR: Name<'a> = Name::Id(crate::image::RT_GROUP_CURSOR as u32);
 }
+impl<'a> Name<'a> {
+	fn eq_find(&self, rhs: &str, id_names: &[Option<&str>]) -> bool {
+		match self {
+			Name::Id(id) => {
+				if rhs.starts_with("#") {
+					if let Ok(rhs_id) = rhs[1..].parse::<u32>() {
+						if id == &rhs_id {
+							return true;
+						}
+					}
+				}
+				else if let Some(&Some(id_name)) = id_names.get(*id as usize) {
+					if id_name == rhs {
+						return true;
+					}
+				}
+				false
+			},
+			Name::WideStr(words) => Self::eq_wide_str(words, rhs),
+			Name::Str(s) => rhs == *s,
+		}
+	}
+	fn display_wide_str(words: &[u16], f: &mut fmt::Write) -> fmt::Result {
+		for chr in char::decode_utf16(words.iter().cloned()) {
+			let chr = chr.unwrap_or(char::REPLACEMENT_CHARACTER);
+			fmt::Write::write_char(f, chr)?;
+		}
+		Ok(())
+	}
+	fn eq_wide_str(words: &[u16], s: &str) -> bool {
+		char::decode_utf16(words.iter().cloned()).eq(s.chars().map(Ok))
+	}
+	fn display(&self, f: &mut fmt::Write, id_names: &[Option<&str>]) -> fmt::Result {
+		match self {
+			Name::Id(id) => {
+				if let Some(&Some(name)) = id_names.get(*id as usize) {
+					write!(f, "{}", name)
+				}
+				else {
+					write!(f, "#{}", id)
+				}
+			},
+			Name::WideStr(words) => Self::display_wide_str(words, f),
+			Name::Str(s) => write!(f, "{}", s),
+		}
+	}
+}
 impl<'a> From<u16> for Name<'a> {
 	fn from(id: u16) -> Name<'a> {
 		Name::Id(id as u32)
 	}
 }
-impl<'a> From<&'a WideStr> for Name<'a> {
-	fn from(ws: &'a WideStr) -> Name<'a> {
-		Name::Str(ws)
+impl<'a> From<&'a [u16]> for Name<'a> {
+	fn from(wide_str: &'a [u16]) -> Name<'a> {
+		Name::WideStr(wide_str)
+	}
+}
+impl<'a> From<&'a str> for Name<'a> {
+	fn from(s: &'a str) -> Name<'a> {
+		Name::Str(s)
+	}
+}
+impl PartialEq for Name<'_> {
+	fn eq(&self, rhs: &Name<'_>) -> bool {
+		match (*self, *rhs) {
+			// Strict checking between ids and wide strings
+			(Name::Id(lhs), Name::Id(rhs)) => lhs == rhs,
+			(Name::Id(_), Name::WideStr(_)) => false,
+			(Name::WideStr(lhs), Name::WideStr(rhs)) => lhs == rhs,
+			(Name::WideStr(_), Name::Id(_)) => false,
+			// When comparing against Rust strings
+			(Name::Str(lhs), rhs) => rhs.eq_find(lhs, &[]),
+			(lhs, Name::Str(rhs)) => lhs.eq_find(rhs, &[]),
+		}
+	}
+}
+impl PartialEq<str> for Name<'_> {
+	fn eq(&self, rhs: &str) -> bool {
+		self.eq_find(rhs, &[])
 	}
 }
 impl fmt::Display for Name<'_> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		match self {
-			Name::Id(id) => write!(f, "#{}", id),
-			Name::Str(s) => s.fmt(f),
-		}
+		self.display(f, &[])
 	}
 }
 
@@ -274,7 +346,7 @@ impl<'a> DirectoryEntry<'a> {
 		if self.image.Name & 0x80000000 != 0 {
 			let offset = self.image.Name & !0x80000000;
 			let name = self.resources.slice_ws(offset)?;
-			Ok(Name::Str(name))
+			Ok(Name::WideStr(name))
 		}
 		else {
 			// TODO: What if this doesn't fit in u16...
@@ -454,7 +526,8 @@ pub(crate) fn test(resources: Resources<'_>) -> Result<()> {
 				let mut named_entries;
 				let mut entries: &mut Iterator<Item = _> = match name {
 					Name::Id(_) => { id_entries = dir.id_entries(); &mut id_entries },
-					Name::Str(_) => { named_entries = dir.named_entries(); &mut named_entries },
+					Name::WideStr(_) => { named_entries = dir.named_entries(); &mut named_entries },
+					Name::Str(_) => unreachable!()
 				};
 				assert!((&mut entries).any(|entry| entry.name() == Ok(name)));
 			}
