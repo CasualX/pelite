@@ -10,6 +10,7 @@ pub fn print(bin: PeFile<'_>, dll_name: &str) {
 	local_entity_handle(bin, dll_name);
 	global_vars(bin, dll_name);
 	player_resource(bin, dll_name);
+	view_render(bin, dll_name);
 	println!("```\n");
 }
 
@@ -85,5 +86,16 @@ fn game_version(bin: PeFile<'_>) {
 	}
 	else {
 		eprintln!("unable to find GameVersion!");
+	}
+}
+
+fn view_render(bin: PeFile<'_>, dll_name: &str) {
+	let mut save = [0; 4];
+	if bin.scanner().finds_code(pat!("74 34 48 8B 0D ${'} 40 0F B6 D7"), &mut save) {
+		let view_render = save[1];
+		println!("{}!{:#x} ViewRender", dll_name, view_render);
+	}
+	else {
+		eprintln!("unable to find ViewRender");
 	}
 }
