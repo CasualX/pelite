@@ -1,6 +1,6 @@
 /*!
 Demonstrates how to read the version info from a PE file.
-!*/
+ */
 
 use std::env;
 use std::path::Path;
@@ -41,16 +41,36 @@ fn print_version_info(path: &Path, lang: Option<u16>) {
 		None => resources.version_info(),
 	}.expect("version info not found");
 
-	// Print the fixed file info
-	if let Some(fixed) = version_info.fixed() {
-		println!("{:?}", fixed);
-	}
-
 	// Print the version info strings
-	version_info.for_each_string(|lang, key, value| {
-		let lang = String::from_utf16_lossy(lang);
-		let key = String::from_utf16_lossy(key);
-		let value = String::from_utf16_lossy(value);
-		println!("[{}] {:<20} {}", lang, key, value);
-	});
+	struct Printer;
+	impl pelite::resources::version_info::Visit<'_> for Printer {
+		fn version_info(&mut self, _key: &[u16], fixed: Option<&pelite::image::VS_FIXEDFILEINFO>) -> bool {
+			if let Some(fixed) = fixed {
+				println!("{:<20} {}.{}.{}.{}\n{:<20} {}.{}.{}.{}\n{:<20} {:#x}\n{:<20} {:#x}\n{:<20} {}, {}\n{:<20} {}\n{:<20} {}",
+					"FileVersion", fixed.dwFileVersion.Major, fixed.dwFileVersion.Minor, fixed.dwFileVersion.Patch, fixed.dwFileVersion.Build,
+					"ProductVersion", fixed.dwProductVersion.Major, fixed.dwProductVersion.Minor, fixed.dwProductVersion.Patch, fixed.dwProductVersion.Build,
+					"FileFlagsMask", fixed.dwFileFlagsMask,
+					"FileFlags", fixed.dwFileFlags,
+					"FileOS", fixed.dwFileOS >> 16, fixed.dwFileOS & 0xffff,
+					"FileType", fixed.dwFileType,
+					"FileSubtype", fixed.dwFileSubtype);
+			}
+			true
+		}
+		fn string_table(&mut self, lang: &[u16]) -> bool {
+			let lang = String::from_utf16_lossy(lang);
+			println!("\n[{}]", lang);
+			true
+		}
+		fn string(&mut self, key: &[u16], value: &[u16]) {
+			let key = String::from_utf16_lossy(key);
+			let value = String::from_utf16_lossy(value);
+			println!("{:<20} {:?}", key, value);
+		}
+	}
+	version_info.visit(&mut Printer);
+
+	// Render as source code
+	let source_code = version_info.source_code();
+	println!("\n```\n{}```", source_code);
 }

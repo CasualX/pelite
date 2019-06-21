@@ -87,18 +87,30 @@ impl AsRef<[u16]> for WideStr {
 
 impl fmt::Display for WideStr {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		for chr in char::decode_utf16(self.as_ref().iter().cloned()) {
+		FmtUtf16(self.as_ref()).fmt(f)
+	}
+}
+
+impl fmt::Debug for WideStr {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		FmtUtf16(self.as_ref()).fmt(f)
+	}
+}
+
+pub(crate) struct FmtUtf16<'a>(pub(crate) &'a [u16]);
+impl fmt::Display for FmtUtf16<'_> {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		for chr in char::decode_utf16(self.0.iter().cloned()) {
 			let chr = chr.unwrap_or(char::REPLACEMENT_CHARACTER);
 			fmt::Write::write_char(f, chr)?;
 		}
 		Ok(())
 	}
 }
-
-impl fmt::Debug for WideStr {
+impl fmt::Debug for FmtUtf16<'_> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		f.write_str("L\"")?;
-		for chr in char::decode_utf16(self.as_ref().iter().cloned()) {
+		for chr in char::decode_utf16(self.0.iter().cloned()) {
 			match chr {
 				Ok(chr) => {
 					match chr {

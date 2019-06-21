@@ -34,6 +34,7 @@ pub(crate) mod serde_helper;
 
 pub use self::c_str::CStr;
 // pub use self::wide_str::WideStr;
+pub(crate) use self::wide_str::FmtUtf16;
 pub use self::align::*;
 pub use self::string_n::StringN;
 

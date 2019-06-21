@@ -2,24 +2,62 @@
 Version Information.
 
 See [Microsoft's documentation](https://docs.microsoft.com/en-us/windows/desktop/menurc/version-information) for more information.
+
+# Examples
+
+See also the `examples/version_info.rs` example which reads and prints the version info of the given file.
+
+```
+use pelite::PeFile;
+
+fn example(bin: PeFile<'_>) -> Result<(), pelite::resources::FindError> {
+	let resources = bin.resources()?;
+	let version_info = resources.version_info()?;
+
+	// Get and print the fixed file info
+	println!("FixedFileInfo: {:?}", version_info.fixed());
+
+	// Get the first available translation
+	let translation = version_info.translation().unwrap();
+	let &lang = translation.first().unwrap();
+
+	// Query some properties
+	let company_name = version_info.value(lang, "CompanyName");
+
+	// Print all the properties for this language
+	version_info.strings(lang, |key, value| {
+		println!("{}: {:?}", key, value);
+	});
+
+	// Dump the version info into hashmaps for later consumption or serialization
+	let file_info = version_info.file_info();
+
+	// Transform the version info back into source code
+	let source_code = version_info.source_code();
+
+	Ok(())
+}
+```
+
  */
 
 use std::{char, cmp, fmt, mem, slice};
 use std::collections::HashMap;
+use std::fmt::Write;
 
 use crate::image::VS_FIXEDFILEINFO;
 use crate::{Error, Result, _Pod as Pod};
-use crate::util::{AlignTo, wstrn};
+use crate::util::{AlignTo, FmtUtf16, wstrn};
 
 //----------------------------------------------------------------
 
 /// Language and charset pair.
-///
-/// References [langID](https://docs.microsoft.com/en-us/windows/desktop/menurc/versioninfo-resource#langID) and [charsetID](https://docs.microsoft.com/en-us/windows/desktop/menurc/versioninfo-resource#charsetID).
-#[derive(Copy, Clone, Debug, Pod, Eq, PartialEq)]
+#[derive(Copy, Clone, Debug, Default, Pod, Eq, PartialEq, Hash)]
 #[repr(C)]
 pub struct Language {
+	/// References [langID](https://docs.microsoft.com/en-us/windows/desktop/menurc/versioninfo-resource#langID) constants.
 	pub lang_id: u16,
+	/// References [charsetID](https://docs.microsoft.com/en-us/windows/desktop/menurc/versioninfo-resource#charsetID) constants.
 	pub charset_id: u16,
 }
 impl Language {
@@ -44,6 +82,10 @@ impl Language {
 		let charset_id = (digits[4] << 12) | (digits[5] << 8) | (digits[6] << 4) | digits[7];
 		Ok(Language { lang_id, charset_id })
 	}
+	fn from_slice<'a>(words: &'a [u16]) -> &'a [Language] {
+		let len = words.len() / 2;
+		unsafe { slice::from_raw_parts(words.as_ptr() as *const Language, len) }
+	}
 }
 impl fmt::Display for Language {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -54,9 +96,9 @@ impl fmt::Display for Language {
 //----------------------------------------------------------------
 
 /// Version Information.
-#[derive(Copy, Clone, Debug)]
+#[derive(Copy, Clone)]
 pub struct VersionInfo<'a> {
-	bytes: &'a [u8],
+	words: &'a [u16],
 }
 impl<'a> VersionInfo<'a> {
 	pub fn try_from(bytes: &'a [u8]) -> Result<VersionInfo<'a>> {
@@ -65,37 +107,51 @@ impl<'a> VersionInfo<'a> {
 		if !bytes.as_ptr().aligned_to(4) {
 			return Err(Error::Misaligned);
 		}
-		Ok(VersionInfo { bytes })
+		let words = unsafe { slice::from_raw_parts(bytes.as_ptr() as *const u16, bytes.len() / 2) };
+		Ok(VersionInfo { words })
 	}
 
 	/// Gets the fixed file information if available.
-	pub fn fixed(self) -> Option<&'a VS_FIXEDFILEINFO> {
-		let mut fixed = None;
-		self.visit(&mut fixed);
-		fixed
-	}
-	/// Queries a string value by name.
 	///
-	/// The returned string is UTF-16 encoded, convert to UTF-8 with `String::from_utf16` and friends.
-	pub fn query_value<S: AsRef<str>>(self, key: &S) -> Option<&'a [u16]> {
-		let mut this = QueryValue {
-			key: key.as_ref(),
-			value: None,
-		};
+	/// Queries `\`.
+	pub fn fixed(self) -> Option<&'a VS_FIXEDFILEINFO> {
+		let mut this = QueryFixed(None);
+		self.visit(&mut this);
+		this.0
+	}
+	/// Gets the available translations.
+	///
+	/// Queries `\VarFileInfo\Translation`.
+	pub fn translation(self) -> Option<&'a [Language]> {
+		let mut this = QueryTranslation(None);
+		self.visit(&mut this);
+		this.0
+	}
+	/// Gets a string value by name.
+	///
+	/// Queries `\StringFileInfo\{lang}\{key}`
+	pub fn value(self, lang: Language, key: &str) -> Option<String> {
+		let mut this = QueryValue { lang, key, value: None };
 		self.visit(&mut this);
 		this.value
 	}
-	/// Iterates over all the strings.
+	/// Iterates over all the strings' keys and values of a given language.
 	///
-	/// The closure's arguments are the lang, name and value for each string pair in the version information.
-	pub fn for_each_string<F: FnMut(&'a [u16], &'a [u16], &'a [u16])>(self, mut f: F) {
-		self.visit(&mut ForEachString(&mut f));
+	/// Queries `\StringFileInfo\{lang}\*`
+	pub fn strings<F: FnMut(&str, &str)>(self, lang: Language, f: F) {
+		self.visit(&mut QueryStrings { lang, f });
 	}
-	/// Gets the strings in a hash map.
-	pub fn to_hash_map(self) -> HashMap<String, String> {
-		let mut hash_map = HashMap::new();
-		self.visit(&mut hash_map);
-		hash_map
+	/// Parse the version info into HashMaps.
+	pub fn file_info(self) -> FileInfo<'a> {
+		let mut file_info = FileInfo::default();
+		self.visit(&mut file_info);
+		file_info
+	}
+	/// Renders the version info back into its source code form.
+	pub fn source_code(self) -> String {
+		let mut source_code = String::new();
+		self.visit(&mut source_code);
+		source_code
 	}
 
 	/// Parse the version information.
@@ -105,63 +161,70 @@ impl<'a> VersionInfo<'a> {
 	///
 	/// To keep the API simple all errors are ignored, any invalid or corrupted data is skipped.
 	pub fn visit(self, visit: &mut dyn Visit<'a>) {
-		let words = unsafe { slice::from_raw_parts(self.bytes.as_ptr() as *const u16, self.bytes.len() / 2) };
+		for version_info in Parser::new_bytes(self.words).filter_map(Result::ok) {
+			const VS_FIXEDFILEINFO_SIZEOF: usize = mem::size_of::<VS_FIXEDFILEINFO>();
+			let fixed = match mem::size_of_val(version_info.value) {
+				0 => None,
+				VS_FIXEDFILEINFO_SIZEOF => {
+					let value = unsafe { &*(version_info.value.as_ptr() as *const VS_FIXEDFILEINFO) };
+					Some(value)
+				},
+				_ => None,
+			};
 
-		for version_info_r in Parser::new_bytes(words) {
-			if let Ok(version_info) = version_info_r {
-				const VS_FIXEDFILEINFO_SIZEOF: usize = mem::size_of::<VS_FIXEDFILEINFO>();
-				let fixed = match mem::size_of_val(version_info.value) {
-					0 => None,
-					VS_FIXEDFILEINFO_SIZEOF => {
-						let value = unsafe { &*(version_info.value.as_ptr() as *const VS_FIXEDFILEINFO) };
-						Some(value)
-					},
-					_ => None,//return Err(Error::Invalid),
-				};
+			if !visit.version_info(version_info.key, fixed) {
+				continue;
+			}
 
-				if !visit.version_info(version_info.key, fixed) {
+			// MS docs: This member is always equal to zero.
+			visit.enter_scope(0);
+			for file_info in Parser::new_zero(version_info.children).filter_map(Result::ok) {
+				if !visit.file_info(file_info.key) {
 					continue;
 				}
 
-				// MS docs: This member is always equal to zero.
-				for file_info_r in Parser::new_zero(version_info.children) {
-					if let Ok(file_info) = file_info_r {
-						if !visit.file_info(file_info.key) {
+				// MS docs: L"StringFileInfo"
+				visit.enter_scope(1);
+				if file_info.key == &self::strings::StringFileInfo {
+					// MS docs: This member is always equal to zero.
+					for string_table in Parser::new_zero(file_info.children).filter_map(Result::ok) {
+						if !visit.string_table(string_table.key) {
 							continue;
 						}
 
-						// MS docs: L"StringFileInfo"
-						if file_info.key == &self::strings::StringFileInfo {
-							// MS docs: This member is always equal to zero.
-							for string_table_r in Parser::new_zero(file_info.children) {
-								if let Ok(string_table) = string_table_r {
-									if !visit.string_table(string_table.key) {
-										continue;
-									}
-
-									for string_r in Parser::new_words(string_table.children) {
-										if let Ok(string) = string_r {
-											// Strip the nul terminator...
-											let value = if string.value.last() != Some(&0) { string.value }
-											else { &string.value[..string.value.len() - 1] };
-											visit.string(string_table.key, string.key, value);
-										}
-									}
-								}
-							}
+						visit.enter_scope(2);
+						for string in Parser::new_words(string_table.children).filter_map(Result::ok) {
+							// Strip the nul terminator...
+							let value = if string.value.last() != Some(&0) { string.value }
+							else { &string.value[..string.value.len() - 1] };
+							visit.string(string.key, value);
 						}
-						// MS docs: L"VarFileInfo"
-						else if file_info.key == &self::strings::VarFileInfo {
-							for var_r in Parser::new_bytes(file_info.children) {
-								if let Ok(var) = var_r {
-									visit.var(var.key, var.value);
-								}
-							}
-						}
+						visit.exit_scope(2);
 					}
 				}
+				// MS docs: L"VarFileInfo"
+				else if file_info.key == &self::strings::VarFileInfo {
+					for var in Parser::new_bytes(file_info.children).filter_map(Result::ok) {
+						visit.var(var.key, var.value);
+					}
+				}
+				visit.exit_scope(1);
 			}
+			visit.exit_scope(0);
+
+			// Ignore any additional version infos...
+			return;
 		}
+	}
+}
+impl fmt::Debug for VersionInfo<'_> {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		let file_info = self.file_info();
+		f.debug_struct("VersionInfo")
+			.field("fixed", &file_info.fixed)
+			.field("strings", &file_info.strings)
+			.field("translation", &file_info.translation)
+			.finish()
 	}
 }
 
@@ -173,40 +236,165 @@ pub trait Visit<'a> {
 	fn version_info(&mut self, key: &'a [u16], fixed: Option<&'a VS_FIXEDFILEINFO>) -> bool { true }
 	fn file_info(&mut self, key: &'a [u16]) -> bool { true }
 	fn string_table(&mut self, lang: &'a [u16]) -> bool { true }
-	fn string(&mut self, lang: &'a [u16], key: &'a [u16], value: &'a [u16]) {}
-	fn var(&mut self, key: &'a [u16], pairs: &'a [u16]) {}
+	fn string(&mut self, key: &'a [u16], value: &'a [u16]) {}
+	fn var(&mut self, key: &'a [u16], value: &'a [u16]) {}
+	fn enter_scope(&mut self, depth: usize) {}
+	fn exit_scope(&mut self, depth: usize) {}
 }
 
-impl<'a> Visit<'a> for HashMap<String, String> {
-	fn string(&mut self, _lang: &'a [u16], key: &'a [u16], value: &'a [u16]) {
-		self.insert(
-			String::from_utf16_lossy(key),
-			String::from_utf16_lossy(value),
-		);
-	}
-}
-impl<'a> Visit<'a> for Option<&'a VS_FIXEDFILEINFO> {
+struct QueryFixed<'a>(Option<&'a VS_FIXEDFILEINFO>);
+impl<'a> Visit<'a> for QueryFixed<'a> {
 	fn version_info(&mut self, _key: &'a [u16], fixed: Option<&'a VS_FIXEDFILEINFO>) -> bool {
-		*self = fixed;
+		self.0 = fixed;
+		true
+	}
+	fn file_info(&mut self, _key: &'a [u16]) -> bool {
 		false
 	}
 }
 
-struct ForEachString<F>(F);
-impl<'a, F: FnMut(&'a [u16], &'a [u16], &'a [u16])> Visit<'a> for ForEachString<F> {
-	fn string(&mut self, lang: &'a [u16], key: &'a [u16], value: &'a [u16]) {
-		(self.0)(lang, key, value);
+struct QueryTranslation<'a>(Option<&'a [Language]>);
+impl<'a> Visit<'a> for QueryTranslation<'a> {
+	fn file_info(&mut self, key: &'a [u16]) -> bool {
+		key == strings::VarFileInfo
+	}
+	fn var(&mut self, key: &'a [u16], value: &'a [u16]) {
+		if key == strings::Translation {
+			let langs = Language::from_slice(value);
+			self.0 = Some(langs);
+		}
 	}
 }
 
-struct QueryValue<'a, 's> {
-	key: &'s str,
-	value: Option<&'a [u16]>,
+struct QueryValue<'z> {
+	lang: Language,
+	key: &'z str,
+	value: Option<String>,
 }
-impl<'a, 's> Visit<'a> for QueryValue<'a, 's> {
-	fn string(&mut self, _lang: &'a [u16], key: &'a [u16], value: &'a [u16]) {
+impl<'a, 'z> Visit<'a> for QueryValue<'z> {
+	fn file_info(&mut self, key: &'a [u16]) -> bool {
+		key == strings::StringFileInfo
+	}
+	fn string_table(&mut self, lang: &'a [u16]) -> bool {
+		match Language::parse(lang) {
+			Ok(lang) => lang == self.lang,
+			Err(_) => false,
+		}
+	}
+	fn string(&mut self, key: &'a [u16], value: &'a [u16]) {
 		if Iterator::eq(self.key.chars().map(Ok), char::decode_utf16(key.iter().cloned())) {
+			let value = String::from_utf16_lossy(value);
 			self.value = Some(value);
+		}
+	}
+}
+
+struct QueryStrings<F> {
+	lang: Language,
+	f: F,
+}
+impl<'a, F: FnMut(&str, &str)> Visit<'a> for QueryStrings<F> {
+	fn string_table(&mut self, lang: &'a [u16]) -> bool {
+		match Language::parse(lang) {
+			Ok(lang) => lang == self.lang,
+			Err(_) => false,
+		}
+	}
+	fn string(&mut self, key: &'a [u16], value: &'a [u16]) {
+		let key = String::from_utf16_lossy(key);
+		let value = String::from_utf16_lossy(value);
+		(self.f)(&key, &value);
+	}
+}
+
+impl<'a> Visit<'a> for String {
+	fn version_info(&mut self, _key: &'a [u16], fixed: Option<&'a VS_FIXEDFILEINFO>) -> bool {
+		if let Some(fixed) = fixed {
+			let _ = writeln!(self, "\
+1 VERSIONINFO
+FILEVERSION {}, {}, {}, {}
+PRODUCTVERSION {}, {}, {}, {}
+FILEFLAGSMASK {:#x}
+FILEFLAGS {:#x}
+FILEOS ({} << 16) | {}
+FILETYPE {}
+FILESUBTYPE {}",
+				fixed.dwFileVersion.Major, fixed.dwFileVersion.Minor, fixed.dwFileVersion.Patch, fixed.dwFileVersion.Build,
+				fixed.dwProductVersion.Major, fixed.dwProductVersion.Minor, fixed.dwProductVersion.Patch, fixed.dwProductVersion.Build,
+				fixed.dwFileFlagsMask, fixed.dwFileFlags, fixed.dwFileOS >> 16, fixed.dwFileOS & 0xffff, fixed.dwFileType, fixed.dwFileSubtype);
+		}
+		true
+	}
+	fn file_info(&mut self, key: &'a [u16]) -> bool {
+		let _ = writeln!(self, "  BLOCK {:?}", FmtUtf16(key));
+		true
+	}
+	fn string_table(&mut self, lang: &'a [u16]) -> bool {
+		let _ = writeln!(self, "    BLOCK {:?}", FmtUtf16(lang));
+		true
+	}
+	fn string(&mut self, key: &'a [u16], value: &'a [u16]) {
+		let _ = writeln!(self, "      VALUE {:?}, {:?}", FmtUtf16(key), FmtUtf16(value));
+	}
+	fn var(&mut self, key: &'a [u16], value: &'a [u16]) {
+		// Don't know how to interpret any other Var key...
+		if key != strings::Translation {
+			return;
+		}
+		struct PrintLangs<'a>(&'a [Language]);
+		impl fmt::Display for PrintLangs<'_> {
+			fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+				for lang in self.0 {
+					write!(f, ", {}, {}", lang.lang_id, lang.charset_id)?;
+				}
+				Ok(())
+			}
+		}
+		let langs = Language::from_slice(value);
+		let _ = writeln!(self, "    VALUE {:?}{}", FmtUtf16(key), PrintLangs(langs));
+	}
+	fn enter_scope(&mut self, depth: usize) {
+		let _ = writeln!(self, "{}{{", &"        "[..depth * 2]);
+	}
+	fn exit_scope(&mut self, depth: usize) {
+		let _ = writeln!(self, "{}}}", &"        "[..depth * 2]);
+	}
+}
+
+/// VersionInfo parsed into HashMaps.
+#[derive(Clone, Debug, Default)]
+#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
+pub struct FileInfo<'a> {
+	pub fixed: Option<&'a VS_FIXEDFILEINFO>,
+	pub strings: HashMap<Language, HashMap<String, String>>,
+	pub translation: Option<&'a [Language]>,
+	#[cfg_attr(feature = "serde", serde(skip))]
+	lang: Language,
+}
+impl<'a> Visit<'a> for FileInfo<'a> {
+	fn version_info(&mut self, _key: &'a [u16], fixed: Option<&'a VS_FIXEDFILEINFO>) -> bool {
+		self.fixed = fixed;
+		true
+	}
+	fn string_table(&mut self, lang: &'a [u16]) -> bool {
+		if let Ok(lang) = Language::parse(lang) {
+			self.lang = lang;
+			self.strings.insert(lang, HashMap::new());
+			return true;
+		}
+		false
+	}
+	fn string(&mut self, key: &'a [u16], value: &'a [u16]) {
+		if let Some(entry) = self.strings.get_mut(&self.lang) {
+			let key = String::from_utf16_lossy(key);
+			let value = String::from_utf16_lossy(value);
+			entry.insert(key, value);
+		}
+	}
+	fn var(&mut self, key: &'a [u16], value: &'a [u16]) {
+		if key == strings::Translation {
+			let langs = Language::from_slice(value);
+			self.translation = Some(langs);
 		}
 	}
 }
@@ -216,21 +404,27 @@ impl<'a, 's> Visit<'a> for QueryValue<'a, 's> {
 /*
 	"version_info": {
 		"fixed": { .. },
-		"strings": { .. },
+		"strings": {
+			"040904B0": { ... }
+		},
+		"translation": ["040904B0"],
 	},
 */
 
 #[cfg(feature = "serde")]
 mod serde {
 	use crate::util::serde_helper::*;
-	use super::{VersionInfo};
+	use super::{Language, VersionInfo};
+
+	impl Serialize for Language {
+		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+			serializer.collect_str(self)
+		}
+	}
 
 	impl<'a> Serialize for VersionInfo<'a> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-			let mut state = serializer.serialize_struct("VersionInfo", 2)?;
-			state.serialize_field("fixed", &self.fixed())?;
-			state.serialize_field("strings", &self.to_hash_map())?;
-			state.end()
+			self.file_info().serialize(serializer)
 		}
 	}
 }
@@ -240,9 +434,9 @@ mod serde {
 mod strings {
 	#![allow(non_upper_case_globals)]
 	// static VS_VERSION_INFO: [u16; 15] = [86u16, 83, 95, 86, 69, 82, 83, 73, 79, 78, 95, 73, 78, 70, 79];
-	pub(crate) static StringFileInfo: [u16; 14] = [83u16, 116, 114, 105, 110, 103, 70, 105, 108, 101, 73, 110, 102, 111];
-	pub(crate) static VarFileInfo: [u16; 11] = [86u16, 97, 114, 70, 105, 108, 101, 73, 110, 102, 111];
-	// static Translation: [u16; 11] = [84u16, 114, 97, 110, 115, 108, 97, 116, 105, 111, 110];
+	pub(super) static StringFileInfo: [u16; 14] = [83u16, 116, 114, 105, 110, 103, 70, 105, 108, 101, 73, 110, 102, 111];
+	pub(super) static VarFileInfo: [u16; 11] = [86u16, 97, 114, 70, 105, 108, 101, 73, 110, 102, 111];
+	pub(super) static Translation: [u16; 11] = [84u16, 114, 97, 110, 115, 108, 97, 116, 105, 111, 110];
 	// static Comments: [u16; 8] = [67u16, 111, 109, 109, 101, 110, 116, 115];
 	// static CompanyName: [u16; 11] = [67u16, 111, 109, 112, 97, 110, 121, 78, 97, 109, 101];
 	// static FileDescription: [u16; 15] = [70u16, 105, 108, 101, 68, 101, 115, 99, 114, 105, 112, 116, 105, 111, 110];
@@ -262,7 +456,9 @@ mod strings {
 #[cfg(test)]
 pub(crate) fn test(version_info: VersionInfo<'_>) {
 	let _fixed = version_info.fixed();
-	let _hash_map = version_info.to_hash_map();
+	let _translation = version_info.translation();
+	let _file_info = version_info.file_info();
+	let _source_code = version_info.source_code();
 }
 
 //----------------------------------------------------------------

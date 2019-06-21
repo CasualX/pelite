@@ -14,6 +14,8 @@ Sources:
 #![allow(non_snake_case)]
 #![allow(non_camel_case_types)]
 
+use std::fmt;
+
 use crate::_Pod as Pod;
 use crate::util::StringN;
 
@@ -156,7 +158,7 @@ pub const IMAGE_NUMBEROF_DIRECTORY_ENTRIES: usize   = 16;
 //----------------------------------------------------------------
 
 // Helper struct, makes serialization nicer
-#[derive(Copy, Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
+#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
 #[repr(C)]
 pub struct IMAGE_VERSION<T> {
 	pub Major: T,
@@ -164,9 +166,19 @@ pub struct IMAGE_VERSION<T> {
 }
 unsafe impl<T: Pod> Pod for IMAGE_VERSION<T> {}
 #[cfg(feature = "serde")]
-impl<T: std::fmt::Display> serde::Serialize for IMAGE_VERSION<T> {
+impl<T: fmt::Display> serde::Serialize for IMAGE_VERSION<T> {
 	fn serialize<S: serde::Serializer>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error> {
-		serializer.collect_str(&format_args!("{}.{}", self.Major, self.Minor))
+		serializer.collect_str(self)
+	}
+}
+impl<T: fmt::Display> fmt::Debug for IMAGE_VERSION<T> {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		write!(f, "\"{}.{}\"", self.Major, self.Minor)
+	}
+}
+impl<T: fmt::Display> fmt::Display for IMAGE_VERSION<T> {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		write!(f, "{}.{}", self.Major, self.Minor)
 	}
 }
 
@@ -473,7 +485,7 @@ pub struct IMAGE_RESOURCE_DATA_ENTRY {
 
 pub const VS_FIXEDFILEINFO_SIGNATURE: u32 = 0xFEEF04BD;
 
-#[derive(Copy, Clone, Pod, Debug, Eq, PartialEq, Ord, PartialOrd)]
+#[derive(Copy, Clone, Pod, Eq, PartialEq, Ord, PartialOrd)]
 #[repr(C)]
 pub struct VS_VERSION {
 	pub Minor: u16,
@@ -484,15 +496,27 @@ pub struct VS_VERSION {
 #[cfg(feature = "serde")]
 impl serde::Serialize for VS_VERSION {
 	fn serialize<S: serde::Serializer>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error> {
-		serializer.collect_str(&format_args!("{}.{}.{}.{}", self.Major, self.Minor, self.Patch, self.Build))
+		serializer.collect_str(self)
+	}
+}
+impl fmt::Debug for VS_VERSION {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		write!(f, "\"{}.{}.{}.{}\"", self.Major, self.Minor, self.Patch, self.Build)
+	}
+}
+impl fmt::Display for VS_VERSION {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		write!(f, "{}.{}.{}.{}", self.Major, self.Minor, self.Patch, self.Build)
 	}
 }
 
 #[cfg(feature = "serde")]
 fn ser_fixed_file_info_struc_version<S: serde::Serializer>(&version: &u32, serializer: S) -> std::result::Result<S::Ok, S::Error> {
-	let major = version >> 16;
-	let minor = version & 0xffff;
-	serializer.collect_str(&format_args!("{}.{}", major, minor))
+	let version = IMAGE_VERSION {
+		Major: (version >> 16) as u16,
+		Minor: (version & 0xffff) as u16,
+	};
+	serializer.collect_str(&version)
 }
 
 #[derive(Copy, Clone, Pod, Debug)]
