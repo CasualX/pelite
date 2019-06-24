@@ -94,6 +94,6 @@ fn parse_str_literal(input: &str) -> (usize, String) {
 }
 
 // Total hack to get the pattern parse code in here :)
-#[path = "../../src/pattern.rs"]
+#[path = "../pattern.rs"]
 #[allow(unused)]
 mod pattern;
