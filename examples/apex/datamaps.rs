@@ -36,16 +36,16 @@ struct typedescription_t {
 	fieldName: Ptr<CStr>,
 	fieldOffset: [u32; 2],
 	externalName: Ptr<CStr>,
-	_unk0: [u64; 4], // seen: [0, 0, 0, 0x7FF6FFFFFFFF]
+	_unk0: [u64; 5], // seen: [0, 0, 0, 0x7FF6FFFFFFFF, 0xFFFFFFFF]
 	td: Ptr<datamap_t>,
 	fieldSizeInBytes: i32,
 	_unk_bool: u8,
 	_unk_four: u32, // seen: 4
 	_unk1: [u64; 3], // seen: [0, 0, fieldOffset[0]]
 	_unk_word: u16,
-} // sizeof = 0x78
+} // sizeof = 0x80
 #[allow(dead_code)]
-const SIZE_OF_TYPE_DESCRIPTION: [(); mem::size_of::<typedescription_t>()] = [(); 0x78];
+const SIZE_OF_TYPE_DESCRIPTION: [(); mem::size_of::<typedescription_t>()] = [(); 0x80];
 
 #[allow(non_snake_case)]
 #[derive(Copy, Clone, Pod)]
@@ -83,21 +83,29 @@ struct DataMap<'a> {
 fn datamaps<'a>(bin: PeFile<'a>) -> Vec<DataMap<'a>> {
 	let mut save = [0; 4];
 	let mut list = Vec::new();
+	let mut addresses = Vec::new();
 
 	// Ugh this is kinda shitty
 	// Every entity class has a virtual method to return the address of its datamap
 	// So try to find those and filter out all false positives?
 	let mut matches = bin.scanner().matches_code(pat!("48 8D 05 $ {'} C3 CC CC CC CC CC CC CC CC"));
 	while matches.next(&mut save) {
-		if let Ok(dm) = datamap(bin, save[1]) {
+		addresses.push(save[1]);
+	}
+
+	// Analyze any datamaps found and add any extras
+	let mut i = 0;
+	while i < addresses.len() {
+		if let Ok(dm) = datamap(bin, addresses[i], &mut addresses) {
 			list.push(dm);
 		}
+		i += 1;
 	}
 
 	list.sort_unstable_by_key(|dm| dm.name);
 	return list;
 }
-fn datamap<'a>(bin: PeFile<'a>, address: u32) -> pelite::Result<DataMap<'a>> {
+fn datamap<'a>(bin: PeFile<'a>, address: u32, addresses: &mut Vec<u32>) -> pelite::Result<DataMap<'a>> {
 	let datamap = bin.derva::<datamap_t>(address)?;
 	let datadesc = bin.deref_slice(datamap.dataDesc, datamap.dataNumFields as usize)?;
 	let base = if datamap.baseMap.is_null() {
@@ -119,7 +127,12 @@ fn datamap<'a>(bin: PeFile<'a>, address: u32) -> pelite::Result<DataMap<'a>> {
 			FIELD_TYPES[ty as usize]
 		}
 		else {
-			// TODO! Recursively walk this datamap?
+			if !desc.td.is_null() {
+				let td_rva = bin.va_to_rva(desc.td.into())?;
+				if !addresses.iter().any(|&td| td == td_rva) {
+					addresses.push(td_rva);
+				}
+			}
 			let td = bin.deref(desc.td)?;
 			let name = bin.deref_c_str(td.dataClassName)?.to_str().or(Err(pelite::Error::Encoding))?;
 			name
