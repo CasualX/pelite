@@ -17,9 +17,8 @@ fn example(bin: PeFile<'_>) -> Result<(), pelite::resources::FindError> {
 	// Get and print the fixed file info
 	println!("FixedFileInfo: {:?}", version_info.fixed());
 
-	// Get the first available translation
-	let translations = version_info.translations();
-	let &lang = translations.first().unwrap();
+	// Get the first available language
+	let lang = version_info.translation()[0];
 
 	// Query some properties
 	let company_name = version_info.value(lang, "CompanyName");
@@ -119,10 +118,10 @@ impl<'a> VersionInfo<'a> {
 		self.visit(&mut this);
 		this.0
 	}
-	/// Gets the available translations.
+	/// Gets the available languages.
 	///
 	/// Queries `\VarFileInfo\Translation`.
-	pub fn translations(self) -> &'a [Language] {
+	pub fn translation(self) -> &'a [Language] {
 		let mut this = QueryTranslation(&[]);
 		self.visit(&mut this);
 		this.0
@@ -223,7 +222,7 @@ impl fmt::Debug for VersionInfo<'_> {
 		f.debug_struct("VersionInfo")
 			.field("fixed", &file_info.fixed)
 			.field("strings", &file_info.strings)
-			.field("translation", &file_info.translation)
+			.field("langs", &file_info.langs)
 			.finish()
 	}
 }
@@ -366,7 +365,7 @@ FILESUBTYPE {}",
 pub struct FileInfo<'a> {
 	pub fixed: Option<&'a VS_FIXEDFILEINFO>,
 	pub strings: HashMap<Language, HashMap<String, String>>,
-	pub translation: Option<&'a [Language]>,
+	pub langs: &'a [Language],
 	#[cfg_attr(feature = "serde", serde(skip))]
 	lang: Language,
 }
@@ -392,8 +391,7 @@ impl<'a> Visit<'a> for FileInfo<'a> {
 	}
 	fn var(&mut self, key: &'a [u16], value: &'a [u16]) {
 		if key == strings::Translation {
-			let langs = Language::from_slice(value);
-			self.translation = Some(langs);
+			self.langs = Language::from_slice(value);
 		}
 	}
 }
@@ -406,7 +404,7 @@ impl<'a> Visit<'a> for FileInfo<'a> {
 		"strings": {
 			"040904B0": { ... }
 		},
-		"translation": ["040904B0"],
+		"langs": ["040904B0"],
 	},
 */
 
@@ -455,7 +453,7 @@ mod strings {
 #[cfg(test)]
 pub(crate) fn test(version_info: VersionInfo<'_>) {
 	let _fixed = version_info.fixed();
-	let _translation = version_info.translations();
+	let _langs = version_info.translation();
 	let _file_info = version_info.file_info();
 	let _source_code = version_info.source_code();
 }
