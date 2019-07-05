@@ -18,8 +18,8 @@ fn example(bin: PeFile<'_>) -> Result<(), pelite::resources::FindError> {
 	println!("FixedFileInfo: {:?}", version_info.fixed());
 
 	// Get the first available translation
-	let translation = version_info.translation().unwrap();
-	let &lang = translation.first().unwrap();
+	let translations = version_info.translations();
+	let &lang = translations.first().unwrap();
 
 	// Query some properties
 	let company_name = version_info.value(lang, "CompanyName");
@@ -122,8 +122,8 @@ impl<'a> VersionInfo<'a> {
 	/// Gets the available translations.
 	///
 	/// Queries `\VarFileInfo\Translation`.
-	pub fn translation(self) -> Option<&'a [Language]> {
-		let mut this = QueryTranslation(None);
+	pub fn translations(self) -> &'a [Language] {
+		let mut this = QueryTranslation(&[]);
 		self.visit(&mut this);
 		this.0
 	}
@@ -253,15 +253,14 @@ impl<'a> Visit<'a> for QueryFixed<'a> {
 	}
 }
 
-struct QueryTranslation<'a>(Option<&'a [Language]>);
+struct QueryTranslation<'a>(&'a [Language]);
 impl<'a> Visit<'a> for QueryTranslation<'a> {
 	fn file_info(&mut self, key: &'a [u16]) -> bool {
 		key == strings::VarFileInfo
 	}
 	fn var(&mut self, key: &'a [u16], value: &'a [u16]) {
 		if key == strings::Translation {
-			let langs = Language::from_slice(value);
-			self.0 = Some(langs);
+			self.0 = Language::from_slice(value);
 		}
 	}
 }
@@ -456,7 +455,7 @@ mod strings {
 #[cfg(test)]
 pub(crate) fn test(version_info: VersionInfo<'_>) {
 	let _fixed = version_info.fixed();
-	let _translation = version_info.translation();
+	let _translation = version_info.translations();
 	let _file_info = version_info.file_info();
 	let _source_code = version_info.source_code();
 }
