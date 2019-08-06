@@ -1,7 +1,13 @@
 [package]
 name = "pelite-macros"
 version = "0.1.0"
+authors = ["Casper <CasualX@users.noreply.github.com>"]
 edition = "2018"
+
+description = "Implements procedural macros for the pelite crate."
+documentation = "https://docs.rs/pelite/"
+repository = "https://github.com/CasualX/pelite"
+license = "MIT"
 
 [lib]
 proc-macro = true
