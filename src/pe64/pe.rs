@@ -551,8 +551,9 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) if the image has no resources. Any other error indicates some form of corruption.
 	fn resources(self) -> Result<crate::resources::Resources<'a>> where Self: Copy {
 		let datadir = self.data_directory().get(IMAGE_DIRECTORY_ENTRY_RESOURCE).ok_or(Error::Bounds)?;
-		let data = self.derva_slice(datadir.VirtualAddress, datadir.Size as usize)?;
-		Ok(crate::resources::Resources::new(data, datadir))
+		let bytes = self.slice_bytes(datadir.VirtualAddress)?;
+		let size = cmp::min(datadir.Size as usize, bytes.len());
+		Ok(crate::resources::Resources::new(&bytes[..size], datadir))
 	}
 
 	/// Gets Scanner access.
