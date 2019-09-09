@@ -7,24 +7,30 @@ use pelite::{Pod, util::CStr};
 pub fn print(bin: PeFile, _dll_name: &str) {
 	let tables = tables(bin);
 
-	println!("## RecvTables\n");
-	for table in &tables {
-		println!("<details>");
-		print!("<summary><code>class {}", table.name);
-		if let Some(base) = table.base {
-			print!(" extends {}", base);
+	tprint! {
+		"## RecvTables\n\n"
+		for table in (&tables) {
+			"<details>\n"
+			"<summary><code>class "{table.name}
+			if let Some(base) = (table.base) {
+				" extends "{base}
+			}
+			"</code></summary>\n\n"
+			"```\n{{\n"
+			for prop in (&table.props) {
+				"\t"{prop.name}": "{prop.ty}",\n"
+			}
+			"}}\n```\n\n"
+			"### Offsets\n\n"
+			"```\n"
+			for prop in (&table.props) {
+				{table.name}"!"{prop.offset;#06x}" "{prop.name}"\n"
+			}
+			"```\n"
+			"</details>\n"
 		}
-		println!("</code></summary>\n\n```\n{{");
-		for prop in &table.props {
-			println!("\t{}: {},", prop.name, prop.ty);
-		}
-		println!("}}\n```\n\n### Offsets\n\n```");
-		for prop in &table.props {
-			println!("{}!{:#06x} {}", table.name, prop.offset, prop.name);
-		}
-		println!("```\n</details>");
+		"\n"
 	}
-	println!();
 }
 
 #[derive(Copy, Clone, Pod)]

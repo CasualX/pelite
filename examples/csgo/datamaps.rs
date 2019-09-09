@@ -14,24 +14,32 @@ use pelite::pe32::*;
 pub fn print(client: PeFile) {
 	let datamaps = datamaps(client).unwrap();
 
-	println!("### Datamaps\n");
-	for class in &datamaps {
-		println!("<details>");
-		print!("<summary><code>class {}", class.name);
-		if let Some(base) = class.base {
-			print!(" extends {}", base);
+	tprint! {
+		"### Datamaps\n\n"
+		for class in (&datamaps) {
+			"<details>\n"
+			"<summary><code>class "{class.name}
+			if let Some(base) = (class.base) {
+				" extends "{base}
+			}
+			"</code></summary>\n\n"
+			"```\n"
+			"{{\n"
+			for field in (&class.fields) {
+				"\t"{field.name}": "{field.ty}",\n"
+			}
+			"}}\n"
+			"```\n\n"
+			"#### Offsets\n\n"
+			"```\n"
+			for field in (&class.fields) {
+				{class.name}"!"{field.offset;#06x}" "{field.name}"\n"
+			}
+			"```\n"
+			"</details>\n"
 		}
-		println!("</code></summary>\n\n```\n{{");
-		for field in &class.fields {
-			println!("\t{}: {},", field.name, field.ty);
-		}
-		println!("}}\n```\n\n#### Offsets\n\n```");
-		for field in &class.fields {
-			println!("{}!{:#06x} {}", class.name, field.offset, field.name);
-		}
-		println!("```\n</details>");
+		"\n"
 	}
-	println!();
 }
 
 //----------------------------------------------------------------

@@ -13,11 +13,13 @@ use pelite::pe32::*;
 pub fn print(bin: PeFile<'_>, dll_name: &str) {
 	let btns = buttons(bin);
 
-	println!("### Buttons\n\n```");
-	for btn in &btns {
-		println!("{}!{:#010x} kbutton_t {}", dll_name, btn.kbutton, btn.name);
+	tprint! {
+		"### Buttons\n\n```\n"
+		for btn in (&btns) {
+			{dll_name}"!"{btn.kbutton;#010x}" kbutton_t "{btn.name}"\n"
+		}
+		"```\n\n"
 	}
-	println!("```\n");
 }
 
 #[derive(Copy, Clone, Pod, Debug)]

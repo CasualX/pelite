@@ -6,21 +6,24 @@ use pelite::pattern as pat;
 pub fn print(bin: PeFile, dll_name: &str) {
 	let cmds = concommands(bin);
 
-	println!("## ConCommands\n");
-	for cmd in &cmds {
-		println!("<details>");
-		println!("<summary><code>{}</code></summary>\n", cmd.name);
-		if let Some(desc) = cmd.desc {
-			println!("{}\n", desc);
+	tprint! {
+		"## ConCommands\n\n"
+		for cmd in (&cmds) {
+			"<details>\n"
+			"<summary><code>"{cmd.name}"</code></summary>\n\n"
+			if let Some(desc) = (cmd.desc) {
+				{desc}"\n\n"
+			}
+			"flags: `"{cmd.flags;#x}"`  \n"
+			"</details>\n"
 		}
-		println!("flags: `{:#x}`  ", cmd.flags);
-		println!("</details>");
+		"\n### Addresses\n\n"
+		"```\n"
+		for cmd in (&cmds) {
+			{dll_name}"!"{cmd.address;#010x}" ConCommand "{cmd.name}"\n"
+		}
+		"```\n\n"
 	}
-	println!("\n### Addresses\n\n```");
-	for cmd in &cmds {
-		println!("{}!{:#010x} ConCommand {}", dll_name, cmd.address, cmd.name);
-	}
-	println!("```\n");
 }
 
 #[allow(non_snake_case)]

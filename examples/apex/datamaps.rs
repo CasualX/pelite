@@ -8,24 +8,30 @@ use pelite::pe64::*;
 pub fn print(bin: PeFile<'_>, _dll_name: &str) {
 	let datamaps = datamaps(bin);
 
-	println!("## Datamaps\n");
-	for datamap in &datamaps {
-		println!("<details>");
-		print!("<summary><code>class {}", datamap.name);
-		if let Some(base) = datamap.base {
-			print!(" extends {}", base);
+	tprint! {
+		"## Datamaps\n\n"
+		for datamap in (&datamaps) {
+			"<details>\n"
+			"<summary><code>class "{datamap.name}
+			if let Some(base) = (datamap.base) {
+				" extends "{base}
+			}
+			"</code></summary>\n\n"
+			"```\n{{\n"
+			for field in (&datamap.fields) {
+				"\t"{field.name}": "{field.ty}",\n"
+			}
+			"}}\n```\n\n"
+			"### Offsets\n\n"
+			"```\n"
+			for field in (&datamap.fields) {
+				{datamap.name}"!"{field.offset;#06x}" "{field.name}"\n"
+			}
+			"```\n"
+			"</details>\n"
 		}
-		println!("</code></summary>\n\n```\n{{");
-		for field in &datamap.fields {
-			println!("\t{}: {},", field.name, field.ty);
-		}
-		println!("}}\n```\n\n### Offsets\n\n```");
-		for field in &datamap.fields {
-			println!("{}!{:#06x} {}", datamap.name, field.offset, field.name);
-		}
-		println!("```\n</details>");
+		"\n"
 	}
-	println!();
 }
 
 #[allow(non_snake_case)]
@@ -113,10 +119,10 @@ fn datamap<'a>(bin: PeFile<'a>, address: u32, addresses: &mut Vec<u32>) -> pelit
 	}
 	else {
 		let basemap = bin.deref(datamap.baseMap)?;
-		let name = bin.deref_c_str(basemap.dataClassName)?.to_str().or(Err(pelite::Error::Encoding))?;
+		let name = bin.deref_c_str(basemap.dataClassName)?.to_str()?;
 		Some(name)
 	};
-	let name = bin.deref_c_str(datamap.dataClassName)?.to_str().or(Err(pelite::Error::Encoding))?;
+	let name = bin.deref_c_str(datamap.dataClassName)?.to_str()?;
 	let mut fields = Vec::new();
 	for desc in datadesc {
 		let ty = desc.fieldType;
@@ -134,11 +140,11 @@ fn datamap<'a>(bin: PeFile<'a>, address: u32, addresses: &mut Vec<u32>) -> pelit
 				}
 			}
 			let td = bin.deref(desc.td)?;
-			let name = bin.deref_c_str(td.dataClassName)?.to_str().or(Err(pelite::Error::Encoding))?;
+			let name = bin.deref_c_str(td.dataClassName)?.to_str()?;
 			name
 		};
 		let offset = desc.fieldOffset[0];
-		let name = bin.deref_c_str(desc.fieldName)?.to_str().or(Err(pelite::Error::Encoding))?;
+		let name = bin.deref_c_str(desc.fieldName)?.to_str()?;
 		fields.push(Field { ty, offset, name });
 	}
 	fields.sort_by_key(|field| field.offset);

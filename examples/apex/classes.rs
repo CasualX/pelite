@@ -9,19 +9,22 @@ use pelite::pattern as pat;
 pub fn print(bin: PeFile, dll_name: &str) {
 	let classes = classes(bin);
 
-	println!("## ClientClasses\n");
-	for cls in &classes {
-		println!("<details>");
-		println!("<summary><code>client_class {}</code></summary>\n", cls.name);
-		println!("class_id: `{}`  ", cls.id);
-		println!("sizeof: `{}`  ", cls.size);
-		println!("</details>");
+	tprint! {
+		"## ClientClasses\n\n"
+		for cls in (&classes) {
+			"<details>\n"
+			"<summary><code>client_class "{cls.name}"</code></summary>\n\n"
+			"class_id: `"{cls.id}"`  \n"
+			"sizeof: `"{cls.size}"`  \n"
+			"</details>\n"
+		}
+		"\n### Addresses\n"
+		"\n```\n"
+		for cls in (&classes) {
+			{dll_name}"!"{cls.address;#010x}" ClientClass "{cls.name}"\n"
+		}
+		"```\n\n"
 	}
-	println!("\n### Addresses\n\n```");
-	for cls in &classes {
-		println!("{}!{:#010x} ClientClass {}", dll_name, cls.address, cls.name);
-	}
-	println!("```\n");
 }
 
 //----------------------------------------------------------------

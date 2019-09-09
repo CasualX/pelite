@@ -17,24 +17,32 @@ use lde;
 pub fn print(client: PeFile) {
 	let classes = recvtables(client).unwrap();
 
-	println!("### Recvtables\n");
-	for cls in &classes {
-		println!("<details>");
-		print!("<summary><code>class {}", cls.name);
-		if let Some(base) = cls.base {
-			print!(" extends {}", base);
+	tprint! {
+		"### Recvtables\n\n"
+		for cls in (&classes) {
+			"<details>\n"
+			"<summary><code>class "{cls.name}
+			if let Some(base) = (cls.base) {
+				" extends "{base}
+			}
+			"</code></summary>\n\n"
+			"```\n"
+			"{{\n"
+			for prop in (&cls.props) {
+				"\t"{prop.name}": "{prop.ty}",\n"
+			}
+			"}}\n"
+			"```\n\n"
+			"#### Offsets\n\n"
+			"```\n"
+			for prop in (&cls.props) {
+				{cls.name}"!"{prop.offset;#06x}" "{prop.name}"\n"
+			}
+			"```\n"
+			"</details>\n"
 		}
-		println!("</code></summary>\n\n```\n{{");
-		for prop in &cls.props {
-			println!("\t{}: {},", prop.name, prop.ty);
-		}
-		println!("}}\n```\n\n#### Offsets\n\n```");
-		for prop in &cls.props {
-			println!("{}!{:#06x} {}", cls.name, prop.offset, prop.name);
-		}
-		println!("```\n</details>");
+		"\n"
 	}
-	println!();
 }
 
 //----------------------------------------------------------------

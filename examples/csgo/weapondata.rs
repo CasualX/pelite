@@ -14,23 +14,30 @@ use lde;
 pub fn print(client: PeFile) {
 	let list = weapondata(client).unwrap();
 
-	println!("### WeaponData\n\n```");
-	print!("class WeaponInfo {{\n");
-	for member in &list[1].members {
-		println!("\t{}: {},", member.name, member.ty);
+	tprint! {
+		"### WeaponData\n\n"
+		"```\n"
+		"class WeaponInfo {{\n"
+		for member in (&list[1].members) {
+			"\t"{member.name}": "{member.ty}",\n"
+		}
+		"}}\n"
+		"class CSWeaponInfo extends WeaponInfo {{\n"
+		for member in (&list[0].members) {
+			"\t"{member.name}": "{member.ty}",\n"
+		}
+		"}}\n"
+		"```\n\n"
+		"#### Offsets\n\n"
+		"```\n"
+		for member in (&list[1].members) {
+			"WeaponInfo!"{member.offset;#06x}" "{member.name}"\n"
+		}
+		for member in (&list[0].members) {
+			"CSWeaponInfo!"{member.offset;#06x}" "{member.name}"\n"
+		}
+		"```\n\n"
 	}
-	println!("}}\nclass CSWeaponInfo extends WeaponInfo {{");
-	for member in &list[0].members {
-		println!("\t{}: {},", member.name, member.ty);
-	}
-	println!("}}\n```\n\n#### Offsets\n\n```");
-	for member in &list[1].members {
-		println!("WeaponInfo!{:#06x} {}", member.offset, member.name);
-	}
-	for member in &list[0].members {
-		println!("CSWeaponInfo!{:#06x} {}", member.offset, member.name);
-	}
-	println!("```\n");
 }
 
 //----------------------------------------------------------------
