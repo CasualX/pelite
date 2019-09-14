@@ -31,7 +31,7 @@ pub fn _pod_derive(input: TokenStream) -> TokenStream {
 ///
 /// See `pelite::pattern` macro for the macro rules wrapper around this implementation detail.
 ///
-/// ```
+/// ```ignore
 /// #[pattern_attribute]
 /// const PATTERN: &[pelite::pattern::Atom] = &pattern!("pattern string");
 /// ```
@@ -96,6 +96,5 @@ fn parse_str_literal(input: &str) -> (usize, String) {
 }
 
 // Total hack to get the pattern parse code in here :)
-#[path = "../pattern.rs"]
 #[allow(unused)]
 mod pattern;

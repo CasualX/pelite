@@ -570,10 +570,7 @@ fn parse_helper(pat: &mut &str, result: &mut Vec<Atom>) -> Result<(), PatError> 
 mod tests {
 	use super::*;
 
-	#[test]
-	fn sizes() {
-		assert_size_of!(2, Atom);
-	}
+	const _: [(); 2] = [(); std::mem::size_of::<Atom>()];
 
 	#[test]
 	fn patterns() {

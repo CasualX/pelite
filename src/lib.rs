@@ -22,6 +22,7 @@ pub mod image;
 
 pub mod stringify;
 
+#[path = "proc-macros/pattern.rs"]
 pub mod pattern;
 
 #[macro_export]

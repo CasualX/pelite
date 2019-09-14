@@ -524,7 +524,7 @@ pub(crate) fn test(resources: Resources<'_>) -> Result<()> {
 			if let Ok(name) = entry.name() {
 				let mut id_entries;
 				let mut named_entries;
-				let mut entries: &mut Iterator<Item = _> = match name {
+				let mut entries: &mut dyn Iterator<Item = _> = match name {
 					Name::Id(_) => { id_entries = dir.id_entries(); &mut id_entries },
 					Name::WideStr(_) => { named_entries = dir.named_entries(); &mut named_entries },
 					Name::Str(_) => unreachable!()

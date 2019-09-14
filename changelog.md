@@ -5,6 +5,136 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [0.8.0] 2019-09-12
+
+Pelite is now developed in Rust Edition 2018!
+
+### Proc-macro Assistance
+
+Procedural macros have been added (because I can)!
+
+- Moved the Pod trait to the crate root from util.
+- Added zeroed and uninit constructors for Pod types.
+- Added a proc-macro to safely implement the Pod trait as it'll check if every other member implements Pod.
+
+### Patterns and Scanner
+
+The patterns and scanner saw some significant upgrades.
+
+- Added a proc-macro to compiletime parse patterns making the pattern strings zero-cost to use.
+
+Added new atoms to build more powerful patterns.
+
+Unfortunately not all of these have a syntax representation in string patterns.
+Welcoming ideas on how to improve the design of the pattern DSL.
+
+- Added pattern atom Check which compares the cursor against the save slot value and fails if they're not equal.
+- Added pattern atom Zero which writes zero to the given save slot.
+- Added pattern atom Align which checks if the cursor is aligned to the given alignment.
+- Added pattern atom Nop for assisting implementing parsers.
+
+Cleaned up the implementation of skipping around, this is a very **[breaking]** change but cleans up the API and implementation.
+
+- Changed the parameters of Skip and Push to only be able to skip forwards.
+- Changed the argument to skip a pointer's worth of bytes to zero, use Nop as a no-operation atom.
+- Replaced SkipExt and ManyExt by Rangext to unify range extension under a single atom.
+- Added pattern atom Skep to jump backwards.
+
+### Unified Wrappers
+
+This library has never attempted to unify the 32-bit and 64-bit PE variants.
+It made it annoying to write tooling or utilities to work with both formats even when there's hardly a difference in API.
+
+Introducing the Wrap API which is an enum that holds either one of two types, the 32-bit or the 64-bit variant.
+Then using Rust magic reimplement most of the pelite API on this wrapper for convenience to avoid having to match all the time.
+
+- Added the `Wrap` API to unify the 32-bit and 64-bit PE variants.
+
+Further try to avoid the Wrap as much as possible by actually unifying types that are actually the same.
+Code between 32-bit and 64-bit variants is actually duplicated at the source code level by means of `#[path]`.
+This means that some types that are identical got unnecessarily duplicated, efforts include reducing this duplication.
+
+This shared code is not directly accessible, accessing these types from their usual pe32 or pe64 paths.
+It doesn't matter what you pick, Rust now recognizes they refer to the same underlying types.
+
+- Changed Rich Structure to shared code.
+- Changed Security Directory to shared code.
+- Changed Base Relocations to shared code.
+
+### PE Format
+
+- Renamed names Pogo to Pgo to better reflect the actual meaning of Profile Guided Optimization related information.
+- Added Rich Structure parser.
+- Added Base Relocations builder API.
+- Added API get_section_bytes to do the right thing regardless if a PeFile or PeView.
+
+### Resources Format
+
+VersionInfo got a complete do-over and some fixes.
+
+- Fixed infinite loop case in VersionInfo parser.
+- Refactored the VersionInfo API, see docs and examples how to use it.
+- Added rendering VersionInfo back to source code.
+- Added an example which reads and renders the VersionInfo from a PE file.
+- Added a parser for lang id and charset id pairs.
+- Changed version_info from resources to no longer hardcode the language.
+
+Finding resources by name has been redesigned.
+
+- Renamed the UTF-16 variant to `WideStr`.
+- Added a `Str` variant that accepts Rust strings.
+  Compares as an identifier if the string starts with `#`, otherwise compares against named entries.
+
+Miscellaneous changes
+
+- Delay bound checks when fetching resources parsing some (questionably valid) binaries that would previously fail.
+
+### Examples
+
+The examples demonstrate how pelite might be used in practice.
+
+For fun I wrote an ApiSetSchema parser (only supports the latest Windows 10 format).
+Try it out: `cargo run --example apisetschema > apisetschema.txt`.
+
+- Parse ApiSetSchema for Windows 10.
+
+Perhaps even more important than example code is to show the result of these examples.
+Visualizing the results becomes important, for this I refactored the game analysis modules to render to markdown so GitHub's preview gives a pretty view.
+Future ideas may move to rendering to HTML and hosting with GitHub pages.
+
+There are many ideas to explore in this space.
+
+- Update CS:GO analysis.
+- Added Apex Legends analysis.
+
+### Alignment utils
+
+An interesting use case is to embed a binary in your executable through `include_bytes!` and reflect upon the binary with pelite.
+However because the included resource is an array of bytes it may not have the strict alignment that pelite requires! To fix this use one of the Align wrappers.
+
+- Added alignment tuple structs `Align16`, `Align512` and `Align4K`.
+
+Make it convenient to align to or check the alignment of an integer or pointer.
+
+- Added helper to align an integer or pointer to the next alignment.
+- Added helper to check if an integer or pointer is aligned.
+
+### RE Utilities
+
+Support more general purpose analysis features for discovery rather than automating existing analysis.
+
+- Added shannon entropy function.
+
+### Miscellaneous
+
+- Added maintenance badge.
+- Added unstable feature to expose experimental features.
+- Added error converters from `std::str::Utf8Error` making more convenient error handling.
+- Changed TLS raw data to use base64 when serializing for humans.
+- Changed Ptr's methods where const fn has been stablized.
+- Fixed Ptr's type parameter variance.
+- Removed WideStr from utils, it didn't do what you thought it did.
+
 ## [0.7.1] 2018-09-20
 
 - Tweak the patterns documentation.
