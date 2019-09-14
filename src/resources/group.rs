@@ -129,7 +129,7 @@ impl<'a> GroupResource<'a> {
 			.bytes().map_err(FindError::Pe)
 	}
 	/// Reassemble the file.
-	pub fn write(&self, dest: &mut io::Write) -> io::Result<()> {
+	pub fn write(&self, dest: &mut dyn io::Write) -> io::Result<()> {
 		// Start by appending the header
 		dest.write(self.image.as_bytes())?;
 		// Write all the icon entries

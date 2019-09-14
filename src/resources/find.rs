@@ -60,7 +60,10 @@ impl error::Error for FindError {
 			FindError::UnDirectory => "unexpected directory",
 		}
 	}
-	fn cause(&self) -> Option<&error::Error> {
+	fn cause(&self) -> Option<&dyn error::Error> {
+		self.source()
+	}
+	fn source(&self) -> Option<&(dyn error::Error + 'static)> {
 		match self {
 			FindError::Pe(err) => Some(err),
 			_ => None,

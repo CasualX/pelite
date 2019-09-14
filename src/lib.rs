@@ -13,6 +13,7 @@ Due to small but incompatible differences the two formats are not unified.
 */
 
 #![recursion_limit = "128"]
+#![allow(ellipsis_inclusive_range_patterns)]
 
 #[macro_use]
 pub mod util;

@@ -567,7 +567,7 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 //----------------------------------------------------------------
 // Make `&PeObject<'a>` trait objects work seamlessly.
 
-unsafe impl<'s, 'a> PeObject<'a> for &'s PeObject<'a> {
+unsafe impl<'s, 'a> PeObject<'a> for &'s dyn PeObject<'a> {
 	fn image(&self) -> &'a [u8] {
 		PeObject::image(*self)
 	}
@@ -580,7 +580,7 @@ unsafe impl<'s, 'a> PeObject<'a> for &'s PeObject<'a> {
 	}
 }
 
-unsafe impl<'s, 'a> Pe<'a> for &'s PeObject<'a> {}
+unsafe impl<'s, 'a> Pe<'a> for &'s dyn PeObject<'a> {}
 
 //----------------------------------------------------------------
 
