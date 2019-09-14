@@ -231,7 +231,7 @@ impl<'a> Name<'a> {
 			Name::Str(s) => rhs == *s,
 		}
 	}
-	fn display_wide_str(words: &[u16], f: &mut fmt::Write) -> fmt::Result {
+	fn display_wide_str(words: &[u16], f: &mut dyn fmt::Write) -> fmt::Result {
 		for chr in char::decode_utf16(words.iter().cloned()) {
 			let chr = chr.unwrap_or(char::REPLACEMENT_CHARACTER);
 			fmt::Write::write_char(f, chr)?;
@@ -241,7 +241,7 @@ impl<'a> Name<'a> {
 	fn eq_wide_str(words: &[u16], s: &str) -> bool {
 		char::decode_utf16(words.iter().cloned()).eq(s.chars().map(Ok))
 	}
-	fn display(&self, f: &mut fmt::Write, id_names: &[Option<&str>]) -> fmt::Result {
+	fn display(&self, f: &mut dyn fmt::Write, id_names: &[Option<&str>]) -> fmt::Result {
 		match self {
 			Name::Id(id) => {
 				if let Some(&Some(name)) = id_names.get(*id as usize) {

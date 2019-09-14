@@ -54,7 +54,7 @@ fn main() {
 	}
 }
 
-fn process_patterns(args: env::ArgsOs, f: &mut FnMut(&[pat::Atom], &mut [u32])) {
+fn process_patterns(args: env::ArgsOs, f: &mut dyn FnMut(&[pat::Atom], &mut [u32])) {
 	if args.len() > 0 {
 		// Read from the command line args if available
 		for pattern_string in args.filter_map(|pattern_string| pattern_string.into_string().ok()) {
@@ -81,7 +81,7 @@ fn process_patterns(args: env::ArgsOs, f: &mut FnMut(&[pat::Atom], &mut [u32])) 
 		}
 	}
 }
-fn process_pattern(pattern_str: &str, f: &mut FnMut(&[pat::Atom], &mut [u32])) {
+fn process_pattern(pattern_str: &str, f: &mut dyn FnMut(&[pat::Atom], &mut [u32])) {
 	// Parse the pattern
 	let pattern = match pat::parse(pattern_str) {
 		Ok(pattern) => pattern,
