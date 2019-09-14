@@ -13,15 +13,15 @@ use pelite::pe64::*;
 pub fn print(bin: PeFile<'_>, dll_name: &str) {
 	let btns = buttons(bin);
 
-	println!("## Buttons
-
-These are addresses to global instances of the [`kbutton_t`](https://github.com/ValveSoftware/source-sdk-2013/blob/master/mp/src/game/client/kbutton.h#L14-L20) struct.
-
-```");
-	for btn in &btns {
-		println!("{}!{:#010x} kbutton_t in_{}", dll_name, btn.kbutton, &btn.name[1..]);
+	tprint! {
+		"## Buttons\n\n"
+		"These are addresses to global instances of the [`kbutton_t`](https://github.com/ValveSoftware/source-sdk-2013/blob/master/mp/src/game/client/kbutton.h#L14-L20) struct.\n\n"
+		"```\n"
+		for btn in (&btns) {
+			{dll_name}"!"{btn.kbutton;#010x}" kbutton_t in_"{&btn.name[1..]}"\n"
+		}
+		"```\n\n"
 	}
-	println!("```\n");
 }
 
 #[derive(Copy, Clone, Pod, Debug)]

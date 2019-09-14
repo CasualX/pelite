@@ -6,28 +6,31 @@ use pelite::pattern as pat;
 pub fn print(bin: PeFile, dll_name: &str) {
 	let cvars = convars(bin);
 
-	println!("## ConVars\n");
-	for cvar in &cvars {
-		println!("<details>");
-		println!("<summary><code>{}</code></summary>\n", cvar.name);
-		if let Some(desc) = cvar.desc {
-			println!("{}\n", desc);
+	tprint! {
+		"## ConVars\n\n"
+		for cvar in (&cvars) {
+			"<details>\n"
+			"<summary><code>"{cvar.name}"</code></summary>\n\n"
+			if let Some(desc) = (cvar.desc) {
+				{desc}"\n\n"
+			}
+			"default: `"{cvar.default;?}"`  \n"
+			"flags: `"{cvar.flags;#x}"`  \n"
+			if let Some(min_value) = (cvar.min_value) {
+				"min value: `"{min_value}"`  \n"
+			}
+			if let Some(max_value) = (cvar.max_value) {
+				"max value: `"{max_value}"`  \n"
+			}
+			"</details>\n"
 		}
-		println!("default: `{:?}`  ", cvar.default);
-		println!("flags: `{:#x}`  ", cvar.flags);
-		if let Some(min_value) = cvar.min_value {
-			println!("min value: `{}`  ", min_value);
+		"\n### Addresses\n\n"
+		"```\n"
+		for cvar in (&cvars) {
+			{dll_name}"!"{cvar.address;#010x}" ConVar "{cvar.name}"\n"
 		}
-		if let Some(max_value) = cvar.max_value {
-			println!("max value: `{}`  ", max_value);
-		}
-		println!("</details>");
+		"```\n\n"
 	}
-	println!("\n### Addresses\n\n```");
-	for cvar in &cvars {
-		println!("{}!{:#010x} ConVar {}", dll_name, cvar.address, cvar.name);
-	}
-	println!("```\n");
 }
 
 // Find information in the 'setinfo' command

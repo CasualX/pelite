@@ -14,44 +14,48 @@ pub fn print(bin: PeFile, dll_name: &str) {
 	let cvars = convars(bin);
 	let cmds = concommands(bin);
 
-	println!("### ConVars\n");
-	for cvar in &cvars {
-		println!("<details>");
-		println!("<summary><code>{}</code></summary>\n", cvar.name);
-		if let Some(desc) = cvar.desc {
-			println!("{}\n", desc);
+	tprint! {
+		"### ConVars\n\n"
+		for cvar in (&cvars) {
+			"<details>\n"
+			"<summary><code>"{cvar.name}"</code></summary>\n\n"
+			if let Some(desc) = (cvar.desc) {
+				{desc}"\n\n"
+			}
+			"default: `"{cvar.default;?}"`  \n"
+			"flags: `"{cvar.flags;#x}"`  \n"
+			if let Some(min_value) = (cvar.min_value) {
+				"min value: `"{min_value}"`  \n"
+			}
+			if let Some(max_value) = (cvar.max_value) {
+				"max value: `"{max_value}"`  \n"
+			}
+			"</details>\n"
 		}
-		println!("default: `{:?}`  ", cvar.default);
-		println!("flags: `{:#x}`  ", cvar.flags);
-		if let Some(min_value) = cvar.min_value {
-			println!("min value: `{}`  ", min_value);
+		"\n#### Addresses\n\n"
+		"```\n"
+		for cvar in (&cvars) {
+			{dll_name}"!"{cvar.address;#010x}" ConVar "{cvar.name}"\n"
 		}
-		if let Some(max_value) = cvar.max_value {
-			println!("max value: `{}`  ", max_value);
-		}
-		println!("</details>");
-	}
-	println!("\n#### Addresses\n\n```");
-	for cvar in &cvars {
-		println!("{}!{:#010x} ConVar {}", dll_name, cvar.address, cvar.name);
-	}
-	println!("```\n");
+		"```\n\n"
 
-	println!("### ConCommands\n");
-	for cmd in &cmds {
-		println!("<details>");
-		println!("<summary><code>{}</code></summary>\n", cmd.name);
-		if let Some(desc) = cmd.desc {
-			println!("{}\n", desc);
+		"### ConCommands\n\n"
+		for cmd in (&cmds) {
+			"<details>\n"
+			"<summary><code>"{cmd.name}"</code></summary>\n\n"
+			if let Some(desc) = (cmd.desc) {
+				{desc}"\n\n"
+			}
+			"flags: `"{cmd.flags;#x}"`  \n"
+			"</details>\n"
 		}
-		println!("flags: `{:#x}`  ", cmd.flags);
-		println!("</details>");
+		"\n#### Addresses\n\n"
+		"```\n"
+		for cmd in (&cmds) {
+			{dll_name}"!"{cmd.address;#010x}" ConCommand "{cmd.name}"\n"
+		}
+		"```\n\n"
 	}
-	println!("\n#### Addresses\n\n```");
-	for cmd in &cmds {
-		println!("{}!{:#010x} ConCommand {}", dll_name, cmd.address, cmd.name);
-	}
-	println!("```\n");
 }
 
 //----------------------------------------------------------------
@@ -171,9 +175,9 @@ pub fn concommands<'a>(bin: PeFile<'a>) -> Vec<ConCommand<'a>> {
 }
 fn concommand<'a>(bin: PeFile<'a>, save: &[u32; 8]) -> pelite::Result<ConCommand<'a>> {
 	let address = save[0];
-	let name = bin.derva_c_str(save[1])?.to_str().or(Err(pelite::Error::Encoding))?;
+	let name = bin.derva_c_str(save[1])?.to_str()?;
 	let desc = if save[2] == 0 { None }
-	else { Some(bin.derva_c_str(save[2])?.to_str().or(Err(pelite::Error::Encoding))?) };
+	else { Some(bin.derva_c_str(save[2])?.to_str()?) };
 	let flags = save[3];
 	let callback = save[4];
 	Ok(ConCommand { address, name, desc, flags, callback })
