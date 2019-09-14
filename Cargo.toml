@@ -28,7 +28,7 @@ unstable = []
 [badges]
 appveyor = { repository = "CasualX/pelite", branch = "master", service = "github" }
 travis-ci = { repository = "CasualX/pelite", branch = "master", service = "github" }
-maintenance = { state = "actively-developed" }
+maintenance = { status = "actively-developed" }
 
 [profile.release]
 lto = true
