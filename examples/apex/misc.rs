@@ -24,12 +24,11 @@ fn entity_list(bin: PeFile<'_>, dll_name: &str) {
 	// EntityList
 	//
 	// Find GetEntityByIndex:
-	// "Index must be greater than or equal to "
 	// "Index must be less than %i.\n"
 	//
 	// entity_ptr = *(uintptr_t*)(entity_list + index * 32)
 	let mut save = [0; 4];
-	if bin.scanner().finds_code(pat!("4883EC28 85C9 79% 81F9u4 7C% 4863C1 488D0D$'"), &mut save) {
+	if bin.scanner().finds_code(pat!("81F9u4 7C% 85C9 79% 4863C1 488D15$'"), &mut save) {
 		let num_ent_entries = save[1];
 		let cl_entitylist = save[2];
 		println!("NUM_ENT_ENTRIES = {:#x}", num_ent_entries);
