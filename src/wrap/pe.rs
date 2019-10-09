@@ -103,9 +103,25 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 	//----------------------------------------------------------------
 
 	#[inline]
+	pub fn slice(&self, rva: u32, min_size: usize, align: usize) -> Result<&'a [u8]> {
+		match self {
+			Wrap::T32(pe32) => pe32.slice(rva, min_size, align),
+			Wrap::T64(pe64) => pe64.slice(rva, min_size, align),
+		}
+	}
+	#[inline]
+	pub fn slice_bytes(&self, rva: u32) -> Result<&'a [u8]> {
+		match self {
+			Wrap::T32(pe32) => pe32.slice_bytes(rva),
+			Wrap::T64(pe64) => pe64.slice_bytes(rva),
+		}
+	}
+	#[inline]
 	pub fn get_section_bytes(&self, section_header: &image::IMAGE_SECTION_HEADER) -> Result<&'a [u8]> {
 		get_section_bytes(self.image(), section_header, self.align())
 	}
+
+	//----------------------------------------------------------------
 
 	#[inline]
 	pub fn derva<T>(&self, rva: u32) -> Result<&'a T> where T: Pod {

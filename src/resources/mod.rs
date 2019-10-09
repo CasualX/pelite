@@ -187,14 +187,13 @@ pub type Entries<'a, F> = iter::Map<slice::Iter<'a, IMAGE_RESOURCE_DIRECTORY_ENT
 
 /// Represents a resource name.
 #[derive(Copy, Clone, Debug, Eq)]
-#[cfg_attr(feature = "serde", derive(::serde::Serialize), serde(untagged))]
 pub enum Name<'a> {
 	/// Resource ID.
 	///
 	/// Technically allows `u32` ids, but some Windows APIs will be unable to use resources with an id which isn't `u16`.
 	Id(u32),
 	/// UTF-16 named resource.
-	WideStr(&'a [u16]),
+	Wide(&'a [u16]),
 	/// UTF-8 named resource.
 	///
 	/// This variant is used when accepting user input and will be interpreted liberally when compared against other names:
@@ -227,8 +226,8 @@ impl<'a> Name<'a> {
 				}
 				false
 			},
-			Name::WideStr(words) => Self::eq_wide_str(words, rhs),
-			Name::Str(s) => rhs == *s,
+			Name::Wide(words) => Self::eq_wide_str(words, rhs),
+			Name::Str(name) => rhs == *name,
 		}
 	}
 	fn display_wide_str(words: &[u16], f: &mut dyn fmt::Write) -> fmt::Result {
@@ -251,9 +250,22 @@ impl<'a> Name<'a> {
 					write!(f, "#{}", id)
 				}
 			},
-			Name::WideStr(words) => Self::display_wide_str(words, f),
-			Name::Str(s) => write!(f, "{}", s),
+			Name::Wide(words) => Self::display_wide_str(words, f),
+			Name::Str(name) => write!(f, "{}", name),
 		}
+	}
+	// Rename Str names to their Id entries before lookup
+	fn rename(&self, types: &[Option<&str>]) -> Name<'a> {
+		if let &Name::Str(name) = self {
+			for ty in 0..types.len() {
+				if let Some(string) = types[ty] {
+					if name == string {
+						return Name::Id(ty as u32);
+					}
+				}
+			}
+		}
+		return *self;
 	}
 }
 impl<'a> From<u16> for Name<'a> {
@@ -262,13 +274,13 @@ impl<'a> From<u16> for Name<'a> {
 	}
 }
 impl<'a> From<&'a [u16]> for Name<'a> {
-	fn from(wide_str: &'a [u16]) -> Name<'a> {
-		Name::WideStr(wide_str)
+	fn from(words: &'a [u16]) -> Name<'a> {
+		Name::Wide(words)
 	}
 }
 impl<'a> From<&'a str> for Name<'a> {
-	fn from(s: &'a str) -> Name<'a> {
-		Name::Str(s)
+	fn from(name: &'a str) -> Name<'a> {
+		Name::Str(name)
 	}
 }
 impl PartialEq for Name<'_> {
@@ -276,9 +288,9 @@ impl PartialEq for Name<'_> {
 		match (*self, *rhs) {
 			// Strict checking between ids and wide strings
 			(Name::Id(lhs), Name::Id(rhs)) => lhs == rhs,
-			(Name::Id(_), Name::WideStr(_)) => false,
-			(Name::WideStr(lhs), Name::WideStr(rhs)) => lhs == rhs,
-			(Name::WideStr(_), Name::Id(_)) => false,
+			(Name::Id(_), Name::Wide(_)) => false,
+			(Name::Wide(lhs), Name::Wide(rhs)) => lhs == rhs,
+			(Name::Wide(_), Name::Id(_)) => false,
 			// When comparing against Rust strings
 			(Name::Str(lhs), rhs) => rhs.eq_find(lhs, &[]),
 			(lhs, Name::Str(rhs)) => lhs.eq_find(rhs, &[]),
@@ -345,8 +357,8 @@ impl<'a> DirectoryEntry<'a> {
 	pub fn name(&self) -> Result<Name<'a>> {
 		if self.image.Name & 0x80000000 != 0 {
 			let offset = self.image.Name & !0x80000000;
-			let name = self.resources.slice_ws(offset)?;
-			Ok(Name::WideStr(name))
+			let words = self.resources.slice_ws(offset)?;
+			Ok(Name::Wide(words))
 		}
 		else {
 			// TODO: What if this doesn't fit in u16...
@@ -442,44 +454,70 @@ impl<'a> fmt::Debug for DataEntry<'a> {
 //----------------------------------------------------------------
 
 /*
-	"resources": {
-		"version_info": { .. },
-		"manifest": "<xml>",
-		"root": [
-			{
-				"name": 12,
-				"directory": [
-					{
-						"name": "IMPORTANT",
-						"data": {
-							size: 1234,
-							code_page: 65001,
-							bytes: "base64encoded=",
-						}
+	[
+		{
+			"name": 12,
+			"directory": [
+				{
+					"name": "IMPORTANT",
+					"data": {
+						address: 0x1000,
+						size: 1234,
+						code_page: 65001,
 					}
-				]
-			}
-		]
-	}
+				}
+			]
+		}
+	]
 */
 
 #[cfg(feature = "serde")]
 mod serde {
 	use crate::util::serde_helper::*;
-	use super::{Resources, Directory, DirectoryEntry, DataEntry};
+	use super::{Resources, Directory, Name, DirectoryEntry, DataEntry};
+
+	// Rename the toplevel directory ids to their names
+	struct NamedDirectoryEntry<'a>(DirectoryEntry<'a>);
+	impl<'a> Serialize for NamedDirectoryEntry<'a> {
+		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+			let name = self.0.name().ok().map(|name| {
+				use crate::stringify::RSRC_TYPES;
+				match name {
+					Name::Id(id) => match RSRC_TYPES.get(id as usize) {
+						Some(Some(name)) => Name::Str(name),
+						_ => Name::Id(id),
+					},
+					Name::Wide(words) => Name::Wide(words),
+					Name::Str(name) => Name::Str(name),
+				}
+			});
+			let mut state = serializer.serialize_struct("DirectoryEntry", 2)?;
+			state.serialize_field("name", &name)?;
+			state.serialize_field(if self.0.is_dir() { "directory" } else { "data" }, &self.0.entry().ok())?;
+			state.end()
+		}
+	}
 
 	impl<'a> Serialize for Resources<'a> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-			let mut state = serializer.serialize_struct("Resources", 3)?;
-			state.serialize_field("version_info", &self.version_info().ok())?;
-			state.serialize_field("manifest", &self.manifest().ok())?;
-			state.serialize_field("root", &self.root().ok())?;
-			state.end()
+			match self.root() {
+				Ok(root) => serializer.collect_seq(root.entries().map(NamedDirectoryEntry)),
+				Err(_) => serializer.serialize_none(),
+			}
 		}
 	}
 	impl<'a> Serialize for Directory<'a> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			serializer.collect_seq(self.entries())
+		}
+	}
+	impl<'a> Serialize for Name<'a> {
+		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+			match self {
+				Name::Id(id) => id.serialize(serializer),
+				Name::Wide(words) => serializer.serialize_str(&String::from_utf16_lossy(words)),
+				Name::Str(name) => serializer.serialize_str(name),
+			}
 		}
 	}
 	impl<'a> Serialize for DirectoryEntry<'a> {
@@ -492,18 +530,10 @@ mod serde {
 	}
 	impl<'a> Serialize for DataEntry<'a> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-			let is_human_readable = serializer.is_human_readable();
 			let mut state = serializer.serialize_struct("DataEntry", 3)?;
+			state.serialize_field("address", &self.image().OffsetToData)?;
 			state.serialize_field("size", &self.size())?;
 			state.serialize_field("code_page", &self.code_page())?;
-			if cfg!(feature = "data-encoding") && is_human_readable {
-				#[cfg(feature = "data-encoding")]
-				state.serialize_field("bytes",
-					&self.bytes().map(|bytes| data_encoding::BASE64.encode(bytes)).as_ref().ok())?;
-			}
-			else {
-				state.serialize_field("bytes", &self.bytes().ok())?;
-			}
 			state.end()
 		}
 	}
@@ -526,7 +556,7 @@ pub(crate) fn test(resources: Resources<'_>) -> Result<()> {
 				let mut named_entries;
 				let mut entries: &mut dyn Iterator<Item = _> = match name {
 					Name::Id(_) => { id_entries = dir.id_entries(); &mut id_entries },
-					Name::WideStr(_) => { named_entries = dir.named_entries(); &mut named_entries },
+					Name::Wide(_) => { named_entries = dir.named_entries(); &mut named_entries },
 					Name::Str(_) => unreachable!()
 				};
 				assert!((&mut entries).any(|entry| entry.name() == Ok(name)));

@@ -66,7 +66,6 @@ impl<'a, P: Pe<'a>> Headers<P> {
 /*
 	"headers": {
 		"DosHeader": { .. }
-		"DosImage": "base64encoded=",
 		"NtHeaders": {
 			"Signature": ..,
 			"FileHeader": { .. }
@@ -95,17 +94,8 @@ mod serde {
 
 	impl<'a, P: Pe<'a>> Serialize for Headers<P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-			let is_human_readable = serializer.is_human_readable();
-			let mut state = serializer.serialize_struct("Headers", 6)?;
+			let mut state = serializer.serialize_struct("Headers", 5)?;
 			state.serialize_field("DosHeader", self.pe.dos_header())?;
-			if cfg!(feature = "data-encoding") && is_human_readable {
-				#[cfg(feature = "data-encoding")]
-				state.serialize_field("DosImage",
-					&data_encoding::BASE64.encode(self.pe.dos_image()))?;
-			}
-			else {
-				state.serialize_field("DosImage", self.pe.dos_image())?;
-			}
 			state.serialize_field("NtHeaders", self.pe.nt_headers())?;
 			state.serialize_field("DataDirectory", self.pe.data_directory())?;
 			state.serialize_field("SectionHeaders", self.pe.section_headers())?;

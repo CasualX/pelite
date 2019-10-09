@@ -75,27 +75,27 @@ impl error::Error for FindError {
 
 impl<'a> Resources<'a> {
 	/// Finds a resource by its type and name.
-	pub fn find_resource(&self, ty: Name<'_>, name: Name<'_>) -> Result<&'a [u8], FindError> {
-		Ok(self.root()?.get_dir(ty)?.get_dir(name)?.first_data()?.bytes()?)
+	pub fn find_resource(&self, path: &[Name<'_>; 2]) -> Result<&'a [u8], FindError> {
+		Ok(self.root()?.get_dir(path[0].rename(&crate::stringify::RSRC_TYPES))?.get_dir(path[1])?.first_data()?.bytes()?)
 	}
 	/// Finds the language directory for a resource with given type and name.
-	pub fn find_resources(&self, ty: Name<'_>, name: Name<'_>) -> Result<Directory<'a>, FindError> {
-		self.root()?.get_dir(ty)?.get_dir(name)
+	pub fn find_resources(&self, path: &[Name<'_>; 2]) -> Result<Directory<'a>, FindError> {
+		self.root()?.get_dir(path[0].rename(&crate::stringify::RSRC_TYPES))?.get_dir(path[1])
 	}
 	/// Finds the resource with specified type, name and language.
-	pub fn find_resource_ex(&self, ty: Name<'_>, name: Name<'_>, lang: Name<'_>) -> Result<&'a [u8], FindError> {
-		Ok(self.root()?.get_dir(ty)?.get_dir(name)?.get_data(lang)?.bytes()?)
+	pub fn find_resource_ex(&self, path: &[Name<'_>; 3]) -> Result<&'a [u8], FindError> {
+		Ok(self.root()?.get_dir(path[0].rename(&crate::stringify::RSRC_TYPES))?.get_dir(path[1])?.get_data(path[2])?.bytes()?)
 	}
 	/// Gets the Version Information.
 	pub fn version_info(&self) -> Result<super::version_info::VersionInfo<'a>, FindError> {
-		let bytes = self.find_resource(Name::VERSION, 1.into())?;
+		let bytes = self.find_resource(&[Name::VERSION, Name::Id(1)])?;
 		let version_info = super::version_info::VersionInfo::try_from(bytes)?;
 		Ok(version_info)
 	}
 	/// Gets the Application Manifest.
 	pub fn manifest(&self) -> Result<&'a str, FindError> {
-		// Assumption: This appears to be always the same...
-		let bytes = self.find_resource_ex(Name::MANIFEST, 2.into(), 1033.into())?;
+		// Ok, new assumption: just take whatever we can find in the Manifest directory
+		let bytes = self.root()?.get_dir(Name::MANIFEST)?.first_dir()?.first_data()?.bytes()?;
 		let manifest = str::from_utf8(bytes)?;
 		Ok(manifest)
 	}
