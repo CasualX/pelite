@@ -166,6 +166,16 @@ pub enum Atom {
 /// Patterns are a vector of [`Atom`](enum.Atom.html)s.
 pub type Pattern = Vec<Atom>;
 
+/// Returns the length of the save array needed for this signature.
+pub fn save_len(pat: &[Atom]) -> usize {
+	pat.iter().filter_map(|&atom| {
+		match atom {
+			Atom::Save(i) => Some(i as usize + 1),
+			_ => None,
+		}
+	}).max().unwrap_or(0)
+}
+
 /// Pattern parser.
 ///
 /// # Remarks
