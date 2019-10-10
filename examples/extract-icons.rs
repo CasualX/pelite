@@ -20,7 +20,7 @@ fn main() {
 			let file = PeFile::from_bytes(&map).expect("Error parsing the binary");
 			let dest = PathBuf::from(dest);
 			let resources = file.resources().expect("Error binary does not have resources");
-			for (name, group) in resources.group_icons().filter_map(Result::ok) {
+			for (name, group) in resources.icons().filter_map(Result::ok) {
 				// Write the ICO file
 				let mut contents = Vec::new();
 				group.write(&mut contents).unwrap();

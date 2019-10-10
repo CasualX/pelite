@@ -18,7 +18,7 @@ let resources: pelite::resources::Resources;
 # fn example(resources: pelite::resources::Resources<'_>) {
 // Iterate over the group icons in the resources and throw away any invalid results
 // If the resources contain no group icons the iterator is empty
-for (name, group) in resources.group_icons().filter_map(Result::ok) {
+for (name, group) in resources.icons().filter_map(Result::ok) {
 	// Enumerate the entries in the group
 	for entry in group.entries() {
 		// Fetch the image data for this entry
