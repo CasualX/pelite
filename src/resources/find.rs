@@ -6,7 +6,6 @@ use std::{error, fmt, str};
 use std::path::Path;
 
 use super::{Resources, Directory, Entry, Name, DataEntry};
-use crate::stringify::RSRC_TYPES;
 
 //------------------------------------------------
 
@@ -76,15 +75,15 @@ impl error::Error for FindError {
 impl<'a> Resources<'a> {
 	/// Finds a resource by its type and name.
 	pub fn find_resource(&self, path: &[Name<'_>; 2]) -> Result<&'a [u8], FindError> {
-		Ok(self.root()?.get_dir(path[0].rename(&crate::stringify::RSRC_TYPES))?.get_dir(path[1])?.first_data()?.bytes()?)
+		Ok(self.root()?.get_dir(path[0])?.get_dir(path[1])?.first_data()?.bytes()?)
 	}
 	/// Finds the language directory for a resource with given type and name.
 	pub fn find_resources(&self, path: &[Name<'_>; 2]) -> Result<Directory<'a>, FindError> {
-		self.root()?.get_dir(path[0].rename(&crate::stringify::RSRC_TYPES))?.get_dir(path[1])
+		self.root()?.get_dir(path[0])?.get_dir(path[1])
 	}
 	/// Finds the resource with specified type, name and language.
 	pub fn find_resource_ex(&self, path: &[Name<'_>; 3]) -> Result<&'a [u8], FindError> {
-		Ok(self.root()?.get_dir(path[0].rename(&crate::stringify::RSRC_TYPES))?.get_dir(path[1])?.get_data(path[2])?.bytes()?)
+		Ok(self.root()?.get_dir(path[0])?.get_dir(path[1])?.get_data(path[2])?.bytes()?)
 	}
 	/// Gets the Version Information.
 	pub fn version_info(&self) -> Result<super::version_info::VersionInfo<'a>, FindError> {
@@ -99,13 +98,13 @@ impl<'a> Resources<'a> {
 		let manifest = str::from_utf8(bytes)?;
 		Ok(manifest)
 	}
-	/// Gets the group icons.
-	pub fn group_icons(&self) -> impl 'a + Iterator<Item = Result<(Name<'a>, super::group::GroupIcon<'a>), FindError>> + Clone {
+	/// Gets the icons.
+	pub fn icons(&self) -> impl 'a + Iterator<Item = Result<(Name<'a>, super::group::GroupIcon<'a>), FindError>> + Clone {
 		let resources = *self;
-		let group_icons = self.root().map_err(FindError::Pe)
+		let icons = self.root().map_err(FindError::Pe)
 			.and_then(|root| root.get_dir(Name::GROUP_ICON));
 
-		group_icons.into_iter().flat_map(move |group_icons| group_icons.entries().map(move |de| {
+		icons.into_iter().flat_map(move |icons| icons.entries().map(move |de| {
 			let name = de.name()?;
 			// A lot of assumptions being made here...
 			let bytes = de.entry()?.dir().ok_or(FindError::UnDataEntry)?.first_data()?.bytes()?;
@@ -113,13 +112,13 @@ impl<'a> Resources<'a> {
 			Ok((name, group_icon))
 		}))
 	}
-	/// Gets the group cursors.
-	pub fn group_cursors(&self) -> impl 'a + Iterator<Item = Result<(Name<'a>, super::group::GroupCursor<'a>), FindError>> + Clone {
+	/// Gets the cursors.
+	pub fn cursors(&self) -> impl 'a + Iterator<Item = Result<(Name<'a>, super::group::GroupCursor<'a>), FindError>> + Clone {
 		let resources = *self;
-		let group_cursors = self.root().map_err(FindError::Pe)
+		let cursors = self.root().map_err(FindError::Pe)
 			.and_then(|root| root.get_dir(Name::GROUP_CURSOR));
 
-		group_cursors.into_iter().flat_map(move |group_cursors| group_cursors.entries().map(move |de| {
+		cursors.into_iter().flat_map(move |cursors| cursors.entries().map(move |de| {
 			let name = de.name()?;
 			// A lot of assumptions being made here...
 			let bytes = de.entry()?.dir().ok_or(FindError::UnDataEntry)?.first_data()?.bytes()?;
@@ -179,7 +178,7 @@ impl<'a> Resources<'a> {
 			}
 			// Find the path in the root
 			else {
-				(*self).root()?.find_internal(iter.as_path(), &RSRC_TYPES)
+				(*self).root()?.find_internal(iter.as_path())
 			}
 		}
 		else {
@@ -191,7 +190,7 @@ impl<'a> Resources<'a> {
 impl<'a> Directory<'a> {
 	/// Finds a file or directory by its path.
 	pub fn find<P: AsRef<Path> + ?Sized>(&self, path: &P) -> Result<Entry<'a>, FindError> {
-		self.find_internal(path.as_ref(), &[])
+		self.find_internal(path.as_ref())
 	}
 	/// Finds a file by its path.
 	pub fn find_data<P: AsRef<Path> + ?Sized>(&self, path: &P) -> Result<DataEntry<'a>, FindError> {
@@ -201,19 +200,17 @@ impl<'a> Directory<'a> {
 	pub fn find_dir<P: AsRef<Path> + ?Sized>(&self, path: &P) -> Result<Directory<'a>, FindError> {
 		self.find(path).and_then(|e| e.dir().ok_or(FindError::UnDataEntry))
 	}
-	fn find_internal(&self, path: &Path, mut id_names: &[Option<&str>]) -> Result<Entry<'a>, FindError> {
-		let mut e = Entry::Directory(*self);
+	fn find_internal(&self, path: &Path) -> Result<Entry<'a>, FindError> {
+		let mut entry = Entry::Directory(*self);
 		'parts: for part in path {
 			// The names of resources are UTF16
-			let part_name = part.to_str().ok_or(FindError::Bad8Path)?;
-			match e {
+			let name = Name::Str(part.to_str().ok_or(FindError::Bad8Path)?);
+			match entry {
 				Entry::Directory(dir) => {
 					// Find a child with matching name for this part of the path
 					for child in dir.entries() {
-						if child.name()?.eq_find(part_name, id_names) {
-							e = child.entry()?;
-							// After one level forget any id names
-							id_names = &id_names[..0];
+						if child.name() == Ok(name) {
+							entry = child.entry()?;
 							continue 'parts;
 						}
 					}
@@ -224,6 +221,6 @@ impl<'a> Directory<'a> {
 				},
 			};
 		}
-		Ok(e)
+		Ok(entry)
 	}
 }

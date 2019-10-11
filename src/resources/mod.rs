@@ -209,63 +209,40 @@ impl<'a> Name<'a> {
 	pub const GROUP_CURSOR: Name<'a> = Name::Id(crate::image::RT_GROUP_CURSOR as u32);
 }
 impl<'a> Name<'a> {
-	fn eq_find(&self, rhs: &str, id_names: &[Option<&str>]) -> bool {
+	#[inline(never)]
+	fn eq_string(&self, string: &str) -> bool {
 		match self {
-			Name::Id(id) => {
-				if rhs.starts_with("#") {
-					if let Ok(rhs_id) = rhs[1..].parse::<u32>() {
-						if id == &rhs_id {
-							return true;
-						}
+			&Name::Id(id) => {
+				// Resource id strings must start with #
+				if !(string.len() >= 2 && string.as_bytes()[0] == b'#') {
+					false
+				}
+				// Followed by an integer resource id
+				else if string.as_bytes()[1] > b'0' && string.as_bytes()[1] <= b'9' {
+					match string[1..].parse::<u32>() {
+						Ok(string_id) if id == string_id => true,
+						_ => false,
 					}
 				}
-				else if let Some(&Some(id_name)) = id_names.get(*id as usize) {
-					if id_name == rhs {
-						return true;
-					}
-				}
-				false
-			},
-			Name::Wide(words) => Self::eq_wide_str(words, rhs),
-			Name::Str(name) => rhs == *name,
-		}
-	}
-	fn display_wide_str(words: &[u16], f: &mut dyn fmt::Write) -> fmt::Result {
-		for chr in char::decode_utf16(words.iter().cloned()) {
-			let chr = chr.unwrap_or(char::REPLACEMENT_CHARACTER);
-			fmt::Write::write_char(f, chr)?;
-		}
-		Ok(())
-	}
-	fn eq_wide_str(words: &[u16], s: &str) -> bool {
-		char::decode_utf16(words.iter().cloned()).eq(s.chars().map(Ok))
-	}
-	fn display(&self, f: &mut dyn fmt::Write, id_names: &[Option<&str>]) -> fmt::Result {
-		match self {
-			Name::Id(id) => {
-				if let Some(&Some(name)) = id_names.get(*id as usize) {
-					write!(f, "{}", name)
-				}
+				// Followed by a predefined resource type name
 				else {
-					write!(f, "#{}", id)
-				}
-			},
-			Name::Wide(words) => Self::display_wide_str(words, f),
-			Name::Str(name) => write!(f, "{}", name),
-		}
-	}
-	// Rename Str names to their Id entries before lookup
-	fn rename(&self, types: &[Option<&str>]) -> Name<'a> {
-		if let &Name::Str(name) = self {
-			for ty in 0..types.len() {
-				if let Some(string) = types[ty] {
-					if name == string {
-						return Name::Id(ty as u32);
+					match crate::stringify::RSRC_TYPES.get(id as usize) {
+						Some(&Some(name)) if string == name => true,
+						_ => false,
 					}
 				}
+			},
+			&Name::Wide(words) => char::decode_utf16(words.iter().cloned()).eq(string.chars().map(Ok)),
+			&Name::Str(name) => string == name,
+		}
+	}
+	fn rename_id(self, names: &[Option<&'a str>]) -> Name<'a> {
+		if let Name::Id(id) = self {
+			if let Some(&Some(name)) = names.get(id as usize) {
+				return Name::Str(name);
 			}
 		}
-		return *self;
+		self
 	}
 }
 impl<'a> From<u16> for Name<'a> {
@@ -284,6 +261,7 @@ impl<'a> From<&'a str> for Name<'a> {
 	}
 }
 impl PartialEq for Name<'_> {
+	#[inline(never)]
 	fn eq(&self, rhs: &Name<'_>) -> bool {
 		match (*self, *rhs) {
 			// Strict checking between ids and wide strings
@@ -292,19 +270,37 @@ impl PartialEq for Name<'_> {
 			(Name::Wide(lhs), Name::Wide(rhs)) => lhs == rhs,
 			(Name::Wide(_), Name::Id(_)) => false,
 			// When comparing against Rust strings
-			(Name::Str(lhs), rhs) => rhs.eq_find(lhs, &[]),
-			(lhs, Name::Str(rhs)) => lhs.eq_find(rhs, &[]),
+			(Name::Str(lhs), rhs) => rhs.eq_string(lhs),
+			(lhs, Name::Str(rhs)) => lhs.eq_string(rhs),
 		}
 	}
 }
 impl PartialEq<str> for Name<'_> {
 	fn eq(&self, rhs: &str) -> bool {
-		self.eq_find(rhs, &[])
+		self.eq_string(rhs)
+	}
+}
+impl PartialEq<u32> for Name<'_> {
+	fn eq(&self, &rhs: &u32) -> bool {
+		match self {
+			&Name::Id(id) => id == rhs,
+			_ => false,
+		}
 	}
 }
 impl fmt::Display for Name<'_> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		self.display(f, &[])
+		match self {
+			Name::Id(id) => write!(f, "#{}", id),
+			Name::Wide(words) => {
+				for chr in char::decode_utf16(words.iter().cloned()) {
+					let chr = chr.unwrap_or(char::REPLACEMENT_CHARACTER);
+					fmt::Write::write_char(f, chr)?;
+				}
+				Ok(())
+			},
+			Name::Str(string) => f.write_str(string),
+		}
 	}
 }
 
@@ -480,19 +476,8 @@ mod serde {
 	struct NamedDirectoryEntry<'a>(DirectoryEntry<'a>);
 	impl<'a> Serialize for NamedDirectoryEntry<'a> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-			let name = self.0.name().ok().map(|name| {
-				use crate::stringify::RSRC_TYPES;
-				match name {
-					Name::Id(id) => match RSRC_TYPES.get(id as usize) {
-						Some(Some(name)) => Name::Str(name),
-						_ => Name::Id(id),
-					},
-					Name::Wide(words) => Name::Wide(words),
-					Name::Str(name) => Name::Str(name),
-				}
-			});
 			let mut state = serializer.serialize_struct("DirectoryEntry", 2)?;
-			state.serialize_field("name", &name)?;
+			state.serialize_field("name", &self.0.name().ok().map(|name| name.rename_id(&crate::stringify::RSRC_TYPES)))?;
 			state.serialize_field(if self.0.is_dir() { "directory" } else { "data" }, &self.0.entry().ok())?;
 			state.end()
 		}
