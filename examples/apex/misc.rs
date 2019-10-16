@@ -11,6 +11,7 @@ pub fn print(bin: PeFile<'_>, dll_name: &str) {
 	global_vars(bin, dll_name);
 	player_resource(bin, dll_name);
 	view_render(bin, dll_name);
+	client_state(bin, dll_name);
 	println!("```\n");
 }
 
@@ -96,5 +97,38 @@ fn view_render(bin: PeFile<'_>, dll_name: &str) {
 	}
 	else {
 		eprintln!("unable to find ViewRender");
+	}
+}
+
+fn client_state(bin: PeFile<'_>, dll_name: &str) {
+	let mut save = [0; 4];
+	// Address of global CClientState instance
+	if bin.scanner().finds_code(pat!("488D15${\"Missing client class\"} 488D0D$'"), &mut save) {
+		let client_state = save[1];
+		println!("{}!{:#x} ClientState", dll_name, client_state);
+	}
+	else {
+		eprintln!("unable to find ClientState");
+	}
+	/*
+	// SignonState = ClientState + 0x98 has values 0...8
+	if bin.scanner().finds_code(pat!("@3 833D${?'}08 0F94C0 C3")) {
+		let signon_state = save[1];
+		println!("{}!{:#x} SignonState", dll_name, signon_state);
+	}
+	else {
+		eprintln!("unable to find SignonState");
+	}
+	*/
+	// LevelName and SignonState together, look for string "dedicated" the smaller of the two routines
+	// LevelName is [u8; 0x40] (buffer of 0x40 bytes inlined in the struct)
+	if bin.scanner().finds_code(pat!("488D05${\"dedicated\"} C3 833D${?'}02 488D05${00} 7C07 488D05${'} C3"), &mut save) {
+		let signon_state = save[1];
+		let level_name = save[2];
+		println!("{}!{:#x} SignonState", dll_name, signon_state);
+		println!("{}!{:#x} LevelName", dll_name, level_name);
+	}
+	else {
+		eprintln!("unable to find LevelName");
 	}
 }
