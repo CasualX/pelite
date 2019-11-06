@@ -70,10 +70,10 @@ fn player_resource(bin: PeFile<'_>, dll_name: &str) {
 	let mut save = [0; 4];
 	if bin.scanner().finds_code(pat!("488B6C24? 488BC3 48891D$'"), &mut save) {
 		let player_resource = save[1];
-		println!("{}!{:#x} PlayerResource", dll_name, player_resource);
+		println!("{}!{:#x} PlayerResources", dll_name, player_resource);
 	}
 	else {
-		eprintln!("unable to find PlayerResource!");
+		eprintln!("unable to find PlayerResources!");
 	}
 }
 
