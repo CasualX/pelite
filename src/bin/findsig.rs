@@ -2,7 +2,7 @@
 Find patterns utility.
  */
 
-use std::env;
+use std::{cmp, env};
 use std::path::Path;
 use std::io::{self, Write};
 
@@ -92,15 +92,16 @@ fn process_pattern(pattern_str: &str, f: &mut dyn FnMut(&[pat::Atom], &mut [u32]
 	};
 	// Print the header followed by its matches
 	println!("Pattern `{}` matches:", pattern_str);
-	let mut save = [0; 16];
-	f(&pattern, &mut save);
+	let mut save = [0; 32];
+	let save_len = cmp::min(pat::save_len(&pattern), save.len());
+	f(&pattern, &mut save[..save_len]);
 }
 fn print_match(file_name: &str, save: &[u32]) {
-	print!("  {}!{:08x}", file_name, save[0]);
-	if save[1] != 0 {
-		print!("  [1/{:08x}", save[1]);
-		for i in (2..save.len()).take_while(|&i| save[i] != 0) {
-			print!(" {}/{:08x}", i, save[i]);
+	print!("  {}!{:#010x}", file_name, save[0]);
+	if save.len() > 1 {
+		print!("  [");
+		for i in 1..save.len() {
+			print!("{}/{:#010x} ", i, save[i]);
 		}
 		print!("]");
 	}
