@@ -8,6 +8,7 @@ pub fn print(bin: PeFile<'_>, dll_name: &str) {
 	game_version(bin);
 	entity_list(bin, dll_name);
 	local_entity_handle(bin, dll_name);
+	local_player(bin, dll_name);
 	global_vars(bin, dll_name);
 	player_resource(bin, dll_name);
 	view_render(bin, dll_name);
@@ -49,6 +50,29 @@ fn local_entity_handle(bin: PeFile<'_>, dll_name: &str) {
 	else {
 		eprintln!("unable to find LocalEntityHandle!");
 	}
+}
+
+fn local_player(bin: PeFile<'_>, dll_name: &str) {
+	// The global instance of C_GameMovement contains as its first member a pointer to local player right after its vtable.
+	fn is_game_movement(bin: PeFile<'_>, address: u32) -> pelite::Result<u32> {
+		let vtable_va = *bin.derva::<u64>(address)?;
+		let col_ptr = *bin.deref::<Ptr<msvc::RTTICompleteObjectLocator>>((vtable_va - 8).into())?;
+		let col = bin.deref(col_ptr)?;
+		let ty_name = bin.derva_c_str(col.type_descriptor + 16)?.to_str()?;
+		if ty_name != ".?AVC_GameMovement@@" {
+			return Err(pelite::Error::Invalid);
+		}
+		Ok(address + 8)
+	}
+	if let Some(sect) = bin.section_headers().iter().find(|sect| sect.Name == *b".data\0\0\0") {
+		for address in sect.virtual_range().step_by(8) {
+			if let Ok(local_player) = is_game_movement(bin, address) {
+				println!("{}!{:#x} LocalPlayer", dll_name, local_player);
+				return;
+			}
+		}
+	}
+	eprintln!("unable to find LocalPlayer!");
 }
 
 fn global_vars(bin: PeFile<'_>, dll_name: &str) {
@@ -93,10 +117,18 @@ fn view_render(bin: PeFile<'_>, dll_name: &str) {
 	let mut save = [0; 4];
 	if bin.scanner().finds_code(pat!("74 34 48 8B 0D ${'} 40 0F B6 D7"), &mut save) {
 		let view_render = save[1];
-		println!("{}!{:#x} ViewRender", dll_name, view_render);
+		print!("{}!{:#x} ViewRender", dll_name, view_render);
 	}
 	else {
 		eprintln!("unable to find ViewRender");
+	}
+	if bin.scanner().finds_code(pat!("480fbec2 488b84c1u4 c3"), &mut save) {
+		let view_matrix = save[1];
+		println!(" + {:#x} ViewMatrix", view_matrix);
+	}
+	else {
+		println!();
+		eprintln!("unable to find ViewMatrix");
 	}
 }
 
