@@ -170,7 +170,9 @@ pub type Pattern = Vec<Atom>;
 pub fn save_len(pat: &[Atom]) -> usize {
 	pat.iter().filter_map(|&atom| {
 		match atom {
-			Atom::Save(i) => Some(i as usize + 1),
+			Atom::Save(slot) | Atom::Pir(slot) | Atom::Check(slot) | Atom::Zero(slot) |
+			Atom::ReadI8(slot) | Atom::ReadI16(slot) | Atom::ReadI32(slot) |
+			Atom::ReadU8(slot) | Atom::ReadU16(slot)| Atom::ReadU32(slot) => Some(slot as usize + 1),
 			_ => None,
 		}
 	}).max().unwrap_or(0)
