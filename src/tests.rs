@@ -19,10 +19,9 @@ macro_rules! test {
 
 #[test]
 fn pocs() {
-	for (file_name, image) in pocs::iter() {
-		println!("\n{}", file_name);
+	for (name, image) in pocs::iter() {
+		println!("\n{}", name);
 
-		let image = image.to_vec(); // Fix alignment
 		println!("  base_relocs...    {:?}", test!(image, base_relocs));
 		println!("  rich_structure... {:?}", test!(image, rich_structure));
 		println!("  exception...      {:?}", test!(image, exception));
