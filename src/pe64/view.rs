@@ -46,12 +46,7 @@ impl<'a> PeView<'a> {
 	///   Reasonable limits on `e_lfanew`, `SizeOfHeaders` or `NumberOfSections` are exceeded.
 	pub fn from_bytes<T: AsRef<[u8]> + ?Sized>(image: &'a T) -> Result<PeView<'a>> {
 		let image = image.as_ref();
-		let size_of_image = validate_headers(image)?;
-		// Sanity check, this values should match.
-		// If they don't, that's not a problem per sé as it would be caught later.
-		if size_of_image as usize != image.len() {
-			return Err(Error::Insanity);
-		}
+		let _ = validate_headers(image)?;
 		Ok(PeView { image })
 	}
 	/// Constructs a new view from module handle.
