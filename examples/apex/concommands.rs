@@ -34,17 +34,20 @@ pub struct RawConCommand {
 	pub vtable: u64,
 	pub pNext: Ptr,
 	pub bRegistered: u8,
+	_pad0: [u8; 7],
 	pub pszName: Ptr<CStr>,
 	pub pszHelpString: Ptr<CStr>,
 	pub pszDataType: Ptr<CStr>, // Some string indicating the data type and min/max range in string form
 	unk_u64: u64,
 	pub fFlags: u32,
+	_pad1: u32,
 	// ConCommand
 	unk_fn: u64,
 	unk_zero: u64,
 	pub fnCommandCallback: u64,
 	pub fnCompletionCallback: u64,
 	pub fnCommandType: u32,
+	_pad2: u32,
 }
 
 pub struct ConCommand<'a> {

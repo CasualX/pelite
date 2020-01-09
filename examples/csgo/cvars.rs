@@ -136,6 +136,7 @@ pub struct RawConCommand {
 	pub vtable: Ptr<[Ptr]>,
 	pub pNext: Ptr,
 	pub bRegistered: u8,
+	_pad: [u8; 3],
 	pub pszName: Ptr<CStr>,
 	pub pszHelpString: Ptr<CStr>,
 	pub fFlags: u32,
