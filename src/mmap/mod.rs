@@ -2,12 +2,12 @@
 Memory map files from disk.
 */
 
-#[cfg(windows)]
+#[cfg(all(windows, feature = "winapi"))]
 mod windows;
-#[cfg(windows)]
+#[cfg(all(windows, feature = "winapi"))]
 pub use self::windows::{FileMap, ImageMap};
 
-#[cfg(unix)]
+#[cfg(all(unix, feature = "libc"))]
 mod unix;
-#[cfg(unix)]
+#[cfg(all(unix, feature = "libc"))]
 pub use self::unix::{FileMap};
