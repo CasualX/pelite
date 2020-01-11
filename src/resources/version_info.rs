@@ -45,13 +45,13 @@ use std::collections::HashMap;
 use std::fmt::Write;
 
 use crate::image::VS_FIXEDFILEINFO;
-use crate::{Error, Result, _Pod as Pod};
+use crate::{Error, Result, Pod};
 use crate::util::{AlignTo, FmtUtf16, wstrn};
 
 //----------------------------------------------------------------
 
 /// Language and charset pair.
-#[derive(Copy, Clone, Debug, Default, Pod, Eq, PartialEq, Hash)]
+#[derive(Copy, Clone, Debug, Default, Eq, PartialEq, Hash)]
 #[repr(C)]
 pub struct Language {
 	/// References [langID](https://docs.microsoft.com/en-us/windows/desktop/menurc/versioninfo-resource#langID) constants.
@@ -59,6 +59,7 @@ pub struct Language {
 	/// References [charsetID](https://docs.microsoft.com/en-us/windows/desktop/menurc/versioninfo-resource#charsetID) constants.
 	pub charset_id: u16,
 }
+unsafe impl Pod for Language {}
 impl Language {
 	/// Parse language hex strings.
 	pub fn parse(lang: &[u16]) -> std::result::Result<Language, &[u16]> {

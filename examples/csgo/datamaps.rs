@@ -74,6 +74,7 @@ struct datamap_t {
 	baseMap: Ptr<datamap_t>,
 	chains_validated: u8, //bool
 	packed_offsets_computed: u8, //bool
+	_pad: [u8; 2],
 	packed_size: i32,
 }
 

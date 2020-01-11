@@ -45,7 +45,9 @@ struct RecvTable {
 	name: Ptr<CStr>,
 	initialized: u8,
 	in_main_list: u8,
-} // sizeof: 0x4D2
+	_pad: [u8; 6],
+} // sizeof: 0x4D8
+const _: [(); mem::size_of::<RecvTable>()] = [(); 0x4D8];
 
 #[derive(Copy, Clone, Pod)]
 #[repr(C)]
@@ -56,15 +58,16 @@ struct RecvProp {
 	data_table: Ptr<RecvTable>,
 	name: Ptr<CStr>,
 	is_inside_array: u8,
+	_pad0: [u8; 7],
 	array_prop: Ptr<RecvProp>,
 	proxy_fn: Ptr,
 	_unk2: [u32; 4],
 	flags: i32,
 	_unk3: u32,
 	num_elements: i32,
+	_pad1: u32,
 } // sizeof: 0x68
-#[allow(dead_code)]
-const SIZE_OF_RECV_PROP: [(); mem::size_of::<RecvProp>()] = [(); 0x68];
+const _: [(); mem::size_of::<RecvProp>()] = [(); 0x68];
 
 static SEND_PROP_TYPES: [&str; 11] = [
 	"Int", "Float", "Vector", "VectorXY", "String",

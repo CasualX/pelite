@@ -39,6 +39,7 @@ pub fn print(bin: PeFile<'_>, _dll_name: &str) {
 #[repr(C)]
 struct typedescription_t {
 	fieldType: i32,
+	_pad0: u32,
 	fieldName: Ptr<CStr>,
 	fieldOffset: [u32; 2],
 	externalName: Ptr<CStr>,
@@ -46,12 +47,14 @@ struct typedescription_t {
 	td: Ptr<datamap_t>,
 	fieldSizeInBytes: i32,
 	_unk_bool: u8,
+	_pad1: [u8; 3],
 	_unk_four: u32, // seen: 4
+	_pad2: u32,
 	_unk1: [u64; 3], // seen: [0, 0, fieldOffset[0]]
 	_unk_word: u16,
+	_pad3: [u16; 3],
 } // sizeof = 0x80
-#[allow(dead_code)]
-const SIZE_OF_TYPE_DESCRIPTION: [(); mem::size_of::<typedescription_t>()] = [(); 0x80];
+const _: [(); mem::size_of::<typedescription_t>()] = [(); 0x80];
 
 #[allow(non_snake_case)]
 #[derive(Copy, Clone, Pod)]
@@ -59,11 +62,13 @@ const SIZE_OF_TYPE_DESCRIPTION: [(); mem::size_of::<typedescription_t>()] = [();
 struct datamap_t {
 	dataDesc: Ptr<[typedescription_t]>,
 	dataNumFields: i32,
+	_pad0: u32,
 	dataClassName: Ptr<CStr>,
 	_unk0: u64,
 	_unk1: u64, // chains_validated ?
 	baseMap: Ptr<datamap_t>,
 }
+const _: [(); mem::size_of::<datamap_t>()] = [(); 12 * 4];
 
 struct Field<'a> {
 	ty: &'a str,

@@ -43,7 +43,7 @@ for (name, group) in resources.icons().filter_map(Result::ok) {
 use std::{fmt, io, mem, slice};
 use crate::{Error};
 use crate::util::{AlignTo};
-use crate::_Pod as Pod;
+use crate::Pod;
 
 use super::{Resources, FindError};
 
@@ -189,8 +189,8 @@ pub type GroupCursor<'a> = GroupResource<'a>;
 
 #[allow(non_snake_case)]
 pub mod image {
-	use crate::_Pod as Pod;
-	#[derive(Copy, Clone, Pod, Debug)]
+	use crate::Pod;
+	#[derive(Copy, Clone, Debug)]
 	#[repr(C)]
 	pub struct GRPICONDIR {
 		pub idReserved: u16,
@@ -198,7 +198,7 @@ pub mod image {
 		pub idCount: u16,
 		pub idEntries: [GRPICONDIRENTRY; 0],
 	}
-	#[derive(Copy, Clone, Pod, Debug)]
+	#[derive(Copy, Clone, Debug)]
 	#[repr(C)]
 	pub struct GRPICONDIRENTRY {
 		pub bWidth: u8,
@@ -216,4 +216,6 @@ pub mod image {
 			self.dwBytesInResHi as u32 * 0x10000 + self.dwBytesInResLo as u32
 		}
 	}
+	unsafe impl Pod for GRPICONDIR {}
+	unsafe impl Pod for GRPICONDIRENTRY {}
 }

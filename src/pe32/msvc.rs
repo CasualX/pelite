@@ -7,14 +7,14 @@ References:
 [2]: [Reversing Microsoft Visual C++ Part II: Classes, Methods and RTTI](http://www.openrce.org/articles/full_view/23)  
 */
 
-use crate::{util::CStr, _Pod as Pod};
+use crate::{util::CStr, Pod};
 
 use super::Ptr;
 
 //----------------------------------------------------------------
 
 /// Represents the C++ `std::type_info` class returned by the `typeid` operator.
-#[derive(Pod, Debug)]
+#[derive(Debug)]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize))]
 #[repr(C)]
 pub struct TypeDescriptor {
@@ -28,7 +28,7 @@ pub struct TypeDescriptor {
 }
 
 /// Pointer-to-member displacement info.
-#[derive(Copy, Clone, Pod, Debug)]
+#[derive(Copy, Clone, Debug)]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize))]
 #[repr(C)]
 pub struct PMD {
@@ -43,7 +43,7 @@ pub struct PMD {
 //----------------------------------------------------------------
 
 /// Fully describes all try/catch blocks and unwindable objects in the function.
-#[derive(Copy, Clone, Pod, Debug)]
+#[derive(Copy, Clone, Debug)]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize))]
 #[repr(C)]
 pub struct FuncInfo {
@@ -69,7 +69,7 @@ pub struct FuncInfo {
 	pub eh_flags: i32,
 }
 
-#[derive(Copy, Clone, Pod, Debug)]
+#[derive(Copy, Clone, Debug)]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize))]
 #[repr(C)]
 pub struct UnwindMapEntry {
@@ -84,7 +84,7 @@ pub struct UnwindMapEntry {
 /// Try block descriptor.
 ///
 /// Describes a try block with associated catches.
-#[derive(Copy, Clone, Pod, Debug)]
+#[derive(Copy, Clone, Debug)]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize))]
 #[repr(C)]
 pub struct TryBlockMapEntry {
@@ -102,7 +102,7 @@ pub struct TryBlockMapEntry {
 /// Catch block descriptor.
 ///
 /// Describes a single catch of a try block.
-#[derive(Copy, Clone, Pod, Debug)]
+#[derive(Copy, Clone, Debug)]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize))]
 #[repr(C)]
 pub struct HandlerType {
@@ -121,7 +121,7 @@ pub struct HandlerType {
 }
 
 /// List of expected exceptions.
-#[derive(Copy, Clone, Pod, Debug)]
+#[derive(Copy, Clone, Debug)]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize))]
 #[repr(C)]
 pub struct ESTypeList {
@@ -133,7 +133,7 @@ pub struct ESTypeList {
 
 //----------------------------------------------------------------
 
-#[derive(Copy, Clone, Pod, Debug)]
+#[derive(Copy, Clone, Debug)]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize))]
 #[repr(C)]
 pub struct ThrowInfo {
@@ -152,7 +152,7 @@ pub struct ThrowInfo {
 	pub catchable_type_array: Ptr<CatchableTypeArray>,
 }
 
-#[derive(Pod, Debug)]
+#[derive(Debug)]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize))]
 #[repr(C)]
 pub struct CatchableTypeArray {
@@ -164,7 +164,7 @@ pub struct CatchableTypeArray {
 }
 
 /// Describes a type that can catch this exception.
-#[derive(Copy, Clone, Pod, Debug)]
+#[derive(Copy, Clone, Debug)]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize))]
 #[repr(C)]
 pub struct CatchableType {
@@ -190,7 +190,7 @@ pub struct CatchableType {
 /// The structure is called so because it lets you find the location to the complete object from a specific vftable pointer.
 ///
 /// Every vftable has its own Complete Object Locator.
-#[derive(Copy, Clone, Pod, Debug)]
+#[derive(Copy, Clone, Debug)]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize))]
 #[repr(C)]
 pub struct RTTICompleteObjectLocator {
@@ -209,7 +209,7 @@ pub struct RTTICompleteObjectLocator {
 /// Class Hierarchy Descriptor.
 ///
 /// Describes the inheritance hierarchy of the class, it is shared by all [COL](struct.RTTICompleteObjectLocator.html)s.
-#[derive(Copy, Clone, Pod, Debug)]
+#[derive(Copy, Clone, Debug)]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize))]
 #[repr(C)]
 pub struct RTTIClassHierarchyDescriptor {
@@ -224,7 +224,7 @@ pub struct RTTIClassHierarchyDescriptor {
 }
 
 /// Entry in the [Base Class Array](struct.RTTIClassHierarchyDescriptor.html#base_class_array.v).
-#[derive(Copy, Clone, Pod, Debug)]
+#[derive(Copy, Clone, Debug)]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize))]
 #[repr(C)]
 pub struct RTTIBaseClassDescriptor {
@@ -237,6 +237,22 @@ pub struct RTTIBaseClassDescriptor {
 	/// Flags, usually `0`. (?)
 	pub attributes: u32,
 }
+
+//----------------------------------------------------------------
+
+unsafe impl Pod for TypeDescriptor {}
+unsafe impl Pod for PMD {}
+unsafe impl Pod for FuncInfo {}
+unsafe impl Pod for UnwindMapEntry {}
+unsafe impl Pod for TryBlockMapEntry {}
+unsafe impl Pod for HandlerType {}
+unsafe impl Pod for ESTypeList {}
+unsafe impl Pod for ThrowInfo {}
+unsafe impl Pod for CatchableTypeArray {}
+unsafe impl Pod for CatchableType {}
+unsafe impl Pod for RTTICompleteObjectLocator {}
+unsafe impl Pod for RTTIClassHierarchyDescriptor {}
+unsafe impl Pod for RTTIBaseClassDescriptor {}
 
 //----------------------------------------------------------------
 

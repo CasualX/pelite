@@ -56,6 +56,7 @@ struct RecvTable {
 	pNetTableName: Ptr<CStr>,
 	bInitialized: u8,
 	bInMainList: u8,
+	_pad: [u8; 2],
 }
 #[derive(Pod, Debug, Clone)]
 #[repr(C)]
@@ -65,6 +66,7 @@ struct RecvProp {
 	Flags: i32,
 	StringBufferSize: i32,
 	bInsideArray: u8,
+	_pad1: [u8; 3],
 	pExtraData: Va,
 	pArrayProp: Ptr<RecvProp>,
 	ArrayLengthProxy: Va,
