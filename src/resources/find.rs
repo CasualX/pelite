@@ -52,11 +52,11 @@ impl error::Error for FindError {
 	fn description(&self) -> &str {
 		match self {
 			FindError::Pe(err) => err.description(),
-			FindError::Bad8Path => "invalid utf8 path",
-			FindError::NotFound => "entry not found",
-			FindError::NoRootPath => "missing '/' root",
-			FindError::UnDataEntry => "unexpected data entry",
-			FindError::UnDirectory => "unexpected directory",
+			FindError::Bad8Path => "Invalid utf8 path",
+			FindError::NotFound => "Entry not found",
+			FindError::NoRootPath => "Missing '/' root",
+			FindError::UnDataEntry => "Unexpected data entry",
+			FindError::UnDirectory => "Unexpected directory",
 		}
 	}
 	fn cause(&self) -> Option<&dyn error::Error> {

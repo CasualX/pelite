@@ -1,0 +1,18 @@
+[package]
+name = "pelite-wasm"
+version = "0.1.0"
+edition = "2018"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies.pelite]
+path = ".."
+version = "0.8.0"
+features = ["serde", "data-encoding"]
+
+[dependencies]
+serde = "1.0"
+serde_json = "1.0"
+# wasm-bindgen = { version = "0.2", features = ["serde-serialize"] }
+# wee_alloc = "0.4"
