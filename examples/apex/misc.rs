@@ -54,25 +54,14 @@ fn local_entity_handle(bin: PeFile<'_>, dll_name: &str) {
 
 fn local_player(bin: PeFile<'_>, dll_name: &str) {
 	// The global instance of C_GameMovement contains as its first member a pointer to local player right after its vtable.
-	fn is_game_movement(bin: PeFile<'_>, address: u32) -> pelite::Result<u32> {
-		let vtable_va = *bin.derva::<u64>(address)?;
-		let col_ptr = *bin.deref::<Ptr<msvc::RTTICompleteObjectLocator>>((vtable_va - 8).into())?;
-		let col = bin.deref(col_ptr)?;
-		let ty_name = bin.derva_c_str(col.type_descriptor + 16)?.to_str()?;
-		if ty_name != ".?AVC_GameMovement@@" {
-			return Err(pelite::Error::Invalid);
-		}
-		Ok(address + 8)
+	let mut save = [0; 4];
+	if bin.scanner().finds_code(pat!("48 89 05 ${[8]'} 48 85 C9 74 0D"), &mut save) {
+		let local_player_ptr = save[1];
+			println!("{}!{:#x} LocalPlayer", dll_name, local_player_ptr);
 	}
-	if let Some(sect) = bin.section_headers().iter().find(|sect| sect.Name == *b".data\0\0\0") {
-		for address in sect.virtual_range().step_by(8) {
-			if let Ok(local_player) = is_game_movement(bin, address) {
-				println!("{}!{:#x} LocalPlayer", dll_name, local_player);
-				return;
-			}
-		}
+	else {
+		eprintln!("unable to find LocalPlayerPtr!");
 	}
-	eprintln!("unable to find LocalPlayer!");
 }
 
 fn global_vars(bin: PeFile<'_>, dll_name: &str) {

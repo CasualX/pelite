@@ -1,45 +1,45 @@
 ## Interfaces
 
 ```
-r5apex.exe!0x01044348 ClientRenderTargets001
-r5apex.exe!0x01036be8 EngineTraceClient004
-r5apex.exe!0x01034ea8 EngineTraceClientDecals004
-r5apex.exe!0x01818430 EventSystem001
-r5apex.exe!0x01df0e00 GameUI011
-r5apex.exe!0x01038f08 ISoundC002
-r5apex.exe!0x01def0c8 RunGameEngine005
-r5apex.exe!0x0128c618 ShaderSystem002
-r5apex.exe!0x0181a340 VClient018
-r5apex.exe!0x01abf168 VClientEntityList003
-r5apex.exe!0x01defe00 VClientPrediction001
-r5apex.exe!0x01038340 VCvarQuery001
-r5apex.exe!0x01036d30 VDebugOverlay004
-r5apex.exe!0x01039938 VENGINE_GAMEUIFUNCS_VERSION005
-r5apex.exe!0x0117b4a0 VENGINE_LAUNCHER_API_VERSION004
-r5apex.exe!0x01047550 VEngineModel016
-r5apex.exe!0x010388b8 VEngineRandom001
-r5apex.exe!0x010386d8 VEngineRenderView013
-r5apex.exe!0x01814390 VGUI_System010
-r5apex.exe!0x22d12478 VMaterialSystemConfig004
-r5apex.exe!0x01036d38 VPhysicsDebugOverlay001
+r5apex.exe!0x0105a178 ClientRenderTargets001
+r5apex.exe!0x0104cc98 EngineTraceClient004
+r5apex.exe!0x0104af58 EngineTraceClientDecals004
+r5apex.exe!0x0182f2f0 EventSystem001
+r5apex.exe!0x01e07f10 GameUI011
+r5apex.exe!0x0104efb8 ISoundC002
+r5apex.exe!0x01e06168 RunGameEngine005
+r5apex.exe!0x012a34d8 ShaderSystem002
+r5apex.exe!0x01831200 VClient018
+r5apex.exe!0x01ad6028 VClientEntityList003
+r5apex.exe!0x01e06f60 VClientPrediction001
+r5apex.exe!0x0104e3f0 VCvarQuery001
+r5apex.exe!0x0104cde0 VDebugOverlay004
+r5apex.exe!0x0104f9e8 VENGINE_GAMEUIFUNCS_VERSION005
+r5apex.exe!0x01192350 VENGINE_LAUNCHER_API_VERSION004
+r5apex.exe!0x0105d380 VEngineModel016
+r5apex.exe!0x0104e968 VEngineRandom001
+r5apex.exe!0x0104e788 VEngineRenderView013
+r5apex.exe!0x0182b270 VGUI_System010
+r5apex.exe!0x245353b8 VMaterialSystemConfig004
+r5apex.exe!0x0104cde8 VPhysicsDebugOverlay001
 ```
 
 ## Miscellaneous
 
 ```
-TimeDateStamp = 0x5de73ec3
-CheckSum = 0x1f20056
-GameVersion = "v3.0.11.1353"
+TimeDateStamp = 0x5dfc0d27
+CheckSum = 0x1f3c00c
+GameVersion = "v3.0.12.1480"
 NUM_ENT_ENTRIES = 0x10000
-r5apex.exe!0x183f118 cl_entitylist
-r5apex.exe!0x1039934 LocalEntityHandle
-r5apex.exe!0x1d9ab98 LocalPlayer
-r5apex.exe!0x1110910 GlobalVars
-r5apex.exe!0xcad2248 PlayerResources
-r5apex.exe!0xcab13f8 ViewRender + 0x1a93d0 ViewMatrix
-r5apex.exe!0x1110c10 ClientState
-r5apex.exe!0x1110ca8 SignonState
-r5apex.exe!0x1110dc8 LevelName
+r5apex.exe!0x1855fd8 cl_entitylist
+r5apex.exe!0x104f9e4 LocalEntityHandle
+r5apex.exe!0x1db1c38 LocalPlayer
+r5apex.exe!0x11268e0 GlobalVars
+r5apex.exe!0xcae8490 PlayerResources
+r5apex.exe!0xcac7638 ViewRender + 0x1a93d0 ViewMatrix
+r5apex.exe!0x1126be0 ClientState
+r5apex.exe!0x1126c78 SignonState
+r5apex.exe!0x1126d98 LevelName
 ```
 
 ## Buttons
@@ -47,54 +47,54 @@ r5apex.exe!0x1110dc8 LevelName
 These are addresses to global instances of the [`kbutton_t`](https://github.com/ValveSoftware/source-sdk-2013/blob/master/mp/src/game/client/kbutton.h#L14-L20) struct.
 
 ```
-r5apex.exe!0x0cad2bb0 kbutton_t in_attack
-r5apex.exe!0x0cad2cd0 kbutton_t in_backward
-r5apex.exe!0x26df0540 kbutton_t in_break
-r5apex.exe!0x271e00d0 kbutton_t in_camin
-r5apex.exe!0x26df0870 kbutton_t in_camout
-r5apex.exe!0x26df0820 kbutton_t in_campitchdown
-r5apex.exe!0x271e0158 kbutton_t in_campitchup
-r5apex.exe!0x26df08b0 kbutton_t in_camyawleft
-r5apex.exe!0x26df0850 kbutton_t in_camyawright
-r5apex.exe!0x0cad2b68 kbutton_t in_commandermousemove
-r5apex.exe!0x0cad2c40 kbutton_t in_dodge
-r5apex.exe!0x26df0560 kbutton_t in_duck
-r5apex.exe!0x0cad2ca8 kbutton_t in_forward
-r5apex.exe!0x0cad2bc0 kbutton_t in_graph
-r5apex.exe!0x0cad2c28 kbutton_t in_jump
-r5apex.exe!0x271e0138 kbutton_t in_klook
-r5apex.exe!0x26df0898 kbutton_t in_left
-r5apex.exe!0x26df0840 kbutton_t in_lookdown
-r5apex.exe!0x26df0550 kbutton_t in_lookup
-r5apex.exe!0x271e0148 kbutton_t in_melee
-r5apex.exe!0x26df08c0 kbutton_t in_movedown
-r5apex.exe!0x0cad2c98 kbutton_t in_moveleft
-r5apex.exe!0x0cad2cc0 kbutton_t in_moveright
-r5apex.exe!0x271e0118 kbutton_t in_moveup
-r5apex.exe!0x271e0128 kbutton_t in_offhand0
-r5apex.exe!0x26df0888 kbutton_t in_offhand1
-r5apex.exe!0x26df0650 kbutton_t in_offhand2
-r5apex.exe!0x26df0630 kbutton_t in_offhand3
-r5apex.exe!0x26df05f0 kbutton_t in_offhand4
-r5apex.exe!0x0cad2c10 kbutton_t in_pause_menu
-r5apex.exe!0x0cad2b80 kbutton_t in_ping
-r5apex.exe!0x0cad2bd0 kbutton_t in_reload
-r5apex.exe!0x26df0860 kbutton_t in_right
-r5apex.exe!0x26df0660 kbutton_t in_score
-r5apex.exe!0x26df0660 kbutton_t in_showscores
-r5apex.exe!0x0cad2b50 kbutton_t in_speed
-r5apex.exe!0x0cad2be0 kbutton_t in_strafe
-r5apex.exe!0x271e00f0 kbutton_t in_toggle_duck
-r5apex.exe!0x271e00e0 kbutton_t in_toggle_zoom
-r5apex.exe!0x26df0640 kbutton_t in_use
-r5apex.exe!0x26df05e0 kbutton_t in_useAndReload
-r5apex.exe!0x271e0100 kbutton_t in_use_alt
-r5apex.exe!0x26df05d0 kbutton_t in_use_long
-r5apex.exe!0x0cad2bf8 kbutton_t in_variableScopeToggle
-r5apex.exe!0x26df0610 kbutton_t in_walk
-r5apex.exe!0x26df0830 kbutton_t in_weaponCycle
-r5apex.exe!0x26df0600 kbutton_t in_weapon_discard
-r5apex.exe!0x26df0620 kbutton_t in_zoom
+r5apex.exe!0x0cae9f98 kbutton_t in_attack
+r5apex.exe!0x0cae9f28 kbutton_t in_backward
+r5apex.exe!0x2851ef10 kbutton_t in_break
+r5apex.exe!0x2890eab0 kbutton_t in_camin
+r5apex.exe!0x2851f250 kbutton_t in_camout
+r5apex.exe!0x2851f200 kbutton_t in_campitchdown
+r5apex.exe!0x2890eb30 kbutton_t in_campitchup
+r5apex.exe!0x2851f288 kbutton_t in_camyawleft
+r5apex.exe!0x2851f230 kbutton_t in_camyawright
+r5apex.exe!0x0cae9f50 kbutton_t in_commandermousemove
+r5apex.exe!0x0caea028 kbutton_t in_dodge
+r5apex.exe!0x2851ef30 kbutton_t in_duck
+r5apex.exe!0x0caea090 kbutton_t in_forward
+r5apex.exe!0x0cae9fa8 kbutton_t in_graph
+r5apex.exe!0x0caea008 kbutton_t in_jump
+r5apex.exe!0x2890eb10 kbutton_t in_klook
+r5apex.exe!0x2851f270 kbutton_t in_left
+r5apex.exe!0x2851f220 kbutton_t in_lookdown
+r5apex.exe!0x2851ef20 kbutton_t in_lookup
+r5apex.exe!0x2890eb20 kbutton_t in_melee
+r5apex.exe!0x2851f298 kbutton_t in_movedown
+r5apex.exe!0x0caea080 kbutton_t in_moveleft
+r5apex.exe!0x0cae9f18 kbutton_t in_moveright
+r5apex.exe!0x2890eaf0 kbutton_t in_moveup
+r5apex.exe!0x2890eb00 kbutton_t in_offhand0
+r5apex.exe!0x2851f260 kbutton_t in_offhand1
+r5apex.exe!0x2851f028 kbutton_t in_offhand2
+r5apex.exe!0x2851f008 kbutton_t in_offhand3
+r5apex.exe!0x2851efc0 kbutton_t in_offhand4
+r5apex.exe!0x0cae9ff8 kbutton_t in_pause_menu
+r5apex.exe!0x0cae9f68 kbutton_t in_ping
+r5apex.exe!0x0cae9fb8 kbutton_t in_reload
+r5apex.exe!0x2851f240 kbutton_t in_right
+r5apex.exe!0x2851f038 kbutton_t in_score
+r5apex.exe!0x2851f038 kbutton_t in_showscores
+r5apex.exe!0x0cae9f38 kbutton_t in_speed
+r5apex.exe!0x0cae9fd0 kbutton_t in_strafe
+r5apex.exe!0x2890ead0 kbutton_t in_toggle_duck
+r5apex.exe!0x2890eac0 kbutton_t in_toggle_zoom
+r5apex.exe!0x2851f018 kbutton_t in_use
+r5apex.exe!0x2851efb0 kbutton_t in_useAndReload
+r5apex.exe!0x2890eae0 kbutton_t in_use_alt
+r5apex.exe!0x2851efa0 kbutton_t in_use_long
+r5apex.exe!0x0cae9fe0 kbutton_t in_variableScopeToggle
+r5apex.exe!0x2851efe0 kbutton_t in_walk
+r5apex.exe!0x2851f210 kbutton_t in_weaponCycle
+r5apex.exe!0x2851efd0 kbutton_t in_weapon_discard
+r5apex.exe!0x2851eff8 kbutton_t in_zoom
 ```
 
 ## ClientClasses
@@ -145,7 +145,7 @@ sizeof: `2560`
 <summary><code>client_class CBaseGrenade</code></summary>
 
 class_id: `6`  
-sizeof: `10432`  
+sizeof: `10496`  
 </details>
 <details>
 <summary><code>client_class CBaseParticleEntity</code></summary>
@@ -217,7 +217,7 @@ sizeof: `2944`
 <summary><code>client_class CCrossbowBolt</code></summary>
 
 class_id: `17`  
-sizeof: `10304`  
+sizeof: `10368`  
 </details>
 <details>
 <summary><code>client_class CDeathBoxProp</code></summary>
@@ -373,7 +373,7 @@ sizeof: `4992`
 <summary><code>client_class CMissile</code></summary>
 
 class_id: `43`  
-sizeof: `10496`  
+sizeof: `10560`  
 </details>
 <details>
 <summary><code>client_class CMovieDisplay</code></summary>
@@ -427,7 +427,7 @@ sizeof: `4992`
 <summary><code>client_class CPlayer</code></summary>
 
 class_id: `52`  
-sizeof: `16384`  
+sizeof: `16448`  
 </details>
 <details>
 <summary><code>client_class CPlayerDecoy</code></summary>
@@ -487,7 +487,7 @@ sizeof: `5056`
 <summary><code>client_class CProjectile</code></summary>
 
 class_id: `62`  
-sizeof: `10240`  
+sizeof: `10304`  
 </details>
 <details>
 <summary><code>client_class CPropDoor</code></summary>
@@ -511,7 +511,7 @@ sizeof: `3840`
 <summary><code>client_class CScriptMover</code></summary>
 
 class_id: `66`  
-sizeof: `5440`  
+sizeof: `5504`  
 </details>
 <details>
 <summary><code>client_class CScriptMoverTrainNode</code></summary>
@@ -535,7 +535,7 @@ sizeof: `3456`
 <summary><code>client_class CScriptNetData_SNDC_DEATH_BOX</code></summary>
 
 class_id: `69`  
-sizeof: `3200`  
+sizeof: `3264`  
 </details>
 <details>
 <summary><code>client_class CScriptNetData_SNDC_GLOBAL</code></summary>
@@ -547,13 +547,13 @@ sizeof: `3456`
 <summary><code>client_class CScriptNetData_SNDC_PLAYER_EXCLUSIVE</code></summary>
 
 class_id: `71`  
-sizeof: `3328`  
+sizeof: `3392`  
 </details>
 <details>
 <summary><code>client_class CScriptNetData_SNDC_PLAYER_GLOBAL</code></summary>
 
 class_id: `72`  
-sizeof: `3328`  
+sizeof: `3392`  
 </details>
 <details>
 <summary><code>client_class CScriptNetData_SNDC_TITAN_SOUL</code></summary>
@@ -745,7 +745,7 @@ sizeof: `2624`
 <summary><code>client_class CWeaponX</code></summary>
 
 class_id: `104`  
-sizeof: `25088`  
+sizeof: `25152`  
 </details>
 <details>
 <summary><code>client_class CWorld</code></summary>
@@ -769,13 +769,13 @@ sizeof: `2624`
 <summary><code>client_class DoorMover</code></summary>
 
 class_id: `108`  
-sizeof: `5504`  
+sizeof: `5568`  
 </details>
 <details>
 <summary><code>client_class ScriptMoverLightweight</code></summary>
 
 class_id: `109`  
-sizeof: `5504`  
+sizeof: `5568`  
 </details>
 <details>
 <summary><code>client_class Titan_Cockpit</code></summary>
@@ -787,120 +787,120 @@ sizeof: `5440`
 ### Addresses
 
 ```
-r5apex.exe!0x010482d8 ClientClass CAI_BaseNPC
-r5apex.exe!0x010452d8 ClientClass CAmbientGeneric
-r5apex.exe!0x01047478 ClientClass CBaseAnimating
-r5apex.exe!0x01045c48 ClientClass CBaseAnimatingOverlay
-r5apex.exe!0x01047e38 ClientClass CBaseButton
-r5apex.exe!0x01042378 ClientClass CBaseCombatCharacter
-r5apex.exe!0x01047518 ClientClass CBaseEntity
-r5apex.exe!0x0117d7b8 ClientClass CBaseGrenade
-r5apex.exe!0x01deb498 ClientClass CBaseParticleEntity
-r5apex.exe!0x01047698 ClientClass CBaseTempEntity
-r5apex.exe!0x010467f8 ClientClass CBaseToggle
-r5apex.exe!0x0110eb88 ClientClass CBaseTrigger
-r5apex.exe!0x01048a28 ClientClass CBaseVPhysicsTrigger
-r5apex.exe!0x01bd3068 ClientClass CBaseViewModel
-r5apex.exe!0x01040a78 ClientClass CBoneFollower
-r5apex.exe!0x01041838 ClientClass CBreakableProp
-r5apex.exe!0x01043e48 ClientClass CBreakableSurface
-r5apex.exe!0x01041518 ClientClass CCascadeLight
-r5apex.exe!0x01047158 ClientClass CColorCorrection
-r5apex.exe!0x01df5a88 ClientClass CCrossbowBolt
-r5apex.exe!0x01040578 ClientClass CDeathBoxProp
-r5apex.exe!0x01046bb8 ClientClass CDynamicLight
-r5apex.exe!0x01047338 ClientClass CDynamicProp
-r5apex.exe!0x01040ed8 ClientClass CDynamicPropLightweight
-r5apex.exe!0x01dc87d0 ClientClass CEntityBlocker
-r5apex.exe!0x01045698 ClientClass CEntityDissolve
-r5apex.exe!0x0104de18 ClientClass CEntityLinkPage
-r5apex.exe!0x01dd73c0 ClientClass CEnvDecoy
-r5apex.exe!0x010413d8 ClientClass CEnvWind
-r5apex.exe!0x01df4ea8 ClientClass CFirstPersonProxy
-r5apex.exe!0x01045b08 ClientClass CFuncBrush
-r5apex.exe!0x01043578 ClientClass CFuncBrushLightweight
-r5apex.exe!0x01043098 ClientClass CFuncMoveLinear
-r5apex.exe!0x01dcd788 ClientClass CGameRulesProxy
-r5apex.exe!0x01bdaec8 ClientClass CGlobalNonRewinding
-r5apex.exe!0x01df6728 ClientClass CGrappleHook
-r5apex.exe!0x01049ee8 ClientClass CHardPointEntity
-r5apex.exe!0x0104af68 ClientClass CHardPointFrontierEntity
-r5apex.exe!0x01dee238 ClientClass CHealthKit
-r5apex.exe!0x0110f108 ClientClass CImportantOnEntSound
-r5apex.exe!0x01df0dc8 ClientClass CInfoPlacementHelper
-r5apex.exe!0x01dca048 ClientClass CInfoTarget
-r5apex.exe!0x0117b468 ClientClass CInfoTargetGravity
-r5apex.exe!0x01bd4938 ClientClass CInfoTargetMinimap
-r5apex.exe!0x01046e38 ClientClass CLootGrabber
-r5apex.exe!0x01df3d58 ClientClass CMissile
-r5apex.exe!0x01041dd8 ClientClass CMovieDisplay
-r5apex.exe!0x01042d78 ClientClass CNPC_Drone
-r5apex.exe!0x01042c38 ClientClass CNPC_Dropship
-r5apex.exe!0x01040f78 ClientClass CNPC_SentryTurret
-r5apex.exe!0x01044dd8 ClientClass CNPC_Titan
-r5apex.exe!0x010454b8 ClientClass CParticleSystem
-r5apex.exe!0x01044208 ClientClass CPhysBox
-r5apex.exe!0x01046328 ClientClass CPhysicsProp
-r5apex.exe!0x01041338 ClientClass CPlayer
-r5apex.exe!0x01de2b28 ClientClass CPlayerDecoy
-r5apex.exe!0x01046148 ClientClass CPlayerResource
-r5apex.exe!0x01dd8f48 ClientClass CPlayerTasklist
-r5apex.exe!0x0104c298 ClientClass CPlayerVehicle
-r5apex.exe!0x01dd8ea0 ClientClass CPlayerWaypoint
-r5apex.exe!0x01044978 ClientClass CPointCamera
-r5apex.exe!0x01df1c88 ClientClass CPortal_PointPush
-r5apex.exe!0x01041298 ClientClass CPostProcessController
-r5apex.exe!0x01df46e8 ClientClass CPredictedFirstPersonProxy
-r5apex.exe!0x01df3838 ClientClass CProjectile
-r5apex.exe!0x01814718 ClientClass CPropDoor
-r5apex.exe!0x01043938 ClientClass CPropSurvival
-r5apex.exe!0x01dd3418 ClientClass CRopeKeyframe
-r5apex.exe!0x01de13d8 ClientClass CScriptMover
-r5apex.exe!0x01dd3238 ClientClass CScriptMoverTrainNode
-r5apex.exe!0x01ddb568 ClientClass CScriptNetData
-r5apex.exe!0x01dd73f8 ClientClass CScriptNetDataGlobal
-r5apex.exe!0x01dd2e78 ClientClass CScriptNetData_SNDC_DEATH_BOX
-r5apex.exe!0x01dd8ed8 ClientClass CScriptNetData_SNDC_GLOBAL
-r5apex.exe!0x01dd8810 ClientClass CScriptNetData_SNDC_PLAYER_EXCLUSIVE
-r5apex.exe!0x01dd83a0 ClientClass CScriptNetData_SNDC_PLAYER_GLOBAL
-r5apex.exe!0x01dd8f10 ClientClass CScriptNetData_SNDC_TITAN_SOUL
-r5apex.exe!0x010434d8 ClientClass CScriptProp
-r5apex.exe!0x01df36f8 ClientClass CScriptTraceVolume
-r5apex.exe!0x01040e38 ClientClass CShieldProp
-r5apex.exe!0x01046758 ClientClass CSkyCamera
-r5apex.exe!0x01047018 ClientClass CStatueProp
-r5apex.exe!0x01ddb4c8 ClientClass CStatusEffectPlugin
-r5apex.exe!0x0104cf18 ClientClass CTEBreakModel
-r5apex.exe!0x01049bc8 ClientClass CTEEffectDispatch
-r5apex.exe!0x01049948 ClientClass CTEExplosion
-r5apex.exe!0x01045ce8 ClientClass CTEGibEvent
-r5apex.exe!0x0110ed48 ClientClass CTEParticleSystem
-r5apex.exe!0x0104a808 ClientClass CTEPhysicsProp
-r5apex.exe!0x01df57c8 ClientClass CTEProjectileTrail
-r5apex.exe!0x01bdabe8 ClientClass CTEScriptParticleSystem
-r5apex.exe!0x01bda328 ClientClass CTEScriptParticleSystemOnEntity
-r5apex.exe!0x01dcbb30 ClientClass CTEScriptParticleSystemOnEntityWithPos
-r5apex.exe!0x0110e9c8 ClientClass CTEShatterSurface
-r5apex.exe!0x01048ec8 ClientClass CTESoundDispatch
-r5apex.exe!0x0110efc8 ClientClass CTeam
-r5apex.exe!0x01042b98 ClientClass CTitanSoul
-r5apex.exe!0x01dd83d8 ClientClass CTriggerCylinderHeavy
-r5apex.exe!0x010498a8 ClientClass CTriggerNoGrapple
-r5apex.exe!0x0104dfd8 ClientClass CTriggerNoZipline
-r5apex.exe!0x01dde188 ClientClass CTriggerPlayerMovement
-r5apex.exe!0x01dda378 ClientClass CTriggerPointGravity
-r5apex.exe!0x01dd8848 ClientClass CTriggerSlip
-r5apex.exe!0x01df5658 ClientClass CTurret
-r5apex.exe!0x0110f2c8 ClientClass CVGuiScreen
-r5apex.exe!0x01df6988 ClientClass CVortexSphere
-r5apex.exe!0x0104bc58 ClientClass CWaterLODControl
-r5apex.exe!0x01df9608 ClientClass CWeaponX
-r5apex.exe!0x0110f228 ClientClass CWorld
-r5apex.exe!0x01df4968 ClientClass CZipline
-r5apex.exe!0x01df42d8 ClientClass CZiplineEnd
-r5apex.exe!0x01dd6348 ClientClass DoorMover
-r5apex.exe!0x01dde078 ClientClass ScriptMoverLightweight
-r5apex.exe!0x01df36c0 ClientClass Titan_Cockpit
+r5apex.exe!0x0105e108 ClientClass CAI_BaseNPC
+r5apex.exe!0x0105b108 ClientClass CAmbientGeneric
+r5apex.exe!0x0105d2a8 ClientClass CBaseAnimating
+r5apex.exe!0x0105ba78 ClientClass CBaseAnimatingOverlay
+r5apex.exe!0x0105dc68 ClientClass CBaseButton
+r5apex.exe!0x010581a8 ClientClass CBaseCombatCharacter
+r5apex.exe!0x0105d348 ClientClass CBaseEntity
+r5apex.exe!0x011943b8 ClientClass CBaseGrenade
+r5apex.exe!0x01df9ca8 ClientClass CBaseParticleEntity
+r5apex.exe!0x0105d4c8 ClientClass CBaseTempEntity
+r5apex.exe!0x0105c628 ClientClass CBaseToggle
+r5apex.exe!0x011249b8 ClientClass CBaseTrigger
+r5apex.exe!0x0105e858 ClientClass CBaseVPhysicsTrigger
+r5apex.exe!0x01be9828 ClientClass CBaseViewModel
+r5apex.exe!0x01056948 ClientClass CBoneFollower
+r5apex.exe!0x01057708 ClientClass CBreakableProp
+r5apex.exe!0x01059c78 ClientClass CBreakableSurface
+r5apex.exe!0x010573e8 ClientClass CCascadeLight
+r5apex.exe!0x0105cf88 ClientClass CColorCorrection
+r5apex.exe!0x01e0d838 ClientClass CCrossbowBolt
+r5apex.exe!0x01056448 ClientClass CDeathBoxProp
+r5apex.exe!0x0105c9e8 ClientClass CDynamicLight
+r5apex.exe!0x0105d168 ClientClass CDynamicProp
+r5apex.exe!0x01056da8 ClientClass CDynamicPropLightweight
+r5apex.exe!0x01dcb2d8 ClientClass CEntityBlocker
+r5apex.exe!0x0105b4c8 ClientClass CEntityDissolve
+r5apex.exe!0x01063ce8 ClientClass CEntityLinkPage
+r5apex.exe!0x01dee460 ClientClass CEnvDecoy
+r5apex.exe!0x010572a8 ClientClass CEnvWind
+r5apex.exe!0x01e0c118 ClientClass CFirstPersonProxy
+r5apex.exe!0x0105b938 ClientClass CFuncBrush
+r5apex.exe!0x010593a8 ClientClass CFuncBrushLightweight
+r5apex.exe!0x01058ec8 ClientClass CFuncMoveLinear
+r5apex.exe!0x01de4828 ClientClass CGameRulesProxy
+r5apex.exe!0x01bf1ac8 ClientClass CGlobalNonRewinding
+r5apex.exe!0x01e0da98 ClientClass CGrappleHook
+r5apex.exe!0x0105fd18 ClientClass CHardPointEntity
+r5apex.exe!0x01060e38 ClientClass CHardPointFrontierEntity
+r5apex.exe!0x01e02618 ClientClass CHealthKit
+r5apex.exe!0x01124f38 ClientClass CImportantOnEntSound
+r5apex.exe!0x01e08d98 ClientClass CInfoPlacementHelper
+r5apex.exe!0x01de10e8 ClientClass CInfoTarget
+r5apex.exe!0x01190a68 ClientClass CInfoTargetGravity
+r5apex.exe!0x01beb4f8 ClientClass CInfoTargetMinimap
+r5apex.exe!0x0105cc68 ClientClass CLootGrabber
+r5apex.exe!0x01e0b3e8 ClientClass CMissile
+r5apex.exe!0x01057ca8 ClientClass CMovieDisplay
+r5apex.exe!0x01058ba8 ClientClass CNPC_Drone
+r5apex.exe!0x01058a68 ClientClass CNPC_Dropship
+r5apex.exe!0x01056e48 ClientClass CNPC_SentryTurret
+r5apex.exe!0x0105ac08 ClientClass CNPC_Titan
+r5apex.exe!0x0105b2e8 ClientClass CParticleSystem
+r5apex.exe!0x0105a038 ClientClass CPhysBox
+r5apex.exe!0x0105c158 ClientClass CPhysicsProp
+r5apex.exe!0x01057208 ClientClass CPlayer
+r5apex.exe!0x01df8e78 ClientClass CPlayerDecoy
+r5apex.exe!0x0105bf78 ClientClass CPlayerResource
+r5apex.exe!0x01deffe8 ClientClass CPlayerTasklist
+r5apex.exe!0x01062168 ClientClass CPlayerVehicle
+r5apex.exe!0x01deff40 ClientClass CPlayerWaypoint
+r5apex.exe!0x0105a7a8 ClientClass CPointCamera
+r5apex.exe!0x01e0a3f0 ClientClass CPortal_PointPush
+r5apex.exe!0x01057168 ClientClass CPostProcessController
+r5apex.exe!0x01e0ba78 ClientClass CPredictedFirstPersonProxy
+r5apex.exe!0x01e0ae68 ClientClass CProjectile
+r5apex.exe!0x01828568 ClientClass CPropDoor
+r5apex.exe!0x01059768 ClientClass CPropSurvival
+r5apex.exe!0x01dea4b8 ClientClass CRopeKeyframe
+r5apex.exe!0x01df8e40 ClientClass CScriptMover
+r5apex.exe!0x01dea2d8 ClientClass CScriptMoverTrainNode
+r5apex.exe!0x01df34e8 ClientClass CScriptNetData
+r5apex.exe!0x01dee498 ClientClass CScriptNetDataGlobal
+r5apex.exe!0x01de9f18 ClientClass CScriptNetData_SNDC_DEATH_BOX
+r5apex.exe!0x01deff78 ClientClass CScriptNetData_SNDC_GLOBAL
+r5apex.exe!0x01def8b0 ClientClass CScriptNetData_SNDC_PLAYER_EXCLUSIVE
+r5apex.exe!0x01def440 ClientClass CScriptNetData_SNDC_PLAYER_GLOBAL
+r5apex.exe!0x01deffb0 ClientClass CScriptNetData_SNDC_TITAN_SOUL
+r5apex.exe!0x01059308 ClientClass CScriptProp
+r5apex.exe!0x01e0a948 ClientClass CScriptTraceVolume
+r5apex.exe!0x01056d08 ClientClass CShieldProp
+r5apex.exe!0x0105c588 ClientClass CSkyCamera
+r5apex.exe!0x0105ce48 ClientClass CStatueProp
+r5apex.exe!0x01df2618 ClientClass CStatusEffectPlugin
+r5apex.exe!0x01062de8 ClientClass CTEBreakModel
+r5apex.exe!0x0105f9f8 ClientClass CTEEffectDispatch
+r5apex.exe!0x0105f778 ClientClass CTEExplosion
+r5apex.exe!0x0105bb18 ClientClass CTEGibEvent
+r5apex.exe!0x01124c18 ClientClass CTEParticleSystem
+r5apex.exe!0x010606d8 ClientClass CTEPhysicsProp
+r5apex.exe!0x01e0cb98 ClientClass CTEProjectileTrail
+r5apex.exe!0x01bf1548 ClientClass CTEScriptParticleSystem
+r5apex.exe!0x01bf1068 ClientClass CTEScriptParticleSystemOnEntity
+r5apex.exe!0x01de2bd0 ClientClass CTEScriptParticleSystemOnEntityWithPos
+r5apex.exe!0x01124898 ClientClass CTEShatterSurface
+r5apex.exe!0x0105ecf8 ClientClass CTESoundDispatch
+r5apex.exe!0x01124cb8 ClientClass CTeam
+r5apex.exe!0x010589c8 ClientClass CTitanSoul
+r5apex.exe!0x01def478 ClientClass CTriggerCylinderHeavy
+r5apex.exe!0x0105f6d8 ClientClass CTriggerNoGrapple
+r5apex.exe!0x01063ea8 ClientClass CTriggerNoZipline
+r5apex.exe!0x01df84e8 ClientClass CTriggerPlayerMovement
+r5apex.exe!0x01df2578 ClientClass CTriggerPointGravity
+r5apex.exe!0x01def8e8 ClientClass CTriggerSlip
+r5apex.exe!0x01e0c8d8 ClientClass CTurret
+r5apex.exe!0x01125198 ClientClass CVGuiScreen
+r5apex.exe!0x01e0dd18 ClientClass CVortexSphere
+r5apex.exe!0x01061b28 ClientClass CWaterLODControl
+r5apex.exe!0x01e107a8 ClientClass CWeaponX
+r5apex.exe!0x011250f8 ClientClass CWorld
+r5apex.exe!0x01e0bfb8 ClientClass CZipline
+r5apex.exe!0x01e0b7f8 ClientClass CZiplineEnd
+r5apex.exe!0x01ded3e8 ClientClass DoorMover
+r5apex.exe!0x01df5298 ClientClass ScriptMoverLightweight
+r5apex.exe!0x01e0a428 ClientClass Titan_Cockpit
 ```
 
 ## RecvTables
@@ -1413,9 +1413,9 @@ DT_BaseGrenade!0x0754 m_baseTakeDamage
 DT_BaseGrenade!0x0758 m_invulnerableToDamageCount
 DT_BaseGrenade!0x07f4 m_parentAttachmentHitbox
 DT_BaseGrenade!0x07f8 m_parentAttachmentModel
-DT_BaseGrenade!0x2801 m_doesExplode
-DT_BaseGrenade!0x2804 m_DmgRadius
-DT_BaseGrenade!0x2890 m_ziplineGrenadeExpectedEndPosition
+DT_BaseGrenade!0x2841 m_doesExplode
+DT_BaseGrenade!0x2844 m_DmgRadius
+DT_BaseGrenade!0x28d0 m_ziplineGrenadeExpectedEndPosition
 ```
 </details>
 <details>
@@ -1851,7 +1851,7 @@ DT_DoorMover!0x08c8 m_usablePriority
 DT_DoorMover!0x08cc m_usableDistanceOverride
 DT_DoorMover!0x08d0 m_usableFOV
 DT_DoorMover!0x08d4 m_usePromptSize
-DT_DoorMover!0x1540 m_doorFlags
+DT_DoorMover!0x1580 m_doorFlags
 ```
 </details>
 <details>
@@ -2563,118 +2563,118 @@ DT_InfoTarget!0x09e4 m_firstParentEntityLink
 
 ```
 DT_Local!0x0000 m_airMoveBlockPlanes
-DT_Local!0x0010 m_iHideHUD
-DT_Local!0x0014 m_superJumpsUsed
-DT_Local!0x0018 m_jumpedOffRodeo
-DT_Local!0x001c m_jumpPressTime
-DT_Local!0x0020 m_jetpackActivateTime
-DT_Local!0x0024 m_jetpackDeactivateTime
-DT_Local!0x0028 m_flSuitPower
-DT_Local!0x002c m_flSuitJumpPower
-DT_Local!0x0030 m_flSuitGrapplePower
-DT_Local!0x0034 m_flFallVelocity
-DT_Local!0x0038 m_flStepSize
-DT_Local!0x003c m_airSlowMoFrac
-DT_Local!0x0040 predictableFlags
-DT_Local!0x0044 m_bitsActiveDevices
-DT_Local!0x0048 m_forceStance
-DT_Local!0x004c m_duckToggleOn
-DT_Local!0x004d m_bDrawViewmodel
-DT_Local!0x004e m_bAllowAutoMovement
-DT_Local!0x0050 m_accelScale
-DT_Local!0x0054 m_powerRegenRateScale
-DT_Local!0x0058 m_dodgePowerDelayScale
-DT_Local!0x0070 m_hSkyCamera
-DT_Local!0x0074 m_skybox3d.scale
-DT_Local!0x0078 m_skybox3d.cellNum
-DT_Local!0x007c m_skybox3d.useWorldFog
-DT_Local!0x0080 m_skybox3d.fog.botAlt
-DT_Local!0x0084 m_skybox3d.fog.topAlt
-DT_Local!0x0088 m_skybox3d.fog.halfDistBot
-DT_Local!0x008c m_skybox3d.fog.halfDistTop
-DT_Local!0x0090 m_skybox3d.fog.distColorStr
-DT_Local!0x0094 m_skybox3d.fog.dirColorStr
-DT_Local!0x0098 m_skybox3d.fog.distOffset
-DT_Local!0x009c m_skybox3d.fog.densityScale
-DT_Local!0x00a0 m_skybox3d.fog.halfAngleDeg
-DT_Local!0x00a4 m_skybox3d.fog.HDRColorScale
-DT_Local!0x00a8 m_skybox3d.fog.distColor
-DT_Local!0x00ac m_skybox3d.fog.dirColor
-DT_Local!0x00b0 m_skybox3d.fog.direction
-DT_Local!0x00c1 m_skybox3d.fog.enable
-DT_Local!0x00c8 m_audio.localSound[0]
-DT_Local!0x00d4 m_audio.localSound[1]
-DT_Local!0x00e0 m_audio.localSound[2]
-DT_Local!0x00ec m_audio.localSound[3]
-DT_Local!0x00f8 m_audio.localSound[4]
-DT_Local!0x0104 m_audio.localSound[5]
-DT_Local!0x0110 m_audio.localSound[6]
-DT_Local!0x011c m_audio.localSound[7]
-DT_Local!0x0128 m_audio.soundscapeIndex
-DT_Local!0x012c m_audio.localBits
-DT_Local!0x0130 m_audio.entIndex
-DT_Local!0x014c m_animNearZ
-DT_Local!0x0150 lastAttacker
-DT_Local!0x0154 attackedCount
-DT_Local!0x0180 m_airMoveBlockPlanes[0]
-DT_Local!0x0198 m_airMoveBlockPlaneTime
-DT_Local!0x019c m_airMoveBlockPlaneCount
-DT_Local!0x01a0 m_queuedMeleePressTime
-DT_Local!0x01a4 m_queuedGrappleMeleeTime
-DT_Local!0x01a9 m_disableMeleeUntilRelease
-DT_Local!0x01ac m_meleePressTime
-DT_Local!0x01b0 m_meleeDisabledCounter
-DT_Local!0x01b4 m_meleeInputIndex
-DT_Local!0x01b8 m_trackedChildProjectileCount
-DT_Local!0x01bc m_oneHandedWeaponUsage
-DT_Local!0x01c0 m_flCockpitEntryTime
-DT_Local!0x01c4 m_ejectStartTime
-DT_Local!0x01c8 m_disembarkStartTime
-DT_Local!0x01cc m_hotDropImpactTime
-DT_Local!0x01d0 m_outOfBoundsDeadTime
-DT_Local!0x01d4 m_objectiveIndex
-DT_Local!0x01d8 m_objectiveEntity
-DT_Local!0x01dc m_objectiveEndTime
-DT_Local!0x01e0 m_cinematicEventFlags
-DT_Local!0x01e4 m_forcedDialogueOnly
-DT_Local!0x01e8 m_titanBuildTime
-DT_Local!0x01ec m_titanBubbleShieldTime
-DT_Local!0x01f0 m_titanEmbarkEnabled
-DT_Local!0x01f1 m_titanDisembarkEnabled
-DT_Local!0x01f4 m_voicePackIndex
-DT_Local!0x01f8 m_playerAnimStationaryGoalFeetYaw
-DT_Local!0x01fc m_playerAnimJumping
-DT_Local!0x0200 m_playerAnimJumpStartTime
-DT_Local!0x0204 m_playerAnimFirstJumpFrame
-DT_Local!0x0205 m_playerAnimDodging
-DT_Local!0x0208 m_playerAnimJumpActivity
-DT_Local!0x020c m_playerAnimLanding
-DT_Local!0x020d m_playerAnimShouldLand
-DT_Local!0x0210 m_playerAnimLandStartTime
-DT_Local!0x0214 m_playerAnimInAirWalk
-DT_Local!0x0218 m_playerAnimPrevFrameSequenceMotionYaw
-DT_Local!0x021c m_playerAnimMeleeParity
-DT_Local!0x0220 m_playerAnimMeleeStartTime
-DT_Local!0x0254 m_playerLocalGravityBlendStartRotation
-DT_Local!0x0264 m_playerLocalGravityBlendEndRotation
-DT_Local!0x0274 m_playerLocalGravityBlendEndDirection
-DT_Local!0x0280 m_playerLocalGravityBlendStartTime
-DT_Local!0x0284 m_playerLocalGravityBlendEndTime
-DT_Local!0x0288 m_playerLocalGravityBlendStrength
-DT_Local!0x028c m_playerLocalGravityStrength
-DT_Local!0x0290 m_playerLocalGravityType
-DT_Local!0x0294 m_playerLocalGravityPoint
-DT_Local!0x02a0 m_playerLocalGravityLineStart
-DT_Local!0x02ac m_playerLocalGravityLineEnd
-DT_Local!0x02b8 m_playerLocalGravityEntity
-DT_Local!0x02bc m_playerLocalGravityLineStartEntity
-DT_Local!0x02c0 m_playerLocalGravityLineEndEntity
-DT_Local!0x02c4 m_playerFloatLookStartTime
-DT_Local!0x02c8 m_playerFloatLookEndTime
-DT_Local!0x02cc m_wallrunLatestFloorHeight
-DT_Local!0x02d0 m_groundNormal
-DT_Local!0x02dc m_continuousUseBlocked
-DT_Local!0x02e0 m_useEnt
+DT_Local!0x0014 m_iHideHUD
+DT_Local!0x0018 m_superJumpsUsed
+DT_Local!0x001c m_jumpedOffRodeo
+DT_Local!0x0020 m_jumpPressTime
+DT_Local!0x0024 m_jetpackActivateTime
+DT_Local!0x0028 m_jetpackDeactivateTime
+DT_Local!0x002c m_flSuitPower
+DT_Local!0x0030 m_flSuitJumpPower
+DT_Local!0x0034 m_flSuitGrapplePower
+DT_Local!0x0038 m_flFallVelocity
+DT_Local!0x003c m_flStepSize
+DT_Local!0x0040 m_airSlowMoFrac
+DT_Local!0x0044 predictableFlags
+DT_Local!0x0048 m_bitsActiveDevices
+DT_Local!0x004c m_forceStance
+DT_Local!0x0050 m_duckToggleOn
+DT_Local!0x0051 m_bDrawViewmodel
+DT_Local!0x0052 m_bAllowAutoMovement
+DT_Local!0x0054 m_accelScale
+DT_Local!0x0058 m_powerRegenRateScale
+DT_Local!0x005c m_dodgePowerDelayScale
+DT_Local!0x0074 m_hSkyCamera
+DT_Local!0x0078 m_skybox3d.scale
+DT_Local!0x007c m_skybox3d.cellNum
+DT_Local!0x0080 m_skybox3d.useWorldFog
+DT_Local!0x0084 m_skybox3d.fog.botAlt
+DT_Local!0x0088 m_skybox3d.fog.topAlt
+DT_Local!0x008c m_skybox3d.fog.halfDistBot
+DT_Local!0x0090 m_skybox3d.fog.halfDistTop
+DT_Local!0x0094 m_skybox3d.fog.distColorStr
+DT_Local!0x0098 m_skybox3d.fog.dirColorStr
+DT_Local!0x009c m_skybox3d.fog.distOffset
+DT_Local!0x00a0 m_skybox3d.fog.densityScale
+DT_Local!0x00a4 m_skybox3d.fog.halfAngleDeg
+DT_Local!0x00a8 m_skybox3d.fog.HDRColorScale
+DT_Local!0x00ac m_skybox3d.fog.distColor
+DT_Local!0x00b0 m_skybox3d.fog.dirColor
+DT_Local!0x00b4 m_skybox3d.fog.direction
+DT_Local!0x00c5 m_skybox3d.fog.enable
+DT_Local!0x00cc m_audio.localSound[0]
+DT_Local!0x00d8 m_audio.localSound[1]
+DT_Local!0x00e4 m_audio.localSound[2]
+DT_Local!0x00f0 m_audio.localSound[3]
+DT_Local!0x00fc m_audio.localSound[4]
+DT_Local!0x0108 m_audio.localSound[5]
+DT_Local!0x0114 m_audio.localSound[6]
+DT_Local!0x0120 m_audio.localSound[7]
+DT_Local!0x012c m_audio.soundscapeIndex
+DT_Local!0x0130 m_audio.localBits
+DT_Local!0x0134 m_audio.entIndex
+DT_Local!0x0150 m_animNearZ
+DT_Local!0x0154 lastAttacker
+DT_Local!0x0158 attackedCount
+DT_Local!0x0184 m_airMoveBlockPlanes[0]
+DT_Local!0x019c m_airMoveBlockPlaneTime
+DT_Local!0x01a0 m_airMoveBlockPlaneCount
+DT_Local!0x01a4 m_queuedMeleePressTime
+DT_Local!0x01a8 m_queuedGrappleMeleeTime
+DT_Local!0x01ad m_disableMeleeUntilRelease
+DT_Local!0x01b0 m_meleePressTime
+DT_Local!0x01b4 m_meleeDisabledCounter
+DT_Local!0x01b8 m_meleeInputIndex
+DT_Local!0x01bc m_trackedChildProjectileCount
+DT_Local!0x01c0 m_oneHandedWeaponUsage
+DT_Local!0x01c4 m_flCockpitEntryTime
+DT_Local!0x01c8 m_ejectStartTime
+DT_Local!0x01cc m_disembarkStartTime
+DT_Local!0x01d0 m_hotDropImpactTime
+DT_Local!0x01d4 m_outOfBoundsDeadTime
+DT_Local!0x01d8 m_objectiveIndex
+DT_Local!0x01dc m_objectiveEntity
+DT_Local!0x01e0 m_objectiveEndTime
+DT_Local!0x01e4 m_cinematicEventFlags
+DT_Local!0x01e8 m_forcedDialogueOnly
+DT_Local!0x01ec m_titanBuildTime
+DT_Local!0x01f0 m_titanBubbleShieldTime
+DT_Local!0x01f4 m_titanEmbarkEnabled
+DT_Local!0x01f5 m_titanDisembarkEnabled
+DT_Local!0x01f8 m_voicePackIndex
+DT_Local!0x01fc m_playerAnimStationaryGoalFeetYaw
+DT_Local!0x0200 m_playerAnimJumping
+DT_Local!0x0204 m_playerAnimJumpStartTime
+DT_Local!0x0208 m_playerAnimFirstJumpFrame
+DT_Local!0x0209 m_playerAnimDodging
+DT_Local!0x020c m_playerAnimJumpActivity
+DT_Local!0x0210 m_playerAnimLanding
+DT_Local!0x0211 m_playerAnimShouldLand
+DT_Local!0x0214 m_playerAnimLandStartTime
+DT_Local!0x0218 m_playerAnimInAirWalk
+DT_Local!0x021c m_playerAnimPrevFrameSequenceMotionYaw
+DT_Local!0x0220 m_playerAnimMeleeParity
+DT_Local!0x0224 m_playerAnimMeleeStartTime
+DT_Local!0x0258 m_playerLocalGravityBlendStartRotation
+DT_Local!0x0268 m_playerLocalGravityBlendEndRotation
+DT_Local!0x0278 m_playerLocalGravityBlendEndDirection
+DT_Local!0x0284 m_playerLocalGravityBlendStartTime
+DT_Local!0x0288 m_playerLocalGravityBlendEndTime
+DT_Local!0x028c m_playerLocalGravityBlendStrength
+DT_Local!0x0290 m_playerLocalGravityStrength
+DT_Local!0x0294 m_playerLocalGravityType
+DT_Local!0x0298 m_playerLocalGravityPoint
+DT_Local!0x02a4 m_playerLocalGravityLineStart
+DT_Local!0x02b0 m_playerLocalGravityLineEnd
+DT_Local!0x02bc m_playerLocalGravityEntity
+DT_Local!0x02c0 m_playerLocalGravityLineStartEntity
+DT_Local!0x02c4 m_playerLocalGravityLineEndEntity
+DT_Local!0x02c8 m_playerFloatLookStartTime
+DT_Local!0x02cc m_playerFloatLookEndTime
+DT_Local!0x02d0 m_wallrunLatestFloorHeight
+DT_Local!0x02d4 m_groundNormal
+DT_Local!0x02e0 m_continuousUseBlocked
+DT_Local!0x02e4 m_useEnt
 ```
 </details>
 <details>
@@ -2787,6 +2787,8 @@ DT_Local!0x02e0 m_useEnt
 	m_hThirdPersonEnt: Int,
 	m_thirdPersonShoulderView: Int,
 	m_thirdPerson: DT_ThirdPersonView,
+	m_playerLookTargetEntity: Int,
+	m_playerLookTargetOffset: Vector,
 	m_viewConeLerpTime: Float,
 	m_flLaggedMovementValue: Float,
 	m_lastMoveInputTime: Time,
@@ -2814,16 +2816,16 @@ DT_Local!0x02e0 m_useEnt
 	m_skydiveSidePoseValueVelocity: Float,
 	m_skydiveSidePoseValueCurrent: Float,
 	m_skydiveYawVelocity: Float,
-	m_freefallStartTime: Time,
-	m_freefallEndTime: Time,
-	m_freefallAnticipateStartTime: Time,
-	m_freefallAnticipateEndTime: Time,
-	m_freefallDistanceToLand: Float,
+	m_skydiveIsNearLeviathan: Int,
+	m_skydiveStartTime: Time,
+	m_skydiveEndTime: Time,
+	m_skydiveAnticipateStartTime: Time,
+	m_skydiveAnticipateEndTime: Time,
+	m_skydiveDistanceToLand: Float,
 	m_skydiveFreelookEnabled: Int,
 	m_skydiveFreelookLockedAngle: Vector,
 	m_skydiveFollowing: Int,
 	m_skydiveUnfollowVelocity: Vector,
-	m_skydiveIsNearLeviathan: Int,
 	m_skydiveLeviathanHitPosition: Vector,
 	m_skydiveLeviathanHitNormal: Vector,
 	m_skydiveSlipVelocity: Vector,
@@ -2841,7 +2843,6 @@ DT_Local!0x02e0 m_useEnt
 	m_updraftLiftAcceleration: Float,
 	m_updraftLiftExitDuration: Float,
 	m_updraftSlowTime: Time,
-	m_updraftEndSkydiveAtPeak: Int,
 	m_armsModelIndex: Int,
 }
 ```
@@ -2866,150 +2867,151 @@ DT_LocalPlayerExclusive!0x1ee8 m_currentFrameLocalPlayer
 DT_LocalPlayerExclusive!0x2264 m_modInventory
 DT_LocalPlayerExclusive!0x22e4 m_consumableInventory
 DT_LocalPlayerExclusive!0x25f8 m_fStickySprintMinTime
-DT_LocalPlayerExclusive!0x2608 m_sprintStartedTime
-DT_LocalPlayerExclusive!0x260c m_sprintStartedFrac
-DT_LocalPlayerExclusive!0x2610 m_sprintEndedTime
-DT_LocalPlayerExclusive!0x2614 m_sprintEndedFrac
-DT_LocalPlayerExclusive!0x2618 m_stickySprintStartTime
-DT_LocalPlayerExclusive!0x2678 m_upDirPredicted
-DT_LocalPlayerExclusive!0x2684 m_lastWallRunStartPos
-DT_LocalPlayerExclusive!0x26a8 m_wallrunFrictionScale
-DT_LocalPlayerExclusive!0x26ac m_groundFrictionScale
-DT_LocalPlayerExclusive!0x26f0 m_traversalBegin
-DT_LocalPlayerExclusive!0x26fc m_traversalMid
-DT_LocalPlayerExclusive!0x2708 m_traversalEnd
-DT_LocalPlayerExclusive!0x2714 m_traversalMidFrac
-DT_LocalPlayerExclusive!0x2718 m_traversalForwardDir
-DT_LocalPlayerExclusive!0x2730 m_traversalProgress
-DT_LocalPlayerExclusive!0x2734 m_traversalStartTime
-DT_LocalPlayerExclusive!0x2738 m_traversalHandAppearTime
-DT_LocalPlayerExclusive!0x273c m_traversalReleaseTime
-DT_LocalPlayerExclusive!0x2740 m_traversalBlendOutStartTime
-DT_LocalPlayerExclusive!0x2744 m_traversalBlendOutStartOffset
-DT_LocalPlayerExclusive!0x275c m_wallDangleJumpOffTime
-DT_LocalPlayerExclusive!0x2760 m_wallDangleMayHangHere
-DT_LocalPlayerExclusive!0x2761 m_wallDangleForceFallOff
-DT_LocalPlayerExclusive!0x2762 m_wallDangleLastPushedForward
-DT_LocalPlayerExclusive!0x2764 m_wallDangleDisableWeapon
-DT_LocalPlayerExclusive!0x2814 m_slowMoEnabled
-DT_LocalPlayerExclusive!0x2815 m_sliding
-DT_LocalPlayerExclusive!0x2816 m_slideLongJumpAllowed
-DT_LocalPlayerExclusive!0x2824 m_bIsStickySprinting
-DT_LocalPlayerExclusive!0x2828 m_prevMoveYaw
-DT_LocalPlayerExclusive!0x282c m_sprintTiltVel
-DT_LocalPlayerExclusive!0x2830 m_sprintTiltPoseParameter
-DT_LocalPlayerExclusive!0x2834 m_sprintFracPoseParameter
-DT_LocalPlayerExclusive!0x299c m_ziplineAllowed
-DT_LocalPlayerExclusive!0x29a4 m_lastZipline
-DT_LocalPlayerExclusive!0x29a8 m_lastZiplineDetachTime
-DT_LocalPlayerExclusive!0x29b8 m_zipline
-DT_LocalPlayerExclusive!0x2a28 m_ziplineViewOffsetPosition
-DT_LocalPlayerExclusive!0x2a34 m_ziplineViewOffsetVelocity
-DT_LocalPlayerExclusive!0x2a40 m_ziplineGrenadeEntity
-DT_LocalPlayerExclusive!0x2a50 m_highSpeedViewmodelAnims
-DT_LocalPlayerExclusive!0x2a54 m_playAnimationType
-DT_LocalPlayerExclusive!0x2a58 m_detachGrappleOnPlayAnimationEnd
-DT_LocalPlayerExclusive!0x2a5c m_playAnimationNext
-DT_LocalPlayerExclusive!0x2a64 m_playAnimationEntityBlocker
-DT_LocalPlayerExclusive!0x2a68 m_playAnimationEntityBlockerDucking
-DT_LocalPlayerExclusive!0x2a70 m_boosting
-DT_LocalPlayerExclusive!0x2a71 m_activateBoost
-DT_LocalPlayerExclusive!0x2a72 m_repeatedBoost
-DT_LocalPlayerExclusive!0x2a74 m_boostMeter
-DT_LocalPlayerExclusive!0x2a78 m_jetpack
-DT_LocalPlayerExclusive!0x2a79 m_activateJetpack
-DT_LocalPlayerExclusive!0x2a7a m_jetpackAfterburner
-DT_LocalPlayerExclusive!0x2a7b m_gliding
-DT_LocalPlayerExclusive!0x2a7c m_glideMeter
-DT_LocalPlayerExclusive!0x2a80 m_glideRechargeDelayAccumulator
-DT_LocalPlayerExclusive!0x2a84 m_hovering
-DT_LocalPlayerExclusive!0x2a88 m_lastJumpHeight
-DT_LocalPlayerExclusive!0x2ad8 m_slipAirRestrictDirection
-DT_LocalPlayerExclusive!0x2ae4 m_slipAirRestrictTime
-DT_LocalPlayerExclusive!0x2c20 m_replayImportantSounds_networkTableSoundID
-DT_LocalPlayerExclusive!0x2c30 m_replayImportantSounds_beginTime
-DT_LocalPlayerExclusive!0x2c6d m_viewConeActive
-DT_LocalPlayerExclusive!0x2c6e m_viewConeParented
-DT_LocalPlayerExclusive!0x2c70 m_viewConeParity
-DT_LocalPlayerExclusive!0x2ecc m_hConstraintEntity
-DT_LocalPlayerExclusive!0x2ed0 m_vecConstraintCenter
-DT_LocalPlayerExclusive!0x2edc m_flConstraintRadius
-DT_LocalPlayerExclusive!0x2ee0 m_flConstraintWidth
-DT_LocalPlayerExclusive!0x2ee4 m_flConstraintSpeedFactor
-DT_LocalPlayerExclusive!0x2ee8 m_bConstraintPastRadius
-DT_LocalPlayerExclusive!0x2f44 m_observerModeStaticPosition
-DT_LocalPlayerExclusive!0x2f50 m_observerModeStaticAngles
-DT_LocalPlayerExclusive!0x2f5c m_observerModeStaticFOVOverride
-DT_LocalPlayerExclusive!0x2fc8 m_lastKillTime
-DT_LocalPlayerExclusive!0x2fec m_wallRunStartTime
-DT_LocalPlayerExclusive!0x2ff0 m_wallRunClearTime
-DT_LocalPlayerExclusive!0x3004 m_dodging
-DT_LocalPlayerExclusive!0x305e m_dodgingInAir
-DT_LocalPlayerExclusive!0x3078 m_airSpeed
-DT_LocalPlayerExclusive!0x307c m_airAcceleration
-DT_LocalPlayerExclusive!0x30a8 m_firstPersonProxy
-DT_LocalPlayerExclusive!0x30ac m_predictedFirstPersonProxy
-DT_LocalPlayerExclusive!0x30bc m_hardpointEntity
-DT_LocalPlayerExclusive!0x30f4 m_petTitanMode
-DT_LocalPlayerExclusive!0x30fc m_hThirdPersonEnt
-DT_LocalPlayerExclusive!0x3100 m_thirdPersonShoulderView
-DT_LocalPlayerExclusive!0x315c m_thirdPerson
-DT_LocalPlayerExclusive!0x3238 m_viewConeLerpTime
-DT_LocalPlayerExclusive!0x345c m_flLaggedMovementValue
-DT_LocalPlayerExclusive!0x3460 m_lastMoveInputTime
-DT_LocalPlayerExclusive!0x3464 m_ignoreEntityForMovementUntilNotTouching
-DT_LocalPlayerExclusive!0x39ac m_lungeTargetEntity
-DT_LocalPlayerExclusive!0x39b0 m_isLungingToPosition
-DT_LocalPlayerExclusive!0x39b4 m_lungeTargetPosition
-DT_LocalPlayerExclusive!0x39c0 m_lungeStartPositionOffset
-DT_LocalPlayerExclusive!0x39cc m_lungeEndPositionOffset
-DT_LocalPlayerExclusive!0x39d8 m_lungeStartTime
-DT_LocalPlayerExclusive!0x39dc m_lungeEndTime
-DT_LocalPlayerExclusive!0x39e0 m_lungeCanFly
-DT_LocalPlayerExclusive!0x39e1 m_lungeLockPitch
-DT_LocalPlayerExclusive!0x39e4 m_lungeStartPitch
-DT_LocalPlayerExclusive!0x39e8 m_lungeSmoothTime
-DT_LocalPlayerExclusive!0x39ec m_lungeMaxTime
-DT_LocalPlayerExclusive!0x39f0 m_lungeMaxEndSpeed
-DT_LocalPlayerExclusive!0x3e34 m_nearbyPusherCount
-DT_LocalPlayerExclusive!0x3e44 m_pushAwayFromTopAcceleration
-DT_LocalPlayerExclusive!0x3e54 m_minimapTargetZoomScale
-DT_LocalPlayerExclusive!0x3e58 m_minimapTargetLerpTime
-DT_LocalPlayerExclusive!0x3e60 m_playerScriptNetDataExclusive
-DT_LocalPlayerExclusive!0x3e84 m_skydiveForwardPoseValueVelocity
-DT_LocalPlayerExclusive!0x3e8c m_skydiveForwardPoseValueCurrent
-DT_LocalPlayerExclusive!0x3e90 m_skydiveSidePoseValueVelocity
-DT_LocalPlayerExclusive!0x3e98 m_skydiveSidePoseValueCurrent
-DT_LocalPlayerExclusive!0x3e9c m_skydiveYawVelocity
-DT_LocalPlayerExclusive!0x3ebc m_freefallStartTime
-DT_LocalPlayerExclusive!0x3ec0 m_freefallEndTime
-DT_LocalPlayerExclusive!0x3ec4 m_freefallAnticipateStartTime
-DT_LocalPlayerExclusive!0x3ec8 m_freefallAnticipateEndTime
-DT_LocalPlayerExclusive!0x3ecc m_freefallDistanceToLand
-DT_LocalPlayerExclusive!0x3ee0 m_skydiveFreelookEnabled
-DT_LocalPlayerExclusive!0x3ee4 m_skydiveFreelookLockedAngle
-DT_LocalPlayerExclusive!0x3ef8 m_skydiveFollowing
-DT_LocalPlayerExclusive!0x3efc m_skydiveUnfollowVelocity
-DT_LocalPlayerExclusive!0x3f09 m_skydiveIsNearLeviathan
-DT_LocalPlayerExclusive!0x3f0c m_skydiveLeviathanHitPosition
-DT_LocalPlayerExclusive!0x3f18 m_skydiveLeviathanHitNormal
-DT_LocalPlayerExclusive!0x3f24 m_skydiveSlipVelocity
-DT_LocalPlayerExclusive!0x3f30 m_skydiveFromUpdraft
-DT_LocalPlayerExclusive!0x3f38 m_twitchRewardBits
-DT_LocalPlayerExclusive!0x3f48 m_playerKnockBacks
-DT_LocalPlayerExclusive!0x3fc8 m_updraftCount
-DT_LocalPlayerExclusive!0x3fcc m_updraftStage
-DT_LocalPlayerExclusive!0x3fd0 m_updraftEnterTime
-DT_LocalPlayerExclusive!0x3fd4 m_updraftLeaveTime
-DT_LocalPlayerExclusive!0x3fd8 m_updraftMinShakeActivationHeight
-DT_LocalPlayerExclusive!0x3fdc m_updraftMaxShakeActivationHeight
-DT_LocalPlayerExclusive!0x3fe0 m_updraftLiftActivationHeight
-DT_LocalPlayerExclusive!0x3fe4 m_updraftLiftSpeed
-DT_LocalPlayerExclusive!0x3fe8 m_updraftLiftAcceleration
-DT_LocalPlayerExclusive!0x3fec m_updraftLiftExitDuration
-DT_LocalPlayerExclusive!0x3ff0 m_updraftSlowTime
-DT_LocalPlayerExclusive!0x3ff4 m_updraftEndSkydiveAtPeak
-DT_LocalPlayerExclusive!0x3ff8 m_armsModelIndex
+DT_LocalPlayerExclusive!0x2614 m_sprintStartedTime
+DT_LocalPlayerExclusive!0x2618 m_sprintStartedFrac
+DT_LocalPlayerExclusive!0x261c m_sprintEndedTime
+DT_LocalPlayerExclusive!0x2620 m_sprintEndedFrac
+DT_LocalPlayerExclusive!0x2624 m_stickySprintStartTime
+DT_LocalPlayerExclusive!0x2684 m_upDirPredicted
+DT_LocalPlayerExclusive!0x2690 m_lastWallRunStartPos
+DT_LocalPlayerExclusive!0x26b4 m_wallrunFrictionScale
+DT_LocalPlayerExclusive!0x26b8 m_groundFrictionScale
+DT_LocalPlayerExclusive!0x26fc m_traversalBegin
+DT_LocalPlayerExclusive!0x2708 m_traversalMid
+DT_LocalPlayerExclusive!0x2714 m_traversalEnd
+DT_LocalPlayerExclusive!0x2720 m_traversalMidFrac
+DT_LocalPlayerExclusive!0x2724 m_traversalForwardDir
+DT_LocalPlayerExclusive!0x273c m_traversalProgress
+DT_LocalPlayerExclusive!0x2740 m_traversalStartTime
+DT_LocalPlayerExclusive!0x2744 m_traversalHandAppearTime
+DT_LocalPlayerExclusive!0x2748 m_traversalReleaseTime
+DT_LocalPlayerExclusive!0x274c m_traversalBlendOutStartTime
+DT_LocalPlayerExclusive!0x2750 m_traversalBlendOutStartOffset
+DT_LocalPlayerExclusive!0x2768 m_wallDangleJumpOffTime
+DT_LocalPlayerExclusive!0x276c m_wallDangleMayHangHere
+DT_LocalPlayerExclusive!0x276d m_wallDangleForceFallOff
+DT_LocalPlayerExclusive!0x276e m_wallDangleLastPushedForward
+DT_LocalPlayerExclusive!0x2770 m_wallDangleDisableWeapon
+DT_LocalPlayerExclusive!0x2824 m_slowMoEnabled
+DT_LocalPlayerExclusive!0x2825 m_sliding
+DT_LocalPlayerExclusive!0x2826 m_slideLongJumpAllowed
+DT_LocalPlayerExclusive!0x2834 m_bIsStickySprinting
+DT_LocalPlayerExclusive!0x2838 m_prevMoveYaw
+DT_LocalPlayerExclusive!0x283c m_sprintTiltVel
+DT_LocalPlayerExclusive!0x2840 m_sprintTiltPoseParameter
+DT_LocalPlayerExclusive!0x2844 m_sprintFracPoseParameter
+DT_LocalPlayerExclusive!0x29ac m_ziplineAllowed
+DT_LocalPlayerExclusive!0x29b4 m_lastZipline
+DT_LocalPlayerExclusive!0x29b8 m_lastZiplineDetachTime
+DT_LocalPlayerExclusive!0x29c8 m_zipline
+DT_LocalPlayerExclusive!0x2a38 m_ziplineViewOffsetPosition
+DT_LocalPlayerExclusive!0x2a44 m_ziplineViewOffsetVelocity
+DT_LocalPlayerExclusive!0x2a50 m_ziplineGrenadeEntity
+DT_LocalPlayerExclusive!0x2a60 m_highSpeedViewmodelAnims
+DT_LocalPlayerExclusive!0x2a64 m_playAnimationType
+DT_LocalPlayerExclusive!0x2a68 m_detachGrappleOnPlayAnimationEnd
+DT_LocalPlayerExclusive!0x2a6c m_playAnimationNext
+DT_LocalPlayerExclusive!0x2a74 m_playAnimationEntityBlocker
+DT_LocalPlayerExclusive!0x2a78 m_playAnimationEntityBlockerDucking
+DT_LocalPlayerExclusive!0x2a80 m_boosting
+DT_LocalPlayerExclusive!0x2a81 m_activateBoost
+DT_LocalPlayerExclusive!0x2a82 m_repeatedBoost
+DT_LocalPlayerExclusive!0x2a84 m_boostMeter
+DT_LocalPlayerExclusive!0x2a88 m_jetpack
+DT_LocalPlayerExclusive!0x2a89 m_activateJetpack
+DT_LocalPlayerExclusive!0x2a8a m_jetpackAfterburner
+DT_LocalPlayerExclusive!0x2a8b m_gliding
+DT_LocalPlayerExclusive!0x2a8c m_glideMeter
+DT_LocalPlayerExclusive!0x2a90 m_glideRechargeDelayAccumulator
+DT_LocalPlayerExclusive!0x2a94 m_hovering
+DT_LocalPlayerExclusive!0x2a98 m_lastJumpHeight
+DT_LocalPlayerExclusive!0x2ae8 m_slipAirRestrictDirection
+DT_LocalPlayerExclusive!0x2af4 m_slipAirRestrictTime
+DT_LocalPlayerExclusive!0x2c30 m_replayImportantSounds_networkTableSoundID
+DT_LocalPlayerExclusive!0x2c40 m_replayImportantSounds_beginTime
+DT_LocalPlayerExclusive!0x2c7d m_viewConeActive
+DT_LocalPlayerExclusive!0x2c7e m_viewConeParented
+DT_LocalPlayerExclusive!0x2c80 m_viewConeParity
+DT_LocalPlayerExclusive!0x2edc m_hConstraintEntity
+DT_LocalPlayerExclusive!0x2ee0 m_vecConstraintCenter
+DT_LocalPlayerExclusive!0x2eec m_flConstraintRadius
+DT_LocalPlayerExclusive!0x2ef0 m_flConstraintWidth
+DT_LocalPlayerExclusive!0x2ef4 m_flConstraintSpeedFactor
+DT_LocalPlayerExclusive!0x2ef8 m_bConstraintPastRadius
+DT_LocalPlayerExclusive!0x2f54 m_observerModeStaticPosition
+DT_LocalPlayerExclusive!0x2f60 m_observerModeStaticAngles
+DT_LocalPlayerExclusive!0x2f6c m_observerModeStaticFOVOverride
+DT_LocalPlayerExclusive!0x2fd8 m_lastKillTime
+DT_LocalPlayerExclusive!0x2ffc m_wallRunStartTime
+DT_LocalPlayerExclusive!0x3000 m_wallRunClearTime
+DT_LocalPlayerExclusive!0x3014 m_dodging
+DT_LocalPlayerExclusive!0x306e m_dodgingInAir
+DT_LocalPlayerExclusive!0x3088 m_airSpeed
+DT_LocalPlayerExclusive!0x308c m_airAcceleration
+DT_LocalPlayerExclusive!0x30b8 m_firstPersonProxy
+DT_LocalPlayerExclusive!0x30bc m_predictedFirstPersonProxy
+DT_LocalPlayerExclusive!0x30cc m_hardpointEntity
+DT_LocalPlayerExclusive!0x3104 m_petTitanMode
+DT_LocalPlayerExclusive!0x310c m_hThirdPersonEnt
+DT_LocalPlayerExclusive!0x3110 m_thirdPersonShoulderView
+DT_LocalPlayerExclusive!0x316c m_thirdPerson
+DT_LocalPlayerExclusive!0x3218 m_playerLookTargetEntity
+DT_LocalPlayerExclusive!0x321c m_playerLookTargetOffset
+DT_LocalPlayerExclusive!0x325c m_viewConeLerpTime
+DT_LocalPlayerExclusive!0x347c m_flLaggedMovementValue
+DT_LocalPlayerExclusive!0x3480 m_lastMoveInputTime
+DT_LocalPlayerExclusive!0x3484 m_ignoreEntityForMovementUntilNotTouching
+DT_LocalPlayerExclusive!0x39cc m_lungeTargetEntity
+DT_LocalPlayerExclusive!0x39d0 m_isLungingToPosition
+DT_LocalPlayerExclusive!0x39d4 m_lungeTargetPosition
+DT_LocalPlayerExclusive!0x39e0 m_lungeStartPositionOffset
+DT_LocalPlayerExclusive!0x39ec m_lungeEndPositionOffset
+DT_LocalPlayerExclusive!0x39f8 m_lungeStartTime
+DT_LocalPlayerExclusive!0x39fc m_lungeEndTime
+DT_LocalPlayerExclusive!0x3a00 m_lungeCanFly
+DT_LocalPlayerExclusive!0x3a01 m_lungeLockPitch
+DT_LocalPlayerExclusive!0x3a04 m_lungeStartPitch
+DT_LocalPlayerExclusive!0x3a08 m_lungeSmoothTime
+DT_LocalPlayerExclusive!0x3a0c m_lungeMaxTime
+DT_LocalPlayerExclusive!0x3a10 m_lungeMaxEndSpeed
+DT_LocalPlayerExclusive!0x3e54 m_nearbyPusherCount
+DT_LocalPlayerExclusive!0x3e64 m_pushAwayFromTopAcceleration
+DT_LocalPlayerExclusive!0x3e74 m_minimapTargetZoomScale
+DT_LocalPlayerExclusive!0x3e78 m_minimapTargetLerpTime
+DT_LocalPlayerExclusive!0x3e80 m_playerScriptNetDataExclusive
+DT_LocalPlayerExclusive!0x3ea4 m_skydiveForwardPoseValueVelocity
+DT_LocalPlayerExclusive!0x3eac m_skydiveForwardPoseValueCurrent
+DT_LocalPlayerExclusive!0x3eb0 m_skydiveSidePoseValueVelocity
+DT_LocalPlayerExclusive!0x3eb8 m_skydiveSidePoseValueCurrent
+DT_LocalPlayerExclusive!0x3ebc m_skydiveYawVelocity
+DT_LocalPlayerExclusive!0x3ec0 m_skydiveIsNearLeviathan
+DT_LocalPlayerExclusive!0x3ee0 m_skydiveStartTime
+DT_LocalPlayerExclusive!0x3ee4 m_skydiveEndTime
+DT_LocalPlayerExclusive!0x3ee8 m_skydiveAnticipateStartTime
+DT_LocalPlayerExclusive!0x3eec m_skydiveAnticipateEndTime
+DT_LocalPlayerExclusive!0x3ef0 m_skydiveDistanceToLand
+DT_LocalPlayerExclusive!0x3f04 m_skydiveFreelookEnabled
+DT_LocalPlayerExclusive!0x3f08 m_skydiveFreelookLockedAngle
+DT_LocalPlayerExclusive!0x3f1c m_skydiveFollowing
+DT_LocalPlayerExclusive!0x3f20 m_skydiveUnfollowVelocity
+DT_LocalPlayerExclusive!0x3f30 m_skydiveLeviathanHitPosition
+DT_LocalPlayerExclusive!0x3f3c m_skydiveLeviathanHitNormal
+DT_LocalPlayerExclusive!0x3f48 m_skydiveSlipVelocity
+DT_LocalPlayerExclusive!0x3f54 m_skydiveFromUpdraft
+DT_LocalPlayerExclusive!0x3f58 m_twitchRewardBits
+DT_LocalPlayerExclusive!0x3f68 m_playerKnockBacks
+DT_LocalPlayerExclusive!0x3fe8 m_updraftCount
+DT_LocalPlayerExclusive!0x3fec m_updraftStage
+DT_LocalPlayerExclusive!0x3ff0 m_updraftEnterTime
+DT_LocalPlayerExclusive!0x3ff4 m_updraftLeaveTime
+DT_LocalPlayerExclusive!0x3ff8 m_updraftMinShakeActivationHeight
+DT_LocalPlayerExclusive!0x3ffc m_updraftMaxShakeActivationHeight
+DT_LocalPlayerExclusive!0x4000 m_updraftLiftActivationHeight
+DT_LocalPlayerExclusive!0x4004 m_updraftLiftSpeed
+DT_LocalPlayerExclusive!0x4008 m_updraftLiftAcceleration
+DT_LocalPlayerExclusive!0x400c m_updraftLiftExitDuration
+DT_LocalPlayerExclusive!0x4010 m_updraftSlowTime
+DT_LocalPlayerExclusive!0x4014 m_armsModelIndex
 ```
 </details>
 <details>
@@ -3142,7 +3144,7 @@ DT_NPC_Titan!0x1ad9 m_canStand
 ### Offsets
 
 ```
-DT_NearbyPushers!0x3ce4 m_nearbyPushers
+DT_NearbyPushers!0x3d04 m_nearbyPushers
 ```
 </details>
 <details>
@@ -3312,6 +3314,10 @@ DT_PhysicsProp!0x134c m_collisionMaxs
 	m_gestureAutoKillBitfield: Int,
 	m_autoSprintForced: Int,
 	m_fIsSprinting: Int,
+	m_playerSettingForStickySprintForward: Int,
+	m_lastSprintPressTime: Time,
+	m_stickySprintForwardEnableTime: Time,
+	m_stickySprintForwardDisableTime: Time,
 	m_damageImpulseNoDecelEndTime: Time,
 	m_playerVehicle: Int,
 	m_duckState: Int,
@@ -3375,7 +3381,7 @@ DT_PhysicsProp!0x134c m_collisionMaxs
 	m_controllerModeActive: Int,
 	m_skydiveForwardPoseValueTarget: Float,
 	m_skydiveSidePoseValueTarget: Float,
-	m_freefallState: Int,
+	m_skydiveState: Int,
 	m_skydiveDiveAngle: Float,
 	m_skydiveIsDiving: Int,
 	m_skydiveSpeed: Float,
@@ -3437,76 +3443,80 @@ DT_Player!0x259c m_gestureFadeOutDuration
 DT_Player!0x25bc m_gestureAutoKillBitfield
 DT_Player!0x2600 m_autoSprintForced
 DT_Player!0x2604 m_fIsSprinting
-DT_Player!0x261c m_damageImpulseNoDecelEndTime
-DT_Player!0x2628 m_playerVehicle
-DT_Player!0x262c m_duckState
-DT_Player!0x2630 m_leanState
-DT_Player!0x2635 m_canStand
-DT_Player!0x2638 m_StandHullMin
-DT_Player!0x2644 m_StandHullMax
-DT_Player!0x2650 m_DuckHullMin
-DT_Player!0x265c m_DuckHullMax
-DT_Player!0x2668 m_entitySyncingWithMe
-DT_Player!0x266c m_upDir
-DT_Player!0x26e8 m_traversalState
-DT_Player!0x26ec m_traversalType
-DT_Player!0x2718 m_traversalForwardDir
-DT_Player!0x2724 m_traversalRefPos
-DT_Player!0x2750 m_traversalYawDelta
-DT_Player!0x2754 m_traversalYawPoseParameter
-DT_Player!0x276c m_wallClimbSetUp
-DT_Player!0x276d m_wallHanging
-DT_Player!0x2770 m_grapple
-DT_Player!0x2800 m_grappleActive
-DT_Player!0x2848 m_turret
-DT_Player!0x284c m_hViewModels
-DT_Player!0x2860 m_viewOffsetEntity
-DT_Player!0x28a0 m_animViewEntity
-DT_Player!0x29a0 m_activeZipline
-DT_Player!0x29ac m_ziplineValid3pWeaponLayerAnim
-DT_Player!0x29b0 m_ziplineState
-DT_Player!0x2a44 m_ziplineGrenadeBeginStationEntity
-DT_Player!0x2a48 m_ziplineGrenadeBeginStationAttachmentIndex
-DT_Player!0x2a85 m_isPerformingBoostAction
-DT_Player!0x2b40 m_lastJumpPadTouched
-DT_Player!0x2b48 m_launchCount
-DT_Player!0x2c78 m_melee
-DT_Player!0x2cb0 m_useCredit
-DT_Player!0x2cb4 m_playerFlags
-DT_Player!0x2cb8 m_hasMic
-DT_Player!0x2cb9 m_inPartyChat
-DT_Player!0x2cbc m_playerMoveSpeedScale
-DT_Player!0x2ec8 m_bShouldDrawPlayerWhileUsingViewEntity
-DT_Player!0x2f34 m_iSpawnParity
-DT_Player!0x2f3c m_iObserverMode
-DT_Player!0x2f40 m_hObserverTarget
-DT_Player!0x2fcc m_flDeathTime
-DT_Player!0x3008 m_lastDodgeTime
-DT_Player!0x3028 m_timeJetpackHeightActivateCheckPassed
-DT_Player!0x30b0 m_grappleHook
-DT_Player!0x30b4 m_petTitan
-DT_Player!0x30dc m_xp
-DT_Player!0x30e4 m_skill_mu
-DT_Player!0x30e8 m_bHasMatchAdminRole
-DT_Player!0x3960 m_ubEFNoInterpParity
-DT_Player!0x3964 m_hColorCorrectionCtrl
-DT_Player!0x3988 m_title
-DT_Player!0x3c90 m_Shared
-DT_Player!0x3cd8 m_pilotClassIndex
-DT_Player!0x3cdc m_pilotClassActivityModifier
-DT_Player!0x3e5c m_playerScriptNetDataGlobal
-DT_Player!0x3e64 m_helmetType
-DT_Player!0x3e68 m_armorType
-DT_Player!0x3e6c m_controllerModeActive
-DT_Player!0x3e88 m_skydiveForwardPoseValueTarget
-DT_Player!0x3e94 m_skydiveSidePoseValueTarget
-DT_Player!0x3eb8 m_freefallState
-DT_Player!0x3ed0 m_skydiveDiveAngle
-DT_Player!0x3ed4 m_skydiveIsDiving
-DT_Player!0x3ed8 m_skydiveSpeed
-DT_Player!0x3edc m_skydiveStrafeAngle
-DT_Player!0x3ef0 m_skydivePlayerPitch
-DT_Player!0x3ef4 m_skydivePlayerYaw
+DT_Player!0x2606 m_playerSettingForStickySprintForward
+DT_Player!0x2608 m_lastSprintPressTime
+DT_Player!0x260c m_stickySprintForwardEnableTime
+DT_Player!0x2610 m_stickySprintForwardDisableTime
+DT_Player!0x2628 m_damageImpulseNoDecelEndTime
+DT_Player!0x2634 m_playerVehicle
+DT_Player!0x2638 m_duckState
+DT_Player!0x263c m_leanState
+DT_Player!0x2641 m_canStand
+DT_Player!0x2644 m_StandHullMin
+DT_Player!0x2650 m_StandHullMax
+DT_Player!0x265c m_DuckHullMin
+DT_Player!0x2668 m_DuckHullMax
+DT_Player!0x2674 m_entitySyncingWithMe
+DT_Player!0x2678 m_upDir
+DT_Player!0x26f4 m_traversalState
+DT_Player!0x26f8 m_traversalType
+DT_Player!0x2724 m_traversalForwardDir
+DT_Player!0x2730 m_traversalRefPos
+DT_Player!0x275c m_traversalYawDelta
+DT_Player!0x2760 m_traversalYawPoseParameter
+DT_Player!0x2778 m_wallClimbSetUp
+DT_Player!0x2779 m_wallHanging
+DT_Player!0x2780 m_grapple
+DT_Player!0x2810 m_grappleActive
+DT_Player!0x2858 m_turret
+DT_Player!0x285c m_hViewModels
+DT_Player!0x2870 m_viewOffsetEntity
+DT_Player!0x28b0 m_animViewEntity
+DT_Player!0x29b0 m_activeZipline
+DT_Player!0x29bc m_ziplineValid3pWeaponLayerAnim
+DT_Player!0x29c0 m_ziplineState
+DT_Player!0x2a54 m_ziplineGrenadeBeginStationEntity
+DT_Player!0x2a58 m_ziplineGrenadeBeginStationAttachmentIndex
+DT_Player!0x2a95 m_isPerformingBoostAction
+DT_Player!0x2b50 m_lastJumpPadTouched
+DT_Player!0x2b58 m_launchCount
+DT_Player!0x2c88 m_melee
+DT_Player!0x2cc0 m_useCredit
+DT_Player!0x2cc4 m_playerFlags
+DT_Player!0x2ccc m_hasMic
+DT_Player!0x2ccd m_inPartyChat
+DT_Player!0x2cd0 m_playerMoveSpeedScale
+DT_Player!0x2ed8 m_bShouldDrawPlayerWhileUsingViewEntity
+DT_Player!0x2f44 m_iSpawnParity
+DT_Player!0x2f4c m_iObserverMode
+DT_Player!0x2f50 m_hObserverTarget
+DT_Player!0x2fdc m_flDeathTime
+DT_Player!0x3018 m_lastDodgeTime
+DT_Player!0x3038 m_timeJetpackHeightActivateCheckPassed
+DT_Player!0x30c0 m_grappleHook
+DT_Player!0x30c4 m_petTitan
+DT_Player!0x30ec m_xp
+DT_Player!0x30f4 m_skill_mu
+DT_Player!0x30f8 m_bHasMatchAdminRole
+DT_Player!0x3980 m_ubEFNoInterpParity
+DT_Player!0x3984 m_hColorCorrectionCtrl
+DT_Player!0x39a8 m_title
+DT_Player!0x3cb0 m_Shared
+DT_Player!0x3cf8 m_pilotClassIndex
+DT_Player!0x3cfc m_pilotClassActivityModifier
+DT_Player!0x3e7c m_playerScriptNetDataGlobal
+DT_Player!0x3e84 m_helmetType
+DT_Player!0x3e88 m_armorType
+DT_Player!0x3e8c m_controllerModeActive
+DT_Player!0x3ea8 m_skydiveForwardPoseValueTarget
+DT_Player!0x3eb4 m_skydiveSidePoseValueTarget
+DT_Player!0x3edc m_skydiveState
+DT_Player!0x3ef4 m_skydiveDiveAngle
+DT_Player!0x3ef8 m_skydiveIsDiving
+DT_Player!0x3efc m_skydiveSpeed
+DT_Player!0x3f00 m_skydiveStrafeAngle
+DT_Player!0x3f14 m_skydivePlayerPitch
+DT_Player!0x3f18 m_skydivePlayerYaw
 ```
 </details>
 <details>
@@ -3682,10 +3692,10 @@ DT_PlayerTasklist!0x0edc m_taskStringM
 
 ```
 DT_PlayerTeamShared!0x21a4 m_healResources_healthTarget
-DT_PlayerTeamShared!0x2ae8 m_lastTimeDamagedByOtherPlayer
-DT_PlayerTeamShared!0x2aec m_lastTimeDamagedByNPC
-DT_PlayerTeamShared!0x2af0 m_lastTimeDidDamageToOtherPlayer
-DT_PlayerTeamShared!0x2af4 m_lastTimeDidDamageToNPC
+DT_PlayerTeamShared!0x2af8 m_lastTimeDamagedByOtherPlayer
+DT_PlayerTeamShared!0x2afc m_lastTimeDamagedByNPC
+DT_PlayerTeamShared!0x2b00 m_lastTimeDidDamageToOtherPlayer
+DT_PlayerTeamShared!0x2b04 m_lastTimeDidDamageToNPC
 ```
 </details>
 <details>
@@ -3709,6 +3719,7 @@ DT_PlayerTeamShared!0x2af4 m_lastTimeDidDamageToNPC
 	m_vehicleType: Int,
 	m_vehicleLaunchTime: Float,
 	m_vehicleVelocity: Vector,
+	m_vehicleGroundEntity: Int,
 	m_overrideVehicleAngles: Vector,
 	m_overrideVehicleAnglesUntilTick: Int,
 	m_pushingEnt: Int,
@@ -3734,9 +3745,10 @@ DT_PlayerVehicle!0x1324 m_vehicleFlags
 DT_PlayerVehicle!0x1328 m_vehicleType
 DT_PlayerVehicle!0x1330 m_vehicleLaunchTime
 DT_PlayerVehicle!0x1338 m_vehicleVelocity
-DT_PlayerVehicle!0x1358 m_overrideVehicleAngles
-DT_PlayerVehicle!0x1364 m_overrideVehicleAnglesUntilTick
-DT_PlayerVehicle!0x138c m_pushingEnt
+DT_PlayerVehicle!0x1344 m_vehicleGroundEntity
+DT_PlayerVehicle!0x135c m_overrideVehicleAngles
+DT_PlayerVehicle!0x1368 m_overrideVehicleAnglesUntilTick
+DT_PlayerVehicle!0x1390 m_pushingEnt
 ```
 </details>
 <details>
@@ -4289,6 +4301,7 @@ DT_ScriptMover!0x07f4 m_parentAttachmentHitbox
 	m_trainAutoRollStrength: Float,
 	m_trainAutoRollLookAheadDistance: Float,
 	m_trainAutoRollMax: Float,
+	m_trainSimulateBeforeMeEntity: Int,
 	m_rotateModeNonPhysics: Int,
 	m_rotateModeIsLocal: Int,
 	m_RotateToAnglesStart: Vector,
@@ -4352,17 +4365,18 @@ DT_ScriptMoverLightweight!0x14e4 m_trainBreadcrumbCount
 DT_ScriptMoverLightweight!0x14e8 m_trainAutoRollStrength
 DT_ScriptMoverLightweight!0x14ec m_trainAutoRollLookAheadDistance
 DT_ScriptMoverLightweight!0x14f0 m_trainAutoRollMax
-DT_ScriptMoverLightweight!0x14f4 m_rotateModeNonPhysics
-DT_ScriptMoverLightweight!0x14f8 m_rotateModeIsLocal
-DT_ScriptMoverLightweight!0x14fc m_RotateToAnglesStart
-DT_ScriptMoverLightweight!0x1508 m_RotateToAnglesEnd
-DT_ScriptMoverLightweight!0x1514 m_rotateToTimeStart
-DT_ScriptMoverLightweight!0x1518 m_rotateToTimeEnd
-DT_ScriptMoverLightweight!0x151c m_rotateToTimeEaseIn
-DT_ScriptMoverLightweight!0x1520 m_rotateToTimeEaseOut
-DT_ScriptMoverLightweight!0x1524 m_rotateAxis
-DT_ScriptMoverLightweight!0x1530 m_rotateSpeed
-DT_ScriptMoverLightweight!0x1544 m_useNonPhysicsMoveInterpolation
+DT_ScriptMoverLightweight!0x14f4 m_trainSimulateBeforeMeEntity
+DT_ScriptMoverLightweight!0x14f8 m_rotateModeNonPhysics
+DT_ScriptMoverLightweight!0x14fc m_rotateModeIsLocal
+DT_ScriptMoverLightweight!0x1500 m_RotateToAnglesStart
+DT_ScriptMoverLightweight!0x150c m_RotateToAnglesEnd
+DT_ScriptMoverLightweight!0x1518 m_rotateToTimeStart
+DT_ScriptMoverLightweight!0x151c m_rotateToTimeEnd
+DT_ScriptMoverLightweight!0x1520 m_rotateToTimeEaseIn
+DT_ScriptMoverLightweight!0x1524 m_rotateToTimeEaseOut
+DT_ScriptMoverLightweight!0x1528 m_rotateAxis
+DT_ScriptMoverLightweight!0x1534 m_rotateSpeed
+DT_ScriptMoverLightweight!0x1584 m_useNonPhysicsMoveInterpolation
 ```
 </details>
 <details>
@@ -4427,10 +4441,10 @@ DT_ScriptNetData_SNDC_DEATH_BOX!0x0000 m_int32s
 DT_ScriptNetData_SNDC_DEATH_BOX!0x0000 m_times
 DT_ScriptNetData_SNDC_DEATH_BOX!0x0000 m_entities
 DT_ScriptNetData_SNDC_DEATH_BOX!0x0c40 m_bools[0]
-DT_ScriptNetData_SNDC_DEATH_BOX!0x0c42 m_ranges[0]
-DT_ScriptNetData_SNDC_DEATH_BOX!0x0c64 m_int32s[0]
-DT_ScriptNetData_SNDC_DEATH_BOX!0x0c68 m_times[0]
-DT_ScriptNetData_SNDC_DEATH_BOX!0x0c6c m_entities[0]
+DT_ScriptNetData_SNDC_DEATH_BOX!0x0c44 m_ranges[0]
+DT_ScriptNetData_SNDC_DEATH_BOX!0x0c68 m_int32s[0]
+DT_ScriptNetData_SNDC_DEATH_BOX!0x0c74 m_times[0]
+DT_ScriptNetData_SNDC_DEATH_BOX!0x0c80 m_entities[0]
 ```
 </details>
 <details>
@@ -4460,10 +4474,10 @@ DT_ScriptNetData_SNDC_GLOBAL!0x0000 m_int32s
 DT_ScriptNetData_SNDC_GLOBAL!0x0000 m_times
 DT_ScriptNetData_SNDC_GLOBAL!0x0000 m_entities
 DT_ScriptNetData_SNDC_GLOBAL!0x0c40 m_bools[0]
-DT_ScriptNetData_SNDC_GLOBAL!0x0c50 m_ranges[0]
-DT_ScriptNetData_SNDC_GLOBAL!0x0c90 m_int32s[0]
-DT_ScriptNetData_SNDC_GLOBAL!0x0cb0 m_times[0]
-DT_ScriptNetData_SNDC_GLOBAL!0x0d10 m_entities[0]
+DT_ScriptNetData_SNDC_GLOBAL!0x0c52 m_ranges[0]
+DT_ScriptNetData_SNDC_GLOBAL!0x0c98 m_int32s[0]
+DT_ScriptNetData_SNDC_GLOBAL!0x0cc0 m_times[0]
+DT_ScriptNetData_SNDC_GLOBAL!0x0d28 m_entities[0]
 ```
 </details>
 <details>
@@ -4493,10 +4507,10 @@ DT_ScriptNetData_SNDC_PLAYER_EXCLUSIVE!0x0000 m_int32s
 DT_ScriptNetData_SNDC_PLAYER_EXCLUSIVE!0x0000 m_times
 DT_ScriptNetData_SNDC_PLAYER_EXCLUSIVE!0x0000 m_entities
 DT_ScriptNetData_SNDC_PLAYER_EXCLUSIVE!0x0c40 m_bools[0]
-DT_ScriptNetData_SNDC_PLAYER_EXCLUSIVE!0x0c50 m_ranges[0]
-DT_ScriptNetData_SNDC_PLAYER_EXCLUSIVE!0x0c90 m_int32s[0]
-DT_ScriptNetData_SNDC_PLAYER_EXCLUSIVE!0x0cb0 m_times[0]
-DT_ScriptNetData_SNDC_PLAYER_EXCLUSIVE!0x0cd0 m_entities[0]
+DT_ScriptNetData_SNDC_PLAYER_EXCLUSIVE!0x0c52 m_ranges[0]
+DT_ScriptNetData_SNDC_PLAYER_EXCLUSIVE!0x0c98 m_int32s[0]
+DT_ScriptNetData_SNDC_PLAYER_EXCLUSIVE!0x0cc0 m_times[0]
+DT_ScriptNetData_SNDC_PLAYER_EXCLUSIVE!0x0ce8 m_entities[0]
 ```
 </details>
 <details>
@@ -4526,10 +4540,10 @@ DT_ScriptNetData_SNDC_PLAYER_GLOBAL!0x0000 m_int32s
 DT_ScriptNetData_SNDC_PLAYER_GLOBAL!0x0000 m_times
 DT_ScriptNetData_SNDC_PLAYER_GLOBAL!0x0000 m_entities
 DT_ScriptNetData_SNDC_PLAYER_GLOBAL!0x0c40 m_bools[0]
-DT_ScriptNetData_SNDC_PLAYER_GLOBAL!0x0c48 m_ranges[0]
-DT_ScriptNetData_SNDC_PLAYER_GLOBAL!0x0c88 m_int32s[0]
-DT_ScriptNetData_SNDC_PLAYER_GLOBAL!0x0cb8 m_times[0]
-DT_ScriptNetData_SNDC_PLAYER_GLOBAL!0x0cd8 m_entities[0]
+DT_ScriptNetData_SNDC_PLAYER_GLOBAL!0x0c4e m_ranges[0]
+DT_ScriptNetData_SNDC_PLAYER_GLOBAL!0x0c94 m_int32s[0]
+DT_ScriptNetData_SNDC_PLAYER_GLOBAL!0x0ccc m_times[0]
+DT_ScriptNetData_SNDC_PLAYER_GLOBAL!0x0cf4 m_entities[0]
 ```
 </details>
 <details>
@@ -4559,10 +4573,10 @@ DT_ScriptNetData_SNDC_TITAN_SOUL!0x0000 m_int32s
 DT_ScriptNetData_SNDC_TITAN_SOUL!0x0000 m_times
 DT_ScriptNetData_SNDC_TITAN_SOUL!0x0000 m_entities
 DT_ScriptNetData_SNDC_TITAN_SOUL!0x0c40 m_bools[0]
-DT_ScriptNetData_SNDC_TITAN_SOUL!0x0c48 m_ranges[0]
-DT_ScriptNetData_SNDC_TITAN_SOUL!0x0c68 m_int32s[0]
-DT_ScriptNetData_SNDC_TITAN_SOUL!0x0c70 m_times[0]
-DT_ScriptNetData_SNDC_TITAN_SOUL!0x0c90 m_entities[0]
+DT_ScriptNetData_SNDC_TITAN_SOUL!0x0c4a m_ranges[0]
+DT_ScriptNetData_SNDC_TITAN_SOUL!0x0c70 m_int32s[0]
+DT_ScriptNetData_SNDC_TITAN_SOUL!0x0c80 m_times[0]
+DT_ScriptNetData_SNDC_TITAN_SOUL!0x0ca8 m_entities[0]
 ```
 </details>
 <details>
@@ -4989,6 +5003,7 @@ DT_Team!0x0b40 m_loadingPlayerCount
 	m_thirdPersonEntFixedClientOnly: Int,
 	m_thirdPersonEntPushedInByGeo: Int,
 	m_thirdPersonEntDrawViewmodel: Int,
+	m_thirdPersonEntEnableCameraLag: Int,
 	m_thirdPersonEntBlendInTotalDuration: Float,
 	m_thirdPersonEntBlendInEaseInDuration: Float,
 	m_thirdPersonEntBlendInEaseOutDuration: Float,
@@ -5024,6 +5039,7 @@ DT_ThirdPersonView!0x000f m_thirdPersonEntUseFixedDist
 DT_ThirdPersonView!0x0010 m_thirdPersonEntFixedClientOnly
 DT_ThirdPersonView!0x0011 m_thirdPersonEntPushedInByGeo
 DT_ThirdPersonView!0x0012 m_thirdPersonEntDrawViewmodel
+DT_ThirdPersonView!0x0013 m_thirdPersonEntEnableCameraLag
 DT_ThirdPersonView!0x0014 m_thirdPersonEntBlendInTotalDuration
 DT_ThirdPersonView!0x0018 m_thirdPersonEntBlendInEaseInDuration
 DT_ThirdPersonView!0x001c m_thirdPersonEntBlendInEaseOutDuration
@@ -5259,7 +5275,7 @@ DT_VGuiScreen!0x0ab8 m_hPlayerOwner
 ```
 DT_VehicleDriverExclusive!0x0004 m_localOrigin
 DT_VehicleDriverExclusive!0x000c m_localOrigin.z
-DT_VehicleDriverExclusive!0x1374 m_pushedFixedPointOffset
+DT_VehicleDriverExclusive!0x1378 m_pushedFixedPointOffset
 ```
 </details>
 <details>
@@ -5410,6 +5426,7 @@ DT_WeaponInventoryActiveWeaponOnly!0x0068 activeWeapons
 	m_reloadMilestone: Int,
 	m_rechamberMilestone: Int,
 	m_cooldownMilestone: Int,
+	m_prevSeqWeight: Int,
 	m_fullReloadStartTime: Time,
 	m_scriptTime0: Time,
 	m_scriptFlags0: Int,
@@ -5480,21 +5497,22 @@ DT_WeaponPlayerData!0x0090 m_proScreen_float2
 DT_WeaponPlayerData!0x0094 m_reloadMilestone
 DT_WeaponPlayerData!0x0098 m_rechamberMilestone
 DT_WeaponPlayerData!0x009c m_cooldownMilestone
-DT_WeaponPlayerData!0x00a0 m_fullReloadStartTime
-DT_WeaponPlayerData!0x00a4 m_scriptTime0
-DT_WeaponPlayerData!0x00a8 m_scriptFlags0
-DT_WeaponPlayerData!0x00ac m_scriptInt0
-DT_WeaponPlayerData!0x00b0 m_curZoomFOV
-DT_WeaponPlayerData!0x00b4 m_targetZoomFOV
-DT_WeaponPlayerData!0x00b8 m_zoomFOVLerpTime
-DT_WeaponPlayerData!0x00bc m_zoomFOVLerpEndTime
-DT_WeaponPlayerData!0x00c0 m_latestDryfireTime
-DT_WeaponPlayerData!0x00c4 m_requestedAttackEndTime
-DT_WeaponPlayerData!0x00c8 m_currentAltFireAnimIndex
-DT_WeaponPlayerData!0x00cc m_legendaryModelIndex
-DT_WeaponPlayerData!0x00d0 m_charmModelIndex
-DT_WeaponPlayerData!0x00d4 m_charmAttachment
-DT_WeaponPlayerData!0x00d8 m_charmScriptIndex
+DT_WeaponPlayerData!0x00a0 m_prevSeqWeight
+DT_WeaponPlayerData!0x00a4 m_fullReloadStartTime
+DT_WeaponPlayerData!0x00a8 m_scriptTime0
+DT_WeaponPlayerData!0x00ac m_scriptFlags0
+DT_WeaponPlayerData!0x00b0 m_scriptInt0
+DT_WeaponPlayerData!0x00b4 m_curZoomFOV
+DT_WeaponPlayerData!0x00b8 m_targetZoomFOV
+DT_WeaponPlayerData!0x00bc m_zoomFOVLerpTime
+DT_WeaponPlayerData!0x00c0 m_zoomFOVLerpEndTime
+DT_WeaponPlayerData!0x00c4 m_latestDryfireTime
+DT_WeaponPlayerData!0x00c8 m_requestedAttackEndTime
+DT_WeaponPlayerData!0x00cc m_currentAltFireAnimIndex
+DT_WeaponPlayerData!0x00d0 m_legendaryModelIndex
+DT_WeaponPlayerData!0x00d4 m_charmModelIndex
+DT_WeaponPlayerData!0x00d8 m_charmAttachment
+DT_WeaponPlayerData!0x00dc m_charmScriptIndex
 ```
 </details>
 <details>
@@ -5526,6 +5544,7 @@ DT_WeaponPlayerData!0x00d8 m_charmScriptIndex
 	m_customActivityEndTime: Time,
 	m_customActivityFlags: Int,
 	m_playerData: DT_WeaponPlayerData,
+	m_lastTossedGrenade: Int,
 	m_needsReloadCheck: Int,
 	m_needsEmptyCycleCheck: Int,
 	m_skinOverride: Int,
@@ -5578,28 +5597,29 @@ DT_WeaponX!0x135c m_customActivityOwner
 DT_WeaponX!0x1360 m_customActivityEndTime
 DT_WeaponX!0x1364 m_customActivityFlags
 DT_WeaponX!0x1368 m_playerData
-DT_WeaponX!0x1448 m_needsReloadCheck
-DT_WeaponX!0x1449 m_needsEmptyCycleCheck
-DT_WeaponX!0x144c m_skinOverride
-DT_WeaponX!0x1450 m_skinOverrideIsValid
-DT_WeaponX!0x1454 m_chargeStartTime
-DT_WeaponX!0x1458 m_chargeEndTime
-DT_WeaponX!0x145c m_lastChargeFrac
-DT_WeaponX!0x1480 m_sustainedDischargeEndTime
-DT_WeaponX!0x1484 m_sustainedLaserCurrentSpread
-DT_WeaponX!0x1488 m_sustainedDischargeIsInPrimaryAttack
-DT_WeaponX!0x1489 m_sustainedLaserNextRandomSeed
-DT_WeaponX!0x148c m_modBitfieldFromPlayer
-DT_WeaponX!0x1490 m_modBitfieldInternal
-DT_WeaponX!0x1494 m_modBitfieldCurrent
-DT_WeaponX!0x1498 m_curSharedEnergyCost
-DT_WeaponX!0x149c m_grappleWeaponNeedsDryfire
-DT_WeaponX!0x149d m_scriptActivated
-DT_WeaponX!0x149e m_isLoadoutPickup
-DT_WeaponX!0x14a0 m_utilityEnt
-DT_WeaponX!0x14a8 m_weaponNameIndex
-DT_WeaponX!0x14b4 m_shouldPlayIdleAnims
-DT_WeaponX!0x14b8 m_oaActiveOverride
+DT_WeaponX!0x1448 m_lastTossedGrenade
+DT_WeaponX!0x144c m_needsReloadCheck
+DT_WeaponX!0x144d m_needsEmptyCycleCheck
+DT_WeaponX!0x1450 m_skinOverride
+DT_WeaponX!0x1454 m_skinOverrideIsValid
+DT_WeaponX!0x1458 m_chargeStartTime
+DT_WeaponX!0x145c m_chargeEndTime
+DT_WeaponX!0x1460 m_lastChargeFrac
+DT_WeaponX!0x1484 m_sustainedDischargeEndTime
+DT_WeaponX!0x1488 m_sustainedLaserCurrentSpread
+DT_WeaponX!0x148c m_sustainedDischargeIsInPrimaryAttack
+DT_WeaponX!0x148d m_sustainedLaserNextRandomSeed
+DT_WeaponX!0x1490 m_modBitfieldFromPlayer
+DT_WeaponX!0x1494 m_modBitfieldInternal
+DT_WeaponX!0x1498 m_modBitfieldCurrent
+DT_WeaponX!0x149c m_curSharedEnergyCost
+DT_WeaponX!0x14a0 m_grappleWeaponNeedsDryfire
+DT_WeaponX!0x14a1 m_scriptActivated
+DT_WeaponX!0x14a2 m_isLoadoutPickup
+DT_WeaponX!0x14a4 m_utilityEnt
+DT_WeaponX!0x14ac m_weaponNameIndex
+DT_WeaponX!0x14b8 m_shouldPlayIdleAnims
+DT_WeaponX!0x14bc m_oaActiveOverride
 ```
 </details>
 <details>
@@ -5658,18 +5678,18 @@ DT_WeaponX_LocalWeaponData!0x134a m_bInReload
 ### Offsets
 
 ```
-DT_WeaponX_PredictingClientOnly!0x1460 m_lastRegenTime
-DT_WeaponX_PredictingClientOnly!0x1464 m_cooldownEndTime
-DT_WeaponX_PredictingClientOnly!0x1468 m_stockPileWasDraining
-DT_WeaponX_PredictingClientOnly!0x1469 m_weaponIsCharging
-DT_WeaponX_PredictingClientOnly!0x146a m_weaponChargeLevelIncreasedAnimPlaying
-DT_WeaponX_PredictingClientOnly!0x146c m_lastChargeLevel
-DT_WeaponX_PredictingClientOnly!0x1470 m_chargeEnergyDepleteStepCounter
-DT_WeaponX_PredictingClientOnly!0x1474 m_burstFireCount
-DT_WeaponX_PredictingClientOnly!0x1478 m_burstFireIndex
-DT_WeaponX_PredictingClientOnly!0x147c m_shotCount
-DT_WeaponX_PredictingClientOnly!0x14ac m_animModelIndexPredictingClientOnly
-DT_WeaponX_PredictingClientOnly!0x14b0 m_animSequencePredictingClientOnly
+DT_WeaponX_PredictingClientOnly!0x1464 m_lastRegenTime
+DT_WeaponX_PredictingClientOnly!0x1468 m_cooldownEndTime
+DT_WeaponX_PredictingClientOnly!0x146c m_stockPileWasDraining
+DT_WeaponX_PredictingClientOnly!0x146d m_weaponIsCharging
+DT_WeaponX_PredictingClientOnly!0x146e m_weaponChargeLevelIncreasedAnimPlaying
+DT_WeaponX_PredictingClientOnly!0x1470 m_lastChargeLevel
+DT_WeaponX_PredictingClientOnly!0x1474 m_chargeEnergyDepleteStepCounter
+DT_WeaponX_PredictingClientOnly!0x1478 m_burstFireCount
+DT_WeaponX_PredictingClientOnly!0x147c m_burstFireIndex
+DT_WeaponX_PredictingClientOnly!0x1480 m_shotCount
+DT_WeaponX_PredictingClientOnly!0x14b0 m_animModelIndexPredictingClientOnly
+DT_WeaponX_PredictingClientOnly!0x14b4 m_animSequencePredictingClientOnly
 ```
 </details>
 <details>
@@ -5842,12 +5862,12 @@ DT_ZiplinePhysicsExlusive!0x0234 m_remainingUnsimulatedTime
 
 ```
 CBaseGrenade!0x041c m_vecVelocity
-CBaseGrenade!0x2801 m_doesExplode
-CBaseGrenade!0x2804 m_DmgRadius
-CBaseGrenade!0x2814 m_grenadeCreationTime
-CBaseGrenade!0x2818 m_grenadeCreationOrigin
-CBaseGrenade!0x28a8 m_flDamage
-CBaseGrenade!0x28ac m_hThrower
+CBaseGrenade!0x2841 m_doesExplode
+CBaseGrenade!0x2844 m_DmgRadius
+CBaseGrenade!0x2854 m_grenadeCreationTime
+CBaseGrenade!0x2858 m_grenadeCreationOrigin
+CBaseGrenade!0x28e8 m_flDamage
+CBaseGrenade!0x28ec m_hThrower
 ```
 </details>
 <details>
@@ -6442,35 +6462,35 @@ CWeaponX!0x135c m_customActivityOwner
 CWeaponX!0x1360 m_customActivityEndTime
 CWeaponX!0x1364 m_customActivityFlags
 CWeaponX!0x1368 m_playerData
-CWeaponX!0x1448 m_needsReloadCheck
-CWeaponX!0x1449 m_needsEmptyCycleCheck
-CWeaponX!0x144c m_skinOverride
-CWeaponX!0x1450 m_skinOverrideIsValid
-CWeaponX!0x1454 m_chargeStartTime
-CWeaponX!0x1458 m_chargeEndTime
-CWeaponX!0x145c m_lastChargeFrac
-CWeaponX!0x1460 m_lastRegenTime
-CWeaponX!0x1464 m_cooldownEndTime
-CWeaponX!0x1468 m_stockPileWasDraining
-CWeaponX!0x1469 m_weaponIsCharging
-CWeaponX!0x146a m_weaponChargeLevelIncreasedAnimPlaying
-CWeaponX!0x146c m_lastChargeLevel
-CWeaponX!0x1470 m_chargeEnergyDepleteStepCounter
-CWeaponX!0x1474 m_burstFireCount
-CWeaponX!0x1478 m_burstFireIndex
-CWeaponX!0x147c m_shotCount
-CWeaponX!0x1480 m_sustainedDischargeEndTime
-CWeaponX!0x1484 m_sustainedLaserCurrentSpread
-CWeaponX!0x1488 m_sustainedDischargeIsInPrimaryAttack
-CWeaponX!0x1489 m_sustainedLaserNextRandomSeed
-CWeaponX!0x148c m_modBitfieldFromPlayer
-CWeaponX!0x1490 m_modBitfieldInternal
-CWeaponX!0x1494 m_modBitfieldCurrent
-CWeaponX!0x1498 m_curSharedEnergyCost
-CWeaponX!0x149c m_grappleWeaponNeedsDryfire
-CWeaponX!0x149d m_scriptActivated
-CWeaponX!0x27e0 m_flNextEmptySoundTime
-CWeaponX!0x2806 m_bRemoveable
+CWeaponX!0x144c m_needsReloadCheck
+CWeaponX!0x144d m_needsEmptyCycleCheck
+CWeaponX!0x1450 m_skinOverride
+CWeaponX!0x1454 m_skinOverrideIsValid
+CWeaponX!0x1458 m_chargeStartTime
+CWeaponX!0x145c m_chargeEndTime
+CWeaponX!0x1460 m_lastChargeFrac
+CWeaponX!0x1464 m_lastRegenTime
+CWeaponX!0x1468 m_cooldownEndTime
+CWeaponX!0x146c m_stockPileWasDraining
+CWeaponX!0x146d m_weaponIsCharging
+CWeaponX!0x146e m_weaponChargeLevelIncreasedAnimPlaying
+CWeaponX!0x1470 m_lastChargeLevel
+CWeaponX!0x1474 m_chargeEnergyDepleteStepCounter
+CWeaponX!0x1478 m_burstFireCount
+CWeaponX!0x147c m_burstFireIndex
+CWeaponX!0x1480 m_shotCount
+CWeaponX!0x1484 m_sustainedDischargeEndTime
+CWeaponX!0x1488 m_sustainedLaserCurrentSpread
+CWeaponX!0x148c m_sustainedDischargeIsInPrimaryAttack
+CWeaponX!0x148d m_sustainedLaserNextRandomSeed
+CWeaponX!0x1490 m_modBitfieldFromPlayer
+CWeaponX!0x1494 m_modBitfieldInternal
+CWeaponX!0x1498 m_modBitfieldCurrent
+CWeaponX!0x149c m_curSharedEnergyCost
+CWeaponX!0x14a0 m_grappleWeaponNeedsDryfire
+CWeaponX!0x14a1 m_scriptActivated
+CWeaponX!0x2828 m_flNextEmptySoundTime
+CWeaponX!0x284e m_bRemoveable
 ```
 </details>
 <details>
@@ -6843,16 +6863,16 @@ C_ClientRagdoll!0x1374 m_flScaleTimeEnd
 ### Offsets
 
 ```
-C_CrossbowBolt!0x2800 m_bounceCount
-C_CrossbowBolt!0x2804 m_maxBounceCount
-C_CrossbowBolt!0x2808 m_doesGrow
-C_CrossbowBolt!0x280c m_growStartSize
-C_CrossbowBolt!0x2810 m_growStage1Tick
-C_CrossbowBolt!0x2814 m_growStage1Size
-C_CrossbowBolt!0x2818 m_growStage2Tick
-C_CrossbowBolt!0x281c m_growStage2Size
-C_CrossbowBolt!0x2820 m_growStageFinalTick
-C_CrossbowBolt!0x2824 m_growStageFinalSize
+C_CrossbowBolt!0x2840 m_bounceCount
+C_CrossbowBolt!0x2844 m_maxBounceCount
+C_CrossbowBolt!0x2848 m_doesGrow
+C_CrossbowBolt!0x284c m_growStartSize
+C_CrossbowBolt!0x2850 m_growStage1Tick
+C_CrossbowBolt!0x2854 m_growStage1Size
+C_CrossbowBolt!0x2858 m_growStage2Tick
+C_CrossbowBolt!0x285c m_growStage2Size
+C_CrossbowBolt!0x2860 m_growStageFinalTick
+C_CrossbowBolt!0x2864 m_growStageFinalSize
 ```
 </details>
 <details>
@@ -7051,25 +7071,25 @@ C_KnockBack!0x0018 endTime
 ### Offsets
 
 ```
-C_Missile!0x2800 m_hasPlayedWhizby
-C_Missile!0x2804 m_whizByStart
-C_Missile!0x2810 m_whizBySoundName
-C_Missile!0x2850 m_homingSpeed
-C_Missile!0x2854 m_homingSpeedDodgingPlayer
-C_Missile!0x2858 m_launchDir
-C_Missile!0x2864 m_hSpecificTarget
-C_Missile!0x2868 m_targetOffset
-C_Missile!0x2874 m_targetPosition
-C_Missile!0x2880 m_useTargetPosition
-C_Missile!0x2884 m_postIgnitionSpeed
-C_Missile!0x2888 m_flGracePeriodEndsAt
-C_Missile!0x288c m_pathSettingsInitialized
-C_Missile!0x288d m_expandContractMissile
-C_Missile!0x288e m_spiralMissile
-C_Missile!0x2890 m_spiralSettings
-C_Missile!0x28b4 m_expandContractSettings
-C_Missile!0x28ec m_lastThinkTime
-C_Missile!0x28f0 m_explosionIgnoreEntity
+C_Missile!0x2840 m_hasPlayedWhizby
+C_Missile!0x2844 m_whizByStart
+C_Missile!0x2850 m_whizBySoundName
+C_Missile!0x2890 m_homingSpeed
+C_Missile!0x2894 m_homingSpeedDodgingPlayer
+C_Missile!0x2898 m_launchDir
+C_Missile!0x28a4 m_hSpecificTarget
+C_Missile!0x28a8 m_targetOffset
+C_Missile!0x28b4 m_targetPosition
+C_Missile!0x28c0 m_useTargetPosition
+C_Missile!0x28c4 m_postIgnitionSpeed
+C_Missile!0x28c8 m_flGracePeriodEndsAt
+C_Missile!0x28cc m_pathSettingsInitialized
+C_Missile!0x28cd m_expandContractMissile
+C_Missile!0x28ce m_spiralMissile
+C_Missile!0x28d0 m_spiralSettings
+C_Missile!0x28f4 m_expandContractSettings
+C_Missile!0x292c m_lastThinkTime
+C_Missile!0x2930 m_explosionIgnoreEntity
 ```
 </details>
 <details>
@@ -7192,6 +7212,9 @@ C_ParticleSystem!0x0a17 m_killIfOverLimit
 	m_bPlayedSprintStartEffects: Bool,
 	m_fIsSprinting: Bool,
 	m_fIsWalking: Bool,
+	m_lastSprintPressTime: Time,
+	m_stickySprintForwardEnableTime: Time,
+	m_stickySprintForwardDisableTime: Time,
 	m_sprintStartedTime: Time,
 	m_sprintStartedFrac: Float,
 	m_sprintEndedTime: Time,
@@ -7338,12 +7361,13 @@ C_ParticleSystem!0x0a17 m_killIfOverLimit
 	m_skydiveSidePoseValueTarget: Float,
 	m_skydiveSidePoseValueCurrent: Float,
 	m_skydiveYawVelocity: Float,
-	m_freefallState: Int,
-	m_freefallStartTime: Time,
-	m_freefallEndTime: Time,
-	m_freefallAnticipateStartTime: Time,
-	m_freefallAnticipateEndTime: Time,
-	m_freefallDistanceToLand: Float,
+	m_skydiveIsNearLeviathan: Bool,
+	m_skydiveState: Int,
+	m_skydiveStartTime: Time,
+	m_skydiveEndTime: Time,
+	m_skydiveAnticipateStartTime: Time,
+	m_skydiveAnticipateEndTime: Time,
+	m_skydiveDistanceToLand: Float,
 	m_skydiveDiveAngle: Float,
 	m_skydiveIsDiving: Bool,
 	m_skydiveSpeed: Float,
@@ -7354,7 +7378,6 @@ C_ParticleSystem!0x0a17 m_killIfOverLimit
 	m_skydivePlayerYaw: Float,
 	m_skydiveFollowing: Bool,
 	m_skydiveUnfollowVelocity: Vector,
-	m_skydiveIsNearLeviathan: Bool,
 	m_skydiveLeviathanHitPosition: Vector,
 	m_skydiveLeviathanHitNormal: Vector,
 	m_skydiveSlipVelocity: Vector,
@@ -7421,175 +7444,178 @@ C_Player!0x25f8 m_fStickySprintMinTime
 C_Player!0x25fc m_bPlayedSprintStartEffects
 C_Player!0x2604 m_fIsSprinting
 C_Player!0x2605 m_fIsWalking
-C_Player!0x2608 m_sprintStartedTime
-C_Player!0x260c m_sprintStartedFrac
-C_Player!0x2610 m_sprintEndedTime
-C_Player!0x2614 m_sprintEndedFrac
-C_Player!0x2618 m_stickySprintStartTime
-C_Player!0x261c m_damageImpulseNoDecelEndTime
-C_Player!0x262c m_duckState
-C_Player!0x2630 m_leanState
-C_Player!0x2634 m_doingHalfDuck
-C_Player!0x2635 m_canStand
-C_Player!0x2638 m_StandHullMin
-C_Player!0x2644 m_StandHullMax
-C_Player!0x2650 m_DuckHullMin
-C_Player!0x265c m_DuckHullMax
-C_Player!0x266c m_upDir
-C_Player!0x2678 m_upDirPredicted
-C_Player!0x2684 m_lastWallRunStartPos
-C_Player!0x2690 m_wallRunCount
-C_Player!0x2694 m_wallRunWeak
-C_Player!0x2695 m_shouldBeOneHanded
-C_Player!0x2698 m_oneHandFraction
-C_Player!0x269c m_animAimPitch
-C_Player!0x26a0 m_animAimYaw
-C_Player!0x26a4 m_wallRunPushAwayTime
-C_Player!0x26b0 m_wallrunRetryTime
-C_Player!0x26b4 m_wallrunRetryPos
-C_Player!0x26c0 m_wallrunRetryNormal
-C_Player!0x26e4 m_wallHangTime
-C_Player!0x26e8 m_traversalState
-C_Player!0x26ec m_traversalType
-C_Player!0x26f0 m_traversalBegin
-C_Player!0x26fc m_traversalMid
-C_Player!0x2708 m_traversalEnd
-C_Player!0x2714 m_traversalMidFrac
-C_Player!0x2718 m_traversalForwardDir
-C_Player!0x2724 m_traversalRefPos
-C_Player!0x2730 m_traversalProgress
-C_Player!0x2734 m_traversalStartTime
-C_Player!0x2738 m_traversalHandAppearTime
-C_Player!0x273c m_traversalReleaseTime
-C_Player!0x2740 m_traversalBlendOutStartTime
-C_Player!0x2744 m_traversalBlendOutStartOffset
-C_Player!0x2750 m_traversalYawDelta
-C_Player!0x275c m_wallDangleJumpOffTime
-C_Player!0x2760 m_wallDangleMayHangHere
-C_Player!0x2761 m_wallDangleForceFallOff
-C_Player!0x2762 m_wallDangleLastPushedForward
-C_Player!0x2764 m_wallDangleDisableWeapon
-C_Player!0x2768 m_wallDangleClimbProgressFloor
-C_Player!0x276c m_wallClimbSetUp
-C_Player!0x276d m_wallHanging
-C_Player!0x2770 m_grapple
-C_Player!0x2770 m_grapple
-C_Player!0x2800 m_grappleActive
-C_Player!0x2800 m_grappleActive
-C_Player!0x2801 m_grappleNeedWindowCheck
-C_Player!0x2804 m_grappleNextWindowHint
-C_Player!0x2814 m_slowMoEnabled
-C_Player!0x2815 m_sliding
-C_Player!0x2816 m_slideLongJumpAllowed
-C_Player!0x2818 m_lastSlideTime
-C_Player!0x281c m_lastSlideBoost
-C_Player!0x2820 m_gravityGrenadeStatusEffect
-C_Player!0x2824 m_bIsStickySprinting
-C_Player!0x2828 m_prevMoveYaw
-C_Player!0x282c m_sprintTiltVel
-C_Player!0x2848 m_turret
-C_Player!0x284c m_hViewModels
-C_Player!0x2860 m_viewOffsetEntity
-C_Player!0x29a0 m_activeZipline
-C_Player!0x29a4 m_lastZipline
-C_Player!0x29a8 m_lastZiplineDetachTime
-C_Player!0x29ac m_ziplineValid3pWeaponLayerAnim
-C_Player!0x29b0 m_ziplineState
-C_Player!0x29b8 m_zipline
-C_Player!0x2a28 m_ziplineViewOffsetPosition
-C_Player!0x2a34 m_ziplineViewOffsetVelocity
-C_Player!0x2a40 m_ziplineGrenadeEntity
-C_Player!0x2a44 m_ziplineGrenadeBeginStationEntity
-C_Player!0x2a48 m_ziplineGrenadeBeginStationAttachmentIndex
-C_Player!0x2a54 m_playAnimationType
-C_Player!0x2a58 m_detachGrappleOnPlayAnimationEnd
-C_Player!0x2a5c m_playAnimationNext
-C_Player!0x2a70 m_boosting
-C_Player!0x2a71 m_activateBoost
-C_Player!0x2a72 m_repeatedBoost
-C_Player!0x2a74 m_boostMeter
-C_Player!0x2a78 m_jetpack
-C_Player!0x2a79 m_activateJetpack
-C_Player!0x2a7a m_jetpackAfterburner
-C_Player!0x2a7b m_gliding
-C_Player!0x2a7c m_glideMeter
-C_Player!0x2a80 m_glideRechargeDelayAccumulator
-C_Player!0x2a84 m_hovering
-C_Player!0x2a85 m_isPerformingBoostAction
-C_Player!0x2a88 m_lastJumpHeight
-C_Player!0x2ad8 m_slipAirRestrictDirection
-C_Player!0x2ae4 m_slipAirRestrictTime
-C_Player!0x2c78 m_melee
-C_Player!0x2cb0 m_useCredit
-C_Player!0x2fec m_wallRunStartTime
-C_Player!0x2ff0 m_wallRunClearTime
-C_Player!0x2ff4 m_onSlopeTime
-C_Player!0x2ff8 m_lastWallNormal
-C_Player!0x3004 m_dodging
-C_Player!0x3008 m_lastDodgeTime
-C_Player!0x300c m_vecPreviouslyPredictedOrigin
-C_Player!0x3024 m_flTimeLastTouchedWall
-C_Player!0x3028 m_timeJetpackHeightActivateCheckPassed
-C_Player!0x302c m_flTimeLastTouchedGround
-C_Player!0x3030 m_flTimeLastJumped
-C_Player!0x3034 m_flTimeLastLanded
-C_Player!0x3038 m_flLastLandFromHeight
-C_Player!0x303c m_usePressedTime
-C_Player!0x3040 m_lastUseTime
-C_Player!0x3050 m_lastFakeFloorPos
-C_Player!0x305c m_bHasJumpedSinceTouchedGround
-C_Player!0x305d m_bDoMultiJumpPenalty
-C_Player!0x305e m_dodgingInAir
-C_Player!0x3214 m_activeViewmodelModifiers
-C_Player!0x3460 m_lastMoveInputTime
-C_Player!0x3464 m_ignoreEntityForMovementUntilNotTouching
-C_Player!0x3930 m_gameMovementUtil.m_surfaceFriction
-C_Player!0x39ac m_lungeTargetEntity
-C_Player!0x39b0 m_isLungingToPosition
-C_Player!0x39b4 m_lungeTargetPosition
-C_Player!0x39c0 m_lungeStartPositionOffset
-C_Player!0x39cc m_lungeEndPositionOffset
-C_Player!0x39d8 m_lungeStartTime
-C_Player!0x39dc m_lungeEndTime
-C_Player!0x39e0 m_lungeCanFly
-C_Player!0x39e1 m_lungeLockPitch
-C_Player!0x39e4 m_lungeStartPitch
-C_Player!0x39e8 m_lungeSmoothTime
-C_Player!0x39ec m_lungeMaxTime
-C_Player!0x39f0 m_lungeMaxEndSpeed
-C_Player!0x3c80 m_vPrevGroundNormal
-C_Player!0x3e44 m_pushAwayFromTopAcceleration
-C_Player!0x3e6c m_controllerModeActive
-C_Player!0x3e84 m_skydiveForwardPoseValueVelocity
-C_Player!0x3e88 m_skydiveForwardPoseValueTarget
-C_Player!0x3e8c m_skydiveForwardPoseValueCurrent
-C_Player!0x3e90 m_skydiveSidePoseValueVelocity
-C_Player!0x3e94 m_skydiveSidePoseValueTarget
-C_Player!0x3e98 m_skydiveSidePoseValueCurrent
-C_Player!0x3e9c m_skydiveYawVelocity
-C_Player!0x3eb8 m_freefallState
-C_Player!0x3ebc m_freefallStartTime
-C_Player!0x3ec0 m_freefallEndTime
-C_Player!0x3ec4 m_freefallAnticipateStartTime
-C_Player!0x3ec8 m_freefallAnticipateEndTime
-C_Player!0x3ecc m_freefallDistanceToLand
-C_Player!0x3ed0 m_skydiveDiveAngle
-C_Player!0x3ed4 m_skydiveIsDiving
-C_Player!0x3ed8 m_skydiveSpeed
-C_Player!0x3edc m_skydiveStrafeAngle
-C_Player!0x3ee0 m_skydiveFreelookEnabled
-C_Player!0x3ee4 m_skydiveFreelookLockedAngle
-C_Player!0x3ef0 m_skydivePlayerPitch
-C_Player!0x3ef4 m_skydivePlayerYaw
-C_Player!0x3ef8 m_skydiveFollowing
-C_Player!0x3efc m_skydiveUnfollowVelocity
-C_Player!0x3f09 m_skydiveIsNearLeviathan
-C_Player!0x3f0c m_skydiveLeviathanHitPosition
-C_Player!0x3f18 m_skydiveLeviathanHitNormal
-C_Player!0x3f24 m_skydiveSlipVelocity
-C_Player!0x3f48 m_playerKnockBacks
-C_Player!0x3fcc m_updraftStage
-C_Player!0x3ff0 m_updraftSlowTime
+C_Player!0x2608 m_lastSprintPressTime
+C_Player!0x260c m_stickySprintForwardEnableTime
+C_Player!0x2610 m_stickySprintForwardDisableTime
+C_Player!0x2614 m_sprintStartedTime
+C_Player!0x2618 m_sprintStartedFrac
+C_Player!0x261c m_sprintEndedTime
+C_Player!0x2620 m_sprintEndedFrac
+C_Player!0x2624 m_stickySprintStartTime
+C_Player!0x2628 m_damageImpulseNoDecelEndTime
+C_Player!0x2638 m_duckState
+C_Player!0x263c m_leanState
+C_Player!0x2640 m_doingHalfDuck
+C_Player!0x2641 m_canStand
+C_Player!0x2644 m_StandHullMin
+C_Player!0x2650 m_StandHullMax
+C_Player!0x265c m_DuckHullMin
+C_Player!0x2668 m_DuckHullMax
+C_Player!0x2678 m_upDir
+C_Player!0x2684 m_upDirPredicted
+C_Player!0x2690 m_lastWallRunStartPos
+C_Player!0x269c m_wallRunCount
+C_Player!0x26a0 m_wallRunWeak
+C_Player!0x26a1 m_shouldBeOneHanded
+C_Player!0x26a4 m_oneHandFraction
+C_Player!0x26a8 m_animAimPitch
+C_Player!0x26ac m_animAimYaw
+C_Player!0x26b0 m_wallRunPushAwayTime
+C_Player!0x26bc m_wallrunRetryTime
+C_Player!0x26c0 m_wallrunRetryPos
+C_Player!0x26cc m_wallrunRetryNormal
+C_Player!0x26f0 m_wallHangTime
+C_Player!0x26f4 m_traversalState
+C_Player!0x26f8 m_traversalType
+C_Player!0x26fc m_traversalBegin
+C_Player!0x2708 m_traversalMid
+C_Player!0x2714 m_traversalEnd
+C_Player!0x2720 m_traversalMidFrac
+C_Player!0x2724 m_traversalForwardDir
+C_Player!0x2730 m_traversalRefPos
+C_Player!0x273c m_traversalProgress
+C_Player!0x2740 m_traversalStartTime
+C_Player!0x2744 m_traversalHandAppearTime
+C_Player!0x2748 m_traversalReleaseTime
+C_Player!0x274c m_traversalBlendOutStartTime
+C_Player!0x2750 m_traversalBlendOutStartOffset
+C_Player!0x275c m_traversalYawDelta
+C_Player!0x2768 m_wallDangleJumpOffTime
+C_Player!0x276c m_wallDangleMayHangHere
+C_Player!0x276d m_wallDangleForceFallOff
+C_Player!0x276e m_wallDangleLastPushedForward
+C_Player!0x2770 m_wallDangleDisableWeapon
+C_Player!0x2774 m_wallDangleClimbProgressFloor
+C_Player!0x2778 m_wallClimbSetUp
+C_Player!0x2779 m_wallHanging
+C_Player!0x2780 m_grapple
+C_Player!0x2780 m_grapple
+C_Player!0x2810 m_grappleActive
+C_Player!0x2810 m_grappleActive
+C_Player!0x2811 m_grappleNeedWindowCheck
+C_Player!0x2814 m_grappleNextWindowHint
+C_Player!0x2824 m_slowMoEnabled
+C_Player!0x2825 m_sliding
+C_Player!0x2826 m_slideLongJumpAllowed
+C_Player!0x2828 m_lastSlideTime
+C_Player!0x282c m_lastSlideBoost
+C_Player!0x2830 m_gravityGrenadeStatusEffect
+C_Player!0x2834 m_bIsStickySprinting
+C_Player!0x2838 m_prevMoveYaw
+C_Player!0x283c m_sprintTiltVel
+C_Player!0x2858 m_turret
+C_Player!0x285c m_hViewModels
+C_Player!0x2870 m_viewOffsetEntity
+C_Player!0x29b0 m_activeZipline
+C_Player!0x29b4 m_lastZipline
+C_Player!0x29b8 m_lastZiplineDetachTime
+C_Player!0x29bc m_ziplineValid3pWeaponLayerAnim
+C_Player!0x29c0 m_ziplineState
+C_Player!0x29c8 m_zipline
+C_Player!0x2a38 m_ziplineViewOffsetPosition
+C_Player!0x2a44 m_ziplineViewOffsetVelocity
+C_Player!0x2a50 m_ziplineGrenadeEntity
+C_Player!0x2a54 m_ziplineGrenadeBeginStationEntity
+C_Player!0x2a58 m_ziplineGrenadeBeginStationAttachmentIndex
+C_Player!0x2a64 m_playAnimationType
+C_Player!0x2a68 m_detachGrappleOnPlayAnimationEnd
+C_Player!0x2a6c m_playAnimationNext
+C_Player!0x2a80 m_boosting
+C_Player!0x2a81 m_activateBoost
+C_Player!0x2a82 m_repeatedBoost
+C_Player!0x2a84 m_boostMeter
+C_Player!0x2a88 m_jetpack
+C_Player!0x2a89 m_activateJetpack
+C_Player!0x2a8a m_jetpackAfterburner
+C_Player!0x2a8b m_gliding
+C_Player!0x2a8c m_glideMeter
+C_Player!0x2a90 m_glideRechargeDelayAccumulator
+C_Player!0x2a94 m_hovering
+C_Player!0x2a95 m_isPerformingBoostAction
+C_Player!0x2a98 m_lastJumpHeight
+C_Player!0x2ae8 m_slipAirRestrictDirection
+C_Player!0x2af4 m_slipAirRestrictTime
+C_Player!0x2c88 m_melee
+C_Player!0x2cc0 m_useCredit
+C_Player!0x2ffc m_wallRunStartTime
+C_Player!0x3000 m_wallRunClearTime
+C_Player!0x3004 m_onSlopeTime
+C_Player!0x3008 m_lastWallNormal
+C_Player!0x3014 m_dodging
+C_Player!0x3018 m_lastDodgeTime
+C_Player!0x301c m_vecPreviouslyPredictedOrigin
+C_Player!0x3034 m_flTimeLastTouchedWall
+C_Player!0x3038 m_timeJetpackHeightActivateCheckPassed
+C_Player!0x303c m_flTimeLastTouchedGround
+C_Player!0x3040 m_flTimeLastJumped
+C_Player!0x3044 m_flTimeLastLanded
+C_Player!0x3048 m_flLastLandFromHeight
+C_Player!0x304c m_usePressedTime
+C_Player!0x3050 m_lastUseTime
+C_Player!0x3060 m_lastFakeFloorPos
+C_Player!0x306c m_bHasJumpedSinceTouchedGround
+C_Player!0x306d m_bDoMultiJumpPenalty
+C_Player!0x306e m_dodgingInAir
+C_Player!0x3234 m_activeViewmodelModifiers
+C_Player!0x3480 m_lastMoveInputTime
+C_Player!0x3484 m_ignoreEntityForMovementUntilNotTouching
+C_Player!0x3950 m_gameMovementUtil.m_surfaceFriction
+C_Player!0x39cc m_lungeTargetEntity
+C_Player!0x39d0 m_isLungingToPosition
+C_Player!0x39d4 m_lungeTargetPosition
+C_Player!0x39e0 m_lungeStartPositionOffset
+C_Player!0x39ec m_lungeEndPositionOffset
+C_Player!0x39f8 m_lungeStartTime
+C_Player!0x39fc m_lungeEndTime
+C_Player!0x3a00 m_lungeCanFly
+C_Player!0x3a01 m_lungeLockPitch
+C_Player!0x3a04 m_lungeStartPitch
+C_Player!0x3a08 m_lungeSmoothTime
+C_Player!0x3a0c m_lungeMaxTime
+C_Player!0x3a10 m_lungeMaxEndSpeed
+C_Player!0x3ca0 m_vPrevGroundNormal
+C_Player!0x3e64 m_pushAwayFromTopAcceleration
+C_Player!0x3e8c m_controllerModeActive
+C_Player!0x3ea4 m_skydiveForwardPoseValueVelocity
+C_Player!0x3ea8 m_skydiveForwardPoseValueTarget
+C_Player!0x3eac m_skydiveForwardPoseValueCurrent
+C_Player!0x3eb0 m_skydiveSidePoseValueVelocity
+C_Player!0x3eb4 m_skydiveSidePoseValueTarget
+C_Player!0x3eb8 m_skydiveSidePoseValueCurrent
+C_Player!0x3ebc m_skydiveYawVelocity
+C_Player!0x3ec0 m_skydiveIsNearLeviathan
+C_Player!0x3edc m_skydiveState
+C_Player!0x3ee0 m_skydiveStartTime
+C_Player!0x3ee4 m_skydiveEndTime
+C_Player!0x3ee8 m_skydiveAnticipateStartTime
+C_Player!0x3eec m_skydiveAnticipateEndTime
+C_Player!0x3ef0 m_skydiveDistanceToLand
+C_Player!0x3ef4 m_skydiveDiveAngle
+C_Player!0x3ef8 m_skydiveIsDiving
+C_Player!0x3efc m_skydiveSpeed
+C_Player!0x3f00 m_skydiveStrafeAngle
+C_Player!0x3f04 m_skydiveFreelookEnabled
+C_Player!0x3f08 m_skydiveFreelookLockedAngle
+C_Player!0x3f14 m_skydivePlayerPitch
+C_Player!0x3f18 m_skydivePlayerYaw
+C_Player!0x3f1c m_skydiveFollowing
+C_Player!0x3f20 m_skydiveUnfollowVelocity
+C_Player!0x3f30 m_skydiveLeviathanHitPosition
+C_Player!0x3f3c m_skydiveLeviathanHitNormal
+C_Player!0x3f48 m_skydiveSlipVelocity
+C_Player!0x3f68 m_playerKnockBacks
+C_Player!0x3fec m_updraftStage
+C_Player!0x4010 m_updraftSlowTime
 ```
 </details>
 <details>
@@ -7599,6 +7625,7 @@ C_Player!0x3ff0 m_updraftSlowTime
 {
 	m_nStepside: Int,
 	m_nOldButtons: Int,
+	m_nOldVehicleButtons: Int,
 	m_iHideHUD: Int,
 	m_superJumpsUsed: Int,
 	m_jumpedOffRodeo: Bool,
@@ -7672,71 +7699,72 @@ C_Player!0x3ff0 m_updraftSlowTime
 ```
 C_PlayerLocalData!0x0008 m_nStepside
 C_PlayerLocalData!0x000c m_nOldButtons
-C_PlayerLocalData!0x0010 m_iHideHUD
-C_PlayerLocalData!0x0014 m_superJumpsUsed
-C_PlayerLocalData!0x0018 m_jumpedOffRodeo
-C_PlayerLocalData!0x001c m_jumpPressTime
-C_PlayerLocalData!0x0020 m_jetpackActivateTime
-C_PlayerLocalData!0x0024 m_jetpackDeactivateTime
-C_PlayerLocalData!0x0028 m_flSuitPower
-C_PlayerLocalData!0x002c m_flSuitJumpPower
-C_PlayerLocalData!0x0030 m_flSuitGrapplePower
-C_PlayerLocalData!0x0034 m_flFallVelocity
-C_PlayerLocalData!0x0038 m_flStepSize
-C_PlayerLocalData!0x003c m_airSlowMoFrac
-C_PlayerLocalData!0x0040 predictableFlags
-C_PlayerLocalData!0x0044 m_bitsActiveDevices
-C_PlayerLocalData!0x0048 m_forceStance
-C_PlayerLocalData!0x004c m_duckToggleOn
-C_PlayerLocalData!0x004d m_bDrawViewmodel
-C_PlayerLocalData!0x004e m_bAllowAutoMovement
-C_PlayerLocalData!0x0180 m_airMoveBlockPlanes
-C_PlayerLocalData!0x0198 m_airMoveBlockPlaneTime
-C_PlayerLocalData!0x019c m_airMoveBlockPlaneCount
-C_PlayerLocalData!0x01a0 m_queuedMeleePressTime
-C_PlayerLocalData!0x01a4 m_queuedGrappleMeleeTime
-C_PlayerLocalData!0x01a9 m_disableMeleeUntilRelease
-C_PlayerLocalData!0x01ac m_meleePressTime
-C_PlayerLocalData!0x01b0 m_meleeDisabledCounter
-C_PlayerLocalData!0x01b4 m_meleeInputIndex
-C_PlayerLocalData!0x01bc m_oneHandedWeaponUsage
-C_PlayerLocalData!0x01bd m_prevOneHandedWeaponUsage
-C_PlayerLocalData!0x01f0 m_titanEmbarkEnabled
-C_PlayerLocalData!0x01f1 m_titanDisembarkEnabled
-C_PlayerLocalData!0x01f8 m_playerAnimStationaryGoalFeetYaw
-C_PlayerLocalData!0x01fc m_playerAnimJumping
-C_PlayerLocalData!0x0200 m_playerAnimJumpStartTime
-C_PlayerLocalData!0x0204 m_playerAnimFirstJumpFrame
-C_PlayerLocalData!0x0205 m_playerAnimDodging
-C_PlayerLocalData!0x0208 m_playerAnimJumpActivity
-C_PlayerLocalData!0x020c m_playerAnimLanding
-C_PlayerLocalData!0x020d m_playerAnimShouldLand
-C_PlayerLocalData!0x0210 m_playerAnimLandStartTime
-C_PlayerLocalData!0x0214 m_playerAnimInAirWalk
-C_PlayerLocalData!0x0218 m_playerAnimPrevFrameSequenceMotionYaw
-C_PlayerLocalData!0x021c m_playerAnimMeleeParity
-C_PlayerLocalData!0x0220 m_playerAnimMeleeStartTime
-C_PlayerLocalData!0x0224 m_playerLocalGravityToWorldTransform
-C_PlayerLocalData!0x0254 m_playerLocalGravityBlendStartRotation
-C_PlayerLocalData!0x0264 m_playerLocalGravityBlendEndRotation
-C_PlayerLocalData!0x0274 m_playerLocalGravityBlendEndDirection
-C_PlayerLocalData!0x0280 m_playerLocalGravityBlendStartTime
-C_PlayerLocalData!0x0284 m_playerLocalGravityBlendEndTime
-C_PlayerLocalData!0x0288 m_playerLocalGravityBlendStrength
-C_PlayerLocalData!0x028c m_playerLocalGravityStrength
-C_PlayerLocalData!0x0290 m_playerLocalGravityType
-C_PlayerLocalData!0x0294 m_playerLocalGravityPoint
-C_PlayerLocalData!0x02a0 m_playerLocalGravityLineStart
-C_PlayerLocalData!0x02ac m_playerLocalGravityLineEnd
-C_PlayerLocalData!0x02b8 m_playerLocalGravityEntity
-C_PlayerLocalData!0x02bc m_playerLocalGravityLineStartEntity
-C_PlayerLocalData!0x02c0 m_playerLocalGravityLineEndEntity
-C_PlayerLocalData!0x02c4 m_playerFloatLookStartTime
-C_PlayerLocalData!0x02c8 m_playerFloatLookEndTime
-C_PlayerLocalData!0x02cc m_wallrunLatestFloorHeight
-C_PlayerLocalData!0x02d0 m_groundNormal
-C_PlayerLocalData!0x02dc m_continuousUseBlocked
-C_PlayerLocalData!0x02e0 m_useEnt
+C_PlayerLocalData!0x0010 m_nOldVehicleButtons
+C_PlayerLocalData!0x0014 m_iHideHUD
+C_PlayerLocalData!0x0018 m_superJumpsUsed
+C_PlayerLocalData!0x001c m_jumpedOffRodeo
+C_PlayerLocalData!0x0020 m_jumpPressTime
+C_PlayerLocalData!0x0024 m_jetpackActivateTime
+C_PlayerLocalData!0x0028 m_jetpackDeactivateTime
+C_PlayerLocalData!0x002c m_flSuitPower
+C_PlayerLocalData!0x0030 m_flSuitJumpPower
+C_PlayerLocalData!0x0034 m_flSuitGrapplePower
+C_PlayerLocalData!0x0038 m_flFallVelocity
+C_PlayerLocalData!0x003c m_flStepSize
+C_PlayerLocalData!0x0040 m_airSlowMoFrac
+C_PlayerLocalData!0x0044 predictableFlags
+C_PlayerLocalData!0x0048 m_bitsActiveDevices
+C_PlayerLocalData!0x004c m_forceStance
+C_PlayerLocalData!0x0050 m_duckToggleOn
+C_PlayerLocalData!0x0051 m_bDrawViewmodel
+C_PlayerLocalData!0x0052 m_bAllowAutoMovement
+C_PlayerLocalData!0x0184 m_airMoveBlockPlanes
+C_PlayerLocalData!0x019c m_airMoveBlockPlaneTime
+C_PlayerLocalData!0x01a0 m_airMoveBlockPlaneCount
+C_PlayerLocalData!0x01a4 m_queuedMeleePressTime
+C_PlayerLocalData!0x01a8 m_queuedGrappleMeleeTime
+C_PlayerLocalData!0x01ad m_disableMeleeUntilRelease
+C_PlayerLocalData!0x01b0 m_meleePressTime
+C_PlayerLocalData!0x01b4 m_meleeDisabledCounter
+C_PlayerLocalData!0x01b8 m_meleeInputIndex
+C_PlayerLocalData!0x01c0 m_oneHandedWeaponUsage
+C_PlayerLocalData!0x01c1 m_prevOneHandedWeaponUsage
+C_PlayerLocalData!0x01f4 m_titanEmbarkEnabled
+C_PlayerLocalData!0x01f5 m_titanDisembarkEnabled
+C_PlayerLocalData!0x01fc m_playerAnimStationaryGoalFeetYaw
+C_PlayerLocalData!0x0200 m_playerAnimJumping
+C_PlayerLocalData!0x0204 m_playerAnimJumpStartTime
+C_PlayerLocalData!0x0208 m_playerAnimFirstJumpFrame
+C_PlayerLocalData!0x0209 m_playerAnimDodging
+C_PlayerLocalData!0x020c m_playerAnimJumpActivity
+C_PlayerLocalData!0x0210 m_playerAnimLanding
+C_PlayerLocalData!0x0211 m_playerAnimShouldLand
+C_PlayerLocalData!0x0214 m_playerAnimLandStartTime
+C_PlayerLocalData!0x0218 m_playerAnimInAirWalk
+C_PlayerLocalData!0x021c m_playerAnimPrevFrameSequenceMotionYaw
+C_PlayerLocalData!0x0220 m_playerAnimMeleeParity
+C_PlayerLocalData!0x0224 m_playerAnimMeleeStartTime
+C_PlayerLocalData!0x0228 m_playerLocalGravityToWorldTransform
+C_PlayerLocalData!0x0258 m_playerLocalGravityBlendStartRotation
+C_PlayerLocalData!0x0268 m_playerLocalGravityBlendEndRotation
+C_PlayerLocalData!0x0278 m_playerLocalGravityBlendEndDirection
+C_PlayerLocalData!0x0284 m_playerLocalGravityBlendStartTime
+C_PlayerLocalData!0x0288 m_playerLocalGravityBlendEndTime
+C_PlayerLocalData!0x028c m_playerLocalGravityBlendStrength
+C_PlayerLocalData!0x0290 m_playerLocalGravityStrength
+C_PlayerLocalData!0x0294 m_playerLocalGravityType
+C_PlayerLocalData!0x0298 m_playerLocalGravityPoint
+C_PlayerLocalData!0x02a4 m_playerLocalGravityLineStart
+C_PlayerLocalData!0x02b0 m_playerLocalGravityLineEnd
+C_PlayerLocalData!0x02bc m_playerLocalGravityEntity
+C_PlayerLocalData!0x02c0 m_playerLocalGravityLineStartEntity
+C_PlayerLocalData!0x02c4 m_playerLocalGravityLineEndEntity
+C_PlayerLocalData!0x02c8 m_playerFloatLookStartTime
+C_PlayerLocalData!0x02cc m_playerFloatLookEndTime
+C_PlayerLocalData!0x02d0 m_wallrunLatestFloorHeight
+C_PlayerLocalData!0x02d4 m_groundNormal
+C_PlayerLocalData!0x02e0 m_continuousUseBlocked
+C_PlayerLocalData!0x02e4 m_useEnt
 ```
 </details>
 <details>
@@ -7775,6 +7803,7 @@ C_PlayerResource!0x2e44 m_bConnected
 	m_blockDuckInput: Bool,
 	m_vehicleLaunchTime: Float,
 	m_vehicleVelocity: Vector,
+	m_vehicleGroundEntity: EHANDLE,
 }
 ```
 
@@ -7787,6 +7816,7 @@ C_PlayerVehicle!0x1320 m_vehicleActivated
 C_PlayerVehicle!0x1321 m_blockDuckInput
 C_PlayerVehicle!0x1330 m_vehicleLaunchTime
 C_PlayerVehicle!0x1338 m_vehicleVelocity
+C_PlayerVehicle!0x1344 m_vehicleGroundEntity
 ```
 </details>
 <details>
@@ -7853,27 +7883,27 @@ C_Projectile!0x1330 m_wpnData
 C_Projectile!0x1338 m_hWeaponFileInfo
 C_Projectile!0x133c m_weaponChargeLevel
 C_Projectile!0x1340 m_modVars
-C_Projectile!0x2498 m_modVarsAreValid
-C_Projectile!0x249c m_launchOrigin
-C_Projectile!0x24a8 m_scriptCB
-C_Projectile!0x24d0 m_hasPlayedTrailEffect
-C_Projectile!0x24d4 m_projectileLifeTimeEndTick
-C_Projectile!0x24d8 m_projectileCreationTime
-C_Projectile!0x24dc m_isVortexRefired
-C_Projectile!0x24dd m_damageAliveOnly
-C_Projectile!0x24de m_usesPositionFunction
-C_Projectile!0x24e0 m_lastCollisionNormal
-C_Projectile!0x24ec m_bounceIndex
-C_Projectile!0x24f0 m_randomInt
-C_Projectile!0x24f4 m_thrownByAI
-C_Projectile!0x24f8 m_perPolyRadius
-C_Projectile!0x2500 m_posBeforePhysicsSimulate
-C_Projectile!0x250c m_hasIgnited
-C_Projectile!0x250d m_inLagCompensation
-C_Projectile!0x2510 m_passEntities
-C_Projectile!0x2578 m_projectileSpeed
-C_Projectile!0x2598 m_wantStartTrailEffect
-C_Projectile!0x259a m_hasCalledPostDataUpdate
+C_Projectile!0x24e0 m_modVarsAreValid
+C_Projectile!0x24e4 m_launchOrigin
+C_Projectile!0x24f0 m_scriptCB
+C_Projectile!0x2518 m_hasPlayedTrailEffect
+C_Projectile!0x251c m_projectileLifeTimeEndTick
+C_Projectile!0x2520 m_projectileCreationTime
+C_Projectile!0x2524 m_isVortexRefired
+C_Projectile!0x2525 m_damageAliveOnly
+C_Projectile!0x2526 m_usesPositionFunction
+C_Projectile!0x2528 m_lastCollisionNormal
+C_Projectile!0x2534 m_bounceIndex
+C_Projectile!0x2538 m_randomInt
+C_Projectile!0x253c m_thrownByAI
+C_Projectile!0x2540 m_perPolyRadius
+C_Projectile!0x2548 m_posBeforePhysicsSimulate
+C_Projectile!0x2554 m_hasIgnited
+C_Projectile!0x2555 m_inLagCompensation
+C_Projectile!0x2558 m_passEntities
+C_Projectile!0x25c0 m_projectileSpeed
+C_Projectile!0x25e0 m_wantStartTrailEffect
+C_Projectile!0x25e2 m_hasCalledPostDataUpdate
 ```
 </details>
 <details>
@@ -8468,6 +8498,7 @@ WeaponInventory_Client!0x0044 activeWeapons
 	m_reloadMilestone: Int,
 	m_rechamberMilestone: Int,
 	m_cooldownMilestone: Int,
+	m_prevSeqWeight: Int,
 	m_fullReloadStartTime: Time,
 	m_scriptTime0: Time,
 	m_scriptFlags0: Int,
@@ -8531,21 +8562,22 @@ WeaponPlayerData!0x0074 m_chargeAnimIndexOld
 WeaponPlayerData!0x0094 m_reloadMilestone
 WeaponPlayerData!0x0098 m_rechamberMilestone
 WeaponPlayerData!0x009c m_cooldownMilestone
-WeaponPlayerData!0x00a0 m_fullReloadStartTime
-WeaponPlayerData!0x00a4 m_scriptTime0
-WeaponPlayerData!0x00a8 m_scriptFlags0
-WeaponPlayerData!0x00ac m_scriptInt0
-WeaponPlayerData!0x00b0 m_curZoomFOV
-WeaponPlayerData!0x00b4 m_targetZoomFOV
-WeaponPlayerData!0x00b8 m_zoomFOVLerpTime
-WeaponPlayerData!0x00bc m_zoomFOVLerpEndTime
-WeaponPlayerData!0x00c0 m_latestDryfireTime
-WeaponPlayerData!0x00c4 m_requestedAttackEndTime
-WeaponPlayerData!0x00c8 m_currentAltFireAnimIndex
-WeaponPlayerData!0x00cc m_legendaryModelIndex
-WeaponPlayerData!0x00d0 m_charmModelIndex
-WeaponPlayerData!0x00d4 m_charmAttachment
-WeaponPlayerData!0x00d8 m_charmScriptIndex
+WeaponPlayerData!0x00a0 m_prevSeqWeight
+WeaponPlayerData!0x00a4 m_fullReloadStartTime
+WeaponPlayerData!0x00a8 m_scriptTime0
+WeaponPlayerData!0x00ac m_scriptFlags0
+WeaponPlayerData!0x00b0 m_scriptInt0
+WeaponPlayerData!0x00b4 m_curZoomFOV
+WeaponPlayerData!0x00b8 m_targetZoomFOV
+WeaponPlayerData!0x00bc m_zoomFOVLerpTime
+WeaponPlayerData!0x00c0 m_zoomFOVLerpEndTime
+WeaponPlayerData!0x00c4 m_latestDryfireTime
+WeaponPlayerData!0x00c8 m_requestedAttackEndTime
+WeaponPlayerData!0x00cc m_currentAltFireAnimIndex
+WeaponPlayerData!0x00d0 m_legendaryModelIndex
+WeaponPlayerData!0x00d4 m_charmModelIndex
+WeaponPlayerData!0x00d8 m_charmAttachment
+WeaponPlayerData!0x00dc m_charmScriptIndex
 ```
 </details>
 <details>
@@ -9415,6 +9447,30 @@ default: `"100"`
 flags: `0x2`  
 </details>
 <details>
+<summary><code>c_thirdpersonshoulderaimdistADS_110</code></summary>
+
+
+
+default: `"35.0"`  
+flags: `0x2`  
+</details>
+<details>
+<summary><code>c_thirdpersonshoulderaimdistADS_70</code></summary>
+
+
+
+default: `"50.0"`  
+flags: `0x2`  
+</details>
+<details>
+<summary><code>c_thirdpersonshoulderaimdistADS_90</code></summary>
+
+
+
+default: `"40.0"`  
+flags: `0x2`  
+</details>
+<details>
 <summary><code>c_thirdpersonshoulderaimdist_110</code></summary>
 
 
@@ -9459,7 +9515,7 @@ flags: `0x2`
 
 
 
-default: `"30.0"`  
+default: `"0.0"`  
 flags: `0x2`  
 </details>
 <details>
@@ -9467,7 +9523,7 @@ flags: `0x2`
 
 
 
-default: `"20.0"`  
+default: `"17.0"`  
 flags: `0x2`  
 </details>
 <details>
@@ -9587,7 +9643,7 @@ flags: `0x2`
 
 
 
-default: `"0.75"`  
+default: `"1.0"`  
 flags: `0x2`  
 </details>
 <details>
@@ -11370,7 +11426,7 @@ flags: `0x2`
 
 Host game client port
 
-default: `"37005"`  
+default: `"0"`  
 flags: `0x80000`  
 </details>
 <details>
@@ -12992,6 +13048,14 @@ flags: `0x2`
 
 default: `"HEADFOCUS"`  
 flags: `0x2002`  
+</details>
+<details>
+<summary><code>force_CrossPlay</code></summary>
+
+
+
+default: `"-1"`  
+flags: `0x2`  
 </details>
 <details>
 <summary><code>force_EAAccess</code></summary>
@@ -14720,27 +14784,11 @@ default: `"1.0"`
 flags: `0x6000`  
 </details>
 <details>
-<summary><code>hostip</code></summary>
-
-Host game server ip
-
-default: `""`  
-flags: `0x80000`  
-</details>
-<details>
 <summary><code>hostname</code></summary>
 
 Hostname for server.
 
 default: `""`  
-flags: `0x80000`  
-</details>
-<details>
-<summary><code>hostport</code></summary>
-
-Host game server port
-
-default: `"37015"`  
 flags: `0x80000`  
 </details>
 <details>
@@ -18615,7 +18663,7 @@ flags: `0x6002`
 
 
 
-default: `"55"`  
+default: `"58"`  
 flags: `0x2002`  
 </details>
 <details>
@@ -19215,14 +19263,6 @@ Show prop skips more than this many apart
 
 default: `"1000"`  
 flags: `0x2`  
-</details>
-<details>
-<summary><code>net_public_adr</code></summary>
-
-For servers behind NAT/DHCP meant to be exposed to the public internet, this is the public facing ip address string: ("x.x.x.x" )
-
-default: `""`  
-flags: `0x80000`  
 </details>
 <details>
 <summary><code>net_queue_trace</code></summary>
@@ -20966,6 +21006,14 @@ default: `"1"`
 flags: `0x1000000`  
 </details>
 <details>
+<summary><code>player_setting_stickysprintforward</code></summary>
+
+Double-tapping sprint will keep the player sprinting forward.
+
+default: `"0"`  
+flags: `0x41000200`  
+</details>
+<details>
 <summary><code>player_showEyePosition</code></summary>
 
 
@@ -21036,6 +21084,14 @@ flags: `0x2`
 
 default: `"0"`  
 flags: `0x2`  
+</details>
+<details>
+<summary><code>playlist_privateMatchEnabled</code></summary>
+
+
+
+default: `"0"`  
+flags: `0x2002`  
 </details>
 <details>
 <summary><code>playlist_variableErrorsChecks</code></summary>
@@ -21132,6 +21188,14 @@ Use a single bar.
 
 default: `"1"`  
 flags: `0x2`  
+</details>
+<details>
+<summary><code>projectile_drag_indicator_enabled</code></summary>
+
+enables projecitle arc indicator to draw with drag
+
+default: `"0"`  
+flags: `0x2002`  
 </details>
 <details>
 <summary><code>projectile_fake_prediction_in_kill_replay</code></summary>
@@ -22825,14 +22889,6 @@ max value: `1`
 
 default: `"64.0"`  
 flags: `0x2`  
-</details>
-<details>
-<summary><code>s2sPort</code></summary>
-
-S2S communication port
-
-default: `"(37015 + 1)"`  
-flags: `0x80000`  
 </details>
 <details>
 <summary><code>save_enable</code></summary>
@@ -24637,6 +24693,14 @@ Set to 0 for nothing, 1 for warnings, 2 for script errors
 
 default: `"1"`  
 flags: `0x2002`  
+</details>
+<details>
+<summary><code>steam_debug</code></summary>
+
+Enable Steam HTTP debug logging
+
+default: `"0"`  
+flags: `0x2`  
 </details>
 <details>
 <summary><code>steam_id</code></summary>
@@ -28303,2452 +28367,2456 @@ max value: `24`
 ### Addresses
 
 ```
-r5apex.exe!0x01e0c560 ConVar 
-r5apex.exe!0x01177fd0 ConVar Allow_auto_Party
-r5apex.exe!0x010347f0 ConVar BlendBonesMode
-r5apex.exe!0x01d968a0 ConVar DoorSoundPrefixDouble
-r5apex.exe!0x01dcb720 ConVar DoorSoundPrefixSingle
-r5apex.exe!0x01dd3130 ConVar ScriptDisallowedToUsePersistenceOnSP
-r5apex.exe!0x01ddb9a0 ConVar ScriptSaveAllowed
-r5apex.exe!0x0104c410 ConVar StreamMicDisabled
-r5apex.exe!0x0104cc30 ConVar TalkIsStream
-r5apex.exe!0x0104ca50 ConVar VoiceNeedsReset
-r5apex.exe!0x01dd7790 ConVar When set to 0, player always returns false when asked if it has a vehicle
-r5apex.exe!0x01e00c70 ConVar ai_titan_grapple_max_len
-r5apex.exe!0x01dce5b0 ConVar airslowmo_enabled
-r5apex.exe!0x01dc5040 ConVar airslowmo_enter_time
-r5apex.exe!0x01dc96b0 ConVar airslowmo_ground_immediate_end
-r5apex.exe!0x01d98cc0 ConVar airslowmo_leave_time
-r5apex.exe!0x01dca400 ConVar airslowmo_scripted_speed
-r5apex.exe!0x01dce410 ConVar airslowmo_when_hovering
-r5apex.exe!0x0182a9c0 ConVar animEvent_debug
-r5apex.exe!0x01834500 ConVar animEvent_debugEnt
-r5apex.exe!0x0183e930 ConVar animEvent_debug_cl
-r5apex.exe!0x01df0430 ConVar anim_estimateVelocity
-r5apex.exe!0x01df0bf0 ConVar anim_playerMovementAngleMargin
-r5apex.exe!0x01df0570 ConVar anim_player_ragdoll_fix
-r5apex.exe!0x01ddd380 ConVar anim_print_transition_overflow
-r5apex.exe!0x01df0b50 ConVar anim_runGestureAnimEventsToCompletionOnReset_client
-r5apex.exe!0x0181ba40 ConVar anim_showPoseParamErrors
-r5apex.exe!0x01df02f0 ConVar anim_showstate
-r5apex.exe!0x01df06b0 ConVar anim_showstatelog
-r5apex.exe!0x01ded140 ConVar anim_transitionsequences
-r5apex.exe!0x01ded0a0 ConVar anim_view_entity_third_person_camera_use_move_parent
-r5apex.exe!0x011772d0 ConVar announcement
-r5apex.exe!0x01177870 ConVar announcementImage
-r5apex.exe!0x011774b0 ConVar announcementVersion
-r5apex.exe!0x0114bb60 ConVar assetdownloads_desiredState
-r5apex.exe!0x0114bc00 ConVar assetdownloads_enabled
-r5apex.exe!0x0114bac0 ConVar assetdownloads_hostname
-r5apex.exe!0x0114bca0 ConVar assetdownloads_useProdPreview
-r5apex.exe!0x01049400 ConVar async_serialize
-r5apex.exe!0x01dc8be0 ConVar automantle_backoff_anim_maxfrac
-r5apex.exe!0x01d969e0 ConVar automantle_cooldown
-r5apex.exe!0x01dc6f00 ConVar automantle_dangle_required_space
-r5apex.exe!0x01d98d60 ConVar automantle_debug
-r5apex.exe!0x01dc8310 ConVar automantle_enable
-r5apex.exe!0x01dca4a0 ConVar automantle_forwarddist
-r5apex.exe!0x01dc9ec0 ConVar automantle_gun_enable_height
-r5apex.exe!0x01db44d0 ConVar automantle_height_above
-r5apex.exe!0x01dcb820 ConVar automantle_height_below
-r5apex.exe!0x01d9b3d0 ConVar automantle_height_level
-r5apex.exe!0x01d9b9f0 ConVar automantle_jumpoff_anim_maxfrac
-r5apex.exe!0x01dc8270 ConVar automantle_jumpoff_duration
-r5apex.exe!0x01dcd390 ConVar automantle_max_frac
-r5apex.exe!0x01dc7270 ConVar automantle_maxangle_push
-r5apex.exe!0x01dca120 ConVar automantle_maxangle_view
-r5apex.exe!0x01d99880 ConVar automantle_min_frac
-r5apex.exe!0x01d9bb30 ConVar automantle_mindist
-r5apex.exe!0x01dc9e20 ConVar automantle_rest_frac
-r5apex.exe!0x01d9ba90 ConVar automantle_rest_frac_below
-r5apex.exe!0x01dcf9c0 ConVar automantle_searchdist
-r5apex.exe!0x0182b9c0 ConVar automantle_view_correction_speed
-r5apex.exe!0x0182a0c0 ConVar automantle_view_high_yaw_max
-r5apex.exe!0x0182ebf0 ConVar automantle_view_pitch_max
-r5apex.exe!0x01bc20e0 ConVar automantle_view_pitch_min
-r5apex.exe!0x01825e10 ConVar automantle_view_yaw_max
-r5apex.exe!0x01dc9930 ConVar automantle_wallrun_maxangle_view
-r5apex.exe!0x01d960b0 ConVar baseanimatingoverlay_playbackRateThreshold
-r5apex.exe!0x0114b790 ConVar baselines_print
-r5apex.exe!0x01dfae20 ConVar bhit_enable
-r5apex.exe!0x01dffcf0 ConVar bhit_reliable
-r5apex.exe!0x0104dd10 ConVar bink_materials_enabled
-r5apex.exe!0x01d91930 ConVar bink_preload_videopanel_movies
-r5apex.exe!0x01bcba50 ConVar boost_jetwash_prediction_factor
-r5apex.exe!0x01148290 ConVar bot_lagOut
-r5apex.exe!0x01039750 ConVar budget_animatingEntities
-r5apex.exe!0x01037680 ConVar budget_animationOverlayEntities
-r5apex.exe!0x01038b80 ConVar budget_combatCharEntities
-r5apex.exe!0x01037430 ConVar budget_weaponEntities
-r5apex.exe!0x01039020 ConVar budget_ziplineEntities
-r5apex.exe!0x01dd2fd0 ConVar bug_reproNum
-r5apex.exe!0x0103a5b0 ConVar buildcubemaps_async
-r5apex.exe!0x01039ce0 ConVar buildcubemaps_index
-r5apex.exe!0x01037c10 ConVar buildcubemaps_pvs_start_early
-r5apex.exe!0x01039fe0 ConVar buildcubemaps_single_step
-r5apex.exe!0x010390c0 ConVar building_cubemaps
-r5apex.exe!0x01e046b0 ConVar bulletPredictionDebug
-r5apex.exe!0x01ddbb10 ConVar bullet_trace_test_debug
-r5apex.exe!0x01de1fe0 ConVar bullet_trace_test_enable
-r5apex.exe!0x01bcb7f0 ConVar c_dropship_ground_fx_dist_interval
-r5apex.exe!0x018324d0 ConVar c_dropship_ground_fx_time_interval
-r5apex.exe!0x0182bb00 ConVar c_dropship_rope_debug
-r5apex.exe!0x0183bc90 ConVar c_dropship_rope_events
-r5apex.exe!0x01bbf4f0 ConVar c_dropship_rope_magnitude
-r5apex.exe!0x01828ed0 ConVar c_dropship_rope_range
-r5apex.exe!0x01bd08d0 ConVar c_maxdistance
-r5apex.exe!0x01bcdb50 ConVar c_maxpitch
-r5apex.exe!0x01bde7f0 ConVar c_maxyaw
-r5apex.exe!0x01bd27c0 ConVar c_mindistance
-r5apex.exe!0x01bd57a0 ConVar c_minpitch
-r5apex.exe!0x01bd7640 ConVar c_minyaw
-r5apex.exe!0x01bdb120 ConVar c_orthoheight
-r5apex.exe!0x01bcd170 ConVar c_orthowidth
-r5apex.exe!0x01be0270 ConVar c_thirdpersonshoulderaimdist_110
-r5apex.exe!0x01be0310 ConVar c_thirdpersonshoulderaimdist_70
-r5apex.exe!0x01be01d0 ConVar c_thirdpersonshoulderaimdist_90
-r5apex.exe!0x01bdd970 ConVar c_thirdpersonshoulderdist
-r5apex.exe!0x01be0130 ConVar c_thirdpersonshouldergetsviewpunch
-r5apex.exe!0x01be0450 ConVar c_thirdpersonshoulderheight
-r5apex.exe!0x01be03b0 ConVar c_thirdpersonshoulderoffset
-r5apex.exe!0x01830e70 ConVar c_threadedAnimPostData
-r5apex.exe!0x01bd1ab0 ConVar cam_collision
-r5apex.exe!0x01bd8930 ConVar cam_idealdelta
-r5apex.exe!0x01bcf4d0 ConVar cam_idealdist
-r5apex.exe!0x01bdb000 ConVar cam_ideallag
-r5apex.exe!0x01bdeb70 ConVar cam_idealpitch
-r5apex.exe!0x01bdaca0 ConVar cam_idealyaw
-r5apex.exe!0x01bcd710 ConVar cam_pitchLock_feetRelative
-r5apex.exe!0x01bd2f60 ConVar cam_pitchlock_on
-r5apex.exe!0x01bdca00 ConVar cam_pitchlock_period
-r5apex.exe!0x01bcf730 ConVar cam_pitchlock_phase
-r5apex.exe!0x01bdd300 ConVar cam_pitchlock_pitchBase
-r5apex.exe!0x01bd00e0 ConVar cam_pitchlock_pitchRange
-r5apex.exe!0x01bccf30 ConVar cam_pitchlock_pitchWiggleRoom
-r5apex.exe!0x01bdff50 ConVar cam_player_viewheight_scale
-r5apex.exe!0x01bd0790 ConVar cam_showangles
-r5apex.exe!0x01bdcaa0 ConVar cc_captiontrace
-r5apex.exe!0x01bd6770 ConVar cc_global_norepeat
-r5apex.exe!0x01bdf6f0 ConVar cc_linger_time
-r5apex.exe!0x01bd4410 ConVar cc_max_duration
-r5apex.exe!0x01bd4970 ConVar cc_minvisibleitems
-r5apex.exe!0x01bd86d0 ConVar cc_predisplay_time
-r5apex.exe!0x01bdccc0 ConVar cc_rui
-r5apex.exe!0x01bd32c0 ConVar cc_text_size
-r5apex.exe!0x01bd1410 ConVar cc_timeshift_norepeat
-r5apex.exe!0x0181b670 ConVar chasecam_distanceMax_override
-r5apex.exe!0x0104cd70 ConVar chatroom_console_ptt
-r5apex.exe!0x01178770 ConVar chatroom_debug
-r5apex.exe!0x0117b7f0 ConVar chatroom_doRealNameLookups
-r5apex.exe!0x0117bbf0 ConVar chatroom_min_status_send_interval
-r5apex.exe!0x01df1860 ConVar chatroom_nameLength
-r5apex.exe!0x01df2660 ConVar chatroom_namePaddingX
-r5apex.exe!0x01df25c0 ConVar chatroom_nameWidth
-r5apex.exe!0x0114c240 ConVar chatroom_onlyWhenActive
-r5apex.exe!0x01df2200 ConVar chatroom_useSlopSpace
-r5apex.exe!0x0117b890 ConVar chatroom_voiceMode
-r5apex.exe!0x01df2840 ConVar chatroom_voiceMode
-r5apex.exe!0x01d92f40 ConVar cheap_captions_fadetime
-r5apex.exe!0x01d92660 ConVar cheap_captions_test
-r5apex.exe!0x0104de50 ConVar chroma_enable
-r5apex.exe!0x01825620 ConVar cl_NotifyAllLevelAssetsLoaded_endframe
-r5apex.exe!0x01bc1f00 ConVar cl_RunClientConnectScripts_Before_ProcessOnDataChangedEvents
-r5apex.exe!0x01831cf0 ConVar cl_SetupAllBones
-r5apex.exe!0x0182b320 ConVar cl_ShowBoneSetupEnts
-r5apex.exe!0x01146d90 ConVar cl_adjustTimeEntsPerJob
-r5apex.exe!0x01d947d0 ConVar cl_aggregate_particles
-r5apex.exe!0x01830b50 ConVar cl_allowABSCalculationDuringSnapshotScriptCalls
-r5apex.exe!0x018248a0 ConVar cl_allowABSDuringSnapshotScriptCalls
-r5apex.exe!0x0182aa60 ConVar cl_allowAnimsToInterpolateBackward
-r5apex.exe!0x01d95b10 ConVar cl_always_draw_3p_player
-r5apex.exe!0x0183ac40 ConVar cl_always_ragdoll_radius
-r5apex.exe!0x01bdd260 ConVar cl_anglespeedkey
-r5apex.exe!0x01bc2e60 ConVar cl_anim_blend_transition_dist
-r5apex.exe!0x0182e490 ConVar cl_anim_detail_dist
-r5apex.exe!0x0182df00 ConVar cl_anim_face_dist
-r5apex.exe!0x0182f710 ConVar cl_anim_sequence_transition_full_weight_optimization
-r5apex.exe!0x01bcbb90 ConVar cl_anim_sounds_seek
-r5apex.exe!0x0181b550 ConVar cl_approx_footstep_origin
-r5apex.exe!0x01bdeed0 ConVar cl_approx_tracer_origin
-r5apex.exe!0x01bbfc30 ConVar cl_async_bone_setup
-r5apex.exe!0x01830850 ConVar cl_base_entity_effect_lock
-r5apex.exe!0x018258a0 ConVar cl_bones_incremental_blend
-r5apex.exe!0x01828c50 ConVar cl_bones_incremental_transform
-r5apex.exe!0x0183eff0 ConVar cl_bones_oldhack
-r5apex.exe!0x01dcef80 ConVar cl_bounds_show_errors
-r5apex.exe!0x01dd6a80 ConVar cl_burninggibs
-r5apex.exe!0x0103a750 ConVar cl_clock_correction
-r5apex.exe!0x01038c20 ConVar cl_clock_correction_ahead_correct_interval
-r5apex.exe!0x01037a00 ConVar cl_clock_correction_behind_correct_interval
-r5apex.exe!0x010392a0 ConVar cl_clock_correction_force_server_tick
-r5apex.exe!0x0110f6d0 ConVar cl_cmdbackup
-r5apex.exe!0x0110e840 ConVar cl_cmdrate
-r5apex.exe!0x01040fb0 ConVar cl_configversion
-r5apex.exe!0x0103edc0 ConVar cl_configversion_dummy
-r5apex.exe!0x01dfa4b0 ConVar cl_cull_weapon_fx
-r5apex.exe!0x0104a840 ConVar cl_dataBlockFragmentPL
-r5apex.exe!0x01de1410 ConVar cl_deathhints_enabled
-r5apex.exe!0x01829990 ConVar cl_debugClientEntities
-r5apex.exe!0x01ddba70 ConVar cl_debug_deferred_trace
-r5apex.exe!0x01de1c90 ConVar cl_debug_deferred_trace_overlay
-r5apex.exe!0x01bdd0c0 ConVar cl_debug_model_fx_sounds
-r5apex.exe!0x01d994c0 ConVar cl_decal_alwayswhite
-r5apex.exe!0x01dcf2f0 ConVar cl_decal_backoff
-r5apex.exe!0x01d95c50 ConVar cl_deferred_effects
-r5apex.exe!0x01ddabd0 ConVar cl_deferred_trace_normal_priority
-r5apex.exe!0x0183aba0 ConVar cl_demoviewoverride
-r5apex.exe!0x01bc2180 ConVar cl_disable_ragdolls
-r5apex.exe!0x01824800 ConVar cl_disable_splitscreen_cpu_level_cfgs_in_pip
-r5apex.exe!0x0104e0b0 ConVar cl_disconnectOnTooManySnapshotFrames
-r5apex.exe!0x01e05ae0 ConVar cl_doNetworkAsserts
-r5apex.exe!0x0104e010 ConVar cl_doRecreateEnts
-r5apex.exe!0x018240a0 ConVar cl_draw_player_model
-r5apex.exe!0x01bc2360 ConVar cl_drawhud
-r5apex.exe!0x01be2cc0 ConVar cl_drawmonitors
-r5apex.exe!0x01839270 ConVar cl_ejectbrass
-r5apex.exe!0x01be16c0 ConVar cl_enable_remote_splitscreen
-r5apex.exe!0x0104e3d0 ConVar cl_entCreateDeleteDebug
-r5apex.exe!0x0182dfa0 ConVar cl_events_ignore_invalidate
-r5apex.exe!0x01049980 ConVar cl_failremoteconnections
-r5apex.exe!0x01bde890 ConVar cl_fasttempentcollision
-r5apex.exe!0x01829ad0 ConVar cl_flip_vis_bits
-r5apex.exe!0x0104e1f0 ConVar cl_flushentitypacket
-r5apex.exe!0x01bc02e0 ConVar cl_footstep_event_max_dist
-r5apex.exe!0x01833790 ConVar cl_footstep_event_max_dist_titan
-r5apex.exe!0x01145e90 ConVar cl_forceAdjustTime
-r5apex.exe!0x0117cc70 ConVar cl_fovScale
-r5apex.exe!0x0117cbd0 ConVar cl_gib_allow
-r5apex.exe!0x01bc05e0 ConVar cl_gib_attack_dir_scale
-r5apex.exe!0x0181abc0 ConVar cl_gib_lifetime
-r5apex.exe!0x01d8da20 ConVar cl_idealpitchscale
-r5apex.exe!0x0110fbe0 ConVar cl_ignorepackets
-r5apex.exe!0x01834640 ConVar cl_interp_all
-r5apex.exe!0x01145d50 ConVar cl_interpolate
-r5apex.exe!0x0182cae0 ConVar cl_interpolate
-r5apex.exe!0x018295f0 ConVar cl_interpolateSoAllAnimsLoop
-r5apex.exe!0x01bcb6b0 ConVar cl_interpolation_before_prediction
-r5apex.exe!0x0104bf10 ConVar cl_isUnderAge
-r5apex.exe!0x0110fd70 ConVar cl_is_softened_locale
-r5apex.exe!0x01dee3b0 ConVar cl_jiggle_bone_debug
-r5apex.exe!0x01dee270 ConVar cl_jiggle_bone_debug_pitch_constraints
-r5apex.exe!0x01dee530 ConVar cl_jiggle_bone_debug_yaw_constraints
-r5apex.exe!0x01dee310 ConVar cl_jiggle_bone_invert
-r5apex.exe!0x01dee450 ConVar cl_jiggle_bone_sanity
-r5apex.exe!0x01145b70 ConVar cl_keepPersistentDataOnDisconnect
-r5apex.exe!0x01d8fd90 ConVar cl_lagcompensation
-r5apex.exe!0x01110980 ConVar cl_language
-r5apex.exe!0x01bcbf70 ConVar cl_leafsystemvis
-r5apex.exe!0x01bc1400 ConVar cl_lerpIfChildrenLerp
-r5apex.exe!0x0104aac0 ConVar cl_loadBspFromServerInfo
-r5apex.exe!0x01047a90 ConVar cl_loadPostProcessShadersEarly
-r5apex.exe!0x01046e70 ConVar cl_loadStaticPropsInJob
-r5apex.exe!0x01146bb0 ConVar cl_matchmaking_timeout
-r5apex.exe!0x0183aec0 ConVar cl_minimal_rtt_shadows
-r5apex.exe!0x01bda860 ConVar cl_model_fx_gib_cull_front_dist
-r5apex.exe!0x01bda3e0 ConVar cl_model_fx_gib_cull_radius
-r5apex.exe!0x01bdd600 ConVar cl_mouseenable
-r5apex.exe!0x01110490 ConVar cl_move_use_dt
-r5apex.exe!0x0110ebc0 ConVar cl_noTimeoutLocalHost
-r5apex.exe!0x01110b60 ConVar cl_overrideEventTimes
-r5apex.exe!0x01d91570 ConVar cl_parallelParticlePreDrawWork
-r5apex.exe!0x0182ab00 ConVar cl_parallel_clientside_animations
-r5apex.exe!0x01ded970 ConVar cl_particle_batch_mode
-r5apex.exe!0x0117c9f0 ConVar cl_particle_fallback_base
-r5apex.exe!0x0117cd10 ConVar cl_particle_fallback_multiplier
-r5apex.exe!0x01d936d0 ConVar cl_particle_limiter_display_killed
-r5apex.exe!0x01e086b0 ConVar cl_particle_limiter_hide_killable
-r5apex.exe!0x01be29a0 ConVar cl_particle_limiter_max_particle_count
-r5apex.exe!0x01be2f10 ConVar cl_particle_limiter_max_system_count
-r5apex.exe!0x01d8db40 ConVar cl_particle_limiter_min_kill_distance
-r5apex.exe!0x01d93250 ConVar cl_particle_limiter_overlay
-r5apex.exe!0x01be3e30 ConVar cl_particle_max_count
-r5apex.exe!0x01d94730 ConVar cl_particle_sim_fallback_base_multiplier
-r5apex.exe!0x01be1100 ConVar cl_particle_sim_fallback_threshold_ms
-r5apex.exe!0x01d91af0 ConVar cl_particle_snoozetime
-r5apex.exe!0x01d8e080 ConVar cl_particles_show_bbox
-r5apex.exe!0x01d8f240 ConVar cl_particles_show_controlpoints
-r5apex.exe!0x01d95240 ConVar cl_pclass
-r5apex.exe!0x01d92150 ConVar cl_pdump
-r5apex.exe!0x01be1240 ConVar cl_phys_maxticks
-r5apex.exe!0x01d8fc50 ConVar cl_phys_show_active
-r5apex.exe!0x01d90450 ConVar cl_phys_timescale
-r5apex.exe!0x01d93cf0 ConVar cl_physics_invalidate_ents
-r5apex.exe!0x01d93f50 ConVar cl_physics_maxvelocity
-r5apex.exe!0x01dd71e0 ConVar cl_physicsshadowupdate_render
-r5apex.exe!0x01bdda10 ConVar cl_pitchspeed
-r5apex.exe!0x011102d0 ConVar cl_playback_screenshots
-r5apex.exe!0x0182fdb0 ConVar cl_player_fullupdate_predicted_origin_fix
-r5apex.exe!0x01dca1c0 ConVar cl_player_touch_triggers
-r5apex.exe!0x0104e290 ConVar cl_postSnapshotTransitionBlockCount
-r5apex.exe!0x0183afe0 ConVar cl_preSnapshotTransitionBlockCount
-r5apex.exe!0x01dedab0 ConVar cl_pred_error_verbose
-r5apex.exe!0x01d8e6b0 ConVar cl_pred_optimize
-r5apex.exe!0x011100a0 ConVar cl_predict
-r5apex.exe!0x0181a200 ConVar cl_predict_basetoggles
-r5apex.exe!0x01be1460 ConVar cl_predict_cmdlimit
-r5apex.exe!0x01d945f0 ConVar cl_predict_error_icon_duration
-r5apex.exe!0x01be3f10 ConVar cl_predict_error_icon_show
-r5apex.exe!0x01d929a0 ConVar cl_predict_error_icon_threshold_angle
-r5apex.exe!0x01be2200 ConVar cl_predict_error_icon_threshold_dist
-r5apex.exe!0x01dd34d0 ConVar cl_predict_motioncontrol
-r5apex.exe!0x01d95bb0 ConVar cl_predict_viewangles
-r5apex.exe!0x01be2160 ConVar cl_prediction_error_timestamps
-r5apex.exe!0x01d92070 ConVar cl_predictionlist
-r5apex.exe!0x01d8e790 ConVar cl_predictweapons
-r5apex.exe!0x01df6110 ConVar cl_prevent_weapon_text_hints
-r5apex.exe!0x01bc1520 ConVar cl_ragdoll_force_fade_time
-r5apex.exe!0x01bbfb90 ConVar cl_ragdoll_force_fade_time_local_view_player
-r5apex.exe!0x01ded280 ConVar cl_ragdoll_force_fade_time_on_moving_geo
-r5apex.exe!0x01839570 ConVar cl_ragdoll_force_fade_time_titan
-r5apex.exe!0x0117cb30 ConVar cl_ragdoll_maxcount
-r5apex.exe!0x0117cdb0 ConVar cl_ragdoll_self_collision
-r5apex.exe!0x011468b0 ConVar cl_replayDelayTolerance
-r5apex.exe!0x01bcc410 ConVar cl_requireAnimForAnimEventsHdr
-r5apex.exe!0x011465b0 ConVar cl_resend
-r5apex.exe!0x011469f0 ConVar cl_resend_timeout
-r5apex.exe!0x0110f470 ConVar cl_retire_low_priority_lights
-r5apex.exe!0x018345a0 ConVar cl_runWeaponCloneThinkWhenHidden
-r5apex.exe!0x01de18d0 ConVar cl_safearea
-r5apex.exe!0x0110f7e0 ConVar cl_screenshotname
-r5apex.exe!0x01d95d90 ConVar cl_scriptCompileAsync
-r5apex.exe!0x01d8f950 ConVar cl_script_perf_dump_on_shutdown
-r5apex.exe!0x01ddbc50 ConVar cl_shadowupdatespacing
-r5apex.exe!0x01839730 ConVar cl_showClanTags
-r5apex.exe!0x01bda500 ConVar cl_show_splashes
-r5apex.exe!0x01d95a70 ConVar cl_showerror
-r5apex.exe!0x01be22b0 ConVar cl_showerror_watchfield
-r5apex.exe!0x01e04f90 ConVar cl_showfiredbullets
-r5apex.exe!0x01d92700 ConVar cl_showfps
-r5apex.exe!0x01be4380 ConVar cl_showfps_altframetime
-r5apex.exe!0x01d90a30 ConVar cl_showpausedimage
-r5apex.exe!0x01be0d20 ConVar cl_showpos
-r5apex.exe!0x01048fa0 ConVar cl_showsounds
-r5apex.exe!0x01d8e610 ConVar cl_showtime
-r5apex.exe!0x01830310 ConVar cl_simulateAllModelsRegardless
-r5apex.exe!0x01bc2400 ConVar cl_simulationtimefix
-r5apex.exe!0x0182a280 ConVar cl_skipAnimEventsOnProps
-r5apex.exe!0x01d93450 ConVar cl_skipfastpath
-r5apex.exe!0x01bcc550 ConVar cl_smooth
-r5apex.exe!0x018369b0 ConVar cl_smooth_debug
-r5apex.exe!0x01bc1ac0 ConVar cl_smoothtime
-r5apex.exe!0x01824140 ConVar cl_threaded_bone_setup
-r5apex.exe!0x01db4ef0 ConVar cl_updatedirty_async
-r5apex.exe!0x0182e0e0 ConVar cl_updatedirty_early
-r5apex.exe!0x01110a20 ConVar cl_updaterate_mp
-r5apex.exe!0x01bdd8d0 ConVar cl_upspeed
-r5apex.exe!0x01110ac0 ConVar cl_useFutureSnapForEvents
-r5apex.exe!0x01146410 ConVar cl_useLobbyTypeForChatroom
-r5apex.exe!0x0183b080 ConVar cl_view_cone
-r5apex.exe!0x01832430 ConVar cl_view_cone_debug
-r5apex.exe!0x0183bd70 ConVar cl_viewmodel_pre_animate
-r5apex.exe!0x01bdbc40 ConVar cl_warnAboutSoundsOnInvalidEntities
-r5apex.exe!0x01bcd050 ConVar cl_yawspeed
-r5apex.exe!0x01041af0 ConVar clampHostFrameTimeToOneTick_enable
-r5apex.exe!0x0182e220 ConVar clearOnAnimChange
-r5apex.exe!0x01d95cf0 ConVar client_deferredSnapshotScriptCalls
-r5apex.exe!0x010405b0 ConVar clientport
-r5apex.exe!0x01186f70 ConVar cloak_enabled
-r5apex.exe!0x0180f280 ConVar cloak_pilotNoiseFactor
-r5apex.exe!0x0180f3c0 ConVar cloak_pilotTint1
-r5apex.exe!0x0180ef60 ConVar cloak_pilotTint2
-r5apex.exe!0x0180ece0 ConVar cloak_pilotTint3
-r5apex.exe!0x01039570 ConVar clock_bias_mp
-r5apex.exe!0x0103a420 ConVar clock_bias_sp
-r5apex.exe!0x01039ad0 ConVar clock_showcorrections
-r5apex.exe!0x0103a320 ConVar clock_showdebuginfo
-r5apex.exe!0x1fe00fc0 ConVar closecaption
-r5apex.exe!0x01dd8410 ConVar cockpitDrift_scalePitch
-r5apex.exe!0x01ddb5a0 ConVar cockpitDrift_scaleYaw
-r5apex.exe!0x01de1f40 ConVar cockpitDrift_speedPitch
-r5apex.exe!0x01dd7430 ConVar cockpitDrift_speedYaw
-r5apex.exe!0x01df4ae0 ConVar cockpitShake_sourceRollRange
-r5apex.exe!0x01df5ac0 ConVar cockpitShake_translateRange
-r5apex.exe!0x01df3730 ConVar cockpit_damage_chroma_scale
-r5apex.exe!0x01df3bb0 ConVar cockpit_hit_chroma_max_time
-r5apex.exe!0x01df5550 ConVar cockpit_hit_chroma_scale
-r5apex.exe!0x01df4ce0 ConVar cockpit_pitch_down_frac
-r5apex.exe!0x01df62f0 ConVar cockpit_pitch_up_frac
-r5apex.exe!0x01df50c0 ConVar cockpit_screen_boot_chroma_scale
-r5apex.exe!0x01df4720 ConVar cockpit_screen_boot_delay_bottom
-r5apex.exe!0x01df6390 ConVar cockpit_screen_boot_delay_left
-r5apex.exe!0x01df34c0 ConVar cockpit_screen_boot_delay_mid
-r5apex.exe!0x01df4ba0 ConVar cockpit_screen_boot_delay_right
-r5apex.exe!0x01df6760 ConVar cockpit_screen_boot_delay_top
-r5apex.exe!0x01147470 ConVar coll_spatial_entry_limit_client
-r5apex.exe!0x01147510 ConVar coll_spatial_optimize_prefetch
-r5apex.exe!0x01034890 ConVar coll_use_bolt_size
-r5apex.exe!0x01d8e970 ConVar colorblind_mode
-r5apex.exe!0x0114bde0 ConVar communities_doRealNameLookupsForCommunityCreators
-r5apex.exe!0x0114c740 ConVar communities_enabled
-r5apex.exe!0x01177190 ConVar communities_hostname
-r5apex.exe!0x0114bf20 ConVar community
-r5apex.exe!0x0114c060 ConVar community_abortCommunitySettingsTime
-r5apex.exe!0x0114c380 ConVar community_abortUserInfoTime
-r5apex.exe!0x01176970 ConVar community_browse_excludeMine
-r5apex.exe!0x0114b330 ConVar community_clantags
-r5apex.exe!0x01176550 ConVar community_doRealNameLookupsForInbox
-r5apex.exe!0x0114c6a0 ConVar community_frame_run
-r5apex.exe!0x01179150 ConVar community_queryServerWhenOrphaned
-r5apex.exe!0x011764b0 ConVar community_replaceInboxTokens
-r5apex.exe!0x01176cd0 ConVar community_replaceInboxTokens
-r5apex.exe!0x01176390 ConVar community_resolveNames
-r5apex.exe!0x01176690 ConVar community_resolveNames
-r5apex.exe!0x0114c2e0 ConVar community_send_server_voice
-r5apex.exe!0x01176730 ConVar community_spam
-r5apex.exe!0x0114c7e0 ConVar community_staleCommunitySettingsTime
-r5apex.exe!0x0114c100 ConVar community_staleUserInfoTime
-r5apex.exe!0x0117b360 ConVar con_logfile
-r5apex.exe!0x010393e0 ConVar con_timestamp
-r5apex.exe!0x01189c90 ConVar cpu_level
-r5apex.exe!0x01839090 ConVar cpu_level
-r5apex.exe!0x0183bb70 ConVar createentitydecals
-r5apex.exe!0x01bbf590 ConVar csm0_on_worker
-r5apex.exe!0x01189dd0 ConVar csm_cascade_res
-r5apex.exe!0x018394d0 ConVar csm_cascade_res
-r5apex.exe!0x011870b0 ConVar csm_coverage
-r5apex.exe!0x01bc1fa0 ConVar csm_culling_use_base_planes
-r5apex.exe!0x01834d00 ConVar csm_culling_use_exclusion_planes
-r5apex.exe!0x0181a160 ConVar csm_culling_use_inclusion_planes
-r5apex.exe!0x01bcc4b0 ConVar csm_culling_use_planes
-r5apex.exe!0x0182a3a0 ConVar csm_debug_2d
-r5apex.exe!0x018304d0 ConVar csm_debug_culling
-r5apex.exe!0x01bbf890 ConVar csm_debug_vis_hi_range
-r5apex.exe!0x018300b0 ConVar csm_debug_vis_lo_range
-r5apex.exe!0x01830270 ConVar csm_depth_bias
-r5apex.exe!0x01bc1700 ConVar csm_dropsequence_adjusted_coverage
-r5apex.exe!0x0181a3e0 ConVar csm_dropsequence_adjustment
-r5apex.exe!0x01189a10 ConVar csm_enabled
-r5apex.exe!0x01826cb0 ConVar csm_fadeModels
-r5apex.exe!0x0182a1e0 ConVar csm_force_no_csm_in_reflections
-r5apex.exe!0x01819f70 ConVar csm_frustum_draw
-r5apex.exe!0x01819ed0 ConVar csm_frustum_draw_lock
-r5apex.exe!0x01bbf450 ConVar csm_ignore_cascade12
-r5apex.exe!0x01825a80 ConVar csm_ignore_edge_planes
-r5apex.exe!0x01831b30 ConVar csm_ignore_face_planes
-r5apex.exe!0x01bc1360 ConVar csm_max_z_offset
-r5apex.exe!0x0182e670 ConVar csm_min_z_offset
-r5apex.exe!0x0181a700 ConVar csm_renderable_shadows
-r5apex.exe!0x01bc15c0 ConVar csm_rope_shadows
-r5apex.exe!0x0182de60 ConVar csm_rot_override
-r5apex.exe!0x01824f60 ConVar csm_rot_x
-r5apex.exe!0x01828bb0 ConVar csm_rot_y
-r5apex.exe!0x01bc1dc0 ConVar csm_shadow_split_lerp_factor_range
-r5apex.exe!0x0182a920 ConVar csm_texel_size_cascade_0
-r5apex.exe!0x01830a10 ConVar csm_texel_size_cascade_1
-r5apex.exe!0x01825d70 ConVar csm_texel_size_cascade_2
-r5apex.exe!0x0183b430 ConVar csm_texel_size_cascade_onecascade
-r5apex.exe!0x01824ec0 ConVar csm_use_env_light_direction
-r5apex.exe!0x01834c60 ConVar csm_world_shadow_meshes
-r5apex.exe!0x0183ba50 ConVar csm_world_shadows
-r5apex.exe!0x0183b120 ConVar csm_z_cover_world
-r5apex.exe!0x01177af0 ConVar curl_allowHTTPS
-r5apex.exe!0x01177cd0 ConVar curl_preloadDlls
-r5apex.exe!0x01177c30 ConVar curl_spamAllQueryStates
-r5apex.exe!0x238b3570 ConVar cursorWide
-r5apex.exe!0x01df5fa0 ConVar damageIndicatorReplayTimeOffset
-r5apex.exe!0x01de1ab0 ConVar damage_indicator_style_pilot
-r5apex.exe!0x01ddb770 ConVar damage_indicator_style_titan
-r5apex.exe!0x01d96010 ConVar damageinfo_defendInvalidValues
-r5apex.exe!0x0183b1c0 ConVar debugFootstepEffects
-r5apex.exe!0x01037570 ConVar debug_debug_overlay
-r5apex.exe!0x0114c600 ConVar debug_force_textRestriction
-r5apex.exe!0x0114bfc0 ConVar debug_force_ugcRestriction
-r5apex.exe!0x0114c420 ConVar debug_force_voiceRestriction
-r5apex.exe!0x010397f0 ConVar debug_map_crc
-r5apex.exe!0x0128e230 ConVar decal_clip_debug_draw
-r5apex.exe!0x0128e150 ConVar decal_clip_debug_groups
-r5apex.exe!0x01dfad60 ConVar defer_weapon_effects
-r5apex.exe!0x0181a940 ConVar delayPostSnapshotNotificationsToAfterInterpolation
-r5apex.exe!0x01146790 ConVar demo_autoRecord
-r5apex.exe!0x011462f0 ConVar demo_autoRecordName
-r5apex.exe!0x01df1400 ConVar demo_connect_string
-r5apex.exe!0x01df10e0 ConVar demo_ui_enable
-r5apex.exe!0x01dd8e00 ConVar devStats
-r5apex.exe!0x01044510 ConVar developer
-r5apex.exe!0x01df52a0 ConVar disable_player_use_prompts
-r5apex.exe!0x011471f0 ConVar discord_largeImage
-r5apex.exe!0x01147150 ConVar discord_smallImage
-r5apex.exe!0x01147290 ConVar discord_updatePresence
-r5apex.exe!0x01037b70 ConVar dlight_default_falloff
-r5apex.exe!0x0110ff00 ConVar dlight_enable
-r5apex.exe!0x0110ee20 ConVar dlight_overlay
-r5apex.exe!0x01d99560 ConVar dodge_cockpitHack
-r5apex.exe!0x01dcaa80 ConVar dodge_cockpitOffsetMax
-r5apex.exe!0x01db49d0 ConVar dodge_cockpitTiltMax
-r5apex.exe!0x01d96f80 ConVar dodge_vertical_enable
-r5apex.exe!0x01d9a340 ConVar dodge_vertical_horzspeedscale
-r5apex.exe!0x01dcd600 ConVar dodge_vertical_in_air
-r5apex.exe!0x01dce130 ConVar dodge_vertical_threshold
-r5apex.exe!0x01d96c60 ConVar dodge_viewTiltDecreaseSpeed
-r5apex.exe!0x01dc8820 ConVar dodge_viewTiltFalloffTime
-r5apex.exe!0x01d96760 ConVar dodge_viewTiltIncreaseSpeed
-r5apex.exe!0x01dc8730 ConVar dodge_viewTiltMax
-r5apex.exe!0x01d914b0 ConVar dof_enable
-r5apex.exe!0x0180e380 ConVar dof_farDepthEnd
-r5apex.exe!0x0180e420 ConVar dof_farDepthStart
-r5apex.exe!0x0180e560 ConVar dof_monitorFarDepthEnd
-r5apex.exe!0x0180e240 ConVar dof_monitorFarDepthStart
-r5apex.exe!0x0180e100 ConVar dof_monitorNearDepthEnd
-r5apex.exe!0x0180e2e0 ConVar dof_monitorNearDepthStart
-r5apex.exe!0x0180e4c0 ConVar dof_nearDepthEnd
-r5apex.exe!0x0180e1a0 ConVar dof_nearDepthStart
-r5apex.exe!0x0180e600 ConVar dof_overrideParams
-r5apex.exe!0x01be3d50 ConVar dof_variable_blur
-r5apex.exe!0x01826c10 ConVar dormant_debug
-r5apex.exe!0x01df3a70 ConVar draw_target_info_offscreen
-r5apex.exe!0x01037960 ConVar dtwatchclass
-r5apex.exe!0x0103a990 ConVar dtwatchdecode
-r5apex.exe!0x01037270 ConVar dtwatchencode
-r5apex.exe!0x0103a870 ConVar dtwatchent
-r5apex.exe!0x010377a0 ConVar dtwatchvar
-r5apex.exe!0x01dd2910 ConVar dump_varsights_calculations
-r5apex.exe!0x01829730 ConVar durango_voice_chat_team_only
-r5apex.exe!0x01189bf0 ConVar dvs_enable
-r5apex.exe!0x0118ab70 ConVar dvs_gpuframetime_max
-r5apex.exe!0x0118acb0 ConVar dvs_gpuframetime_min
-r5apex.exe!0x0118ac10 ConVar dvs_scale_min
-r5apex.exe!0x0180e920 ConVar edge_override_depth
-r5apex.exe!0x01810360 ConVar edge_override_depth
-r5apex.exe!0x0180e9c0 ConVar edge_override_silhouette
-r5apex.exe!0x01810400 ConVar edge_override_silhouette
-r5apex.exe!0x0104b060 ConVar enable_KVFileOverrides
-r5apex.exe!0x01038490 ConVar enable_debug_overlays
-r5apex.exe!0x01dcbbb0 ConVar enable_height_based_land_anims
-r5apex.exe!0x01dc9d80 ConVar enable_height_based_land_anims_titans
-r5apex.exe!0x0182f5d0 ConVar enable_skeleton_draw
-r5apex.exe!0x01046220 ConVar encrypt_multiKey
-r5apex.exe!0x01834bc0 ConVar ent_lightweightEnts
-r5apex.exe!0x0181a5c0 ConVar ent_repack_almostFull
-r5apex.exe!0x01827d10 ConVar ent_repack_threshhold
-r5apex.exe!0x01db4430 ConVar entity_skipRedundantAddEffects
-r5apex.exe!0x01145a30 ConVar entity_useNetworkFieldBuffer
-r5apex.exe!0x01829a30 ConVar error_if_non_standard_ent_create
-r5apex.exe!0x01d90d30 ConVar eula_version
-r5apex.exe!0x01d8eec0 ConVar eula_version_accepted
-r5apex.exe!0x0182f350 ConVar eventseq_debug
-r5apex.exe!0x01dd29b0 ConVar everything_unlocked
-r5apex.exe!0x010428d0 ConVar fakelag_debug
-r5apex.exe!0x01817bf0 ConVar fast_poly_convert
-r5apex.exe!0x01e09410 ConVar fatal_script_error_prompt
-r5apex.exe!0x01e092d0 ConVar fatal_script_errors
-r5apex.exe!0x01e09370 ConVar fatal_script_errors_client
-r5apex.exe!0x01e094b0 ConVar fatal_script_errors_server
-r5apex.exe!0x01828e30 ConVar fd_playlist_bits
-r5apex.exe!0x0117d7f0 ConVar filesystem_buffer_size
-r5apex.exe!0x0117daf0 ConVar filesystem_max_stdio_read
-r5apex.exe!0x0117db90 ConVar filesystem_native
-r5apex.exe!0x0117d9b0 ConVar filesystem_report_buffered_io
-r5apex.exe!0x0117d910 ConVar filesystem_unbuffered_io
-r5apex.exe!0x0117da50 ConVar filesystem_use_overlapped_io
-r5apex.exe!0x01dd12c0 ConVar fire_animevents_overlay_not_active
-r5apex.exe!0x01e01c60 ConVar first_person_bullet_delay
-r5apex.exe!0x01bcc010 ConVar first_person_proxy_blend_distance
-r5apex.exe!0x01dfe050 ConVar first_person_proxy_debug
-r5apex.exe!0x01d8ec40 ConVar firsttime_mp_message
-r5apex.exe!0x01d959d0 ConVar fog_enable
-r5apex.exe!0x01045a00 ConVar fog_enable_water_fog
-r5apex.exe!0x01d91ee0 ConVar fog_enableskybox
-r5apex.exe!0x01e04ef0 ConVar force3PLaserAttachment
-r5apex.exe!0x0114c560 ConVar force_EAAccess
-r5apex.exe!0x0104b7a0 ConVar fps_max
-r5apex.exe!0x0104a240 ConVar fps_max_use_refresh
-r5apex.exe!0x0104a8e0 ConVar fps_max_vsync
-r5apex.exe!0x018259e0 ConVar freecam_swallowButtonInput
-r5apex.exe!0x01d96330 ConVar freefall_sound_autoplay_time
-r5apex.exe!0x01dc6be0 ConVar freefall_sound_height
-r5apex.exe!0x0117aab0 ConVar friends_onlineUpdateInterval
-r5apex.exe!0x0117cf50 ConVar fs_intralevel_reads
-r5apex.exe!0x0117d410 ConVar fs_monitor_read_from_pack
-r5apex.exe!0x0117d090 ConVar fs_report_intra_level_readopens
-r5apex.exe!0x0117d520 ConVar fs_report_long_reads
-r5apex.exe!0x0117cff0 ConVar fs_report_sync_opens
-r5apex.exe!0x0117d250 ConVar fs_report_sync_opens_callstack
-r5apex.exe!0x0117d370 ConVar fs_report_sync_opens_fatal
-r5apex.exe!0x0117d1b0 ConVar fs_showAllReads
-r5apex.exe!0x0117dc60 ConVar fs_vpk_file_open
-r5apex.exe!0x0117d6c0 ConVar fs_warning_mode
-r5apex.exe!0x01bd8770 ConVar func_break_max_pieces
-r5apex.exe!0x0183a2a0 ConVar fx_debug
-r5apex.exe!0x01e06e50 ConVar fx_deferWorldTraceConstraint
-r5apex.exe!0x01bd1cf0 ConVar fx_glass_velocity_cap
-r5apex.exe!0x01d943d0 ConVar fx_impact_ally
-r5apex.exe!0x01be0890 ConVar fx_impact_enemy
-r5apex.exe!0x01d8ece0 ConVar fx_impact_neutral
-r5apex.exe!0x01e08570 ConVar fx_screenspacepass
-r5apex.exe!0x01dedbf0 ConVar g_debug_ragdoll_removal
-r5apex.exe!0x01bc0d40 ConVar g_ragdoll_fadespeed
-r5apex.exe!0x01ded320 ConVar g_ragdoll_important_maxcount
-r5apex.exe!0x01833e30 ConVar g_ragdoll_lvfadespeed
-r5apex.exe!0x01bd58c0 ConVar gameCursor_ModeActive
-r5apex.exe!0x01bd66d0 ConVar gameCursor_Velocity
-r5apex.exe!0x0182ae20 ConVar gamepad_ads_advanced_sensitivity_scalar_0
-r5apex.exe!0x0182aec0 ConVar gamepad_ads_advanced_sensitivity_scalar_1
-r5apex.exe!0x0182af60 ConVar gamepad_ads_advanced_sensitivity_scalar_2
-r5apex.exe!0x0182b000 ConVar gamepad_ads_advanced_sensitivity_scalar_3
-r5apex.exe!0x0182b0a0 ConVar gamepad_ads_advanced_sensitivity_scalar_4
-r5apex.exe!0x0182b140 ConVar gamepad_ads_advanced_sensitivity_scalar_5
-r5apex.exe!0x0182b1e0 ConVar gamepad_ads_advanced_sensitivity_scalar_6
-r5apex.exe!0x0182b280 ConVar gamepad_ads_advanced_sensitivity_scalar_7
-r5apex.exe!0x0181b710 ConVar gamepad_aim_assist_hip_high_power_scopes
-r5apex.exe!0x01831c50 ConVar gamepad_aim_assist_hip_low_power_scopes
-r5apex.exe!0x0183ef50 ConVar gamepad_aim_assist_melee
-r5apex.exe!0x01832ad0 ConVar gamepad_aim_assist_scope_0
-r5apex.exe!0x01832b70 ConVar gamepad_aim_assist_scope_1
-r5apex.exe!0x01832c10 ConVar gamepad_aim_assist_scope_2
-r5apex.exe!0x01832cb0 ConVar gamepad_aim_assist_scope_3
-r5apex.exe!0x01832d50 ConVar gamepad_aim_assist_scope_4
-r5apex.exe!0x01832df0 ConVar gamepad_aim_assist_scope_5
-r5apex.exe!0x01832e90 ConVar gamepad_aim_assist_scope_6
-r5apex.exe!0x01832f30 ConVar gamepad_aim_assist_scope_7
-r5apex.exe!0x01831510 ConVar gamepad_aim_assist_sniper_scopes
-r5apex.exe!0x018393b0 ConVar gamepad_aim_speed
-r5apex.exe!0x01832fd0 ConVar gamepad_aim_speed_ads_0
-r5apex.exe!0x01833070 ConVar gamepad_aim_speed_ads_1
-r5apex.exe!0x01833110 ConVar gamepad_aim_speed_ads_2
-r5apex.exe!0x018331b0 ConVar gamepad_aim_speed_ads_3
-r5apex.exe!0x01833250 ConVar gamepad_aim_speed_ads_4
-r5apex.exe!0x018332f0 ConVar gamepad_aim_speed_ads_5
-r5apex.exe!0x01833390 ConVar gamepad_aim_speed_ads_6
-r5apex.exe!0x01833430 ConVar gamepad_aim_speed_ads_7
-r5apex.exe!0x01d8ee20 ConVar gamepad_button_layout
-r5apex.exe!0x01d8e550 ConVar gamepad_buttons_are_southpaw
-r5apex.exe!0x0183ace0 ConVar gamepad_custom_ads_pitch
-r5apex.exe!0x0182f490 ConVar gamepad_custom_ads_turn_delay
-r5apex.exe!0x0181b1f0 ConVar gamepad_custom_ads_turn_pitch
-r5apex.exe!0x01bc2220 ConVar gamepad_custom_ads_turn_time
-r5apex.exe!0x01825eb0 ConVar gamepad_custom_ads_turn_yaw
-r5apex.exe!0x01bc0420 ConVar gamepad_custom_ads_yaw
-r5apex.exe!0x01824940 ConVar gamepad_custom_assist_on
-r5apex.exe!0x01836fe0 ConVar gamepad_custom_curve
-r5apex.exe!0x018391d0 ConVar gamepad_custom_deadzone_in
-r5apex.exe!0x0181ada0 ConVar gamepad_custom_deadzone_out
-r5apex.exe!0x01833830 ConVar gamepad_custom_enabled
-r5apex.exe!0x01828cf0 ConVar gamepad_custom_hip_pitch
-r5apex.exe!0x01bbf630 ConVar gamepad_custom_hip_turn_delay
-r5apex.exe!0x01bc1a20 ConVar gamepad_custom_hip_turn_pitch
-r5apex.exe!0x01bc07c0 ConVar gamepad_custom_hip_turn_time
-r5apex.exe!0x01839990 ConVar gamepad_custom_hip_turn_yaw
-r5apex.exe!0x01834140 ConVar gamepad_custom_hip_yaw
-r5apex.exe!0x01be18e0 ConVar gamepad_custom_pilot
-r5apex.exe!0x01be0930 ConVar gamepad_custom_titan
-r5apex.exe!0x018336f0 ConVar gamepad_deadzone_index_look
-r5apex.exe!0x0182aba0 ConVar gamepad_deadzone_index_move
-r5apex.exe!0x01bdfff0 ConVar gamepad_enabled
-r5apex.exe!0x0183aa60 ConVar gamepad_look_curve
-r5apex.exe!0x01d910b0 ConVar gamepad_stick_layout
-r5apex.exe!0x01bccd70 ConVar gamepad_toggle_ads
-r5apex.exe!0x01bd73c0 ConVar gamepad_togglecrouch_hold
-r5apex.exe!0x01181000 ConVar gamepad_trigger_threshold
-r5apex.exe!0x0183a940 ConVar gamepad_use_per_scope_ads_settings
-r5apex.exe!0x01834300 ConVar gamepad_use_per_scope_sensitivity_scalars
-r5apex.exe!0x01d93630 ConVar gamepad_use_type
-r5apex.exe!0x01047fb0 ConVar gameui_xbox
-r5apex.exe!0x01d90230 ConVar gamma_adjusted
-r5apex.exe!0x018272b0 ConVar gatherprops_no_wait
-r5apex.exe!0x011813c0 ConVar gfx_desaturate_force
-r5apex.exe!0x01d957f0 ConVar gl_clear_color_buffer
-r5apex.exe!0x01d8f2e0 ConVar gl_clear_fogcolor
-r5apex.exe!0x01d90370 ConVar gl_clear_randomcolor
-r5apex.exe!0x01830150 ConVar glass_break_required_speed
-r5apex.exe!0x01bdec10 ConVar glass_shatter_direction_force_scale
-r5apex.exe!0x01bd3680 ConVar glass_shatter_force_scale
-r5apex.exe!0x01bd8890 ConVar glass_shatter_size_scale
-r5apex.exe!0x01bd2420 ConVar glass_shatter_use_real_direction
-r5apex.exe!0x0180fc80 ConVar glitch_aberrationScale
-r5apex.exe!0x0180c6f0 ConVar global_lighting_partial_update
-r5apex.exe!0x01e0a000 ConVar gpu_count
-r5apex.exe!0x0128dd90 ConVar gpu_driven_tex_stream
-r5apex.exe!0x0128e2d0 ConVar gpu_driven_tex_stream_single_thread
-r5apex.exe!0x0118ad50 ConVar gpu_level
-r5apex.exe!0x01bcb090 ConVar gpu_level
-r5apex.exe!0x01181850 ConVar gpu_mem_level
-r5apex.exe!0x0181b150 ConVar gpu_mem_level
-r5apex.exe!0x0118aa30 ConVar gpu_vram_size_mb
-r5apex.exe!0x01dce090 ConVar grapple_accel_human
-r5apex.exe!0x01dcab80 ConVar grapple_accel_titan
-r5apex.exe!0x01dcd860 ConVar grapple_around_obstacle_accel
-r5apex.exe!0x01dcc270 ConVar grapple_autoMantle
-r5apex.exe!0x01dcf5d0 ConVar grapple_autoMeleeConvergeTime
-r5apex.exe!0x01d9b710 ConVar grapple_autoMeleeOnDetach
-r5apex.exe!0x01dd0050 ConVar grapple_autoMeleePredict
-r5apex.exe!0x01dd2730 ConVar grapple_autoMeleePredictTime
-r5apex.exe!0x01dd2690 ConVar grapple_autoMeleeViewRotateSpeedFar
-r5apex.exe!0x01dd25f0 ConVar grapple_autoMeleeViewRotateSpeedNear
-r5apex.exe!0x01dcdf20 ConVar grapple_debug
-r5apex.exe!0x01d96a80 ConVar grapple_decelMeleeStrength
-r5apex.exe!0x01dc7040 ConVar grapple_decel_human
-r5apex.exe!0x01d98e00 ConVar grapple_decel_titan
-r5apex.exe!0x01d99920 ConVar grapple_detachExtraAllowedLength
-r5apex.exe!0x01d9a660 ConVar grapple_disableMeleeWhenActive
-r5apex.exe!0x01dc66b0 ConVar grapple_dontFightGravity
-r5apex.exe!0x01dc79d0 ConVar grapple_fallSpeed
-r5apex.exe!0x01dcd180 ConVar grapple_forcedRetractVel
-r5apex.exe!0x01d9b260 ConVar grapple_gracePeriod
-r5apex.exe!0x01d9a870 ConVar grapple_gravityPushUnderContribution
-r5apex.exe!0x01dcb9c0 ConVar grapple_initialImpulseOffGround_human
-r5apex.exe!0x01dcf0f0 ConVar grapple_initialImpulseOffGround_human_npc
-r5apex.exe!0x01db4a70 ConVar grapple_initialImpulseOffGround_titan
-r5apex.exe!0x01dcaee0 ConVar grapple_initialImpulse_human
-r5apex.exe!0x01d9a0c0 ConVar grapple_initialImpulse_titan
-r5apex.exe!0x01d9a730 ConVar grapple_initialSlowFracVert_human
-r5apex.exe!0x01db4e50 ConVar grapple_initialSlowFracVert_titan
-r5apex.exe!0x01dc73b0 ConVar grapple_initialSlowFrac_human
-r5apex.exe!0x01dc70e0 ConVar grapple_initialSlowFrac_titan
-r5apex.exe!0x01dcc340 ConVar grapple_initialSpeedMin_human
-r5apex.exe!0x01dcf670 ConVar grapple_initialSpeedMin_titan
-r5apex.exe!0x01dc67f0 ConVar grapple_jumpFrac
-r5apex.exe!0x01dc6a70 ConVar grapple_letGravityHelpCosAngle
-r5apex.exe!0x01dc6b10 ConVar grapple_lift
-r5apex.exe!0x01dd0ea0 ConVar grapple_pullDelay_human
-r5apex.exe!0x01dd0e00 ConVar grapple_pullDelay_titan
-r5apex.exe!0x01dcf920 ConVar grapple_retractVel
-r5apex.exe!0x01dcee40 ConVar grapple_rodeoVerticalImpulse
-r5apex.exe!0x01dd27d0 ConVar grapple_shootVel
-r5apex.exe!0x01dc6930 ConVar grapple_speedRampMax_human
-r5apex.exe!0x01dcfdd0 ConVar grapple_speedRampMax_titan
-r5apex.exe!0x01d9a020 ConVar grapple_speedRampMin_human
-r5apex.exe!0x01dc7450 ConVar grapple_speedRampMin_titan
-r5apex.exe!0x01dcae40 ConVar grapple_speedRampTime_human
-r5apex.exe!0x01dca080 ConVar grapple_speedRampTime_titan
-r5apex.exe!0x01dc6890 ConVar grapple_swingAngle
-r5apex.exe!0x01d9aaf0 ConVar grapple_swingPullAngle
-r5apex.exe!0x01d9a520 ConVar grapple_swingPullSpeedLength
-r5apex.exe!0x01d96ee0 ConVar grapple_swingPullSpeedScale
-r5apex.exe!0x01dcd7c0 ConVar grapple_titanEmbarkDist
-r5apex.exe!0x01dc69d0 ConVar grapple_windowCheckDist
-r5apex.exe!0x01ddd0c0 ConVar gravity_grenade_decel
-r5apex.exe!0x01dd6270 ConVar gravity_grenade_projectile_min_speed
-r5apex.exe!0x01d96d00 ConVar ground_debug
-r5apex.exe!0x01dd17e0 ConVar ground_trace_hull_radius
-r5apex.exe!0x0104dc00 ConVar grx_hasUnknownItems
-r5apex.exe!0x0128f430 ConVar gtao_angle_bias
-r5apex.exe!0x0128ecb0 ConVar gtao_intensity
-r5apex.exe!0x0128f6b0 ConVar gtao_intensity_in_lobby
-r5apex.exe!0x0128f750 ConVar gtao_thickness_heuristic
-r5apex.exe!0x01146110 ConVar hasAnyAssetsWithDiscardedStreamableData
-r5apex.exe!0x01146b10 ConVar hasMic
-r5apex.exe!0x01146070 ConVar hasPartialInstall
-r5apex.exe!0x0128f4d0 ConVar hbao_angle_bias
-r5apex.exe!0x0128efd0 ConVar hbao_intensity
-r5apex.exe!0x0128f1b0 ConVar hbao_stepsize_random
-r5apex.exe!0x0128ee90 ConVar hbaobasic_tangent_bias
-r5apex.exe!0x01bddbd0 ConVar hidehud
-r5apex.exe!0x0182ff70 ConVar highlight_deferred_update
-r5apex.exe!0x0128e370 ConVar highlight_draw
-r5apex.exe!0x0128e530 ConVar highlight_lazy_clear_buffers
-r5apex.exe!0x0128e490 ConVar highlight_object_max_count
-r5apex.exe!0x01035210 ConVar hitbox_bodygroup_check
-r5apex.exe!0x01d8fcf0 ConVar hitch_alert_active
-r5apex.exe!0x01d8f080 ConVar hitch_alert_color
-r5apex.exe!0x01be2d60 ConVar hitch_alert_show_large_snapshots
-r5apex.exe!0x010465b0 ConVar host_RunFrameServerAlways
-r5apex.exe!0x01043d40 ConVar host_ShowIPCCallCount
-r5apex.exe!0x01148a10 ConVar host_flush_threshold
-r5apex.exe!0x01044790 ConVar host_framerate
-r5apex.exe!0x01044c30 ConVar host_hasIrreversibleShutdown
-r5apex.exe!0x01041410 ConVar host_limitlocal
-r5apex.exe!0x0103bcb0 ConVar host_map
-r5apex.exe!0x01040650 ConVar host_preload_shaders
-r5apex.exe!0x01046830 ConVar host_print_frame_times
-r5apex.exe!0x0103f840 ConVar host_profile
-r5apex.exe!0x010435b0 ConVar host_runframe_input_parcelremainder
-r5apex.exe!0x01041a50 ConVar host_server_thread_min_ticks
-r5apex.exe!0x0103b8f0 ConVar host_sleep
-r5apex.exe!0x0103e040 ConVar host_speeds
-r5apex.exe!0x0110f990 ConVar host_syncfps
-r5apex.exe!0x0103f150 ConVar host_thread_join_fast
-r5apex.exe!0x01046360 ConVar host_thread_mode
-r5apex.exe!0x0103e980 ConVar host_threaded_sound
-r5apex.exe!0x01047b30 ConVar host_timescale
-r5apex.exe!0x0103f260 ConVar hostip
-r5apex.exe!0x0103ff70 ConVar hostname
-r5apex.exe!0x0103bc10 ConVar hostport
-r5apex.exe!0x01177910 ConVar http_StryderKey
-r5apex.exe!0x01177370 ConVar http_debug
-r5apex.exe!0x011777d0 ConVar http_debug_forceFailRate
-r5apex.exe!0x011775f0 ConVar http_debug_forceFailStatus
-r5apex.exe!0x01177410 ConVar http_failuresAsErrors
-r5apex.exe!0x01177730 ConVar http_maxAllocateAttempts
-r5apex.exe!0x01177b90 ConVar http_recv_fail_realloc
-r5apex.exe!0x01177690 ConVar http_sandbox
-r5apex.exe!0x01177550 ConVar http_showQueries
-r5apex.exe!0x01e05bc0 ConVar hud_autoreloadscript
-r5apex.exe!0x01d92a40 ConVar hud_setting_accessibleChat
-r5apex.exe!0x01be24e0 ConVar hud_setting_adsDof
-r5apex.exe!0x01df3870 ConVar hud_setting_compactOverHeadNames
-r5apex.exe!0x01d93910 ConVar hud_setting_damageIndicatorStyle
-r5apex.exe!0x01d8e830 ConVar hud_setting_damageTextStyle
-r5apex.exe!0x01be0bb0 ConVar hud_setting_enableModWheel
-r5apex.exe!0x01be1e40 ConVar hud_setting_healthUseOnHold
-r5apex.exe!0x01be28e0 ConVar hud_setting_healthWheelToggle
-r5apex.exe!0x01be3170 ConVar hud_setting_healthWheelUseOnRelease
-r5apex.exe!0x01d8dda0 ConVar hud_setting_lootPromptStyle
-r5apex.exe!0x01d8e1c0 ConVar hud_setting_minimapRotate
-r5apex.exe!0x01be15e0 ConVar hud_setting_ordnanceUseOnHold
-r5apex.exe!0x01d91750 ConVar hud_setting_ordnanceWheelToggle
-r5apex.exe!0x01be1a00 ConVar hud_setting_ordnanceWheelUseOnRelease
-r5apex.exe!0x01d937f0 ConVar hud_setting_pingAlpha
-r5apex.exe!0x01d8f500 ConVar hud_setting_pingDoubleTapEnemy
-r5apex.exe!0x01be3980 ConVar hud_setting_pingWheelToggle
-r5apex.exe!0x01be11a0 ConVar hud_setting_showButtonHints
-r5apex.exe!0x01d931b0 ConVar hud_setting_showCallsigns
-r5apex.exe!0x01d91e40 ConVar hud_setting_showLevelUp
-r5apex.exe!0x01d90510 ConVar hud_setting_showMedals
-r5apex.exe!0x01d94690 ConVar hud_setting_showMeter
-r5apex.exe!0x01d90790 ConVar hud_setting_showObituary
-r5apex.exe!0x01be2fb0 ConVar hud_setting_showTips
-r5apex.exe!0x01d94130 ConVar hud_setting_showWeaponFlyouts
-r5apex.exe!0x01d941f0 ConVar hud_setting_streamerMode
-r5apex.exe!0x01bd1810 ConVar hudchat_new_message_fade_duration
-r5apex.exe!0x01bd89d0 ConVar hudchat_new_message_shown_duration
-r5apex.exe!0x01bd2560 ConVar hudchat_play_text_to_speech
-r5apex.exe!0x01bd1650 ConVar hudchat_transition_message_mode_fade_duration
-r5apex.exe!0x01bd0830 ConVar hudchat_visibility
-r5apex.exe!0x01815b40 ConVar hudwarp_chopsize
-r5apex.exe!0x01815820 ConVar hudwarp_override
-r5apex.exe!0x018156e0 ConVar hudwarp_viewDist
-r5apex.exe!0x01815aa0 ConVar hudwarp_xScale
-r5apex.exe!0x01814840 ConVar hudwarp_xWarp
-r5apex.exe!0x018148e0 ConVar hudwarp_yScale
-r5apex.exe!0x01815780 ConVar hudwarp_yWarp
-r5apex.exe!0x01be2350 ConVar idcolor_ally
-r5apex.exe!0x01d94910 ConVar idcolor_ally_cb1
-r5apex.exe!0x01d91fd0 ConVar idcolor_ally_cb2
-r5apex.exe!0x01d927a0 ConVar idcolor_ally_cb3
-r5apex.exe!0x01d95580 ConVar idcolor_enemy
-r5apex.exe!0x01d91270 ConVar idcolor_enemy_cb1
-r5apex.exe!0x01d908f0 ConVar idcolor_enemy_cb2
-r5apex.exe!0x01be0c80 ConVar idcolor_enemy_cb3
-r5apex.exe!0x01be2840 ConVar idcolor_neutral
-r5apex.exe!0x01dd15b0 ConVar ik_debug
-r5apex.exe!0x01d95ed0 ConVar ik_debug_chain
-r5apex.exe!0x01dcc4b0 ConVar ik_debug_ent
-r5apex.exe!0x01dd0370 ConVar ik_debug_text
-r5apex.exe!0x01d99740 ConVar ik_enable
-r5apex.exe!0x01dc6610 ConVar ik_enable_client
-r5apex.exe!0x01dcda70 ConVar ik_height_adjust
-r5apex.exe!0x01d99ba0 ConVar ik_height_adjust_debug
-r5apex.exe!0x01d986a0 ConVar ik_height_adjust_move_speed
-r5apex.exe!0x01d96940 ConVar ik_height_adjust_sine
-r5apex.exe!0x01dcf050 ConVar ik_height_adjust_speed
-r5apex.exe!0x01dc9cb0 ConVar ik_latch
-r5apex.exe!0x01db4d30 ConVar ik_normal_lerp_rate
-r5apex.exe!0x01dc8a10 ConVar ik_unlatch_max_rate
-r5apex.exe!0x0117f510 ConVar ime_enabled
-r5apex.exe!0x01813b00 ConVar imgui_buildmode
-r5apex.exe!0x01813bd0 ConVar imgui_buildmode
-r5apex.exe!0x01bdbd60 ConVar impact_allow
-r5apex.exe!0x01d90830 ConVar impact_debug_info
-r5apex.exe!0x01bddb30 ConVar impact_victim_offset_dist
-r5apex.exe!0x01dd3270 ConVar impulse_low_decel_duration_scalar
-r5apex.exe!0x01146c50 ConVar inPartyChat
-r5apex.exe!0x01042410 ConVar in_forceuser
-r5apex.exe!0x0104adc0 ConVar in_syncRT
-r5apex.exe!0x01bcc8b0 ConVar in_usekeyboardsampletime
-r5apex.exe!0x0114c4c0 ConVar inbox_enabled
-r5apex.exe!0x0114c1a0 ConVar infoblock_requestInterval
-r5apex.exe!0x01be3050 ConVar intro_viewed
-r5apex.exe!0x01043830 ConVar ip
-r5apex.exe!0x01bdc860 ConVar joy_advaxisr
-r5apex.exe!0x01bcd830 ConVar joy_advaxisu
-r5apex.exe!0x01bdee30 ConVar joy_advaxisv
-r5apex.exe!0x01bd7810 ConVar joy_advaxisx
-r5apex.exe!0x01bd9f80 ConVar joy_advaxisy
-r5apex.exe!0x01bd7460 ConVar joy_advaxisz
-r5apex.exe!0x01bde5d0 ConVar joy_inverty
-r5apex.exe!0x01be0590 ConVar joy_legacy
-r5apex.exe!0x01bd2860 ConVar joy_movement_stick
-r5apex.exe!0x01bccad0 ConVar joy_requireFocus
-r5apex.exe!0x01bdaac0 ConVar joy_rumble
-r5apex.exe!0x01bdc570 ConVar joy_xcontroller_cfg_loaded
-r5apex.exe!0x0110f000 ConVar jpeg_quality
-r5apex.exe!0x01810c20 ConVar jt_help_with_anything_ignore_preference
-r5apex.exe!0x01dcdff0 ConVar jump_graceperiod
-r5apex.exe!0x01dcb120 ConVar jump_keyboardgrace_max
-r5apex.exe!0x01db42f0 ConVar jump_keyboardgrace_strength
-r5apex.exe!0x01d9a7d0 ConVar jump_keyboardgraceperiodmax
-r5apex.exe!0x01dcb570 ConVar jump_keyboardgraceperiodmin
-r5apex.exe!0x01147bd0 ConVar killReplay_lagCompensate
-r5apex.exe!0x01df5e20 ConVar killReplay_playNonReplayRemoteCallsOnLocalClientPlayer
-r5apex.exe!0x01839b00 ConVar leaf_threadedRecompute
-r5apex.exe!0x018334d0 ConVar leaf_threadedRecompute_batchSize
-r5apex.exe!0x01dfa550 ConVar leech_npc_angle_cos
-r5apex.exe!0x01836890 ConVar lerp_careAboutAttachmentBonePosition
-r5apex.exe!0x01d96b20 ConVar lerp_debugEnt
-r5apex.exe!0x0183e770 ConVar lerp_opt
-r5apex.exe!0x0181b290 ConVar lerp_threaded
-r5apex.exe!0x01835c40 ConVar lerp_threaded_numEntsPerTask
-r5apex.exe!0x0103cb40 ConVar light_maxcone
-r5apex.exe!0x011871f0 ConVar lightmap_realtimelight
-r5apex.exe!0x0118a7d0 ConVar lightmap_realtimeshadows
-r5apex.exe!0x01043c10 ConVar load_during_video
-r5apex.exe!0x01df22a0 ConVar loaderrorsCount
-r5apex.exe!0x01df1b80 ConVar loaderrorsNeedShown
-r5apex.exe!0x01df27a0 ConVar localClientPlayerCachedLevel
-r5apex.exe!0x01110870 ConVar locationInfo
-r5apex.exe!0x011107d0 ConVar locationInfo_nucleus
-r5apex.exe!0x01bd0970 ConVar locator_background_border_color
-r5apex.exe!0x01bcc790 ConVar locator_background_border_thickness
-r5apex.exe!0x01bd3120 ConVar locator_background_color
-r5apex.exe!0x01bd3360 ConVar locator_background_shift_x
-r5apex.exe!0x01bd3c90 ConVar locator_background_shift_y
-r5apex.exe!0x01bd75a0 ConVar locator_background_style
-r5apex.exe!0x01bd3b70 ConVar locator_background_thickness_x
-r5apex.exe!0x01bcd450 ConVar locator_background_thickness_y
-r5apex.exe!0x01bd1bd0 ConVar locator_fade_time
-r5apex.exe!0x01bde4b0 ConVar locator_icon_max_size_non_ss
-r5apex.exe!0x01bd7e10 ConVar locator_icon_min_size_non_ss
-r5apex.exe!0x01bd1d90 ConVar locator_lerp_rest
-r5apex.exe!0x01bd4530 ConVar locator_lerp_speed
-r5apex.exe!0x01bd6630 ConVar locator_lerp_time
-r5apex.exe!0x01bda6a0 ConVar locator_pulse_time
-r5apex.exe!0x01bcce90 ConVar locator_split_len
-r5apex.exe!0x01bd4790 ConVar locator_split_maxwide_percent
-r5apex.exe!0x01bda020 ConVar locator_start_at_crosshair
-r5apex.exe!0x01bd85b0 ConVar locator_target_offset_x
-r5apex.exe!0x01bd0040 ConVar locator_target_offset_y
-r5apex.exe!0x01bdcd60 ConVar locator_topdown_style
-r5apex.exe!0x01bd8b80 ConVar lookspring
-r5apex.exe!0x01bdd4c0 ConVar lookstrafe
-r5apex.exe!0x01bd37a0 ConVar m_acceleration
-r5apex.exe!0x01bdd3a0 ConVar m_forward
-r5apex.exe!0x01bd24c0 ConVar m_invert_pitch
-r5apex.exe!0x01bd7770 ConVar m_side
-r5apex.exe!0x01df1ea0 ConVar mainmenu_background_movie
-r5apex.exe!0x01bdc790 ConVar map_settings_override
-r5apex.exe!0x01be1520 ConVar mat_autoexposure_compensation
-r5apex.exe!0x0180c970 ConVar mat_autoexposure_force_value
-r5apex.exe!0x01d92ae0 ConVar mat_autoexposure_max
-r5apex.exe!0x01d8f5a0 ConVar mat_autoexposure_max_multiplier
-r5apex.exe!0x01d94330 ConVar mat_autoexposure_min
-r5apex.exe!0x01d902d0 ConVar mat_autoexposure_min_multiplier
-r5apex.exe!0x01be3fb0 ConVar mat_autoexposure_speed
-r5apex.exe!0x01d951a0 ConVar mat_autoexposure_uncap
-r5apex.exe!0x01d93eb0 ConVar mat_bloom_cutoff
-r5apex.exe!0x0180cab0 ConVar mat_bloom_max_lighting_value
-r5apex.exe!0x01be2660 ConVar mat_bloom_scalefactor_scalar
-r5apex.exe!0x0180eb00 ConVar mat_bloom_streak_amount
-r5apex.exe!0x01d91610 ConVar mat_bloom_streak_cutoff
-r5apex.exe!0x01d90650 ConVar mat_bloom_streak_cutoff_exposure_adapt
-r5apex.exe!0x0180fb40 ConVar mat_bloom_streak_exponent_post
-r5apex.exe!0x01d8fbb0 ConVar mat_bloom_streak_exponent_pre
-r5apex.exe!0x0180f640 ConVar mat_bloom_wide_amount
-r5apex.exe!0x01d91410 ConVar mat_bloom_wide_exponent_pre
-r5apex.exe!0x01d93b10 ConVar mat_bloomamount_rate
-r5apex.exe!0x01d95930 ConVar mat_bloomscale
-r5apex.exe!0x0128fe30 ConVar mat_checkStalls
-r5apex.exe!0x011874f0 ConVar mat_cloudmask
-r5apex.exe!0x01039990 ConVar mat_colcorrection_disableentities
-r5apex.exe!0x01147330 ConVar mat_colcorrection_disableentities
-r5apex.exe!0x01bbf3b0 ConVar mat_colcorrection_disableentities
-r5apex.exe!0x01038350 ConVar mat_colcorrection_editor
-r5apex.exe!0x0182e5d0 ConVar mat_colcorrection_editor
-r5apex.exe!0x0182f210 ConVar mat_colcorrection_forceentitiesclientside
-r5apex.exe!0x01038a70 ConVar mat_colorcorrection
-r5apex.exe!0x0180fbe0 ConVar mat_debug_postprocess_allowed
-r5apex.exe!0x01d91c10 ConVar mat_debug_postprocessing_effects
-r5apex.exe!0x0180f960 ConVar mat_debug_tonemapping
-r5apex.exe!0x0180f460 ConVar mat_debug_tonemapping_disable
-r5apex.exe!0x0180f320 ConVar mat_debug_tonemapping_mid1
-r5apex.exe!0x0180f000 ConVar mat_debug_tonemapping_mid2
-r5apex.exe!0x0180f1e0 ConVar mat_debug_tonemapping_shoulder
-r5apex.exe!0x0180f140 ConVar mat_debug_tonemapping_toe
-r5apex.exe!0x0118aad0 ConVar mat_debugalttab
-r5apex.exe!0x0180d5a0 ConVar mat_depthbias_decal
-r5apex.exe!0x0180d780 ConVar mat_depthbias_normal
-r5apex.exe!0x0180d460 ConVar mat_depthbias_shadowmap
-r5apex.exe!0x0180d640 ConVar mat_depthbias_tightshadowmap
-r5apex.exe!0x0180d140 ConVar mat_depthbias_ui
-r5apex.exe!0x0180d6e0 ConVar mat_depthbias_zfill
-r5apex.exe!0x0180d000 ConVar mat_depthbiasclamp_decal
-r5apex.exe!0x0180da00 ConVar mat_depthbiasclamp_normal
-r5apex.exe!0x0180d1e0 ConVar mat_depthbiasclamp_shadowmap
-r5apex.exe!0x0180d3c0 ConVar mat_depthbiasclamp_ui
-r5apex.exe!0x0180d320 ConVar mat_depthbiasclamp_zfill
-r5apex.exe!0x0180d0a0 ConVar mat_depthtest_force_disabled
-r5apex.exe!0x0118a5f0 ConVar mat_detail_tex
-r5apex.exe!0x01181670 ConVar mat_diffuse
-r5apex.exe!0x01d91010 ConVar mat_disable_bloom
-r5apex.exe!0x0180c8d0 ConVar mat_disable_lightmap_ambient
-r5apex.exe!0x01189830 ConVar mat_disable_lightmaps
-r5apex.exe!0x01184c70 ConVar mat_disable_model_ambient
-r5apex.exe!0x01049180 ConVar mat_drawMenuGrid
-r5apex.exe!0x0104b840 ConVar mat_drawTitleSafe
-r5apex.exe!0x011818f0 ConVar mat_drawflat
-r5apex.exe!0x01187450 ConVar mat_dxlevel
-r5apex.exe!0x010383f0 ConVar mat_dynamic_tonemapping
-r5apex.exe!0x0118ae90 ConVar mat_dynamic_tonemapping
-r5apex.exe!0x01181460 ConVar mat_enable_ssr
-r5apex.exe!0x0180cb50 ConVar mat_envmap_scale
-r5apex.exe!0x010374d0 ConVar mat_envmaptgasize
-r5apex.exe!0x0118a050 ConVar mat_fastnobump
-r5apex.exe!0x01043e80 ConVar mat_fastspecular
-r5apex.exe!0x0118a4b0 ConVar mat_filterlightmaps
-r5apex.exe!0x01184ab0 ConVar mat_filtertextures
-r5apex.exe!0x01be2e50 ConVar mat_force_bloom
-r5apex.exe!0x01189fb0 ConVar mat_forceaniso
-r5apex.exe!0x01be38e0 ConVar mat_frame_color_bias
-r5apex.exe!0x01d8ef80 ConVar mat_frame_color_enabled
-r5apex.exe!0x01d952e0 ConVar mat_frame_color_scale
-r5apex.exe!0x01be41f0 ConVar mat_frame_color_spot_metering_screen_ratio
-r5apex.exe!0x01041eb0 ConVar mat_fullbright
-r5apex.exe!0x0180f780 ConVar mat_fxaa_enable
-r5apex.exe!0x011815d0 ConVar mat_global_lighting
-r5apex.exe!0x01290130 ConVar mat_global_lighting
-r5apex.exe!0x01be0a70 ConVar mat_global_lighting
-r5apex.exe!0x01041550 ConVar mat_hdr_level
-r5apex.exe!0x011473d0 ConVar mat_hdrcolcorrection_editor
-r5apex.exe!0x01181290 ConVar mat_hdrcolorcorrection
-r5apex.exe!0x01290280 ConVar mat_hide_sun_in_last_cascade
-r5apex.exe!0x012901e0 ConVar mat_instancing
-r5apex.exe!0x0128fd90 ConVar mat_letterbox_aspect_goal
-r5apex.exe!0x0128fcf0 ConVar mat_letterbox_aspect_threshold
-r5apex.exe!0x01be1d80 ConVar mat_lightcull_subview
-r5apex.exe!0x01d8de40 ConVar mat_lightcull_subviews
-r5apex.exe!0x0180fa00 ConVar mat_local_contrast_edge_scale_override
-r5apex.exe!0x0180ed80 ConVar mat_local_contrast_midtone_mask_override
-r5apex.exe!0x0180ec40 ConVar mat_local_contrast_scale_override
-r5apex.exe!0x0180ee20 ConVar mat_local_contrast_vignette_end_override
-r5apex.exe!0x0180eec0 ConVar mat_local_contrast_vignette_start_override
-r5apex.exe!0x0118be60 ConVar mat_materialmip_character_0
-r5apex.exe!0x0118b1b0 ConVar mat_materialmip_character_1
-r5apex.exe!0x0118b570 ConVar mat_materialmip_character_2
-r5apex.exe!0x0118b930 ConVar mat_materialmip_character_3
-r5apex.exe!0x0118b890 ConVar mat_materialmip_character_4
-r5apex.exe!0x0118bbe0 ConVar mat_materialmip_cockpit_0
-r5apex.exe!0x0118b390 ConVar mat_materialmip_cockpit_1
-r5apex.exe!0x0118afd0 ConVar mat_materialmip_cockpit_2
-r5apex.exe!0x0118b110 ConVar mat_materialmip_cockpit_3
-r5apex.exe!0x0118bd20 ConVar mat_materialmip_cockpit_4
-r5apex.exe!0x0118b070 ConVar mat_materialmip_model_0
-r5apex.exe!0x0118b6b0 ConVar mat_materialmip_model_1
-r5apex.exe!0x0118bdc0 ConVar mat_materialmip_model_2
-r5apex.exe!0x0118c0c0 ConVar mat_materialmip_model_3
-r5apex.exe!0x0118b7f0 ConVar mat_materialmip_model_4
-r5apex.exe!0x0118bc80 ConVar mat_materialmip_other_0
-r5apex.exe!0x0118b4d0 ConVar mat_materialmip_other_1
-r5apex.exe!0x0118c160 ConVar mat_materialmip_other_2
-r5apex.exe!0x0118b250 ConVar mat_materialmip_other_3
-r5apex.exe!0x0118bfa0 ConVar mat_materialmip_other_4
-r5apex.exe!0x0118b750 ConVar mat_materialmip_world_0
-r5apex.exe!0x0118af30 ConVar mat_materialmip_world_1
-r5apex.exe!0x0118b2f0 ConVar mat_materialmip_world_2
-r5apex.exe!0x0118bf00 ConVar mat_materialmip_world_3
-r5apex.exe!0x0118b430 ConVar mat_materialmip_world_4
-r5apex.exe!0x0103dd40 ConVar mat_maxframelatency
-r5apex.exe!0x01187310 ConVar mat_mip_linear
-r5apex.exe!0x01187590 ConVar mat_mipmaptextures
-r5apex.exe!0x0103b4b0 ConVar mat_norendering
-r5apex.exe!0x01181710 ConVar mat_norendering
-r5apex.exe!0x01189b50 ConVar mat_phong
-r5apex.exe!0x01184d10 ConVar mat_picmip
-r5apex.exe!0x0180f6e0 ConVar mat_postprocess_enable
-r5apex.exe!0x01d92ca0 ConVar mat_postprocess_enable
-r5apex.exe!0x0128c2f0 ConVar mat_processtoolvars
-r5apex.exe!0x0118a230 ConVar mat_proxy
-r5apex.exe!0x0118a2d0 ConVar mat_reducefillrate
-r5apex.exe!0x0118c200 ConVar mat_reduceparticles
-r5apex.exe!0x0180cf60 ConVar mat_remoteshadercompile
-r5apex.exe!0x0118adf0 ConVar mat_report_queue_status
-r5apex.exe!0x011896f0 ConVar mat_reversedepth
-r5apex.exe!0x01be3750 ConVar mat_screen_blur_enabled
-r5apex.exe!0x0180f0a0 ConVar mat_screen_blur_override
-r5apex.exe!0x0103d840 ConVar mat_shadowstate
-r5apex.exe!0x0180ea60 ConVar mat_sharpen_amount
-r5apex.exe!0x0180f5a0 ConVar mat_sharpen_threshold
-r5apex.exe!0x0180f8c0 ConVar mat_sharpen_width
-r5apex.exe!0x01145820 ConVar mat_show_texture_memory_usage
-r5apex.exe!0x0128c640 ConVar mat_showenvmapmask
-r5apex.exe!0x01181530 ConVar mat_showlowresimage
-r5apex.exe!0x01189ab0 ConVar mat_showmiplevels
-r5apex.exe!0x010406f0 ConVar mat_skipid
-r5apex.exe!0x01043ad0 ConVar mat_sky_color
-r5apex.exe!0x01040290 ConVar mat_sky_scale
-r5apex.exe!0x0180d960 ConVar mat_slopescaledepthbias_decal
-r5apex.exe!0x0180d280 ConVar mat_slopescaledepthbias_normal
-r5apex.exe!0x0180d8c0 ConVar mat_slopescaledepthbias_shadowmap
-r5apex.exe!0x0180d500 ConVar mat_slopescaledepthbias_ui
-r5apex.exe!0x0180d820 ConVar mat_slopescaledepthbias_zfill
-r5apex.exe!0x01043970 ConVar mat_sun_color
-r5apex.exe!0x0103e620 ConVar mat_sun_scale
-r5apex.exe!0x01040c90 ConVar mat_surfacefilter
-r5apex.exe!0x0103fcf0 ConVar mat_surfaceid
-r5apex.exe!0x01043fc0 ConVar mat_surfacemat
-r5apex.exe!0x0128fff0 ConVar mat_syncGPU
-r5apex.exe!0x0128ff50 ConVar mat_syncInterval
-r5apex.exe!0x01189d30 ConVar mat_sync_rt
-r5apex.exe!0x0128c4d0 ConVar mat_sync_rt_flushes_gpu
-r5apex.exe!0x011456e0 ConVar mat_texture_list
-r5apex.exe!0x01145780 ConVar mat_texture_list_view
-r5apex.exe!0x0128c570 ConVar mat_translucency_errors
-r5apex.exe!0x0180fd20 ConVar mat_use_compressed_hdr_textures
-r5apex.exe!0x0180faa0 ConVar mat_vignette_enable
-r5apex.exe!0x0118b610 ConVar mat_warn_texture_convert
-r5apex.exe!0x0103cd00 ConVar match_backingOutMaxTimeToWait
-r5apex.exe!0x01043650 ConVar match_backoutslow
-r5apex.exe!0x0103bf70 ConVar match_connect
-r5apex.exe!0x0103e360 ConVar match_defaultMap_party
-r5apex.exe!0x01044240 ConVar match_dir
-r5apex.exe!0x0103f040 ConVar match_dumpSearchResults
-r5apex.exe!0x0103b850 ConVar match_emptyUpdateRate
-r5apex.exe!0x01045130 ConVar match_enabled
-r5apex.exe!0x0103e220 ConVar match_fakePort
-r5apex.exe!0x0103ba30 ConVar match_fakeS2SPort
-r5apex.exe!0x01046970 ConVar match_forceVerboseSearches
-r5apex.exe!0x010410f0 ConVar match_goodReputation
-r5apex.exe!0x01041cd0 ConVar match_maxPingsSent
-r5apex.exe!0x01046040 ConVar match_mixtape_unchecked
-r5apex.exe!0x0103de50 ConVar match_mixtape_unchecked_version
-r5apex.exe!0x01046d30 ConVar match_mixtape_version
-r5apex.exe!0x0103ef00 ConVar match_mixtape_warnOnPlay
-r5apex.exe!0x01044100 ConVar match_myBestDatacenter
-r5apex.exe!0x01044060 ConVar match_myDatacenter
-r5apex.exe!0x010443f0 ConVar match_myRankedDatacenter
-r5apex.exe!0x0103c5c0 ConVar match_myTeam
-r5apex.exe!0x01043170 ConVar match_partyChangeNum
-r5apex.exe!0x0103c400 ConVar match_partySize
-r5apex.exe!0x0103bb70 ConVar match_partySub
-r5apex.exe!0x0103b090 ConVar match_pingWaveInterval
-r5apex.exe!0x01044ff0 ConVar match_playlist
-r5apex.exe!0x0103d270 ConVar match_precachemap
-r5apex.exe!0x0103e8e0 ConVar match_privateMatchListWithStryder
-r5apex.exe!0x0103fbb0 ConVar match_rankedMaxPing
-r5apex.exe!0x0103ce40 ConVar match_rankedSwitchETA
-r5apex.exe!0x01044af0 ConVar match_resetPlaylistBetweenMatches
-r5apex.exe!0x01043790 ConVar match_roleToken
-r5apex.exe!0x0103fe30 ConVar match_searchInterval
-r5apex.exe!0x01045590 ConVar match_searching
-r5apex.exe!0x01041f50 ConVar match_teamNoFill
-r5apex.exe!0x010430d0 ConVar match_updateNotableRate
-r5apex.exe!0x01043350 ConVar match_updateRate
-r5apex.exe!0x010415f0 ConVar match_useMatchmaking
-r5apex.exe!0x01044a50 ConVar match_verbosePrintsInterval
-r5apex.exe!0x0103ed20 ConVar match_visiblePlaylists
-r5apex.exe!0x01040b50 ConVar matchmaking_hostname
-r5apex.exe!0x01dd7140 ConVar max_explosive_damage_mass
-r5apex.exe!0x01de1b50 ConVar max_explosive_damage_velocity
-r5apex.exe!0x0181b330 ConVar max_tweak_shadow_updates
-r5apex.exe!0x01dfa390 ConVar melee_aim_assist_can_lock_pitch
-r5apex.exe!0x01e009d0 ConVar melee_aim_assist_use_target_velocity
-r5apex.exe!0x01df6d00 ConVar melee_attack_trace_can_use_lunge_distance
-r5apex.exe!0x01df93f0 ConVar melee_cone_trace_box_check
-r5apex.exe!0x01dc9750 ConVar melee_lunge_abort_distance
-r5apex.exe!0x01d99b00 ConVar melee_lunge_abort_if_blocked
-r5apex.exe!0x01dfe190 ConVar melee_lunge_adjust_trace_distance
-r5apex.exe!0x01dfec50 ConVar melee_lunge_align_eye_position
-r5apex.exe!0x01df9df0 ConVar melee_lunge_dot_check
-r5apex.exe!0x01dce370 ConVar melee_lunge_force_enable_flying
-r5apex.exe!0x01dd0780 ConVar melee_lunge_lag_compensate_target
-r5apex.exe!0x01e01fe0 ConVar melee_lunge_scale_by_speed
-r5apex.exe!0x01d9b8b0 ConVar melee_lunge_slide
-r5apex.exe!0x01d96bc0 ConVar melee_lunge_use_closest_distance_between_cylinders
-r5apex.exe!0x01e01770 ConVar melee_lunge_use_command_time
-r5apex.exe!0x01dd7000 ConVar melee_queue_attack_anim_event
-r5apex.exe!0x010479f0 ConVar mem_dumpstats
-r5apex.exe!0x01036c90 ConVar mem_force_flush
-r5apex.exe!0x01036bf0 ConVar mem_force_flush_section
-r5apex.exe!0x0103d980 ConVar mem_incremental_compact_rate
-r5apex.exe!0x01187010 ConVar mem_level
-r5apex.exe!0x01828770 ConVar mem_level
-r5apex.exe!0x0104a5e0 ConVar mem_max_heapsize
-r5apex.exe!0x01048b00 ConVar mem_max_heapsize_dedicated
-r5apex.exe!0x010483b0 ConVar mem_min_heapsize
-r5apex.exe!0x018114f0 ConVar mem_runheapchecks
-r5apex.exe!0x01040830 ConVar mem_test_each_frame
-r5apex.exe!0x01042c70 ConVar mem_test_every_n_seconds
-r5apex.exe!0x0103d550 ConVar mem_test_quiet
-r5apex.exe!0x01d8e280 ConVar menu_faq_community_version
-r5apex.exe!0x01be2c20 ConVar menu_faq_patchnotes_version
-r5apex.exe!0x01be0b10 ConVar menu_faq_viewed
-r5apex.exe!0x01be3b80 ConVar menu_was_multiplayer_played_last
-r5apex.exe!0x011789f0 ConVar migrate_attempt_interval
-r5apex.exe!0x01df4d80 ConVar miles_actor_occlusion_radius
-r5apex.exe!0x01df5860 ConVar miles_channels
-r5apex.exe!0x0182f530 ConVar miles_flip_active_window_logic
-r5apex.exe!0x01df3420 ConVar miles_force_emitter_environment
-r5apex.exe!0x01df4c40 ConVar miles_force_listener_environment
-r5apex.exe!0x01df6620 ConVar miles_freeze
-r5apex.exe!0x01df5ce0 ConVar miles_initial_occlusion_delay
-r5apex.exe!0x01df5690 ConVar miles_language
-r5apex.exe!0x01df3600 ConVar miles_listener_freeze
-r5apex.exe!0x01df4ee0 ConVar miles_nonactor_occlusion
-r5apex.exe!0x01df5f00 ConVar miles_nonactor_occlusion_radius
-r5apex.exe!0x01df5020 ConVar miles_nopandist
-r5apex.exe!0x01df5d80 ConVar miles_occlusion
-r5apex.exe!0x01df5370 ConVar miles_occlusion_force
-r5apex.exe!0x01df3b10 ConVar miles_occlusion_partial
-r5apex.exe!0x01df4860 ConVar miles_occlusion_use_reset_after_deferred_initial
-r5apex.exe!0x01df64e0 ConVar miles_samplerate
-r5apex.exe!0x0104d940 ConVar miles_server_sounds_debug
-r5apex.exe!0x0104d9e0 ConVar miles_server_sounds_print
-r5apex.exe!0x01df3560 ConVar miles_solo_ents
-r5apex.exe!0x01bcf570 ConVar miles_soundscape_imgui
-r5apex.exe!0x01df45c0 ConVar miles_spatialize_front_degrees
-r5apex.exe!0x01df6040 ConVar miles_spatialize_offplane_strength
-r5apex.exe!0x01df47c0 ConVar miles_spatialize_on
-r5apex.exe!0x01df5160 ConVar miles_spatialize_rear_degrees
-r5apex.exe!0x01df6250 ConVar miles_suffixes
-r5apex.exe!0x01dd9180 ConVar min_explosive_damage_mass
-r5apex.exe!0x01e00b10 ConVar missile_default_speed
-r5apex.exe!0x01e00290 ConVar missile_homing_speed
-r5apex.exe!0x01034f50 ConVar mod_check_vcollide
-r5apex.exe!0x01035170 ConVar mod_trace_load
-r5apex.exe!0x0104bfb0 ConVar model_defaultFadeDistMin
-r5apex.exe!0x01bcbc50 ConVar model_defaultFadeDistMin
-r5apex.exe!0x01048dc0 ConVar model_defaultFadeDistScale
-r5apex.exe!0x018297d0 ConVar model_defaultFadeDistScale
-r5apex.exe!0x01bcc650 ConVar model_fadeRangeFraction
-r5apex.exe!0x01bcc6f0 ConVar model_fadeRangeFractionNear
-r5apex.exe!0x01be1aa0 ConVar monitor_cc
-r5apex.exe!0x0180eba0 ConVar monitor_mat_sharpen_amount
-r5apex.exe!0x01be3a20 ConVar monitor_postfx
-r5apex.exe!0x01d906f0 ConVar monitor_rui_world_enabled
-r5apex.exe!0x0181b010 ConVar monitor_snapshot_frame_delay
-r5apex.exe!0x01825f50 ConVar monitor_zfar_default
-r5apex.exe!0x01d8fe50 ConVar monitor_zfar_override
-r5apex.exe!0x01be09d0 ConVar monitor_zfar_override_enabled
-r5apex.exe!0x01040010 ConVar motd
-r5apex.exe!0x01bdce80 ConVar mouse_sensitivity
-r5apex.exe!0x01bd1e80 ConVar mouse_use_per_scope_sensitivity_scalars
-r5apex.exe!0x01bd1f20 ConVar mouse_zoomed_sensitivity_scalar_0
-r5apex.exe!0x01bd1fc0 ConVar mouse_zoomed_sensitivity_scalar_1
-r5apex.exe!0x01bd2060 ConVar mouse_zoomed_sensitivity_scalar_2
-r5apex.exe!0x01bd2100 ConVar mouse_zoomed_sensitivity_scalar_3
-r5apex.exe!0x01bd21a0 ConVar mouse_zoomed_sensitivity_scalar_4
-r5apex.exe!0x01bd2240 ConVar mouse_zoomed_sensitivity_scalar_5
-r5apex.exe!0x01bd22e0 ConVar mouse_zoomed_sensitivity_scalar_6
-r5apex.exe!0x01bd2380 ConVar mouse_zoomed_sensitivity_scalar_7
-r5apex.exe!0x01047bf0 ConVar move_one_cmd_per_client_frame
-r5apex.exe!0x01df0c90 ConVar movement_anim_downed_playback_maxrate
-r5apex.exe!0x01df04d0 ConVar movement_anim_playback_maxrate
-r5apex.exe!0x01df0390 ConVar movement_anim_playback_minrate
-r5apex.exe!0x01df0890 ConVar movement_anim_sprint_playback_maxrate
-r5apex.exe!0x01045310 ConVar mp_accountLink_requestInterval
-r5apex.exe!0x0103c260 ConVar mp_allowed
-r5apex.exe!0x01df09d0 ConVar mp_bodyyawrate
-r5apex.exe!0x01dcaf80 ConVar mp_class_max_dronecontroller
-r5apex.exe!0x01dd0410 ConVar mp_class_max_fireteam
-r5apex.exe!0x01dc6430 ConVar mp_class_max_pilot
-r5apex.exe!0x01dcc3e0 ConVar mp_class_max_titan
-r5apex.exe!0x011466f0 ConVar mp_countRRNobodyAsLobby
-r5apex.exe!0x01dcb920 ConVar mp_enablematchending
-r5apex.exe!0x01d997e0 ConVar mp_enabletimelimit
-r5apex.exe!0x01dd2870 ConVar mp_gamemode
-r5apex.exe!0x0114b290 ConVar mp_huge_threshhold
-r5apex.exe!0x0117ac90 ConVar mp_linkingAccountTime
-r5apex.exe!0x0117abf0 ConVar mp_linkingAccountWindow
-r5apex.exe!0x01df0610 ConVar mp_maxbodyyaw
-r5apex.exe!0x01046470 ConVar mp_permission_requestInterval
-r5apex.exe!0x01044830 ConVar mp_permission_rerequestInterval
-r5apex.exe!0x01d9b670 ConVar mp_player_level
-r5apex.exe!0x01df07f0 ConVar mp_scaleAnimationSpeeds
-r5apex.exe!0x01df0930 ConVar mp_showgestureslots
-r5apex.exe!0x0104da80 ConVar mtx_svEdition
-r5apex.exe!0x01e01ee0 ConVar muteWeaponSounds
-r5apex.exe!0x01147010 ConVar name
-r5apex.exe!0x01830ab0 ConVar net_RunInvalidatePhysics
-r5apex.exe!0x010425d0 ConVar net_async_sendto
-r5apex.exe!0x01040bf0 ConVar net_autoUnthrottle
-r5apex.exe!0x010478b0 ConVar net_bandwidthPrintThreshold
-r5apex.exe!0x01045f00 ConVar net_bindToSpecificAddress
-r5apex.exe!0x0103bdd0 ConVar net_blockmsg
-r5apex.exe!0x0117bb50 ConVar net_chatThroughChatserver
-r5apex.exe!0x01047050 ConVar net_chokeloop
-r5apex.exe!0x01040ab0 ConVar net_clearReliableDataOnReset
-r5apex.exe!0x01e01b80 ConVar net_client_side_weapon_animations
-r5apex.exe!0x01047590 ConVar net_compressDataBlock
-r5apex.exe!0x01042790 ConVar net_compressLZValue
-r5apex.exe!0x0103fed0 ConVar net_compresspackets
-r5apex.exe!0x0103d3b0 ConVar net_compresspackets_minsize
-r5apex.exe!0x011461b0 ConVar net_connectPacketWarningThreshhold
-r5apex.exe!0x011498b0 ConVar net_connectingDataRate
-r5apex.exe!0x010396b0 ConVar net_createUndoDeltas
-r5apex.exe!0x0114b8d0 ConVar net_data_block_enabled
-r5apex.exe!0x01044eb0 ConVar net_datablockPrintSummaries
-r5apex.exe!0x01147e50 ConVar net_datablock_fastRate
-r5apex.exe!0x01040150 ConVar net_datablock_longSendTime
-r5apex.exe!0x01045b40 ConVar net_datablock_minResendInterval
-r5apex.exe!0x01149bb0 ConVar net_datablock_networkLossForSlowSpeed
-r5apex.exe!0x011483d0 ConVar net_datablock_resendRateForSlowSpeed
-r5apex.exe!0x0114ab10 ConVar net_datablock_slowRate
-r5apex.exe!0x0103b710 ConVar net_debugDataBlockReceiver
-r5apex.exe!0x01045090 ConVar net_debugDataBlockSender
-r5apex.exe!0x0104e150 ConVar net_debugLerping
-r5apex.exe!0x01146cf0 ConVar net_deltaFieldEntityBlockSize
-r5apex.exe!0x01145ad0 ConVar net_disconnectIfDeltaBufferIsFull
-r5apex.exe!0x0103b130 ConVar net_drawslider
-r5apex.exe!0x01042db0 ConVar net_droppackets
-r5apex.exe!0x01039a30 ConVar net_dumpChangesPrecise
-r5apex.exe!0x0103d8e0 ConVar net_encrypt_copyCtx
-r5apex.exe!0x01040330 ConVar net_encryptionDebug
-r5apex.exe!0x01040d30 ConVar net_fakelag
-r5apex.exe!0x01046c90 ConVar net_fakelag_clientOnly
-r5apex.exe!0x01047810 ConVar net_fakelagjitter
-r5apex.exe!0x01047770 ConVar net_fakeloss
-r5apex.exe!0x01145990 ConVar net_forceDeltaBufferToOverflow
-r5apex.exe!0x010388c0 ConVar net_forceUnnecessaryUndoDeltas
-r5apex.exe!0x01044cd0 ConVar net_forcetimeout
-r5apex.exe!0x01047370 ConVar net_fullyConnectedDataRate
-r5apex.exe!0x0110fad0 ConVar net_highPacketLatencyThreshold
-r5apex.exe!0x0110ea80 ConVar net_highPacketLossThreshold
-r5apex.exe!0x0110e700 ConVar net_ignoreAllSnapshots
-r5apex.exe!0x01145fd0 ConVar net_largeSnapshotThreshold
-r5apex.exe!0x0104e330 ConVar net_lerpFields
-r5apex.exe!0x01149770 ConVar net_lowBandwidthConnect
-r5apex.exe!0x0103b7b0 ConVar net_maxAccumulatedClearTimeBalance
-r5apex.exe!0x0103c660 ConVar net_maxcleartime
-r5apex.exe!0x0103d700 ConVar net_maxfilesize
-r5apex.exe!0x0103c820 ConVar net_maxfragments
-r5apex.exe!0x0103bad0 ConVar net_maxroutable
-r5apex.exe!0x0103c010 ConVar net_minConnectionTimeForSpam
-r5apex.exe!0x01044350 ConVar net_minQueuedPacketsForPrint
-r5apex.exe!0x01d8f640 ConVar net_minResetIdleTimerInterval
-r5apex.exe!0x0103caa0 ConVar net_minimumPacketLossDC
-r5apex.exe!0x0103c8c0 ConVar net_minroutable
-r5apex.exe!0x01146e30 ConVar net_noPostDataForDeletedEnts
-r5apex.exe!0x01dd70a0 ConVar net_old_seed_generation
-r5apex.exe!0x011493b0 ConVar net_optimize_persistent_data
-r5apex.exe!0x0114b650 ConVar net_optimize_playlists
-r5apex.exe!0x01e04cd0 ConVar net_optimize_weapons
-r5apex.exe!0x0182b3c0 ConVar net_predictParentEntities
-r5apex.exe!0x01146510 ConVar net_predictedEntsUseFirstAvailableSnapshot
-r5apex.exe!0x01145f30 ConVar net_predictionDebug
-r5apex.exe!0x0104e470 ConVar net_pretendSnapshotArrayFull
-r5apex.exe!0x0103e730 ConVar net_printCompression
-r5apex.exe!0x01146650 ConVar net_printOutOfSnapshots
-r5apex.exe!0x010385d0 ConVar net_printUnnecessaryDeltas
-r5apex.exe!0x0103a650 ConVar net_propSkipPrintThreshold
-r5apex.exe!0x01041ff0 ConVar net_public_adr
-r5apex.exe!0x0103e4a0 ConVar net_queue_trace
-r5apex.exe!0x0103acb0 ConVar net_queuedPackets_PrintOversleeps
-r5apex.exe!0x01040970 ConVar net_queuedPackets_SkipSmallSleeps
-r5apex.exe!0x0103ebe0 ConVar net_queued_packet_sender_nopacket_sleep
-r5apex.exe!0x0103dac0 ConVar net_queued_packet_thread
-r5apex.exe!0x0103f700 ConVar net_recentNetworkGapWindow
-r5apex.exe!0x01041870 ConVar net_recentNetworkGapsNeeded
-r5apex.exe!0x01145cb0 ConVar net_recreateScriptInstanceOnReplayTransition
-r5apex.exe!0x0104e5b0 ConVar net_recv_dumpChanges
-r5apex.exe!0x01038f80 ConVar net_recv_dumpNetworkedChangesOnEntCreate
-r5apex.exe!0x01039340 ConVar net_recv_watchEnt
-r5apex.exe!0x01038960 ConVar net_recv_watchField1
-r5apex.exe!0x01039f40 ConVar net_recv_watchField2
-r5apex.exe!0x010436f0 ConVar net_resourcePrintMinimum
-r5apex.exe!0x010381d0 ConVar net_sendFloatDeltas
-r5apex.exe!0x0114a890 ConVar net_sendProfileTotals
-r5apex.exe!0x01042970 ConVar net_sendtoInJob
-r5apex.exe!0x01046ab0 ConVar net_showFailedAuth
-r5apex.exe!0x01146250 ConVar net_showLargeSnapshot
-r5apex.exe!0x0103ee60 ConVar net_showQueued
-r5apex.exe!0x010378c0 ConVar net_showUndoDeltas
-r5apex.exe!0x0110eec0 ConVar net_showUserWarnings
-r5apex.exe!0x01046f10 ConVar net_showchoke
-r5apex.exe!0x0103b670 ConVar net_showchokeInterval
-r5apex.exe!0x0103fd90 ConVar net_showdrop
-r5apex.exe!0x0103b990 ConVar net_showfragments
-r5apex.exe!0x01041910 ConVar net_showmsg
-r5apex.exe!0x0103dc00 ConVar net_showpeaks
-r5apex.exe!0x0103f5f0 ConVar net_showsendrecv
-r5apex.exe!0x0103dca0 ConVar net_showsplits
-r5apex.exe!0x0103fc50 ConVar net_showudp
-r5apex.exe!0x0103b1d0 ConVar net_showudp_oob
-r5apex.exe!0x010476d0 ConVar net_showudp_remoteonly
-r5apex.exe!0x01de14b0 ConVar net_showusercmd
-r5apex.exe!0x010371d0 ConVar net_skipUnnecessaryDeltas
-r5apex.exe!0x01043b70 ConVar net_splitrate
-r5apex.exe!0x01042530 ConVar net_splitrateDefaultMP
-r5apex.exe!0x0103ec80 ConVar net_splitrateDefaultSP
-r5apex.exe!0x0103ae70 ConVar net_tamperPackets
-r5apex.exe!0x01145df0 ConVar net_threadedEntityDeltas
-r5apex.exe!0x01146ed0 ConVar net_threadedProcessPacket
-r5apex.exe!0x0103c4a0 ConVar net_timeoutUsesLastReadTime
-r5apex.exe!0x01042f90 ConVar net_trackerWarningInterval
-r5apex.exe!0x01045d20 ConVar net_usesocketsforloopback
-r5apex.exe!0x010445b0 ConVar net_verifyEncryption
-r5apex.exe!0x0117ba30 ConVar net_voiceEchoFromChatServer
-r5apex.exe!0x0103c1c0 ConVar net_warnAboutSocketReadGaps
-r5apex.exe!0x01044e10 ConVar net_warnGapTime
-r5apex.exe!0x01045fa0 ConVar net_wifi
-r5apex.exe!0x01145c10 ConVar net_worldHitchSlopTime
-r5apex.exe!0x01042e50 ConVar next
-r5apex.exe!0x01dd90e0 ConVar noReloadAfterUse
-r5apex.exe!0x0180f820 ConVar noise_filter_scale
-r5apex.exe!0x01048c40 ConVar not_focus_sleep
-r5apex.exe!0x011765f0 ConVar notification_displayTime
-r5apex.exe!0x01049ca0 ConVar nucleus_id
-r5apex.exe!0x010492c0 ConVar nucleus_pid
-r5apex.exe!0x01be1820 ConVar number_shortenToMillionsAfter
-r5apex.exe!0x01e05770 ConVar offhandTossOverheadPitchThreshold
-r5apex.exe!0x01d99600 ConVar offhand_alignEndAnim1p3p
-r5apex.exe!0x0104b240 ConVar old_culling
-r5apex.exe!0x010495e0 ConVar old_gather_props
-r5apex.exe!0x01dd05b0 ConVar one_handed_change_rate
-r5apex.exe!0x01176d70 ConVar openInvite_spam
-r5apex.exe!0x011767d0 ConVar openInvites_filterByLanguage
-r5apex.exe!0x01176a90 ConVar openInvites_filterByRegion
-r5apex.exe!0x01178f70 ConVar openinvite_duration_default
-r5apex.exe!0x01bcd3b0 ConVar ordnanceSwapSelectCooldown
-r5apex.exe!0x011783d0 ConVar origin_Errorlevel_OldBehaviour
-r5apex.exe!0x01178650 ConVar origin_Errorlevel_Telementry
-r5apex.exe!0x011785b0 ConVar origin_authCodeFailureMaxBackoffSeconds
-r5apex.exe!0x01178470 ConVar origin_autoRefreshToken
-r5apex.exe!0x01178290 ConVar origin_debug
-r5apex.exe!0x01177e90 ConVar origin_disconnectWhenOffline
-r5apex.exe!0x01177f30 ConVar origin_ignoreInvitesOnLoadScreen
-r5apex.exe!0x01177d70 ConVar origin_igo_mutes_sound_enabled
-r5apex.exe!0x0182e040 ConVar origin_igo_muting_sound
-r5apex.exe!0x01178330 ConVar origin_presense_updateRate
-r5apex.exe!0x01178510 ConVar origin_tokenFailureMaxBackoffSeconds
-r5apex.exe!0x018141b0 ConVar panel_showVisChanges
-r5apex.exe!0x01813e70 ConVar panel_test_title_safe
-r5apex.exe!0x0181a660 ConVar parenting_debug
-r5apex.exe!0x01dedb50 ConVar particleEffect_checkShouldStillPlay
-r5apex.exe!0x01e08750 ConVar particle_alwayswakeonstop
-r5apex.exe!0x0117ca90 ConVar particle_cpu_level
-r5apex.exe!0x01e08b10 ConVar particle_delete_all_except
-r5apex.exe!0x01bc2040 ConVar particle_dlights_enable
-r5apex.exe!0x01bcbed0 ConVar particle_dlights_spew
-r5apex.exe!0x01d954c0 ConVar particle_gpu_level
-r5apex.exe!0x0128e670 ConVar particle_lighting_clear_enable
-r5apex.exe!0x0128e5d0 ConVar particle_lighting_size
-r5apex.exe!0x01e08350 ConVar particle_lighting_viewmodel_enable
-r5apex.exe!0x01be40d0 ConVar particle_overlay
-r5apex.exe!0x01d8ea10 ConVar particle_overlay_detail_attributes
-r5apex.exe!0x01d94470 ConVar particle_overlay_detail_filter
-r5apex.exe!0x01d94090 ConVar particle_overlay_detail_list_particles
-r5apex.exe!0x01d90110 ConVar particle_overlay_detail_scroll
-r5apex.exe!0x01d924c0 ConVar particle_overlay_hide_sleeping
-r5apex.exe!0x01d92e00 ConVar particle_overlay_list_filter
-r5apex.exe!0x01be3c20 ConVar particle_overlay_list_tally
-r5apex.exe!0x01d8e8d0 ConVar particle_overlay_list_tally_collapse_children
-r5apex.exe!0x01d90c90 ConVar particle_overlay_old
-r5apex.exe!0x01d916b0 ConVar particle_overlay_scroll
-r5apex.exe!0x01e07d10 ConVar particle_remap_vol2cp_debug
-r5apex.exe!0x01e06c40 ConVar particle_script_dump
-r5apex.exe!0x01e06ce0 ConVar particle_script_list
-r5apex.exe!0x01e06d80 ConVar particle_script_log
-r5apex.exe!0x01d8d980 ConVar particle_scrub_debug
-r5apex.exe!0x01e08430 ConVar particle_scrub_debug_effect
-r5apex.exe!0x01e08c50 ConVar particle_scrub_is_using_time_scrub
-r5apex.exe!0x01e087f0 ConVar particle_scrub_max_dt
-r5apex.exe!0x01e08890 ConVar particle_scrub_play_speed
-r5apex.exe!0x01e08a70 ConVar particle_scrub_quality
-r5apex.exe!0x01e08930 ConVar particle_scrub_time
-r5apex.exe!0x01d92b80 ConVar particle_simulateoverflow
-r5apex.exe!0x01e08bb0 ConVar particles_cull_dlights
-r5apex.exe!0x01e089d0 ConVar particles_max_passes
-r5apex.exe!0x01e084d0 ConVar particles_spawncull
-r5apex.exe!0x01e08610 ConVar particles_spawncull_report
-r5apex.exe!0x01179010 ConVar parties_alwaysReadSubs
-r5apex.exe!0x01178810 ConVar party_autoCreatePartyAlways
-r5apex.exe!0x01179310 ConVar party_autoCreatePartyDelay
-r5apex.exe!0x01de1790 ConVar party_color_enabled
-r5apex.exe!0x01178a90 ConVar party_doRealNameLookups
-r5apex.exe!0x01178950 ConVar party_doRealNameLookupsForOwner
-r5apex.exe!0x01177050 ConVar party_hostname
-r5apex.exe!0x011788b0 ConVar party_httpHandleTimeout
-r5apex.exe!0x01176b30 ConVar party_keepAliveTime
-r5apex.exe!0x01178e30 ConVar party_keepAliveTime
-r5apex.exe!0x01178c70 ConVar party_leaderAlwaysDetectsChanges
-r5apex.exe!0x01178ed0 ConVar party_leaveMatchOnJoin
-r5apex.exe!0x01178d90 ConVar party_lookupRealNamesForOpenInvites
-r5apex.exe!0x011790b0 ConVar party_lookupRealNamesForOpenInvitesForOwner
-r5apex.exe!0x01178bd0 ConVar party_minSize
-r5apex.exe!0x01179270 ConVar party_privacy
-r5apex.exe!0x011793b0 ConVar party_readyToSearch
-r5apex.exe!0x0114be80 ConVar party_relyOnPartyForMemberUserInfo
-r5apex.exe!0x01179450 ConVar party_requireConsensusForSearch
-r5apex.exe!0x0104c190 ConVar perTriangleCollisionForced
-r5apex.exe!0x01047190 ConVar persistenceDef_hostname
-r5apex.exe!0x0117bf50 ConVar persistenceDef_queryMaxHttpRetries
-r5apex.exe!0x0117beb0 ConVar persistenceDef_readMaxHttpRetries
-r5apex.exe!0x0117bff0 ConVar persistenceDef_retryReadAfterErrorTime
-r5apex.exe!0x0117c090 ConVar persistenceDef_writeMaxHttpRetries
-r5apex.exe!0x0117c1d0 ConVar persistence_clForceNew
-r5apex.exe!0x0117c270 ConVar persistence_disableForBuildProcess
-r5apex.exe!0x0117c310 ConVar persistence_enforce_manifest
-r5apex.exe!0x01045e60 ConVar persistence_hostname
-r5apex.exe!0x0117c450 ConVar persistence_new_player_if_upgrade_fails
-r5apex.exe!0x0117c130 ConVar persistence_upload_def
-r5apex.exe!0x0117c3b0 ConVar persistence_upload_failure_is_error
-r5apex.exe!0x01146950 ConVar persistent_warningRate
-r5apex.exe!0x01048630 ConVar pertrianglecollision
-r5apex.exe!0x01e067e0 ConVar phys_bounce
-r5apex.exe!0x01e068c0 ConVar phys_cfm
-r5apex.exe!0x01e06600 ConVar phys_cfm_anglejointstop
-r5apex.exe!0x01e066a0 ConVar phys_drawContacts
-r5apex.exe!0x01e06740 ConVar phys_drawContactsDuration
-r5apex.exe!0x01e062e0 ConVar phys_drawGeoms
-r5apex.exe!0x01e06420 ConVar phys_drawTunnelChecks
-r5apex.exe!0x01e06060 ConVar phys_enableObjectPairCollidePrototype
-r5apex.exe!0x01e05f20 ConVar phys_erp
-r5apex.exe!0x01e06240 ConVar phys_erp_anglejointstop
-r5apex.exe!0x01e06560 ConVar phys_frictionDefault
-r5apex.exe!0x01d93590 ConVar phys_showObjectCount
-r5apex.exe!0x01e06100 ConVar phys_threadGoWide
-r5apex.exe!0x01e06ba0 ConVar physics_async_cl
-r5apex.exe!0x01e06a60 ConVar physics_autoSleepAngularThreshold
-r5apex.exe!0x01e064c0 ConVar physics_autoSleepDebug
-r5apex.exe!0x01e06380 ConVar physics_autoSleepGroundHysteresis
-r5apex.exe!0x01e06b00 ConVar physics_autoSleepSpeedThreshold
-r5apex.exe!0x01e05fc0 ConVar physics_collideWithMovingGeo
-r5apex.exe!0x01db4250 ConVar physics_defaultMaxAngularSpeed
-r5apex.exe!0x01dcff10 ConVar physics_defaultMaxSpeed
-r5apex.exe!0x01817c90 ConVar physics_scaled_mem
-r5apex.exe!0x01e061a0 ConVar physics_tunnelChecks
-r5apex.exe!0x01e069c0 ConVar physics_tunnelChecksForceAlways
-r5apex.exe!0x0104b5c0 ConVar pin_opt_in
-r5apex.exe!0x01146f70 ConVar pin_plat_id
-r5apex.exe!0x0104b8e0 ConVar pin_sid
-r5apex.exe!0x01048310 ConVar pin_telemetry_actually_send
-r5apex.exe!0x0104bb60 ConVar pin_telemetry_debug_code
-r5apex.exe!0x010480f0 ConVar pin_telemetry_debug_payload
-r5apex.exe!0x01de2a20 ConVar pin_telemetry_debug_script
-r5apex.exe!0x01048590 ConVar pin_telemetry_dont_send_events
-r5apex.exe!0x010497a0 ConVar pin_telemetry_hostname
-r5apex.exe!0x01049360 ConVar pin_telemetry_inactivity_send_time
-r5apex.exe!0x01049540 ConVar pin_telemetry_max_payload_size
-r5apex.exe!0x0104a980 ConVar pin_telemetry_send_debug
-r5apex.exe!0x01041690 ConVar ping_debug
-r5apex.exe!0x01df20c0 ConVar ping_max_green
-r5apex.exe!0x01df1f40 ConVar ping_max_red
-r5apex.exe!0x01df2520 ConVar ping_max_yellow
-r5apex.exe!0x0103fb10 ConVar ping_minSentForChoice
-r5apex.exe!0x01041c30 ConVar ping_qos_units
-r5apex.exe!0x01046510 ConVar ping_usePacketLoss
-r5apex.exe!0x0181ad00 ConVar pixvis_enable
-r5apex.exe!0x0180cd10 ConVar pixvis_maxquads
-r5apex.exe!0x0181aa80 ConVar pixvis_spew
-r5apex.exe!0x01177a50 ConVar plat_environment
-r5apex.exe!0x011762f0 ConVar plat_retryNameLookups
-r5apex.exe!0x011470b0 ConVar platform_user_id
-r5apex.exe!0x01df1680 ConVar playerListPartyColorB
-r5apex.exe!0x01df2480 ConVar playerListPartyColorG
-r5apex.exe!0x01df1360 ConVar playerListPartyColorR
-r5apex.exe!0x01df2700 ConVar playerListUseFriendColor
-r5apex.exe!0x01dd8570 ConVar player_ADS_buffer_time_seconds
-r5apex.exe!0x01bbf310 ConVar player_debugPredictedPosition
-r5apex.exe!0x0181a480 ConVar player_deltaAnimsMakeMeUnpredicted
-r5apex.exe!0x01835e30 ConVar player_doJetwashEffects
-r5apex.exe!0x01dc7a70 ConVar player_extraairaccelleration
-r5apex.exe!0x01bbf1d0 ConVar player_highFrequencyThinkDistance
-r5apex.exe!0x01dd0820 ConVar player_movementBounds_predictionShare
-r5apex.exe!0x01df0a70 ConVar player_movingDeathThreshold
-r5apex.exe!0x01839610 ConVar player_respawnInputDebounceDuration
-r5apex.exe!0x01bd8e40 ConVar player_setting_autosprint
-r5apex.exe!0x01d90e10 ConVar player_setting_damage_closes_deathbox_menu
-r5apex.exe!0x0182f670 ConVar player_showEyePosition
-r5apex.exe!0x01d96640 ConVar player_useMovementBounds
-r5apex.exe!0x018397d0 ConVar player_viewchange_debug_pitch
-r5apex.exe!0x01bc12c0 ConVar player_viewchange_debug_roll
-r5apex.exe!0x01834420 ConVar player_viewchange_debug_yaw
-r5apex.exe!0x0104b100 ConVar playlist_changeGamemodeAutomatically
-r5apex.exe!0x0104a1a0 ConVar playlist_debug
-r5apex.exe!0x01048050 ConVar playlist_debug_getvar
-r5apex.exe!0x01049700 ConVar playlist_debug_localization
-r5apex.exe!0x01dc6570 ConVar playlist_variableErrorsChecks
-r5apex.exe!0x01df32e0 ConVar portal_pointpush_debug
-r5apex.exe!0x01df3380 ConVar portal_pointpush_think_rate
-r5apex.exe!0x01ddb8b0 ConVar portal_use_player_avoidance
-r5apex.exe!0x01830c90 ConVar postdataupdate_threaded
-r5apex.exe!0x01825760 ConVar postdataupdate_threaded_chunksize
-r5apex.exe!0x01042a10 ConVar printConnectTimings
-r5apex.exe!0x0183e6d0 ConVar print_timeprefix
-r5apex.exe!0x01dfe0f0 ConVar process_pending_vm_effects
-r5apex.exe!0x01df14a0 ConVar progressbar_allow_wrap
-r5apex.exe!0x01df1900 ConVar progressbar_high_precision
-r5apex.exe!0x01df1720 ConVar progressbar_single_bar
-r5apex.exe!0x01e03cf0 ConVar projectile_fake_prediction_in_kill_replay
-r5apex.exe!0x01dfedb0 ConVar projectile_faketrails
-r5apex.exe!0x01e00a70 ConVar projectile_filltrails
-r5apex.exe!0x01df6b00 ConVar projectile_lagCompensationDebug
-r5apex.exe!0x01df9350 ConVar projectile_lagCompensationDebugDrawTime
-r5apex.exe!0x01dff5b0 ConVar projectile_lagCompensationDebugExtra
-r5apex.exe!0x01df8db0 ConVar projectile_lagCompensationDebugServerOffset
-r5apex.exe!0x01df8ce0 ConVar projectile_lagCompensationMissileTimeStepScalar
-r5apex.exe!0x01dff510 ConVar projectile_muzzleOffsetFirstPersonDecayDist
-r5apex.exe!0x01dfaad0 ConVar projectile_muzzleOffsetFirstPersonDecayMaxTime
-r5apex.exe!0x01df9c10 ConVar projectile_muzzleOffsetThirdPersonDecayDist
-r5apex.exe!0x01dff650 ConVar projectile_muzzleOffsetThirdPersonDecayMaxTime
-r5apex.exe!0x01dfef50 ConVar projectile_prediction
-r5apex.exe!0x01e011f0 ConVar projectile_predictionErrorCorrectTime
-r5apex.exe!0x01bbf7f0 ConVar prop_lightweightPropsSkipAnimData
-r5apex.exe!0x0181a8a0 ConVar prop_survivalSkipsAnimData
-r5apex.exe!0x01dd8770 ConVar props_break_burst_rotation
-r5apex.exe!0x01dd8610 ConVar props_break_max_pieces
-r5apex.exe!0x01deb2c0 ConVar props_break_max_pieces_perframe
-r5apex.exe!0x011770f0 ConVar publication_hostname
-r5apex.exe!0x01bcbd90 ConVar push_cl
-r5apex.exe!0x0182ca40 ConVar push_cl_always_update_prev_matrix
-r5apex.exe!0x01de2b60 ConVar push_debug
-r5apex.exe!0x01ddd2e0 ConVar push_debug_ent
-r5apex.exe!0x01dd7570 ConVar push_ragdolls
-r5apex.exe!0x01dd84d0 ConVar pve_debug
-r5apex.exe!0x01def0d0 ConVar pvs_addWorkItemsAccum
-r5apex.exe!0x01def490 ConVar pvs_addWorkItemsThreshold_edges
-r5apex.exe!0x01def670 ConVar pvs_addWorkItemsThreshold_leaves
-r5apex.exe!0x01def710 ConVar pvs_cullBoxes
-r5apex.exe!0x01def2b0 ConVar pvs_debug
-r5apex.exe!0x01def530 ConVar pvs_drawPortals
-r5apex.exe!0x01def350 ConVar pvs_frustumCullOnly
-r5apex.exe!0x01bcc0b0 ConVar pvs_start_early
-r5apex.exe!0x01dcbfd0 ConVar r_AirboatViewDampenDamp
-r5apex.exe!0x01dcf880 ConVar r_AirboatViewDampenFreq
-r5apex.exe!0x01dcd0e0 ConVar r_AirboatViewZHeight
-r5apex.exe!0x01dcffb0 ConVar r_JeepViewDampenDamp
-r5apex.exe!0x01dcd4c0 ConVar r_JeepViewDampenFreq
-r5apex.exe!0x01d9a200 ConVar r_VehicleViewDampen
-r5apex.exe!0x01def3f0 ConVar r_WaterDrawReflection
-r5apex.exe!0x01189790 ConVar r_WaterDrawRefraction
-r5apex.exe!0x0103cbe0 ConVar r_aspectratio
-r5apex.exe!0x0180e6a0 ConVar r_bloomtintb
-r5apex.exe!0x0180e880 ConVar r_bloomtintexponent
-r5apex.exe!0x0180e7e0 ConVar r_bloomtintg
-r5apex.exe!0x0180e740 ConVar r_bloomtintr
-r5apex.exe!0x01be27a0 ConVar r_blurmenubg
-r5apex.exe!0x0180c650 ConVar r_bone_matrix_bulk_update_threshold
-r5apex.exe!0x0104a2e0 ConVar r_brush_queue_mode
-r5apex.exe!0x0104ad20 ConVar r_createmodeldecals
-r5apex.exe!0x010408d0 ConVar r_cullshadowworldmeshes
-r5apex.exe!0x01d96da0 ConVar r_debug_draw_box_depth_test
-r5apex.exe!0x0104b380 ConVar r_decal_cover_count
-r5apex.exe!0x01039e20 ConVar r_decal_cull_stretch_limit
-r5apex.exe!0x010490e0 ConVar r_decal_draw_basis
-r5apex.exe!0x01039200 ConVar r_decal_drawclipped
-r5apex.exe!0x0104b980 ConVar r_decal_overlap_area
-r5apex.exe!0x0104ac80 ConVar r_decal_overlap_count
-r5apex.exe!0x01049220 ConVar r_decal_test_scale
-r5apex.exe!0x01041b90 ConVar r_decals
-r5apex.exe!0x0128d260 ConVar r_delay_texture_destroy
-r5apex.exe!0x0180dfc0 ConVar r_ditherAlpha
-r5apex.exe!0x01189970 ConVar r_ditherFade
-r5apex.exe!0x01835d80 ConVar r_ditherFade
-r5apex.exe!0x0180e060 ConVar r_ditherFadeShadows
-r5apex.exe!0x01830010 ConVar r_ditherFadeShadows
-r5apex.exe!0x01bcbaf0 ConVar r_drawallrenderables
-r5apex.exe!0x01be2b80 ConVar r_drawalphasort
-r5apex.exe!0x01046bf0 ConVar r_drawbrushmodels
-r5apex.exe!0x01d95030 ConVar r_drawbrushmodels
-r5apex.exe!0x0104aa20 ConVar r_drawdecals
-r5apex.exe!0x01d939b0 ConVar r_drawdepth_of_blend2transparent
-r5apex.exe!0x01038020 ConVar r_drawdlights
-r5apex.exe!0x0103da20 ConVar r_drawentities
-r5apex.exe!0x01039d80 ConVar r_drawlightdist
-r5apex.exe!0x010394d0 ConVar r_drawlightinfo
-r5apex.exe!0x01830970 ConVar r_drawmodelsinzfill
-r5apex.exe!0x0103ca00 ConVar r_drawmodelstatsoverlay
-r5apex.exe!0x01824280 ConVar r_drawmodelstatsoverlay
-r5apex.exe!0x010449b0 ConVar r_drawmodelstatsoverlaydistance
-r5apex.exe!0x010419b0 ConVar r_drawmodelstatsoverlayfilter
-r5apex.exe!0x0103e400 ConVar r_drawmodelstatsoverlaymax
-r5apex.exe!0x01040470 ConVar r_drawmodelstatsoverlaymin
-r5apex.exe!0x01d95420 ConVar r_drawopaquerenderables
-r5apex.exe!0x0183b310 ConVar r_drawothermodels
-r5apex.exe!0x01d95380 ConVar r_drawparticles
-r5apex.exe!0x01828d90 ConVar r_drawrenderboxes
-r5apex.exe!0x01be2420 ConVar r_drawscreenspaceparticles
-r5apex.exe!0x01d8fa90 ConVar r_drawsky
-r5apex.exe!0x01d905b0 ConVar r_drawskybox_deprecated
-r5apex.exe!0x01039c10 ConVar r_drawstaticlight
-r5apex.exe!0x01d934f0 ConVar r_drawstaticprops
-r5apex.exe!0x01bd5a90 ConVar r_drawtracers
-r5apex.exe!0x010494a0 ConVar r_drawvgui
-r5apex.exe!0x01d8f9f0 ConVar r_drawviewmodel
-r5apex.exe!0x01044b90 ConVar r_drawworld
-r5apex.exe!0x0103b270 ConVar r_dynamic
-r5apex.exe!0x01d919d0 ConVar r_earlyRenderables
-r5apex.exe!0x0182fd10 ConVar r_enableOriginSort
-r5apex.exe!0x01be0dc0 ConVar r_fadeincode
-r5apex.exe!0x01bcc270 ConVar r_farz
-r5apex.exe!0x01043f20 ConVar r_fastzreject
-r5apex.exe!0x01def170 ConVar r_forcecheapwater
-r5apex.exe!0x01839c40 ConVar r_jiggle_bones
-r5apex.exe!0x010454f0 ConVar r_lightmap
-r5apex.exe!0x01044f50 ConVar r_lightprobe_force_trans_dist
-r5apex.exe!0x01045810 ConVar r_lightstyle
-r5apex.exe!0x01042830 ConVar r_lod
-r5apex.exe!0x01d90b50 ConVar r_lod
-r5apex.exe!0x01df5c40 ConVar r_lod_switch_scale
-r5apex.exe!0x018315b0 ConVar r_mapextents
-r5apex.exe!0x01810890 ConVar r_modeldecal_maxtotal
-r5apex.exe!0x0181ab20 ConVar r_nearz
-r5apex.exe!0x01290090 ConVar r_no_stalls
-r5apex.exe!0x0180c830 ConVar r_no_stalls
-r5apex.exe!0x0180cdb0 ConVar r_no_stalls
-r5apex.exe!0x0103d310 ConVar r_norefresh
-r5apex.exe!0x01d8e4b0 ConVar r_particle_lighting_debug
-r5apex.exe!0x01be0770 ConVar r_particle_lighting_enable
-r5apex.exe!0x01e08010 ConVar r_particle_lighting_enable
-r5apex.exe!0x01e073d0 ConVar r_particle_lighting_force
-r5apex.exe!0x01e08290 ConVar r_particle_lighting_force
-r5apex.exe!0x01be0fa0 ConVar r_particle_low_res_debug
-r5apex.exe!0x0128e7b0 ConVar r_particle_low_res_draw_weight_tex
-r5apex.exe!0x01e080e0 ConVar r_particle_low_res_enable
-r5apex.exe!0x01e08180 ConVar r_particle_low_res_force
-r5apex.exe!0x0128e710 ConVar r_particle_low_res_tiled_composite
-r5apex.exe!0x01d8dfe0 ConVar r_particle_sim_spike_increment_ms
-r5apex.exe!0x01d93a50 ConVar r_particle_sim_spike_threshold_ms
-r5apex.exe!0x01be06b0 ConVar r_particle_timescale
-r5apex.exe!0x01839ba0 ConVar r_pos_debug
-r5apex.exe!0x01830710 ConVar r_render_pos_debug
-r5apex.exe!0x01189e70 ConVar r_rimlight
-r5apex.exe!0x01035030 ConVar r_rootlod
-r5apex.exe!0x01045dc0 ConVar r_rootlod
-r5apex.exe!0x01bd2600 ConVar r_ropetranslucent
-r5apex.exe!0x01d917f0 ConVar r_setupBoneWorkerThreadhold
-r5apex.exe!0x01189f10 ConVar r_shadowrendertotexture
-r5apex.exe!0x01be2ae0 ConVar r_sky_ignoreAngles
-r5apex.exe!0x01bc22c0 ConVar r_sort_trans_debug
-r5apex.exe!0x01830570 ConVar r_sort_trans_debug_dist
-r5apex.exe!0x01be3ac0 ConVar r_threaded_particles
-r5apex.exe!0x01be1ee0 ConVar r_updaterefracttexture
-r5apex.exe!0x01d94870 ConVar r_updaterefracttexture_allowmultiple
-r5apex.exe!0x01037aa0 ConVar r_visambient
-r5apex.exe!0x01039610 ConVar r_visambient_orig
-r5apex.exe!0x01039b70 ConVar r_visambient_point
-r5apex.exe!0x0103c780 ConVar r_vislighting_sphereradius
-r5apex.exe!0x0103efa0 ConVar r_vismodellighting
-r5apex.exe!0x0104b520 ConVar r_vismodellighting_lightpos
-r5apex.exe!0x0103b410 ConVar r_vismodellighting_maxdist
-r5apex.exe!0x01be13c0 ConVar r_vismodellighting_maxdist
-r5apex.exe!0x01042670 ConVar r_vismodellighting_mindist
-r5apex.exe!0x01d90990 ConVar r_vismodellighting_mindist
-r5apex.exe!0x0104a4a0 ConVar r_vismodellighting_offset_x
-r5apex.exe!0x01048f00 ConVar r_vismodellighting_offset_y
-r5apex.exe!0x0104a100 ConVar r_vismodellighting_offset_z
-r5apex.exe!0x0183e590 ConVar r_visualizeproplightcaching
-r5apex.exe!0x01ded000 ConVar r_visualizetraces
-r5apex.exe!0x01deca80 ConVar r_visualizetraces_duration
-r5apex.exe!0x0128fb10 ConVar r_volumetric_lighting_blur_count
-r5apex.exe!0x0128fa70 ConVar r_volumetric_lighting_blur_type
-r5apex.exe!0x0128f9d0 ConVar r_volumetric_lighting_enabled
-r5apex.exe!0x0128fc50 ConVar r_volumetric_lighting_numSteps
-r5apex.exe!0x0128fbb0 ConVar r_volumetric_lighting_rotate_dither
-r5apex.exe!0x01def210 ConVar r_waterforceexpensive
-r5apex.exe!0x01def5d0 ConVar r_waterforcereflectentities
-r5apex.exe!0x01d94f10 ConVar r_zfill
-r5apex.exe!0x0182f170 ConVar ragdoll_debug
-r5apex.exe!0x01d93d90 ConVar ragdoll_sleepaftertime
-r5apex.exe!0x01be37f0 ConVar rankedplay_display_enabled
-r5apex.exe!0x01be1060 ConVar rankedplay_voice_enabled
-r5apex.exe!0x011103f0 ConVar rate
-r5apex.exe!0x01bd14b0 ConVar real_time_update_dt
-r5apex.exe!0x0104e510 ConVar recalculateOrigin_threaded_chunksize
-r5apex.exe!0x01df4a40 ConVar remoteCalls_requireConnectionScriptsForViewPlayer
-r5apex.exe!0x01047e70 ConVar remoteMatchInfo_print
-r5apex.exe!0x0104c2d0 ConVar replay_enable
-r5apex.exe!0x01049c00 ConVar replay_prediction_smooth
-r5apex.exe!0x01bc04c0 ConVar report_cliententitysim
-r5apex.exe!0x01830430 ConVar report_clientthinklist
-r5apex.exe!0x01bcb890 ConVar rodeo_camera_smooth_blend_out_time
-r5apex.exe!0x01833570 ConVar rodeo_camera_smooth_enable
-r5apex.exe!0x01df0750 ConVar rodeoed_anims_enabled
-r5apex.exe!0x01bdead0 ConVar rope_collide
-r5apex.exe!0x01bdd560 ConVar rope_debug_shake
-r5apex.exe!0x01bcff20 ConVar rope_parallelMeshBuilder
-r5apex.exe!0x01bde390 ConVar rope_regenMeshEachDraw
-r5apex.exe!0x01bd1770 ConVar rope_shake
-r5apex.exe!0x01bddd70 ConVar rope_texels_per_world_unit
-r5apex.exe!0x01bcd570 ConVar rope_wiggle_harmonic_falloff
-r5apex.exe!0x01bdf550 ConVar rope_wiggle_magnitude_loose
-r5apex.exe!0x01bd26a0 ConVar rope_wiggle_magnitude_tight
-r5apex.exe!0x01bdadc0 ConVar rope_wiggle_oscillate_speed
-r5apex.exe!0x01bcd290 ConVar rope_wiggle_rotate_speed
-r5apex.exe!0x01bd7500 ConVar rope_wiggle_zipline_min_points
-r5apex.exe!0x01bcccd0 ConVar rope_wind_dist
-r5apex.exe!0x01831eb0 ConVar rotate_ents
-r5apex.exe!0x0103c0b0 ConVar rspn_motd
-r5apex.exe!0x0128c390 ConVar rt_sync_message_pump
-r5apex.exe!0x0128c430 ConVar rt_worker
-r5apex.exe!0x01df2160 ConVar ruiPanel_resArgName
-r5apex.exe!0x01d92ea0 ConVar rui_asyncTracks
-r5apex.exe!0x01815640 ConVar rui_defaultDebugFontFace
-r5apex.exe!0x01815960 ConVar rui_defaultFontFace
-r5apex.exe!0x018147a0 ConVar rui_defaultFontHeight
-r5apex.exe!0x01813f70 ConVar rui_overrideVguiTextRendering
-r5apex.exe!0x01147650 ConVar rui_padDist
-r5apex.exe!0x011475b0 ConVar rui_safeAreaFrac
-r5apex.exe!0x01048770 ConVar rui_standardTextHeight
-r5apex.exe!0x0103cda0 ConVar s2sPort
-r5apex.exe!0x0114b510 ConVar save_enable
-r5apex.exe!0x01814260 ConVar scheme_manager_font_debug
-r5apex.exe!0x01d8f440 ConVar scr_centertime
-r5apex.exe!0x01826b70 ConVar screen_indicator_back_range
-r5apex.exe!0x0183b9b0 ConVar screen_indicator_ellipse_height
-r5apex.exe!0x0181ae50 ConVar screen_indicator_ellipse_width
-r5apex.exe!0x01828a90 ConVar screen_indicator_pitch_limit
-r5apex.exe!0x01828ff0 ConVar screen_indicator_pitch_scale
-r5apex.exe!0x01d92900 ConVar screenfade_debug
-r5apex.exe!0x01dd2c30 ConVar script_compile_all_levels
-r5apex.exe!0x01d90070 ConVar script_debugger_connect_client_on_mapspawn
-r5apex.exe!0x01d94e70 ConVar script_debugger_connect_ui_auto
-r5apex.exe!0x01e09190 ConVar script_debugger_host
-r5apex.exe!0x01e09230 ConVar script_debugger_port_client
-r5apex.exe!0x01e090f0 ConVar script_debugger_port_server
-r5apex.exe!0x01e08fb0 ConVar script_debugger_port_ui
-r5apex.exe!0x01e095c0 ConVar script_disallow_newslot_on_globals
-r5apex.exe!0x01e09050 ConVar script_dump_simple
-r5apex.exe!0x01ddadb0 ConVar script_error_on_midgame_load
-r5apex.exe!0x01e08f10 ConVar script_infinite_loop_ms
-r5apex.exe!0x01ddc9f0 ConVar script_parallel_trace_LOS_multiple
-r5apex.exe!0x01dcd9d0 ConVar script_precache_errors
-r5apex.exe!0x01be0f00 ConVar script_printDeferredCalls
-r5apex.exe!0x01deb5c0 ConVar script_retry_after_compile_errors
-r5apex.exe!0x01dde0b0 ConVar script_seasonNameQueryInterval
-r5apex.exe!0x01df1540 ConVar script_showErrorDialogs
-r5apex.exe!0x0103b550 ConVar script_slopTimeBeforeBudgetEnforcement
-r5apex.exe!0x01dd2d70 ConVar sequence_transitioner_enable
-r5apex.exe!0x010468d0 ConVar serverFilter
-r5apex.exe!0x01176f10 ConVar serverReports_hostname
-r5apex.exe!0x01037310 ConVar server_concommands_allways_network
-r5apex.exe!0x01178b30 ConVar server_query_interval
-r5apex.exe!0x01bcc1d0 ConVar sfm_record_hz
-r5apex.exe!0x0182f2b0 ConVar shadow_always_update
-r5apex.exe!0x0180ca10 ConVar shadow_bleedfudge
-r5apex.exe!0x0103d1d0 ConVar shadow_capable
-r5apex.exe!0x01d90eb0 ConVar shadow_clear_dist
-r5apex.exe!0x0182ad80 ConVar shadow_dbg_draw
-r5apex.exe!0x0182ac40 ConVar shadow_default_filter_size
-r5apex.exe!0x01bc0380 ConVar shadow_depth_dimen_min
-r5apex.exe!0x0182e180 ConVar shadow_depth_upres_factor_max
-r5apex.exe!0x01839130 ConVar shadow_drawfrustum
-r5apex.exe!0x018254e0 ConVar shadow_dynamic_blendfactor
-r5apex.exe!0x01044650 ConVar shadow_enable
-r5apex.exe!0x018307b0 ConVar shadow_esm_enable
-r5apex.exe!0x01823b20 ConVar shadow_filter_maxstep
-r5apex.exe!0x01bcb130 ConVar shadow_info
-r5apex.exe!0x01bbf750 ConVar shadow_lobby_mode_allowed
-r5apex.exe!0x0183e890 ConVar shadow_max_dynamic_lobby
-r5apex.exe!0x01828810 ConVar shadow_max_old_dynamic
-r5apex.exe!0x01833610 ConVar shadow_max_spot_updates
-r5apex.exe!0x01184a10 ConVar shadow_maxdynamic
-r5apex.exe!0x018241e0 ConVar shadow_maxdynamic
-r5apex.exe!0x0182f3f0 ConVar shadow_min_count_smallest
-r5apex.exe!0x0180cbf0 ConVar shadow_minvariance
-r5apex.exe!0x01bcbcf0 ConVar shadow_multisampled
-r5apex.exe!0x01826ad0 ConVar shadow_noLOD
-r5apex.exe!0x01bbfaf0 ConVar shadow_show_spot_udpate_infos
-r5apex.exe!0x01839870 ConVar shadow_tools_depth_dimen_min
-r5apex.exe!0x0182fed0 ConVar shadow_tools_depth_upres_factor_max
-r5apex.exe!0x01836f30 ConVar shadow_tools_min_count_smallest
-r5apex.exe!0x01bbf930 ConVar shadow_tools_mode
-r5apex.exe!0x0183ad80 ConVar shadow_update_culling
-r5apex.exe!0x01bbf270 ConVar shake_angleFactor_human
-r5apex.exe!0x01829690 ConVar shake_angleFactor_titan
-r5apex.exe!0x01be3290 ConVar shake_basicPitchFactor
-r5apex.exe!0x01d8f380 ConVar shake_basicRandomRollFactor
-r5apex.exe!0x01835ce0 ConVar shake_offsetFactor_human
-r5apex.exe!0x01825800 ConVar shake_offsetFactor_titan
-r5apex.exe!0x01bc0680 ConVar shake_viewmodelFactor_ads_human
-r5apex.exe!0x01bbfa50 ConVar shake_viewmodelFactor_ads_titan
-r5apex.exe!0x01826a30 ConVar shake_viewmodelFactor_human
-r5apex.exe!0x01bc0720 ConVar shake_viewmodelFactor_titan
-r5apex.exe!0x0118a190 ConVar showfps_enabled
-r5apex.exe!0x01187150 ConVar showfps_heightpercent
-r5apex.exe!0x0117f5e0 ConVar showfps_mouse_latency
-r5apex.exe!0x011898d0 ConVar showfps_smoothtime
-r5apex.exe!0x0118a910 ConVar showfps_spinner
-r5apex.exe!0x011873b0 ConVar showmem_enabled
-r5apex.exe!0x0118a370 ConVar showmem_mode_bottom
-r5apex.exe!0x0118a870 ConVar showmem_mode_top
-r5apex.exe!0x0118a550 ConVar shownet_enabled
-r5apex.exe!0x0118a0f0 ConVar showsnapshot_enabled
-r5apex.exe!0x01bd0b90 ConVar sidearmSwapSelectCooldown
-r5apex.exe!0x01bdaa20 ConVar sidearmSwapSelectDoubleTapTime
-r5apex.exe!0x0103e180 ConVar single_frame_shutdown_for_reload
-r5apex.exe!0x01045770 ConVar singlestep
-r5apex.exe!0x01049f20 ConVar skill_arena
-r5apex.exe!0x01049a20 ConVar skill_dediOnly
-r5apex.exe!0x0104ae60 ConVar skill_enabled
-r5apex.exe!0x0103e2c0 ConVar skill_hostname
-r5apex.exe!0x01d9b330 ConVar skip_jump_height_fraction
-r5apex.exe!0x01dcde20 ConVar skip_jump_height_speed
-r5apex.exe!0x01dcf1c0 ConVar skip_replenish_double_jump
-r5apex.exe!0x01d99420 ConVar skip_sounds
-r5apex.exe!0x01dceca0 ConVar skip_speed_reduce
-r5apex.exe!0x01dcbc80 ConVar skip_speed_retain
-r5apex.exe!0x01dcfd00 ConVar skip_time
-r5apex.exe!0x01048810 ConVar sleep_when_meeting_framerate
-r5apex.exe!0x0104b660 ConVar sleep_when_meeting_framerate_headroom_ms
-r5apex.exe!0x01dcad70 ConVar slide_auto_stand
-r5apex.exe!0x01d985c0 ConVar slide_max_angle_dot
-r5apex.exe!0x01d9b530 ConVar slide_step_velocity_reduction
-r5apex.exe!0x01ddd9a0 ConVar slide_viewTiltDecreaseSpeed
-r5apex.exe!0x01de1830 ConVar slide_viewTiltIncreaseSpeed
-r5apex.exe!0x01dd2f30 ConVar slide_viewTiltPlayerSpeed
-r5apex.exe!0x01ddb810 ConVar slide_viewTiltSide
-r5apex.exe!0x01dc50e0 ConVar slide_whileInAir
-r5apex.exe!0x01039160 ConVar slowconsolelog_old_logic
-r5apex.exe!0x01de12d0 ConVar smoothstairs_lunge
-r5apex.exe!0x01038530 ConVar sort_opaque_meshes
-r5apex.exe!0x0182ba60 ConVar sound_classic_music
-r5apex.exe!0x01be04f0 ConVar sound_entity_seek_snap
-r5apex.exe!0x01dd74d0 ConVar sound_musicReduced
-r5apex.exe!0x01bcc310 ConVar sound_num_speakers
-r5apex.exe!0x01df3910 ConVar sound_only_warn_on_missing_sound_events_in_client_script
-r5apex.exe!0x01110630 ConVar sound_printloaderrors
-r5apex.exe!0x018256c0 ConVar sound_volume
-r5apex.exe!0x01830dd0 ConVar sound_volume_dialogue
-r5apex.exe!0x01830d30 ConVar sound_volume_dialogue_sp
-r5apex.exe!0x01834260 ConVar sound_volume_music_game
-r5apex.exe!0x01831470 ConVar sound_volume_music_game_sp
-r5apex.exe!0x01830610 ConVar sound_volume_music_lobby
-r5apex.exe!0x0181a2a0 ConVar sound_volume_sfx
-r5apex.exe!0x01bc1c00 ConVar sound_volume_sfx_sp
-r5apex.exe!0x01bc1e60 ConVar sound_volume_voice
-r5apex.exe!0x0183ae20 ConVar sound_without_focus
-r5apex.exe!0x01bda900 ConVar soundscape_fadetime
-r5apex.exe!0x01bd8da0 ConVar soundscape_message
-r5apex.exe!0x01bdbe00 ConVar soundscape_radius_debug
-r5apex.exe!0x01831e10 ConVar soundtrigger_repeat_interval
-r5apex.exe!0x01047f10 ConVar sp_not_focus_pause
-r5apex.exe!0x0180c5b0 ConVar spam_skinning_matrices_used
-r5apex.exe!0x0180c790 ConVar spam_skinning_matrices_used_detailed
-r5apex.exe!0x01d99f80 ConVar spatial_partition_deadlock_assert
-r5apex.exe!0x01df5b80 ConVar speech_queue_bytes
-r5apex.exe!0x0117a750 ConVar speechtotext_audioenabled
-r5apex.exe!0x0117a610 ConVar speechtotext_enabled
-r5apex.exe!0x0117a570 ConVar speechtotext_forcedisabled
-r5apex.exe!0x0117a390 ConVar speechtotext_hostname
-r5apex.exe!0x0117a4d0 ConVar speechtotext_msg_droptimeout
-r5apex.exe!0x011794f0 ConVar speechtotext_path
-r5apex.exe!0x0117a6b0 ConVar speechtotext_quiettime
-r5apex.exe!0x0117a110 ConVar speechtotext_stats_errorspermin
-r5apex.exe!0x0117a430 ConVar speechtotext_stats_interval
-r5apex.exe!0x0117a250 ConVar speechtotext_stats_senderrors
-r5apex.exe!0x0117a1b0 ConVar speechtotext_stats_sendrequests
-r5apex.exe!0x0117a2f0 ConVar speechtotext_stats_sendsuccess
-r5apex.exe!0x010401f0 ConVar speechtotexttoken_hostname
-r5apex.exe!0x0104d310 ConVar speex_audio_recording
-r5apex.exe!0x0104c550 ConVar speex_audio_value
-r5apex.exe!0x0117c950 ConVar speex_preprocess_agc_max_gain
-r5apex.exe!0x0117c590 ConVar speex_preprocess_noise_suppress
-r5apex.exe!0x0117c8b0 ConVar speex_preprocess_set_agc_decrenment
-r5apex.exe!0x0117c4f0 ConVar speex_preprocess_set_agc_increment
-r5apex.exe!0x0117c770 ConVar speex_preprocess_set_agc_target
-r5apex.exe!0x0104c730 ConVar speex_quiet_threshold
-r5apex.exe!0x0104c870 ConVar speex_quiet_window
-r5apex.exe!0x0117c630 ConVar speex_set_enh
-r5apex.exe!0x0117c6d0 ConVar speex_use_highpass
-r5apex.exe!0x0117c810 ConVar speex_use_preproser
-r5apex.exe!0x01ded1e0 ConVar spinner_debug_info
-r5apex.exe!0x01dd86b0 ConVar sprint_powerdrain
-r5apex.exe!0x01bbfd50 ConVar sprint_view_shake_style
-r5apex.exe!0x01d96150 ConVar sprinttilt_accel
-r5apex.exe!0x01dcc550 ConVar sprinttilt_maxvel
-r5apex.exe!0x01d98ea0 ConVar sprinttilt_turnrange
-r5apex.exe!0x01d8dce0 ConVar ss_enable
-r5apex.exe!0x01be1300 ConVar ss_force_primary_fullscreen
-r5apex.exe!0x01bd8f60 ConVar ss_mimic
-r5apex.exe!0x01d8e120 ConVar ss_splitmode
-r5apex.exe!0x01d921f0 ConVar ss_verticalsplit
-r5apex.exe!0x01bcb750 ConVar ss_viewmodelfov
-r5apex.exe!0x011496d0 ConVar ss_voice_hearpartner
-r5apex.exe!0x0128eb70 ConVar ssao_allow_partial
-r5apex.exe!0x0128edf0 ConVar ssao_blur
-r5apex.exe!0x0128f250 ConVar ssao_blur_edge_sharpness
-r5apex.exe!0x0128f070 ConVar ssao_depth_max
-r5apex.exe!0x0128ea30 ConVar ssao_downsample
-r5apex.exe!0x0128ed50 ConVar ssao_enabled
-r5apex.exe!0x0128f110 ConVar ssao_exponent
-r5apex.exe!0x0128e990 ConVar ssao_jitter_scale
-r5apex.exe!0x0128f390 ConVar ssao_max_res
-r5apex.exe!0x0128ec10 ConVar ssao_max_res_threshold
-r5apex.exe!0x0128e8f0 ConVar ssao_num_directions
-r5apex.exe!0x0128f7f0 ConVar ssao_num_steps
-r5apex.exe!0x0128f610 ConVar ssao_on_everything
-r5apex.exe!0x0128e850 ConVar ssao_radius
-r5apex.exe!0x0128ef30 ConVar ssao_radius_in_lobby
-r5apex.exe!0x0128f570 ConVar ssao_show
-r5apex.exe!0x0128f930 ConVar ssao_show
-r5apex.exe!0x0180f500 ConVar ssao_show
-r5apex.exe!0x0128ead0 ConVar ssao_snap_uv
-r5apex.exe!0x0128f2f0 ConVar ssao_tech
-r5apex.exe!0x01d911d0 ConVar ssao_tech
-r5apex.exe!0x0128f890 ConVar ssao_upsample_ranged
-r5apex.exe!0x01049de0 ConVar startButtonCommand
-r5apex.exe!0x01048a60 ConVar staticProp_budget
-r5apex.exe!0x01825580 ConVar staticProp_buildlists_on_worker
-r5apex.exe!0x01049fc0 ConVar staticProp_debug_draw
-r5apex.exe!0x010486d0 ConVar staticProp_earlyDepthPrepass
-r5apex.exe!0x0104c0f0 ConVar staticProp_earlyDepthPrepassDist
-r5apex.exe!0x01049d40 ConVar staticProp_earlyDepthPrepassIncludeOpaques
-r5apex.exe!0x0104ba20 ConVar staticProp_earlyDepthPrepassIncludeOpaquesDist
-r5apex.exe!0x0104b2e0 ConVar staticProp_gather_size_weight
-r5apex.exe!0x01048ba0 ConVar staticProp_max_scaled_dist
-r5apex.exe!0x0104bac0 ConVar staticProp_no_fade_scalar
-r5apex.exe!0x01d94550 ConVar staticProp_refineDrawOnWorker
-r5apex.exe!0x011817b0 ConVar static_shadow
-r5apex.exe!0x0181af70 ConVar static_shadow
-r5apex.exe!0x01830bf0 ConVar static_shadow_bounds_per_env
-r5apex.exe!0x01d8f1a0 ConVar static_shadow_debug_2d
-r5apex.exe!0x0182e530 ConVar static_shadow_debug_dirty_rects
-r5apex.exe!0x01bcb9b0 ConVar static_shadow_depth_bias_scale
-r5apex.exe!0x018289f0 ConVar static_shadow_expand_z
-r5apex.exe!0x0182e3f0 ConVar static_shadow_good_merge_ratio
-r5apex.exe!0x0183a200 ConVar static_shadow_good_merge_score
-r5apex.exe!0x01bc1ca0 ConVar static_shadow_prop_min_size
-r5apex.exe!0x0118a410 ConVar static_shadow_res
-r5apex.exe!0x0182ace0 ConVar static_shadow_shrink_culler
-r5apex.exe!0x0118a690 ConVar static_shadow_use_d16
-r5apex.exe!0x01825b20 ConVar static_shadow_uses_shadow_lod
-r5apex.exe!0x0103f950 ConVar staticfile_hostname
-r5apex.exe!0x01041730 ConVar stats_hostname
-r5apex.exe!0x01dd7280 ConVar status_effect_warning_level
-r5apex.exe!0x0117a870 ConVar steam_id
-r5apex.exe!0x0117aa10 ConVar steam_name
-r5apex.exe!0x0117ab50 ConVar steamlink_hostname
-r5apex.exe!0x0128cb20 ConVar stream_addnoise
-r5apex.exe!0x0128c780 ConVar stream_bsp_bucket_bias
-r5apex.exe!0x0128cf80 ConVar stream_bsp_dist_scale
-r5apex.exe!0x010353f0 ConVar stream_cache_capacity
-r5apex.exe!0x01035530 ConVar stream_cache_capacity_while_loading
-r5apex.exe!0x010350d0 ConVar stream_cache_high_priority_static_models
-r5apex.exe!0x01034cd0 ConVar stream_cache_multithreaded
-r5apex.exe!0x01034eb0 ConVar stream_cache_preload_from_rpak
-r5apex.exe!0x01035350 ConVar stream_cache_read_buffer_cap
-r5apex.exe!0x01035490 ConVar stream_cache_read_count_cap
-r5apex.exe!0x010352b0 ConVar stream_cache_speculative_add_level
-r5apex.exe!0x010355d0 ConVar stream_cache_speculative_drop
-r5apex.exe!0x0128ca00 ConVar stream_drop_unused
-r5apex.exe!0x0128c820 ConVar stream_enable
-r5apex.exe!0x01184b50 ConVar stream_freeze_camera
-r5apex.exe!0x0128c6e0 ConVar stream_load_after_drop
-r5apex.exe!0x0128d0a0 ConVar stream_memory
-r5apex.exe!0x0128cd00 ConVar stream_memory_ignore
-r5apex.exe!0x0128cc60 ConVar stream_memory_ignore_vram
-r5apex.exe!0x0128cbc0 ConVar stream_memory_while_loading
-r5apex.exe!0x0128cda0 ConVar stream_mode
-r5apex.exe!0x0128ce40 ConVar stream_never_high_priority_frac
-r5apex.exe!0x0128d140 ConVar stream_overlay
-r5apex.exe!0x0128cee0 ConVar stream_overlay_mode
-r5apex.exe!0x0128c960 ConVar stream_pause
-r5apex.exe!0x0128c8c0 ConVar stream_picmip
-r5apex.exe!0x0128df70 ConVar stream_resource_max_commits_per_frame
-r5apex.exe!0x0128e010 ConVar stream_resource_thread
-r5apex.exe!0x0128ded0 ConVar stream_resource_wait_copy_to_commit
-r5apex.exe!0x0128e0b0 ConVar stream_resource_wait_creation_to_copy
-r5apex.exe!0x0128de30 ConVar stream_resource_wait_for_additional_gpus
-r5apex.exe!0x01047230 ConVar stringtable_alwaysrebuilddictionaries
-r5apex.exe!0x01041e10 ConVar stringtable_compress
-r5apex.exe!0x01042ef0 ConVar stringtable_showsizes
-r5apex.exe!0x01178070 ConVar stryder_forceOriginUsersInvisible
-r5apex.exe!0x01177230 ConVar stryder_security
-r5apex.exe!0x01d9aa50 ConVar stuck_debugging
-r5apex.exe!0x01dcb4a0 ConVar stuck_debugging_world_only
-r5apex.exe!0x01034750 ConVar studiobonecache_unlimited
-r5apex.exe!0x01176fb0 ConVar subscription_hostname
-r5apex.exe!0x01dc85d0 ConVar superjump_disabled_from_water
-r5apex.exe!0x01dcfbd0 ConVar superjump_drain_power_onfail
-r5apex.exe!0x01dc9a60 ConVar superjump_fail_sound_when_jump_limit
-r5apex.exe!0x01dcbdf0 ConVar superjump_limit
-r5apex.exe!0x01dc8130 ConVar superjump_limitreset_onwallrun
-r5apex.exe!0x01db4890 ConVar superjump_max_power_use
-r5apex.exe!0x01d9b1c0 ConVar superjump_min_height_fraction
-r5apex.exe!0x01dcaca0 ConVar superjump_min_power_use
-r5apex.exe!0x01dc6c80 ConVar superjump_powerreset_onground
-r5apex.exe!0x01dca330 ConVar sv_airaccelerate
-r5apex.exe!0x01040790 ConVar sv_allTicksFinal
-r5apex.exe!0x01148510 ConVar sv_allowSendTableTransmitToClients
-r5apex.exe!0x0114a310 ConVar sv_allowSpectatorClients
-r5apex.exe!0x011494f0 ConVar sv_asyncSendSnapshot
-r5apex.exe!0x01d99cc0 ConVar sv_backspeed
-r5apex.exe!0x01149810 ConVar sv_balanceTeams
-r5apex.exe!0x01db4710 ConVar sv_bounce
-r5apex.exe!0x0114ba20 ConVar sv_cheats
-r5apex.exe!0x01148bf0 ConVar sv_checkPropBudgets
-r5apex.exe!0x01148f90 ConVar sv_compressPlaylists
-r5apex.exe!0x01038130 ConVar sv_compressTimeValEpsilon
-r5apex.exe!0x010382a0 ConVar sv_compressTimeVals
-r5apex.exe!0x01148790 ConVar sv_connectingClientDelay
-r5apex.exe!0x01149310 ConVar sv_debug_prop_send
-r5apex.exe!0x0114b150 ConVar sv_debugmanualmode
-r5apex.exe!0x0114acf0 ConVar sv_disconnectOnScriptError
-r5apex.exe!0x0114b5b0 ConVar sv_disconnectOnTooManySnapshotFrames
-r5apex.exe!0x0103d7a0 ConVar sv_dumpstringtables
-r5apex.exe!0x0114b3d0 ConVar sv_earlyPersistenceRead
-r5apex.exe!0x010432b0 ConVar sv_everyThirdTick
-r5apex.exe!0x0114a930 ConVar sv_extra_client_connect_time
-r5apex.exe!0x0114a7f0 ConVar sv_fakeClientBaseId
-r5apex.exe!0x01dd1120 ConVar sv_footsteps
-r5apex.exe!0x01d99ee0 ConVar sv_friction
-r5apex.exe!0x01dd16b0 ConVar sv_gravity
-r5apex.exe!0x011480b0 ConVar sv_hibernate_ms
-r5apex.exe!0x01148db0 ConVar sv_hibernate_ms_vgui
-r5apex.exe!0x0114b470 ConVar sv_hibernate_postgame_delay
-r5apex.exe!0x0114ad90 ConVar sv_hibernate_when_empty
-r5apex.exe!0x0114a4f0 ConVar sv_instancebaselines
-r5apex.exe!0x0103ad50 ConVar sv_loadMapModelEarly
-r5apex.exe!0x010446f0 ConVar sv_lobbyType
-r5apex.exe!0x01148d10 ConVar sv_max_prop_data_dwords_huge_lobby
-r5apex.exe!0x0114a750 ConVar sv_max_prop_data_dwords_huge_multiplayer
-r5apex.exe!0x01148b50 ConVar sv_max_prop_data_dwords_lobby
-r5apex.exe!0x01149590 ConVar sv_max_prop_data_dwords_multiplayer
-r5apex.exe!0x011488d0 ConVar sv_max_prop_data_dwords_singleplayer
-r5apex.exe!0x0114b830 ConVar sv_max_props_huge_lobby
-r5apex.exe!0x01148150 ConVar sv_max_props_huge_multiplayer
-r5apex.exe!0x01148ef0 ConVar sv_max_props_lobby
-r5apex.exe!0x01148830 ConVar sv_max_props_multiplayer
-r5apex.exe!0x01148650 ConVar sv_max_props_singleplayer
-r5apex.exe!0x0114a3b0 ConVar sv_max_snapshots_lobby
-r5apex.exe!0x01147a10 ConVar sv_max_snapshots_multiplayer
-r5apex.exe!0x0114b6f0 ConVar sv_max_snapshots_singleplayer
-r5apex.exe!0x01149150 ConVar sv_maxclientframes
-r5apex.exe!0x0114ac50 ConVar sv_maxrate
-r5apex.exe!0x01041190 ConVar sv_maxroutable
-r5apex.exe!0x01dcdb40 ConVar sv_maxspeed
-r5apex.exe!0x0114a1d0 ConVar sv_maxupdaterate
-r5apex.exe!0x01dcdd80 ConVar sv_maxvelocity
-r5apex.exe!0x01149030 ConVar sv_minrate
-r5apex.exe!0x01149450 ConVar sv_minupdaterate
-r5apex.exe!0x01db45d0 ConVar sv_noclipaccelerate
-r5apex.exe!0x01dc8090 ConVar sv_noclipaccelerate_fast
-r5apex.exe!0x01dd06e0 ConVar sv_noclipaccelerate_slow
-r5apex.exe!0x01dcbd50 ConVar sv_noclipspeed
-r5apex.exe!0x01db4390 ConVar sv_noclipspeed_fast
-r5apex.exe!0x01d9b470 ConVar sv_noclipspeed_slow
-r5apex.exe!0x01dc9f90 ConVar sv_optimizedmovement
-r5apex.exe!0x01148330 ConVar sv_parallel_sendsnapshot
-r5apex.exe!0x01148010 ConVar sv_pausable
-r5apex.exe!0x01147830 ConVar sv_playerNameAppendCheater
-r5apex.exe!0x01dcf7e0 ConVar sv_players
-r5apex.exe!0x0114a630 ConVar sv_printHighWaterMark
-r5apex.exe!0x01dc6dc0 ConVar sv_pushaway_accel
-r5apex.exe!0x01d95f70 ConVar sv_pushaway_clientside
-r5apex.exe!0x01dd7d30 ConVar sv_pushaway_clientside_size
-r5apex.exe!0x01dce200 ConVar sv_pushaway_debug
-r5apex.exe!0x01d96800 ConVar sv_pushaway_dist
-r5apex.exe!0x01dc9b00 ConVar sv_pushaway_min_player_speed
-r5apex.exe!0x01dc9c10 ConVar sv_pushaway_player_accel
-r5apex.exe!0x01d9a3e0 ConVar sv_pushaway_player_dist
-r5apex.exe!0x01149a70 ConVar sv_rejectClientConnects
-r5apex.exe!0x01147db0 ConVar sv_rejectConnections
-r5apex.exe!0x01148970 ConVar sv_requireOriginToken
-r5apex.exe!0x01149b10 ConVar sv_resendSignonData
-r5apex.exe!0x01dcec00 ConVar sv_rollangle
-r5apex.exe!0x01dc8b10 ConVar sv_rollspeed
-r5apex.exe!0x01147d10 ConVar sv_runSpatialOptimizeInJob
-r5apex.exe!0x0114a270 ConVar sv_scarySnapDeltaPrints
-r5apex.exe!0x0114af70 ConVar sv_sendEarlyServerInfo
-r5apex.exe!0x01148e50 ConVar sv_sendReplayNetMessagesOnNoDeltaSnaps
-r5apex.exe!0x01149c50 ConVar sv_separate_freq_change_prop_send
-r5apex.exe!0x011481f0 ConVar sv_showClientTickCmds
-r5apex.exe!0x01147ab0 ConVar sv_showLargeSnapshotSize
-r5apex.exe!0x01147790 ConVar sv_showSnapshots
-r5apex.exe!0x01147970 ConVar sv_showUserCmds
-r5apex.exe!0x0114abb0 ConVar sv_single_core_dedi
-r5apex.exe!0x01147c70 ConVar sv_skipSendingUnnecessaryPersistence
-r5apex.exe!0x01dca260 ConVar sv_skyname
-r5apex.exe!0x0114a130 ConVar sv_snapshot_uniform_interval
-r5apex.exe!0x01dc9530 ConVar sv_specaccelerate
-r5apex.exe!0x01d9b810 ConVar sv_specnoclip
-r5apex.exe!0x01d99a60 ConVar sv_specspeed
-r5apex.exe!0x011476f0 ConVar sv_stats
-r5apex.exe!0x01d99e40 ConVar sv_stopspeed
-r5apex.exe!0x0114aed0 ConVar sv_stressbots
-r5apex.exe!0x0114b1f0 ConVar sv_struggleCheck
-r5apex.exe!0x01148470 ConVar sv_struggleSpam
-r5apex.exe!0x0114aa70 ConVar sv_struggleSpamInterval
-r5apex.exe!0x01149630 ConVar sv_tempents_send_from_delta
-r5apex.exe!0x011478d0 ConVar sv_tempents_send_from_last_sent
-r5apex.exe!0x0117be10 ConVar sv_testLargeDatablock
-r5apex.exe!0x0182ddc0 ConVar sv_teststepsimulation
-r5apex.exe!0x0114ae30 ConVar sv_transmitToAllPlayersMask_allBitsSet
-r5apex.exe!0x011499d0 ConVar sv_unnecessaryConnectDelay
-r5apex.exe!0x011485b0 ConVar sv_unreliableSnapMaxSize
-r5apex.exe!0x01147f70 ConVar sv_updaterate_mp
-r5apex.exe!0x0114a450 ConVar sv_updaterate_sp
-r5apex.exe!0x01ddac90 ConVar sv_useRK4forprojectiles
-r5apex.exe!0x011486f0 ConVar sv_useReputation
-r5apex.exe!0x0114a590 ConVar sv_useThreadsForSnapshots
-r5apex.exe!0x011491f0 ConVar sv_voiceDebug
-r5apex.exe!0x0114b010 ConVar sv_voiceEcho
-r5apex.exe!0x0114a9d0 ConVar sv_voiceenable
-r5apex.exe!0x01148ab0 ConVar sv_warnAboutCmdNumJumps
-r5apex.exe!0x01047950 ConVar sv_watchdogTimer
-r5apex.exe!0x01d95e30 ConVar sv_wateraccelerate
-r5apex.exe!0x01dd0240 ConVar sv_waterdist
-r5apex.exe!0x010456d0 ConVar sv_writePersistenceOnShutdown
-r5apex.exe!0x01df2020 ConVar sys_attract_mode_timeout
-r5apex.exe!0x0104a400 ConVar system_alt_f4_closes_window
-r5apex.exe!0x01dcb3d0 ConVar teams_unassigned_are_friendly
-r5apex.exe!0x01046180 ConVar telemetry_client_debug
-r5apex.exe!0x0103e840 ConVar telemetry_client_enable
-r5apex.exe!0x01043210 ConVar telemetry_client_sendInterval
-r5apex.exe!0x01dd3070 ConVar test_fakeTimeDays
-r5apex.exe!0x01dccb00 ConVar tether_damageScale
-r5apex.exe!0x01d965a0 ConVar tether_dodge_damage
-r5apex.exe!0x01d961f0 ConVar tether_healthDrain
-r5apex.exe!0x01d9a160 ConVar tether_healthDrainNPC
-r5apex.exe!0x01dcfb30 ConVar tether_maxvel
-r5apex.exe!0x01dcf390 ConVar tether_radius
-r5apex.exe!0x01dce2a0 ConVar tether_strength
-r5apex.exe!0x01deb4d0 ConVar think_limit
-r5apex.exe!0x01bd4830 ConVar thirdperson_mayamode
-r5apex.exe!0x01bcbe30 ConVar thirdperson_override
-r5apex.exe!0x01bdcf20 ConVar thirdperson_screenspace
-r5apex.exe!0x0103a1e0 ConVar timeout
-r5apex.exe!0x0103a280 ConVar timeout_during_load
-r5apex.exe!0x01de2980 ConVar titan_sprint_sound
-r5apex.exe!0x0114bd40 ConVar tracehull_height_error_check
-r5apex.exe!0x01bd7f30 ConVar tracer_debug
-r5apex.exe!0x01bcf610 ConVar tracer_extra
-r5apex.exe!0x01dfabf0 ConVar trail_optimizedRemove
-r5apex.exe!0x01d96290 ConVar traversal_anim
-r5apex.exe!0x01d983a0 ConVar traversal_cooldown
-r5apex.exe!0x01dc9260 ConVar traversal_enable
-r5apex.exe!0x01d9a5c0 ConVar traversal_hand_debug
-r5apex.exe!0x01dc97f0 ConVar traversal_hand_required_width
-r5apex.exe!0x01dfacc0 ConVar traversal_viewLerpInDuration
-r5apex.exe!0x01dfdfb0 ConVar traversal_viewLerpOut
-r5apex.exe!0x01e00330 ConVar traversal_viewLerpOutAngle
-r5apex.exe!0x01df6c20 ConVar traversal_viewLerpOutDebug
-r5apex.exe!0x01e00930 ConVar traversal_viewLerpOutPos
-r5apex.exe!0x01d996a0 ConVar traversal_window_duration
-r5apex.exe!0x01d98440 ConVar traversal_window_enable
-r5apex.exe!0x01d9a480 ConVar traversal_window_finish_angle
-r5apex.exe!0x01dc83b0 ConVar traversal_window_forward_offset
-r5apex.exe!0x01dcf500 ConVar traversal_window_hand_vertical_offset
-r5apex.exe!0x01dcc1a0 ConVar traversal_window_sideways_offset
-r5apex.exe!0x0182e2d0 ConVar traversal_window_view_pitch_max
-r5apex.exe!0x018288b0 ConVar traversal_window_view_pitch_min
-r5apex.exe!0x0183e630 ConVar traversal_window_yaw_max
-r5apex.exe!0x01dcd560 ConVar trigger_ignore_nonsolids
-r5apex.exe!0x0180ff00 ConVar tsaa_blendfactorincreaseatmaxvelocity
-r5apex.exe!0x0180ffa0 ConVar tsaa_blendfactorincreasewhenunoccluded
-r5apex.exe!0x018100e0 ConVar tsaa_blendfactormaxesoutatvelocity
-r5apex.exe!0x018102c0 ConVar tsaa_blendfactormodulationonsparklesandunocclusion
-r5apex.exe!0x01810180 ConVar tsaa_blendfactoroverride
-r5apex.exe!0x01810040 ConVar tsaa_curframeblendamount
-r5apex.exe!0x01810220 ConVar tsaa_debugresponsiveflag
-r5apex.exe!0x0180fdc0 ConVar tsaa_neighborhoodclamping
-r5apex.exe!0x0180fe60 ConVar tsaa_neighborhoodclampingsoftened
-r5apex.exe!0x01d925a0 ConVar tsaa_numsamples
-r5apex.exe!0x01bdde10 ConVar tweak_light_shadows_every_frame
-r5apex.exe!0x0110e7a0 ConVar twitch_check_interval
-r5apex.exe!0x0110f8f0 ConVar twitch_prime_rewards
-r5apex.exe!0x0110ed80 ConVar twitch_shouldQuery
-r5apex.exe!0x01df1e00 ConVar ui_fadecloud_time
-r5apex.exe!0x01df1d60 ConVar ui_fadexui_time
-r5apex.exe!0x01df1040 ConVar ui_gameui_ctrlr_title
-r5apex.exe!0x01df17c0 ConVar ui_gameui_modal
-r5apex.exe!0x01df12c0 ConVar ui_loadingscreen_autotransition_time
-r5apex.exe!0x01df19a0 ConVar ui_loadingscreen_fadein_time
-r5apex.exe!0x01038d80 ConVar ui_loadingscreen_fadeout_time
-r5apex.exe!0x01df1a40 ConVar ui_loadingscreen_fadeout_time
-r5apex.exe!0x01df23e0 ConVar ui_loadingscreen_mintransition_time
-r5apex.exe!0x01df15e0 ConVar ui_loadingscreen_transition_time
-r5apex.exe!0x01df1220 ConVar ui_lobby_jointimeout
-r5apex.exe!0x01df2340 ConVar ui_lobby_noautostart
-r5apex.exe!0x01df1cc0 ConVar ui_lobby_noresults_create_msg_time
-r5apex.exe!0x01dee670 ConVar ui_posedebug_fade_in_time
-r5apex.exe!0x01dee5d0 ConVar ui_posedebug_fade_out_time
-r5apex.exe!0x01df1180 ConVar ui_virtualnav_render
-r5apex.exe!0x01d96e40 ConVar unique_entity_names
-r5apex.exe!0x01df3c50 ConVar usePromptBaseColor
-r5apex.exe!0x01df5980 ConVar usePromptButtonTextColor
-r5apex.exe!0x01df39b0 ConVar usePromptImageScale
-r5apex.exe!0x01df54b0 ConVar usePromptImageYOffset
-r5apex.exe!0x01df6580 ConVar usePromptTextColor
-r5apex.exe!0x01d90bf0 ConVar use_monitors
-r5apex.exe!0x0104c370 ConVar use_valve_auto_gain
-r5apex.exe!0x011779b0 ConVar user_tracking_enabled
-r5apex.exe!0x0103d660 ConVar users_hostname
-r5apex.exe!0x0181a0c0 ConVar v_centermove
-r5apex.exe!0x01828950 ConVar v_centerspeed
-r5apex.exe!0x01dda650 ConVar variable_sights_gravity_scale_override
-r5apex.exe!0x01bdc4d0 ConVar vehicle_predictViaPlayer
-r5apex.exe!0x01814040 ConVar vgui_EnableFixedAspectScaling
-r5apex.exe!0x01df1ae0 ConVar vgui_drawPolyShapes
-r5apex.exe!0x010488b0 ConVar vgui_drawfocus
-r5apex.exe!0x01813c90 ConVar vgui_drawfocus
-r5apex.exe!0x0104a700 ConVar vgui_drawkeyfocus
-r5apex.exe!0x01049ac0 ConVar vgui_drawtree
-r5apex.exe!0x0104b1a0 ConVar vgui_drawtree_bounds
-r5apex.exe!0x0104c050 ConVar vgui_drawtree_draw_selected
-r5apex.exe!0x0104a540 ConVar vgui_drawtree_freeze
-r5apex.exe!0x01047c90 ConVar vgui_drawtree_hidden
-r5apex.exe!0x0104ab60 ConVar vgui_drawtree_panelalpha
-r5apex.exe!0x01049040 ConVar vgui_drawtree_panelptr
-r5apex.exe!0x01048d20 ConVar vgui_drawtree_popupsonly
-r5apex.exe!0x01047d30 ConVar vgui_drawtree_render_order
-r5apex.exe!0x0104b700 ConVar vgui_drawtree_scheme
-r5apex.exe!0x0104a060 ConVar vgui_drawtree_visible
-r5apex.exe!0x0181a520 ConVar vgui_interactive
-r5apex.exe!0x01815a00 ConVar vgui_noquads
-r5apex.exe!0x018158c0 ConVar vgui_notext
-r5apex.exe!0x01813d30 ConVar vgui_resize_on_resolution_change
-r5apex.exe!0x01814640 ConVar vgui_show_glyph_miss
-r5apex.exe!0x010451d0 ConVar vgui_simulate_during_bone_setup
-r5apex.exe!0x01df49a0 ConVar video_menu_uiscript_reset
-r5apex.exe!0x01dda450 ConVar viewDrift
-r5apex.exe!0x01ddd420 ConVar viewDrift_ads_delay_debounce_time
-r5apex.exe!0x01dde1c0 ConVar viewDrift_pitch_base1_amp
-r5apex.exe!0x01dddaa0 ConVar viewDrift_pitch_base1_freq
-r5apex.exe!0x01dd8d60 ConVar viewDrift_pitch_base1_phase
-r5apex.exe!0x01ddbd20 ConVar viewDrift_pitch_base2_amp
-r5apex.exe!0x01de2720 ConVar viewDrift_pitch_base2_freq
-r5apex.exe!0x01dda3b0 ConVar viewDrift_pitch_base2_phase
-r5apex.exe!0x01dd7dd0 ConVar viewDrift_pitch_scaler_amp
-r5apex.exe!0x01deb220 ConVar viewDrift_pitch_scaler_base
-r5apex.exe!0x01dd76b0 ConVar viewDrift_pitch_scaler_freq
-r5apex.exe!0x01dd7320 ConVar viewDrift_pitch_scaler_phase
-r5apex.exe!0x01ddd1d0 ConVar viewDrift_pitch_shifter_amp
-r5apex.exe!0x01ddd020 ConVar viewDrift_pitch_shifter_freq
-r5apex.exe!0x01de1bf0 ConVar viewDrift_pitch_shifter_phase
-r5apex.exe!0x01deb180 ConVar viewDrift_yaw_base1_amp
-r5apex.exe!0x01de1610 ConVar viewDrift_yaw_base1_freq
-r5apex.exe!0x01dd2a70 ConVar viewDrift_yaw_base1_phase
-r5apex.exe!0x01dda4f0 ConVar viewDrift_yaw_base2_amp
-r5apex.exe!0x01ddc470 ConVar viewDrift_yaw_base2_freq
-r5apex.exe!0x01ddc3d0 ConVar viewDrift_yaw_base2_phase
-r5apex.exe!0x01dd9040 ConVar viewDrift_yaw_scaler_amp
-r5apex.exe!0x01de16b0 ConVar viewDrift_yaw_scaler_base
-r5apex.exe!0x01de2080 ConVar viewDrift_yaw_scaler_freq
-r5apex.exe!0x01de1990 ConVar viewDrift_yaw_scaler_phase
-r5apex.exe!0x01dd2b90 ConVar viewDrift_yaw_shifter_amp
-r5apex.exe!0x01ddc2a0 ConVar viewDrift_yaw_shifter_freq
-r5apex.exe!0x01deb360 ConVar viewDrift_yaw_shifter_phase
-r5apex.exe!0x01debb40 ConVar view_offset_entity_enable
-r5apex.exe!0x01be0090 ConVar viewangle_debug
-r5apex.exe!0x01829870 ConVar viewangles_simpler
-r5apex.exe!0x0181a9e0 ConVar viewmodelShake
-r5apex.exe!0x0183ab00 ConVar viewmodelShake_sourceRollRange
-r5apex.exe!0x01dd0110 ConVar viewmodel_attachment_fov_fix
-r5apex.exe!0x01d91890 ConVar viewmodel_bounds_draw
-r5apex.exe!0x01be2a40 ConVar viewmodel_bounds_draw_lock
-r5apex.exe!0x0118a730 ConVar viewmodel_selfshadow
-r5apex.exe!0x01d90f50 ConVar viewmodel_selfshadow_debug_2d
-r5apex.exe!0x01be1780 ConVar viewmodel_selfshadow_tightbounds
-r5apex.exe!0x01825940 ConVar viewportscale
-r5apex.exe!0x01dc6750 ConVar viewpunch_base_springConstantX
-r5apex.exe!0x01dce4e0 ConVar viewpunch_base_springConstantY
-r5apex.exe!0x01dcd900 ConVar viewpunch_base_springConstantZ
-r5apex.exe!0x01db4930 ConVar viewpunch_base_springDampingX
-r5apex.exe!0x01dcdc40 ConVar viewpunch_base_springDampingY
-r5apex.exe!0x01d9a910 ConVar viewpunch_base_springDampingZ
-r5apex.exe!0x0103c960 ConVar violence_ablood
-r5apex.exe!0x01dd6380 ConVar violence_ablood
-r5apex.exe!0x0103f370 ConVar violence_agibs
-r5apex.exe!0x01dd8f80 ConVar violence_agibs
-r5apex.exe!0x01046650 ConVar violence_hblood
-r5apex.exe!0x01de27c0 ConVar violence_hblood
-r5apex.exe!0x01041050 ConVar violence_hgibs
-r5apex.exe!0x01ddbbb0 ConVar violence_hgibs
-r5apex.exe!0x01de28a0 ConVar visible_ent_cone_debug_duration_client
-r5apex.exe!0x0104d6c0 ConVar voice_absTriggerAmount
-r5apex.exe!0x01df69c0 ConVar voice_allow_mute_self
-r5apex.exe!0x0104c7d0 ConVar voice_avggain
-r5apex.exe!0x01ded3c0 ConVar voice_clientdebug
-r5apex.exe!0x0104cb90 ConVar voice_debugAddSecondTalker
-r5apex.exe!0x0104d270 ConVar voice_debugThresholds
-r5apex.exe!0x01048950 ConVar voice_debugfeedback
-r5apex.exe!0x01df5200 ConVar voice_decimate_at_bytes
-r5apex.exe!0x01df6880 ConVar voice_decimate_rate
-r5apex.exe!0x0104cff0 ConVar voice_enabled
-r5apex.exe!0x0104ccd0 ConVar voice_energyPerZeroThreshold
-r5apex.exe!0x0104d1d0 ConVar voice_energyThreshold
-r5apex.exe!0x0104d090 ConVar voice_forcemicrecord
-r5apex.exe!0x0103e0e0 ConVar voice_inputfromfile
-r5apex.exe!0x0181a020 ConVar voice_late_update
-r5apex.exe!0x0104d450 ConVar voice_loopback
-r5apex.exe!0x0104d620 ConVar voice_maxgain
-r5apex.exe!0x0104ce10 ConVar voice_minEnergyPerZeroThreshold
-r5apex.exe!0x0104d760 ConVar voice_mixer_boost
-r5apex.exe!0x0104d800 ConVar voice_mixer_mute
-r5apex.exe!0x0104d8a0 ConVar voice_mixer_volume
-r5apex.exe!0x01deda10 ConVar voice_modenable
-r5apex.exe!0x0114b0b0 ConVar voice_noxplat
-r5apex.exe!0x0104d580 ConVar voice_profile
-r5apex.exe!0x010403d0 ConVar voice_recordtofile
-r5apex.exe!0x0104c910 ConVar voice_scale
-r5apex.exe!0x0104cf50 ConVar voice_showchannels
-r5apex.exe!0x0104c5f0 ConVar voice_showincoming
-r5apex.exe!0x0104c690 ConVar voice_threshold_delay
-r5apex.exe!0x0104d3b0 ConVar voice_triggerCrossingRate
-r5apex.exe!0x0104caf0 ConVar voice_triggerRate
-r5apex.exe!0x0104d130 ConVar voice_vox
-r5apex.exe!0x0104c4b0 ConVar voice_writevoices
-r5apex.exe!0x0103db60 ConVar voice_xsend_debug
-r5apex.exe!0x0104c9b0 ConVar voice_zeroCrossingThreshold
-r5apex.exe!0x01df9530 ConVar vortex_damageimpulsescale
-r5apex.exe!0x01046a10 ConVar vprof_server_spike_threshold
-r5apex.exe!0x0103fa70 ConVar vprof_server_thread
-r5apex.exe!0x01d92840 ConVar vscript_ui_do_delay_init
-r5apex.exe!0x01839310 ConVar vsm_culling
-r5apex.exe!0x01bc1660 ConVar vsm_ignore_edge_planes
-r5apex.exe!0x0181b0b0 ConVar vsm_ignore_face_planes
-r5apex.exe!0x01048450 ConVar vx_do_not_throttle_events
-r5apex.exe!0x01dda5b0 ConVar wall_climb_pose_paramteter_hands_enabled
-r5apex.exe!0x01dcd2f0 ConVar wallclimb_vertical_gain_reduction
-r5apex.exe!0x01dd04e0 ConVar wallrun_angleChangeMinCos
-r5apex.exe!0x01dcfa60 ConVar wallrun_avoid_wall_top_decel
-r5apex.exe!0x01dfaf40 ConVar wallrun_curveDebug
-r5apex.exe!0x01df9cb0 ConVar wallrun_curveEnable
-r5apex.exe!0x01dcb650 ConVar wallrun_debug
-r5apex.exe!0x01d9b5d0 ConVar wallrun_enable
-r5apex.exe!0x01dcc070 ConVar wallrun_fallAwaySpeed
-r5apex.exe!0x01dcba90 ConVar wallrun_hangStopTime
-r5apex.exe!0x01d98520 ConVar wallrun_hangslipduration
-r5apex.exe!0x01dc9390 ConVar wallrun_hangslipstarttime
-r5apex.exe!0x01dc7b10 ConVar wallrun_hangslipvel
-r5apex.exe!0x01dc6390 ConVar wallrun_maxViewTilt
-r5apex.exe!0x01db4670 ConVar wallrun_minAngle_air
-r5apex.exe!0x01dcbec0 ConVar wallrun_noInputSlipFrac
-r5apex.exe!0x01d99da0 ConVar wallrun_pushAwayFallOffTime
-r5apex.exe!0x01dc4fa0 ConVar wallrun_repelEnable
-r5apex.exe!0x01dc8530 ConVar wallrun_repelSoftness
-r5apex.exe!0x01dceee0 ConVar wallrun_repelTimeMax
-r5apex.exe!0x01dc9490 ConVar wallrun_repelTimeMin
-r5apex.exe!0x01dc6e60 ConVar wallrun_retry_interval
-r5apex.exe!0x01dc7310 ConVar wallrun_rotateMaxRate
-r5apex.exe!0x01dc64d0 ConVar wallrun_sameWallDist
-r5apex.exe!0x01dc6d20 ConVar wallrun_sameWallDot
-r5apex.exe!0x01d96500 ConVar wallrun_sameWallSlope
-r5apex.exe!0x01dced70 ConVar wallrun_slipduration
-r5apex.exe!0x01dc71d0 ConVar wallrun_slipslowdown
-r5apex.exe!0x01dcb1c0 ConVar wallrun_slipstarttime
-r5apex.exe!0x01dcd6a0 ConVar wallrun_slipvel
-r5apex.exe!0x01d9a2a0 ConVar wallrun_strengthLossEnd
-r5apex.exe!0x01d999c0 ConVar wallrun_strengthLossStart
-r5apex.exe!0x01dc9890 ConVar wallrun_upwardAutoPush
-r5apex.exe!0x01dcdce0 ConVar wallrun_viewTiltPredictTime
-r5apex.exe!0x01d9a9b0 ConVar wallrun_viewTiltSpeed
-r5apex.exe!0x01dc8670 ConVar was_loaded
-r5apex.exe!0x01e019d0 ConVar weaponFastHolsterScale
-r5apex.exe!0x01dcf740 ConVar weaponSwitch3p_checkNewWeapon
-r5apex.exe!0x01e051f0 ConVar weaponSwitch3p_onHolster
-r5apex.exe!0x01ddb6d0 ConVar weapon_auto_swap_ordnance_no_ammo
-r5apex.exe!0x01e04d70 ConVar weapon_debugScript
-r5apex.exe!0x01e04750 ConVar weapon_doIdleForSurvivalMelee
-r5apex.exe!0x0183e9d0 ConVar weapon_friendly_fire_prevent_ui
-r5apex.exe!0x01de1550 ConVar weapon_meleeButtonPressProtection
-r5apex.exe!0x01bc1b60 ConVar weapon_parentingFixLerp
-r5apex.exe!0x01de21a0 ConVar weapon_pickup_allow_dupes
-r5apex.exe!0x0181ac60 ConVar weapon_poseParamMaxDistance
-r5apex.exe!0x01e050f0 ConVar weapon_render_with_fastpath
-r5apex.exe!0x01bda740 ConVar weapon_setting_autocycle_on_empty
-r5apex.exe!0x01e04e50 ConVar weapon_sprint_raise_delay
-r5apex.exe!0x01e05810 ConVar weaponx_predicting_client_only_optimization
-r5apex.exe!0x01e058d0 ConVar weaponx_smartammo_data_optimization
-r5apex.exe!0x01e00bd0 ConVar window_hint_debug
-r5apex.exe!0x01db4c90 ConVar window_hint_fov_down
-r5apex.exe!0x01dcd220 ConVar window_hint_fov_horz
-r5apex.exe!0x01dc6fa0 ConVar window_hint_fov_up
-r5apex.exe!0x01dcb330 ConVar window_hint_keyboard_fov_horz
-r5apex.exe!0x01d98740 ConVar window_hint_lookahead_time
-r5apex.exe!0x01dcf460 ConVar window_hint_max_horz_vel_change_dot
-r5apex.exe!0x01dc81d0 ConVar window_hint_max_vel_change_down
-r5apex.exe!0x01dceb60 ConVar window_hint_max_vel_change_up
-r5apex.exe!0x01d9b950 ConVar window_hint_min_horz_vel
-r5apex.exe!0x01dcfe70 ConVar window_hint_permissive_max_horz_vel_change_dot
-r5apex.exe!0x01dcb260 ConVar window_hint_permissive_max_vel_change_down
-r5apex.exe!0x01dc62f0 ConVar window_hint_permissive_max_vel_change_up
-r5apex.exe!0x0183a8a0 ConVar z_ragdoll_impact_strength
-r5apex.exe!0x01df9490 ConVar zipline_fade_dist
-r5apex.exe!0x01df9d50 ConVar zipline_subdiv_lod_dist_base
-r5apex.exe!0x01bdea30 ConVar zipline_subdiv_slices
-r5apex.exe!0x01dffc50 ConVar zipline_subdiv_slices_lod
-r5apex.exe!0x01bd6dc0 ConVar zipline_subdiv_stacks
+r5apex.exe!0x01e237b0 ConVar 
+r5apex.exe!0x0118e040 ConVar Allow_auto_Party
+r5apex.exe!0x0104a8a0 ConVar BlendBonesMode
+r5apex.exe!0x01dad940 ConVar DoorSoundPrefixDouble
+r5apex.exe!0x01de27c0 ConVar DoorSoundPrefixSingle
+r5apex.exe!0x01dea1d0 ConVar ScriptDisallowedToUsePersistenceOnSP
+r5apex.exe!0x01df2a50 ConVar ScriptSaveAllowed
+r5apex.exe!0x010622e0 ConVar StreamMicDisabled
+r5apex.exe!0x01062b00 ConVar TalkIsStream
+r5apex.exe!0x01062920 ConVar VoiceNeedsReset
+r5apex.exe!0x01dee830 ConVar When set to 0, player always returns false when asked if it has a vehicle
+r5apex.exe!0x01e17e40 ConVar ai_titan_grapple_max_len
+r5apex.exe!0x01de5650 ConVar airslowmo_enabled
+r5apex.exe!0x01ddc100 ConVar airslowmo_enter_time
+r5apex.exe!0x01de0750 ConVar airslowmo_ground_immediate_end
+r5apex.exe!0x01dafd60 ConVar airslowmo_leave_time
+r5apex.exe!0x01de14a0 ConVar airslowmo_scripted_speed
+r5apex.exe!0x01de54b0 ConVar airslowmo_when_hovering
+r5apex.exe!0x01841880 ConVar animEvent_debug
+r5apex.exe!0x0184b3c0 ConVar animEvent_debugEnt
+r5apex.exe!0x018557f0 ConVar animEvent_debug_cl
+r5apex.exe!0x01e07590 ConVar anim_estimateVelocity
+r5apex.exe!0x01e07d50 ConVar anim_playerMovementAngleMargin
+r5apex.exe!0x01e076d0 ConVar anim_player_ragdoll_fix
+r5apex.exe!0x01df4500 ConVar anim_print_transition_overflow
+r5apex.exe!0x01e07cb0 ConVar anim_runGestureAnimEventsToCompletionOnReset_client
+r5apex.exe!0x01832900 ConVar anim_showPoseParamErrors
+r5apex.exe!0x01e07450 ConVar anim_showstate
+r5apex.exe!0x01e07810 ConVar anim_showstatelog
+r5apex.exe!0x01e042c0 ConVar anim_transitionsequences
+r5apex.exe!0x01e04220 ConVar anim_view_entity_third_person_camera_use_move_parent
+r5apex.exe!0x0118d340 ConVar announcement
+r5apex.exe!0x0118d8e0 ConVar announcementImage
+r5apex.exe!0x0118d520 ConVar announcementVersion
+r5apex.exe!0x01161b30 ConVar assetdownloads_desiredState
+r5apex.exe!0x01161bd0 ConVar assetdownloads_enabled
+r5apex.exe!0x01161a90 ConVar assetdownloads_hostname
+r5apex.exe!0x01161c70 ConVar assetdownloads_useProdPreview
+r5apex.exe!0x0105f230 ConVar async_serialize
+r5apex.exe!0x01ddfc80 ConVar automantle_backoff_anim_maxfrac
+r5apex.exe!0x01dada80 ConVar automantle_cooldown
+r5apex.exe!0x01dddff0 ConVar automantle_dangle_required_space
+r5apex.exe!0x01dafe00 ConVar automantle_debug
+r5apex.exe!0x01ddf400 ConVar automantle_enable
+r5apex.exe!0x01de1540 ConVar automantle_forwarddist
+r5apex.exe!0x01de0f60 ConVar automantle_gun_enable_height
+r5apex.exe!0x01dcb590 ConVar automantle_height_above
+r5apex.exe!0x01de28c0 ConVar automantle_height_below
+r5apex.exe!0x01db2470 ConVar automantle_height_level
+r5apex.exe!0x01db2a90 ConVar automantle_jumpoff_anim_maxfrac
+r5apex.exe!0x01ddf360 ConVar automantle_jumpoff_duration
+r5apex.exe!0x01de4430 ConVar automantle_max_frac
+r5apex.exe!0x01dde360 ConVar automantle_maxangle_push
+r5apex.exe!0x01de11c0 ConVar automantle_maxangle_view
+r5apex.exe!0x01db0920 ConVar automantle_min_frac
+r5apex.exe!0x01db2bd0 ConVar automantle_mindist
+r5apex.exe!0x01de0ec0 ConVar automantle_rest_frac
+r5apex.exe!0x01db2b30 ConVar automantle_rest_frac_below
+r5apex.exe!0x01de6a60 ConVar automantle_searchdist
+r5apex.exe!0x01842880 ConVar automantle_view_correction_speed
+r5apex.exe!0x01840f80 ConVar automantle_view_high_yaw_max
+r5apex.exe!0x01845ab0 ConVar automantle_view_pitch_max
+r5apex.exe!0x01bd8fa0 ConVar automantle_view_pitch_min
+r5apex.exe!0x0183ccd0 ConVar automantle_view_yaw_max
+r5apex.exe!0x01de09d0 ConVar automantle_wallrun_maxangle_view
+r5apex.exe!0x01dad150 ConVar baseanimatingoverlay_playbackRateThreshold
+r5apex.exe!0x01161760 ConVar baselines_print
+r5apex.exe!0x01e11ff0 ConVar bhit_enable
+r5apex.exe!0x01e16ec0 ConVar bhit_reliable
+r5apex.exe!0x01063be0 ConVar bink_materials_enabled
+r5apex.exe!0x01da89d0 ConVar bink_preload_videopanel_movies
+r5apex.exe!0x01be2910 ConVar boost_jetwash_prediction_factor
+r5apex.exe!0x0115e260 ConVar bot_lagOut
+r5apex.exe!0x0104f800 ConVar budget_animatingEntities
+r5apex.exe!0x0104d730 ConVar budget_animationOverlayEntities
+r5apex.exe!0x0104ec30 ConVar budget_combatCharEntities
+r5apex.exe!0x0104d4e0 ConVar budget_weaponEntities
+r5apex.exe!0x0104f0d0 ConVar budget_ziplineEntities
+r5apex.exe!0x01dea070 ConVar bug_reproNum
+r5apex.exe!0x01050660 ConVar buildcubemaps_async
+r5apex.exe!0x0104fd90 ConVar buildcubemaps_index
+r5apex.exe!0x0104dcc0 ConVar buildcubemaps_pvs_start_early
+r5apex.exe!0x01050090 ConVar buildcubemaps_single_step
+r5apex.exe!0x0104f170 ConVar building_cubemaps
+r5apex.exe!0x01e1b8b0 ConVar bulletPredictionDebug
+r5apex.exe!0x01df2bc0 ConVar bullet_trace_test_debug
+r5apex.exe!0x01df9160 ConVar bullet_trace_test_enable
+r5apex.exe!0x01be26b0 ConVar c_dropship_ground_fx_dist_interval
+r5apex.exe!0x01849390 ConVar c_dropship_ground_fx_time_interval
+r5apex.exe!0x018429c0 ConVar c_dropship_rope_debug
+r5apex.exe!0x01852b50 ConVar c_dropship_rope_events
+r5apex.exe!0x01bd63b0 ConVar c_dropship_rope_magnitude
+r5apex.exe!0x0183fd90 ConVar c_dropship_rope_range
+r5apex.exe!0x01be7790 ConVar c_maxdistance
+r5apex.exe!0x01be4a10 ConVar c_maxpitch
+r5apex.exe!0x01bf56b0 ConVar c_maxyaw
+r5apex.exe!0x01be9680 ConVar c_mindistance
+r5apex.exe!0x01bec660 ConVar c_minpitch
+r5apex.exe!0x01bee500 ConVar c_minyaw
+r5apex.exe!0x01bf1fe0 ConVar c_orthoheight
+r5apex.exe!0x01be4030 ConVar c_orthowidth
+r5apex.exe!0x01bf7090 ConVar c_thirdpersonshoulderaimdistADS_110
+r5apex.exe!0x01bf7130 ConVar c_thirdpersonshoulderaimdistADS_70
+r5apex.exe!0x01bf71d0 ConVar c_thirdpersonshoulderaimdistADS_90
+r5apex.exe!0x01bf7310 ConVar c_thirdpersonshoulderaimdist_110
+r5apex.exe!0x01bf73b0 ConVar c_thirdpersonshoulderaimdist_70
+r5apex.exe!0x01bf7270 ConVar c_thirdpersonshoulderaimdist_90
+r5apex.exe!0x01bf4830 ConVar c_thirdpersonshoulderdist
+r5apex.exe!0x01bf6ff0 ConVar c_thirdpersonshouldergetsviewpunch
+r5apex.exe!0x01bf74f0 ConVar c_thirdpersonshoulderheight
+r5apex.exe!0x01bf7450 ConVar c_thirdpersonshoulderoffset
+r5apex.exe!0x01847d30 ConVar c_threadedAnimPostData
+r5apex.exe!0x01be8970 ConVar cam_collision
+r5apex.exe!0x01bef7f0 ConVar cam_idealdelta
+r5apex.exe!0x01be6390 ConVar cam_idealdist
+r5apex.exe!0x01bf1ec0 ConVar cam_ideallag
+r5apex.exe!0x01bf5a30 ConVar cam_idealpitch
+r5apex.exe!0x01bf1b80 ConVar cam_idealyaw
+r5apex.exe!0x01be45d0 ConVar cam_pitchLock_feetRelative
+r5apex.exe!0x01be9e40 ConVar cam_pitchlock_on
+r5apex.exe!0x01bf38c0 ConVar cam_pitchlock_period
+r5apex.exe!0x01be65f0 ConVar cam_pitchlock_phase
+r5apex.exe!0x01bf41c0 ConVar cam_pitchlock_pitchBase
+r5apex.exe!0x01be6fa0 ConVar cam_pitchlock_pitchRange
+r5apex.exe!0x01be3df0 ConVar cam_pitchlock_pitchWiggleRoom
+r5apex.exe!0x01bf6e10 ConVar cam_player_viewheight_scale
+r5apex.exe!0x01be7650 ConVar cam_showangles
+r5apex.exe!0x01bf3960 ConVar cc_captiontrace
+r5apex.exe!0x01bed630 ConVar cc_global_norepeat
+r5apex.exe!0x01bf65b0 ConVar cc_linger_time
+r5apex.exe!0x01beb2d0 ConVar cc_max_duration
+r5apex.exe!0x01beb830 ConVar cc_minvisibleitems
+r5apex.exe!0x01bef590 ConVar cc_predisplay_time
+r5apex.exe!0x01bf3b80 ConVar cc_rui
+r5apex.exe!0x01bea180 ConVar cc_text_size
+r5apex.exe!0x01be82d0 ConVar cc_timeshift_norepeat
+r5apex.exe!0x01832530 ConVar chasecam_distanceMax_override
+r5apex.exe!0x01062c40 ConVar chatroom_console_ptt
+r5apex.exe!0x0118e7e0 ConVar chatroom_debug
+r5apex.exe!0x011926a0 ConVar chatroom_doRealNameLookups
+r5apex.exe!0x01192aa0 ConVar chatroom_min_status_send_interval
+r5apex.exe!0x01e08970 ConVar chatroom_nameLength
+r5apex.exe!0x01e09770 ConVar chatroom_namePaddingX
+r5apex.exe!0x01e096d0 ConVar chatroom_nameWidth
+r5apex.exe!0x01162210 ConVar chatroom_onlyWhenActive
+r5apex.exe!0x01e09310 ConVar chatroom_useSlopSpace
+r5apex.exe!0x01192740 ConVar chatroom_voiceMode
+r5apex.exe!0x01e09950 ConVar chatroom_voiceMode
+r5apex.exe!0x01da9fe0 ConVar cheap_captions_fadetime
+r5apex.exe!0x01da9700 ConVar cheap_captions_test
+r5apex.exe!0x01063d20 ConVar chroma_enable
+r5apex.exe!0x0183c4e0 ConVar cl_NotifyAllLevelAssetsLoaded_endframe
+r5apex.exe!0x01bd8dc0 ConVar cl_RunClientConnectScripts_Before_ProcessOnDataChangedEvents
+r5apex.exe!0x01848bb0 ConVar cl_SetupAllBones
+r5apex.exe!0x018421e0 ConVar cl_ShowBoneSetupEnts
+r5apex.exe!0x0115cd60 ConVar cl_adjustTimeEntsPerJob
+r5apex.exe!0x01dab870 ConVar cl_aggregate_particles
+r5apex.exe!0x01847a10 ConVar cl_allowABSCalculationDuringSnapshotScriptCalls
+r5apex.exe!0x0183b760 ConVar cl_allowABSDuringSnapshotScriptCalls
+r5apex.exe!0x01841920 ConVar cl_allowAnimsToInterpolateBackward
+r5apex.exe!0x01dacbb0 ConVar cl_always_draw_3p_player
+r5apex.exe!0x01851b00 ConVar cl_always_ragdoll_radius
+r5apex.exe!0x01bf4120 ConVar cl_anglespeedkey
+r5apex.exe!0x01bd9d20 ConVar cl_anim_blend_transition_dist
+r5apex.exe!0x01845350 ConVar cl_anim_detail_dist
+r5apex.exe!0x01844dc0 ConVar cl_anim_face_dist
+r5apex.exe!0x018465d0 ConVar cl_anim_sequence_transition_full_weight_optimization
+r5apex.exe!0x01be2a50 ConVar cl_anim_sounds_seek
+r5apex.exe!0x01832410 ConVar cl_approx_footstep_origin
+r5apex.exe!0x01bf5d90 ConVar cl_approx_tracer_origin
+r5apex.exe!0x01bd6af0 ConVar cl_async_bone_setup
+r5apex.exe!0x01847710 ConVar cl_base_entity_effect_lock
+r5apex.exe!0x0183c760 ConVar cl_bones_incremental_blend
+r5apex.exe!0x0183fb10 ConVar cl_bones_incremental_transform
+r5apex.exe!0x01855eb0 ConVar cl_bones_oldhack
+r5apex.exe!0x01de6020 ConVar cl_bounds_show_errors
+r5apex.exe!0x01dedb20 ConVar cl_burninggibs
+r5apex.exe!0x01050800 ConVar cl_clock_correction
+r5apex.exe!0x0104ecd0 ConVar cl_clock_correction_ahead_correct_interval
+r5apex.exe!0x0104dab0 ConVar cl_clock_correction_behind_correct_interval
+r5apex.exe!0x0104f350 ConVar cl_clock_correction_force_server_tick
+r5apex.exe!0x01125680 ConVar cl_cmdbackup
+r5apex.exe!0x01124710 ConVar cl_cmdrate
+r5apex.exe!0x01056e80 ConVar cl_configversion
+r5apex.exe!0x01054d30 ConVar cl_configversion_dummy
+r5apex.exe!0x01e115e0 ConVar cl_cull_weapon_fx
+r5apex.exe!0x01060710 ConVar cl_dataBlockFragmentPL
+r5apex.exe!0x01df8520 ConVar cl_deathhints_enabled
+r5apex.exe!0x01840850 ConVar cl_debugClientEntities
+r5apex.exe!0x01df2b20 ConVar cl_debug_deferred_trace
+r5apex.exe!0x01df8da0 ConVar cl_debug_deferred_trace_overlay
+r5apex.exe!0x01bf3f80 ConVar cl_debug_model_fx_sounds
+r5apex.exe!0x01db0560 ConVar cl_decal_alwayswhite
+r5apex.exe!0x01de6390 ConVar cl_decal_backoff
+r5apex.exe!0x01daccf0 ConVar cl_deferred_effects
+r5apex.exe!0x01df1c80 ConVar cl_deferred_trace_normal_priority
+r5apex.exe!0x01851a60 ConVar cl_demoviewoverride
+r5apex.exe!0x01bd9040 ConVar cl_disable_ragdolls
+r5apex.exe!0x0183b6c0 ConVar cl_disable_splitscreen_cpu_level_cfgs_in_pip
+r5apex.exe!0x01063f80 ConVar cl_disconnectOnTooManySnapshotFrames
+r5apex.exe!0x01e1cce0 ConVar cl_doNetworkAsserts
+r5apex.exe!0x01063ee0 ConVar cl_doRecreateEnts
+r5apex.exe!0x0183af60 ConVar cl_draw_player_model
+r5apex.exe!0x01bd9220 ConVar cl_drawhud
+r5apex.exe!0x01bf9d60 ConVar cl_drawmonitors
+r5apex.exe!0x01850130 ConVar cl_ejectbrass
+r5apex.exe!0x01bf8760 ConVar cl_enable_remote_splitscreen
+r5apex.exe!0x010642a0 ConVar cl_entCreateDeleteDebug
+r5apex.exe!0x01844e60 ConVar cl_events_ignore_invalidate
+r5apex.exe!0x0105f7b0 ConVar cl_failremoteconnections
+r5apex.exe!0x01bf5750 ConVar cl_fasttempentcollision
+r5apex.exe!0x01840990 ConVar cl_flip_vis_bits
+r5apex.exe!0x010640c0 ConVar cl_flushentitypacket
+r5apex.exe!0x01bd71a0 ConVar cl_footstep_event_max_dist
+r5apex.exe!0x0184a650 ConVar cl_footstep_event_max_dist_titan
+r5apex.exe!0x0115be60 ConVar cl_forceAdjustTime
+r5apex.exe!0x01193b20 ConVar cl_fovScale
+r5apex.exe!0x01193a80 ConVar cl_gib_allow
+r5apex.exe!0x01bd74a0 ConVar cl_gib_attack_dir_scale
+r5apex.exe!0x01831a80 ConVar cl_gib_lifetime
+r5apex.exe!0x01da4aa0 ConVar cl_idealpitchscale
+r5apex.exe!0x01125ba0 ConVar cl_ignorepackets
+r5apex.exe!0x0184b500 ConVar cl_interp_all
+r5apex.exe!0x0115bd20 ConVar cl_interpolate
+r5apex.exe!0x018439a0 ConVar cl_interpolate
+r5apex.exe!0x018404b0 ConVar cl_interpolateSoAllAnimsLoop
+r5apex.exe!0x01be2570 ConVar cl_interpolation_before_prediction
+r5apex.exe!0x01061de0 ConVar cl_isUnderAge
+r5apex.exe!0x01125d30 ConVar cl_is_softened_locale
+r5apex.exe!0x01e05510 ConVar cl_jiggle_bone_debug
+r5apex.exe!0x01e053d0 ConVar cl_jiggle_bone_debug_pitch_constraints
+r5apex.exe!0x01e05690 ConVar cl_jiggle_bone_debug_yaw_constraints
+r5apex.exe!0x01e05470 ConVar cl_jiggle_bone_invert
+r5apex.exe!0x01e055b0 ConVar cl_jiggle_bone_sanity
+r5apex.exe!0x0115bb40 ConVar cl_keepPersistentDataOnDisconnect
+r5apex.exe!0x01da6e30 ConVar cl_lagcompensation
+r5apex.exe!0x01126950 ConVar cl_language
+r5apex.exe!0x01be2e30 ConVar cl_leafsystemvis
+r5apex.exe!0x01bd82c0 ConVar cl_lerpIfChildrenLerp
+r5apex.exe!0x01060990 ConVar cl_loadBspFromServerInfo
+r5apex.exe!0x0105d8c0 ConVar cl_loadPostProcessShadersEarly
+r5apex.exe!0x0105cca0 ConVar cl_loadStaticPropsInJob
+r5apex.exe!0x0115cb80 ConVar cl_matchmaking_timeout
+r5apex.exe!0x01851d80 ConVar cl_minimal_rtt_shadows
+r5apex.exe!0x01bf1740 ConVar cl_model_fx_gib_cull_front_dist
+r5apex.exe!0x01bf12a0 ConVar cl_model_fx_gib_cull_radius
+r5apex.exe!0x01bf44c0 ConVar cl_mouseenable
+r5apex.exe!0x01126460 ConVar cl_move_use_dt
+r5apex.exe!0x01124b10 ConVar cl_noTimeoutLocalHost
+r5apex.exe!0x01126b30 ConVar cl_overrideEventTimes
+r5apex.exe!0x01da8610 ConVar cl_parallelParticlePreDrawWork
+r5apex.exe!0x018419c0 ConVar cl_parallel_clientside_animations
+r5apex.exe!0x01e04af0 ConVar cl_particle_batch_mode
+r5apex.exe!0x011938a0 ConVar cl_particle_fallback_base
+r5apex.exe!0x01193bc0 ConVar cl_particle_fallback_multiplier
+r5apex.exe!0x01daa770 ConVar cl_particle_limiter_display_killed
+r5apex.exe!0x01e1f8e0 ConVar cl_particle_limiter_hide_killable
+r5apex.exe!0x01bf9a40 ConVar cl_particle_limiter_max_particle_count
+r5apex.exe!0x01bf9fb0 ConVar cl_particle_limiter_max_system_count
+r5apex.exe!0x01da4bc0 ConVar cl_particle_limiter_min_kill_distance
+r5apex.exe!0x01daa2f0 ConVar cl_particle_limiter_overlay
+r5apex.exe!0x01bfaed0 ConVar cl_particle_max_count
+r5apex.exe!0x01dab7d0 ConVar cl_particle_sim_fallback_base_multiplier
+r5apex.exe!0x01bf81a0 ConVar cl_particle_sim_fallback_threshold_ms
+r5apex.exe!0x01da8b90 ConVar cl_particle_snoozetime
+r5apex.exe!0x01da5120 ConVar cl_particles_show_bbox
+r5apex.exe!0x01da62e0 ConVar cl_particles_show_controlpoints
+r5apex.exe!0x01dac2e0 ConVar cl_pclass
+r5apex.exe!0x01da91f0 ConVar cl_pdump
+r5apex.exe!0x01bf82e0 ConVar cl_phys_maxticks
+r5apex.exe!0x01da6cf0 ConVar cl_phys_show_active
+r5apex.exe!0x01da74f0 ConVar cl_phys_timescale
+r5apex.exe!0x01daad90 ConVar cl_physics_invalidate_ents
+r5apex.exe!0x01daaff0 ConVar cl_physics_maxvelocity
+r5apex.exe!0x01dee280 ConVar cl_physicsshadowupdate_render
+r5apex.exe!0x01bf48d0 ConVar cl_pitchspeed
+r5apex.exe!0x011262a0 ConVar cl_playback_screenshots
+r5apex.exe!0x01846c70 ConVar cl_player_fullupdate_predicted_origin_fix
+r5apex.exe!0x01de1260 ConVar cl_player_touch_triggers
+r5apex.exe!0x01064160 ConVar cl_postSnapshotTransitionBlockCount
+r5apex.exe!0x01851ea0 ConVar cl_preSnapshotTransitionBlockCount
+r5apex.exe!0x01e04c30 ConVar cl_pred_error_verbose
+r5apex.exe!0x01da5750 ConVar cl_pred_optimize
+r5apex.exe!0x01126070 ConVar cl_predict
+r5apex.exe!0x018310c0 ConVar cl_predict_basetoggles
+r5apex.exe!0x01bf8500 ConVar cl_predict_cmdlimit
+r5apex.exe!0x01dab690 ConVar cl_predict_error_icon_duration
+r5apex.exe!0x01bfafb0 ConVar cl_predict_error_icon_show
+r5apex.exe!0x01da9a40 ConVar cl_predict_error_icon_threshold_angle
+r5apex.exe!0x01bf92c0 ConVar cl_predict_error_icon_threshold_dist
+r5apex.exe!0x01dea570 ConVar cl_predict_motioncontrol
+r5apex.exe!0x01dacc50 ConVar cl_predict_viewangles
+r5apex.exe!0x01bf9220 ConVar cl_prediction_error_timestamps
+r5apex.exe!0x01da9110 ConVar cl_predictionlist
+r5apex.exe!0x01da5830 ConVar cl_predictweapons
+r5apex.exe!0x01e0d220 ConVar cl_prevent_weapon_text_hints
+r5apex.exe!0x01bd83e0 ConVar cl_ragdoll_force_fade_time
+r5apex.exe!0x01bd6a50 ConVar cl_ragdoll_force_fade_time_local_view_player
+r5apex.exe!0x01e04400 ConVar cl_ragdoll_force_fade_time_on_moving_geo
+r5apex.exe!0x01850430 ConVar cl_ragdoll_force_fade_time_titan
+r5apex.exe!0x011939e0 ConVar cl_ragdoll_maxcount
+r5apex.exe!0x01193c60 ConVar cl_ragdoll_self_collision
+r5apex.exe!0x0115c880 ConVar cl_replayDelayTolerance
+r5apex.exe!0x01be32d0 ConVar cl_requireAnimForAnimEventsHdr
+r5apex.exe!0x0115c580 ConVar cl_resend
+r5apex.exe!0x0115c9c0 ConVar cl_resend_timeout
+r5apex.exe!0x011253b0 ConVar cl_retire_low_priority_lights
+r5apex.exe!0x0184b460 ConVar cl_runWeaponCloneThinkWhenHidden
+r5apex.exe!0x01df89e0 ConVar cl_safearea
+r5apex.exe!0x011257c0 ConVar cl_screenshotname
+r5apex.exe!0x01dace30 ConVar cl_scriptCompileAsync
+r5apex.exe!0x01da69f0 ConVar cl_script_perf_dump_on_shutdown
+r5apex.exe!0x01df2d00 ConVar cl_shadowupdatespacing
+r5apex.exe!0x018505f0 ConVar cl_showClanTags
+r5apex.exe!0x01bf13c0 ConVar cl_show_splashes
+r5apex.exe!0x01dacb10 ConVar cl_showerror
+r5apex.exe!0x01bf9370 ConVar cl_showerror_watchfield
+r5apex.exe!0x01e1c190 ConVar cl_showfiredbullets
+r5apex.exe!0x01da97a0 ConVar cl_showfps
+r5apex.exe!0x01bfb420 ConVar cl_showfps_altframetime
+r5apex.exe!0x01da7ad0 ConVar cl_showpausedimage
+r5apex.exe!0x01bf7dc0 ConVar cl_showpos
+r5apex.exe!0x0105edd0 ConVar cl_showsounds
+r5apex.exe!0x01da56b0 ConVar cl_showtime
+r5apex.exe!0x018471d0 ConVar cl_simulateAllModelsRegardless
+r5apex.exe!0x01bd92c0 ConVar cl_simulationtimefix
+r5apex.exe!0x01841140 ConVar cl_skipAnimEventsOnProps
+r5apex.exe!0x01daa4f0 ConVar cl_skipfastpath
+r5apex.exe!0x01be3410 ConVar cl_smooth
+r5apex.exe!0x0184d870 ConVar cl_smooth_debug
+r5apex.exe!0x01bd8980 ConVar cl_smoothtime
+r5apex.exe!0x0183b000 ConVar cl_threaded_bone_setup
+r5apex.exe!0x01dcbfb0 ConVar cl_updatedirty_async
+r5apex.exe!0x01844fa0 ConVar cl_updatedirty_early
+r5apex.exe!0x011269f0 ConVar cl_updaterate_mp
+r5apex.exe!0x01bf4790 ConVar cl_upspeed
+r5apex.exe!0x01126a90 ConVar cl_useFutureSnapForEvents
+r5apex.exe!0x0115c3e0 ConVar cl_useLobbyTypeForChatroom
+r5apex.exe!0x01851f40 ConVar cl_view_cone
+r5apex.exe!0x018492f0 ConVar cl_view_cone_debug
+r5apex.exe!0x01852c30 ConVar cl_viewmodel_pre_animate
+r5apex.exe!0x01bf2b00 ConVar cl_warnAboutSoundsOnInvalidEntities
+r5apex.exe!0x01be3f10 ConVar cl_yawspeed
+r5apex.exe!0x010579c0 ConVar clampHostFrameTimeToOneTick_enable
+r5apex.exe!0x018450e0 ConVar clearOnAnimChange
+r5apex.exe!0x01dacd90 ConVar client_deferredSnapshotScriptCalls
+r5apex.exe!0x01056480 ConVar clientport
+r5apex.exe!0x0119de30 ConVar cloak_enabled
+r5apex.exe!0x01826140 ConVar cloak_pilotNoiseFactor
+r5apex.exe!0x01826280 ConVar cloak_pilotTint1
+r5apex.exe!0x01825e20 ConVar cloak_pilotTint2
+r5apex.exe!0x01825ba0 ConVar cloak_pilotTint3
+r5apex.exe!0x0104f620 ConVar clock_bias_mp
+r5apex.exe!0x010504d0 ConVar clock_bias_sp
+r5apex.exe!0x0104fb80 ConVar clock_showcorrections
+r5apex.exe!0x010503d0 ConVar clock_showdebuginfo
+r5apex.exe!0x21618380 ConVar closecaption
+r5apex.exe!0x01def4b0 ConVar cockpitDrift_scalePitch
+r5apex.exe!0x01df2650 ConVar cockpitDrift_scaleYaw
+r5apex.exe!0x01df90c0 ConVar cockpitDrift_speedPitch
+r5apex.exe!0x01dee4d0 ConVar cockpitDrift_speedYaw
+r5apex.exe!0x01e0bbf0 ConVar cockpitShake_sourceRollRange
+r5apex.exe!0x01e0cbd0 ConVar cockpitShake_translateRange
+r5apex.exe!0x01e0a840 ConVar cockpit_damage_chroma_scale
+r5apex.exe!0x01e0acc0 ConVar cockpit_hit_chroma_max_time
+r5apex.exe!0x01e0c680 ConVar cockpit_hit_chroma_scale
+r5apex.exe!0x01e0bdf0 ConVar cockpit_pitch_down_frac
+r5apex.exe!0x01e0d400 ConVar cockpit_pitch_up_frac
+r5apex.exe!0x01e0c1f0 ConVar cockpit_screen_boot_chroma_scale
+r5apex.exe!0x01e0b830 ConVar cockpit_screen_boot_delay_bottom
+r5apex.exe!0x01e0d4a0 ConVar cockpit_screen_boot_delay_left
+r5apex.exe!0x01e0a640 ConVar cockpit_screen_boot_delay_mid
+r5apex.exe!0x01e0bcb0 ConVar cockpit_screen_boot_delay_right
+r5apex.exe!0x01e0d870 ConVar cockpit_screen_boot_delay_top
+r5apex.exe!0x0115d440 ConVar coll_spatial_entry_limit_client
+r5apex.exe!0x0115d4e0 ConVar coll_spatial_optimize_prefetch
+r5apex.exe!0x0104a940 ConVar coll_use_bolt_size
+r5apex.exe!0x01da5a10 ConVar colorblind_mode
+r5apex.exe!0x01161db0 ConVar communities_doRealNameLookupsForCommunityCreators
+r5apex.exe!0x011627b0 ConVar communities_enabled
+r5apex.exe!0x0118d200 ConVar communities_hostname
+r5apex.exe!0x01161ef0 ConVar community
+r5apex.exe!0x01162030 ConVar community_abortCommunitySettingsTime
+r5apex.exe!0x01162350 ConVar community_abortUserInfoTime
+r5apex.exe!0x0118c9e0 ConVar community_browse_excludeMine
+r5apex.exe!0x01161300 ConVar community_clantags
+r5apex.exe!0x0118c5c0 ConVar community_doRealNameLookupsForInbox
+r5apex.exe!0x01162710 ConVar community_frame_run
+r5apex.exe!0x0118f1c0 ConVar community_queryServerWhenOrphaned
+r5apex.exe!0x0118c520 ConVar community_replaceInboxTokens
+r5apex.exe!0x0118cd40 ConVar community_replaceInboxTokens
+r5apex.exe!0x0118c400 ConVar community_resolveNames
+r5apex.exe!0x0118c700 ConVar community_resolveNames
+r5apex.exe!0x011622b0 ConVar community_send_server_voice
+r5apex.exe!0x0118c7a0 ConVar community_spam
+r5apex.exe!0x01162850 ConVar community_staleCommunitySettingsTime
+r5apex.exe!0x011620d0 ConVar community_staleUserInfoTime
+r5apex.exe!0x01192230 ConVar con_logfile
+r5apex.exe!0x0104f490 ConVar con_timestamp
+r5apex.exe!0x011a0b50 ConVar cpu_level
+r5apex.exe!0x0184ff50 ConVar cpu_level
+r5apex.exe!0x01852a30 ConVar createentitydecals
+r5apex.exe!0x01bd6450 ConVar csm0_on_worker
+r5apex.exe!0x011a0c90 ConVar csm_cascade_res
+r5apex.exe!0x01850390 ConVar csm_cascade_res
+r5apex.exe!0x0119df70 ConVar csm_coverage
+r5apex.exe!0x01bd8e60 ConVar csm_culling_use_base_planes
+r5apex.exe!0x0184bbc0 ConVar csm_culling_use_exclusion_planes
+r5apex.exe!0x01831020 ConVar csm_culling_use_inclusion_planes
+r5apex.exe!0x01be3370 ConVar csm_culling_use_planes
+r5apex.exe!0x01841260 ConVar csm_debug_2d
+r5apex.exe!0x01847390 ConVar csm_debug_culling
+r5apex.exe!0x01bd6750 ConVar csm_debug_vis_hi_range
+r5apex.exe!0x01846f70 ConVar csm_debug_vis_lo_range
+r5apex.exe!0x01847130 ConVar csm_depth_bias
+r5apex.exe!0x01bd85c0 ConVar csm_dropsequence_adjusted_coverage
+r5apex.exe!0x018312a0 ConVar csm_dropsequence_adjustment
+r5apex.exe!0x011a08d0 ConVar csm_enabled
+r5apex.exe!0x0183db70 ConVar csm_fadeModels
+r5apex.exe!0x018410a0 ConVar csm_force_no_csm_in_reflections
+r5apex.exe!0x01830e30 ConVar csm_frustum_draw
+r5apex.exe!0x01830d90 ConVar csm_frustum_draw_lock
+r5apex.exe!0x01bd6310 ConVar csm_ignore_cascade12
+r5apex.exe!0x0183c940 ConVar csm_ignore_edge_planes
+r5apex.exe!0x018489f0 ConVar csm_ignore_face_planes
+r5apex.exe!0x01bd8220 ConVar csm_max_z_offset
+r5apex.exe!0x01845530 ConVar csm_min_z_offset
+r5apex.exe!0x018315c0 ConVar csm_renderable_shadows
+r5apex.exe!0x01bd8480 ConVar csm_rope_shadows
+r5apex.exe!0x01844d20 ConVar csm_rot_override
+r5apex.exe!0x0183be20 ConVar csm_rot_x
+r5apex.exe!0x0183fa70 ConVar csm_rot_y
+r5apex.exe!0x01bd8c80 ConVar csm_shadow_split_lerp_factor_range
+r5apex.exe!0x018417e0 ConVar csm_texel_size_cascade_0
+r5apex.exe!0x018478d0 ConVar csm_texel_size_cascade_1
+r5apex.exe!0x0183cc30 ConVar csm_texel_size_cascade_2
+r5apex.exe!0x018522f0 ConVar csm_texel_size_cascade_onecascade
+r5apex.exe!0x0183bd80 ConVar csm_use_env_light_direction
+r5apex.exe!0x0184bb20 ConVar csm_world_shadow_meshes
+r5apex.exe!0x01852910 ConVar csm_world_shadows
+r5apex.exe!0x01851fe0 ConVar csm_z_cover_world
+r5apex.exe!0x0118db60 ConVar curl_allowHTTPS
+r5apex.exe!0x0118dd40 ConVar curl_preloadDlls
+r5apex.exe!0x0118dca0 ConVar curl_spamAllQueryStates
+r5apex.exe!0x250d64c0 ConVar cursorWide
+r5apex.exe!0x01e0d0b0 ConVar damageIndicatorReplayTimeOffset
+r5apex.exe!0x01df8bc0 ConVar damage_indicator_style_pilot
+r5apex.exe!0x01df2820 ConVar damage_indicator_style_titan
+r5apex.exe!0x01dad0b0 ConVar damageinfo_defendInvalidValues
+r5apex.exe!0x01852080 ConVar debugFootstepEffects
+r5apex.exe!0x0104d620 ConVar debug_debug_overlay
+r5apex.exe!0x01162670 ConVar debug_force_textRestriction
+r5apex.exe!0x01161f90 ConVar debug_force_ugcRestriction
+r5apex.exe!0x011623f0 ConVar debug_force_voiceRestriction
+r5apex.exe!0x0104f8a0 ConVar debug_map_crc
+r5apex.exe!0x012a50f0 ConVar decal_clip_debug_draw
+r5apex.exe!0x012a5010 ConVar decal_clip_debug_groups
+r5apex.exe!0x01e11e90 ConVar defer_weapon_effects
+r5apex.exe!0x01831800 ConVar delayPostSnapshotNotificationsToAfterInterpolation
+r5apex.exe!0x0115c760 ConVar demo_autoRecord
+r5apex.exe!0x0115c2c0 ConVar demo_autoRecordName
+r5apex.exe!0x01e08510 ConVar demo_connect_string
+r5apex.exe!0x01e081f0 ConVar demo_ui_enable
+r5apex.exe!0x01defea0 ConVar devStats
+r5apex.exe!0x0105a340 ConVar developer
+r5apex.exe!0x01e0c3d0 ConVar disable_player_use_prompts
+r5apex.exe!0x0115d1c0 ConVar discord_largeImage
+r5apex.exe!0x0115d120 ConVar discord_smallImage
+r5apex.exe!0x0115d260 ConVar discord_updatePresence
+r5apex.exe!0x0104dc20 ConVar dlight_default_falloff
+r5apex.exe!0x01125ed0 ConVar dlight_enable
+r5apex.exe!0x01124d90 ConVar dlight_overlay
+r5apex.exe!0x01db0600 ConVar dodge_cockpitHack
+r5apex.exe!0x01de1b20 ConVar dodge_cockpitOffsetMax
+r5apex.exe!0x01dcba90 ConVar dodge_cockpitTiltMax
+r5apex.exe!0x01dae020 ConVar dodge_vertical_enable
+r5apex.exe!0x01db13e0 ConVar dodge_vertical_horzspeedscale
+r5apex.exe!0x01de46a0 ConVar dodge_vertical_in_air
+r5apex.exe!0x01de51d0 ConVar dodge_vertical_threshold
+r5apex.exe!0x01dadd00 ConVar dodge_viewTiltDecreaseSpeed
+r5apex.exe!0x01ddf8c0 ConVar dodge_viewTiltFalloffTime
+r5apex.exe!0x01dad800 ConVar dodge_viewTiltIncreaseSpeed
+r5apex.exe!0x01ddf820 ConVar dodge_viewTiltMax
+r5apex.exe!0x01da8550 ConVar dof_enable
+r5apex.exe!0x01825240 ConVar dof_farDepthEnd
+r5apex.exe!0x018252e0 ConVar dof_farDepthStart
+r5apex.exe!0x01825420 ConVar dof_monitorFarDepthEnd
+r5apex.exe!0x01825100 ConVar dof_monitorFarDepthStart
+r5apex.exe!0x01824fc0 ConVar dof_monitorNearDepthEnd
+r5apex.exe!0x018251a0 ConVar dof_monitorNearDepthStart
+r5apex.exe!0x01825380 ConVar dof_nearDepthEnd
+r5apex.exe!0x01825060 ConVar dof_nearDepthStart
+r5apex.exe!0x018254c0 ConVar dof_overrideParams
+r5apex.exe!0x01bfadf0 ConVar dof_variable_blur
+r5apex.exe!0x0183dad0 ConVar dormant_debug
+r5apex.exe!0x01e0ab80 ConVar draw_target_info_offscreen
+r5apex.exe!0x0104da10 ConVar dtwatchclass
+r5apex.exe!0x01050a40 ConVar dtwatchdecode
+r5apex.exe!0x0104d320 ConVar dtwatchencode
+r5apex.exe!0x01050920 ConVar dtwatchent
+r5apex.exe!0x0104d850 ConVar dtwatchvar
+r5apex.exe!0x01de99b0 ConVar dump_varsights_calculations
+r5apex.exe!0x018405f0 ConVar durango_voice_chat_team_only
+r5apex.exe!0x011a0ab0 ConVar dvs_enable
+r5apex.exe!0x011a1a30 ConVar dvs_gpuframetime_max
+r5apex.exe!0x011a1b70 ConVar dvs_gpuframetime_min
+r5apex.exe!0x011a1ad0 ConVar dvs_scale_min
+r5apex.exe!0x018257e0 ConVar edge_override_depth
+r5apex.exe!0x01827220 ConVar edge_override_depth
+r5apex.exe!0x01825880 ConVar edge_override_silhouette
+r5apex.exe!0x018272c0 ConVar edge_override_silhouette
+r5apex.exe!0x01060f30 ConVar enable_KVFileOverrides
+r5apex.exe!0x0104e540 ConVar enable_debug_overlays
+r5apex.exe!0x01de2c50 ConVar enable_height_based_land_anims
+r5apex.exe!0x01de0e20 ConVar enable_height_based_land_anims_titans
+r5apex.exe!0x01846490 ConVar enable_skeleton_draw
+r5apex.exe!0x0105c050 ConVar encrypt_multiKey
+r5apex.exe!0x0184ba80 ConVar ent_lightweightEnts
+r5apex.exe!0x01831480 ConVar ent_repack_almostFull
+r5apex.exe!0x0183ebd0 ConVar ent_repack_threshhold
+r5apex.exe!0x01dcb4f0 ConVar entity_skipRedundantAddEffects
+r5apex.exe!0x0115ba00 ConVar entity_useNetworkFieldBuffer
+r5apex.exe!0x018408f0 ConVar error_if_non_standard_ent_create
+r5apex.exe!0x01da7dd0 ConVar eula_version
+r5apex.exe!0x01da5f60 ConVar eula_version_accepted
+r5apex.exe!0x01846210 ConVar eventseq_debug
+r5apex.exe!0x01de9a50 ConVar everything_unlocked
+r5apex.exe!0x01058700 ConVar fakelag_debug
+r5apex.exe!0x0182eab0 ConVar fast_poly_convert
+r5apex.exe!0x01e20640 ConVar fatal_script_error_prompt
+r5apex.exe!0x01e20500 ConVar fatal_script_errors
+r5apex.exe!0x01e205a0 ConVar fatal_script_errors_client
+r5apex.exe!0x01e206e0 ConVar fatal_script_errors_server
+r5apex.exe!0x0183fcf0 ConVar fd_playlist_bits
+r5apex.exe!0x011946a0 ConVar filesystem_buffer_size
+r5apex.exe!0x011949a0 ConVar filesystem_max_stdio_read
+r5apex.exe!0x01194a40 ConVar filesystem_native
+r5apex.exe!0x01194860 ConVar filesystem_report_buffered_io
+r5apex.exe!0x011947c0 ConVar filesystem_unbuffered_io
+r5apex.exe!0x01194900 ConVar filesystem_use_overlapped_io
+r5apex.exe!0x01de8360 ConVar fire_animevents_overlay_not_active
+r5apex.exe!0x01e18e30 ConVar first_person_bullet_delay
+r5apex.exe!0x01be2ed0 ConVar first_person_proxy_blend_distance
+r5apex.exe!0x01e15220 ConVar first_person_proxy_debug
+r5apex.exe!0x01da5ce0 ConVar firsttime_mp_message
+r5apex.exe!0x01daca70 ConVar fog_enable
+r5apex.exe!0x0105b830 ConVar fog_enable_water_fog
+r5apex.exe!0x01da8f80 ConVar fog_enableskybox
+r5apex.exe!0x01e1c0f0 ConVar force3PLaserAttachment
+r5apex.exe!0x011625d0 ConVar force_CrossPlay
+r5apex.exe!0x01162530 ConVar force_EAAccess
+r5apex.exe!0x01061670 ConVar fps_max
+r5apex.exe!0x01060110 ConVar fps_max_use_refresh
+r5apex.exe!0x010607b0 ConVar fps_max_vsync
+r5apex.exe!0x0183c8a0 ConVar freecam_swallowButtonInput
+r5apex.exe!0x01dad3d0 ConVar freefall_sound_autoplay_time
+r5apex.exe!0x01dddcd0 ConVar freefall_sound_height
+r5apex.exe!0x01190b40 ConVar friends_onlineUpdateInterval
+r5apex.exe!0x01193e00 ConVar fs_intralevel_reads
+r5apex.exe!0x011942c0 ConVar fs_monitor_read_from_pack
+r5apex.exe!0x01193f40 ConVar fs_report_intra_level_readopens
+r5apex.exe!0x011943f0 ConVar fs_report_long_reads
+r5apex.exe!0x01193ea0 ConVar fs_report_sync_opens
+r5apex.exe!0x01194100 ConVar fs_report_sync_opens_callstack
+r5apex.exe!0x01194220 ConVar fs_report_sync_opens_fatal
+r5apex.exe!0x01194060 ConVar fs_showAllReads
+r5apex.exe!0x01194b10 ConVar fs_vpk_file_open
+r5apex.exe!0x01194590 ConVar fs_warning_mode
+r5apex.exe!0x01bef630 ConVar func_break_max_pieces
+r5apex.exe!0x01851160 ConVar fx_debug
+r5apex.exe!0x01e1e050 ConVar fx_deferWorldTraceConstraint
+r5apex.exe!0x01be8bb0 ConVar fx_glass_velocity_cap
+r5apex.exe!0x01dab470 ConVar fx_impact_ally
+r5apex.exe!0x01bf7930 ConVar fx_impact_enemy
+r5apex.exe!0x01da5d80 ConVar fx_impact_neutral
+r5apex.exe!0x01e1f7a0 ConVar fx_screenspacepass
+r5apex.exe!0x01e04d70 ConVar g_debug_ragdoll_removal
+r5apex.exe!0x01bd7c00 ConVar g_ragdoll_fadespeed
+r5apex.exe!0x01e044a0 ConVar g_ragdoll_important_maxcount
+r5apex.exe!0x0184acf0 ConVar g_ragdoll_lvfadespeed
+r5apex.exe!0x01bec780 ConVar gameCursor_ModeActive
+r5apex.exe!0x01bed590 ConVar gameCursor_Velocity
+r5apex.exe!0x01841ce0 ConVar gamepad_ads_advanced_sensitivity_scalar_0
+r5apex.exe!0x01841d80 ConVar gamepad_ads_advanced_sensitivity_scalar_1
+r5apex.exe!0x01841e20 ConVar gamepad_ads_advanced_sensitivity_scalar_2
+r5apex.exe!0x01841ec0 ConVar gamepad_ads_advanced_sensitivity_scalar_3
+r5apex.exe!0x01841f60 ConVar gamepad_ads_advanced_sensitivity_scalar_4
+r5apex.exe!0x01842000 ConVar gamepad_ads_advanced_sensitivity_scalar_5
+r5apex.exe!0x018420a0 ConVar gamepad_ads_advanced_sensitivity_scalar_6
+r5apex.exe!0x01842140 ConVar gamepad_ads_advanced_sensitivity_scalar_7
+r5apex.exe!0x018325d0 ConVar gamepad_aim_assist_hip_high_power_scopes
+r5apex.exe!0x01848b10 ConVar gamepad_aim_assist_hip_low_power_scopes
+r5apex.exe!0x01855e10 ConVar gamepad_aim_assist_melee
+r5apex.exe!0x01849990 ConVar gamepad_aim_assist_scope_0
+r5apex.exe!0x01849a30 ConVar gamepad_aim_assist_scope_1
+r5apex.exe!0x01849ad0 ConVar gamepad_aim_assist_scope_2
+r5apex.exe!0x01849b70 ConVar gamepad_aim_assist_scope_3
+r5apex.exe!0x01849c10 ConVar gamepad_aim_assist_scope_4
+r5apex.exe!0x01849cb0 ConVar gamepad_aim_assist_scope_5
+r5apex.exe!0x01849d50 ConVar gamepad_aim_assist_scope_6
+r5apex.exe!0x01849df0 ConVar gamepad_aim_assist_scope_7
+r5apex.exe!0x018483d0 ConVar gamepad_aim_assist_sniper_scopes
+r5apex.exe!0x01850270 ConVar gamepad_aim_speed
+r5apex.exe!0x01849e90 ConVar gamepad_aim_speed_ads_0
+r5apex.exe!0x01849f30 ConVar gamepad_aim_speed_ads_1
+r5apex.exe!0x01849fd0 ConVar gamepad_aim_speed_ads_2
+r5apex.exe!0x0184a070 ConVar gamepad_aim_speed_ads_3
+r5apex.exe!0x0184a110 ConVar gamepad_aim_speed_ads_4
+r5apex.exe!0x0184a1b0 ConVar gamepad_aim_speed_ads_5
+r5apex.exe!0x0184a250 ConVar gamepad_aim_speed_ads_6
+r5apex.exe!0x0184a2f0 ConVar gamepad_aim_speed_ads_7
+r5apex.exe!0x01da5ec0 ConVar gamepad_button_layout
+r5apex.exe!0x01da55f0 ConVar gamepad_buttons_are_southpaw
+r5apex.exe!0x01851ba0 ConVar gamepad_custom_ads_pitch
+r5apex.exe!0x01846350 ConVar gamepad_custom_ads_turn_delay
+r5apex.exe!0x018320b0 ConVar gamepad_custom_ads_turn_pitch
+r5apex.exe!0x01bd90e0 ConVar gamepad_custom_ads_turn_time
+r5apex.exe!0x0183cd70 ConVar gamepad_custom_ads_turn_yaw
+r5apex.exe!0x01bd72e0 ConVar gamepad_custom_ads_yaw
+r5apex.exe!0x0183b800 ConVar gamepad_custom_assist_on
+r5apex.exe!0x0184dea0 ConVar gamepad_custom_curve
+r5apex.exe!0x01850090 ConVar gamepad_custom_deadzone_in
+r5apex.exe!0x01831c60 ConVar gamepad_custom_deadzone_out
+r5apex.exe!0x0184a6f0 ConVar gamepad_custom_enabled
+r5apex.exe!0x0183fbb0 ConVar gamepad_custom_hip_pitch
+r5apex.exe!0x01bd64f0 ConVar gamepad_custom_hip_turn_delay
+r5apex.exe!0x01bd88e0 ConVar gamepad_custom_hip_turn_pitch
+r5apex.exe!0x01bd7680 ConVar gamepad_custom_hip_turn_time
+r5apex.exe!0x01850850 ConVar gamepad_custom_hip_turn_yaw
+r5apex.exe!0x0184b000 ConVar gamepad_custom_hip_yaw
+r5apex.exe!0x01bf8980 ConVar gamepad_custom_pilot
+r5apex.exe!0x01bf79d0 ConVar gamepad_custom_titan
+r5apex.exe!0x0184a5b0 ConVar gamepad_deadzone_index_look
+r5apex.exe!0x01841a60 ConVar gamepad_deadzone_index_move
+r5apex.exe!0x01bf6eb0 ConVar gamepad_enabled
+r5apex.exe!0x01851920 ConVar gamepad_look_curve
+r5apex.exe!0x01da8150 ConVar gamepad_stick_layout
+r5apex.exe!0x01be3c30 ConVar gamepad_toggle_ads
+r5apex.exe!0x01bee280 ConVar gamepad_togglecrouch_hold
+r5apex.exe!0x01197ec0 ConVar gamepad_trigger_threshold
+r5apex.exe!0x01851800 ConVar gamepad_use_per_scope_ads_settings
+r5apex.exe!0x0184b1c0 ConVar gamepad_use_per_scope_sensitivity_scalars
+r5apex.exe!0x01daa6d0 ConVar gamepad_use_type
+r5apex.exe!0x0105dde0 ConVar gameui_xbox
+r5apex.exe!0x01da72d0 ConVar gamma_adjusted
+r5apex.exe!0x0183e170 ConVar gatherprops_no_wait
+r5apex.exe!0x01198280 ConVar gfx_desaturate_force
+r5apex.exe!0x01dac890 ConVar gl_clear_color_buffer
+r5apex.exe!0x01da6380 ConVar gl_clear_fogcolor
+r5apex.exe!0x01da7410 ConVar gl_clear_randomcolor
+r5apex.exe!0x01847010 ConVar glass_break_required_speed
+r5apex.exe!0x01bf5ad0 ConVar glass_shatter_direction_force_scale
+r5apex.exe!0x01bea540 ConVar glass_shatter_force_scale
+r5apex.exe!0x01bef750 ConVar glass_shatter_size_scale
+r5apex.exe!0x01be92e0 ConVar glass_shatter_use_real_direction
+r5apex.exe!0x01826b40 ConVar glitch_aberrationScale
+r5apex.exe!0x018235b0 ConVar global_lighting_partial_update
+r5apex.exe!0x01e21270 ConVar gpu_count
+r5apex.exe!0x012a4c50 ConVar gpu_driven_tex_stream
+r5apex.exe!0x012a5190 ConVar gpu_driven_tex_stream_single_thread
+r5apex.exe!0x011a1c10 ConVar gpu_level
+r5apex.exe!0x01be1f50 ConVar gpu_level
+r5apex.exe!0x01198710 ConVar gpu_mem_level
+r5apex.exe!0x01832010 ConVar gpu_mem_level
+r5apex.exe!0x011a18f0 ConVar gpu_vram_size_mb
+r5apex.exe!0x01de5130 ConVar grapple_accel_human
+r5apex.exe!0x01de1c20 ConVar grapple_accel_titan
+r5apex.exe!0x01de4900 ConVar grapple_around_obstacle_accel
+r5apex.exe!0x01de3310 ConVar grapple_autoMantle
+r5apex.exe!0x01de6670 ConVar grapple_autoMeleeConvergeTime
+r5apex.exe!0x01db27b0 ConVar grapple_autoMeleeOnDetach
+r5apex.exe!0x01de70f0 ConVar grapple_autoMeleePredict
+r5apex.exe!0x01de97d0 ConVar grapple_autoMeleePredictTime
+r5apex.exe!0x01de9730 ConVar grapple_autoMeleeViewRotateSpeedFar
+r5apex.exe!0x01de9690 ConVar grapple_autoMeleeViewRotateSpeedNear
+r5apex.exe!0x01de4fc0 ConVar grapple_debug
+r5apex.exe!0x01dadb20 ConVar grapple_decelMeleeStrength
+r5apex.exe!0x01dde130 ConVar grapple_decel_human
+r5apex.exe!0x01dafea0 ConVar grapple_decel_titan
+r5apex.exe!0x01db09c0 ConVar grapple_detachExtraAllowedLength
+r5apex.exe!0x01db1700 ConVar grapple_disableMeleeWhenActive
+r5apex.exe!0x01ddd7a0 ConVar grapple_dontFightGravity
+r5apex.exe!0x01ddeac0 ConVar grapple_fallSpeed
+r5apex.exe!0x01de4220 ConVar grapple_forcedRetractVel
+r5apex.exe!0x01db2300 ConVar grapple_gracePeriod
+r5apex.exe!0x01db1910 ConVar grapple_gravityPushUnderContribution
+r5apex.exe!0x01de2a60 ConVar grapple_initialImpulseOffGround_human
+r5apex.exe!0x01de6190 ConVar grapple_initialImpulseOffGround_human_npc
+r5apex.exe!0x01dcbb30 ConVar grapple_initialImpulseOffGround_titan
+r5apex.exe!0x01de1f80 ConVar grapple_initialImpulse_human
+r5apex.exe!0x01db1160 ConVar grapple_initialImpulse_titan
+r5apex.exe!0x01db17d0 ConVar grapple_initialSlowFracVert_human
+r5apex.exe!0x01dcbf10 ConVar grapple_initialSlowFracVert_titan
+r5apex.exe!0x01dde4a0 ConVar grapple_initialSlowFrac_human
+r5apex.exe!0x01dde1d0 ConVar grapple_initialSlowFrac_titan
+r5apex.exe!0x01de33e0 ConVar grapple_initialSpeedMin_human
+r5apex.exe!0x01de6710 ConVar grapple_initialSpeedMin_titan
+r5apex.exe!0x01ddd8e0 ConVar grapple_jumpFrac
+r5apex.exe!0x01dddb60 ConVar grapple_letGravityHelpCosAngle
+r5apex.exe!0x01dddc00 ConVar grapple_lift
+r5apex.exe!0x01de7f40 ConVar grapple_pullDelay_human
+r5apex.exe!0x01de7ea0 ConVar grapple_pullDelay_titan
+r5apex.exe!0x01de69c0 ConVar grapple_retractVel
+r5apex.exe!0x01de5ee0 ConVar grapple_rodeoVerticalImpulse
+r5apex.exe!0x01de9870 ConVar grapple_shootVel
+r5apex.exe!0x01ddda20 ConVar grapple_speedRampMax_human
+r5apex.exe!0x01de6e70 ConVar grapple_speedRampMax_titan
+r5apex.exe!0x01db10c0 ConVar grapple_speedRampMin_human
+r5apex.exe!0x01dde540 ConVar grapple_speedRampMin_titan
+r5apex.exe!0x01de1ee0 ConVar grapple_speedRampTime_human
+r5apex.exe!0x01de1120 ConVar grapple_speedRampTime_titan
+r5apex.exe!0x01ddd980 ConVar grapple_swingAngle
+r5apex.exe!0x01db1b90 ConVar grapple_swingPullAngle
+r5apex.exe!0x01db15c0 ConVar grapple_swingPullSpeedLength
+r5apex.exe!0x01dadf80 ConVar grapple_swingPullSpeedScale
+r5apex.exe!0x01de4860 ConVar grapple_titanEmbarkDist
+r5apex.exe!0x01dddac0 ConVar grapple_windowCheckDist
+r5apex.exe!0x01df4210 ConVar gravity_grenade_decel
+r5apex.exe!0x01ded310 ConVar gravity_grenade_projectile_min_speed
+r5apex.exe!0x01dadda0 ConVar ground_debug
+r5apex.exe!0x01de8880 ConVar ground_trace_hull_radius
+r5apex.exe!0x01063ad0 ConVar grx_hasUnknownItems
+r5apex.exe!0x012a62f0 ConVar gtao_angle_bias
+r5apex.exe!0x012a5b70 ConVar gtao_intensity
+r5apex.exe!0x012a6570 ConVar gtao_intensity_in_lobby
+r5apex.exe!0x012a6610 ConVar gtao_thickness_heuristic
+r5apex.exe!0x0115c0e0 ConVar hasAnyAssetsWithDiscardedStreamableData
+r5apex.exe!0x0115cae0 ConVar hasMic
+r5apex.exe!0x0115c040 ConVar hasPartialInstall
+r5apex.exe!0x012a6390 ConVar hbao_angle_bias
+r5apex.exe!0x012a5e90 ConVar hbao_intensity
+r5apex.exe!0x012a6070 ConVar hbao_stepsize_random
+r5apex.exe!0x012a5d50 ConVar hbaobasic_tangent_bias
+r5apex.exe!0x01bf4a90 ConVar hidehud
+r5apex.exe!0x01846e30 ConVar highlight_deferred_update
+r5apex.exe!0x012a5230 ConVar highlight_draw
+r5apex.exe!0x012a53f0 ConVar highlight_lazy_clear_buffers
+r5apex.exe!0x012a5350 ConVar highlight_object_max_count
+r5apex.exe!0x0104b2c0 ConVar hitbox_bodygroup_check
+r5apex.exe!0x01da6d90 ConVar hitch_alert_active
+r5apex.exe!0x01da6120 ConVar hitch_alert_color
+r5apex.exe!0x01bf9e00 ConVar hitch_alert_show_large_snapshots
+r5apex.exe!0x0105c3e0 ConVar host_RunFrameServerAlways
+r5apex.exe!0x01059b70 ConVar host_ShowIPCCallCount
+r5apex.exe!0x0115e9e0 ConVar host_flush_threshold
+r5apex.exe!0x0105a5c0 ConVar host_framerate
+r5apex.exe!0x0105aa60 ConVar host_hasIrreversibleShutdown
+r5apex.exe!0x010572e0 ConVar host_limitlocal
+r5apex.exe!0x01051cc0 ConVar host_map
+r5apex.exe!0x01056520 ConVar host_preload_shaders
+r5apex.exe!0x0105c660 ConVar host_print_frame_times
+r5apex.exe!0x01055710 ConVar host_profile
+r5apex.exe!0x010593e0 ConVar host_runframe_input_parcelremainder
+r5apex.exe!0x01057920 ConVar host_server_thread_min_ticks
+r5apex.exe!0x010519a0 ConVar host_sleep
+r5apex.exe!0x01053fb0 ConVar host_speeds
+r5apex.exe!0x01125970 ConVar host_syncfps
+r5apex.exe!0x010550c0 ConVar host_thread_join_fast
+r5apex.exe!0x0105c190 ConVar host_thread_mode
+r5apex.exe!0x010548f0 ConVar host_threaded_sound
+r5apex.exe!0x0105d960 ConVar host_timescale
+r5apex.exe!0x01055e40 ConVar hostname
+r5apex.exe!0x0118d980 ConVar http_StryderKey
+r5apex.exe!0x0118d3e0 ConVar http_debug
+r5apex.exe!0x0118d840 ConVar http_debug_forceFailRate
+r5apex.exe!0x0118d660 ConVar http_debug_forceFailStatus
+r5apex.exe!0x0118d480 ConVar http_failuresAsErrors
+r5apex.exe!0x0118d7a0 ConVar http_maxAllocateAttempts
+r5apex.exe!0x0118dc00 ConVar http_recv_fail_realloc
+r5apex.exe!0x0118d700 ConVar http_sandbox
+r5apex.exe!0x0118d5c0 ConVar http_showQueries
+r5apex.exe!0x01e1cdc0 ConVar hud_autoreloadscript
+r5apex.exe!0x01da9ae0 ConVar hud_setting_accessibleChat
+r5apex.exe!0x01bf95a0 ConVar hud_setting_adsDof
+r5apex.exe!0x01e0a980 ConVar hud_setting_compactOverHeadNames
+r5apex.exe!0x01daa9b0 ConVar hud_setting_damageIndicatorStyle
+r5apex.exe!0x01da58d0 ConVar hud_setting_damageTextStyle
+r5apex.exe!0x01bf7c50 ConVar hud_setting_enableModWheel
+r5apex.exe!0x01bf8f00 ConVar hud_setting_healthUseOnHold
+r5apex.exe!0x01bf9980 ConVar hud_setting_healthWheelToggle
+r5apex.exe!0x01bfa210 ConVar hud_setting_healthWheelUseOnRelease
+r5apex.exe!0x01da4e40 ConVar hud_setting_lootPromptStyle
+r5apex.exe!0x01da5260 ConVar hud_setting_minimapRotate
+r5apex.exe!0x01bf8680 ConVar hud_setting_ordnanceUseOnHold
+r5apex.exe!0x01da87f0 ConVar hud_setting_ordnanceWheelToggle
+r5apex.exe!0x01bf8ac0 ConVar hud_setting_ordnanceWheelUseOnRelease
+r5apex.exe!0x01daa890 ConVar hud_setting_pingAlpha
+r5apex.exe!0x01da65a0 ConVar hud_setting_pingDoubleTapEnemy
+r5apex.exe!0x01bfaa20 ConVar hud_setting_pingWheelToggle
+r5apex.exe!0x01bf8240 ConVar hud_setting_showButtonHints
+r5apex.exe!0x01daa250 ConVar hud_setting_showCallsigns
+r5apex.exe!0x01da8ee0 ConVar hud_setting_showLevelUp
+r5apex.exe!0x01da75b0 ConVar hud_setting_showMedals
+r5apex.exe!0x01dab730 ConVar hud_setting_showMeter
+r5apex.exe!0x01da7830 ConVar hud_setting_showObituary
+r5apex.exe!0x01bfa050 ConVar hud_setting_showTips
+r5apex.exe!0x01dab1d0 ConVar hud_setting_showWeaponFlyouts
+r5apex.exe!0x01dab290 ConVar hud_setting_streamerMode
+r5apex.exe!0x01be86d0 ConVar hudchat_new_message_fade_duration
+r5apex.exe!0x01bef890 ConVar hudchat_new_message_shown_duration
+r5apex.exe!0x01be9420 ConVar hudchat_play_text_to_speech
+r5apex.exe!0x01be8510 ConVar hudchat_transition_message_mode_fade_duration
+r5apex.exe!0x01be76f0 ConVar hudchat_visibility
+r5apex.exe!0x0182ca00 ConVar hudwarp_chopsize
+r5apex.exe!0x0182c6e0 ConVar hudwarp_override
+r5apex.exe!0x0182c5a0 ConVar hudwarp_viewDist
+r5apex.exe!0x0182c960 ConVar hudwarp_xScale
+r5apex.exe!0x0182b700 ConVar hudwarp_xWarp
+r5apex.exe!0x0182b7a0 ConVar hudwarp_yScale
+r5apex.exe!0x0182c640 ConVar hudwarp_yWarp
+r5apex.exe!0x01bf9410 ConVar idcolor_ally
+r5apex.exe!0x01dab9b0 ConVar idcolor_ally_cb1
+r5apex.exe!0x01da9070 ConVar idcolor_ally_cb2
+r5apex.exe!0x01da9840 ConVar idcolor_ally_cb3
+r5apex.exe!0x01dac620 ConVar idcolor_enemy
+r5apex.exe!0x01da8310 ConVar idcolor_enemy_cb1
+r5apex.exe!0x01da7990 ConVar idcolor_enemy_cb2
+r5apex.exe!0x01bf7d20 ConVar idcolor_enemy_cb3
+r5apex.exe!0x01bf98e0 ConVar idcolor_neutral
+r5apex.exe!0x01de8650 ConVar ik_debug
+r5apex.exe!0x01dacf70 ConVar ik_debug_chain
+r5apex.exe!0x01de3550 ConVar ik_debug_ent
+r5apex.exe!0x01de7410 ConVar ik_debug_text
+r5apex.exe!0x01db07e0 ConVar ik_enable
+r5apex.exe!0x01ddd700 ConVar ik_enable_client
+r5apex.exe!0x01de4b10 ConVar ik_height_adjust
+r5apex.exe!0x01db0c40 ConVar ik_height_adjust_debug
+r5apex.exe!0x01daf740 ConVar ik_height_adjust_move_speed
+r5apex.exe!0x01dad9e0 ConVar ik_height_adjust_sine
+r5apex.exe!0x01de60f0 ConVar ik_height_adjust_speed
+r5apex.exe!0x01de0d50 ConVar ik_latch
+r5apex.exe!0x01dcbdf0 ConVar ik_normal_lerp_rate
+r5apex.exe!0x01ddfab0 ConVar ik_unlatch_max_rate
+r5apex.exe!0x011963c0 ConVar ime_enabled
+r5apex.exe!0x0182a9e0 ConVar imgui_buildmode
+r5apex.exe!0x0182aab0 ConVar imgui_buildmode
+r5apex.exe!0x01bf2c20 ConVar impact_allow
+r5apex.exe!0x01da78d0 ConVar impact_debug_info
+r5apex.exe!0x01bf49f0 ConVar impact_victim_offset_dist
+r5apex.exe!0x01dea310 ConVar impulse_low_decel_duration_scalar
+r5apex.exe!0x0115cc20 ConVar inPartyChat
+r5apex.exe!0x01058240 ConVar in_forceuser
+r5apex.exe!0x01060c90 ConVar in_syncRT
+r5apex.exe!0x01be3770 ConVar in_usekeyboardsampletime
+r5apex.exe!0x01162490 ConVar inbox_enabled
+r5apex.exe!0x01162170 ConVar infoblock_requestInterval
+r5apex.exe!0x01bfa0f0 ConVar intro_viewed
+r5apex.exe!0x01059660 ConVar ip
+r5apex.exe!0x01bf3720 ConVar joy_advaxisr
+r5apex.exe!0x01be46f0 ConVar joy_advaxisu
+r5apex.exe!0x01bf5cf0 ConVar joy_advaxisv
+r5apex.exe!0x01bee6d0 ConVar joy_advaxisx
+r5apex.exe!0x01bf0e40 ConVar joy_advaxisy
+r5apex.exe!0x01bee320 ConVar joy_advaxisz
+r5apex.exe!0x01bf5490 ConVar joy_inverty
+r5apex.exe!0x01bf7630 ConVar joy_legacy
+r5apex.exe!0x01be9720 ConVar joy_movement_stick
+r5apex.exe!0x01be3990 ConVar joy_requireFocus
+r5apex.exe!0x01bf19a0 ConVar joy_rumble
+r5apex.exe!0x01bf3430 ConVar joy_xcontroller_cfg_loaded
+r5apex.exe!0x01124f70 ConVar jpeg_quality
+r5apex.exe!0x01827ae0 ConVar jt_help_with_anything_ignore_preference
+r5apex.exe!0x01de5090 ConVar jump_graceperiod
+r5apex.exe!0x01de21c0 ConVar jump_keyboardgrace_max
+r5apex.exe!0x01dcb3b0 ConVar jump_keyboardgrace_strength
+r5apex.exe!0x01db1870 ConVar jump_keyboardgraceperiodmax
+r5apex.exe!0x01de2610 ConVar jump_keyboardgraceperiodmin
+r5apex.exe!0x0115dba0 ConVar killReplay_lagCompensate
+r5apex.exe!0x01e0cf30 ConVar killReplay_playNonReplayRemoteCallsOnLocalClientPlayer
+r5apex.exe!0x018509c0 ConVar leaf_threadedRecompute
+r5apex.exe!0x0184a390 ConVar leaf_threadedRecompute_batchSize
+r5apex.exe!0x01e11680 ConVar leech_npc_angle_cos
+r5apex.exe!0x0184d750 ConVar lerp_careAboutAttachmentBonePosition
+r5apex.exe!0x01dadbc0 ConVar lerp_debugEnt
+r5apex.exe!0x01855630 ConVar lerp_opt
+r5apex.exe!0x01832150 ConVar lerp_threaded
+r5apex.exe!0x0184cb00 ConVar lerp_threaded_numEntsPerTask
+r5apex.exe!0x01052b50 ConVar light_maxcone
+r5apex.exe!0x0119e0b0 ConVar lightmap_realtimelight
+r5apex.exe!0x011a1690 ConVar lightmap_realtimeshadows
+r5apex.exe!0x01059a40 ConVar load_during_video
+r5apex.exe!0x01e093b0 ConVar loaderrorsCount
+r5apex.exe!0x01e08c90 ConVar loaderrorsNeedShown
+r5apex.exe!0x01e098b0 ConVar localClientPlayerCachedLevel
+r5apex.exe!0x01126840 ConVar locationInfo
+r5apex.exe!0x011267a0 ConVar locationInfo_nucleus
+r5apex.exe!0x01be7830 ConVar locator_background_border_color
+r5apex.exe!0x01be3650 ConVar locator_background_border_thickness
+r5apex.exe!0x01be9fe0 ConVar locator_background_color
+r5apex.exe!0x01bea220 ConVar locator_background_shift_x
+r5apex.exe!0x01beab50 ConVar locator_background_shift_y
+r5apex.exe!0x01bee460 ConVar locator_background_style
+r5apex.exe!0x01beaa30 ConVar locator_background_thickness_x
+r5apex.exe!0x01be4310 ConVar locator_background_thickness_y
+r5apex.exe!0x01be8a90 ConVar locator_fade_time
+r5apex.exe!0x01bf5370 ConVar locator_icon_max_size_non_ss
+r5apex.exe!0x01beecd0 ConVar locator_icon_min_size_non_ss
+r5apex.exe!0x01be8c50 ConVar locator_lerp_rest
+r5apex.exe!0x01beb3f0 ConVar locator_lerp_speed
+r5apex.exe!0x01bed4f0 ConVar locator_lerp_time
+r5apex.exe!0x01bf1580 ConVar locator_pulse_time
+r5apex.exe!0x01be3d50 ConVar locator_split_len
+r5apex.exe!0x01beb670 ConVar locator_split_maxwide_percent
+r5apex.exe!0x01bf0ee0 ConVar locator_start_at_crosshair
+r5apex.exe!0x01bef470 ConVar locator_target_offset_x
+r5apex.exe!0x01be6f00 ConVar locator_target_offset_y
+r5apex.exe!0x01bf3c20 ConVar locator_topdown_style
+r5apex.exe!0x01befa40 ConVar lookspring
+r5apex.exe!0x01bf4380 ConVar lookstrafe
+r5apex.exe!0x01bea660 ConVar m_acceleration
+r5apex.exe!0x01bf4260 ConVar m_forward
+r5apex.exe!0x01be9380 ConVar m_invert_pitch
+r5apex.exe!0x01bee630 ConVar m_side
+r5apex.exe!0x01e08fb0 ConVar mainmenu_background_movie
+r5apex.exe!0x01bf3650 ConVar map_settings_override
+r5apex.exe!0x01bf85c0 ConVar mat_autoexposure_compensation
+r5apex.exe!0x01823830 ConVar mat_autoexposure_force_value
+r5apex.exe!0x01da9b80 ConVar mat_autoexposure_max
+r5apex.exe!0x01da6640 ConVar mat_autoexposure_max_multiplier
+r5apex.exe!0x01dab3d0 ConVar mat_autoexposure_min
+r5apex.exe!0x01da7370 ConVar mat_autoexposure_min_multiplier
+r5apex.exe!0x01bfb050 ConVar mat_autoexposure_speed
+r5apex.exe!0x01dac240 ConVar mat_autoexposure_uncap
+r5apex.exe!0x01daaf50 ConVar mat_bloom_cutoff
+r5apex.exe!0x01823970 ConVar mat_bloom_max_lighting_value
+r5apex.exe!0x01bf9720 ConVar mat_bloom_scalefactor_scalar
+r5apex.exe!0x018259c0 ConVar mat_bloom_streak_amount
+r5apex.exe!0x01da86b0 ConVar mat_bloom_streak_cutoff
+r5apex.exe!0x01da76f0 ConVar mat_bloom_streak_cutoff_exposure_adapt
+r5apex.exe!0x01826a00 ConVar mat_bloom_streak_exponent_post
+r5apex.exe!0x01da6c50 ConVar mat_bloom_streak_exponent_pre
+r5apex.exe!0x01826500 ConVar mat_bloom_wide_amount
+r5apex.exe!0x01da84b0 ConVar mat_bloom_wide_exponent_pre
+r5apex.exe!0x01daabb0 ConVar mat_bloomamount_rate
+r5apex.exe!0x01dac9d0 ConVar mat_bloomscale
+r5apex.exe!0x012a6cf0 ConVar mat_checkStalls
+r5apex.exe!0x0119e3b0 ConVar mat_cloudmask
+r5apex.exe!0x0104fa40 ConVar mat_colcorrection_disableentities
+r5apex.exe!0x0115d300 ConVar mat_colcorrection_disableentities
+r5apex.exe!0x01bd6270 ConVar mat_colcorrection_disableentities
+r5apex.exe!0x0104e400 ConVar mat_colcorrection_editor
+r5apex.exe!0x01845490 ConVar mat_colcorrection_editor
+r5apex.exe!0x018460d0 ConVar mat_colcorrection_forceentitiesclientside
+r5apex.exe!0x0104eb20 ConVar mat_colorcorrection
+r5apex.exe!0x01826aa0 ConVar mat_debug_postprocess_allowed
+r5apex.exe!0x01da8cb0 ConVar mat_debug_postprocessing_effects
+r5apex.exe!0x01826820 ConVar mat_debug_tonemapping
+r5apex.exe!0x01826320 ConVar mat_debug_tonemapping_disable
+r5apex.exe!0x018261e0 ConVar mat_debug_tonemapping_mid1
+r5apex.exe!0x01825ec0 ConVar mat_debug_tonemapping_mid2
+r5apex.exe!0x018260a0 ConVar mat_debug_tonemapping_shoulder
+r5apex.exe!0x01826000 ConVar mat_debug_tonemapping_toe
+r5apex.exe!0x011a1990 ConVar mat_debugalttab
+r5apex.exe!0x01824460 ConVar mat_depthbias_decal
+r5apex.exe!0x01824640 ConVar mat_depthbias_normal
+r5apex.exe!0x01824320 ConVar mat_depthbias_shadowmap
+r5apex.exe!0x01824500 ConVar mat_depthbias_tightshadowmap
+r5apex.exe!0x01824000 ConVar mat_depthbias_ui
+r5apex.exe!0x018245a0 ConVar mat_depthbias_zfill
+r5apex.exe!0x01823ec0 ConVar mat_depthbiasclamp_decal
+r5apex.exe!0x018248c0 ConVar mat_depthbiasclamp_normal
+r5apex.exe!0x018240a0 ConVar mat_depthbiasclamp_shadowmap
+r5apex.exe!0x01824280 ConVar mat_depthbiasclamp_ui
+r5apex.exe!0x018241e0 ConVar mat_depthbiasclamp_zfill
+r5apex.exe!0x01823f60 ConVar mat_depthtest_force_disabled
+r5apex.exe!0x011a14b0 ConVar mat_detail_tex
+r5apex.exe!0x01198530 ConVar mat_diffuse
+r5apex.exe!0x01da80b0 ConVar mat_disable_bloom
+r5apex.exe!0x01823790 ConVar mat_disable_lightmap_ambient
+r5apex.exe!0x011a06f0 ConVar mat_disable_lightmaps
+r5apex.exe!0x0119bb30 ConVar mat_disable_model_ambient
+r5apex.exe!0x0105efb0 ConVar mat_drawMenuGrid
+r5apex.exe!0x01061710 ConVar mat_drawTitleSafe
+r5apex.exe!0x011987b0 ConVar mat_drawflat
+r5apex.exe!0x0119e310 ConVar mat_dxlevel
+r5apex.exe!0x0104e4a0 ConVar mat_dynamic_tonemapping
+r5apex.exe!0x011a1d50 ConVar mat_dynamic_tonemapping
+r5apex.exe!0x01198320 ConVar mat_enable_ssr
+r5apex.exe!0x01823a10 ConVar mat_envmap_scale
+r5apex.exe!0x0104d580 ConVar mat_envmaptgasize
+r5apex.exe!0x011a0f10 ConVar mat_fastnobump
+r5apex.exe!0x01059cb0 ConVar mat_fastspecular
+r5apex.exe!0x011a1370 ConVar mat_filterlightmaps
+r5apex.exe!0x0119b970 ConVar mat_filtertextures
+r5apex.exe!0x01bf9ef0 ConVar mat_force_bloom
+r5apex.exe!0x011a0e70 ConVar mat_forceaniso
+r5apex.exe!0x01bfa980 ConVar mat_frame_color_bias
+r5apex.exe!0x01da6020 ConVar mat_frame_color_enabled
+r5apex.exe!0x01dac380 ConVar mat_frame_color_scale
+r5apex.exe!0x01bfb290 ConVar mat_frame_color_spot_metering_screen_ratio
+r5apex.exe!0x01057d80 ConVar mat_fullbright
+r5apex.exe!0x01826640 ConVar mat_fxaa_enable
+r5apex.exe!0x01198490 ConVar mat_global_lighting
+r5apex.exe!0x012a6ff0 ConVar mat_global_lighting
+r5apex.exe!0x01bf7b10 ConVar mat_global_lighting
+r5apex.exe!0x01057420 ConVar mat_hdr_level
+r5apex.exe!0x0115d3a0 ConVar mat_hdrcolcorrection_editor
+r5apex.exe!0x01198150 ConVar mat_hdrcolorcorrection
+r5apex.exe!0x012a7140 ConVar mat_hide_sun_in_last_cascade
+r5apex.exe!0x012a70a0 ConVar mat_instancing
+r5apex.exe!0x012a6c50 ConVar mat_letterbox_aspect_goal
+r5apex.exe!0x012a6bb0 ConVar mat_letterbox_aspect_threshold
+r5apex.exe!0x01bf8e40 ConVar mat_lightcull_subview
+r5apex.exe!0x01da4ee0 ConVar mat_lightcull_subviews
+r5apex.exe!0x018268c0 ConVar mat_local_contrast_edge_scale_override
+r5apex.exe!0x01825c40 ConVar mat_local_contrast_midtone_mask_override
+r5apex.exe!0x01825b00 ConVar mat_local_contrast_scale_override
+r5apex.exe!0x01825ce0 ConVar mat_local_contrast_vignette_end_override
+r5apex.exe!0x01825d80 ConVar mat_local_contrast_vignette_start_override
+r5apex.exe!0x011a2d20 ConVar mat_materialmip_character_0
+r5apex.exe!0x011a2070 ConVar mat_materialmip_character_1
+r5apex.exe!0x011a2430 ConVar mat_materialmip_character_2
+r5apex.exe!0x011a27f0 ConVar mat_materialmip_character_3
+r5apex.exe!0x011a2750 ConVar mat_materialmip_character_4
+r5apex.exe!0x011a2aa0 ConVar mat_materialmip_cockpit_0
+r5apex.exe!0x011a2250 ConVar mat_materialmip_cockpit_1
+r5apex.exe!0x011a1e90 ConVar mat_materialmip_cockpit_2
+r5apex.exe!0x011a1fd0 ConVar mat_materialmip_cockpit_3
+r5apex.exe!0x011a2be0 ConVar mat_materialmip_cockpit_4
+r5apex.exe!0x011a1f30 ConVar mat_materialmip_model_0
+r5apex.exe!0x011a2570 ConVar mat_materialmip_model_1
+r5apex.exe!0x011a2c80 ConVar mat_materialmip_model_2
+r5apex.exe!0x011a2f80 ConVar mat_materialmip_model_3
+r5apex.exe!0x011a26b0 ConVar mat_materialmip_model_4
+r5apex.exe!0x011a2b40 ConVar mat_materialmip_other_0
+r5apex.exe!0x011a2390 ConVar mat_materialmip_other_1
+r5apex.exe!0x011a3020 ConVar mat_materialmip_other_2
+r5apex.exe!0x011a2110 ConVar mat_materialmip_other_3
+r5apex.exe!0x011a2e60 ConVar mat_materialmip_other_4
+r5apex.exe!0x011a2610 ConVar mat_materialmip_world_0
+r5apex.exe!0x011a1df0 ConVar mat_materialmip_world_1
+r5apex.exe!0x011a21b0 ConVar mat_materialmip_world_2
+r5apex.exe!0x011a2dc0 ConVar mat_materialmip_world_3
+r5apex.exe!0x011a22f0 ConVar mat_materialmip_world_4
+r5apex.exe!0x01053cb0 ConVar mat_maxframelatency
+r5apex.exe!0x0119e1d0 ConVar mat_mip_linear
+r5apex.exe!0x0119e450 ConVar mat_mipmaptextures
+r5apex.exe!0x01051560 ConVar mat_norendering
+r5apex.exe!0x011985d0 ConVar mat_norendering
+r5apex.exe!0x011a0a10 ConVar mat_phong
+r5apex.exe!0x0119bbd0 ConVar mat_picmip
+r5apex.exe!0x018265a0 ConVar mat_postprocess_enable
+r5apex.exe!0x01da9d40 ConVar mat_postprocess_enable
+r5apex.exe!0x012a31b0 ConVar mat_processtoolvars
+r5apex.exe!0x011a10f0 ConVar mat_proxy
+r5apex.exe!0x011a1190 ConVar mat_reducefillrate
+r5apex.exe!0x011a30c0 ConVar mat_reduceparticles
+r5apex.exe!0x01823e20 ConVar mat_remoteshadercompile
+r5apex.exe!0x011a1cb0 ConVar mat_report_queue_status
+r5apex.exe!0x011a05b0 ConVar mat_reversedepth
+r5apex.exe!0x01bfa7f0 ConVar mat_screen_blur_enabled
+r5apex.exe!0x01825f60 ConVar mat_screen_blur_override
+r5apex.exe!0x010537b0 ConVar mat_shadowstate
+r5apex.exe!0x01825920 ConVar mat_sharpen_amount
+r5apex.exe!0x01826460 ConVar mat_sharpen_threshold
+r5apex.exe!0x01826780 ConVar mat_sharpen_width
+r5apex.exe!0x0115b7f0 ConVar mat_show_texture_memory_usage
+r5apex.exe!0x012a3500 ConVar mat_showenvmapmask
+r5apex.exe!0x011983f0 ConVar mat_showlowresimage
+r5apex.exe!0x011a0970 ConVar mat_showmiplevels
+r5apex.exe!0x010565c0 ConVar mat_skipid
+r5apex.exe!0x01059900 ConVar mat_sky_color
+r5apex.exe!0x01056160 ConVar mat_sky_scale
+r5apex.exe!0x01824820 ConVar mat_slopescaledepthbias_decal
+r5apex.exe!0x01824140 ConVar mat_slopescaledepthbias_normal
+r5apex.exe!0x01824780 ConVar mat_slopescaledepthbias_shadowmap
+r5apex.exe!0x018243c0 ConVar mat_slopescaledepthbias_ui
+r5apex.exe!0x018246e0 ConVar mat_slopescaledepthbias_zfill
+r5apex.exe!0x010597a0 ConVar mat_sun_color
+r5apex.exe!0x01054590 ConVar mat_sun_scale
+r5apex.exe!0x01056b60 ConVar mat_surfacefilter
+r5apex.exe!0x01055bc0 ConVar mat_surfaceid
+r5apex.exe!0x01059df0 ConVar mat_surfacemat
+r5apex.exe!0x012a6eb0 ConVar mat_syncGPU
+r5apex.exe!0x012a6e10 ConVar mat_syncInterval
+r5apex.exe!0x011a0bf0 ConVar mat_sync_rt
+r5apex.exe!0x012a3390 ConVar mat_sync_rt_flushes_gpu
+r5apex.exe!0x0115b6b0 ConVar mat_texture_list
+r5apex.exe!0x0115b750 ConVar mat_texture_list_view
+r5apex.exe!0x012a3430 ConVar mat_translucency_errors
+r5apex.exe!0x01826be0 ConVar mat_use_compressed_hdr_textures
+r5apex.exe!0x01826960 ConVar mat_vignette_enable
+r5apex.exe!0x011a24d0 ConVar mat_warn_texture_convert
+r5apex.exe!0x01052d10 ConVar match_backingOutMaxTimeToWait
+r5apex.exe!0x01059480 ConVar match_backoutslow
+r5apex.exe!0x01051f80 ConVar match_connect
+r5apex.exe!0x010542d0 ConVar match_defaultMap_party
+r5apex.exe!0x0105a070 ConVar match_dir
+r5apex.exe!0x01054fb0 ConVar match_dumpSearchResults
+r5apex.exe!0x01051900 ConVar match_emptyUpdateRate
+r5apex.exe!0x0105af60 ConVar match_enabled
+r5apex.exe!0x01054190 ConVar match_fakePort
+r5apex.exe!0x01051ae0 ConVar match_fakeS2SPort
+r5apex.exe!0x0105c7a0 ConVar match_forceVerboseSearches
+r5apex.exe!0x01056fc0 ConVar match_goodReputation
+r5apex.exe!0x01057ba0 ConVar match_maxPingsSent
+r5apex.exe!0x0105be70 ConVar match_mixtape_unchecked
+r5apex.exe!0x01053dc0 ConVar match_mixtape_unchecked_version
+r5apex.exe!0x0105cb60 ConVar match_mixtape_version
+r5apex.exe!0x01054e70 ConVar match_mixtape_warnOnPlay
+r5apex.exe!0x01059f30 ConVar match_myBestDatacenter
+r5apex.exe!0x01059e90 ConVar match_myDatacenter
+r5apex.exe!0x0105a220 ConVar match_myRankedDatacenter
+r5apex.exe!0x010525d0 ConVar match_myTeam
+r5apex.exe!0x01058fa0 ConVar match_partyChangeNum
+r5apex.exe!0x01052410 ConVar match_partySize
+r5apex.exe!0x01051c20 ConVar match_partySub
+r5apex.exe!0x01051140 ConVar match_pingWaveInterval
+r5apex.exe!0x0105ae20 ConVar match_playlist
+r5apex.exe!0x010531e0 ConVar match_precachemap
+r5apex.exe!0x01054850 ConVar match_privateMatchListWithStryder
+r5apex.exe!0x01055a80 ConVar match_rankedMaxPing
+r5apex.exe!0x01052db0 ConVar match_rankedSwitchETA
+r5apex.exe!0x0105a920 ConVar match_resetPlaylistBetweenMatches
+r5apex.exe!0x010595c0 ConVar match_roleToken
+r5apex.exe!0x01055d00 ConVar match_searchInterval
+r5apex.exe!0x0105b3c0 ConVar match_searching
+r5apex.exe!0x01057e20 ConVar match_teamNoFill
+r5apex.exe!0x01058f00 ConVar match_updateNotableRate
+r5apex.exe!0x01059180 ConVar match_updateRate
+r5apex.exe!0x010574c0 ConVar match_useMatchmaking
+r5apex.exe!0x0105a880 ConVar match_verbosePrintsInterval
+r5apex.exe!0x01054c90 ConVar match_visiblePlaylists
+r5apex.exe!0x01056a20 ConVar matchmaking_hostname
+r5apex.exe!0x01dee1e0 ConVar max_explosive_damage_mass
+r5apex.exe!0x01df8c60 ConVar max_explosive_damage_velocity
+r5apex.exe!0x018321f0 ConVar max_tweak_shadow_updates
+r5apex.exe!0x01e114c0 ConVar melee_aim_assist_can_lock_pitch
+r5apex.exe!0x01e17ba0 ConVar melee_aim_assist_use_target_velocity
+r5apex.exe!0x01e0de30 ConVar melee_attack_trace_can_use_lunge_distance
+r5apex.exe!0x01e10520 ConVar melee_cone_trace_box_check
+r5apex.exe!0x01de07f0 ConVar melee_lunge_abort_distance
+r5apex.exe!0x01db0ba0 ConVar melee_lunge_abort_if_blocked
+r5apex.exe!0x01e15360 ConVar melee_lunge_adjust_trace_distance
+r5apex.exe!0x01e15e20 ConVar melee_lunge_align_eye_position
+r5apex.exe!0x01e10f20 ConVar melee_lunge_dot_check
+r5apex.exe!0x01de5410 ConVar melee_lunge_force_enable_flying
+r5apex.exe!0x01de7820 ConVar melee_lunge_lag_compensate_target
+r5apex.exe!0x01e191b0 ConVar melee_lunge_scale_by_speed
+r5apex.exe!0x01db2950 ConVar melee_lunge_slide
+r5apex.exe!0x01dadc60 ConVar melee_lunge_use_closest_distance_between_cylinders
+r5apex.exe!0x01e18940 ConVar melee_lunge_use_command_time
+r5apex.exe!0x01dee0a0 ConVar melee_queue_attack_anim_event
+r5apex.exe!0x0105d820 ConVar mem_dumpstats
+r5apex.exe!0x0104cd40 ConVar mem_force_flush
+r5apex.exe!0x0104cca0 ConVar mem_force_flush_section
+r5apex.exe!0x010538f0 ConVar mem_incremental_compact_rate
+r5apex.exe!0x0119ded0 ConVar mem_level
+r5apex.exe!0x0183f630 ConVar mem_level
+r5apex.exe!0x010604b0 ConVar mem_max_heapsize
+r5apex.exe!0x0105e930 ConVar mem_max_heapsize_dedicated
+r5apex.exe!0x0105e1e0 ConVar mem_min_heapsize
+r5apex.exe!0x018283b0 ConVar mem_runheapchecks
+r5apex.exe!0x01056700 ConVar mem_test_each_frame
+r5apex.exe!0x01058aa0 ConVar mem_test_every_n_seconds
+r5apex.exe!0x010534c0 ConVar mem_test_quiet
+r5apex.exe!0x01da5320 ConVar menu_faq_community_version
+r5apex.exe!0x01bf9cc0 ConVar menu_faq_patchnotes_version
+r5apex.exe!0x01bf7bb0 ConVar menu_faq_viewed
+r5apex.exe!0x01bfac20 ConVar menu_was_multiplayer_played_last
+r5apex.exe!0x0118ea60 ConVar migrate_attempt_interval
+r5apex.exe!0x01e0be90 ConVar miles_actor_occlusion_radius
+r5apex.exe!0x01e0c970 ConVar miles_channels
+r5apex.exe!0x018463f0 ConVar miles_flip_active_window_logic
+r5apex.exe!0x01e0a5a0 ConVar miles_force_emitter_environment
+r5apex.exe!0x01e0bd50 ConVar miles_force_listener_environment
+r5apex.exe!0x01e0d730 ConVar miles_freeze
+r5apex.exe!0x01e0cdf0 ConVar miles_initial_occlusion_delay
+r5apex.exe!0x01e0c7a0 ConVar miles_language
+r5apex.exe!0x01e0a780 ConVar miles_listener_freeze
+r5apex.exe!0x01e0bff0 ConVar miles_nonactor_occlusion
+r5apex.exe!0x01e0d010 ConVar miles_nonactor_occlusion_radius
+r5apex.exe!0x01e0c150 ConVar miles_nopandist
+r5apex.exe!0x01e0ce90 ConVar miles_occlusion
+r5apex.exe!0x01e0c4a0 ConVar miles_occlusion_force
+r5apex.exe!0x01e0ac20 ConVar miles_occlusion_partial
+r5apex.exe!0x01e0b970 ConVar miles_occlusion_use_reset_after_deferred_initial
+r5apex.exe!0x01e0d5f0 ConVar miles_samplerate
+r5apex.exe!0x01063810 ConVar miles_server_sounds_debug
+r5apex.exe!0x010638b0 ConVar miles_server_sounds_print
+r5apex.exe!0x01e0a6e0 ConVar miles_solo_ents
+r5apex.exe!0x01be6430 ConVar miles_soundscape_imgui
+r5apex.exe!0x01e0b6d0 ConVar miles_spatialize_front_degrees
+r5apex.exe!0x01e0d150 ConVar miles_spatialize_offplane_strength
+r5apex.exe!0x01e0b8d0 ConVar miles_spatialize_on
+r5apex.exe!0x01e0c290 ConVar miles_spatialize_rear_degrees
+r5apex.exe!0x01e0d360 ConVar miles_suffixes
+r5apex.exe!0x01df0220 ConVar min_explosive_damage_mass
+r5apex.exe!0x01e17ce0 ConVar missile_default_speed
+r5apex.exe!0x01e17460 ConVar missile_homing_speed
+r5apex.exe!0x0104b000 ConVar mod_check_vcollide
+r5apex.exe!0x0104b220 ConVar mod_trace_load
+r5apex.exe!0x01061e80 ConVar model_defaultFadeDistMin
+r5apex.exe!0x01be2b10 ConVar model_defaultFadeDistMin
+r5apex.exe!0x0105ebf0 ConVar model_defaultFadeDistScale
+r5apex.exe!0x01840690 ConVar model_defaultFadeDistScale
+r5apex.exe!0x01be3510 ConVar model_fadeRangeFraction
+r5apex.exe!0x01be35b0 ConVar model_fadeRangeFractionNear
+r5apex.exe!0x01bf8b60 ConVar monitor_cc
+r5apex.exe!0x01825a60 ConVar monitor_mat_sharpen_amount
+r5apex.exe!0x01bfaac0 ConVar monitor_postfx
+r5apex.exe!0x01da7790 ConVar monitor_rui_world_enabled
+r5apex.exe!0x01831ed0 ConVar monitor_snapshot_frame_delay
+r5apex.exe!0x0183ce10 ConVar monitor_zfar_default
+r5apex.exe!0x01da6ef0 ConVar monitor_zfar_override
+r5apex.exe!0x01bf7a70 ConVar monitor_zfar_override_enabled
+r5apex.exe!0x01055ee0 ConVar motd
+r5apex.exe!0x01bf3d40 ConVar mouse_sensitivity
+r5apex.exe!0x01be8d40 ConVar mouse_use_per_scope_sensitivity_scalars
+r5apex.exe!0x01be8de0 ConVar mouse_zoomed_sensitivity_scalar_0
+r5apex.exe!0x01be8e80 ConVar mouse_zoomed_sensitivity_scalar_1
+r5apex.exe!0x01be8f20 ConVar mouse_zoomed_sensitivity_scalar_2
+r5apex.exe!0x01be8fc0 ConVar mouse_zoomed_sensitivity_scalar_3
+r5apex.exe!0x01be9060 ConVar mouse_zoomed_sensitivity_scalar_4
+r5apex.exe!0x01be9100 ConVar mouse_zoomed_sensitivity_scalar_5
+r5apex.exe!0x01be91a0 ConVar mouse_zoomed_sensitivity_scalar_6
+r5apex.exe!0x01be9240 ConVar mouse_zoomed_sensitivity_scalar_7
+r5apex.exe!0x0105da20 ConVar move_one_cmd_per_client_frame
+r5apex.exe!0x01e07df0 ConVar movement_anim_downed_playback_maxrate
+r5apex.exe!0x01e07630 ConVar movement_anim_playback_maxrate
+r5apex.exe!0x01e074f0 ConVar movement_anim_playback_minrate
+r5apex.exe!0x01e079f0 ConVar movement_anim_sprint_playback_maxrate
+r5apex.exe!0x0105b140 ConVar mp_accountLink_requestInterval
+r5apex.exe!0x01052270 ConVar mp_allowed
+r5apex.exe!0x01e07b30 ConVar mp_bodyyawrate
+r5apex.exe!0x01de2020 ConVar mp_class_max_dronecontroller
+r5apex.exe!0x01de74b0 ConVar mp_class_max_fireteam
+r5apex.exe!0x01ddd520 ConVar mp_class_max_pilot
+r5apex.exe!0x01de3480 ConVar mp_class_max_titan
+r5apex.exe!0x0115c6c0 ConVar mp_countRRNobodyAsLobby
+r5apex.exe!0x01de29c0 ConVar mp_enablematchending
+r5apex.exe!0x01db0880 ConVar mp_enabletimelimit
+r5apex.exe!0x01de9910 ConVar mp_gamemode
+r5apex.exe!0x01161260 ConVar mp_huge_threshhold
+r5apex.exe!0x01190d20 ConVar mp_linkingAccountTime
+r5apex.exe!0x01190c80 ConVar mp_linkingAccountWindow
+r5apex.exe!0x01e07770 ConVar mp_maxbodyyaw
+r5apex.exe!0x0105c2a0 ConVar mp_permission_requestInterval
+r5apex.exe!0x0105a660 ConVar mp_permission_rerequestInterval
+r5apex.exe!0x01db2710 ConVar mp_player_level
+r5apex.exe!0x01e07950 ConVar mp_scaleAnimationSpeeds
+r5apex.exe!0x01e07a90 ConVar mp_showgestureslots
+r5apex.exe!0x01063950 ConVar mtx_svEdition
+r5apex.exe!0x01e190b0 ConVar muteWeaponSounds
+r5apex.exe!0x0115cfe0 ConVar name
+r5apex.exe!0x01847970 ConVar net_RunInvalidatePhysics
+r5apex.exe!0x01058400 ConVar net_async_sendto
+r5apex.exe!0x01056ac0 ConVar net_autoUnthrottle
+r5apex.exe!0x0105d6e0 ConVar net_bandwidthPrintThreshold
+r5apex.exe!0x0105bd30 ConVar net_bindToSpecificAddress
+r5apex.exe!0x01051de0 ConVar net_blockmsg
+r5apex.exe!0x01192a00 ConVar net_chatThroughChatserver
+r5apex.exe!0x0105ce80 ConVar net_chokeloop
+r5apex.exe!0x01056980 ConVar net_clearReliableDataOnReset
+r5apex.exe!0x01e18d50 ConVar net_client_side_weapon_animations
+r5apex.exe!0x0105d3c0 ConVar net_compressDataBlock
+r5apex.exe!0x010585c0 ConVar net_compressLZValue
+r5apex.exe!0x01055da0 ConVar net_compresspackets
+r5apex.exe!0x01053320 ConVar net_compresspackets_minsize
+r5apex.exe!0x0115c180 ConVar net_connectPacketWarningThreshhold
+r5apex.exe!0x0115f880 ConVar net_connectingDataRate
+r5apex.exe!0x0104f760 ConVar net_createUndoDeltas
+r5apex.exe!0x011618a0 ConVar net_data_block_enabled
+r5apex.exe!0x0105ace0 ConVar net_datablockPrintSummaries
+r5apex.exe!0x0115de20 ConVar net_datablock_fastRate
+r5apex.exe!0x01056020 ConVar net_datablock_longSendTime
+r5apex.exe!0x0105b970 ConVar net_datablock_minResendInterval
+r5apex.exe!0x0115fb80 ConVar net_datablock_networkLossForSlowSpeed
+r5apex.exe!0x0115e3a0 ConVar net_datablock_resendRateForSlowSpeed
+r5apex.exe!0x01160ae0 ConVar net_datablock_slowRate
+r5apex.exe!0x010517c0 ConVar net_debugDataBlockReceiver
+r5apex.exe!0x0105aec0 ConVar net_debugDataBlockSender
+r5apex.exe!0x01064020 ConVar net_debugLerping
+r5apex.exe!0x0115ccc0 ConVar net_deltaFieldEntityBlockSize
+r5apex.exe!0x0115baa0 ConVar net_disconnectIfDeltaBufferIsFull
+r5apex.exe!0x010511e0 ConVar net_drawslider
+r5apex.exe!0x01058be0 ConVar net_droppackets
+r5apex.exe!0x0104fae0 ConVar net_dumpChangesPrecise
+r5apex.exe!0x01053850 ConVar net_encrypt_copyCtx
+r5apex.exe!0x01056200 ConVar net_encryptionDebug
+r5apex.exe!0x01056c00 ConVar net_fakelag
+r5apex.exe!0x0105cac0 ConVar net_fakelag_clientOnly
+r5apex.exe!0x0105d640 ConVar net_fakelagjitter
+r5apex.exe!0x0105d5a0 ConVar net_fakeloss
+r5apex.exe!0x0115b960 ConVar net_forceDeltaBufferToOverflow
+r5apex.exe!0x0104e970 ConVar net_forceUnnecessaryUndoDeltas
+r5apex.exe!0x0105ab00 ConVar net_forcetimeout
+r5apex.exe!0x0105d1a0 ConVar net_fullyConnectedDataRate
+r5apex.exe!0x01125a80 ConVar net_highPacketLatencyThreshold
+r5apex.exe!0x011249f0 ConVar net_highPacketLossThreshold
+r5apex.exe!0x011245d0 ConVar net_ignoreAllSnapshots
+r5apex.exe!0x0115bfa0 ConVar net_largeSnapshotThreshold
+r5apex.exe!0x01064200 ConVar net_lerpFields
+r5apex.exe!0x0115f740 ConVar net_lowBandwidthConnect
+r5apex.exe!0x01051860 ConVar net_maxAccumulatedClearTimeBalance
+r5apex.exe!0x01052670 ConVar net_maxcleartime
+r5apex.exe!0x01053670 ConVar net_maxfilesize
+r5apex.exe!0x01052830 ConVar net_maxfragments
+r5apex.exe!0x01051b80 ConVar net_maxroutable
+r5apex.exe!0x01052020 ConVar net_minConnectionTimeForSpam
+r5apex.exe!0x0105a180 ConVar net_minQueuedPacketsForPrint
+r5apex.exe!0x01da66e0 ConVar net_minResetIdleTimerInterval
+r5apex.exe!0x01052ab0 ConVar net_minimumPacketLossDC
+r5apex.exe!0x010528d0 ConVar net_minroutable
+r5apex.exe!0x0115ce00 ConVar net_noPostDataForDeletedEnts
+r5apex.exe!0x01dee140 ConVar net_old_seed_generation
+r5apex.exe!0x0115f380 ConVar net_optimize_persistent_data
+r5apex.exe!0x01161620 ConVar net_optimize_playlists
+r5apex.exe!0x01e1bed0 ConVar net_optimize_weapons
+r5apex.exe!0x01842280 ConVar net_predictParentEntities
+r5apex.exe!0x0115c4e0 ConVar net_predictedEntsUseFirstAvailableSnapshot
+r5apex.exe!0x0115bf00 ConVar net_predictionDebug
+r5apex.exe!0x01064340 ConVar net_pretendSnapshotArrayFull
+r5apex.exe!0x010546a0 ConVar net_printCompression
+r5apex.exe!0x0115c620 ConVar net_printOutOfSnapshots
+r5apex.exe!0x0104e680 ConVar net_printUnnecessaryDeltas
+r5apex.exe!0x01050700 ConVar net_propSkipPrintThreshold
+r5apex.exe!0x01054410 ConVar net_queue_trace
+r5apex.exe!0x01050d60 ConVar net_queuedPackets_PrintOversleeps
+r5apex.exe!0x01056840 ConVar net_queuedPackets_SkipSmallSleeps
+r5apex.exe!0x01054b50 ConVar net_queued_packet_sender_nopacket_sleep
+r5apex.exe!0x01053a30 ConVar net_queued_packet_thread
+r5apex.exe!0x010555d0 ConVar net_recentNetworkGapWindow
+r5apex.exe!0x01057740 ConVar net_recentNetworkGapsNeeded
+r5apex.exe!0x0115bc80 ConVar net_recreateScriptInstanceOnReplayTransition
+r5apex.exe!0x01064480 ConVar net_recv_dumpChanges
+r5apex.exe!0x0104f030 ConVar net_recv_dumpNetworkedChangesOnEntCreate
+r5apex.exe!0x0104f3f0 ConVar net_recv_watchEnt
+r5apex.exe!0x0104ea10 ConVar net_recv_watchField1
+r5apex.exe!0x0104fff0 ConVar net_recv_watchField2
+r5apex.exe!0x01059520 ConVar net_resourcePrintMinimum
+r5apex.exe!0x0104e280 ConVar net_sendFloatDeltas
+r5apex.exe!0x01160860 ConVar net_sendProfileTotals
+r5apex.exe!0x010587a0 ConVar net_sendtoInJob
+r5apex.exe!0x0105c8e0 ConVar net_showFailedAuth
+r5apex.exe!0x0115c220 ConVar net_showLargeSnapshot
+r5apex.exe!0x01054dd0 ConVar net_showQueued
+r5apex.exe!0x0104d970 ConVar net_showUndoDeltas
+r5apex.exe!0x01124e30 ConVar net_showUserWarnings
+r5apex.exe!0x0105cd40 ConVar net_showchoke
+r5apex.exe!0x01051720 ConVar net_showchokeInterval
+r5apex.exe!0x01055c60 ConVar net_showdrop
+r5apex.exe!0x01051a40 ConVar net_showfragments
+r5apex.exe!0x010577e0 ConVar net_showmsg
+r5apex.exe!0x01053b70 ConVar net_showpeaks
+r5apex.exe!0x010554c0 ConVar net_showsendrecv
+r5apex.exe!0x01053c10 ConVar net_showsplits
+r5apex.exe!0x01055b20 ConVar net_showudp
+r5apex.exe!0x01051280 ConVar net_showudp_oob
+r5apex.exe!0x0105d500 ConVar net_showudp_remoteonly
+r5apex.exe!0x01df85c0 ConVar net_showusercmd
+r5apex.exe!0x0104d280 ConVar net_skipUnnecessaryDeltas
+r5apex.exe!0x010599a0 ConVar net_splitrate
+r5apex.exe!0x01058360 ConVar net_splitrateDefaultMP
+r5apex.exe!0x01054bf0 ConVar net_splitrateDefaultSP
+r5apex.exe!0x01050f20 ConVar net_tamperPackets
+r5apex.exe!0x0115bdc0 ConVar net_threadedEntityDeltas
+r5apex.exe!0x0115cea0 ConVar net_threadedProcessPacket
+r5apex.exe!0x010524b0 ConVar net_timeoutUsesLastReadTime
+r5apex.exe!0x01058dc0 ConVar net_trackerWarningInterval
+r5apex.exe!0x0105bb50 ConVar net_usesocketsforloopback
+r5apex.exe!0x0105a3e0 ConVar net_verifyEncryption
+r5apex.exe!0x011928e0 ConVar net_voiceEchoFromChatServer
+r5apex.exe!0x010521d0 ConVar net_warnAboutSocketReadGaps
+r5apex.exe!0x0105ac40 ConVar net_warnGapTime
+r5apex.exe!0x0105bdd0 ConVar net_wifi
+r5apex.exe!0x0115bbe0 ConVar net_worldHitchSlopTime
+r5apex.exe!0x01058c80 ConVar next
+r5apex.exe!0x01df0180 ConVar noReloadAfterUse
+r5apex.exe!0x018266e0 ConVar noise_filter_scale
+r5apex.exe!0x0105ea70 ConVar not_focus_sleep
+r5apex.exe!0x0118c660 ConVar notification_displayTime
+r5apex.exe!0x0105fad0 ConVar nucleus_id
+r5apex.exe!0x0105f0f0 ConVar nucleus_pid
+r5apex.exe!0x01bf88c0 ConVar number_shortenToMillionsAfter
+r5apex.exe!0x01e1c970 ConVar offhandTossOverheadPitchThreshold
+r5apex.exe!0x01db06a0 ConVar offhand_alignEndAnim1p3p
+r5apex.exe!0x01061110 ConVar old_culling
+r5apex.exe!0x0105f410 ConVar old_gather_props
+r5apex.exe!0x01de7650 ConVar one_handed_change_rate
+r5apex.exe!0x0118cde0 ConVar openInvite_spam
+r5apex.exe!0x0118c840 ConVar openInvites_filterByLanguage
+r5apex.exe!0x0118cb00 ConVar openInvites_filterByRegion
+r5apex.exe!0x0118efe0 ConVar openinvite_duration_default
+r5apex.exe!0x01be4270 ConVar ordnanceSwapSelectCooldown
+r5apex.exe!0x0118e440 ConVar origin_Errorlevel_OldBehaviour
+r5apex.exe!0x0118e6c0 ConVar origin_Errorlevel_Telementry
+r5apex.exe!0x0118e620 ConVar origin_authCodeFailureMaxBackoffSeconds
+r5apex.exe!0x0118e4e0 ConVar origin_autoRefreshToken
+r5apex.exe!0x0118e300 ConVar origin_debug
+r5apex.exe!0x0118df00 ConVar origin_disconnectWhenOffline
+r5apex.exe!0x0118dfa0 ConVar origin_ignoreInvitesOnLoadScreen
+r5apex.exe!0x0118dde0 ConVar origin_igo_mutes_sound_enabled
+r5apex.exe!0x01844f00 ConVar origin_igo_muting_sound
+r5apex.exe!0x0118e3a0 ConVar origin_presense_updateRate
+r5apex.exe!0x0118e580 ConVar origin_tokenFailureMaxBackoffSeconds
+r5apex.exe!0x0182b090 ConVar panel_showVisChanges
+r5apex.exe!0x0182ad50 ConVar panel_test_title_safe
+r5apex.exe!0x01831520 ConVar parenting_debug
+r5apex.exe!0x01e04cd0 ConVar particleEffect_checkShouldStillPlay
+r5apex.exe!0x01e1f980 ConVar particle_alwayswakeonstop
+r5apex.exe!0x01193940 ConVar particle_cpu_level
+r5apex.exe!0x01e1fd40 ConVar particle_delete_all_except
+r5apex.exe!0x01bd8f00 ConVar particle_dlights_enable
+r5apex.exe!0x01be2d90 ConVar particle_dlights_spew
+r5apex.exe!0x01dac560 ConVar particle_gpu_level
+r5apex.exe!0x012a5530 ConVar particle_lighting_clear_enable
+r5apex.exe!0x012a5490 ConVar particle_lighting_size
+r5apex.exe!0x01e1f580 ConVar particle_lighting_viewmodel_enable
+r5apex.exe!0x01bfb170 ConVar particle_overlay
+r5apex.exe!0x01da5ab0 ConVar particle_overlay_detail_attributes
+r5apex.exe!0x01dab510 ConVar particle_overlay_detail_filter
+r5apex.exe!0x01dab130 ConVar particle_overlay_detail_list_particles
+r5apex.exe!0x01da71b0 ConVar particle_overlay_detail_scroll
+r5apex.exe!0x01da9560 ConVar particle_overlay_hide_sleeping
+r5apex.exe!0x01da9ea0 ConVar particle_overlay_list_filter
+r5apex.exe!0x01bfacc0 ConVar particle_overlay_list_tally
+r5apex.exe!0x01da5970 ConVar particle_overlay_list_tally_collapse_children
+r5apex.exe!0x01da7d30 ConVar particle_overlay_old
+r5apex.exe!0x01da8750 ConVar particle_overlay_scroll
+r5apex.exe!0x01e1ef40 ConVar particle_remap_vol2cp_debug
+r5apex.exe!0x01e1de40 ConVar particle_script_dump
+r5apex.exe!0x01e1dee0 ConVar particle_script_list
+r5apex.exe!0x01e1df80 ConVar particle_script_log
+r5apex.exe!0x01da4a00 ConVar particle_scrub_debug
+r5apex.exe!0x01e1f660 ConVar particle_scrub_debug_effect
+r5apex.exe!0x01e1fe80 ConVar particle_scrub_is_using_time_scrub
+r5apex.exe!0x01e1fa20 ConVar particle_scrub_max_dt
+r5apex.exe!0x01e1fac0 ConVar particle_scrub_play_speed
+r5apex.exe!0x01e1fca0 ConVar particle_scrub_quality
+r5apex.exe!0x01e1fb60 ConVar particle_scrub_time
+r5apex.exe!0x01da9c20 ConVar particle_simulateoverflow
+r5apex.exe!0x01e1fde0 ConVar particles_cull_dlights
+r5apex.exe!0x01e1fc00 ConVar particles_max_passes
+r5apex.exe!0x01e1f700 ConVar particles_spawncull
+r5apex.exe!0x01e1f840 ConVar particles_spawncull_report
+r5apex.exe!0x0118f080 ConVar parties_alwaysReadSubs
+r5apex.exe!0x0118e880 ConVar party_autoCreatePartyAlways
+r5apex.exe!0x0118f380 ConVar party_autoCreatePartyDelay
+r5apex.exe!0x01df88a0 ConVar party_color_enabled
+r5apex.exe!0x0118eb00 ConVar party_doRealNameLookups
+r5apex.exe!0x0118e9c0 ConVar party_doRealNameLookupsForOwner
+r5apex.exe!0x0118d0c0 ConVar party_hostname
+r5apex.exe!0x0118e920 ConVar party_httpHandleTimeout
+r5apex.exe!0x0118cba0 ConVar party_keepAliveTime
+r5apex.exe!0x0118eea0 ConVar party_keepAliveTime
+r5apex.exe!0x0118ece0 ConVar party_leaderAlwaysDetectsChanges
+r5apex.exe!0x0118ef40 ConVar party_leaveMatchOnJoin
+r5apex.exe!0x0118ee00 ConVar party_lookupRealNamesForOpenInvites
+r5apex.exe!0x0118f120 ConVar party_lookupRealNamesForOpenInvitesForOwner
+r5apex.exe!0x0118ec40 ConVar party_minSize
+r5apex.exe!0x0118f2e0 ConVar party_privacy
+r5apex.exe!0x0118f420 ConVar party_readyToSearch
+r5apex.exe!0x01161e50 ConVar party_relyOnPartyForMemberUserInfo
+r5apex.exe!0x0118f4c0 ConVar party_requireConsensusForSearch
+r5apex.exe!0x01062060 ConVar perTriangleCollisionForced
+r5apex.exe!0x0105cfc0 ConVar persistenceDef_hostname
+r5apex.exe!0x01192e00 ConVar persistenceDef_queryMaxHttpRetries
+r5apex.exe!0x01192d60 ConVar persistenceDef_readMaxHttpRetries
+r5apex.exe!0x01192ea0 ConVar persistenceDef_retryReadAfterErrorTime
+r5apex.exe!0x01192f40 ConVar persistenceDef_writeMaxHttpRetries
+r5apex.exe!0x01193080 ConVar persistence_clForceNew
+r5apex.exe!0x01193120 ConVar persistence_disableForBuildProcess
+r5apex.exe!0x011931c0 ConVar persistence_enforce_manifest
+r5apex.exe!0x0105bc90 ConVar persistence_hostname
+r5apex.exe!0x01193300 ConVar persistence_new_player_if_upgrade_fails
+r5apex.exe!0x01192fe0 ConVar persistence_upload_def
+r5apex.exe!0x01193260 ConVar persistence_upload_failure_is_error
+r5apex.exe!0x0115c920 ConVar persistent_warningRate
+r5apex.exe!0x0105e460 ConVar pertrianglecollision
+r5apex.exe!0x01e1d9e0 ConVar phys_bounce
+r5apex.exe!0x01e1dac0 ConVar phys_cfm
+r5apex.exe!0x01e1d800 ConVar phys_cfm_anglejointstop
+r5apex.exe!0x01e1d8a0 ConVar phys_drawContacts
+r5apex.exe!0x01e1d940 ConVar phys_drawContactsDuration
+r5apex.exe!0x01e1d4e0 ConVar phys_drawGeoms
+r5apex.exe!0x01e1d620 ConVar phys_drawTunnelChecks
+r5apex.exe!0x01e1d260 ConVar phys_enableObjectPairCollidePrototype
+r5apex.exe!0x01e1d120 ConVar phys_erp
+r5apex.exe!0x01e1d440 ConVar phys_erp_anglejointstop
+r5apex.exe!0x01e1d760 ConVar phys_frictionDefault
+r5apex.exe!0x01daa630 ConVar phys_showObjectCount
+r5apex.exe!0x01e1d300 ConVar phys_threadGoWide
+r5apex.exe!0x01e1dda0 ConVar physics_async_cl
+r5apex.exe!0x01e1dc60 ConVar physics_autoSleepAngularThreshold
+r5apex.exe!0x01e1d6c0 ConVar physics_autoSleepDebug
+r5apex.exe!0x01e1d580 ConVar physics_autoSleepGroundHysteresis
+r5apex.exe!0x01e1dd00 ConVar physics_autoSleepSpeedThreshold
+r5apex.exe!0x01e1d1c0 ConVar physics_collideWithMovingGeo
+r5apex.exe!0x01dcb310 ConVar physics_defaultMaxAngularSpeed
+r5apex.exe!0x01de6fb0 ConVar physics_defaultMaxSpeed
+r5apex.exe!0x0182eb50 ConVar physics_scaled_mem
+r5apex.exe!0x01e1d3a0 ConVar physics_tunnelChecks
+r5apex.exe!0x01e1dbc0 ConVar physics_tunnelChecksForceAlways
+r5apex.exe!0x01061490 ConVar pin_opt_in
+r5apex.exe!0x0115cf40 ConVar pin_plat_id
+r5apex.exe!0x010617b0 ConVar pin_sid
+r5apex.exe!0x0105e140 ConVar pin_telemetry_actually_send
+r5apex.exe!0x01061a30 ConVar pin_telemetry_debug_code
+r5apex.exe!0x0105df20 ConVar pin_telemetry_debug_payload
+r5apex.exe!0x01df9ba0 ConVar pin_telemetry_debug_script
+r5apex.exe!0x0105e3c0 ConVar pin_telemetry_dont_send_events
+r5apex.exe!0x0105f5d0 ConVar pin_telemetry_hostname
+r5apex.exe!0x0105f190 ConVar pin_telemetry_inactivity_send_time
+r5apex.exe!0x0105f370 ConVar pin_telemetry_max_payload_size
+r5apex.exe!0x01060850 ConVar pin_telemetry_send_debug
+r5apex.exe!0x01057560 ConVar ping_debug
+r5apex.exe!0x01e091d0 ConVar ping_max_green
+r5apex.exe!0x01e09050 ConVar ping_max_red
+r5apex.exe!0x01e09630 ConVar ping_max_yellow
+r5apex.exe!0x010559e0 ConVar ping_minSentForChoice
+r5apex.exe!0x01057b00 ConVar ping_qos_units
+r5apex.exe!0x0105c340 ConVar ping_usePacketLoss
+r5apex.exe!0x01831bc0 ConVar pixvis_enable
+r5apex.exe!0x01823bd0 ConVar pixvis_maxquads
+r5apex.exe!0x01831940 ConVar pixvis_spew
+r5apex.exe!0x0118dac0 ConVar plat_environment
+r5apex.exe!0x0118c360 ConVar plat_retryNameLookups
+r5apex.exe!0x0115d080 ConVar platform_user_id
+r5apex.exe!0x01e08790 ConVar playerListPartyColorB
+r5apex.exe!0x01e09590 ConVar playerListPartyColorG
+r5apex.exe!0x01e08470 ConVar playerListPartyColorR
+r5apex.exe!0x01e09810 ConVar playerListUseFriendColor
+r5apex.exe!0x01def610 ConVar player_ADS_buffer_time_seconds
+r5apex.exe!0x01bd61d0 ConVar player_debugPredictedPosition
+r5apex.exe!0x01831340 ConVar player_deltaAnimsMakeMeUnpredicted
+r5apex.exe!0x0184ccf0 ConVar player_doJetwashEffects
+r5apex.exe!0x01ddeb60 ConVar player_extraairaccelleration
+r5apex.exe!0x01bd6090 ConVar player_highFrequencyThinkDistance
+r5apex.exe!0x01de78c0 ConVar player_movementBounds_predictionShare
+r5apex.exe!0x01e07bd0 ConVar player_movingDeathThreshold
+r5apex.exe!0x018504d0 ConVar player_respawnInputDebounceDuration
+r5apex.exe!0x01befd00 ConVar player_setting_autosprint
+r5apex.exe!0x01da7eb0 ConVar player_setting_damage_closes_deathbox_menu
+r5apex.exe!0x01df3350 ConVar player_setting_stickysprintforward
+r5apex.exe!0x01846530 ConVar player_showEyePosition
+r5apex.exe!0x01dad6e0 ConVar player_useMovementBounds
+r5apex.exe!0x01850690 ConVar player_viewchange_debug_pitch
+r5apex.exe!0x01bd8180 ConVar player_viewchange_debug_roll
+r5apex.exe!0x0184b2e0 ConVar player_viewchange_debug_yaw
+r5apex.exe!0x01060fd0 ConVar playlist_changeGamemodeAutomatically
+r5apex.exe!0x01060070 ConVar playlist_debug
+r5apex.exe!0x0105de80 ConVar playlist_debug_getvar
+r5apex.exe!0x0105f530 ConVar playlist_debug_localization
+r5apex.exe!0x0105fd50 ConVar playlist_privateMatchEnabled
+r5apex.exe!0x01ddd660 ConVar playlist_variableErrorsChecks
+r5apex.exe!0x01e0a460 ConVar portal_pointpush_debug
+r5apex.exe!0x01e0a500 ConVar portal_pointpush_think_rate
+r5apex.exe!0x01df2960 ConVar portal_use_player_avoidance
+r5apex.exe!0x01847b50 ConVar postdataupdate_threaded
+r5apex.exe!0x0183c620 ConVar postdataupdate_threaded_chunksize
+r5apex.exe!0x01058840 ConVar printConnectTimings
+r5apex.exe!0x01855590 ConVar print_timeprefix
+r5apex.exe!0x01e152c0 ConVar process_pending_vm_effects
+r5apex.exe!0x01e085b0 ConVar progressbar_allow_wrap
+r5apex.exe!0x01e08a10 ConVar progressbar_high_precision
+r5apex.exe!0x01e08830 ConVar progressbar_single_bar
+r5apex.exe!0x01e11f50 ConVar projectile_drag_indicator_enabled
+r5apex.exe!0x01e1aef0 ConVar projectile_fake_prediction_in_kill_replay
+r5apex.exe!0x01e15f80 ConVar projectile_faketrails
+r5apex.exe!0x01e17c40 ConVar projectile_filltrails
+r5apex.exe!0x01e0dc10 ConVar projectile_lagCompensationDebug
+r5apex.exe!0x01e10480 ConVar projectile_lagCompensationDebugDrawTime
+r5apex.exe!0x01e16780 ConVar projectile_lagCompensationDebugExtra
+r5apex.exe!0x01e0fee0 ConVar projectile_lagCompensationDebugServerOffset
+r5apex.exe!0x01e0fe10 ConVar projectile_lagCompensationMissileTimeStepScalar
+r5apex.exe!0x01e166e0 ConVar projectile_muzzleOffsetFirstPersonDecayDist
+r5apex.exe!0x01e11c00 ConVar projectile_muzzleOffsetFirstPersonDecayMaxTime
+r5apex.exe!0x01e10d40 ConVar projectile_muzzleOffsetThirdPersonDecayDist
+r5apex.exe!0x01e16820 ConVar projectile_muzzleOffsetThirdPersonDecayMaxTime
+r5apex.exe!0x01e16120 ConVar projectile_prediction
+r5apex.exe!0x01e183c0 ConVar projectile_predictionErrorCorrectTime
+r5apex.exe!0x01bd66b0 ConVar prop_lightweightPropsSkipAnimData
+r5apex.exe!0x01831760 ConVar prop_survivalSkipsAnimData
+r5apex.exe!0x01def810 ConVar props_break_burst_rotation
+r5apex.exe!0x01def6b0 ConVar props_break_max_pieces
+r5apex.exe!0x01e02440 ConVar props_break_max_pieces_perframe
+r5apex.exe!0x0118d160 ConVar publication_hostname
+r5apex.exe!0x01be2c50 ConVar push_cl
+r5apex.exe!0x01843900 ConVar push_cl_always_update_prev_matrix
+r5apex.exe!0x01df9ce0 ConVar push_debug
+r5apex.exe!0x01df4460 ConVar push_debug_ent
+r5apex.exe!0x01dee610 ConVar push_ragdolls
+r5apex.exe!0x01def570 ConVar pve_debug
+r5apex.exe!0x01e06230 ConVar pvs_addWorkItemsAccum
+r5apex.exe!0x01e065f0 ConVar pvs_addWorkItemsThreshold_edges
+r5apex.exe!0x01e067d0 ConVar pvs_addWorkItemsThreshold_leaves
+r5apex.exe!0x01e06870 ConVar pvs_cullBoxes
+r5apex.exe!0x01e06410 ConVar pvs_debug
+r5apex.exe!0x01e06690 ConVar pvs_drawPortals
+r5apex.exe!0x01e064b0 ConVar pvs_frustumCullOnly
+r5apex.exe!0x01be2f70 ConVar pvs_start_early
+r5apex.exe!0x01de3070 ConVar r_AirboatViewDampenDamp
+r5apex.exe!0x01de6920 ConVar r_AirboatViewDampenFreq
+r5apex.exe!0x01de4180 ConVar r_AirboatViewZHeight
+r5apex.exe!0x01de7050 ConVar r_JeepViewDampenDamp
+r5apex.exe!0x01de4560 ConVar r_JeepViewDampenFreq
+r5apex.exe!0x01db12a0 ConVar r_VehicleViewDampen
+r5apex.exe!0x01e06550 ConVar r_WaterDrawReflection
+r5apex.exe!0x011a0650 ConVar r_WaterDrawRefraction
+r5apex.exe!0x01052bf0 ConVar r_aspectratio
+r5apex.exe!0x01825560 ConVar r_bloomtintb
+r5apex.exe!0x01825740 ConVar r_bloomtintexponent
+r5apex.exe!0x018256a0 ConVar r_bloomtintg
+r5apex.exe!0x01825600 ConVar r_bloomtintr
+r5apex.exe!0x01bf9840 ConVar r_blurmenubg
+r5apex.exe!0x01823510 ConVar r_bone_matrix_bulk_update_threshold
+r5apex.exe!0x010601b0 ConVar r_brush_queue_mode
+r5apex.exe!0x01060bf0 ConVar r_createmodeldecals
+r5apex.exe!0x010567a0 ConVar r_cullshadowworldmeshes
+r5apex.exe!0x01dade40 ConVar r_debug_draw_box_depth_test
+r5apex.exe!0x01061250 ConVar r_decal_cover_count
+r5apex.exe!0x0104fed0 ConVar r_decal_cull_stretch_limit
+r5apex.exe!0x0105ef10 ConVar r_decal_draw_basis
+r5apex.exe!0x0104f2b0 ConVar r_decal_drawclipped
+r5apex.exe!0x01061850 ConVar r_decal_overlap_area
+r5apex.exe!0x01060b50 ConVar r_decal_overlap_count
+r5apex.exe!0x0105f050 ConVar r_decal_test_scale
+r5apex.exe!0x01057a60 ConVar r_decals
+r5apex.exe!0x012a4120 ConVar r_delay_texture_destroy
+r5apex.exe!0x01824e80 ConVar r_ditherAlpha
+r5apex.exe!0x011a0830 ConVar r_ditherFade
+r5apex.exe!0x0184cc40 ConVar r_ditherFade
+r5apex.exe!0x01824f20 ConVar r_ditherFadeShadows
+r5apex.exe!0x01846ed0 ConVar r_ditherFadeShadows
+r5apex.exe!0x01be29b0 ConVar r_drawallrenderables
+r5apex.exe!0x01bf9c20 ConVar r_drawalphasort
+r5apex.exe!0x0105ca20 ConVar r_drawbrushmodels
+r5apex.exe!0x01dac0d0 ConVar r_drawbrushmodels
+r5apex.exe!0x010608f0 ConVar r_drawdecals
+r5apex.exe!0x01daaa50 ConVar r_drawdepth_of_blend2transparent
+r5apex.exe!0x0104e0d0 ConVar r_drawdlights
+r5apex.exe!0x01053990 ConVar r_drawentities
+r5apex.exe!0x0104fe30 ConVar r_drawlightdist
+r5apex.exe!0x0104f580 ConVar r_drawlightinfo
+r5apex.exe!0x01847830 ConVar r_drawmodelsinzfill
+r5apex.exe!0x01052a10 ConVar r_drawmodelstatsoverlay
+r5apex.exe!0x0183b140 ConVar r_drawmodelstatsoverlay
+r5apex.exe!0x0105a7e0 ConVar r_drawmodelstatsoverlaydistance
+r5apex.exe!0x01057880 ConVar r_drawmodelstatsoverlayfilter
+r5apex.exe!0x01054370 ConVar r_drawmodelstatsoverlaymax
+r5apex.exe!0x01056340 ConVar r_drawmodelstatsoverlaymin
+r5apex.exe!0x01dac4c0 ConVar r_drawopaquerenderables
+r5apex.exe!0x018521d0 ConVar r_drawothermodels
+r5apex.exe!0x01dac420 ConVar r_drawparticles
+r5apex.exe!0x0183fc50 ConVar r_drawrenderboxes
+r5apex.exe!0x01bf94e0 ConVar r_drawscreenspaceparticles
+r5apex.exe!0x01da6b30 ConVar r_drawsky
+r5apex.exe!0x01da7650 ConVar r_drawskybox_deprecated
+r5apex.exe!0x0104fcc0 ConVar r_drawstaticlight
+r5apex.exe!0x01daa590 ConVar r_drawstaticprops
+r5apex.exe!0x01bec950 ConVar r_drawtracers
+r5apex.exe!0x0105f2d0 ConVar r_drawvgui
+r5apex.exe!0x01da6a90 ConVar r_drawviewmodel
+r5apex.exe!0x0105a9c0 ConVar r_drawworld
+r5apex.exe!0x01051320 ConVar r_dynamic
+r5apex.exe!0x01da8a70 ConVar r_earlyRenderables
+r5apex.exe!0x01846bd0 ConVar r_enableOriginSort
+r5apex.exe!0x01bf7e60 ConVar r_fadeincode
+r5apex.exe!0x01be3130 ConVar r_farz
+r5apex.exe!0x01059d50 ConVar r_fastzreject
+r5apex.exe!0x01e062d0 ConVar r_forcecheapwater
+r5apex.exe!0x01850b00 ConVar r_jiggle_bones
+r5apex.exe!0x0105b320 ConVar r_lightmap
+r5apex.exe!0x0105ad80 ConVar r_lightprobe_force_trans_dist
+r5apex.exe!0x0105b640 ConVar r_lightstyle
+r5apex.exe!0x01058660 ConVar r_lod
+r5apex.exe!0x01da7bf0 ConVar r_lod
+r5apex.exe!0x01e0cd50 ConVar r_lod_switch_scale
+r5apex.exe!0x01848470 ConVar r_mapextents
+r5apex.exe!0x01827750 ConVar r_modeldecal_maxtotal
+r5apex.exe!0x018319e0 ConVar r_nearz
+r5apex.exe!0x012a6f50 ConVar r_no_stalls
+r5apex.exe!0x018236f0 ConVar r_no_stalls
+r5apex.exe!0x01823c70 ConVar r_no_stalls
+r5apex.exe!0x01053280 ConVar r_norefresh
+r5apex.exe!0x01da5550 ConVar r_particle_lighting_debug
+r5apex.exe!0x01bf7810 ConVar r_particle_lighting_enable
+r5apex.exe!0x01e1f240 ConVar r_particle_lighting_enable
+r5apex.exe!0x01e1e600 ConVar r_particle_lighting_force
+r5apex.exe!0x01e1f4c0 ConVar r_particle_lighting_force
+r5apex.exe!0x01bf8040 ConVar r_particle_low_res_debug
+r5apex.exe!0x012a5670 ConVar r_particle_low_res_draw_weight_tex
+r5apex.exe!0x01e1f310 ConVar r_particle_low_res_enable
+r5apex.exe!0x01e1f3b0 ConVar r_particle_low_res_force
+r5apex.exe!0x012a55d0 ConVar r_particle_low_res_tiled_composite
+r5apex.exe!0x01da5080 ConVar r_particle_sim_spike_increment_ms
+r5apex.exe!0x01daaaf0 ConVar r_particle_sim_spike_threshold_ms
+r5apex.exe!0x01bf7750 ConVar r_particle_timescale
+r5apex.exe!0x01850a60 ConVar r_pos_debug
+r5apex.exe!0x018475d0 ConVar r_render_pos_debug
+r5apex.exe!0x011a0d30 ConVar r_rimlight
+r5apex.exe!0x0104b0e0 ConVar r_rootlod
+r5apex.exe!0x0105bbf0 ConVar r_rootlod
+r5apex.exe!0x01be94c0 ConVar r_ropetranslucent
+r5apex.exe!0x01da8890 ConVar r_setupBoneWorkerThreadhold
+r5apex.exe!0x011a0dd0 ConVar r_shadowrendertotexture
+r5apex.exe!0x01bf9b80 ConVar r_sky_ignoreAngles
+r5apex.exe!0x01bd9180 ConVar r_sort_trans_debug
+r5apex.exe!0x01847430 ConVar r_sort_trans_debug_dist
+r5apex.exe!0x01bfab60 ConVar r_threaded_particles
+r5apex.exe!0x01bf8fa0 ConVar r_updaterefracttexture
+r5apex.exe!0x01dab910 ConVar r_updaterefracttexture_allowmultiple
+r5apex.exe!0x0104db50 ConVar r_visambient
+r5apex.exe!0x0104f6c0 ConVar r_visambient_orig
+r5apex.exe!0x0104fc20 ConVar r_visambient_point
+r5apex.exe!0x01052790 ConVar r_vislighting_sphereradius
+r5apex.exe!0x01054f10 ConVar r_vismodellighting
+r5apex.exe!0x010613f0 ConVar r_vismodellighting_lightpos
+r5apex.exe!0x010514c0 ConVar r_vismodellighting_maxdist
+r5apex.exe!0x01bf8460 ConVar r_vismodellighting_maxdist
+r5apex.exe!0x010584a0 ConVar r_vismodellighting_mindist
+r5apex.exe!0x01da7a30 ConVar r_vismodellighting_mindist
+r5apex.exe!0x01060370 ConVar r_vismodellighting_offset_x
+r5apex.exe!0x0105ed30 ConVar r_vismodellighting_offset_y
+r5apex.exe!0x0105ffd0 ConVar r_vismodellighting_offset_z
+r5apex.exe!0x01855450 ConVar r_visualizeproplightcaching
+r5apex.exe!0x01e04180 ConVar r_visualizetraces
+r5apex.exe!0x01e03c00 ConVar r_visualizetraces_duration
+r5apex.exe!0x012a69d0 ConVar r_volumetric_lighting_blur_count
+r5apex.exe!0x012a6930 ConVar r_volumetric_lighting_blur_type
+r5apex.exe!0x012a6890 ConVar r_volumetric_lighting_enabled
+r5apex.exe!0x012a6b10 ConVar r_volumetric_lighting_numSteps
+r5apex.exe!0x012a6a70 ConVar r_volumetric_lighting_rotate_dither
+r5apex.exe!0x01e06370 ConVar r_waterforceexpensive
+r5apex.exe!0x01e06730 ConVar r_waterforcereflectentities
+r5apex.exe!0x01dabfb0 ConVar r_zfill
+r5apex.exe!0x01846030 ConVar ragdoll_debug
+r5apex.exe!0x01daae30 ConVar ragdoll_sleepaftertime
+r5apex.exe!0x01bfa890 ConVar rankedplay_display_enabled
+r5apex.exe!0x01bf8100 ConVar rankedplay_voice_enabled
+r5apex.exe!0x011263c0 ConVar rate
+r5apex.exe!0x01be8370 ConVar real_time_update_dt
+r5apex.exe!0x010643e0 ConVar recalculateOrigin_threaded_chunksize
+r5apex.exe!0x01e0bb50 ConVar remoteCalls_requireConnectionScriptsForViewPlayer
+r5apex.exe!0x0105dca0 ConVar remoteMatchInfo_print
+r5apex.exe!0x010621a0 ConVar replay_enable
+r5apex.exe!0x0105fa30 ConVar replay_prediction_smooth
+r5apex.exe!0x01bd7380 ConVar report_cliententitysim
+r5apex.exe!0x018472f0 ConVar report_clientthinklist
+r5apex.exe!0x01be2750 ConVar rodeo_camera_smooth_blend_out_time
+r5apex.exe!0x0184a430 ConVar rodeo_camera_smooth_enable
+r5apex.exe!0x01e078b0 ConVar rodeoed_anims_enabled
+r5apex.exe!0x01bf5990 ConVar rope_collide
+r5apex.exe!0x01bf4420 ConVar rope_debug_shake
+r5apex.exe!0x01be6de0 ConVar rope_parallelMeshBuilder
+r5apex.exe!0x01bf5250 ConVar rope_regenMeshEachDraw
+r5apex.exe!0x01be8630 ConVar rope_shake
+r5apex.exe!0x01bf4c30 ConVar rope_texels_per_world_unit
+r5apex.exe!0x01be4430 ConVar rope_wiggle_harmonic_falloff
+r5apex.exe!0x01bf6410 ConVar rope_wiggle_magnitude_loose
+r5apex.exe!0x01be9560 ConVar rope_wiggle_magnitude_tight
+r5apex.exe!0x01bf1ca0 ConVar rope_wiggle_oscillate_speed
+r5apex.exe!0x01be4150 ConVar rope_wiggle_rotate_speed
+r5apex.exe!0x01bee3c0 ConVar rope_wiggle_zipline_min_points
+r5apex.exe!0x01be3b90 ConVar rope_wind_dist
+r5apex.exe!0x01848d70 ConVar rotate_ents
+r5apex.exe!0x010520c0 ConVar rspn_motd
+r5apex.exe!0x012a3250 ConVar rt_sync_message_pump
+r5apex.exe!0x012a32f0 ConVar rt_worker
+r5apex.exe!0x01e09270 ConVar ruiPanel_resArgName
+r5apex.exe!0x01da9f40 ConVar rui_asyncTracks
+r5apex.exe!0x0182c500 ConVar rui_defaultDebugFontFace
+r5apex.exe!0x0182c820 ConVar rui_defaultFontFace
+r5apex.exe!0x0182b660 ConVar rui_defaultFontHeight
+r5apex.exe!0x0182ae50 ConVar rui_overrideVguiTextRendering
+r5apex.exe!0x0115d620 ConVar rui_padDist
+r5apex.exe!0x0115d580 ConVar rui_safeAreaFrac
+r5apex.exe!0x0105e5a0 ConVar rui_standardTextHeight
+r5apex.exe!0x011614e0 ConVar save_enable
+r5apex.exe!0x0182b140 ConVar scheme_manager_font_debug
+r5apex.exe!0x01da64e0 ConVar scr_centertime
+r5apex.exe!0x0183da30 ConVar screen_indicator_back_range
+r5apex.exe!0x01852870 ConVar screen_indicator_ellipse_height
+r5apex.exe!0x01831d10 ConVar screen_indicator_ellipse_width
+r5apex.exe!0x0183f950 ConVar screen_indicator_pitch_limit
+r5apex.exe!0x0183feb0 ConVar screen_indicator_pitch_scale
+r5apex.exe!0x01da99a0 ConVar screenfade_debug
+r5apex.exe!0x01de9cd0 ConVar script_compile_all_levels
+r5apex.exe!0x01da7110 ConVar script_debugger_connect_client_on_mapspawn
+r5apex.exe!0x01dabf10 ConVar script_debugger_connect_ui_auto
+r5apex.exe!0x01e203c0 ConVar script_debugger_host
+r5apex.exe!0x01e20460 ConVar script_debugger_port_client
+r5apex.exe!0x01e20320 ConVar script_debugger_port_server
+r5apex.exe!0x01e201e0 ConVar script_debugger_port_ui
+r5apex.exe!0x01e207f0 ConVar script_disallow_newslot_on_globals
+r5apex.exe!0x01e20280 ConVar script_dump_simple
+r5apex.exe!0x01df1e60 ConVar script_error_on_midgame_load
+r5apex.exe!0x01e20140 ConVar script_infinite_loop_ms
+r5apex.exe!0x01df3b40 ConVar script_parallel_trace_LOS_multiple
+r5apex.exe!0x01de4a70 ConVar script_precache_errors
+r5apex.exe!0x01bf7fa0 ConVar script_printDeferredCalls
+r5apex.exe!0x01e02740 ConVar script_retry_after_compile_errors
+r5apex.exe!0x01df51c0 ConVar script_seasonNameQueryInterval
+r5apex.exe!0x01e08650 ConVar script_showErrorDialogs
+r5apex.exe!0x01051600 ConVar script_slopTimeBeforeBudgetEnforcement
+r5apex.exe!0x01de9e10 ConVar sequence_transitioner_enable
+r5apex.exe!0x0105c700 ConVar serverFilter
+r5apex.exe!0x0118cf80 ConVar serverReports_hostname
+r5apex.exe!0x0104d3c0 ConVar server_concommands_allways_network
+r5apex.exe!0x0118eba0 ConVar server_query_interval
+r5apex.exe!0x01be3090 ConVar sfm_record_hz
+r5apex.exe!0x01846170 ConVar shadow_always_update
+r5apex.exe!0x018238d0 ConVar shadow_bleedfudge
+r5apex.exe!0x01053140 ConVar shadow_capable
+r5apex.exe!0x01da7f50 ConVar shadow_clear_dist
+r5apex.exe!0x01841c40 ConVar shadow_dbg_draw
+r5apex.exe!0x01841b00 ConVar shadow_default_filter_size
+r5apex.exe!0x01bd7240 ConVar shadow_depth_dimen_min
+r5apex.exe!0x01845040 ConVar shadow_depth_upres_factor_max
+r5apex.exe!0x0184fff0 ConVar shadow_drawfrustum
+r5apex.exe!0x0183c3a0 ConVar shadow_dynamic_blendfactor
+r5apex.exe!0x0105a480 ConVar shadow_enable
+r5apex.exe!0x01847670 ConVar shadow_esm_enable
+r5apex.exe!0x0183a9e0 ConVar shadow_filter_maxstep
+r5apex.exe!0x01be1ff0 ConVar shadow_info
+r5apex.exe!0x01bd6610 ConVar shadow_lobby_mode_allowed
+r5apex.exe!0x01855750 ConVar shadow_max_dynamic_lobby
+r5apex.exe!0x0183f6d0 ConVar shadow_max_old_dynamic
+r5apex.exe!0x0184a4d0 ConVar shadow_max_spot_updates
+r5apex.exe!0x0119b8d0 ConVar shadow_maxdynamic
+r5apex.exe!0x0183b0a0 ConVar shadow_maxdynamic
+r5apex.exe!0x018462b0 ConVar shadow_min_count_smallest
+r5apex.exe!0x01823ab0 ConVar shadow_minvariance
+r5apex.exe!0x01be2bb0 ConVar shadow_multisampled
+r5apex.exe!0x0183d990 ConVar shadow_noLOD
+r5apex.exe!0x01bd69b0 ConVar shadow_show_spot_udpate_infos
+r5apex.exe!0x01850730 ConVar shadow_tools_depth_dimen_min
+r5apex.exe!0x01846d90 ConVar shadow_tools_depth_upres_factor_max
+r5apex.exe!0x0184ddf0 ConVar shadow_tools_min_count_smallest
+r5apex.exe!0x01bd67f0 ConVar shadow_tools_mode
+r5apex.exe!0x01851c40 ConVar shadow_update_culling
+r5apex.exe!0x01bd6130 ConVar shake_angleFactor_human
+r5apex.exe!0x01840550 ConVar shake_angleFactor_titan
+r5apex.exe!0x01bfa330 ConVar shake_basicPitchFactor
+r5apex.exe!0x01da6420 ConVar shake_basicRandomRollFactor
+r5apex.exe!0x0184cba0 ConVar shake_offsetFactor_human
+r5apex.exe!0x0183c6c0 ConVar shake_offsetFactor_titan
+r5apex.exe!0x01bd7540 ConVar shake_viewmodelFactor_ads_human
+r5apex.exe!0x01bd6910 ConVar shake_viewmodelFactor_ads_titan
+r5apex.exe!0x0183d8f0 ConVar shake_viewmodelFactor_human
+r5apex.exe!0x01bd75e0 ConVar shake_viewmodelFactor_titan
+r5apex.exe!0x011a1050 ConVar showfps_enabled
+r5apex.exe!0x0119e010 ConVar showfps_heightpercent
+r5apex.exe!0x01196490 ConVar showfps_mouse_latency
+r5apex.exe!0x011a0790 ConVar showfps_smoothtime
+r5apex.exe!0x011a17d0 ConVar showfps_spinner
+r5apex.exe!0x0119e270 ConVar showmem_enabled
+r5apex.exe!0x011a1230 ConVar showmem_mode_bottom
+r5apex.exe!0x011a1730 ConVar showmem_mode_top
+r5apex.exe!0x011a1410 ConVar shownet_enabled
+r5apex.exe!0x011a0fb0 ConVar showsnapshot_enabled
+r5apex.exe!0x01be7a50 ConVar sidearmSwapSelectCooldown
+r5apex.exe!0x01bf1900 ConVar sidearmSwapSelectDoubleTapTime
+r5apex.exe!0x010540f0 ConVar single_frame_shutdown_for_reload
+r5apex.exe!0x0105b5a0 ConVar singlestep
+r5apex.exe!0x0105fdf0 ConVar skill_arena
+r5apex.exe!0x0105f850 ConVar skill_dediOnly
+r5apex.exe!0x01060d30 ConVar skill_enabled
+r5apex.exe!0x01054230 ConVar skill_hostname
+r5apex.exe!0x01db23d0 ConVar skip_jump_height_fraction
+r5apex.exe!0x01de4ec0 ConVar skip_jump_height_speed
+r5apex.exe!0x01de6260 ConVar skip_replenish_double_jump
+r5apex.exe!0x01db04c0 ConVar skip_sounds
+r5apex.exe!0x01de5d40 ConVar skip_speed_reduce
+r5apex.exe!0x01de2d20 ConVar skip_speed_retain
+r5apex.exe!0x01de6da0 ConVar skip_time
+r5apex.exe!0x0105e640 ConVar sleep_when_meeting_framerate
+r5apex.exe!0x01061530 ConVar sleep_when_meeting_framerate_headroom_ms
+r5apex.exe!0x01de1e10 ConVar slide_auto_stand
+r5apex.exe!0x01daf660 ConVar slide_max_angle_dot
+r5apex.exe!0x01db25d0 ConVar slide_step_velocity_reduction
+r5apex.exe!0x01df4b20 ConVar slide_viewTiltDecreaseSpeed
+r5apex.exe!0x01df8940 ConVar slide_viewTiltIncreaseSpeed
+r5apex.exe!0x01de9fd0 ConVar slide_viewTiltPlayerSpeed
+r5apex.exe!0x01df28c0 ConVar slide_viewTiltSide
+r5apex.exe!0x01ddc1a0 ConVar slide_whileInAir
+r5apex.exe!0x0104f210 ConVar slowconsolelog_old_logic
+r5apex.exe!0x01df83e0 ConVar smoothstairs_lunge
+r5apex.exe!0x0104e5e0 ConVar sort_opaque_meshes
+r5apex.exe!0x01842920 ConVar sound_classic_music
+r5apex.exe!0x01bf7590 ConVar sound_entity_seek_snap
+r5apex.exe!0x01dee570 ConVar sound_musicReduced
+r5apex.exe!0x01be31d0 ConVar sound_num_speakers
+r5apex.exe!0x01e0aa20 ConVar sound_only_warn_on_missing_sound_events_in_client_script
+r5apex.exe!0x01126600 ConVar sound_printloaderrors
+r5apex.exe!0x0183c580 ConVar sound_volume
+r5apex.exe!0x01847c90 ConVar sound_volume_dialogue
+r5apex.exe!0x01847bf0 ConVar sound_volume_dialogue_sp
+r5apex.exe!0x0184b120 ConVar sound_volume_music_game
+r5apex.exe!0x01848330 ConVar sound_volume_music_game_sp
+r5apex.exe!0x018474d0 ConVar sound_volume_music_lobby
+r5apex.exe!0x01831160 ConVar sound_volume_sfx
+r5apex.exe!0x01bd8ac0 ConVar sound_volume_sfx_sp
+r5apex.exe!0x01bd8d20 ConVar sound_volume_voice
+r5apex.exe!0x01851ce0 ConVar sound_without_focus
+r5apex.exe!0x01bf17e0 ConVar soundscape_fadetime
+r5apex.exe!0x01befc60 ConVar soundscape_message
+r5apex.exe!0x01bf2cc0 ConVar soundscape_radius_debug
+r5apex.exe!0x01848cd0 ConVar soundtrigger_repeat_interval
+r5apex.exe!0x0105dd40 ConVar sp_not_focus_pause
+r5apex.exe!0x01823470 ConVar spam_skinning_matrices_used
+r5apex.exe!0x01823650 ConVar spam_skinning_matrices_used_detailed
+r5apex.exe!0x01db1020 ConVar spatial_partition_deadlock_assert
+r5apex.exe!0x01e0cc90 ConVar speech_queue_bytes
+r5apex.exe!0x011907c0 ConVar speechtotext_audioenabled
+r5apex.exe!0x01190680 ConVar speechtotext_enabled
+r5apex.exe!0x011905e0 ConVar speechtotext_forcedisabled
+r5apex.exe!0x01190400 ConVar speechtotext_hostname
+r5apex.exe!0x01190540 ConVar speechtotext_msg_droptimeout
+r5apex.exe!0x0118f560 ConVar speechtotext_path
+r5apex.exe!0x01190720 ConVar speechtotext_quiettime
+r5apex.exe!0x01190180 ConVar speechtotext_stats_errorspermin
+r5apex.exe!0x011904a0 ConVar speechtotext_stats_interval
+r5apex.exe!0x011902c0 ConVar speechtotext_stats_senderrors
+r5apex.exe!0x01190220 ConVar speechtotext_stats_sendrequests
+r5apex.exe!0x01190360 ConVar speechtotext_stats_sendsuccess
+r5apex.exe!0x010560c0 ConVar speechtotexttoken_hostname
+r5apex.exe!0x010631e0 ConVar speex_audio_recording
+r5apex.exe!0x01062420 ConVar speex_audio_value
+r5apex.exe!0x01193800 ConVar speex_preprocess_agc_max_gain
+r5apex.exe!0x01193440 ConVar speex_preprocess_noise_suppress
+r5apex.exe!0x01193760 ConVar speex_preprocess_set_agc_decrenment
+r5apex.exe!0x011933a0 ConVar speex_preprocess_set_agc_increment
+r5apex.exe!0x01193620 ConVar speex_preprocess_set_agc_target
+r5apex.exe!0x01062600 ConVar speex_quiet_threshold
+r5apex.exe!0x01062740 ConVar speex_quiet_window
+r5apex.exe!0x011934e0 ConVar speex_set_enh
+r5apex.exe!0x01193580 ConVar speex_use_highpass
+r5apex.exe!0x011936c0 ConVar speex_use_preproser
+r5apex.exe!0x01e04360 ConVar spinner_debug_info
+r5apex.exe!0x01def750 ConVar sprint_powerdrain
+r5apex.exe!0x01bd6c10 ConVar sprint_view_shake_style
+r5apex.exe!0x01dad1f0 ConVar sprinttilt_accel
+r5apex.exe!0x01de35f0 ConVar sprinttilt_maxvel
+r5apex.exe!0x01daff40 ConVar sprinttilt_turnrange
+r5apex.exe!0x01da4d80 ConVar ss_enable
+r5apex.exe!0x01bf83a0 ConVar ss_force_primary_fullscreen
+r5apex.exe!0x01befe20 ConVar ss_mimic
+r5apex.exe!0x01da51c0 ConVar ss_splitmode
+r5apex.exe!0x01da9290 ConVar ss_verticalsplit
+r5apex.exe!0x01be2610 ConVar ss_viewmodelfov
+r5apex.exe!0x0115f6a0 ConVar ss_voice_hearpartner
+r5apex.exe!0x012a5a30 ConVar ssao_allow_partial
+r5apex.exe!0x012a5cb0 ConVar ssao_blur
+r5apex.exe!0x012a6110 ConVar ssao_blur_edge_sharpness
+r5apex.exe!0x012a5f30 ConVar ssao_depth_max
+r5apex.exe!0x012a58f0 ConVar ssao_downsample
+r5apex.exe!0x012a5c10 ConVar ssao_enabled
+r5apex.exe!0x012a5fd0 ConVar ssao_exponent
+r5apex.exe!0x012a5850 ConVar ssao_jitter_scale
+r5apex.exe!0x012a6250 ConVar ssao_max_res
+r5apex.exe!0x012a5ad0 ConVar ssao_max_res_threshold
+r5apex.exe!0x012a57b0 ConVar ssao_num_directions
+r5apex.exe!0x012a66b0 ConVar ssao_num_steps
+r5apex.exe!0x012a64d0 ConVar ssao_on_everything
+r5apex.exe!0x012a5710 ConVar ssao_radius
+r5apex.exe!0x012a5df0 ConVar ssao_radius_in_lobby
+r5apex.exe!0x012a6430 ConVar ssao_show
+r5apex.exe!0x012a67f0 ConVar ssao_show
+r5apex.exe!0x018263c0 ConVar ssao_show
+r5apex.exe!0x012a5990 ConVar ssao_snap_uv
+r5apex.exe!0x012a61b0 ConVar ssao_tech
+r5apex.exe!0x01da8270 ConVar ssao_tech
+r5apex.exe!0x012a6750 ConVar ssao_upsample_ranged
+r5apex.exe!0x0105fc10 ConVar startButtonCommand
+r5apex.exe!0x0105e890 ConVar staticProp_budget
+r5apex.exe!0x0183c440 ConVar staticProp_buildlists_on_worker
+r5apex.exe!0x0105fe90 ConVar staticProp_debug_draw
+r5apex.exe!0x0105e500 ConVar staticProp_earlyDepthPrepass
+r5apex.exe!0x01061fc0 ConVar staticProp_earlyDepthPrepassDist
+r5apex.exe!0x0105fb70 ConVar staticProp_earlyDepthPrepassIncludeOpaques
+r5apex.exe!0x010618f0 ConVar staticProp_earlyDepthPrepassIncludeOpaquesDist
+r5apex.exe!0x010611b0 ConVar staticProp_gather_size_weight
+r5apex.exe!0x0105e9d0 ConVar staticProp_max_scaled_dist
+r5apex.exe!0x01061990 ConVar staticProp_no_fade_scalar
+r5apex.exe!0x01dab5f0 ConVar staticProp_refineDrawOnWorker
+r5apex.exe!0x01198670 ConVar static_shadow
+r5apex.exe!0x01831e30 ConVar static_shadow
+r5apex.exe!0x01847ab0 ConVar static_shadow_bounds_per_env
+r5apex.exe!0x01da6240 ConVar static_shadow_debug_2d
+r5apex.exe!0x018453f0 ConVar static_shadow_debug_dirty_rects
+r5apex.exe!0x01be2870 ConVar static_shadow_depth_bias_scale
+r5apex.exe!0x0183f8b0 ConVar static_shadow_expand_z
+r5apex.exe!0x018452b0 ConVar static_shadow_good_merge_ratio
+r5apex.exe!0x018510c0 ConVar static_shadow_good_merge_score
+r5apex.exe!0x01bd8b60 ConVar static_shadow_prop_min_size
+r5apex.exe!0x011a12d0 ConVar static_shadow_res
+r5apex.exe!0x01841ba0 ConVar static_shadow_shrink_culler
+r5apex.exe!0x011a1550 ConVar static_shadow_use_d16
+r5apex.exe!0x0183c9e0 ConVar static_shadow_uses_shadow_lod
+r5apex.exe!0x01055820 ConVar staticfile_hostname
+r5apex.exe!0x01057600 ConVar stats_hostname
+r5apex.exe!0x01dee320 ConVar status_effect_warning_level
+r5apex.exe!0x01190dd0 ConVar steam_debug
+r5apex.exe!0x011908e0 ConVar steam_id
+r5apex.exe!0x01190aa0 ConVar steam_name
+r5apex.exe!0x01190be0 ConVar steamlink_hostname
+r5apex.exe!0x012a39e0 ConVar stream_addnoise
+r5apex.exe!0x012a3640 ConVar stream_bsp_bucket_bias
+r5apex.exe!0x012a3e40 ConVar stream_bsp_dist_scale
+r5apex.exe!0x0104b4a0 ConVar stream_cache_capacity
+r5apex.exe!0x0104b5e0 ConVar stream_cache_capacity_while_loading
+r5apex.exe!0x0104b180 ConVar stream_cache_high_priority_static_models
+r5apex.exe!0x0104ad80 ConVar stream_cache_multithreaded
+r5apex.exe!0x0104af60 ConVar stream_cache_preload_from_rpak
+r5apex.exe!0x0104b400 ConVar stream_cache_read_buffer_cap
+r5apex.exe!0x0104b540 ConVar stream_cache_read_count_cap
+r5apex.exe!0x0104b360 ConVar stream_cache_speculative_add_level
+r5apex.exe!0x0104b680 ConVar stream_cache_speculative_drop
+r5apex.exe!0x012a38c0 ConVar stream_drop_unused
+r5apex.exe!0x012a36e0 ConVar stream_enable
+r5apex.exe!0x0119ba10 ConVar stream_freeze_camera
+r5apex.exe!0x012a35a0 ConVar stream_load_after_drop
+r5apex.exe!0x012a3f60 ConVar stream_memory
+r5apex.exe!0x012a3bc0 ConVar stream_memory_ignore
+r5apex.exe!0x012a3b20 ConVar stream_memory_ignore_vram
+r5apex.exe!0x012a3a80 ConVar stream_memory_while_loading
+r5apex.exe!0x012a3c60 ConVar stream_mode
+r5apex.exe!0x012a3d00 ConVar stream_never_high_priority_frac
+r5apex.exe!0x012a4000 ConVar stream_overlay
+r5apex.exe!0x012a3da0 ConVar stream_overlay_mode
+r5apex.exe!0x012a3820 ConVar stream_pause
+r5apex.exe!0x012a3780 ConVar stream_picmip
+r5apex.exe!0x012a4e30 ConVar stream_resource_max_commits_per_frame
+r5apex.exe!0x012a4ed0 ConVar stream_resource_thread
+r5apex.exe!0x012a4d90 ConVar stream_resource_wait_copy_to_commit
+r5apex.exe!0x012a4f70 ConVar stream_resource_wait_creation_to_copy
+r5apex.exe!0x012a4cf0 ConVar stream_resource_wait_for_additional_gpus
+r5apex.exe!0x0105d060 ConVar stringtable_alwaysrebuilddictionaries
+r5apex.exe!0x01057ce0 ConVar stringtable_compress
+r5apex.exe!0x01058d20 ConVar stringtable_showsizes
+r5apex.exe!0x0118e0e0 ConVar stryder_forceOriginUsersInvisible
+r5apex.exe!0x0118d2a0 ConVar stryder_security
+r5apex.exe!0x01db1af0 ConVar stuck_debugging
+r5apex.exe!0x01de2540 ConVar stuck_debugging_world_only
+r5apex.exe!0x0104a800 ConVar studiobonecache_unlimited
+r5apex.exe!0x0118d020 ConVar subscription_hostname
+r5apex.exe!0x01ddf6c0 ConVar superjump_disabled_from_water
+r5apex.exe!0x01de6c70 ConVar superjump_drain_power_onfail
+r5apex.exe!0x01de0b00 ConVar superjump_fail_sound_when_jump_limit
+r5apex.exe!0x01de2e90 ConVar superjump_limit
+r5apex.exe!0x01ddf220 ConVar superjump_limitreset_onwallrun
+r5apex.exe!0x01dcb950 ConVar superjump_max_power_use
+r5apex.exe!0x01db2260 ConVar superjump_min_height_fraction
+r5apex.exe!0x01de1d40 ConVar superjump_min_power_use
+r5apex.exe!0x01dddd70 ConVar superjump_powerreset_onground
+r5apex.exe!0x01de13d0 ConVar sv_airaccelerate
+r5apex.exe!0x01056660 ConVar sv_allTicksFinal
+r5apex.exe!0x0115e4e0 ConVar sv_allowSendTableTransmitToClients
+r5apex.exe!0x011602e0 ConVar sv_allowSpectatorClients
+r5apex.exe!0x0115f4c0 ConVar sv_asyncSendSnapshot
+r5apex.exe!0x01db0d60 ConVar sv_backspeed
+r5apex.exe!0x0115f7e0 ConVar sv_balanceTeams
+r5apex.exe!0x01dcb7d0 ConVar sv_bounce
+r5apex.exe!0x011619f0 ConVar sv_cheats
+r5apex.exe!0x0115ebc0 ConVar sv_checkPropBudgets
+r5apex.exe!0x0115ef60 ConVar sv_compressPlaylists
+r5apex.exe!0x0104e1e0 ConVar sv_compressTimeValEpsilon
+r5apex.exe!0x0104e350 ConVar sv_compressTimeVals
+r5apex.exe!0x0115e760 ConVar sv_connectingClientDelay
+r5apex.exe!0x0115f2e0 ConVar sv_debug_prop_send
+r5apex.exe!0x01161120 ConVar sv_debugmanualmode
+r5apex.exe!0x01160cc0 ConVar sv_disconnectOnScriptError
+r5apex.exe!0x01161580 ConVar sv_disconnectOnTooManySnapshotFrames
+r5apex.exe!0x01053710 ConVar sv_dumpstringtables
+r5apex.exe!0x011613a0 ConVar sv_earlyPersistenceRead
+r5apex.exe!0x010590e0 ConVar sv_everyThirdTick
+r5apex.exe!0x01160900 ConVar sv_extra_client_connect_time
+r5apex.exe!0x011607c0 ConVar sv_fakeClientBaseId
+r5apex.exe!0x01de81c0 ConVar sv_footsteps
+r5apex.exe!0x01db0f80 ConVar sv_friction
+r5apex.exe!0x01de8750 ConVar sv_gravity
+r5apex.exe!0x0115e080 ConVar sv_hibernate_ms
+r5apex.exe!0x0115ed80 ConVar sv_hibernate_ms_vgui
+r5apex.exe!0x01161440 ConVar sv_hibernate_postgame_delay
+r5apex.exe!0x01160d60 ConVar sv_hibernate_when_empty
+r5apex.exe!0x011604c0 ConVar sv_instancebaselines
+r5apex.exe!0x01050e00 ConVar sv_loadMapModelEarly
+r5apex.exe!0x0105a520 ConVar sv_lobbyType
+r5apex.exe!0x0115ece0 ConVar sv_max_prop_data_dwords_huge_lobby
+r5apex.exe!0x01160720 ConVar sv_max_prop_data_dwords_huge_multiplayer
+r5apex.exe!0x0115eb20 ConVar sv_max_prop_data_dwords_lobby
+r5apex.exe!0x0115f560 ConVar sv_max_prop_data_dwords_multiplayer
+r5apex.exe!0x0115e8a0 ConVar sv_max_prop_data_dwords_singleplayer
+r5apex.exe!0x01161800 ConVar sv_max_props_huge_lobby
+r5apex.exe!0x0115e120 ConVar sv_max_props_huge_multiplayer
+r5apex.exe!0x0115eec0 ConVar sv_max_props_lobby
+r5apex.exe!0x0115e800 ConVar sv_max_props_multiplayer
+r5apex.exe!0x0115e620 ConVar sv_max_props_singleplayer
+r5apex.exe!0x01160380 ConVar sv_max_snapshots_lobby
+r5apex.exe!0x0115d9e0 ConVar sv_max_snapshots_multiplayer
+r5apex.exe!0x011616c0 ConVar sv_max_snapshots_singleplayer
+r5apex.exe!0x0115f120 ConVar sv_maxclientframes
+r5apex.exe!0x01160c20 ConVar sv_maxrate
+r5apex.exe!0x01057060 ConVar sv_maxroutable
+r5apex.exe!0x01de4be0 ConVar sv_maxspeed
+r5apex.exe!0x011601a0 ConVar sv_maxupdaterate
+r5apex.exe!0x01de4e20 ConVar sv_maxvelocity
+r5apex.exe!0x0115f000 ConVar sv_minrate
+r5apex.exe!0x0115f420 ConVar sv_minupdaterate
+r5apex.exe!0x01dcb690 ConVar sv_noclipaccelerate
+r5apex.exe!0x01ddf180 ConVar sv_noclipaccelerate_fast
+r5apex.exe!0x01de7780 ConVar sv_noclipaccelerate_slow
+r5apex.exe!0x01de2df0 ConVar sv_noclipspeed
+r5apex.exe!0x01dcb450 ConVar sv_noclipspeed_fast
+r5apex.exe!0x01db2510 ConVar sv_noclipspeed_slow
+r5apex.exe!0x01de1030 ConVar sv_optimizedmovement
+r5apex.exe!0x0115e300 ConVar sv_parallel_sendsnapshot
+r5apex.exe!0x0115dfe0 ConVar sv_pausable
+r5apex.exe!0x0115d800 ConVar sv_playerNameAppendCheater
+r5apex.exe!0x01de6880 ConVar sv_players
+r5apex.exe!0x01160600 ConVar sv_printHighWaterMark
+r5apex.exe!0x01dddeb0 ConVar sv_pushaway_accel
+r5apex.exe!0x01dad010 ConVar sv_pushaway_clientside
+r5apex.exe!0x01deedd0 ConVar sv_pushaway_clientside_size
+r5apex.exe!0x01de52a0 ConVar sv_pushaway_debug
+r5apex.exe!0x01dad8a0 ConVar sv_pushaway_dist
+r5apex.exe!0x01de0ba0 ConVar sv_pushaway_min_player_speed
+r5apex.exe!0x01de0cb0 ConVar sv_pushaway_player_accel
+r5apex.exe!0x01db1480 ConVar sv_pushaway_player_dist
+r5apex.exe!0x0115fa40 ConVar sv_rejectClientConnects
+r5apex.exe!0x0115dd80 ConVar sv_rejectConnections
+r5apex.exe!0x0115e940 ConVar sv_requireOriginToken
+r5apex.exe!0x0115fae0 ConVar sv_resendSignonData
+r5apex.exe!0x01de5ca0 ConVar sv_rollangle
+r5apex.exe!0x01ddfbb0 ConVar sv_rollspeed
+r5apex.exe!0x0115dce0 ConVar sv_runSpatialOptimizeInJob
+r5apex.exe!0x01160240 ConVar sv_scarySnapDeltaPrints
+r5apex.exe!0x01160f40 ConVar sv_sendEarlyServerInfo
+r5apex.exe!0x0115ee20 ConVar sv_sendReplayNetMessagesOnNoDeltaSnaps
+r5apex.exe!0x0115fc20 ConVar sv_separate_freq_change_prop_send
+r5apex.exe!0x0115e1c0 ConVar sv_showClientTickCmds
+r5apex.exe!0x0115da80 ConVar sv_showLargeSnapshotSize
+r5apex.exe!0x0115d760 ConVar sv_showSnapshots
+r5apex.exe!0x0115d940 ConVar sv_showUserCmds
+r5apex.exe!0x01160b80 ConVar sv_single_core_dedi
+r5apex.exe!0x0115dc40 ConVar sv_skipSendingUnnecessaryPersistence
+r5apex.exe!0x01de1300 ConVar sv_skyname
+r5apex.exe!0x01160100 ConVar sv_snapshot_uniform_interval
+r5apex.exe!0x01de05d0 ConVar sv_specaccelerate
+r5apex.exe!0x01db28b0 ConVar sv_specnoclip
+r5apex.exe!0x01db0b00 ConVar sv_specspeed
+r5apex.exe!0x0115d6c0 ConVar sv_stats
+r5apex.exe!0x01db0ee0 ConVar sv_stopspeed
+r5apex.exe!0x01160ea0 ConVar sv_stressbots
+r5apex.exe!0x011611c0 ConVar sv_struggleCheck
+r5apex.exe!0x0115e440 ConVar sv_struggleSpam
+r5apex.exe!0x01160a40 ConVar sv_struggleSpamInterval
+r5apex.exe!0x0115f600 ConVar sv_tempents_send_from_delta
+r5apex.exe!0x0115d8a0 ConVar sv_tempents_send_from_last_sent
+r5apex.exe!0x01192cc0 ConVar sv_testLargeDatablock
+r5apex.exe!0x01844c80 ConVar sv_teststepsimulation
+r5apex.exe!0x01160e00 ConVar sv_transmitToAllPlayersMask_allBitsSet
+r5apex.exe!0x0115f9a0 ConVar sv_unnecessaryConnectDelay
+r5apex.exe!0x0115e580 ConVar sv_unreliableSnapMaxSize
+r5apex.exe!0x0115df40 ConVar sv_updaterate_mp
+r5apex.exe!0x01160420 ConVar sv_updaterate_sp
+r5apex.exe!0x01df1d40 ConVar sv_useRK4forprojectiles
+r5apex.exe!0x0115e6c0 ConVar sv_useReputation
+r5apex.exe!0x01160560 ConVar sv_useThreadsForSnapshots
+r5apex.exe!0x0115f1c0 ConVar sv_voiceDebug
+r5apex.exe!0x01160fe0 ConVar sv_voiceEcho
+r5apex.exe!0x011609a0 ConVar sv_voiceenable
+r5apex.exe!0x0115ea80 ConVar sv_warnAboutCmdNumJumps
+r5apex.exe!0x0105d780 ConVar sv_watchdogTimer
+r5apex.exe!0x01daced0 ConVar sv_wateraccelerate
+r5apex.exe!0x01de72e0 ConVar sv_waterdist
+r5apex.exe!0x0105b500 ConVar sv_writePersistenceOnShutdown
+r5apex.exe!0x01e09130 ConVar sys_attract_mode_timeout
+r5apex.exe!0x010602d0 ConVar system_alt_f4_closes_window
+r5apex.exe!0x01de2470 ConVar teams_unassigned_are_friendly
+r5apex.exe!0x0105bfb0 ConVar telemetry_client_debug
+r5apex.exe!0x010547b0 ConVar telemetry_client_enable
+r5apex.exe!0x01059040 ConVar telemetry_client_sendInterval
+r5apex.exe!0x01dea110 ConVar test_fakeTimeDays
+r5apex.exe!0x01de3ba0 ConVar tether_damageScale
+r5apex.exe!0x01dad640 ConVar tether_dodge_damage
+r5apex.exe!0x01dad290 ConVar tether_healthDrain
+r5apex.exe!0x01db1200 ConVar tether_healthDrainNPC
+r5apex.exe!0x01de6bd0 ConVar tether_maxvel
+r5apex.exe!0x01de6430 ConVar tether_radius
+r5apex.exe!0x01de5340 ConVar tether_strength
+r5apex.exe!0x01e02650 ConVar think_limit
+r5apex.exe!0x01beb710 ConVar thirdperson_mayamode
+r5apex.exe!0x01be2cf0 ConVar thirdperson_override
+r5apex.exe!0x01bf3de0 ConVar thirdperson_screenspace
+r5apex.exe!0x01050290 ConVar timeout
+r5apex.exe!0x01050330 ConVar timeout_during_load
+r5apex.exe!0x01df9b00 ConVar titan_sprint_sound
+r5apex.exe!0x01161d10 ConVar tracehull_height_error_check
+r5apex.exe!0x01beedf0 ConVar tracer_debug
+r5apex.exe!0x01be64d0 ConVar tracer_extra
+r5apex.exe!0x01e11d20 ConVar trail_optimizedRemove
+r5apex.exe!0x01dad330 ConVar traversal_anim
+r5apex.exe!0x01daf440 ConVar traversal_cooldown
+r5apex.exe!0x01de0300 ConVar traversal_enable
+r5apex.exe!0x01db1660 ConVar traversal_hand_debug
+r5apex.exe!0x01de0890 ConVar traversal_hand_required_width
+r5apex.exe!0x01e11df0 ConVar traversal_viewLerpInDuration
+r5apex.exe!0x01e15180 ConVar traversal_viewLerpOut
+r5apex.exe!0x01e17500 ConVar traversal_viewLerpOutAngle
+r5apex.exe!0x01e0dd50 ConVar traversal_viewLerpOutDebug
+r5apex.exe!0x01e17b00 ConVar traversal_viewLerpOutPos
+r5apex.exe!0x01db0740 ConVar traversal_window_duration
+r5apex.exe!0x01daf4e0 ConVar traversal_window_enable
+r5apex.exe!0x01db1520 ConVar traversal_window_finish_angle
+r5apex.exe!0x01ddf4a0 ConVar traversal_window_forward_offset
+r5apex.exe!0x01de65a0 ConVar traversal_window_hand_vertical_offset
+r5apex.exe!0x01de3240 ConVar traversal_window_sideways_offset
+r5apex.exe!0x01845190 ConVar traversal_window_view_pitch_max
+r5apex.exe!0x0183f770 ConVar traversal_window_view_pitch_min
+r5apex.exe!0x018554f0 ConVar traversal_window_yaw_max
+r5apex.exe!0x01de4600 ConVar trigger_ignore_nonsolids
+r5apex.exe!0x01826dc0 ConVar tsaa_blendfactorincreaseatmaxvelocity
+r5apex.exe!0x01826e60 ConVar tsaa_blendfactorincreasewhenunoccluded
+r5apex.exe!0x01826fa0 ConVar tsaa_blendfactormaxesoutatvelocity
+r5apex.exe!0x01827180 ConVar tsaa_blendfactormodulationonsparklesandunocclusion
+r5apex.exe!0x01827040 ConVar tsaa_blendfactoroverride
+r5apex.exe!0x01826f00 ConVar tsaa_curframeblendamount
+r5apex.exe!0x018270e0 ConVar tsaa_debugresponsiveflag
+r5apex.exe!0x01826c80 ConVar tsaa_neighborhoodclamping
+r5apex.exe!0x01826d20 ConVar tsaa_neighborhoodclampingsoftened
+r5apex.exe!0x01da9640 ConVar tsaa_numsamples
+r5apex.exe!0x01bf4cd0 ConVar tweak_light_shadows_every_frame
+r5apex.exe!0x01124670 ConVar twitch_check_interval
+r5apex.exe!0x011258d0 ConVar twitch_prime_rewards
+r5apex.exe!0x01124cf0 ConVar twitch_shouldQuery
+r5apex.exe!0x01e08f10 ConVar ui_fadecloud_time
+r5apex.exe!0x01e08e70 ConVar ui_fadexui_time
+r5apex.exe!0x01e08150 ConVar ui_gameui_ctrlr_title
+r5apex.exe!0x01e088d0 ConVar ui_gameui_modal
+r5apex.exe!0x01e083d0 ConVar ui_loadingscreen_autotransition_time
+r5apex.exe!0x01e08ab0 ConVar ui_loadingscreen_fadein_time
+r5apex.exe!0x0104ee30 ConVar ui_loadingscreen_fadeout_time
+r5apex.exe!0x01e08b50 ConVar ui_loadingscreen_fadeout_time
+r5apex.exe!0x01e094f0 ConVar ui_loadingscreen_mintransition_time
+r5apex.exe!0x01e086f0 ConVar ui_loadingscreen_transition_time
+r5apex.exe!0x01e08330 ConVar ui_lobby_jointimeout
+r5apex.exe!0x01e09450 ConVar ui_lobby_noautostart
+r5apex.exe!0x01e08dd0 ConVar ui_lobby_noresults_create_msg_time
+r5apex.exe!0x01e057d0 ConVar ui_posedebug_fade_in_time
+r5apex.exe!0x01e05730 ConVar ui_posedebug_fade_out_time
+r5apex.exe!0x01e08290 ConVar ui_virtualnav_render
+r5apex.exe!0x01dadee0 ConVar unique_entity_names
+r5apex.exe!0x01e0ad60 ConVar usePromptBaseColor
+r5apex.exe!0x01e0ca90 ConVar usePromptButtonTextColor
+r5apex.exe!0x01e0aac0 ConVar usePromptImageScale
+r5apex.exe!0x01e0c5e0 ConVar usePromptImageYOffset
+r5apex.exe!0x01e0d690 ConVar usePromptTextColor
+r5apex.exe!0x01da7c90 ConVar use_monitors
+r5apex.exe!0x01062240 ConVar use_valve_auto_gain
+r5apex.exe!0x0118da20 ConVar user_tracking_enabled
+r5apex.exe!0x010535d0 ConVar users_hostname
+r5apex.exe!0x01830f80 ConVar v_centermove
+r5apex.exe!0x0183f810 ConVar v_centerspeed
+r5apex.exe!0x01df1700 ConVar variable_sights_gravity_scale_override
+r5apex.exe!0x01bf3390 ConVar vehicle_predictViaPlayer
+r5apex.exe!0x0182af20 ConVar vgui_EnableFixedAspectScaling
+r5apex.exe!0x01e08bf0 ConVar vgui_drawPolyShapes
+r5apex.exe!0x0105e6e0 ConVar vgui_drawfocus
+r5apex.exe!0x0182ab70 ConVar vgui_drawfocus
+r5apex.exe!0x010605d0 ConVar vgui_drawkeyfocus
+r5apex.exe!0x0105f8f0 ConVar vgui_drawtree
+r5apex.exe!0x01061070 ConVar vgui_drawtree_bounds
+r5apex.exe!0x01061f20 ConVar vgui_drawtree_draw_selected
+r5apex.exe!0x01060410 ConVar vgui_drawtree_freeze
+r5apex.exe!0x0105dac0 ConVar vgui_drawtree_hidden
+r5apex.exe!0x01060a30 ConVar vgui_drawtree_panelalpha
+r5apex.exe!0x0105ee70 ConVar vgui_drawtree_panelptr
+r5apex.exe!0x0105eb50 ConVar vgui_drawtree_popupsonly
+r5apex.exe!0x0105db60 ConVar vgui_drawtree_render_order
+r5apex.exe!0x010615d0 ConVar vgui_drawtree_scheme
+r5apex.exe!0x0105ff30 ConVar vgui_drawtree_visible
+r5apex.exe!0x018313e0 ConVar vgui_interactive
+r5apex.exe!0x0182c8c0 ConVar vgui_noquads
+r5apex.exe!0x0182c780 ConVar vgui_notext
+r5apex.exe!0x0182ac10 ConVar vgui_resize_on_resolution_change
+r5apex.exe!0x0182b520 ConVar vgui_show_glyph_miss
+r5apex.exe!0x0105b000 ConVar vgui_simulate_during_bone_setup
+r5apex.exe!0x01e0bab0 ConVar video_menu_uiscript_reset
+r5apex.exe!0x01df1500 ConVar viewDrift
+r5apex.exe!0x01df45a0 ConVar viewDrift_ads_delay_debounce_time
+r5apex.exe!0x01df52d0 ConVar viewDrift_pitch_base1_amp
+r5apex.exe!0x01df4be0 ConVar viewDrift_pitch_base1_freq
+r5apex.exe!0x01defe00 ConVar viewDrift_pitch_base1_phase
+r5apex.exe!0x01df2dd0 ConVar viewDrift_pitch_base2_amp
+r5apex.exe!0x01df98a0 ConVar viewDrift_pitch_base2_freq
+r5apex.exe!0x01df1460 ConVar viewDrift_pitch_base2_phase
+r5apex.exe!0x01deee70 ConVar viewDrift_pitch_scaler_amp
+r5apex.exe!0x01e023a0 ConVar viewDrift_pitch_scaler_base
+r5apex.exe!0x01dee750 ConVar viewDrift_pitch_scaler_freq
+r5apex.exe!0x01dee3c0 ConVar viewDrift_pitch_scaler_phase
+r5apex.exe!0x01df4350 ConVar viewDrift_pitch_shifter_amp
+r5apex.exe!0x01df4170 ConVar viewDrift_pitch_shifter_freq
+r5apex.exe!0x01df8d00 ConVar viewDrift_pitch_shifter_phase
+r5apex.exe!0x01e02300 ConVar viewDrift_yaw_base1_amp
+r5apex.exe!0x01df8720 ConVar viewDrift_yaw_base1_freq
+r5apex.exe!0x01de9b10 ConVar viewDrift_yaw_base1_phase
+r5apex.exe!0x01df15a0 ConVar viewDrift_yaw_base2_amp
+r5apex.exe!0x01df35c0 ConVar viewDrift_yaw_base2_freq
+r5apex.exe!0x01df3520 ConVar viewDrift_yaw_base2_phase
+r5apex.exe!0x01df00e0 ConVar viewDrift_yaw_scaler_amp
+r5apex.exe!0x01df87c0 ConVar viewDrift_yaw_scaler_base
+r5apex.exe!0x01df9200 ConVar viewDrift_yaw_scaler_freq
+r5apex.exe!0x01df8aa0 ConVar viewDrift_yaw_scaler_phase
+r5apex.exe!0x01de9c30 ConVar viewDrift_yaw_shifter_amp
+r5apex.exe!0x01df33f0 ConVar viewDrift_yaw_shifter_freq
+r5apex.exe!0x01e024e0 ConVar viewDrift_yaw_shifter_phase
+r5apex.exe!0x01e02cc0 ConVar view_offset_entity_enable
+r5apex.exe!0x01bf6f50 ConVar viewangle_debug
+r5apex.exe!0x01840730 ConVar viewangles_simpler
+r5apex.exe!0x018318a0 ConVar viewmodelShake
+r5apex.exe!0x018519c0 ConVar viewmodelShake_sourceRollRange
+r5apex.exe!0x01de71b0 ConVar viewmodel_attachment_fov_fix
+r5apex.exe!0x01da8930 ConVar viewmodel_bounds_draw
+r5apex.exe!0x01bf9ae0 ConVar viewmodel_bounds_draw_lock
+r5apex.exe!0x011a15f0 ConVar viewmodel_selfshadow
+r5apex.exe!0x01da7ff0 ConVar viewmodel_selfshadow_debug_2d
+r5apex.exe!0x01bf8820 ConVar viewmodel_selfshadow_tightbounds
+r5apex.exe!0x0183c800 ConVar viewportscale
+r5apex.exe!0x01ddd840 ConVar viewpunch_base_springConstantX
+r5apex.exe!0x01de5580 ConVar viewpunch_base_springConstantY
+r5apex.exe!0x01de49a0 ConVar viewpunch_base_springConstantZ
+r5apex.exe!0x01dcb9f0 ConVar viewpunch_base_springDampingX
+r5apex.exe!0x01de4ce0 ConVar viewpunch_base_springDampingY
+r5apex.exe!0x01db19b0 ConVar viewpunch_base_springDampingZ
+r5apex.exe!0x01052970 ConVar violence_ablood
+r5apex.exe!0x01ded420 ConVar violence_ablood
+r5apex.exe!0x01055240 ConVar violence_agibs
+r5apex.exe!0x01df0020 ConVar violence_agibs
+r5apex.exe!0x0105c480 ConVar violence_hblood
+r5apex.exe!0x01df9940 ConVar violence_hblood
+r5apex.exe!0x01056f20 ConVar violence_hgibs
+r5apex.exe!0x01df2c60 ConVar violence_hgibs
+r5apex.exe!0x01df9a20 ConVar visible_ent_cone_debug_duration_client
+r5apex.exe!0x01063590 ConVar voice_absTriggerAmount
+r5apex.exe!0x01e0dad0 ConVar voice_allow_mute_self
+r5apex.exe!0x010626a0 ConVar voice_avggain
+r5apex.exe!0x01e04540 ConVar voice_clientdebug
+r5apex.exe!0x01062a60 ConVar voice_debugAddSecondTalker
+r5apex.exe!0x01063140 ConVar voice_debugThresholds
+r5apex.exe!0x0105e780 ConVar voice_debugfeedback
+r5apex.exe!0x01e0c330 ConVar voice_decimate_at_bytes
+r5apex.exe!0x01e0d990 ConVar voice_decimate_rate
+r5apex.exe!0x01062ec0 ConVar voice_enabled
+r5apex.exe!0x01062ba0 ConVar voice_energyPerZeroThreshold
+r5apex.exe!0x010630a0 ConVar voice_energyThreshold
+r5apex.exe!0x01062f60 ConVar voice_forcemicrecord
+r5apex.exe!0x01054050 ConVar voice_inputfromfile
+r5apex.exe!0x01830ee0 ConVar voice_late_update
+r5apex.exe!0x01063320 ConVar voice_loopback
+r5apex.exe!0x010634f0 ConVar voice_maxgain
+r5apex.exe!0x01062ce0 ConVar voice_minEnergyPerZeroThreshold
+r5apex.exe!0x01063630 ConVar voice_mixer_boost
+r5apex.exe!0x010636d0 ConVar voice_mixer_mute
+r5apex.exe!0x01063770 ConVar voice_mixer_volume
+r5apex.exe!0x01e04b90 ConVar voice_modenable
+r5apex.exe!0x01161080 ConVar voice_noxplat
+r5apex.exe!0x01063450 ConVar voice_profile
+r5apex.exe!0x010562a0 ConVar voice_recordtofile
+r5apex.exe!0x010627e0 ConVar voice_scale
+r5apex.exe!0x01062e20 ConVar voice_showchannels
+r5apex.exe!0x010624c0 ConVar voice_showincoming
+r5apex.exe!0x01062560 ConVar voice_threshold_delay
+r5apex.exe!0x01063280 ConVar voice_triggerCrossingRate
+r5apex.exe!0x010629c0 ConVar voice_triggerRate
+r5apex.exe!0x01063000 ConVar voice_vox
+r5apex.exe!0x01062380 ConVar voice_writevoices
+r5apex.exe!0x01053ad0 ConVar voice_xsend_debug
+r5apex.exe!0x01062880 ConVar voice_zeroCrossingThreshold
+r5apex.exe!0x01e10660 ConVar vortex_damageimpulsescale
+r5apex.exe!0x0105c840 ConVar vprof_server_spike_threshold
+r5apex.exe!0x01055940 ConVar vprof_server_thread
+r5apex.exe!0x01da98e0 ConVar vscript_ui_do_delay_init
+r5apex.exe!0x018501d0 ConVar vsm_culling
+r5apex.exe!0x01bd8520 ConVar vsm_ignore_edge_planes
+r5apex.exe!0x01831f70 ConVar vsm_ignore_face_planes
+r5apex.exe!0x0105e280 ConVar vx_do_not_throttle_events
+r5apex.exe!0x01df1660 ConVar wall_climb_pose_paramteter_hands_enabled
+r5apex.exe!0x01de4390 ConVar wallclimb_vertical_gain_reduction
+r5apex.exe!0x01de7580 ConVar wallrun_angleChangeMinCos
+r5apex.exe!0x01de6b00 ConVar wallrun_avoid_wall_top_decel
+r5apex.exe!0x01e12110 ConVar wallrun_curveDebug
+r5apex.exe!0x01e10de0 ConVar wallrun_curveEnable
+r5apex.exe!0x01de26f0 ConVar wallrun_debug
+r5apex.exe!0x01db2670 ConVar wallrun_enable
+r5apex.exe!0x01de3110 ConVar wallrun_fallAwaySpeed
+r5apex.exe!0x01de2b30 ConVar wallrun_hangStopTime
+r5apex.exe!0x01daf5c0 ConVar wallrun_hangslipduration
+r5apex.exe!0x01de0430 ConVar wallrun_hangslipstarttime
+r5apex.exe!0x01ddec00 ConVar wallrun_hangslipvel
+r5apex.exe!0x01ddd480 ConVar wallrun_maxViewTilt
+r5apex.exe!0x01dcb730 ConVar wallrun_minAngle_air
+r5apex.exe!0x01de2f60 ConVar wallrun_noInputSlipFrac
+r5apex.exe!0x01db0e40 ConVar wallrun_pushAwayFallOffTime
+r5apex.exe!0x01ddc060 ConVar wallrun_repelEnable
+r5apex.exe!0x01ddf620 ConVar wallrun_repelSoftness
+r5apex.exe!0x01de5f80 ConVar wallrun_repelTimeMax
+r5apex.exe!0x01de0530 ConVar wallrun_repelTimeMin
+r5apex.exe!0x01dddf50 ConVar wallrun_retry_interval
+r5apex.exe!0x01dde400 ConVar wallrun_rotateMaxRate
+r5apex.exe!0x01ddd5c0 ConVar wallrun_sameWallDist
+r5apex.exe!0x01ddde10 ConVar wallrun_sameWallDot
+r5apex.exe!0x01dad5a0 ConVar wallrun_sameWallSlope
+r5apex.exe!0x01de5e10 ConVar wallrun_slipduration
+r5apex.exe!0x01dde2c0 ConVar wallrun_slipslowdown
+r5apex.exe!0x01de2260 ConVar wallrun_slipstarttime
+r5apex.exe!0x01de4740 ConVar wallrun_slipvel
+r5apex.exe!0x01db1340 ConVar wallrun_strengthLossEnd
+r5apex.exe!0x01db0a60 ConVar wallrun_strengthLossStart
+r5apex.exe!0x01de0930 ConVar wallrun_upwardAutoPush
+r5apex.exe!0x01de4d80 ConVar wallrun_viewTiltPredictTime
+r5apex.exe!0x01db1a50 ConVar wallrun_viewTiltSpeed
+r5apex.exe!0x01ddf760 ConVar was_loaded
+r5apex.exe!0x01e18ba0 ConVar weaponFastHolsterScale
+r5apex.exe!0x01de67e0 ConVar weaponSwitch3p_checkNewWeapon
+r5apex.exe!0x01e1c3f0 ConVar weaponSwitch3p_onHolster
+r5apex.exe!0x01df2780 ConVar weapon_auto_swap_ordnance_no_ammo
+r5apex.exe!0x01e1bf70 ConVar weapon_debugScript
+r5apex.exe!0x01e1b950 ConVar weapon_doIdleForSurvivalMelee
+r5apex.exe!0x01855890 ConVar weapon_friendly_fire_prevent_ui
+r5apex.exe!0x01df8660 ConVar weapon_meleeButtonPressProtection
+r5apex.exe!0x01bd8a20 ConVar weapon_parentingFixLerp
+r5apex.exe!0x01df9320 ConVar weapon_pickup_allow_dupes
+r5apex.exe!0x01831b20 ConVar weapon_poseParamMaxDistance
+r5apex.exe!0x01e1c2f0 ConVar weapon_render_with_fastpath
+r5apex.exe!0x01bf1620 ConVar weapon_setting_autocycle_on_empty
+r5apex.exe!0x01e1c050 ConVar weapon_sprint_raise_delay
+r5apex.exe!0x01e1ca10 ConVar weaponx_predicting_client_only_optimization
+r5apex.exe!0x01e1cad0 ConVar weaponx_smartammo_data_optimization
+r5apex.exe!0x01e17da0 ConVar window_hint_debug
+r5apex.exe!0x01dcbd50 ConVar window_hint_fov_down
+r5apex.exe!0x01de42c0 ConVar window_hint_fov_horz
+r5apex.exe!0x01dde090 ConVar window_hint_fov_up
+r5apex.exe!0x01de23d0 ConVar window_hint_keyboard_fov_horz
+r5apex.exe!0x01daf7e0 ConVar window_hint_lookahead_time
+r5apex.exe!0x01de6500 ConVar window_hint_max_horz_vel_change_dot
+r5apex.exe!0x01ddf2c0 ConVar window_hint_max_vel_change_down
+r5apex.exe!0x01de5c00 ConVar window_hint_max_vel_change_up
+r5apex.exe!0x01db29f0 ConVar window_hint_min_horz_vel
+r5apex.exe!0x01de6f10 ConVar window_hint_permissive_max_horz_vel_change_dot
+r5apex.exe!0x01de2300 ConVar window_hint_permissive_max_vel_change_down
+r5apex.exe!0x01ddd3e0 ConVar window_hint_permissive_max_vel_change_up
+r5apex.exe!0x01851760 ConVar z_ragdoll_impact_strength
+r5apex.exe!0x01e105c0 ConVar zipline_fade_dist
+r5apex.exe!0x01e10e80 ConVar zipline_subdiv_lod_dist_base
+r5apex.exe!0x01bf58f0 ConVar zipline_subdiv_slices
+r5apex.exe!0x01e16e20 ConVar zipline_subdiv_slices_lod
+r5apex.exe!0x01bedc80 ConVar zipline_subdiv_stacks
 ```
 
 ## ConCommands
@@ -31931,6 +31999,13 @@ flags: `0x2`
 Tells camera to change modes
 
 flags: `0x4008`  
+</details>
+<details>
+<summary><code>cancelreconnect</code></summary>
+
+Cancel a reconnect command
+
+flags: `0x400a0000`  
 </details>
 <details>
 <summary><code>cancelselect</code></summary>
@@ -33668,6 +33743,13 @@ Recomputes clock speed (for debugging purposes).
 flags: `0x4000`  
 </details>
 <details>
+<summary><code>reconnect</code></summary>
+
+Silently reconnect to specified server. Similar to silentconnect
+
+flags: `0xa0000`  
+</details>
+<details>
 <summary><code>reload</code></summary>
 
 Reload the game (add setpos to jump to current view position on reload).
@@ -33948,6 +34030,13 @@ flags: `0x20002`
 <summary><code>status</code></summary>
 
 Display map and connection status.
+
+flags: `0x2`  
+</details>
+<details>
+<summary><code>steam_printid</code></summary>
+
+
 
 flags: `0x2`  
 </details>
@@ -34363,518 +34452,521 @@ flags: `0x40080000`
 ### Addresses
 
 ```
-r5apex.exe!0x01bcd0f0 ConCommand +ability
-r5apex.exe!0x01bd45d0 ConCommand +ability_held
-r5apex.exe!0x01bd8d20 ConCommand +attack
-r5apex.exe!0x01bdcbc0 ConCommand +backward
-r5apex.exe!0x01bd5990 ConCommand +break
-r5apex.exe!0x01bd8ee0 ConCommand +camdistance
-r5apex.exe!0x01bd4650 ConCommand +camin
-r5apex.exe!0x01bd1550 ConCommand +cammousemove
-r5apex.exe!0x01bd1a30 ConCommand +camout
-r5apex.exe!0x01bdcb40 ConCommand +campitchdown
-r5apex.exe!0x01bcce10 ConCommand +campitchup
-r5apex.exe!0x01bd5a10 ConCommand +camyawleft
-r5apex.exe!0x01bd3720 ConCommand +camyawright
-r5apex.exe!0x01bd7eb0 ConCommand +commandermousemove
-r5apex.exe!0x0181a7a0 ConCommand +csm_rot_x_neg
-r5apex.exe!0x01831bd0 ConCommand +csm_rot_x_plus
-r5apex.exe!0x0182b940 ConCommand +csm_rot_y_neg
-r5apex.exe!0x018313f0 ConCommand +csm_rot_y_plus
-r5apex.exe!0x01bdfd80 ConCommand +displayFullscreenMap
-r5apex.exe!0x01bd3000 ConCommand +dodge
-r5apex.exe!0x01bdd6a0 ConCommand +duck
-r5apex.exe!0x01bcd330 ConCommand +forward
-r5apex.exe!0x01bda140 ConCommand +graph
-r5apex.exe!0x01bde430 ConCommand +jump
-r5apex.exe!0x01bd8050 ConCommand +klook
-r5apex.exe!0x01bdc450 ConCommand +left
-r5apex.exe!0x01bda2c0 ConCommand +lookdown
-r5apex.exe!0x01bdaf00 ConCommand +lookup
-r5apex.exe!0x011458c0 ConCommand +mat_texture_list
-r5apex.exe!0x01bddc70 ConCommand +melee
-r5apex.exe!0x01bda0c0 ConCommand +movedown
-r5apex.exe!0x01bd4390 ConCommand +moveleft
-r5apex.exe!0x01bcd950 ConCommand +moveright
-r5apex.exe!0x01bd3240 ConCommand +moveup
-r5apex.exe!0x01bde770 ConCommand +offhand0
-r5apex.exe!0x01bcfcb0 ConCommand +offhand1
-r5apex.exe!0x01bdd1e0 ConCommand +offhand2
-r5apex.exe!0x01bd8c20 ConCommand +offhand3
-r5apex.exe!0x01bdcc40 ConCommand +offhand4
-r5apex.exe!0x01bdfe00 ConCommand +pause_menu
-r5apex.exe!0x01bd6d40 ConCommand +ping
-r5apex.exe!0x01deefa0 ConCommand +posedebug
-r5apex.exe!0x0104d4f0 ConCommand +pushtotalk
-r5apex.exe!0x01bd18b0 ConCommand +reload
-r5apex.exe!0x01bd0db0 ConCommand +right
-r5apex.exe!0x01bdef70 ConCommand +score
-r5apex.exe!0x01bdb6e0 ConCommand +scriptCommand1
-r5apex.exe!0x01bddcf0 ConCommand +scriptCommand2
-r5apex.exe!0x01bd0cb0 ConCommand +scriptCommand3
-r5apex.exe!0x01bd3500 ConCommand +scriptCommand4
-r5apex.exe!0x01bdac20 ConCommand +scriptCommand5
-r5apex.exe!0x01bdaf80 ConCommand +scriptCommand6
-r5apex.exe!0x01bde670 ConCommand +scriptCommand7
-r5apex.exe!0x01bd1310 ConCommand +scriptCommand8
-r5apex.exe!0x01bda9a0 ConCommand +scriptCommand9
-r5apex.exe!0x01bcdbf0 ConCommand +showscores
-r5apex.exe!0x01bcc9d0 ConCommand +speed
-r5apex.exe!0x01bdfd00 ConCommand +strafe
-r5apex.exe!0x01bd16f0 ConCommand +toggle_duck
-r5apex.exe!0x01bcda50 ConCommand +toggle_zoom
-r5apex.exe!0x01bdc980 ConCommand +use
-r5apex.exe!0x01bdad40 ConCommand +useAndReload
-r5apex.exe!0x01bd3af0 ConCommand +use_alt
-r5apex.exe!0x01bdd720 ConCommand +use_long
-r5apex.exe!0x01bd1c70 ConCommand +variableScopeToggle
-r5apex.exe!0x0104b4a0 ConCommand +vgui_drawtree
-r5apex.exe!0x0103ea90 ConCommand +voicerecord
-r5apex.exe!0x01bdf670 ConCommand +walk
-r5apex.exe!0x01bdecb0 ConCommand +weaponCycle
-r5apex.exe!0x01bdb0a0 ConCommand +weapon_discard
-r5apex.exe!0x01bd1930 ConCommand +zoom
-r5apex.exe!0x01bd7fd0 ConCommand -ability
-r5apex.exe!0x01bd2900 ConCommand -ability_held
-r5apex.exe!0x01bd4a10 ConCommand -attack
-r5apex.exe!0x01bccc50 ConCommand -backward
-r5apex.exe!0x01bd6e60 ConCommand -break
-r5apex.exe!0x01bdf4d0 ConCommand -camdistance
-r5apex.exe!0x01bdbce0 ConCommand -camin
-r5apex.exe!0x01bd1390 ConCommand -cammousemove
-r5apex.exe!0x01bd65b0 ConCommand -camout
-r5apex.exe!0x01bda620 ConCommand -campitchdown
-r5apex.exe!0x01bd5b30 ConCommand -campitchup
-r5apex.exe!0x01bd44b0 ConCommand -camyawleft
-r5apex.exe!0x01bd31c0 ConCommand -camyawright
-r5apex.exe!0x01bdd850 ConCommand -commandermousemove
-r5apex.exe!0x01833db0 ConCommand -csm_rot_x_neg
-r5apex.exe!0x0181aef0 ConCommand -csm_rot_x_plus
-r5apex.exe!0x01bc0560 ConCommand -csm_rot_y_neg
-r5apex.exe!0x018308f0 ConCommand -csm_rot_y_plus
-r5apex.exe!0x01bcd210 ConCommand -displayFullscreenMap
-r5apex.exe!0x01bde9b0 ConCommand -dodge
-r5apex.exe!0x01bda240 ConCommand -duck
-r5apex.exe!0x01bd3600 ConCommand -forward
-r5apex.exe!0x01bd3840 ConCommand -graph
-r5apex.exe!0x01bd3db0 ConCommand -jump
-r5apex.exe!0x01bd2980 ConCommand -klook
-r5apex.exe!0x01bcd9d0 ConCommand -left
-r5apex.exe!0x01bd3400 ConCommand -lookdown
-r5apex.exe!0x01bccfd0 ConCommand -lookup
-r5apex.exe!0x01145660 ConCommand -mat_texture_list
-r5apex.exe!0x01bd78b0 ConCommand -melee
-r5apex.exe!0x01bd15d0 ConCommand -movedown
-r5apex.exe!0x01bdc610 ConCommand -moveleft
-r5apex.exe!0x01bd3e30 ConCommand -moveright
-r5apex.exe!0x01bda360 ConCommand -moveup
-r5apex.exe!0x01bdae60 ConCommand -offhand0
-r5apex.exe!0x01bdce00 ConCommand -offhand1
-r5apex.exe!0x01bdbea0 ConCommand -offhand2
-r5apex.exe!0x01bd2a00 ConCommand -offhand3
-r5apex.exe!0x01bcd690 ConCommand -offhand4
-r5apex.exe!0x01bdc710 ConCommand -pause_menu
-r5apex.exe!0x01bcdad0 ConCommand -ping
-r5apex.exe!0x01def020 ConCommand -posedebug
-r5apex.exe!0x0104ceb0 ConCommand -pushtotalk
-r5apex.exe!0x01bcd7b0 ConCommand -reload
-r5apex.exe!0x01bda1c0 ConCommand -right
-r5apex.exe!0x01bdcfc0 ConCommand -score
-r5apex.exe!0x01bcd8d0 ConCommand -scriptCommand1
-r5apex.exe!0x01bda7e0 ConCommand -scriptCommand2
-r5apex.exe!0x01bde6f0 ConCommand -scriptCommand3
-r5apex.exe!0x01bde550 ConCommand -scriptCommand4
-r5apex.exe!0x01bcca50 ConCommand -scriptCommand5
-r5apex.exe!0x01bcc830 ConCommand -scriptCommand6
-r5apex.exe!0x01bde930 ConCommand -scriptCommand7
-r5apex.exe!0x01bd0a10 ConCommand -scriptCommand8
-r5apex.exe!0x01bd9e80 ConCommand -scriptCommand9
-r5apex.exe!0x01bd0c30 ConCommand -showscores
-r5apex.exe!0x01bd3d30 ConCommand -speed
-r5apex.exe!0x01bdd160 ConCommand -strafe
-r5apex.exe!0x01bd3580 ConCommand -toggle_duck
-r5apex.exe!0x01bdab60 ConCommand -toggle_zoom
-r5apex.exe!0x01bd0a90 ConCommand -use
-r5apex.exe!0x01bcc950 ConCommand -useAndReload
-r5apex.exe!0x01bdc900 ConCommand -use_alt
-r5apex.exe!0x01bd5720 ConCommand -use_long
-r5apex.exe!0x01bcd610 ConCommand -variableScopeToggle
-r5apex.exe!0x0104af00 ConCommand -vgui_drawtree
-r5apex.exe!0x0103aa30 ConCommand -voicerecord
-r5apex.exe!0x01bded30 ConCommand -walk
-r5apex.exe!0x01bd30a0 ConCommand -weaponCycle
-r5apex.exe!0x01bdf790 ConCommand -weapon_discard
-r5apex.exe!0x01bd6810 ConCommand -zoom
-r5apex.exe!0x01037160 ConCommand BindToggle
-r5apex.exe!0x0128d020 ConCommand CMaterialSystem_clear_loading
-r5apex.exe!0x0128caa0 ConCommand CMaterialSystem_set_loading
-r5apex.exe!0x0128d1e0 ConCommand DebugPrintUsedTextures
-r5apex.exe!0x01146390 ConCommand DumpClientDataBlockReceiver
-r5apex.exe!0x0110f580 ConCommand MemTrackDeltaSnapshot
-r5apex.exe!0x0110f0a0 ConCommand MemTrackPrintStats
-r5apex.exe!0x0183b3b0 ConCommand ReloadAimAssistSettings
-r5apex.exe!0x0110eb20 ConCommand adminmsg
-r5apex.exe!0x01df6ba0 ConCommand aisettings_reparse_client
-r5apex.exe!0x0103a7f0 ConCommand alias
-r5apex.exe!0x01df55f0 ConCommand applyVideoChangesDeferred
-r5apex.exe!0x010424b0 ConCommand bind
-r5apex.exe!0x0103f0e0 ConCommand bind_US_standard
-r5apex.exe!0x010442e0 ConCommand bind_held
-r5apex.exe!0x01043a10 ConCommand bind_held_US_standard
-r5apex.exe!0x0103f690 ConCommand bind_list
-r5apex.exe!0x0103df60 ConCommand bind_list_abilities
-r5apex.exe!0x0104ddb0 ConCommand bink_dump_precached_movies
-r5apex.exe!0x01dd31d0 ConCommand bot_loadout
-r5apex.exe!0x0110f140 ConCommand box
-r5apex.exe!0x01037f10 ConCommand buildcubemaps
-r5apex.exe!0x01040f10 ConCommand cache_print
-r5apex.exe!0x01040510 ConCommand cache_print_lru
-r5apex.exe!0x0103af10 ConCommand cache_print_summary
-r5apex.exe!0x01bd8810 ConCommand cam_command
-r5apex.exe!0x01bd0b10 ConCommand cancelselect
-r5apex.exe!0x01bcffc0 ConCommand cc_emit
-r5apex.exe!0x0181b450 ConCommand centerview
-r5apex.exe!0x01045270 ConCommand changelevel
-r5apex.exe!0x01110530 ConCommand chat
-r5apex.exe!0x01d93770 ConCommand chat_wheel
-r5apex.exe!0x0117bad0 ConCommand chatroom_adminsOnly
-r5apex.exe!0x0110ea00 ConCommand chatroom_away
-r5apex.exe!0x0117b930 ConCommand chatroom_freetalk
-r5apex.exe!0x0110fc80 ConCommand chatroom_present
-r5apex.exe!0x0110f1c0 ConCommand chatserver
-r5apex.exe!0x0104df70 ConCommand chroma_base
-r5apex.exe!0x0104def0 ConCommand chroma_layer
-r5apex.exe!0x01d94fb0 ConCommand cl_dump_particle_stats
-r5apex.exe!0x01bc14a0 ConCommand cl_ent_absbox
-r5apex.exe!0x01823aa0 ConCommand cl_ent_bbox
-r5apex.exe!0x01833ed0 ConCommand cl_ent_rbox
-r5apex.exe!0x018340c0 ConCommand cl_find_ent
-r5apex.exe!0x01839910 ConCommand cl_find_ent_index
-r5apex.exe!0x01834040 ConCommand cl_flip_visibility
-r5apex.exe!0x0110f5f0 ConCommand cl_fullupdate
-r5apex.exe!0x0183b290 ConCommand cl_interpolation_report
-r5apex.exe!0x01be3210 ConCommand cl_panelanimation
-r5apex.exe!0x01d8dc60 ConCommand cl_particles_dump_effects
-r5apex.exe!0x01d8e410 ConCommand cl_particles_dumplist
-r5apex.exe!0x0110e960 ConCommand cl_precacheinfo
-r5apex.exe!0x0183af60 ConCommand cl_removedecals
-r5apex.exe!0x0110f400 ConCommand cl_showents
-r5apex.exe!0x01bddab0 ConCommand cl_soundscape_flush
-r5apex.exe!0x01d963d0 ConCommand cl_trace_start_solid
-r5apex.exe!0x0183bc10 ConCommand cl_trace_test_hitbox_with_non_zero_start_offset
-r5apex.exe!0x01bc1920 ConCommand cl_updatevisibility
-r5apex.exe!0x01045980 ConCommand clear_loading_progress_detente
-r5apex.exe!0x0103be70 ConCommand clear_loading_progress_sp_text
-r5apex.exe!0x01037cb0 ConCommand cm_query_log_record
-r5apex.exe!0x0103a080 ConCommand cm_query_log_replay
-r5apex.exe!0x01037db0 ConCommand cmd
-r5apex.exe!0x01037840 ConCommand cmd1
-r5apex.exe!0x01037ea0 ConCommand cmd2
-r5apex.exe!0x010373b0 ConCommand cmd3
-r5apex.exe!0x01037fb0 ConCommand cmd4
-r5apex.exe!0x0182d860 ConCommand collision_debug
-r5apex.exe!0x0103a910 ConCommand colorcorrectionui
-r5apex.exe!0x01176a10 ConCommand community_browse
-r5apex.exe!0x01176bd0 ConCommand community_getPendingJoinRequest
-r5apex.exe!0x01176870 ConCommand community_join
-r5apex.exe!0x01176e90 ConCommand community_leave
-r5apex.exe!0x011768f0 ConCommand community_list
-r5apex.exe!0x01176e10 ConCommand community_report
-r5apex.exe!0x0110fb70 ConCommand connect
-r5apex.exe!0x01110020 ConCommand connectAsSpectator
-r5apex.exe!0x0110e8e0 ConCommand connectWithKey
-r5apex.exe!0x01110750 ConCommand connectwithtoken
-r5apex.exe!0x010386e0 ConCommand convar_differences
-r5apex.exe!0x01038670 ConCommand convar_findByFlags
-r5apex.exe!0x0103a0f0 ConCommand convar_list
-r5apex.exe!0x0110f380 ConCommand createparty
-r5apex.exe!0x0110fe10 ConCommand createpartyifnotinone
-r5apex.exe!0x01bc18a0 ConCommand csm_status
-r5apex.exe!0x01de1370 ConCommand damagedefs_reparse_client
-r5apex.exe!0x0110f300 ConCommand debugModelPurge
-r5apex.exe!0x01038850 ConCommand devshots_nextmap
-r5apex.exe!0x0110f770 ConCommand devshots_screenshot
-r5apex.exe!0x0103e6c0 ConCommand dfs_print_flag_states
-r5apex.exe!0x0103abb0 ConCommand disconnect
-r5apex.exe!0x01045630 ConCommand display_elapsedtime
-r5apex.exe!0x018303b0 ConCommand dlight_debug
-r5apex.exe!0x011786f0 ConCommand do_InvitePeople_test
-r5apex.exe!0x01178210 ConCommand do_Invite_friend_test
-r5apex.exe!0x01177e10 ConCommand do_joinPeople_test
-r5apex.exe!0x01178110 ConCommand do_origin_test_presence
-r5apex.exe!0x0104a680 ConCommand downloadPlaylists
-r5apex.exe!0x01d99c40 ConCommand dumpClientStringTable
-r5apex.exe!0x010462c0 ConCommand dumpstringtables
-r5apex.exe!0x010380c0 ConCommand echo
-r5apex.exe!0x010387d0 ConCommand echo_error
-r5apex.exe!0x0117b400 ConCommand editor_toggle
-r5apex.exe!0x011106d0 ConCommand endmovie
-r5apex.exe!0x0103b5f0 ConCommand entitlements_print
-r5apex.exe!0x01146830 ConCommand entitlements_send
-r5apex.exe!0x01042710 ConCommand entitlements_set_bits
-r5apex.exe!0x01037720 ConCommand envmap
-r5apex.exe!0x0103bef0 ConCommand escape
-r5apex.exe!0x0103a4c0 ConCommand exec
-r5apex.exe!0x01045be0 ConCommand execPlayerConfig
-r5apex.exe!0x01038760 ConCommand execifexists
-r5apex.exe!0x0103c540 ConCommand exit
-r5apex.exe!0x01831d90 ConCommand eyeInfo
-r5apex.exe!0x01bd38c0 ConCommand firstperson
-r5apex.exe!0x0103b310 ConCommand flush
-r5apex.exe!0x0103f8e0 ConCommand flush_locked
-r5apex.exe!0x01bdd040 ConCommand force_centerview
-r5apex.exe!0x01184db0 ConCommand fps_stats_dump
-r5apex.exe!0x01186ef0 ConCommand fps_stats_reset
-r5apex.exe!0x01184bf0 ConCommand fps_stats_start
-r5apex.exe!0x01187290 ConCommand fps_stats_stop
-r5apex.exe!0x0117a990 ConCommand friends_update
-r5apex.exe!0x0117ced0 ConCommand fs_clear_open_duplicate_times
-r5apex.exe!0x0117d130 ConCommand fs_dump_open_duplicate_times
-r5apex.exe!0x0117d890 ConCommand fs_fios_cancel_prefetches
-r5apex.exe!0x0117ce50 ConCommand fs_fios_flush_cache
-r5apex.exe!0x0117d2f0 ConCommand fs_fios_prefetch_file
-r5apex.exe!0x0117d640 ConCommand fs_fios_prefetch_file_in_pack
-r5apex.exe!0x0117d5c0 ConCommand fs_fios_print_prefetches
-r5apex.exe!0x01038b10 ConCommand fs_printopenfiles
-r5apex.exe!0x01038f10 ConCommand fs_warning_level
-r5apex.exe!0x01bd2740 ConCommand fx_impact_reparse
-r5apex.exe!0x010484f0 ConCommand gameui_activate
-r5apex.exe!0x0104a7a0 ConCommand gameui_allowescape
-r5apex.exe!0x0104c230 ConCommand gameui_allowescapetoshow
-r5apex.exe!0x01048270 ConCommand gameui_hide
-r5apex.exe!0x01047dd0 ConCommand gameui_preventescape
-r5apex.exe!0x01049680 ConCommand gameui_preventescapetoshow
-r5apex.exe!0x0117bd10 ConCommand getNewAuthToken
-r5apex.exe!0x0182a160 ConCommand getfov
-r5apex.exe!0x0103def0 ConCommand gethttpdatacenterlist
-r5apex.exe!0x0181b3d0 ConCommand getpos
-r5apex.exe!0x01839a80 ConCommand getpos_bind
-r5apex.exe!0x01bbfcd0 ConCommand getposvec
-r5apex.exe!0x01de2ac0 ConCommand give
-r5apex.exe!0x018104f0 ConCommand gpu_profile_snapshot
-r5apex.exe!0x01038ea0 ConCommand help
-r5apex.exe!0x01e05ce0 ConCommand hidepanel
-r5apex.exe!0x01be1b40 ConCommand hidevideos
-r5apex.exe!0x0128e410 ConCommand highlight_log
-r5apex.exe!0x010433f0 ConCommand host_runofftime
-r5apex.exe!0x01bd4f70 ConCommand hud_subtitles
-r5apex.exe!0x0117bd90 ConCommand huffman_readProps
-r5apex.exe!0x01bd9f00 ConCommand impulse
-r5apex.exe!0x01176c50 ConCommand inboxmessage_report
-r5apex.exe!0x010460e0 ConCommand incrementvar
-r5apex.exe!0x01d8dac0 ConCommand ingamemenu_activate
-r5apex.exe!0x0103bd50 ConCommand initMatchmaking
-r5apex.exe!0x01bd3480 ConCommand invnext
-r5apex.exe!0x0183a820 ConCommand is_considered_sony_multiplayer
-r5apex.exe!0x0110f260 ConCommand joinopeninvite
-r5apex.exe!0x01bda5a0 ConCommand joystick_initialize
-r5apex.exe!0x0110f880 ConCommand jpeg
-r5apex.exe!0x01045aa0 ConCommand key_listboundkeys
-r5apex.exe!0x01180f80 ConCommand key_updatelayout
-r5apex.exe!0x0104a380 ConCommand launchplaylist
-r5apex.exe!0x01110370 ConCommand leaveopeninvite
-r5apex.exe!0x01d96450 ConCommand listClientFXScriptHandles
-r5apex.exe!0x010414b0 ConCommand listmodels
-r5apex.exe!0x01048e60 ConCommand loadPlaylists
-r5apex.exe!0x0103f300 ConCommand map
-r5apex.exe!0x0103cee0 ConCommand map_background
-r5apex.exe!0x0103f7a0 ConCommand maps
-r5apex.exe!0x0103e5b0 ConCommand mat_antialias_mode
-r5apex.exe!0x010474b0 ConCommand mat_configcurrent
-r5apex.exe!0x01038cc0 ConCommand mat_crosshair
-r5apex.exe!0x01038a00 ConCommand mat_crosshair_edit
-r5apex.exe!0x01037610 ConCommand mat_crosshair_explorer
-r5apex.exe!0x01038e20 ConCommand mat_crosshair_printmaterial
-r5apex.exe!0x0103a160 ConCommand mat_crosshair_reloadmaterial
-r5apex.exe!0x010400b0 ConCommand mat_gamma
-r5apex.exe!0x0118a9b0 ConCommand mat_hdr_enabled
-r5apex.exe!0x0180cc90 ConCommand mat_printLiveTex
-r5apex.exe!0x0103f480 ConCommand mat_savechanges
-r5apex.exe!0x01043470 ConCommand mat_setvideomode
-r5apex.exe!0x0180cee0 ConCommand mat_shadercount
-r5apex.exe!0x0180ce60 ConCommand mat_spewvertexandpixelshaders
-r5apex.exe!0x010472d0 ConCommand mat_vsync
-r5apex.exe!0x01043510 ConCommand match_abortAllSearches
-r5apex.exe!0x0103dde0 ConCommand match_showAllSearches
-r5apex.exe!0x01046790 ConCommand matchmake
-r5apex.exe!0x01046b50 ConCommand matchmake_cancel
-r5apex.exe!0x01043cb0 ConCommand matchmake_cleanupforparty
-r5apex.exe!0x01147ef0 ConCommand maxplayers
-r5apex.exe!0x01045c80 ConCommand mem_compact
-r5apex.exe!0x0103f4f0 ConCommand mem_dump
-r5apex.exe!0x0103eb00 ConCommand mem_dump_vm
-r5apex.exe!0x0103c700 ConCommand mem_eat
-r5apex.exe!0x01044d70 ConCommand mem_incremental_compact
-r5apex.exe!0x010458b0 ConCommand mem_leak_vm
-r5apex.exe!0x0103f9f0 ConCommand mem_test
-r5apex.exe!0x0118bb60 ConCommand mem_textures
-r5apex.exe!0x01046dd0 ConCommand mem_verify
-r5apex.exe!0x0118c040 ConCommand mem_vram
-r5apex.exe!0x01041d70 ConCommand memory
-r5apex.exe!0x010448d0 ConCommand migrateme
-r5apex.exe!0x01df4e20 ConCommand miles_dump
-r5apex.exe!0x01df4fa0 ConCommand miles_event_info
-r5apex.exe!0x01df5a20 ConCommand miles_pauseui_byname
-r5apex.exe!0x01df66c0 ConCommand miles_play
-r5apex.exe!0x01df6920 ConCommand miles_reboot
-r5apex.exe!0x01df37d0 ConCommand miles_record
-r5apex.exe!0x01df4660 ConCommand miles_record_that
-r5apex.exe!0x01df4270 ConCommand miles_stop_all
-r5apex.exe!0x01df3cf0 ConCommand miles_unpauseui_byname
-r5apex.exe!0x01df4900 ConCommand miles_write_passive_dumpfile
-r5apex.exe!0x0110ece0 ConCommand mmdevinit
-r5apex.exe!0x0103aab0 ConCommand multvar
-r5apex.exe!0x0117bc90 ConCommand muteroom
-r5apex.exe!0x0103b390 ConCommand net_channels
-r5apex.exe!0x0110fe80 ConCommand net_dumpIncomingStats
-r5apex.exe!0x0110fa30 ConCommand net_dumpOutgoingStats
-r5apex.exe!0x0110fcf0 ConCommand net_dumpStats
-r5apex.exe!0x01043de0 ConCommand net_start
-r5apex.exe!0x01040dd0 ConCommand net_status
-r5apex.exe!0x01041230 ConCommand net_writeStatsFile
-r5apex.exe!0x01110140 ConCommand openinvite
-r5apex.exe!0x0110f660 ConCommand openinvitecomplete
-r5apex.exe!0x0110f510 ConCommand openinvitelaunch
-r5apex.exe!0x01178190 ConCommand origin_friendlist_dump
-r5apex.exe!0x01829910 ConCommand particle_create
-r5apex.exe!0x0182fe50 ConCommand particle_create_on_me
-r5apex.exe!0x01bc19a0 ConCommand particle_create_ss
-r5apex.exe!0x01be4420 ConCommand particle_dump
-r5apex.exe!0x0181bae0 ConCommand particle_kill
-r5apex.exe!0x01d932f0 ConCommand particle_list
-r5apex.exe!0x01829570 ConCommand particle_recreate
-r5apex.exe!0x01be25c0 ConCommand particle_remove_all
-r5apex.exe!0x01826d50 ConCommand particle_scrub_bake
-r5apex.exe!0x01bcc150 ConCommand particle_scrub_play
-r5apex.exe!0x01bbf9d0 ConCommand particle_scrub_stop
-r5apex.exe!0x011791f0 ConCommand party_leave
-r5apex.exe!0x01178d10 ConCommand party_serverChange
-r5apex.exe!0x0103a530 ConCommand path
-r5apex.exe!0x0103c380 ConCommand pause
-r5apex.exe!0x01d8ffd0 ConCommand pausevideos
-r5apex.exe!0x01d901b0 ConCommand phys_objectDump
-r5apex.exe!0x01823540 ConCommand phys_throw_client
-r5apex.exe!0x0103d4d0 ConCommand ping
-r5apex.exe!0x01d8fb30 ConCommand ping_specific_type
-r5apex.exe!0x010466f0 ConCommand pingdatacenters
-r5apex.exe!0x0181b4d0 ConCommand pixelvis_debug
-r5apex.exe!0x01dd2e10 ConCommand playerSettings_reparse
-r5apex.exe!0x01bd19b0 ConCommand playsoundscape
-r5apex.exe!0x01d91150 ConCommand playvideo
-r5apex.exe!0x01d8dee0 ConCommand playvideo_end_level_transition
-r5apex.exe!0x01d93bb0 ConCommand playvideo_exitcommand
-r5apex.exe!0x01d93ff0 ConCommand playvideo_exitcommand_nointerrupt
-r5apex.exe!0x01d949b0 ConCommand playvideo_nointerrupt
-r5apex.exe!0x01d90ad0 ConCommand playvideo_scaled
-r5apex.exe!0x01037e30 ConCommand print_colorcorrection
-r5apex.exe!0x0104afa0 ConCommand progress_enable
-r5apex.exe!0x01041370 ConCommand quit
-r5apex.exe!0x01be30f0 ConCommand r_cheapwaterend
-r5apex.exe!0x01d930b0 ConCommand r_cheapwaterstart
-r5apex.exe!0x0103ea20 ConCommand r_cleardecals
-r5apex.exe!0x0128fed0 ConCommand r_dxgi_max_frame_latency
-r5apex.exe!0x01049b60 ConCommand r_printdecalinfo
-r5apex.exe!0x01176430 ConCommand readMsgs
-r5apex.exe!0x01046fb0 ConCommand recheck
-r5apex.exe!0x0103f410 ConCommand recompute_speed
-r5apex.exe!0x010438d0 ConCommand reload
-r5apex.exe!0x01146a90 ConCommand reload_localization
-r5apex.exe!0x01dd33b0 ConCommand reload_script_callbacks
-r5apex.exe!0x01bd5840 ConCommand reset_cam_ideal_angles
-r5apex.exe!0x010441a0 ConCommand restart
-r5apex.exe!0x010412d0 ConCommand restart_checkpoint
-r5apex.exe!0x01df5760 ConCommand rumble_print
-r5apex.exe!0x0103af90 ConCommand savePlayerConfig
-r5apex.exe!0x01d92d80 ConCommand scoreboard_down
-r5apex.exe!0x01d8ed80 ConCommand scoreboard_focus
-r5apex.exe!0x01d93c50 ConCommand scoreboard_mute
-r5apex.exe!0x01d95890 ConCommand scoreboard_profile
-r5apex.exe!0x01d92c20 ConCommand scoreboard_toggle_focus
-r5apex.exe!0x01d91a70 ConCommand scoreboard_up
-r5apex.exe!0x0110ec60 ConCommand screenshot
-r5apex.exe!0x01040e70 ConCommand server_single_frame
-r5apex.exe!0x010498e0 ConCommand serverinfo
-r5apex.exe!0x01ddb500 ConCommand set
-r5apex.exe!0x0103e7d0 ConCommand set_loading_progress_background
-r5apex.exe!0x01047410 ConCommand set_loading_progress_detente
-r5apex.exe!0x0103b010 ConCommand set_loading_progress_fadeout_enabled
-r5apex.exe!0x0103adf0 ConCommand set_loading_progress_sp_text
-r5apex.exe!0x0110ffa0 ConCommand setinfo
-r5apex.exe!0x01039890 ConCommand settype
-r5apex.exe!0x01d93e30 ConCommand shake_stop
-r5apex.exe!0x01d942b0 ConCommand shake_testpunch
-r5apex.exe!0x01047630 ConCommand show_loading_progress
-r5apex.exe!0x01e05c60 ConCommand showpanel
-r5apex.exe!0x01d93130 ConCommand showvideos
-r5apex.exe!0x0110ef60 ConCommand silentconnect
-r5apex.exe!0x0104ac00 ConCommand skill_writeTrainingData
-r5apex.exe!0x018396b0 ConCommand soundscape_dumpclient
-r5apex.exe!0x01be2700 ConCommand spawn_as_pilot
-r5apex.exe!0x01d93370 ConCommand spawn_as_titan
-r5apex.exe!0x01040a10 ConCommand ss_map
-r5apex.exe!0x01be0e60 ConCommand ss_reloadletterbox
-r5apex.exe!0x01d8dbe0 ConCommand sssss_enable
-r5apex.exe!0x01049840 ConCommand star_memory
-r5apex.exe!0x011105b0 ConCommand startmovie
-r5apex.exe!0x01046400 ConCommand status
-r5apex.exe!0x0117a7f0 ConCommand steamlink
-r5apex.exe!0x0117a910 ConCommand steamunlink
-r5apex.exe!0x01d8f120 ConCommand stop_transition_videos_fadeout
-r5apex.exe!0x01bdd440 ConCommand stopsoundscape
-r5apex.exe!0x01be4050 ConCommand stopvideos
-r5apex.exe!0x01be0630 ConCommand stopvideos_fadeout
-r5apex.exe!0x01147b50 ConCommand sv_precacheinfo
-r5apex.exe!0x01149290 ConCommand sv_showents
-r5apex.exe!0x01148c90 ConCommand sv_shutdown
-r5apex.exe!0x0114a6d0 ConCommand sv_writeSendTableStreamFile
-r5apex.exe!0x0181a820 ConCommand testCockpitJoltAngles
-r5apex.exe!0x0183f090 ConCommand testCockpitJoltOrigin
-r5apex.exe!0x01be0810 ConCommand test_freezeframe
-r5apex.exe!0x01bdedb0 ConCommand testhudanim
-r5apex.exe!0x01044490 ConCommand thread_test_tslist
-r5apex.exe!0x0103ab30 ConCommand thread_test_tsqueue
-r5apex.exe!0x01be1980 ConCommand titan_loadout_select
-r5apex.exe!0x01039ec0 ConCommand toggle
-r5apex.exe!0x01d93890 ConCommand toggle_inventory
-r5apex.exe!0x01be4170 ConCommand toggle_map
-r5apex.exe!0x01df1c20 ConCommand ui_reloadscheme
-r5apex.exe!0x01d8df60 ConCommand uiscript_reset
-r5apex.exe!0x01d91390 ConCommand uiscript_resolutionchanged
-r5apex.exe!0x0103d450 ConCommand unbind
-r5apex.exe!0x0103f1f0 ConCommand unbind_US_standard
-r5apex.exe!0x01043030 ConCommand unbind_all_gamepad
-r5apex.exe!0x010417d0 ConCommand unbind_batch
-r5apex.exe!0x01042bd0 ConCommand unbind_held
-r5apex.exe!0x0103c300 ConCommand unbind_held_US_standard
-r5apex.exe!0x0103f570 ConCommand unbindall
-r5apex.exe!0x0103e540 ConCommand unbindall_ignoreGamepad
-r5apex.exe!0x01042ab0 ConCommand unload_level_loadscreen
-r5apex.exe!0x0117b9b0 ConCommand unmuteroom
-r5apex.exe!0x01d91b90 ConCommand unpausevideos
-r5apex.exe!0x01d91310 ConCommand use_consumable
-r5apex.exe!0x01149950 ConCommand user
-r5apex.exe!0x011490d0 ConCommand users
-r5apex.exe!0x01042d10 ConCommand version
-r5apex.exe!0x01049e80 ConCommand vgui_drawtree_clear
-r5apex.exe!0x018140e0 ConCommand vgui_spew_fonts
-r5apex.exe!0x0104b420 ConCommand vgui_togglepanel
-r5apex.exe!0x0103cc80 ConCommand voicerecord_toggle
-r5apex.exe!0x0103ac30 ConCommand vx_datacache_list
-r5apex.exe!0x0103d5f0 ConCommand vx_model_list
-r5apex.exe!0x01bd48d0 ConCommand weaponSelectOrdnance
-r5apex.exe!0x01bdc690 ConCommand weaponSelectPrimary0
-r5apex.exe!0x01bd1b50 ConCommand weaponSelectPrimary1
-r5apex.exe!0x01bd0d30 ConCommand weaponSelectPrimary2
-r5apex.exe!0x01bda480 ConCommand weapon_activity
-r5apex.exe!0x01bccbd0 ConCommand weapon_inspect
-r5apex.exe!0x0182a320 ConCommand weapon_list
-r5apex.exe!0x01ddd160 ConCommand weapon_reparse
-r5apex.exe!0x0103eb70 ConCommand xlog_list
-r5apex.exe!0x010470f0 ConCommand xlog_record
-r5apex.exe!0x01042b30 ConCommand xlog_record_that
-r5apex.exe!0x0103dfd0 ConCommand xlog_stop
-r5apex.exe!0x01bd8ca0 ConCommand xlook
-r5apex.exe!0x01bcd4f0 ConCommand xmove
+r5apex.exe!0x01be3fb0 ConCommand +ability
+r5apex.exe!0x01beb490 ConCommand +ability_held
+r5apex.exe!0x01befbe0 ConCommand +attack
+r5apex.exe!0x01bf3a80 ConCommand +backward
+r5apex.exe!0x01bec850 ConCommand +break
+r5apex.exe!0x01befda0 ConCommand +camdistance
+r5apex.exe!0x01beb530 ConCommand +camin
+r5apex.exe!0x01be8410 ConCommand +cammousemove
+r5apex.exe!0x01be88f0 ConCommand +camout
+r5apex.exe!0x01bf3a00 ConCommand +campitchdown
+r5apex.exe!0x01be3cd0 ConCommand +campitchup
+r5apex.exe!0x01bec8d0 ConCommand +camyawleft
+r5apex.exe!0x01bea5e0 ConCommand +camyawright
+r5apex.exe!0x01beed70 ConCommand +commandermousemove
+r5apex.exe!0x01831660 ConCommand +csm_rot_x_neg
+r5apex.exe!0x01848a90 ConCommand +csm_rot_x_plus
+r5apex.exe!0x01842800 ConCommand +csm_rot_y_neg
+r5apex.exe!0x018482b0 ConCommand +csm_rot_y_plus
+r5apex.exe!0x01bf6c40 ConCommand +displayFullscreenMap
+r5apex.exe!0x01be9ee0 ConCommand +dodge
+r5apex.exe!0x01bf4560 ConCommand +duck
+r5apex.exe!0x01be41f0 ConCommand +forward
+r5apex.exe!0x01bf1000 ConCommand +graph
+r5apex.exe!0x01bf52f0 ConCommand +jump
+r5apex.exe!0x01beef10 ConCommand +klook
+r5apex.exe!0x01bf3310 ConCommand +left
+r5apex.exe!0x01bf11a0 ConCommand +lookdown
+r5apex.exe!0x01bf1dc0 ConCommand +lookup
+r5apex.exe!0x0115b890 ConCommand +mat_texture_list
+r5apex.exe!0x01bf4b30 ConCommand +melee
+r5apex.exe!0x01bf0f80 ConCommand +movedown
+r5apex.exe!0x01beb250 ConCommand +moveleft
+r5apex.exe!0x01be4810 ConCommand +moveright
+r5apex.exe!0x01bea100 ConCommand +moveup
+r5apex.exe!0x01bf5630 ConCommand +offhand0
+r5apex.exe!0x01be6b70 ConCommand +offhand1
+r5apex.exe!0x01bf40a0 ConCommand +offhand2
+r5apex.exe!0x01befae0 ConCommand +offhand3
+r5apex.exe!0x01bf3b00 ConCommand +offhand4
+r5apex.exe!0x01bf6cc0 ConCommand +pause_menu
+r5apex.exe!0x01bedc00 ConCommand +ping
+r5apex.exe!0x01e06100 ConCommand +posedebug
+r5apex.exe!0x010633c0 ConCommand +pushtotalk
+r5apex.exe!0x01be8770 ConCommand +reload
+r5apex.exe!0x01be7c70 ConCommand +right
+r5apex.exe!0x01bf5e30 ConCommand +score
+r5apex.exe!0x01bf25a0 ConCommand +scriptCommand1
+r5apex.exe!0x01bf4bb0 ConCommand +scriptCommand2
+r5apex.exe!0x01be7b70 ConCommand +scriptCommand3
+r5apex.exe!0x01bea3c0 ConCommand +scriptCommand4
+r5apex.exe!0x01bf1b00 ConCommand +scriptCommand5
+r5apex.exe!0x01bf1e40 ConCommand +scriptCommand6
+r5apex.exe!0x01bf5530 ConCommand +scriptCommand7
+r5apex.exe!0x01be81d0 ConCommand +scriptCommand8
+r5apex.exe!0x01bf1880 ConCommand +scriptCommand9
+r5apex.exe!0x01be4ab0 ConCommand +showscores
+r5apex.exe!0x01be3890 ConCommand +speed
+r5apex.exe!0x01bf6bc0 ConCommand +strafe
+r5apex.exe!0x01be85b0 ConCommand +toggle_duck
+r5apex.exe!0x01be4910 ConCommand +toggle_zoom
+r5apex.exe!0x01bf3840 ConCommand +use
+r5apex.exe!0x01bf1c20 ConCommand +useAndReload
+r5apex.exe!0x01bea9b0 ConCommand +use_alt
+r5apex.exe!0x01bf45e0 ConCommand +use_long
+r5apex.exe!0x01be8b30 ConCommand +variableScopeToggle
+r5apex.exe!0x01061370 ConCommand +vgui_drawtree
+r5apex.exe!0x01054a00 ConCommand +voicerecord
+r5apex.exe!0x01bf6530 ConCommand +walk
+r5apex.exe!0x01bf5b70 ConCommand +weaponCycle
+r5apex.exe!0x01bf1f60 ConCommand +weapon_discard
+r5apex.exe!0x01be87f0 ConCommand +zoom
+r5apex.exe!0x01beee90 ConCommand -ability
+r5apex.exe!0x01be97c0 ConCommand -ability_held
+r5apex.exe!0x01beb8d0 ConCommand -attack
+r5apex.exe!0x01be3b10 ConCommand -backward
+r5apex.exe!0x01bedd20 ConCommand -break
+r5apex.exe!0x01bf6390 ConCommand -camdistance
+r5apex.exe!0x01bf2ba0 ConCommand -camin
+r5apex.exe!0x01be8250 ConCommand -cammousemove
+r5apex.exe!0x01bed470 ConCommand -camout
+r5apex.exe!0x01bf14e0 ConCommand -campitchdown
+r5apex.exe!0x01bec9f0 ConCommand -campitchup
+r5apex.exe!0x01beb370 ConCommand -camyawleft
+r5apex.exe!0x01bea080 ConCommand -camyawright
+r5apex.exe!0x01bf4710 ConCommand -commandermousemove
+r5apex.exe!0x0184ac70 ConCommand -csm_rot_x_neg
+r5apex.exe!0x01831db0 ConCommand -csm_rot_x_plus
+r5apex.exe!0x01bd7420 ConCommand -csm_rot_y_neg
+r5apex.exe!0x018477b0 ConCommand -csm_rot_y_plus
+r5apex.exe!0x01be40d0 ConCommand -displayFullscreenMap
+r5apex.exe!0x01bf5870 ConCommand -dodge
+r5apex.exe!0x01bf1120 ConCommand -duck
+r5apex.exe!0x01bea4c0 ConCommand -forward
+r5apex.exe!0x01bea700 ConCommand -graph
+r5apex.exe!0x01beac70 ConCommand -jump
+r5apex.exe!0x01be9860 ConCommand -klook
+r5apex.exe!0x01be4890 ConCommand -left
+r5apex.exe!0x01bea2c0 ConCommand -lookdown
+r5apex.exe!0x01be3e90 ConCommand -lookup
+r5apex.exe!0x0115b630 ConCommand -mat_texture_list
+r5apex.exe!0x01bee770 ConCommand -melee
+r5apex.exe!0x01be8490 ConCommand -movedown
+r5apex.exe!0x01bf34d0 ConCommand -moveleft
+r5apex.exe!0x01beacf0 ConCommand -moveright
+r5apex.exe!0x01bf1220 ConCommand -moveup
+r5apex.exe!0x01bf1d40 ConCommand -offhand0
+r5apex.exe!0x01bf3cc0 ConCommand -offhand1
+r5apex.exe!0x01bf2d60 ConCommand -offhand2
+r5apex.exe!0x01be98e0 ConCommand -offhand3
+r5apex.exe!0x01be4550 ConCommand -offhand4
+r5apex.exe!0x01bf35d0 ConCommand -pause_menu
+r5apex.exe!0x01be4990 ConCommand -ping
+r5apex.exe!0x01e06170 ConCommand -posedebug
+r5apex.exe!0x01062d80 ConCommand -pushtotalk
+r5apex.exe!0x01be4670 ConCommand -reload
+r5apex.exe!0x01bf10a0 ConCommand -right
+r5apex.exe!0x01bf3e80 ConCommand -score
+r5apex.exe!0x01be4790 ConCommand -scriptCommand1
+r5apex.exe!0x01bf16c0 ConCommand -scriptCommand2
+r5apex.exe!0x01bf55b0 ConCommand -scriptCommand3
+r5apex.exe!0x01bf5410 ConCommand -scriptCommand4
+r5apex.exe!0x01be3910 ConCommand -scriptCommand5
+r5apex.exe!0x01be36f0 ConCommand -scriptCommand6
+r5apex.exe!0x01bf57f0 ConCommand -scriptCommand7
+r5apex.exe!0x01be78d0 ConCommand -scriptCommand8
+r5apex.exe!0x01bf0d40 ConCommand -scriptCommand9
+r5apex.exe!0x01be7af0 ConCommand -showscores
+r5apex.exe!0x01beabf0 ConCommand -speed
+r5apex.exe!0x01bf4020 ConCommand -strafe
+r5apex.exe!0x01bea440 ConCommand -toggle_duck
+r5apex.exe!0x01bf1a40 ConCommand -toggle_zoom
+r5apex.exe!0x01be7950 ConCommand -use
+r5apex.exe!0x01be3810 ConCommand -useAndReload
+r5apex.exe!0x01bf37c0 ConCommand -use_alt
+r5apex.exe!0x01bec5e0 ConCommand -use_long
+r5apex.exe!0x01be44d0 ConCommand -variableScopeToggle
+r5apex.exe!0x01060dd0 ConCommand -vgui_drawtree
+r5apex.exe!0x01050ae0 ConCommand -voicerecord
+r5apex.exe!0x01bf5bf0 ConCommand -walk
+r5apex.exe!0x01be9f60 ConCommand -weaponCycle
+r5apex.exe!0x01bf6650 ConCommand -weapon_discard
+r5apex.exe!0x01bed6d0 ConCommand -zoom
+r5apex.exe!0x0104d210 ConCommand BindToggle
+r5apex.exe!0x012a3ee0 ConCommand CMaterialSystem_clear_loading
+r5apex.exe!0x012a3960 ConCommand CMaterialSystem_set_loading
+r5apex.exe!0x012a40a0 ConCommand DebugPrintUsedTextures
+r5apex.exe!0x0115c360 ConCommand DumpClientDataBlockReceiver
+r5apex.exe!0x01125530 ConCommand MemTrackDeltaSnapshot
+r5apex.exe!0x01125010 ConCommand MemTrackPrintStats
+r5apex.exe!0x01852270 ConCommand ReloadAimAssistSettings
+r5apex.exe!0x01124a90 ConCommand adminmsg
+r5apex.exe!0x01e0dcb0 ConCommand aisettings_reparse_client
+r5apex.exe!0x010508a0 ConCommand alias
+r5apex.exe!0x01e0c720 ConCommand applyVideoChangesDeferred
+r5apex.exe!0x010582e0 ConCommand bind
+r5apex.exe!0x01055050 ConCommand bind_US_standard
+r5apex.exe!0x0105a110 ConCommand bind_held
+r5apex.exe!0x01059840 ConCommand bind_held_US_standard
+r5apex.exe!0x01055560 ConCommand bind_list
+r5apex.exe!0x01053ed0 ConCommand bind_list_abilities
+r5apex.exe!0x01063c80 ConCommand bink_dump_precached_movies
+r5apex.exe!0x01dea270 ConCommand bot_loadout
+r5apex.exe!0x01125090 ConCommand box
+r5apex.exe!0x0104dfc0 ConCommand buildcubemaps
+r5apex.exe!0x01056de0 ConCommand cache_print
+r5apex.exe!0x010563e0 ConCommand cache_print_lru
+r5apex.exe!0x01050fc0 ConCommand cache_print_summary
+r5apex.exe!0x01bef6d0 ConCommand cam_command
+r5apex.exe!0x011254c0 ConCommand cancelreconnect
+r5apex.exe!0x01be79d0 ConCommand cancelselect
+r5apex.exe!0x01be6e80 ConCommand cc_emit
+r5apex.exe!0x01832310 ConCommand centerview
+r5apex.exe!0x0105b0a0 ConCommand changelevel
+r5apex.exe!0x01126500 ConCommand chat
+r5apex.exe!0x01daa810 ConCommand chat_wheel
+r5apex.exe!0x01192980 ConCommand chatroom_adminsOnly
+r5apex.exe!0x01124950 ConCommand chatroom_away
+r5apex.exe!0x011927e0 ConCommand chatroom_freetalk
+r5apex.exe!0x01125c40 ConCommand chatroom_present
+r5apex.exe!0x01125130 ConCommand chatserver
+r5apex.exe!0x01063e40 ConCommand chroma_base
+r5apex.exe!0x01063dc0 ConCommand chroma_layer
+r5apex.exe!0x01dac050 ConCommand cl_dump_particle_stats
+r5apex.exe!0x01bd8360 ConCommand cl_ent_absbox
+r5apex.exe!0x0183a960 ConCommand cl_ent_bbox
+r5apex.exe!0x0184ad90 ConCommand cl_ent_rbox
+r5apex.exe!0x0184af80 ConCommand cl_find_ent
+r5apex.exe!0x018507d0 ConCommand cl_find_ent_index
+r5apex.exe!0x0184af00 ConCommand cl_flip_visibility
+r5apex.exe!0x011255a0 ConCommand cl_fullupdate
+r5apex.exe!0x01852150 ConCommand cl_interpolation_report
+r5apex.exe!0x01bfa2b0 ConCommand cl_panelanimation
+r5apex.exe!0x01da4d00 ConCommand cl_particles_dump_effects
+r5apex.exe!0x01da54b0 ConCommand cl_particles_dumplist
+r5apex.exe!0x011248d0 ConCommand cl_precacheinfo
+r5apex.exe!0x01851e20 ConCommand cl_removedecals
+r5apex.exe!0x01125340 ConCommand cl_showents
+r5apex.exe!0x01bf4970 ConCommand cl_soundscape_flush
+r5apex.exe!0x01dad470 ConCommand cl_trace_start_solid
+r5apex.exe!0x01852ad0 ConCommand cl_trace_test_hitbox_with_non_zero_start_offset
+r5apex.exe!0x01bd87e0 ConCommand cl_updatevisibility
+r5apex.exe!0x0105b7b0 ConCommand clear_loading_progress_detente
+r5apex.exe!0x01051e80 ConCommand clear_loading_progress_sp_text
+r5apex.exe!0x0104dd60 ConCommand cm_query_log_record
+r5apex.exe!0x01050130 ConCommand cm_query_log_replay
+r5apex.exe!0x0104de60 ConCommand cmd
+r5apex.exe!0x0104d8f0 ConCommand cmd1
+r5apex.exe!0x0104df50 ConCommand cmd2
+r5apex.exe!0x0104d460 ConCommand cmd3
+r5apex.exe!0x0104e060 ConCommand cmd4
+r5apex.exe!0x01844720 ConCommand collision_debug
+r5apex.exe!0x010509c0 ConCommand colorcorrectionui
+r5apex.exe!0x0118ca80 ConCommand community_browse
+r5apex.exe!0x0118cc40 ConCommand community_getPendingJoinRequest
+r5apex.exe!0x0118c8e0 ConCommand community_join
+r5apex.exe!0x0118cf00 ConCommand community_leave
+r5apex.exe!0x0118c960 ConCommand community_list
+r5apex.exe!0x0118ce80 ConCommand community_report
+r5apex.exe!0x01125b20 ConCommand connect
+r5apex.exe!0x01125ff0 ConCommand connectAsSpectator
+r5apex.exe!0x011247b0 ConCommand connectWithKey
+r5apex.exe!0x01126720 ConCommand connectwithtoken
+r5apex.exe!0x0104e790 ConCommand convar_differences
+r5apex.exe!0x0104e720 ConCommand convar_findByFlags
+r5apex.exe!0x010501a0 ConCommand convar_list
+r5apex.exe!0x011252d0 ConCommand createparty
+r5apex.exe!0x01125dd0 ConCommand createpartyifnotinone
+r5apex.exe!0x01bd8760 ConCommand csm_status
+r5apex.exe!0x01df8480 ConCommand damagedefs_reparse_client
+r5apex.exe!0x01125250 ConCommand debugModelPurge
+r5apex.exe!0x0104e900 ConCommand devshots_nextmap
+r5apex.exe!0x01125720 ConCommand devshots_screenshot
+r5apex.exe!0x01054630 ConCommand dfs_print_flag_states
+r5apex.exe!0x01050c60 ConCommand disconnect
+r5apex.exe!0x0105b460 ConCommand display_elapsedtime
+r5apex.exe!0x01847270 ConCommand dlight_debug
+r5apex.exe!0x0118e760 ConCommand do_InvitePeople_test
+r5apex.exe!0x0118e280 ConCommand do_Invite_friend_test
+r5apex.exe!0x0118de80 ConCommand do_joinPeople_test
+r5apex.exe!0x0118e180 ConCommand do_origin_test_presence
+r5apex.exe!0x01060550 ConCommand downloadPlaylists
+r5apex.exe!0x01db0ce0 ConCommand dumpClientStringTable
+r5apex.exe!0x0105c0f0 ConCommand dumpstringtables
+r5apex.exe!0x0104e170 ConCommand echo
+r5apex.exe!0x0104e880 ConCommand echo_error
+r5apex.exe!0x011922d0 ConCommand editor_toggle
+r5apex.exe!0x011266a0 ConCommand endmovie
+r5apex.exe!0x010516a0 ConCommand entitlements_print
+r5apex.exe!0x0115c800 ConCommand entitlements_send
+r5apex.exe!0x01058540 ConCommand entitlements_set_bits
+r5apex.exe!0x0104d7d0 ConCommand envmap
+r5apex.exe!0x01051f00 ConCommand escape
+r5apex.exe!0x01050570 ConCommand exec
+r5apex.exe!0x0105ba10 ConCommand execPlayerConfig
+r5apex.exe!0x0104e810 ConCommand execifexists
+r5apex.exe!0x01052550 ConCommand exit
+r5apex.exe!0x01848c50 ConCommand eyeInfo
+r5apex.exe!0x01bea780 ConCommand firstperson
+r5apex.exe!0x010513c0 ConCommand flush
+r5apex.exe!0x010557b0 ConCommand flush_locked
+r5apex.exe!0x01bf3f00 ConCommand force_centerview
+r5apex.exe!0x0119bc70 ConCommand fps_stats_dump
+r5apex.exe!0x0119ddb0 ConCommand fps_stats_reset
+r5apex.exe!0x0119bab0 ConCommand fps_stats_start
+r5apex.exe!0x0119e150 ConCommand fps_stats_stop
+r5apex.exe!0x01190a00 ConCommand friends_update
+r5apex.exe!0x01193d80 ConCommand fs_clear_open_duplicate_times
+r5apex.exe!0x01193fe0 ConCommand fs_dump_open_duplicate_times
+r5apex.exe!0x01194740 ConCommand fs_fios_cancel_prefetches
+r5apex.exe!0x01193d00 ConCommand fs_fios_flush_cache
+r5apex.exe!0x011941a0 ConCommand fs_fios_prefetch_file
+r5apex.exe!0x01194510 ConCommand fs_fios_prefetch_file_in_pack
+r5apex.exe!0x01194490 ConCommand fs_fios_print_prefetches
+r5apex.exe!0x0104ebc0 ConCommand fs_printopenfiles
+r5apex.exe!0x0104efc0 ConCommand fs_warning_level
+r5apex.exe!0x01be9600 ConCommand fx_impact_reparse
+r5apex.exe!0x0105e320 ConCommand gameui_activate
+r5apex.exe!0x01060670 ConCommand gameui_allowescape
+r5apex.exe!0x01062100 ConCommand gameui_allowescapetoshow
+r5apex.exe!0x0105e0a0 ConCommand gameui_hide
+r5apex.exe!0x0105dc00 ConCommand gameui_preventescape
+r5apex.exe!0x0105f4b0 ConCommand gameui_preventescapetoshow
+r5apex.exe!0x01192bc0 ConCommand getNewAuthToken
+r5apex.exe!0x01841020 ConCommand getfov
+r5apex.exe!0x01053e60 ConCommand gethttpdatacenterlist
+r5apex.exe!0x01832290 ConCommand getpos
+r5apex.exe!0x01850940 ConCommand getpos_bind
+r5apex.exe!0x01bd6b90 ConCommand getposvec
+r5apex.exe!0x01df9c40 ConCommand give
+r5apex.exe!0x018273b0 ConCommand gpu_profile_snapshot
+r5apex.exe!0x0104ef50 ConCommand help
+r5apex.exe!0x01e1cee0 ConCommand hidepanel
+r5apex.exe!0x01bf8c00 ConCommand hidevideos
+r5apex.exe!0x012a52d0 ConCommand highlight_log
+r5apex.exe!0x01059220 ConCommand host_runofftime
+r5apex.exe!0x01bebe30 ConCommand hud_subtitles
+r5apex.exe!0x01192c40 ConCommand huffman_readProps
+r5apex.exe!0x01bf0dc0 ConCommand impulse
+r5apex.exe!0x0118ccc0 ConCommand inboxmessage_report
+r5apex.exe!0x0105bf10 ConCommand incrementvar
+r5apex.exe!0x01da4b40 ConCommand ingamemenu_activate
+r5apex.exe!0x01051d60 ConCommand initMatchmaking
+r5apex.exe!0x01bea340 ConCommand invnext
+r5apex.exe!0x018516e0 ConCommand is_considered_sony_multiplayer
+r5apex.exe!0x011251d0 ConCommand joinopeninvite
+r5apex.exe!0x01bf1460 ConCommand joystick_initialize
+r5apex.exe!0x01125860 ConCommand jpeg
+r5apex.exe!0x0105b8d0 ConCommand key_listboundkeys
+r5apex.exe!0x01197e40 ConCommand key_updatelayout
+r5apex.exe!0x01060250 ConCommand launchplaylist
+r5apex.exe!0x01126340 ConCommand leaveopeninvite
+r5apex.exe!0x01dad4f0 ConCommand listClientFXScriptHandles
+r5apex.exe!0x01057380 ConCommand listmodels
+r5apex.exe!0x0105ec90 ConCommand loadPlaylists
+r5apex.exe!0x010551d0 ConCommand map
+r5apex.exe!0x01052e50 ConCommand map_background
+r5apex.exe!0x01055670 ConCommand maps
+r5apex.exe!0x01054520 ConCommand mat_antialias_mode
+r5apex.exe!0x0105d2e0 ConCommand mat_configcurrent
+r5apex.exe!0x0104ed70 ConCommand mat_crosshair
+r5apex.exe!0x0104eab0 ConCommand mat_crosshair_edit
+r5apex.exe!0x0104d6c0 ConCommand mat_crosshair_explorer
+r5apex.exe!0x0104eed0 ConCommand mat_crosshair_printmaterial
+r5apex.exe!0x01050210 ConCommand mat_crosshair_reloadmaterial
+r5apex.exe!0x01055f80 ConCommand mat_gamma
+r5apex.exe!0x011a1870 ConCommand mat_hdr_enabled
+r5apex.exe!0x01823b50 ConCommand mat_printLiveTex
+r5apex.exe!0x01055350 ConCommand mat_savechanges
+r5apex.exe!0x010592a0 ConCommand mat_setvideomode
+r5apex.exe!0x01823da0 ConCommand mat_shadercount
+r5apex.exe!0x01823d20 ConCommand mat_spewvertexandpixelshaders
+r5apex.exe!0x0105d100 ConCommand mat_vsync
+r5apex.exe!0x01059340 ConCommand match_abortAllSearches
+r5apex.exe!0x01053d50 ConCommand match_showAllSearches
+r5apex.exe!0x0105c5c0 ConCommand matchmake
+r5apex.exe!0x0105c980 ConCommand matchmake_cancel
+r5apex.exe!0x01059ae0 ConCommand matchmake_cleanupforparty
+r5apex.exe!0x0115dec0 ConCommand maxplayers
+r5apex.exe!0x0105bab0 ConCommand mem_compact
+r5apex.exe!0x010553c0 ConCommand mem_dump
+r5apex.exe!0x01054a70 ConCommand mem_dump_vm
+r5apex.exe!0x01052710 ConCommand mem_eat
+r5apex.exe!0x0105aba0 ConCommand mem_incremental_compact
+r5apex.exe!0x0105b6e0 ConCommand mem_leak_vm
+r5apex.exe!0x010558c0 ConCommand mem_test
+r5apex.exe!0x011a2a20 ConCommand mem_textures
+r5apex.exe!0x0105cc00 ConCommand mem_verify
+r5apex.exe!0x011a2f00 ConCommand mem_vram
+r5apex.exe!0x01057c40 ConCommand memory
+r5apex.exe!0x0105a700 ConCommand migrateme
+r5apex.exe!0x01e0bf30 ConCommand miles_dump
+r5apex.exe!0x01e0c0b0 ConCommand miles_event_info
+r5apex.exe!0x01e0cb30 ConCommand miles_pauseui_byname
+r5apex.exe!0x01e0d7d0 ConCommand miles_play
+r5apex.exe!0x01e0da30 ConCommand miles_reboot
+r5apex.exe!0x01e0a8e0 ConCommand miles_record
+r5apex.exe!0x01e0b770 ConCommand miles_record_that
+r5apex.exe!0x01e0b380 ConCommand miles_stop_all
+r5apex.exe!0x01e0ae00 ConCommand miles_unpauseui_byname
+r5apex.exe!0x01e0ba10 ConCommand miles_write_passive_dumpfile
+r5apex.exe!0x01124c50 ConCommand mmdevinit
+r5apex.exe!0x01050b60 ConCommand multvar
+r5apex.exe!0x01192b40 ConCommand muteroom
+r5apex.exe!0x01051440 ConCommand net_channels
+r5apex.exe!0x01125e50 ConCommand net_dumpIncomingStats
+r5apex.exe!0x01125a10 ConCommand net_dumpOutgoingStats
+r5apex.exe!0x01125cb0 ConCommand net_dumpStats
+r5apex.exe!0x01059c10 ConCommand net_start
+r5apex.exe!0x01056ca0 ConCommand net_status
+r5apex.exe!0x01057100 ConCommand net_writeStatsFile
+r5apex.exe!0x01126110 ConCommand openinvite
+r5apex.exe!0x01125610 ConCommand openinvitecomplete
+r5apex.exe!0x01125450 ConCommand openinvitelaunch
+r5apex.exe!0x0118e200 ConCommand origin_friendlist_dump
+r5apex.exe!0x018407d0 ConCommand particle_create
+r5apex.exe!0x01846d10 ConCommand particle_create_on_me
+r5apex.exe!0x01bd8860 ConCommand particle_create_ss
+r5apex.exe!0x01bfb4c0 ConCommand particle_dump
+r5apex.exe!0x018329a0 ConCommand particle_kill
+r5apex.exe!0x01daa390 ConCommand particle_list
+r5apex.exe!0x01840430 ConCommand particle_recreate
+r5apex.exe!0x01bf9680 ConCommand particle_remove_all
+r5apex.exe!0x0183dc10 ConCommand particle_scrub_bake
+r5apex.exe!0x01be3010 ConCommand particle_scrub_play
+r5apex.exe!0x01bd6890 ConCommand particle_scrub_stop
+r5apex.exe!0x0118f260 ConCommand party_leave
+r5apex.exe!0x0118ed80 ConCommand party_serverChange
+r5apex.exe!0x010505e0 ConCommand path
+r5apex.exe!0x01052390 ConCommand pause
+r5apex.exe!0x01da7070 ConCommand pausevideos
+r5apex.exe!0x01da7250 ConCommand phys_objectDump
+r5apex.exe!0x0183a400 ConCommand phys_throw_client
+r5apex.exe!0x01053440 ConCommand ping
+r5apex.exe!0x01da6bd0 ConCommand ping_specific_type
+r5apex.exe!0x0105c520 ConCommand pingdatacenters
+r5apex.exe!0x01832390 ConCommand pixelvis_debug
+r5apex.exe!0x01de9eb0 ConCommand playerSettings_reparse
+r5apex.exe!0x01be8870 ConCommand playsoundscape
+r5apex.exe!0x01da81f0 ConCommand playvideo
+r5apex.exe!0x01da4f80 ConCommand playvideo_end_level_transition
+r5apex.exe!0x01daac50 ConCommand playvideo_exitcommand
+r5apex.exe!0x01dab090 ConCommand playvideo_exitcommand_nointerrupt
+r5apex.exe!0x01daba50 ConCommand playvideo_nointerrupt
+r5apex.exe!0x01da7b70 ConCommand playvideo_scaled
+r5apex.exe!0x0104dee0 ConCommand print_colorcorrection
+r5apex.exe!0x01060e70 ConCommand progress_enable
+r5apex.exe!0x01057240 ConCommand quit
+r5apex.exe!0x01bfa190 ConCommand r_cheapwaterend
+r5apex.exe!0x01daa150 ConCommand r_cheapwaterstart
+r5apex.exe!0x01054990 ConCommand r_cleardecals
+r5apex.exe!0x012a6d90 ConCommand r_dxgi_max_frame_latency
+r5apex.exe!0x0105f990 ConCommand r_printdecalinfo
+r5apex.exe!0x0118c4a0 ConCommand readMsgs
+r5apex.exe!0x0105cde0 ConCommand recheck
+r5apex.exe!0x010552e0 ConCommand recompute_speed
+r5apex.exe!0x01124830 ConCommand reconnect
+r5apex.exe!0x01059700 ConCommand reload
+r5apex.exe!0x0115ca60 ConCommand reload_localization
+r5apex.exe!0x01dea450 ConCommand reload_script_callbacks
+r5apex.exe!0x01bec700 ConCommand reset_cam_ideal_angles
+r5apex.exe!0x01059fd0 ConCommand restart
+r5apex.exe!0x010571a0 ConCommand restart_checkpoint
+r5apex.exe!0x01e0c870 ConCommand rumble_print
+r5apex.exe!0x01051040 ConCommand savePlayerConfig
+r5apex.exe!0x01da9e20 ConCommand scoreboard_down
+r5apex.exe!0x01da5e20 ConCommand scoreboard_focus
+r5apex.exe!0x01daacf0 ConCommand scoreboard_mute
+r5apex.exe!0x01dac930 ConCommand scoreboard_profile
+r5apex.exe!0x01da9cc0 ConCommand scoreboard_toggle_focus
+r5apex.exe!0x01da8b10 ConCommand scoreboard_up
+r5apex.exe!0x01124bb0 ConCommand screenshot
+r5apex.exe!0x01056d40 ConCommand server_single_frame
+r5apex.exe!0x0105f710 ConCommand serverinfo
+r5apex.exe!0x01df25b0 ConCommand set
+r5apex.exe!0x01054740 ConCommand set_loading_progress_background
+r5apex.exe!0x0105d240 ConCommand set_loading_progress_detente
+r5apex.exe!0x010510c0 ConCommand set_loading_progress_fadeout_enabled
+r5apex.exe!0x01050ea0 ConCommand set_loading_progress_sp_text
+r5apex.exe!0x01125f70 ConCommand setinfo
+r5apex.exe!0x0104f940 ConCommand settype
+r5apex.exe!0x01daaed0 ConCommand shake_stop
+r5apex.exe!0x01dab350 ConCommand shake_testpunch
+r5apex.exe!0x0105d460 ConCommand show_loading_progress
+r5apex.exe!0x01e1ce60 ConCommand showpanel
+r5apex.exe!0x01daa1d0 ConCommand showvideos
+r5apex.exe!0x01124ed0 ConCommand silentconnect
+r5apex.exe!0x01060ad0 ConCommand skill_writeTrainingData
+r5apex.exe!0x01850570 ConCommand soundscape_dumpclient
+r5apex.exe!0x01bf97c0 ConCommand spawn_as_pilot
+r5apex.exe!0x01daa410 ConCommand spawn_as_titan
+r5apex.exe!0x010568e0 ConCommand ss_map
+r5apex.exe!0x01bf7f00 ConCommand ss_reloadletterbox
+r5apex.exe!0x01da4c60 ConCommand sssss_enable
+r5apex.exe!0x0105f670 ConCommand star_memory
+r5apex.exe!0x01126580 ConCommand startmovie
+r5apex.exe!0x0105c230 ConCommand status
+r5apex.exe!0x01191b80 ConCommand steam_printid
+r5apex.exe!0x01190860 ConCommand steamlink
+r5apex.exe!0x01190980 ConCommand steamunlink
+r5apex.exe!0x01da61c0 ConCommand stop_transition_videos_fadeout
+r5apex.exe!0x01bf4300 ConCommand stopsoundscape
+r5apex.exe!0x01bfb0f0 ConCommand stopvideos
+r5apex.exe!0x01bf76d0 ConCommand stopvideos_fadeout
+r5apex.exe!0x0115db20 ConCommand sv_precacheinfo
+r5apex.exe!0x0115f260 ConCommand sv_showents
+r5apex.exe!0x0115ec60 ConCommand sv_shutdown
+r5apex.exe!0x011606a0 ConCommand sv_writeSendTableStreamFile
+r5apex.exe!0x018316e0 ConCommand testCockpitJoltAngles
+r5apex.exe!0x01855f50 ConCommand testCockpitJoltOrigin
+r5apex.exe!0x01bf78b0 ConCommand test_freezeframe
+r5apex.exe!0x01bf5c70 ConCommand testhudanim
+r5apex.exe!0x0105a2c0 ConCommand thread_test_tslist
+r5apex.exe!0x01050be0 ConCommand thread_test_tsqueue
+r5apex.exe!0x01bf8a20 ConCommand titan_loadout_select
+r5apex.exe!0x0104ff70 ConCommand toggle
+r5apex.exe!0x01daa930 ConCommand toggle_inventory
+r5apex.exe!0x01bfb210 ConCommand toggle_map
+r5apex.exe!0x01e08d30 ConCommand ui_reloadscheme
+r5apex.exe!0x01da5000 ConCommand uiscript_reset
+r5apex.exe!0x01da8430 ConCommand uiscript_resolutionchanged
+r5apex.exe!0x010533c0 ConCommand unbind
+r5apex.exe!0x01055160 ConCommand unbind_US_standard
+r5apex.exe!0x01058e60 ConCommand unbind_all_gamepad
+r5apex.exe!0x010576a0 ConCommand unbind_batch
+r5apex.exe!0x01058a00 ConCommand unbind_held
+r5apex.exe!0x01052310 ConCommand unbind_held_US_standard
+r5apex.exe!0x01055440 ConCommand unbindall
+r5apex.exe!0x010544b0 ConCommand unbindall_ignoreGamepad
+r5apex.exe!0x010588e0 ConCommand unload_level_loadscreen
+r5apex.exe!0x01192860 ConCommand unmuteroom
+r5apex.exe!0x01da8c30 ConCommand unpausevideos
+r5apex.exe!0x01da83b0 ConCommand use_consumable
+r5apex.exe!0x0115f920 ConCommand user
+r5apex.exe!0x0115f0a0 ConCommand users
+r5apex.exe!0x01058b40 ConCommand version
+r5apex.exe!0x0105fcb0 ConCommand vgui_drawtree_clear
+r5apex.exe!0x0182afc0 ConCommand vgui_spew_fonts
+r5apex.exe!0x010612f0 ConCommand vgui_togglepanel
+r5apex.exe!0x01052c90 ConCommand voicerecord_toggle
+r5apex.exe!0x01050ce0 ConCommand vx_datacache_list
+r5apex.exe!0x01053560 ConCommand vx_model_list
+r5apex.exe!0x01beb7b0 ConCommand weaponSelectOrdnance
+r5apex.exe!0x01bf3550 ConCommand weaponSelectPrimary0
+r5apex.exe!0x01be8a10 ConCommand weaponSelectPrimary1
+r5apex.exe!0x01be7bf0 ConCommand weaponSelectPrimary2
+r5apex.exe!0x01bf1340 ConCommand weapon_activity
+r5apex.exe!0x01be3a90 ConCommand weapon_inspect
+r5apex.exe!0x018411e0 ConCommand weapon_list
+r5apex.exe!0x01df42b0 ConCommand weapon_reparse
+r5apex.exe!0x01054ae0 ConCommand xlog_list
+r5apex.exe!0x0105cf20 ConCommand xlog_record
+r5apex.exe!0x01058960 ConCommand xlog_record_that
+r5apex.exe!0x01053f40 ConCommand xlog_stop
+r5apex.exe!0x01befb60 ConCommand xlook
+r5apex.exe!0x01be43b0 ConCommand xmove
 ```
 
 ## Globals
@@ -34882,534 +34974,537 @@ r5apex.exe!0x01bcd4f0 ConCommand xmove
 List of global variables with an associated vtable and their type name.
 
 ```
-r5apex.exe!0x01e09a18 .?AUSQArray@@
-r5apex.exe!0x01e09950 .?AUSQClass@@
-r5apex.exe!0x01e09900 .?AUSQClosure@@
-r5apex.exe!0x01e097e8 .?AUSQFunctionProto@@
-r5apex.exe!0x01e09680 .?AUSQInstance@@
-r5apex.exe!0x01e09a40 .?AUSQNativeClosure@@
-r5apex.exe!0x01e09748 .?AUSQString@@
-r5apex.exe!0x01e099c8 .?AUSQStructDef@@
-r5apex.exe!0x01e09798 .?AUSQStructInstance@@
-r5apex.exe!0x01e097c0 .?AUSQTable@@
-r5apex.exe!0x01e096a8 .?AUSQUserData@@
-r5apex.exe!0x01e09a68 .?AUSQVM@@
-r5apex.exe!0x01e09a90 .?AUSQWeakRef@@
-r5apex.exe!0x22d11a90 .?AV?$CConCommandMemberAccessor@VCMaterialSystem@@@@
-r5apex.exe!0x22d11af8 .?AV?$CConCommandMemberAccessor@VCMaterialSystem@@@@
-r5apex.exe!0x22d11b00 .?AV?$CConCommandMemberAccessor@VCMaterialSystem@@@@
-r5apex.exe!0x22d11b30 .?AV?$CConCommandMemberAccessor@VCMaterialSystem@@@@
-r5apex.exe!0x22d11b98 .?AV?$CConCommandMemberAccessor@VCMaterialSystem@@@@
-r5apex.exe!0x22d11ba0 .?AV?$CConCommandMemberAccessor@VCMaterialSystem@@@@
-r5apex.exe!0x22d11bd0 .?AV?$CConCommandMemberAccessor@VCMaterialSystem@@@@
-r5apex.exe!0x22d11c38 .?AV?$CConCommandMemberAccessor@VCMaterialSystem@@@@
-r5apex.exe!0x22d11c40 .?AV?$CConCommandMemberAccessor@VCMaterialSystem@@@@
-r5apex.exe!0x22d11c70 .?AV?$CConCommandMemberAccessor@VCMaterialSystem@@@@
-r5apex.exe!0x22d11cd8 .?AV?$CConCommandMemberAccessor@VCMaterialSystem@@@@
-r5apex.exe!0x22d11ce0 .?AV?$CConCommandMemberAccessor@VCMaterialSystem@@@@
-r5apex.exe!0x22d11d10 .?AV?$CConCommandMemberAccessor@VCMaterialSystem@@@@
-r5apex.exe!0x22d11d78 .?AV?$CConCommandMemberAccessor@VCMaterialSystem@@@@
-r5apex.exe!0x22d11d80 .?AV?$CConCommandMemberAccessor@VCMaterialSystem@@@@
-r5apex.exe!0x22d11db0 .?AV?$CConCommandMemberAccessor@VCMaterialSystem@@@@
-r5apex.exe!0x22d11e18 .?AV?$CConCommandMemberAccessor@VCMaterialSystem@@@@
-r5apex.exe!0x22d11e20 .?AV?$CConCommandMemberAccessor@VCMaterialSystem@@@@
-r5apex.exe!0x01036a88 .?AV?$CDataManager@UDataCacheItem_t@@UDataCacheItemData_t@@PEAU1@VCThreadFastMutex@@@@
-r5apex.exe!0x0cbcebf0 .?AV?$CDataManager@VCBoneCache@@Ubonecacheparams_t@@PEAV1@VCThreadFastMutex@@@@
-r5apex.exe!0x0cbceca0 .?AV?$CDataManager@VCBoneCache@@Ubonecacheparams_t@@PEAV1@VCThreadFastMutex@@@@
-r5apex.exe!0x0110fbd8 .?AV?$CPanelFactory@VCMovieDisplayScreen@@UVGuiScreenInitData_t@@@@
-r5apex.exe!0x0110f468 .?AV?$CPanelFactory@VCVGuiScreenPanel@@UVGuiScreenInitData_t@@@@
-r5apex.exe!0x01e07280 .?AV?$CParticleOperatorDefinition@VC_INIT_AgeNoise@@@@
-r5apex.exe!0x01e07160 .?AV?$CParticleOperatorDefinition@VC_INIT_ChaoticAttractor@@@@
-r5apex.exe!0x01e072c8 .?AV?$CParticleOperatorDefinition@VC_INIT_ColorLitPerParticle@@@@
-r5apex.exe!0x01e070b8 .?AV?$CParticleOperatorDefinition@VC_INIT_CreateAlongPath@@@@
-r5apex.exe!0x01e06fc8 .?AV?$CParticleOperatorDefinition@VC_INIT_CreateFromParentParticles@@@@
-r5apex.exe!0x01e072e0 .?AV?$CParticleOperatorDefinition@VC_INIT_CreateFromPlaneCache@@@@
-r5apex.exe!0x01e07358 .?AV?$CParticleOperatorDefinition@VC_INIT_CreateInEpitrochoid@@@@
-r5apex.exe!0x01e071f0 .?AV?$CParticleOperatorDefinition@VC_INIT_CreateInHierarchy@@@@
-r5apex.exe!0x01e06f80 .?AV?$CParticleOperatorDefinition@VC_INIT_CreateOnModel@@@@
-r5apex.exe!0x01e072f8 .?AV?$CParticleOperatorDefinition@VC_INIT_CreateSequentialPath@@@@
-r5apex.exe!0x01e07238 .?AV?$CParticleOperatorDefinition@VC_INIT_CreateWithinBox@@@@
-r5apex.exe!0x01e07100 .?AV?$CParticleOperatorDefinition@VC_INIT_CreateWithinControlPointBox@@@@
-r5apex.exe!0x01e074d0 .?AV?$CParticleOperatorDefinition@VC_INIT_CreateWithinSphere@@@@
-r5apex.exe!0x01e07058 .?AV?$CParticleOperatorDefinition@VC_INIT_CreationNoise@@@@
-r5apex.exe!0x01e073b8 .?AV?$CParticleOperatorDefinition@VC_INIT_DistanceToCPInit@@@@
-r5apex.exe!0x01e07088 .?AV?$CParticleOperatorDefinition@VC_INIT_InheritFromParentParticles@@@@
-r5apex.exe!0x01e07220 .?AV?$CParticleOperatorDefinition@VC_INIT_InheritVelocity@@@@
-r5apex.exe!0x01e07178 .?AV?$CParticleOperatorDefinition@VC_INIT_InitFromParentKilled@@@@
-r5apex.exe!0x01e07208 .?AV?$CParticleOperatorDefinition@VC_INIT_InitialRepulsionVelocity@@@@
-r5apex.exe!0x01e074e8 .?AV?$CParticleOperatorDefinition@VC_INIT_InitialVelocityNoise@@@@
-r5apex.exe!0x01e07028 .?AV?$CParticleOperatorDefinition@VC_INIT_LifespanFromVelocity@@@@
-r5apex.exe!0x01e07340 .?AV?$CParticleOperatorDefinition@VC_INIT_ModelCull@@@@
-r5apex.exe!0x01e071c0 .?AV?$CParticleOperatorDefinition@VC_INIT_MoveBetweenPoints@@@@
-r5apex.exe!0x01e071d8 .?AV?$CParticleOperatorDefinition@VC_INIT_NormalAlignToCP@@@@
-r5apex.exe!0x01e07488 .?AV?$CParticleOperatorDefinition@VC_INIT_NormalOffset@@@@
-r5apex.exe!0x01e07070 .?AV?$CParticleOperatorDefinition@VC_INIT_OffsetVectorToVector@@@@
-r5apex.exe!0x01e07250 .?AV?$CParticleOperatorDefinition@VC_INIT_PositionOffset@@@@
-r5apex.exe!0x01e06f68 .?AV?$CParticleOperatorDefinition@VC_INIT_PositionPlaceOnGround@@@@
-r5apex.exe!0x01e07268 .?AV?$CParticleOperatorDefinition@VC_INIT_PositionWarp@@@@
-r5apex.exe!0x01e072b0 .?AV?$CParticleOperatorDefinition@VC_INIT_RandomAlpha@@@@
-r5apex.exe!0x01e07010 .?AV?$CParticleOperatorDefinition@VC_INIT_RandomColor@@@@
-r5apex.exe!0x01e07118 .?AV?$CParticleOperatorDefinition@VC_INIT_RandomLifeTime@@@@
-r5apex.exe!0x01e06f08 .?AV?$CParticleOperatorDefinition@VC_INIT_RandomRadius@@@@
-r5apex.exe!0x01e06fe0 .?AV?$CParticleOperatorDefinition@VC_INIT_RandomRotation@@@@
-r5apex.exe!0x01e05d48 .?AV?$CParticleOperatorDefinition@VC_INIT_RandomRotationSpeed@@@@
-r5apex.exe!0x01e070d0 .?AV?$CParticleOperatorDefinition@VC_INIT_RandomScalar@@@@
-r5apex.exe!0x01e07130 .?AV?$CParticleOperatorDefinition@VC_INIT_RandomSecondSequence@@@@
-r5apex.exe!0x01e074b8 .?AV?$CParticleOperatorDefinition@VC_INIT_RandomSequence@@@@
-r5apex.exe!0x01e06f38 .?AV?$CParticleOperatorDefinition@VC_INIT_RandomTrailLength@@@@
-r5apex.exe!0x01e07500 .?AV?$CParticleOperatorDefinition@VC_INIT_RandomVector@@@@
-r5apex.exe!0x01e07328 .?AV?$CParticleOperatorDefinition@VC_INIT_RandomVectorComponent@@@@
-r5apex.exe!0x01e07470 .?AV?$CParticleOperatorDefinition@VC_INIT_RandomYaw@@@@
-r5apex.exe!0x01e06f20 .?AV?$CParticleOperatorDefinition@VC_INIT_RandomYawFlip@@@@
-r5apex.exe!0x01e07040 .?AV?$CParticleOperatorDefinition@VC_INIT_RemapCPtoScalar@@@@
-r5apex.exe!0x01e06f98 .?AV?$CParticleOperatorDefinition@VC_INIT_RemapCPtoVector@@@@
-r5apex.exe!0x01e070a0 .?AV?$CParticleOperatorDefinition@VC_INIT_RemapInitialCPDirectionToRotation@@@@
-r5apex.exe!0x01e06fb0 .?AV?$CParticleOperatorDefinition@VC_INIT_RemapInitialDirectionToCPToVector@@@@
-r5apex.exe!0x01e07148 .?AV?$CParticleOperatorDefinition@VC_INIT_RemapParticleCountToScalar@@@@
-r5apex.exe!0x01e06f50 .?AV?$CParticleOperatorDefinition@VC_INIT_RemapScalar@@@@
-r5apex.exe!0x01e07370 .?AV?$CParticleOperatorDefinition@VC_INIT_RemapScalarToVector@@@@
-r5apex.exe!0x01e06ef0 .?AV?$CParticleOperatorDefinition@VC_INIT_RemapSpeedToScalar@@@@
-r5apex.exe!0x01e073a0 .?AV?$CParticleOperatorDefinition@VC_INIT_RemapWorldCPtoScreen@@@@
-r5apex.exe!0x01e074a0 .?AV?$CParticleOperatorDefinition@VC_INIT_RingWave@@@@
-r5apex.exe!0x01e07310 .?AV?$CParticleOperatorDefinition@VC_INIT_SequenceFromCP@@@@
-r5apex.exe!0x01e06ff8 .?AV?$CParticleOperatorDefinition@VC_INIT_SequenceLifeTime@@@@
-r5apex.exe!0x01e07298 .?AV?$CParticleOperatorDefinition@VC_INIT_SetCPPosition@@@@
-r5apex.exe!0x01e070e8 .?AV?$CParticleOperatorDefinition@VC_INIT_SetHitboxToClosest@@@@
-r5apex.exe!0x01e071a8 .?AV?$CParticleOperatorDefinition@VC_INIT_SetHitboxToModel@@@@
-r5apex.exe!0x01e07190 .?AV?$CParticleOperatorDefinition@VC_INIT_VelocityFromCP@@@@
-r5apex.exe!0x01e07388 .?AV?$CParticleOperatorDefinition@VC_INIT_VelocityRandom@@@@
-r5apex.exe!0x01e07cb0 .?AV?$CParticleOperatorDefinition@VC_OP_AlphaDecay@@@@
-r5apex.exe!0x01e075a8 .?AV?$CParticleOperatorDefinition@VC_OP_AttractToControlPoint@@@@
-r5apex.exe!0x01e07dc8 .?AV?$CParticleOperatorDefinition@VC_OP_AxisSpin@@@@
-r5apex.exe!0x01e07740 .?AV?$CParticleOperatorDefinition@VC_OP_BasicMovement@@@@
-r5apex.exe!0x01dfe278 .?AV?$CParticleOperatorDefinition@VC_OP_BoxConstraint@@@@
-r5apex.exe!0x01e07650 .?AV?$CParticleOperatorDefinition@VC_OP_CPOffsetToPercentageBetweenCPs@@@@
-r5apex.exe!0x01e07fe0 .?AV?$CParticleOperatorDefinition@VC_OP_ClampScalar@@@@
-r5apex.exe!0x01e07a88 .?AV?$CParticleOperatorDefinition@VC_OP_ClampVector@@@@
-r5apex.exe!0x01e07980 .?AV?$CParticleOperatorDefinition@VC_OP_ColorInterpolate@@@@
-r5apex.exe!0x01e03cd8 .?AV?$CParticleOperatorDefinition@VC_OP_ConstrainDistance@@@@
-r5apex.exe!0x01e051d8 .?AV?$CParticleOperatorDefinition@VC_OP_ConstrainDistanceToPath@@@@
-r5apex.exe!0x01e07578 .?AV?$CParticleOperatorDefinition@VC_OP_ContinuousEmitter@@@@
-r5apex.exe!0x01e07df8 .?AV?$CParticleOperatorDefinition@VC_OP_ControlpointLight@@@@
-r5apex.exe!0x01e07788 .?AV?$CParticleOperatorDefinition@VC_OP_Cull@@@@
-r5apex.exe!0x01e07fc8 .?AV?$CParticleOperatorDefinition@VC_OP_DampenToCP@@@@
-r5apex.exe!0x01e076e0 .?AV?$CParticleOperatorDefinition@VC_OP_Decay@@@@
-r5apex.exe!0x01e07ce0 .?AV?$CParticleOperatorDefinition@VC_OP_DecayMaintainCount@@@@
-r5apex.exe!0x01e07e68 .?AV?$CParticleOperatorDefinition@VC_OP_DifferencePreviousParticle@@@@
-r5apex.exe!0x01e07b18 .?AV?$CParticleOperatorDefinition@VC_OP_DistanceBetweenCPs@@@@
-r5apex.exe!0x01e07a40 .?AV?$CParticleOperatorDefinition@VC_OP_DistanceBetweenCPsToCP@@@@
-r5apex.exe!0x01e07f38 .?AV?$CParticleOperatorDefinition@VC_OP_DistanceCull@@@@
-r5apex.exe!0x01e07518 .?AV?$CParticleOperatorDefinition@VC_OP_DistanceEmitter@@@@
-r5apex.exe!0x01e079e0 .?AV?$CParticleOperatorDefinition@VC_OP_DistanceToCP@@@@
-r5apex.exe!0x01e07710 .?AV?$CParticleOperatorDefinition@VC_OP_FadeAndKill@@@@
-r5apex.exe!0x01e07e50 .?AV?$CParticleOperatorDefinition@VC_OP_FadeAndKillForTracers@@@@
-r5apex.exe!0x01e079c8 .?AV?$CParticleOperatorDefinition@VC_OP_FadeIn@@@@
-r5apex.exe!0x01e078a8 .?AV?$CParticleOperatorDefinition@VC_OP_FadeInSimple@@@@
-r5apex.exe!0x01e07ae8 .?AV?$CParticleOperatorDefinition@VC_OP_FadeOut@@@@
-r5apex.exe!0x01e07bf0 .?AV?$CParticleOperatorDefinition@VC_OP_FadeOutSimple@@@@
-r5apex.exe!0x01e075c0 .?AV?$CParticleOperatorDefinition@VC_OP_ForceBasedOnDistanceToPlane@@@@
-r5apex.exe!0x01e07c50 .?AV?$CParticleOperatorDefinition@VC_OP_GraphScalar@@@@
-r5apex.exe!0x01e07ee0 .?AV?$CParticleOperatorDefinition@VC_OP_GraphVector@@@@
-r5apex.exe!0x01e07830 .?AV?$CParticleOperatorDefinition@VC_OP_InheritFromParentParticles@@@@
-r5apex.exe!0x01e07590 .?AV?$CParticleOperatorDefinition@VC_OP_InstantaneousDistanceEmitter@@@@
-r5apex.exe!0x01e07530 .?AV?$CParticleOperatorDefinition@VC_OP_InstantaneousEmitter@@@@
-r5apex.exe!0x01e07f50 .?AV?$CParticleOperatorDefinition@VC_OP_InterpolateRadius@@@@
-r5apex.exe!0x01e07758 .?AV?$CParticleOperatorDefinition@VC_OP_LagCompensation@@@@
-r5apex.exe!0x01e07698 .?AV?$CParticleOperatorDefinition@VC_OP_LerpEndCapScalar@@@@
-r5apex.exe!0x01e07b30 .?AV?$CParticleOperatorDefinition@VC_OP_LerpEndCapVector@@@@
-r5apex.exe!0x01e078d8 .?AV?$CParticleOperatorDefinition@VC_OP_LerpScalar@@@@
-r5apex.exe!0x01e07b00 .?AV?$CParticleOperatorDefinition@VC_OP_LerpVector@@@@
-r5apex.exe!0x01e07950 .?AV?$CParticleOperatorDefinition@VC_OP_LockToBone@@@@
-r5apex.exe!0x01e07b60 .?AV?$CParticleOperatorDefinition@VC_OP_LockToSavedSequentialPath@@@@
-r5apex.exe!0x01e07548 .?AV?$CParticleOperatorDefinition@VC_OP_MaintainEmitter@@@@
-r5apex.exe!0x01e07f80 .?AV?$CParticleOperatorDefinition@VC_OP_MaintainSequentialPath@@@@
-r5apex.exe!0x01e07ad0 .?AV?$CParticleOperatorDefinition@VC_OP_MaxVelocity@@@@
-r5apex.exe!0x01e07968 .?AV?$CParticleOperatorDefinition@VC_OP_ModelCull@@@@
-r5apex.exe!0x01e07e38 .?AV?$CParticleOperatorDefinition@VC_OP_MoveToHitbox@@@@
-r5apex.exe!0x01e07770 .?AV?$CParticleOperatorDefinition@VC_OP_MovementMaintainOffset@@@@
-r5apex.exe!0x01e07e98 .?AV?$CParticleOperatorDefinition@VC_OP_MovementPlaceOnGround@@@@
-r5apex.exe!0x01e07cf8 .?AV?$CParticleOperatorDefinition@VC_OP_MovementRotateParticleAroundAxis@@@@
-r5apex.exe!0x01e079b0 .?AV?$CParticleOperatorDefinition@VC_OP_Noise@@@@
-r5apex.exe!0x01e07560 .?AV?$CParticleOperatorDefinition@VC_OP_NoiseEmitter@@@@
-r5apex.exe!0x01e07cc8 .?AV?$CParticleOperatorDefinition@VC_OP_NormalLock@@@@
-r5apex.exe!0x01e07a28 .?AV?$CParticleOperatorDefinition@VC_OP_NormalizeVector@@@@
-r5apex.exe!0x01e07e80 .?AV?$CParticleOperatorDefinition@VC_OP_Orient2DRelToCP@@@@
-r5apex.exe!0x01e07eb0 .?AV?$CParticleOperatorDefinition@VC_OP_OrientTo2dDirection@@@@
-r5apex.exe!0x01e07b90 .?AV?$CParticleOperatorDefinition@VC_OP_OrientTowardPlayer@@@@
-r5apex.exe!0x01e07818 .?AV?$CParticleOperatorDefinition@VC_OP_OscillateScalar@@@@
-r5apex.exe!0x01e077d0 .?AV?$CParticleOperatorDefinition@VC_OP_OscillateScalarSimple@@@@
-r5apex.exe!0x01e07f08 .?AV?$CParticleOperatorDefinition@VC_OP_OscillateVector@@@@
-r5apex.exe!0x01e07728 .?AV?$CParticleOperatorDefinition@VC_OP_OscillateVectorSimple@@@@
-r5apex.exe!0x01e07608 .?AV?$CParticleOperatorDefinition@VC_OP_ParentVortices@@@@
-r5apex.exe!0x01e07c38 .?AV?$CParticleOperatorDefinition@VC_OP_PercentageBetweenCPs@@@@
-r5apex.exe!0x01e07860 .?AV?$CParticleOperatorDefinition@VC_OP_PercentageBetweenCPsVector@@@@
-r5apex.exe!0x01dfed98 .?AV?$CParticleOperatorDefinition@VC_OP_PlanarConstraint@@@@
-r5apex.exe!0x01e07c08 .?AV?$CParticleOperatorDefinition@VC_OP_PlaneCull@@@@
-r5apex.exe!0x01e07aa0 .?AV?$CParticleOperatorDefinition@VC_OP_PositionBetweenCPs@@@@
-r5apex.exe!0x01e076b0 .?AV?$CParticleOperatorDefinition@VC_OP_PositionLock@@@@
-r5apex.exe!0x01e07e10 .?AV?$CParticleOperatorDefinition@VC_OP_ProjectileArc@@@@
-r5apex.exe!0x01e077a0 .?AV?$CParticleOperatorDefinition@VC_OP_RadiusDecay@@@@
-r5apex.exe!0x01e07c98 .?AV?$CParticleOperatorDefinition@VC_OP_RampScalarLinear@@@@
-r5apex.exe!0x01e07f20 .?AV?$CParticleOperatorDefinition@VC_OP_RampScalarLinearSimple@@@@
-r5apex.exe!0x01e076f8 .?AV?$CParticleOperatorDefinition@VC_OP_RampScalarSpline@@@@
-r5apex.exe!0x01e078f0 .?AV?$CParticleOperatorDefinition@VC_OP_RampScalarSplineSimple@@@@
-r5apex.exe!0x01e07638 .?AV?$CParticleOperatorDefinition@VC_OP_RandomForce@@@@
-r5apex.exe!0x01e07ec8 .?AV?$CParticleOperatorDefinition@VC_OP_RemapAverageScalarValuetoCP@@@@
-r5apex.exe!0x01e07680 .?AV?$CParticleOperatorDefinition@VC_OP_RemapBoundingVolumetoCP@@@@
-r5apex.exe!0x01e07938 .?AV?$CParticleOperatorDefinition@VC_OP_RemapCPVelocityToVector@@@@
-r5apex.exe!0x01e07f68 .?AV?$CParticleOperatorDefinition@VC_OP_RemapCPtoScalar@@@@
-r5apex.exe!0x01e07a58 .?AV?$CParticleOperatorDefinition@VC_OP_RemapCPtoVector@@@@
-r5apex.exe!0x01e07ab8 .?AV?$CParticleOperatorDefinition@VC_OP_RemapControlPointDirectionToVector@@@@
-r5apex.exe!0x01e07bc0 .?AV?$CParticleOperatorDefinition@VC_OP_RemapDirectionToCPToVector@@@@
-r5apex.exe!0x01e07800 .?AV?$CParticleOperatorDefinition@VC_OP_RemapDotProductToScalar@@@@
-r5apex.exe!0x01e07c68 .?AV?$CParticleOperatorDefinition@VC_OP_RemapModelVolumetoCP@@@@
-r5apex.exe!0x01e07c20 .?AV?$CParticleOperatorDefinition@VC_OP_RemapScalar@@@@
-r5apex.exe!0x01e079f8 .?AV?$CParticleOperatorDefinition@VC_OP_RemapSpeed@@@@
-r5apex.exe!0x01e07b48 .?AV?$CParticleOperatorDefinition@VC_OP_RemapSpeedtoCP@@@@
-r5apex.exe!0x01e076c8 .?AV?$CParticleOperatorDefinition@VC_OP_RemapVelocityToVector@@@@
-r5apex.exe!0x01e078c0 .?AV?$CParticleOperatorDefinition@VC_OP_RemapWorldCPToScreen@@@@
-r5apex.exe!0x01e07ff8 .?AV?$CParticleOperatorDefinition@VC_OP_RenderDecal@@@@
-r5apex.exe!0x01e08260 .?AV?$CParticleOperatorDefinition@VC_OP_RenderLightSource@@@@
-r5apex.exe!0x01e080c8 .?AV?$CParticleOperatorDefinition@VC_OP_RenderModels@@@@
-r5apex.exe!0x00d68320 .?AV?$CParticleOperatorDefinition@VC_OP_RenderPoints@@@@
-r5apex.exe!0x01e08330 .?AV?$CParticleOperatorDefinition@VC_OP_RenderRope@@@@
-r5apex.exe!0x01e08248 .?AV?$CParticleOperatorDefinition@VC_OP_RenderScreenVelocityRotate@@@@
-r5apex.exe!0x01e080b0 .?AV?$CParticleOperatorDefinition@VC_OP_RenderScripts@@@@
-r5apex.exe!0x01e08278 .?AV?$CParticleOperatorDefinition@VC_OP_RenderSprites@@@@
-r5apex.exe!0x01e08230 .?AV?$CParticleOperatorDefinition@VC_OP_RenderSpritesTrail@@@@
-r5apex.exe!0x01e07bd8 .?AV?$CParticleOperatorDefinition@VC_OP_RestartAfterDuration@@@@
-r5apex.exe!0x01e077b8 .?AV?$CParticleOperatorDefinition@VC_OP_RotateVector@@@@
-r5apex.exe!0x01e07a70 .?AV?$CParticleOperatorDefinition@VC_OP_SetCPOrientationToDirection@@@@
-r5apex.exe!0x01e07878 .?AV?$CParticleOperatorDefinition@VC_OP_SetChildControlPoints@@@@
-r5apex.exe!0x01e07998 .?AV?$CParticleOperatorDefinition@VC_OP_SetControlPointPositions@@@@
-r5apex.exe!0x01e07f98 .?AV?$CParticleOperatorDefinition@VC_OP_SetControlPointRotation@@@@
-r5apex.exe!0x01e07c80 .?AV?$CParticleOperatorDefinition@VC_OP_SetControlPointToCenter@@@@
-r5apex.exe!0x01e077e8 .?AV?$CParticleOperatorDefinition@VC_OP_SetControlPointToImpactPoint@@@@
-r5apex.exe!0x01e07920 .?AV?$CParticleOperatorDefinition@VC_OP_SetControlPointToPlayer@@@@
-r5apex.exe!0x01e07a10 .?AV?$CParticleOperatorDefinition@VC_OP_SetControlPointsToParticle@@@@
-r5apex.exe!0x01e07890 .?AV?$CParticleOperatorDefinition@VC_OP_SetPerChildControlPoint@@@@
-r5apex.exe!0x01e07de0 .?AV?$CParticleOperatorDefinition@VC_OP_SoundMeterScalar@@@@
-r5apex.exe!0x01e07668 .?AV?$CParticleOperatorDefinition@VC_OP_Spin@@@@
-r5apex.exe!0x01e07908 .?AV?$CParticleOperatorDefinition@VC_OP_SpinUpdate@@@@
-r5apex.exe!0x01e07ba8 .?AV?$CParticleOperatorDefinition@VC_OP_SpinYaw@@@@
-r5apex.exe!0x01e07fb0 .?AV?$CParticleOperatorDefinition@VC_OP_StopAfterCPDuration@@@@
-r5apex.exe!0x01e075f0 .?AV?$CParticleOperatorDefinition@VC_OP_TimeVaryingForce@@@@
-r5apex.exe!0x01e075d8 .?AV?$CParticleOperatorDefinition@VC_OP_TurbulenceForce@@@@
-r5apex.exe!0x01e07620 .?AV?$CParticleOperatorDefinition@VC_OP_TwistAroundAxis@@@@
-r5apex.exe!0x01e07848 .?AV?$CParticleOperatorDefinition@VC_OP_VectorNoise@@@@
-r5apex.exe!0x01e07b78 .?AV?$CParticleOperatorDefinition@VC_OP_VelocityDecay@@@@
-r5apex.exe!0x01e07db0 .?AV?$CParticleOperatorDefinition@VC_OP_VelocityMatchingForce@@@@
-r5apex.exe!0x01df9698 .?AV?$CParticleOperatorDefinition@VC_OP_WorldCollideConstraint@@@@
-r5apex.exe!0x01e05cc8 .?AV?$CParticleOperatorDefinition@VC_OP_WorldTraceConstraint@@@@
-r5apex.exe!0x0182a098 .?AV?$C_EntityClassList@VC_PointCamera@@@@
-r5apex.exe!0x01bd56f8 .?AV?$C_EntityClassList@VC_TriggerPlayerMovement@@@@
-r5apex.exe!0x01e408f0 .?AV?$_Ref_count_obj_alloc@V__ExceptionPtr@@U?$_StaticAllocator@H@@@std@@
-r5apex.exe!0x01839a30 .?AVCAimAssistTargets@@
-r5apex.exe!0x01839a38 .?AVCAimAssistTargets@@
-r5apex.exe!0x0104dca0 .?AVCAvi@@
-r5apex.exe!0x00d67588 .?AVCBSPPack@@
-r5apex.exe!0x01044348 .?AVCBaseClientRenderTargets@@
-r5apex.exe!0x01e0a5a8 .?AVCBaseResourcePrecacher@@
-r5apex.exe!0x01e0a5c8 .?AVCBaseResourcePrecacher@@
-r5apex.exe!0x01e0a798 .?AVCBaseResourcePrecacher@@
-r5apex.exe!0x01e0adc8 .?AVCBaseResourcePrecacher@@
-r5apex.exe!0x01e0af98 .?AVCBaseResourcePrecacher@@
-r5apex.exe!0x01e0afb8 .?AVCBaseResourcePrecacher@@
-r5apex.exe!0x01e0b1a8 .?AVCBaseResourcePrecacher@@
-r5apex.exe!0x01e0b1c8 .?AVCBaseResourcePrecacher@@
-r5apex.exe!0x01e0b1e8 .?AVCBaseResourcePrecacher@@
-r5apex.exe!0x01e0b208 .?AVCBaseResourcePrecacher@@
-r5apex.exe!0x01e0b228 .?AVCBaseResourcePrecacher@@
-r5apex.exe!0x01e0b358 .?AVCBaseResourcePrecacher@@
-r5apex.exe!0x01e0b3e8 .?AVCBaseResourcePrecacher@@
-r5apex.exe!0x01e0b408 .?AVCBaseResourcePrecacher@@
-r5apex.exe!0x01e0b428 .?AVCBaseResourcePrecacher@@
-r5apex.exe!0x01e0b448 .?AVCBaseResourcePrecacher@@
-r5apex.exe!0x01e0fe88 .?AVCBaseResourcePrecacher@@
-r5apex.exe!0x01e10068 .?AVCBaseResourcePrecacher@@
-r5apex.exe!0x01e10168 .?AVCBaseResourcePrecacher@@
-r5apex.exe!0x01e101f8 .?AVCBaseResourcePrecacher@@
-r5apex.exe!0x01e10758 .?AVCBaseResourcePrecacher@@
-r5apex.exe!0x01e108c8 .?AVCBaseResourcePrecacher@@
-r5apex.exe!0x01e10be8 .?AVCBaseResourcePrecacher@@
-r5apex.exe!0x01e11248 .?AVCBaseResourcePrecacher@@
-r5apex.exe!0x01e113b8 .?AVCBaseResourcePrecacher@@
-r5apex.exe!0x01e114b8 .?AVCBaseResourcePrecacher@@
-r5apex.exe!0x01e114d8 .?AVCBaseResourcePrecacher@@
-r5apex.exe!0x01e118e8 .?AVCBaseResourcePrecacher@@
-r5apex.exe!0x01e13138 .?AVCBaseResourcePrecacher@@
-r5apex.exe!0x01e131f8 .?AVCBaseResourcePrecacher@@
-r5apex.exe!0x1fea0b10 .?AVCBik@@
-r5apex.exe!0x0103e838 .?AVCBoolProperty@@
-r5apex.exe!0x01bc1d40 .?AVCCascadeLightManager@@
-r5apex.exe!0x01d95190 .?AVCCenterPrint@@
-r5apex.exe!0x01e0a830 .?AVCClassMap@@
-r5apex.exe!0x01be42d0 .?AVCClientCollisionEvent@@
-r5apex.exe!0x01043d18 .?AVCClientDLLSharedAppSystems@@
-r5apex.exe!0x0183f110 .?AVCClientEntityList@@
-r5apex.exe!0x01abf168 .?AVCClientEntityList@@
-r5apex.exe!0x23a3e140 .?AVCClientLeafSystem@@
-r5apex.exe!0x239f1430 .?AVCClientShadowMgr@@
-r5apex.exe!0x01038f08 .?AVCClientSound@@
-r5apex.exe!0x01110c10 .?AVCClientState@@
-r5apex.exe!0x01110c18 .?AVCClientState@@
-r5apex.exe!0x01110c20 .?AVCClientState@@
-r5apex.exe!0x01110c28 .?AVCClientState@@
-r5apex.exe!0x01bcc5f0 .?AVCClientThinkList@@
-r5apex.exe!0x01034cc0 .?AVCCmdLibFileLoggingListener@@
-r5apex.exe!0x01034c80 .?AVCCmdLibStandardLoggingListener@@
-r5apex.exe!0x0181b7b0 .?AVCColorCorrectionMgr@@
-r5apex.exe!0x01181240 .?AVCColorCorrectionSystem@@
-r5apex.exe!0x0103e618 .?AVCColorProperty@@
-r5apex.exe!0x01810cc0 .?AVCCommandLine@@
-r5apex.exe!0x22d0f3e0 .?AVCCountedStringPool@@
-r5apex.exe!0x22d0f430 .?AVCCountedStringPool@@
-r5apex.exe!0x018182c0 .?AVCCvar@@
-r5apex.exe!0x01038340 .?AVCCvarQuery@@
-r5apex.exe!0x01036a80 .?AVCDataCache@@
-r5apex.exe!0x01be0c70 .?AVCDebugOverlayPanel@@
-r5apex.exe!0x0103a528 .?AVCDebugTextureInfoDX11@@
-r5apex.exe!0x0103dfc8 .?AVCDefaultAccessor@@
-r5apex.exe!0x0103f948 .?AVCDefaultCvarQuery@@
-r5apex.exe!0x01837080 .?AVCEffectsList@@
-r5apex.exe!0x01813a00 .?AVCEmptyConVar@@
-r5apex.exe!0x01813a40 .?AVCEmptyConVar@@
-r5apex.exe!0x01df0fa0 .?AVCEmptyGameUIConVar@@
-r5apex.exe!0x01df0fe0 .?AVCEmptyGameUIConVar@@
-r5apex.exe!0x010489f0 .?AVCEngine@@
-r5apex.exe!0x0117b4a0 .?AVCEngineAPI@@
-r5apex.exe!0x010371c8 .?AVCEngineClient@@
-r5apex.exe!0x0103a0e8 .?AVCEngineConsoleLoggingListener@@
-r5apex.exe!0x01036be8 .?AVCEngineTraceClient@@
-r5apex.exe!0x01034ea8 .?AVCEngineTraceClientDecals@@
-r5apex.exe!0x010388b8 .?AVCEngineUniformRandomStream@@
-r5apex.exe!0x01048190 .?AVCEngineVGui@@
-r5apex.exe!0x011464b0 .?AVCEntityReadInfo@@
-r5apex.exe!0x01818430 .?AVCEventSystem@@
-r5apex.exe!0x01bdd798 .?AVCExampleEffect@@
-r5apex.exe!0x01be2410 .?AVCFPS@@
-r5apex.exe!0x22d0f1f0 .?AVCFileSystem_Stdio@@
-r5apex.exe!0x22d0f1f8 .?AVCFileSystem_Stdio@@
-r5apex.exe!0x0103eb68 .?AVCFloatProperty@@
-r5apex.exe!0x01046468 .?AVCGameClientExports@@
-r5apex.exe!0x01df0e00 .?AVCGameUI@@
-r5apex.exe!0x01039938 .?AVCGameUIFuncs@@
-r5apex.exe!0x0103ebd8 .?AVCHFontProperty@@
-r5apex.exe!0x0181a340 .?AVCHLClient@@
-r5apex.exe!0x0110f8e8 .?AVCHudTextMessage@@
-r5apex.exe!0x0110f578 .?AVCHudTextureHandleProperty@@
-r5apex.exe!0x01036d30 .?AVCIVDebugOverlay@@
-r5apex.exe!0x01036d38 .?AVCIVDebugOverlay@@
-r5apex.exe!0x238ccda0 .?AVCIVPMaterialManager@@
-r5apex.exe!0x01bd9000 .?AVCInput@@
-r5apex.exe!0x0117f5b0 .?AVCInputStackSystem@@
-r5apex.exe!0x0117f680 .?AVCInputSystem@@
-r5apex.exe!0x238b3aa0 .?AVCInputWin32@@
-r5apex.exe!0x0103eaf8 .?AVCIntProperty@@
-r5apex.exe!0x0183be90 .?AVCKeyBindingListenerMgr@@
-r5apex.exe!0x01819c20 .?AVCKeyValuesSystem@@
-r5apex.exe!0x0103d658 .?AVCLauncherLoggingListener@@
-r5apex.exe!0x0103df58 .?AVCListOps@TSListTests@@
-r5apex.exe!0x01d8e5f0 .?AVCLoadingDisc@@
-r5apex.exe!0x011810a0 .?AVCLocalize@@
-r5apex.exe!0x01034d70 .?AVCMDLCache@@
-r5apex.exe!0x22d11f18 .?AVCMatQueuedRenderContext@@
-r5apex.exe!0x22d11f20 .?AVCMatQueuedRenderContext@@
-r5apex.exe!0x22d120e8 .?AVCMatRenderContext@@
-r5apex.exe!0x22d120f0 .?AVCMatRenderContext@@
-r5apex.exe!0x238bc940 .?AVCMatSystemSurface@@
-r5apex.exe!0x238bc948 .?AVCMatSystemSurface@@
-r5apex.exe!0x238bc950 .?AVCMatSystemSurface@@
-r5apex.exe!0x01e0b470 .?AVCMaterialProxyDict@@
-r5apex.exe!0x01037e98 .?AVCMaterialProxyFactory@@
-r5apex.exe!0x22d11a80 .?AVCMaterialSystem@@
-r5apex.exe!0x22d11a88 .?AVCMaterialSystem@@
-r5apex.exe!0x01be22a0 .?AVCMessageChars@@
-r5apex.exe!0x00d67ef8 .?AVCMessageListener@vgui@@
-r5apex.exe!0x01037f08 .?AVCModelInfoClient@@
-r5apex.exe!0x01038018 .?AVCModelInfoServer@@
-r5apex.exe!0x01042090 .?AVCModelLoader@@
-r5apex.exe!0x01047550 .?AVCModelRender@@
-r5apex.exe!0x01d950d0 .?AVCModelRenderSystem@@
-r5apex.exe!0x01d950e8 .?AVCModelRenderSystem@@
-r5apex.exe!0x01d91fa0 .?AVCMoveHelperClient@@
-r5apex.exe!0x01037d78 .?AVCNetworkStringTableContainer@@
-r5apex.exe!0x01045930 .?AVCNetworkStringTableContainer@@
-r5apex.exe!0x01e0bd10 .?AVCPanelMetaClassMgrImp@@
-r5apex.exe!0x01e0c2b0 .?AVCParticleMgr@@
-r5apex.exe!0x0103f808 .?AVCPhysicsCollision@@
-r5apex.exe!0x01817d30 .?AVCPhysicsInterface@@
-r5apex.exe!0x238cccf0 .?AVCPhysicsSurfaceProps@@
-r5apex.exe!0x0110fa98 .?AVCPhysicsSystem@@
-r5apex.exe!0x01d9b7b0 .?AVCPickupList@@
-r5apex.exe!0x01045918 .?AVCPixelVisibilitySystem@@
-r5apex.exe!0x018104b0 .?AVCPolyhedron_TempMemory@@
-r5apex.exe!0x01dee710 .?AVCPoseDebuggerImpl@@
-r5apex.exe!0x01038d28 .?AVCPrecacheSystem@@
-r5apex.exe!0x01defe00 .?AVCPrediction@@
-r5apex.exe!0x01819d90 .?AVCProcessUtils@@
-r5apex.exe!0x0103e038 .?AVCProportionalFloatProperty@@
-r5apex.exe!0x0103f258 .?AVCProportionalIntProperty@@
-r5apex.exe!0x0103f478 .?AVCProportionalXPosProperty@@
-r5apex.exe!0x0103e5a8 .?AVCProportionalYPosProperty@@
-r5apex.exe!0x0103de48 .?AVCQueueOps@TSListTests@@
-r5apex.exe!0x010453b0 .?AVCQueuedPacketSender@@
-r5apex.exe!0x01dee1b0 .?AVCRagdollLRURetirement@@
-r5apex.exe!0x010394b8 .?AVCRegistry@@
-r5apex.exe!0x01810730 .?AVCResListGenerator@@
-r5apex.exe!0x0104b048 .?AVCRopeInitializer@@
-r5apex.exe!0x01def0c8 .?AVCRunGameEngine@@
-r5apex.exe!0x01038128 .?AVCSaveRestoreFileSystemPassthrough@@
-r5apex.exe!0x01814330 .?AVCSchemeManager@@
-r5apex.exe!0x0110f5e8 .?AVCScreenSpaceEffectManager@@
-r5apex.exe!0x01034c88 .?AVCScriptLib@@
-r5apex.exe!0x1fea6480 .?AVCServer@@
-r5apex.exe!0x01ddda40 .?AVCServerRandomStream@@
-r5apex.exe!0x0103a598 .?AVCShader@Basic@@
-r5apex.exe!0x0103a738 .?AVCShader@BasicForceWireframe@Basic@@
-r5apex.exe!0x0103a858 .?AVCShader@Bik@@
-r5apex.exe!0x0103a978 .?AVCShader@Black@@
-r5apex.exe!0x0180daa0 .?AVCShader@BlurFilter@@
-r5apex.exe!0x0103aa98 .?AVCShader@BoxFilterCompute@@
-r5apex.exe!0x0103ab18 .?AVCShader@DebugDrawEnvmapMask@@
-r5apex.exe!0x0103ab98 .?AVCShader@DecalModulate@@
-r5apex.exe!0x0103ac18 .?AVCShader@DepthWrite@@
-r5apex.exe!0x0103ac98 .?AVCShader@DoFBlurFilterCompute@@
-r5apex.exe!0x0103ae58 .?AVCShader@Downsample4x4@@
-r5apex.exe!0x0103aff8 .?AVCShader@Downsample@@
-r5apex.exe!0x0103af78 .?AVCShader@Downsample_bloom@@
-r5apex.exe!0x0103b078 .?AVCShader@Edge@@
-r5apex.exe!0x0103b378 .?AVCShader@Engine_Post@@
-r5apex.exe!0x0103b3f8 .?AVCShader@ExposureAdaptation@@
-r5apex.exe!0x0103b658 .?AVCShader@FrameColorCompute@@
-r5apex.exe!0x0103bdb8 .?AVCShader@Logluminance@@
-r5apex.exe!0x0103bed8 .?AVCShader@Modulate@@
-r5apex.exe!0x0103bf58 .?AVCShader@Occlusion@@
-r5apex.exe!0x0103c1a8 .?AVCShader@Refract@@
-r5apex.exe!0x0103c3e8 .?AVCShader@Sky@@
-r5apex.exe!0x0103c5a8 .?AVCShader@Sprite@@
-r5apex.exe!0x0103c768 .?AVCShader@TSAA@@
-r5apex.exe!0x0103cce8 .?AVCShader@UnlitTwoTexture@@
-r5apex.exe!0x0103cf48 .?AVCShader@VisQuery@@
-r5apex.exe!0x0103d4b8 .?AVCShader@Water@@
-r5apex.exe!0x0103d538 .?AVCShader@WriteZ@@
-r5apex.exe!0x0103c368 .?AVCShader@screenspace_general@@
-r5apex.exe!0x00d67ad8 .?AVCShaderLibConVarAccessor@@
-r5apex.exe!0x0128c610 .?AVCShaderSystem@@
-r5apex.exe!0x0128c618 .?AVCShaderSystem@@
-r5apex.exe!0x010346b8 .?AVCSimpleLoggingListener@@
-r5apex.exe!0x28c640e8 .?AVCSimpleLoggingListener@@
-r5apex.exe!0x010346c8 .?AVCSimpleWindowsLoggingListener@@
-r5apex.exe!0x01dd25e8 .?AVCSolidSetDefaults@@
-r5apex.exe!0x01110c00 .?AVCSplitScreen@@
-r5apex.exe!0x0104bc90 .?AVCStaticPropMgr@@
-r5apex.exe!0x0104bc98 .?AVCStaticPropMgr@@
-r5apex.exe!0x26b9c880 .?AVCStdMemAlloc@@
-r5apex.exe!0x0103ea88 .?AVCStringProperty@@
-r5apex.exe!0x01810ab0 .?AVCStudioRenderContext@@
-r5apex.exe!0x0103f5d8 .?AVCSurfaceDragDropTarget@@
-r5apex.exe!0x01814390 .?AVCSystem@@
-r5apex.exe!0x01bcfd30 .?AVCTempEnts@@
-r5apex.exe!0x018146e0 .?AVCTextureDictionary@@
-r5apex.exe!0x0103f148 .?AVCTextureIdProperty@@
-r5apex.exe!0x0c00d398 .?AVCTraceFilterHitAll@@
-r5apex.exe!0x0c015b98 .?AVCTraceFilterHitAll@@
-r5apex.exe!0x0c01e398 .?AVCTraceFilterHitAll@@
-r5apex.exe!0x0c026b98 .?AVCTraceFilterHitAll@@
-r5apex.exe!0x0c02f398 .?AVCTraceFilterHitAll@@
-r5apex.exe!0x0c037b98 .?AVCTraceFilterHitAll@@
-r5apex.exe!0x0c040398 .?AVCTraceFilterHitAll@@
-r5apex.exe!0x0c048b98 .?AVCTraceFilterHitAll@@
-r5apex.exe!0x01037f78 .?AVCUniformRandomStream@@
-r5apex.exe!0x01040118 .?AVCUniformRandomStream@@
-r5apex.exe!0x01ddda48 .?AVCUniformRandomStream@@
-r5apex.exe!0x018116c0 .?AVCUtlCStringConversion@@
-r5apex.exe!0x018128e0 .?AVCUtlNoEscConversion@@
-r5apex.exe!0x010387c8 .?AVCVEfx@@
-r5apex.exe!0x01038f78 .?AVCVEngineServer@@
-r5apex.exe!0x238b3910 .?AVCVGui@@
-r5apex.exe!0x010386d8 .?AVCVRenderView@@
-r5apex.exe!0x01d908d0 .?AVCVScriptGameSystem@@
-r5apex.exe!0x01be3330 .?AVCViewEffects@@
-r5apex.exe!0x01d94a50 .?AVCViewEffects@@
-r5apex.exe!0x01be44c0 .?AVCViewRender@@
-r5apex.exe!0x0110f658 .?AVCViewportClientSystem@@
-r5apex.exe!0x01038a68 .?AVCVoiceServer@@
-r5apex.exe!0x238b3710 .?AVCWin32Surface@@
-r5apex.exe!0x238b3718 .?AVCWin32Surface@@
-r5apex.exe!0x238b3720 .?AVCWin32Surface@@
-r5apex.exe!0x01042b18 .?AVC_BaseAnimatingGameSystem@@
-r5apex.exe!0x01dd5c70 .?AVC_DataObjectAccessSystem@@
-r5apex.exe!0x01e08348 .?AVC_DefaultParticleSystemQuery@@
-r5apex.exe!0x0114ba08 .?AVC_DirtySpatialPartitionEntityList@@
-r5apex.exe!0x01d9ab90 .?AVC_GameMovement@@
-r5apex.exe!0x01db47d0 .?AVC_GameRules@@
-r5apex.exe!0x01dc9190 .?AVC_GameStringPool@@
-r5apex.exe!0x01be2768 .?AVC_GameTimescale@@
-r5apex.exe!0x01dc8450 .?AVC_ParticleSystemQuery@@
-r5apex.exe!0x01ddd1c8 .?AVC_PrecacheHandler@@
-r5apex.exe!0x01dd5d88 .?AVC_PrecacheRegister@@
-r5apex.exe!0x01deb570 .?AVC_PropData@@
-r5apex.exe!0x01ddc398 .?AVC_PropSurvivalList@@
-r5apex.exe!0x23d45b48 .?AVC_SequenceTransitionerLayer@@
-r5apex.exe!0x01bd8a70 .?AVC_SoundscapeSystem@@
-r5apex.exe!0x01bd3a80 .?AVC_TEBreakModel@@
-r5apex.exe!0x01bd3a90 .?AVC_TEBreakModel@@
-r5apex.exe!0x01bcfe50 .?AVC_TEEffectDispatch@@
-r5apex.exe!0x01bcfe60 .?AVC_TEEffectDispatch@@
-r5apex.exe!0x01bcfdb0 .?AVC_TEExplosion@@
-r5apex.exe!0x01bcfdc0 .?AVC_TEExplosion@@
-r5apex.exe!0x01048558 .?AVC_TEGibEvent@@
-r5apex.exe!0x01048568 .?AVC_TEGibEvent@@
-r5apex.exe!0x01bccb70 .?AVC_TEPhysicsProp@@
-r5apex.exe!0x01bccb80 .?AVC_TEPhysicsProp@@
-r5apex.exe!0x01df9640 .?AVC_TEProjectileTrail@@
-r5apex.exe!0x01df9650 .?AVC_TEProjectileTrail@@
-r5apex.exe!0x01dc7180 .?AVC_TEScriptParticleSystem@@
-r5apex.exe!0x01dc7190 .?AVC_TEScriptParticleSystem@@
-r5apex.exe!0x01d99d60 .?AVC_TEScriptParticleSystemOnEntity@@
-r5apex.exe!0x01d99d70 .?AVC_TEScriptParticleSystemOnEntity@@
-r5apex.exe!0x01dcbf60 .?AVC_TEScriptParticleSystemOnEntityWithPos@@
-r5apex.exe!0x01dcbf70 .?AVC_TEScriptParticleSystemOnEntityWithPos@@
-r5apex.exe!0x01bd76e0 .?AVC_TEShatterSurface@@
-r5apex.exe!0x01bd76f0 .?AVC_TEShatterSurface@@
-r5apex.exe!0x01bd4730 .?AVC_TESoundDispatch@@
-r5apex.exe!0x01bd4740 .?AVC_TESoundDispatch@@
-r5apex.exe!0x0104d558 .?AVC_TempEntsSystem@@
-r5apex.exe!0x01db4b10 .?AVC_TraceFilterSkipTwoEntities@@
-r5apex.exe!0x01db4b40 .?AVC_TraceFilterSkipTwoEntities@@
-r5apex.exe!0x01db4b70 .?AVC_TraceFilterSkipTwoEntities@@
-r5apex.exe!0x01db4ba0 .?AVC_TraceFilterSkipTwoEntities@@
-r5apex.exe!0x01db4bd0 .?AVC_TraceFilterSkipTwoEntities@@
-r5apex.exe!0x01db4c00 .?AVC_TraceFilterSkipTwoEntities@@
-r5apex.exe!0x01db4c30 .?AVC_TraceFilterSkipTwoEntities@@
-r5apex.exe!0x01db4c60 .?AVC_TraceFilterSkipTwoEntities@@
-r5apex.exe!0x01dfe230 .?AVC_TurretList@@
-r5apex.exe!0x01e05190 .?AVC_WeaponXList@@
-r5apex.exe!0x01129380 .?AVClientDataBlockReceiver@@
-r5apex.exe!0x018344c0 .?AVClientModeFullscreen@@
-r5apex.exe!0x00d39ec0 .?AVDNameStatusNode@@
-r5apex.exe!0x00d39ed0 .?AVDNameStatusNode@@
-r5apex.exe!0x00d39ee0 .?AVDNameStatusNode@@
-r5apex.exe!0x00d39ef0 .?AVDNameStatusNode@@
-r5apex.exe!0x0101f400 .?AVDenuvoTrialV2@@
-r5apex.exe!0x0180ce50 .?AVHardwareConfigDX11@@
-r5apex.exe!0x0104dbd8 .?AVIPredictionSystem_Client@@
-r5apex.exe!0x01815be0 .?AVIVP_BetterDebugmanager@@
-r5apex.exe!0x0117dd00 .?AVImeTextStore@@
-r5apex.exe!0x0117dd08 .?AVImeTextStore@@
-r5apex.exe!0x0117dd10 .?AVImeTextStore@@
-r5apex.exe!0x0117dd18 .?AVImeTextStore@@
-r5apex.exe!0x0117dd20 .?AVImeTextStore@@
-r5apex.exe!0x0117dd28 .?AVImeTextStore@@
-r5apex.exe!0x0117dd30 .?AVImeTextStore@@
-r5apex.exe!0x0117dd38 .?AVImeTextStore@@
-r5apex.exe!0x0110ecc8 .?AVMapSettingsReseter@@
-r5apex.exe!0x01e09f08 .?AVMonitorDefaultChanges@@
-r5apex.exe!0x0114a070 .?AVSVC_UserMessage@@
-r5apex.exe!0x0103f6f8 .?AVVPanelWrapper@@
-r5apex.exe!0x01e409a0 .?AVbad_alloc@std@@
-r5apex.exe!0x1f11fbf8 .?AVstl_critical_section_win7@details@Concurrency@@
-r5apex.exe!0x1f120ce8 .?AVstl_critical_section_win7@details@Concurrency@@
+r5apex.exe!0x01190dc0 .?AUCCallbackInternal_OnGetAuthTicket@SteamWrapper_CallbackHandler_s@@
+r5apex.exe!0x01e20c48 .?AUSQArray@@
+r5apex.exe!0x01e20b80 .?AUSQClass@@
+r5apex.exe!0x01e20b30 .?AUSQClosure@@
+r5apex.exe!0x01e20a18 .?AUSQFunctionProto@@
+r5apex.exe!0x01e208b0 .?AUSQInstance@@
+r5apex.exe!0x01e20c70 .?AUSQNativeClosure@@
+r5apex.exe!0x01e20978 .?AUSQString@@
+r5apex.exe!0x01e20bf8 .?AUSQStructDef@@
+r5apex.exe!0x01e209c8 .?AUSQStructInstance@@
+r5apex.exe!0x01e209f0 .?AUSQTable@@
+r5apex.exe!0x01e208d8 .?AUSQUserData@@
+r5apex.exe!0x01e20c98 .?AUSQVM@@
+r5apex.exe!0x01e20cc0 .?AUSQWeakRef@@
+r5apex.exe!0x245349d0 .?AV?$CConCommandMemberAccessor@VCMaterialSystem@@@@
+r5apex.exe!0x24534a38 .?AV?$CConCommandMemberAccessor@VCMaterialSystem@@@@
+r5apex.exe!0x24534a40 .?AV?$CConCommandMemberAccessor@VCMaterialSystem@@@@
+r5apex.exe!0x24534a70 .?AV?$CConCommandMemberAccessor@VCMaterialSystem@@@@
+r5apex.exe!0x24534ad8 .?AV?$CConCommandMemberAccessor@VCMaterialSystem@@@@
+r5apex.exe!0x24534ae0 .?AV?$CConCommandMemberAccessor@VCMaterialSystem@@@@
+r5apex.exe!0x24534b10 .?AV?$CConCommandMemberAccessor@VCMaterialSystem@@@@
+r5apex.exe!0x24534b78 .?AV?$CConCommandMemberAccessor@VCMaterialSystem@@@@
+r5apex.exe!0x24534b80 .?AV?$CConCommandMemberAccessor@VCMaterialSystem@@@@
+r5apex.exe!0x24534bb0 .?AV?$CConCommandMemberAccessor@VCMaterialSystem@@@@
+r5apex.exe!0x24534c18 .?AV?$CConCommandMemberAccessor@VCMaterialSystem@@@@
+r5apex.exe!0x24534c20 .?AV?$CConCommandMemberAccessor@VCMaterialSystem@@@@
+r5apex.exe!0x24534c50 .?AV?$CConCommandMemberAccessor@VCMaterialSystem@@@@
+r5apex.exe!0x24534cb8 .?AV?$CConCommandMemberAccessor@VCMaterialSystem@@@@
+r5apex.exe!0x24534cc0 .?AV?$CConCommandMemberAccessor@VCMaterialSystem@@@@
+r5apex.exe!0x24534cf0 .?AV?$CConCommandMemberAccessor@VCMaterialSystem@@@@
+r5apex.exe!0x24534d58 .?AV?$CConCommandMemberAccessor@VCMaterialSystem@@@@
+r5apex.exe!0x24534d60 .?AV?$CConCommandMemberAccessor@VCMaterialSystem@@@@
+r5apex.exe!0x0104cb38 .?AV?$CDataManager@UDataCacheItem_t@@UDataCacheItemData_t@@PEAU1@VCThreadFastMutex@@@@
+r5apex.exe!0x0cbe5fb0 .?AV?$CDataManager@VCBoneCache@@Ubonecacheparams_t@@PEAV1@VCThreadFastMutex@@@@
+r5apex.exe!0x0cbe6080 .?AV?$CDataManager@VCBoneCache@@Ubonecacheparams_t@@PEAV1@VCThreadFastMutex@@@@
+r5apex.exe!0x011258c8 .?AV?$CPanelFactory@VCMovieDisplayScreen@@UVGuiScreenInitData_t@@@@
+r5apex.exe!0x01125338 .?AV?$CPanelFactory@VCVGuiScreenPanel@@UVGuiScreenInitData_t@@@@
+r5apex.exe!0x01e1e4b0 .?AV?$CParticleOperatorDefinition@VC_INIT_AgeNoise@@@@
+r5apex.exe!0x01e1e390 .?AV?$CParticleOperatorDefinition@VC_INIT_ChaoticAttractor@@@@
+r5apex.exe!0x01e1e4f8 .?AV?$CParticleOperatorDefinition@VC_INIT_ColorLitPerParticle@@@@
+r5apex.exe!0x01e1e2e8 .?AV?$CParticleOperatorDefinition@VC_INIT_CreateAlongPath@@@@
+r5apex.exe!0x01e1e1f8 .?AV?$CParticleOperatorDefinition@VC_INIT_CreateFromParentParticles@@@@
+r5apex.exe!0x01e1e510 .?AV?$CParticleOperatorDefinition@VC_INIT_CreateFromPlaneCache@@@@
+r5apex.exe!0x01e1e588 .?AV?$CParticleOperatorDefinition@VC_INIT_CreateInEpitrochoid@@@@
+r5apex.exe!0x01e1e420 .?AV?$CParticleOperatorDefinition@VC_INIT_CreateInHierarchy@@@@
+r5apex.exe!0x01e1e1b0 .?AV?$CParticleOperatorDefinition@VC_INIT_CreateOnModel@@@@
+r5apex.exe!0x01e1e528 .?AV?$CParticleOperatorDefinition@VC_INIT_CreateSequentialPath@@@@
+r5apex.exe!0x01e1e468 .?AV?$CParticleOperatorDefinition@VC_INIT_CreateWithinBox@@@@
+r5apex.exe!0x01e1e330 .?AV?$CParticleOperatorDefinition@VC_INIT_CreateWithinControlPointBox@@@@
+r5apex.exe!0x01e1e700 .?AV?$CParticleOperatorDefinition@VC_INIT_CreateWithinSphere@@@@
+r5apex.exe!0x01e1e288 .?AV?$CParticleOperatorDefinition@VC_INIT_CreationNoise@@@@
+r5apex.exe!0x01e1e5e8 .?AV?$CParticleOperatorDefinition@VC_INIT_DistanceToCPInit@@@@
+r5apex.exe!0x01e1e2b8 .?AV?$CParticleOperatorDefinition@VC_INIT_InheritFromParentParticles@@@@
+r5apex.exe!0x01e1e450 .?AV?$CParticleOperatorDefinition@VC_INIT_InheritVelocity@@@@
+r5apex.exe!0x01e1e3a8 .?AV?$CParticleOperatorDefinition@VC_INIT_InitFromParentKilled@@@@
+r5apex.exe!0x01e1e438 .?AV?$CParticleOperatorDefinition@VC_INIT_InitialRepulsionVelocity@@@@
+r5apex.exe!0x01e1e718 .?AV?$CParticleOperatorDefinition@VC_INIT_InitialVelocityNoise@@@@
+r5apex.exe!0x01e1e258 .?AV?$CParticleOperatorDefinition@VC_INIT_LifespanFromVelocity@@@@
+r5apex.exe!0x01e1e570 .?AV?$CParticleOperatorDefinition@VC_INIT_ModelCull@@@@
+r5apex.exe!0x01e1e3f0 .?AV?$CParticleOperatorDefinition@VC_INIT_MoveBetweenPoints@@@@
+r5apex.exe!0x01e1e408 .?AV?$CParticleOperatorDefinition@VC_INIT_NormalAlignToCP@@@@
+r5apex.exe!0x01e1e6b8 .?AV?$CParticleOperatorDefinition@VC_INIT_NormalOffset@@@@
+r5apex.exe!0x01e1e2a0 .?AV?$CParticleOperatorDefinition@VC_INIT_OffsetVectorToVector@@@@
+r5apex.exe!0x01e1e480 .?AV?$CParticleOperatorDefinition@VC_INIT_PositionOffset@@@@
+r5apex.exe!0x01e1e198 .?AV?$CParticleOperatorDefinition@VC_INIT_PositionPlaceOnGround@@@@
+r5apex.exe!0x01e1e498 .?AV?$CParticleOperatorDefinition@VC_INIT_PositionWarp@@@@
+r5apex.exe!0x01e1e4e0 .?AV?$CParticleOperatorDefinition@VC_INIT_RandomAlpha@@@@
+r5apex.exe!0x01e1e240 .?AV?$CParticleOperatorDefinition@VC_INIT_RandomColor@@@@
+r5apex.exe!0x01e1e348 .?AV?$CParticleOperatorDefinition@VC_INIT_RandomLifeTime@@@@
+r5apex.exe!0x01e1e138 .?AV?$CParticleOperatorDefinition@VC_INIT_RandomRadius@@@@
+r5apex.exe!0x01e1e210 .?AV?$CParticleOperatorDefinition@VC_INIT_RandomRotation@@@@
+r5apex.exe!0x01e1e108 .?AV?$CParticleOperatorDefinition@VC_INIT_RandomRotationSpeed@@@@
+r5apex.exe!0x01e1e300 .?AV?$CParticleOperatorDefinition@VC_INIT_RandomScalar@@@@
+r5apex.exe!0x01e1e360 .?AV?$CParticleOperatorDefinition@VC_INIT_RandomSecondSequence@@@@
+r5apex.exe!0x01e1e6e8 .?AV?$CParticleOperatorDefinition@VC_INIT_RandomSequence@@@@
+r5apex.exe!0x01e1e168 .?AV?$CParticleOperatorDefinition@VC_INIT_RandomTrailLength@@@@
+r5apex.exe!0x01e1e730 .?AV?$CParticleOperatorDefinition@VC_INIT_RandomVector@@@@
+r5apex.exe!0x01e1e558 .?AV?$CParticleOperatorDefinition@VC_INIT_RandomVectorComponent@@@@
+r5apex.exe!0x01e1e6a0 .?AV?$CParticleOperatorDefinition@VC_INIT_RandomYaw@@@@
+r5apex.exe!0x01e1e150 .?AV?$CParticleOperatorDefinition@VC_INIT_RandomYawFlip@@@@
+r5apex.exe!0x01e1e270 .?AV?$CParticleOperatorDefinition@VC_INIT_RemapCPtoScalar@@@@
+r5apex.exe!0x01e1e1c8 .?AV?$CParticleOperatorDefinition@VC_INIT_RemapCPtoVector@@@@
+r5apex.exe!0x01e1e2d0 .?AV?$CParticleOperatorDefinition@VC_INIT_RemapInitialCPDirectionToRotation@@@@
+r5apex.exe!0x01e1e1e0 .?AV?$CParticleOperatorDefinition@VC_INIT_RemapInitialDirectionToCPToVector@@@@
+r5apex.exe!0x01e1e378 .?AV?$CParticleOperatorDefinition@VC_INIT_RemapParticleCountToScalar@@@@
+r5apex.exe!0x01e1e180 .?AV?$CParticleOperatorDefinition@VC_INIT_RemapScalar@@@@
+r5apex.exe!0x01e1e5a0 .?AV?$CParticleOperatorDefinition@VC_INIT_RemapScalarToVector@@@@
+r5apex.exe!0x01e1e120 .?AV?$CParticleOperatorDefinition@VC_INIT_RemapSpeedToScalar@@@@
+r5apex.exe!0x01e1e5d0 .?AV?$CParticleOperatorDefinition@VC_INIT_RemapWorldCPtoScreen@@@@
+r5apex.exe!0x01e1e6d0 .?AV?$CParticleOperatorDefinition@VC_INIT_RingWave@@@@
+r5apex.exe!0x01e1e540 .?AV?$CParticleOperatorDefinition@VC_INIT_SequenceFromCP@@@@
+r5apex.exe!0x01e1e228 .?AV?$CParticleOperatorDefinition@VC_INIT_SequenceLifeTime@@@@
+r5apex.exe!0x01e1e4c8 .?AV?$CParticleOperatorDefinition@VC_INIT_SetCPPosition@@@@
+r5apex.exe!0x01e1e318 .?AV?$CParticleOperatorDefinition@VC_INIT_SetHitboxToClosest@@@@
+r5apex.exe!0x01e1e3d8 .?AV?$CParticleOperatorDefinition@VC_INIT_SetHitboxToModel@@@@
+r5apex.exe!0x01e1e3c0 .?AV?$CParticleOperatorDefinition@VC_INIT_VelocityFromCP@@@@
+r5apex.exe!0x01e1e5b8 .?AV?$CParticleOperatorDefinition@VC_INIT_VelocityRandom@@@@
+r5apex.exe!0x01e1eee0 .?AV?$CParticleOperatorDefinition@VC_OP_AlphaDecay@@@@
+r5apex.exe!0x01e1e7d8 .?AV?$CParticleOperatorDefinition@VC_OP_AttractToControlPoint@@@@
+r5apex.exe!0x01e1eff8 .?AV?$CParticleOperatorDefinition@VC_OP_AxisSpin@@@@
+r5apex.exe!0x01e1e970 .?AV?$CParticleOperatorDefinition@VC_OP_BasicMovement@@@@
+r5apex.exe!0x01e15f68 .?AV?$CParticleOperatorDefinition@VC_OP_BoxConstraint@@@@
+r5apex.exe!0x01e1e880 .?AV?$CParticleOperatorDefinition@VC_OP_CPOffsetToPercentageBetweenCPs@@@@
+r5apex.exe!0x01e1f210 .?AV?$CParticleOperatorDefinition@VC_OP_ClampScalar@@@@
+r5apex.exe!0x01e1ecb8 .?AV?$CParticleOperatorDefinition@VC_OP_ClampVector@@@@
+r5apex.exe!0x01e1ebb0 .?AV?$CParticleOperatorDefinition@VC_OP_ColorInterpolate@@@@
+r5apex.exe!0x01e1cec8 .?AV?$CParticleOperatorDefinition@VC_OP_ConstrainDistance@@@@
+r5apex.exe!0x01e1cf48 .?AV?$CParticleOperatorDefinition@VC_OP_ConstrainDistanceToPath@@@@
+r5apex.exe!0x01e1e7a8 .?AV?$CParticleOperatorDefinition@VC_OP_ContinuousEmitter@@@@
+r5apex.exe!0x01e1f028 .?AV?$CParticleOperatorDefinition@VC_OP_ControlpointLight@@@@
+r5apex.exe!0x01e1e9b8 .?AV?$CParticleOperatorDefinition@VC_OP_Cull@@@@
+r5apex.exe!0x01e1f1f8 .?AV?$CParticleOperatorDefinition@VC_OP_DampenToCP@@@@
+r5apex.exe!0x01e1e910 .?AV?$CParticleOperatorDefinition@VC_OP_Decay@@@@
+r5apex.exe!0x01e1ef10 .?AV?$CParticleOperatorDefinition@VC_OP_DecayMaintainCount@@@@
+r5apex.exe!0x01e1f098 .?AV?$CParticleOperatorDefinition@VC_OP_DifferencePreviousParticle@@@@
+r5apex.exe!0x01e1ed48 .?AV?$CParticleOperatorDefinition@VC_OP_DistanceBetweenCPs@@@@
+r5apex.exe!0x01e1ec70 .?AV?$CParticleOperatorDefinition@VC_OP_DistanceBetweenCPsToCP@@@@
+r5apex.exe!0x01e1f168 .?AV?$CParticleOperatorDefinition@VC_OP_DistanceCull@@@@
+r5apex.exe!0x01e1e748 .?AV?$CParticleOperatorDefinition@VC_OP_DistanceEmitter@@@@
+r5apex.exe!0x01e1ec10 .?AV?$CParticleOperatorDefinition@VC_OP_DistanceToCP@@@@
+r5apex.exe!0x01e1e940 .?AV?$CParticleOperatorDefinition@VC_OP_FadeAndKill@@@@
+r5apex.exe!0x01e1f080 .?AV?$CParticleOperatorDefinition@VC_OP_FadeAndKillForTracers@@@@
+r5apex.exe!0x01e1ebf8 .?AV?$CParticleOperatorDefinition@VC_OP_FadeIn@@@@
+r5apex.exe!0x01e1ead8 .?AV?$CParticleOperatorDefinition@VC_OP_FadeInSimple@@@@
+r5apex.exe!0x01e1ed18 .?AV?$CParticleOperatorDefinition@VC_OP_FadeOut@@@@
+r5apex.exe!0x01e1ee20 .?AV?$CParticleOperatorDefinition@VC_OP_FadeOutSimple@@@@
+r5apex.exe!0x01e1e7f0 .?AV?$CParticleOperatorDefinition@VC_OP_ForceBasedOnDistanceToPlane@@@@
+r5apex.exe!0x01e1ee80 .?AV?$CParticleOperatorDefinition@VC_OP_GraphScalar@@@@
+r5apex.exe!0x01e1f110 .?AV?$CParticleOperatorDefinition@VC_OP_GraphVector@@@@
+r5apex.exe!0x01e1ea60 .?AV?$CParticleOperatorDefinition@VC_OP_InheritFromParentParticles@@@@
+r5apex.exe!0x01e1e7c0 .?AV?$CParticleOperatorDefinition@VC_OP_InstantaneousDistanceEmitter@@@@
+r5apex.exe!0x01e1e760 .?AV?$CParticleOperatorDefinition@VC_OP_InstantaneousEmitter@@@@
+r5apex.exe!0x01e1f180 .?AV?$CParticleOperatorDefinition@VC_OP_InterpolateRadius@@@@
+r5apex.exe!0x01e1e988 .?AV?$CParticleOperatorDefinition@VC_OP_LagCompensation@@@@
+r5apex.exe!0x01e1e8c8 .?AV?$CParticleOperatorDefinition@VC_OP_LerpEndCapScalar@@@@
+r5apex.exe!0x01e1ed60 .?AV?$CParticleOperatorDefinition@VC_OP_LerpEndCapVector@@@@
+r5apex.exe!0x01e1eb08 .?AV?$CParticleOperatorDefinition@VC_OP_LerpScalar@@@@
+r5apex.exe!0x01e1ed30 .?AV?$CParticleOperatorDefinition@VC_OP_LerpVector@@@@
+r5apex.exe!0x01e1eb80 .?AV?$CParticleOperatorDefinition@VC_OP_LockToBone@@@@
+r5apex.exe!0x01e1ed90 .?AV?$CParticleOperatorDefinition@VC_OP_LockToSavedSequentialPath@@@@
+r5apex.exe!0x01e1e778 .?AV?$CParticleOperatorDefinition@VC_OP_MaintainEmitter@@@@
+r5apex.exe!0x01e1f1b0 .?AV?$CParticleOperatorDefinition@VC_OP_MaintainSequentialPath@@@@
+r5apex.exe!0x01e1ed00 .?AV?$CParticleOperatorDefinition@VC_OP_MaxVelocity@@@@
+r5apex.exe!0x01e1eb98 .?AV?$CParticleOperatorDefinition@VC_OP_ModelCull@@@@
+r5apex.exe!0x01e1f068 .?AV?$CParticleOperatorDefinition@VC_OP_MoveToHitbox@@@@
+r5apex.exe!0x01e1e9a0 .?AV?$CParticleOperatorDefinition@VC_OP_MovementMaintainOffset@@@@
+r5apex.exe!0x01e1f0c8 .?AV?$CParticleOperatorDefinition@VC_OP_MovementPlaceOnGround@@@@
+r5apex.exe!0x01e1ef28 .?AV?$CParticleOperatorDefinition@VC_OP_MovementRotateParticleAroundAxis@@@@
+r5apex.exe!0x01e1ebe0 .?AV?$CParticleOperatorDefinition@VC_OP_Noise@@@@
+r5apex.exe!0x01e1e790 .?AV?$CParticleOperatorDefinition@VC_OP_NoiseEmitter@@@@
+r5apex.exe!0x01e1eef8 .?AV?$CParticleOperatorDefinition@VC_OP_NormalLock@@@@
+r5apex.exe!0x01e1ec58 .?AV?$CParticleOperatorDefinition@VC_OP_NormalizeVector@@@@
+r5apex.exe!0x01e1f0b0 .?AV?$CParticleOperatorDefinition@VC_OP_Orient2DRelToCP@@@@
+r5apex.exe!0x01e1f0e0 .?AV?$CParticleOperatorDefinition@VC_OP_OrientTo2dDirection@@@@
+r5apex.exe!0x01e1edc0 .?AV?$CParticleOperatorDefinition@VC_OP_OrientTowardPlayer@@@@
+r5apex.exe!0x01e1ea48 .?AV?$CParticleOperatorDefinition@VC_OP_OscillateScalar@@@@
+r5apex.exe!0x01e1ea00 .?AV?$CParticleOperatorDefinition@VC_OP_OscillateScalarSimple@@@@
+r5apex.exe!0x01e1f138 .?AV?$CParticleOperatorDefinition@VC_OP_OscillateVector@@@@
+r5apex.exe!0x01e1e958 .?AV?$CParticleOperatorDefinition@VC_OP_OscillateVectorSimple@@@@
+r5apex.exe!0x01e1e838 .?AV?$CParticleOperatorDefinition@VC_OP_ParentVortices@@@@
+r5apex.exe!0x01e1ee68 .?AV?$CParticleOperatorDefinition@VC_OP_PercentageBetweenCPs@@@@
+r5apex.exe!0x01e1ea90 .?AV?$CParticleOperatorDefinition@VC_OP_PercentageBetweenCPsVector@@@@
+r5apex.exe!0x01e1c3d8 .?AV?$CParticleOperatorDefinition@VC_OP_PlanarConstraint@@@@
+r5apex.exe!0x01e1ee38 .?AV?$CParticleOperatorDefinition@VC_OP_PlaneCull@@@@
+r5apex.exe!0x01e1ecd0 .?AV?$CParticleOperatorDefinition@VC_OP_PositionBetweenCPs@@@@
+r5apex.exe!0x01e1e8e0 .?AV?$CParticleOperatorDefinition@VC_OP_PositionLock@@@@
+r5apex.exe!0x01e1f040 .?AV?$CParticleOperatorDefinition@VC_OP_ProjectileArc@@@@
+r5apex.exe!0x01e1e9d0 .?AV?$CParticleOperatorDefinition@VC_OP_RadiusDecay@@@@
+r5apex.exe!0x01e1eec8 .?AV?$CParticleOperatorDefinition@VC_OP_RampScalarLinear@@@@
+r5apex.exe!0x01e1f150 .?AV?$CParticleOperatorDefinition@VC_OP_RampScalarLinearSimple@@@@
+r5apex.exe!0x01e1e928 .?AV?$CParticleOperatorDefinition@VC_OP_RampScalarSpline@@@@
+r5apex.exe!0x01e1eb20 .?AV?$CParticleOperatorDefinition@VC_OP_RampScalarSplineSimple@@@@
+r5apex.exe!0x01e1e868 .?AV?$CParticleOperatorDefinition@VC_OP_RandomForce@@@@
+r5apex.exe!0x01e1f0f8 .?AV?$CParticleOperatorDefinition@VC_OP_RemapAverageScalarValuetoCP@@@@
+r5apex.exe!0x01e1e8b0 .?AV?$CParticleOperatorDefinition@VC_OP_RemapBoundingVolumetoCP@@@@
+r5apex.exe!0x01e1eb68 .?AV?$CParticleOperatorDefinition@VC_OP_RemapCPVelocityToVector@@@@
+r5apex.exe!0x01e1f198 .?AV?$CParticleOperatorDefinition@VC_OP_RemapCPtoScalar@@@@
+r5apex.exe!0x01e1ec88 .?AV?$CParticleOperatorDefinition@VC_OP_RemapCPtoVector@@@@
+r5apex.exe!0x01e1ece8 .?AV?$CParticleOperatorDefinition@VC_OP_RemapControlPointDirectionToVector@@@@
+r5apex.exe!0x01e1edf0 .?AV?$CParticleOperatorDefinition@VC_OP_RemapDirectionToCPToVector@@@@
+r5apex.exe!0x01e1ea30 .?AV?$CParticleOperatorDefinition@VC_OP_RemapDotProductToScalar@@@@
+r5apex.exe!0x01e1ee98 .?AV?$CParticleOperatorDefinition@VC_OP_RemapModelVolumetoCP@@@@
+r5apex.exe!0x01e1ee50 .?AV?$CParticleOperatorDefinition@VC_OP_RemapScalar@@@@
+r5apex.exe!0x01e1ec28 .?AV?$CParticleOperatorDefinition@VC_OP_RemapSpeed@@@@
+r5apex.exe!0x01e1ed78 .?AV?$CParticleOperatorDefinition@VC_OP_RemapSpeedtoCP@@@@
+r5apex.exe!0x01e1e8f8 .?AV?$CParticleOperatorDefinition@VC_OP_RemapVelocityToVector@@@@
+r5apex.exe!0x01e1eaf0 .?AV?$CParticleOperatorDefinition@VC_OP_RemapWorldCPToScreen@@@@
+r5apex.exe!0x01e1f228 .?AV?$CParticleOperatorDefinition@VC_OP_RenderDecal@@@@
+r5apex.exe!0x01e1f490 .?AV?$CParticleOperatorDefinition@VC_OP_RenderLightSource@@@@
+r5apex.exe!0x01e1f2f8 .?AV?$CParticleOperatorDefinition@VC_OP_RenderModels@@@@
+r5apex.exe!0x00d7ba98 .?AV?$CParticleOperatorDefinition@VC_OP_RenderPoints@@@@
+r5apex.exe!0x01e1f560 .?AV?$CParticleOperatorDefinition@VC_OP_RenderRope@@@@
+r5apex.exe!0x01e1f478 .?AV?$CParticleOperatorDefinition@VC_OP_RenderScreenVelocityRotate@@@@
+r5apex.exe!0x01e1f2e0 .?AV?$CParticleOperatorDefinition@VC_OP_RenderScripts@@@@
+r5apex.exe!0x01e1f4a8 .?AV?$CParticleOperatorDefinition@VC_OP_RenderSprites@@@@
+r5apex.exe!0x01e1f460 .?AV?$CParticleOperatorDefinition@VC_OP_RenderSpritesTrail@@@@
+r5apex.exe!0x01e1ee08 .?AV?$CParticleOperatorDefinition@VC_OP_RestartAfterDuration@@@@
+r5apex.exe!0x01e1e9e8 .?AV?$CParticleOperatorDefinition@VC_OP_RotateVector@@@@
+r5apex.exe!0x01e1eca0 .?AV?$CParticleOperatorDefinition@VC_OP_SetCPOrientationToDirection@@@@
+r5apex.exe!0x01e1eaa8 .?AV?$CParticleOperatorDefinition@VC_OP_SetChildControlPoints@@@@
+r5apex.exe!0x01e1ebc8 .?AV?$CParticleOperatorDefinition@VC_OP_SetControlPointPositions@@@@
+r5apex.exe!0x01e1f1c8 .?AV?$CParticleOperatorDefinition@VC_OP_SetControlPointRotation@@@@
+r5apex.exe!0x01e1eeb0 .?AV?$CParticleOperatorDefinition@VC_OP_SetControlPointToCenter@@@@
+r5apex.exe!0x01e1ea18 .?AV?$CParticleOperatorDefinition@VC_OP_SetControlPointToImpactPoint@@@@
+r5apex.exe!0x01e1eb50 .?AV?$CParticleOperatorDefinition@VC_OP_SetControlPointToPlayer@@@@
+r5apex.exe!0x01e1ec40 .?AV?$CParticleOperatorDefinition@VC_OP_SetControlPointsToParticle@@@@
+r5apex.exe!0x01e1eac0 .?AV?$CParticleOperatorDefinition@VC_OP_SetPerChildControlPoint@@@@
+r5apex.exe!0x01e1f010 .?AV?$CParticleOperatorDefinition@VC_OP_SoundMeterScalar@@@@
+r5apex.exe!0x01e1e898 .?AV?$CParticleOperatorDefinition@VC_OP_Spin@@@@
+r5apex.exe!0x01e1eb38 .?AV?$CParticleOperatorDefinition@VC_OP_SpinUpdate@@@@
+r5apex.exe!0x01e1edd8 .?AV?$CParticleOperatorDefinition@VC_OP_SpinYaw@@@@
+r5apex.exe!0x01e1f1e0 .?AV?$CParticleOperatorDefinition@VC_OP_StopAfterCPDuration@@@@
+r5apex.exe!0x01e1e820 .?AV?$CParticleOperatorDefinition@VC_OP_TimeVaryingForce@@@@
+r5apex.exe!0x01e1e808 .?AV?$CParticleOperatorDefinition@VC_OP_TurbulenceForce@@@@
+r5apex.exe!0x01e1e850 .?AV?$CParticleOperatorDefinition@VC_OP_TwistAroundAxis@@@@
+r5apex.exe!0x01e1ea78 .?AV?$CParticleOperatorDefinition@VC_OP_VectorNoise@@@@
+r5apex.exe!0x01e1eda8 .?AV?$CParticleOperatorDefinition@VC_OP_VelocityDecay@@@@
+r5apex.exe!0x01e1efe0 .?AV?$CParticleOperatorDefinition@VC_OP_VelocityMatchingForce@@@@
+r5apex.exe!0x01e15448 .?AV?$CParticleOperatorDefinition@VC_OP_WorldCollideConstraint@@@@
+r5apex.exe!0x01e1e0f0 .?AV?$CParticleOperatorDefinition@VC_OP_WorldTraceConstraint@@@@
+r5apex.exe!0x01840f58 .?AV?$C_EntityClassList@VC_PointCamera@@@@
+r5apex.exe!0x01bec5b8 .?AV?$C_EntityClassList@VC_TriggerPlayerMovement@@@@
+r5apex.exe!0x01e57bc0 .?AV?$_Ref_count_obj_alloc@V__ExceptionPtr@@U?$_StaticAllocator@H@@@std@@
+r5apex.exe!0x018508f0 .?AVCAimAssistTargets@@
+r5apex.exe!0x018508f8 .?AVCAimAssistTargets@@
+r5apex.exe!0x01063b70 .?AVCAvi@@
+r5apex.exe!0x00d7ad00 .?AVCBSPPack@@
+r5apex.exe!0x0105a178 .?AVCBaseClientRenderTargets@@
+r5apex.exe!0x01e217f8 .?AVCBaseResourcePrecacher@@
+r5apex.exe!0x01e21818 .?AVCBaseResourcePrecacher@@
+r5apex.exe!0x01e219e8 .?AVCBaseResourcePrecacher@@
+r5apex.exe!0x01e22018 .?AVCBaseResourcePrecacher@@
+r5apex.exe!0x01e221e8 .?AVCBaseResourcePrecacher@@
+r5apex.exe!0x01e22208 .?AVCBaseResourcePrecacher@@
+r5apex.exe!0x01e223f8 .?AVCBaseResourcePrecacher@@
+r5apex.exe!0x01e22418 .?AVCBaseResourcePrecacher@@
+r5apex.exe!0x01e22438 .?AVCBaseResourcePrecacher@@
+r5apex.exe!0x01e22458 .?AVCBaseResourcePrecacher@@
+r5apex.exe!0x01e22478 .?AVCBaseResourcePrecacher@@
+r5apex.exe!0x01e225a8 .?AVCBaseResourcePrecacher@@
+r5apex.exe!0x01e22638 .?AVCBaseResourcePrecacher@@
+r5apex.exe!0x01e22658 .?AVCBaseResourcePrecacher@@
+r5apex.exe!0x01e22678 .?AVCBaseResourcePrecacher@@
+r5apex.exe!0x01e22698 .?AVCBaseResourcePrecacher@@
+r5apex.exe!0x01e27068 .?AVCBaseResourcePrecacher@@
+r5apex.exe!0x01e27248 .?AVCBaseResourcePrecacher@@
+r5apex.exe!0x01e27348 .?AVCBaseResourcePrecacher@@
+r5apex.exe!0x01e273d8 .?AVCBaseResourcePrecacher@@
+r5apex.exe!0x01e27938 .?AVCBaseResourcePrecacher@@
+r5apex.exe!0x01e27aa8 .?AVCBaseResourcePrecacher@@
+r5apex.exe!0x01e27dc8 .?AVCBaseResourcePrecacher@@
+r5apex.exe!0x01e28428 .?AVCBaseResourcePrecacher@@
+r5apex.exe!0x01e28598 .?AVCBaseResourcePrecacher@@
+r5apex.exe!0x01e28698 .?AVCBaseResourcePrecacher@@
+r5apex.exe!0x01e286b8 .?AVCBaseResourcePrecacher@@
+r5apex.exe!0x01e28ac8 .?AVCBaseResourcePrecacher@@
+r5apex.exe!0x01e2a318 .?AVCBaseResourcePrecacher@@
+r5apex.exe!0x01e2a3d8 .?AVCBaseResourcePrecacher@@
+r5apex.exe!0x216b7f00 .?AVCBik@@
+r5apex.exe!0x010547a8 .?AVCBoolProperty@@
+r5apex.exe!0x01bd8c00 .?AVCCascadeLightManager@@
+r5apex.exe!0x01dac230 .?AVCCenterPrint@@
+r5apex.exe!0x01e21a80 .?AVCClassMap@@
+r5apex.exe!0x01bfb370 .?AVCClientCollisionEvent@@
+r5apex.exe!0x01059b48 .?AVCClientDLLSharedAppSystems@@
+r5apex.exe!0x01855fd0 .?AVCClientEntityList@@
+r5apex.exe!0x01ad6028 .?AVCClientEntityList@@
+r5apex.exe!0x25261090 .?AVCClientLeafSystem@@
+r5apex.exe!0x25214390 .?AVCClientShadowMgr@@
+r5apex.exe!0x0104efb8 .?AVCClientSound@@
+r5apex.exe!0x01126be0 .?AVCClientState@@
+r5apex.exe!0x01126be8 .?AVCClientState@@
+r5apex.exe!0x01126bf0 .?AVCClientState@@
+r5apex.exe!0x01126bf8 .?AVCClientState@@
+r5apex.exe!0x01be34b0 .?AVCClientThinkList@@
+r5apex.exe!0x0104ad70 .?AVCCmdLibFileLoggingListener@@
+r5apex.exe!0x0104ad30 .?AVCCmdLibStandardLoggingListener@@
+r5apex.exe!0x01832670 .?AVCColorCorrectionMgr@@
+r5apex.exe!0x01198100 .?AVCColorCorrectionSystem@@
+r5apex.exe!0x01054588 .?AVCColorProperty@@
+r5apex.exe!0x01827b80 .?AVCCommandLine@@
+r5apex.exe!0x24532330 .?AVCCountedStringPool@@
+r5apex.exe!0x24532380 .?AVCCountedStringPool@@
+r5apex.exe!0x0182f180 .?AVCCvar@@
+r5apex.exe!0x0104e3f0 .?AVCCvarQuery@@
+r5apex.exe!0x0104cb30 .?AVCDataCache@@
+r5apex.exe!0x01bf7d10 .?AVCDebugOverlayPanel@@
+r5apex.exe!0x010505d8 .?AVCDebugTextureInfoDX11@@
+r5apex.exe!0x01053f38 .?AVCDefaultAccessor@@
+r5apex.exe!0x01055818 .?AVCDefaultCvarQuery@@
+r5apex.exe!0x0184df40 .?AVCEffectsList@@
+r5apex.exe!0x0182a8e0 .?AVCEmptyConVar@@
+r5apex.exe!0x0182a920 .?AVCEmptyConVar@@
+r5apex.exe!0x01e080b0 .?AVCEmptyGameUIConVar@@
+r5apex.exe!0x01e080f0 .?AVCEmptyGameUIConVar@@
+r5apex.exe!0x0105e820 .?AVCEngine@@
+r5apex.exe!0x01192350 .?AVCEngineAPI@@
+r5apex.exe!0x0104d278 .?AVCEngineClient@@
+r5apex.exe!0x01050198 .?AVCEngineConsoleLoggingListener@@
+r5apex.exe!0x0104cc98 .?AVCEngineTraceClient@@
+r5apex.exe!0x0bf4fbe8 .?AVCEngineTraceClient@@
+r5apex.exe!0x0bf583e8 .?AVCEngineTraceClient@@
+r5apex.exe!0x0bf60be8 .?AVCEngineTraceClient@@
+r5apex.exe!0x0bf693e8 .?AVCEngineTraceClient@@
+r5apex.exe!0x0104af58 .?AVCEngineTraceClientDecals@@
+r5apex.exe!0x0104e968 .?AVCEngineUniformRandomStream@@
+r5apex.exe!0x0105dfc0 .?AVCEngineVGui@@
+r5apex.exe!0x0115c480 .?AVCEntityReadInfo@@
+r5apex.exe!0x0182f2f0 .?AVCEventSystem@@
+r5apex.exe!0x01bf4658 .?AVCExampleEffect@@
+r5apex.exe!0x01bf94d0 .?AVCFPS@@
+r5apex.exe!0x24532140 .?AVCFileSystem_Stdio@@
+r5apex.exe!0x24532148 .?AVCFileSystem_Stdio@@
+r5apex.exe!0x01054ad8 .?AVCFloatProperty@@
+r5apex.exe!0x0105c298 .?AVCGameClientExports@@
+r5apex.exe!0x01e07f10 .?AVCGameUI@@
+r5apex.exe!0x0104f9e8 .?AVCGameUIFuncs@@
+r5apex.exe!0x01054b48 .?AVCHFontProperty@@
+r5apex.exe!0x01831200 .?AVCHLClient@@
+r5apex.exe!0x01125678 .?AVCHudTextMessage@@
+r5apex.exe!0x011253a8 .?AVCHudTextureHandleProperty@@
+r5apex.exe!0x0104cde0 .?AVCIVDebugOverlay@@
+r5apex.exe!0x0104cde8 .?AVCIVDebugOverlay@@
+r5apex.exe!0x250efd00 .?AVCIVPMaterialManager@@
+r5apex.exe!0x01befec0 .?AVCInput@@
+r5apex.exe!0x01196460 .?AVCInputStackSystem@@
+r5apex.exe!0x01196540 .?AVCInputSystem@@
+r5apex.exe!0x250d6a40 .?AVCInputWin32@@
+r5apex.exe!0x01054a68 .?AVCIntProperty@@
+r5apex.exe!0x01852d50 .?AVCKeyBindingListenerMgr@@
+r5apex.exe!0x01830ae0 .?AVCKeyValuesSystem@@
+r5apex.exe!0x010535c8 .?AVCLauncherLoggingListener@@
+r5apex.exe!0x01053ec8 .?AVCListOps@TSListTests@@
+r5apex.exe!0x01da5690 .?AVCLoadingDisc@@
+r5apex.exe!0x01197f60 .?AVCLocalize@@
+r5apex.exe!0x0104ae20 .?AVCMDLCache@@
+r5apex.exe!0x24534e58 .?AVCMatQueuedRenderContext@@
+r5apex.exe!0x24534e60 .?AVCMatQueuedRenderContext@@
+r5apex.exe!0x24535028 .?AVCMatRenderContext@@
+r5apex.exe!0x24535030 .?AVCMatRenderContext@@
+r5apex.exe!0x250df8a0 .?AVCMatSystemSurface@@
+r5apex.exe!0x250df8a8 .?AVCMatSystemSurface@@
+r5apex.exe!0x250df8b0 .?AVCMatSystemSurface@@
+r5apex.exe!0x01e226c0 .?AVCMaterialProxyDict@@
+r5apex.exe!0x0104df48 .?AVCMaterialProxyFactory@@
+r5apex.exe!0x245349c0 .?AVCMaterialSystem@@
+r5apex.exe!0x245349c8 .?AVCMaterialSystem@@
+r5apex.exe!0x01bf9360 .?AVCMessageChars@@
+r5apex.exe!0x00d7b670 .?AVCMessageListener@vgui@@
+r5apex.exe!0x0104dfb8 .?AVCModelInfoClient@@
+r5apex.exe!0x0104e0c8 .?AVCModelInfoServer@@
+r5apex.exe!0x01057ec0 .?AVCModelLoader@@
+r5apex.exe!0x0105d380 .?AVCModelRender@@
+r5apex.exe!0x01dac170 .?AVCModelRenderSystem@@
+r5apex.exe!0x01dac188 .?AVCModelRenderSystem@@
+r5apex.exe!0x01da9040 .?AVCMoveHelperClient@@
+r5apex.exe!0x0104de28 .?AVCNetworkStringTableContainer@@
+r5apex.exe!0x0105b760 .?AVCNetworkStringTableContainer@@
+r5apex.exe!0x01e22f60 .?AVCPanelMetaClassMgrImp@@
+r5apex.exe!0x01e23500 .?AVCParticleMgr@@
+r5apex.exe!0x010556d8 .?AVCPhysicsCollision@@
+r5apex.exe!0x0182ebf0 .?AVCPhysicsInterface@@
+r5apex.exe!0x250efc50 .?AVCPhysicsSurfaceProps@@
+r5apex.exe!0x01125788 .?AVCPhysicsSystem@@
+r5apex.exe!0x01db2850 .?AVCPickupList@@
+r5apex.exe!0x0105b748 .?AVCPixelVisibilitySystem@@
+r5apex.exe!0x01827370 .?AVCPolyhedron_TempMemory@@
+r5apex.exe!0x01e05870 .?AVCPoseDebuggerImpl@@
+r5apex.exe!0x0104edd8 .?AVCPrecacheSystem@@
+r5apex.exe!0x01e06f60 .?AVCPrediction@@
+r5apex.exe!0x01830c50 .?AVCProcessUtils@@
+r5apex.exe!0x01053fa8 .?AVCProportionalFloatProperty@@
+r5apex.exe!0x010551c8 .?AVCProportionalIntProperty@@
+r5apex.exe!0x01055348 .?AVCProportionalXPosProperty@@
+r5apex.exe!0x01054518 .?AVCProportionalYPosProperty@@
+r5apex.exe!0x01053db8 .?AVCQueueOps@TSListTests@@
+r5apex.exe!0x0105b1e0 .?AVCQueuedPacketSender@@
+r5apex.exe!0x01e05330 .?AVCRagdollLRURetirement@@
+r5apex.exe!0x0104f568 .?AVCRegistry@@
+r5apex.exe!0x018275f0 .?AVCResListGenerator@@
+r5apex.exe!0x01060f18 .?AVCRopeInitializer@@
+r5apex.exe!0x01e06168 .?AVCRunGameEngine@@
+r5apex.exe!0x0104e1d8 .?AVCSaveRestoreFileSystemPassthrough@@
+r5apex.exe!0x0182b210 .?AVCSchemeManager@@
+r5apex.exe!0x011254b8 .?AVCScreenSpaceEffectManager@@
+r5apex.exe!0x0104ad38 .?AVCScriptLib@@
+r5apex.exe!0x216bd840 .?AVCServer@@
+r5apex.exe!0x01050648 .?AVCShader@Basic@@
+r5apex.exe!0x010507e8 .?AVCShader@BasicForceWireframe@Basic@@
+r5apex.exe!0x01050908 .?AVCShader@Bik@@
+r5apex.exe!0x01050a28 .?AVCShader@Black@@
+r5apex.exe!0x01824960 .?AVCShader@BlurFilter@@
+r5apex.exe!0x01050b48 .?AVCShader@BoxFilterCompute@@
+r5apex.exe!0x01050bc8 .?AVCShader@DebugDrawEnvmapMask@@
+r5apex.exe!0x01050c48 .?AVCShader@DecalModulate@@
+r5apex.exe!0x01050cc8 .?AVCShader@DepthWrite@@
+r5apex.exe!0x01050d48 .?AVCShader@DoFBlurFilterCompute@@
+r5apex.exe!0x01050f08 .?AVCShader@Downsample4x4@@
+r5apex.exe!0x010510a8 .?AVCShader@Downsample@@
+r5apex.exe!0x01051028 .?AVCShader@Downsample_bloom@@
+r5apex.exe!0x01051128 .?AVCShader@Edge@@
+r5apex.exe!0x01051428 .?AVCShader@Engine_Post@@
+r5apex.exe!0x010514a8 .?AVCShader@ExposureAdaptation@@
+r5apex.exe!0x01051708 .?AVCShader@FrameColorCompute@@
+r5apex.exe!0x01051dc8 .?AVCShader@Logluminance@@
+r5apex.exe!0x01051ee8 .?AVCShader@Modulate@@
+r5apex.exe!0x01051f68 .?AVCShader@Occlusion@@
+r5apex.exe!0x010521b8 .?AVCShader@Refract@@
+r5apex.exe!0x010523f8 .?AVCShader@Sky@@
+r5apex.exe!0x010525b8 .?AVCShader@Sprite@@
+r5apex.exe!0x01052778 .?AVCShader@TSAA@@
+r5apex.exe!0x01052cf8 .?AVCShader@UnlitTwoTexture@@
+r5apex.exe!0x01052eb8 .?AVCShader@VisQuery@@
+r5apex.exe!0x01053428 .?AVCShader@Water@@
+r5apex.exe!0x010534a8 .?AVCShader@WriteZ@@
+r5apex.exe!0x01052378 .?AVCShader@screenspace_general@@
+r5apex.exe!0x00d7b258 .?AVCShaderLibConVarAccessor@@
+r5apex.exe!0x012a34d0 .?AVCShaderSystem@@
+r5apex.exe!0x012a34d8 .?AVCShaderSystem@@
+r5apex.exe!0x0104a768 .?AVCSimpleLoggingListener@@
+r5apex.exe!0x2a493068 .?AVCSimpleLoggingListener@@
+r5apex.exe!0x0104a778 .?AVCSimpleWindowsLoggingListener@@
+r5apex.exe!0x01de9688 .?AVCSolidSetDefaults@@
+r5apex.exe!0x01126bd0 .?AVCSplitScreen@@
+r5apex.exe!0x01061b60 .?AVCStaticPropMgr@@
+r5apex.exe!0x01061b68 .?AVCStaticPropMgr@@
+r5apex.exe!0x282cb240 .?AVCStdMemAlloc@@
+r5apex.exe!0x010549f8 .?AVCStringProperty@@
+r5apex.exe!0x01827970 .?AVCStudioRenderContext@@
+r5apex.exe!0x010554a8 .?AVCSurfaceDragDropTarget@@
+r5apex.exe!0x0182b270 .?AVCSystem@@
+r5apex.exe!0x01be6bf0 .?AVCTempEnts@@
+r5apex.exe!0x0182b5c0 .?AVCTextureDictionary@@
+r5apex.exe!0x010550b8 .?AVCTextureIdProperty@@
+r5apex.exe!0x0bf4fe68 .?AVCTraceFilterHitAll@@
+r5apex.exe!0x0bf58668 .?AVCTraceFilterHitAll@@
+r5apex.exe!0x0bf60e68 .?AVCTraceFilterHitAll@@
+r5apex.exe!0x0bf69668 .?AVCTraceFilterHitAll@@
+r5apex.exe!0x0bf71e68 .?AVCTraceFilterHitAll@@
+r5apex.exe!0x0bf7a668 .?AVCTraceFilterHitAll@@
+r5apex.exe!0x0bf82e68 .?AVCTraceFilterHitAll@@
+r5apex.exe!0x0bf8b668 .?AVCTraceFilterHitAll@@
+r5apex.exe!0x0bf93e68 .?AVCTraceFilterHitAll@@
+r5apex.exe!0x0104e028 .?AVCUniformRandomStream@@
+r5apex.exe!0x01055fe8 .?AVCUniformRandomStream@@
+r5apex.exe!0x018285a0 .?AVCUtlCStringConversion@@
+r5apex.exe!0x018297c0 .?AVCUtlNoEscConversion@@
+r5apex.exe!0x0104e878 .?AVCVEfx@@
+r5apex.exe!0x0104f028 .?AVCVEngineServer@@
+r5apex.exe!0x250d6870 .?AVCVGui@@
+r5apex.exe!0x0104e788 .?AVCVRenderView@@
+r5apex.exe!0x01da7970 .?AVCVScriptGameSystem@@
+r5apex.exe!0x01bfa3d0 .?AVCViewEffects@@
+r5apex.exe!0x01dabaf0 .?AVCViewEffects@@
+r5apex.exe!0x01bfb540 .?AVCViewRender@@
+r5apex.exe!0x01125528 .?AVCViewportClientSystem@@
+r5apex.exe!0x0104eb18 .?AVCVoiceServer@@
+r5apex.exe!0x250d6670 .?AVCWin32Surface@@
+r5apex.exe!0x250d6678 .?AVCWin32Surface@@
+r5apex.exe!0x250d6680 .?AVCWin32Surface@@
+r5apex.exe!0x01058948 .?AVC_BaseAnimatingGameSystem@@
+r5apex.exe!0x01decd10 .?AVC_DataObjectAccessSystem@@
+r5apex.exe!0x01e1f578 .?AVC_DefaultParticleSystemQuery@@
+r5apex.exe!0x011600e8 .?AVC_DirtySpatialPartitionEntityList@@
+r5apex.exe!0x01db1c30 .?AVC_GameMovement@@
+r5apex.exe!0x01dcb890 .?AVC_GameRules@@
+r5apex.exe!0x01de0230 .?AVC_GameStringPool@@
+r5apex.exe!0x01bf8a88 .?AVC_GameTimescale@@
+r5apex.exe!0x01ddf540 .?AVC_ParticleSystemQuery@@
+r5apex.exe!0x01df51b8 .?AVC_PrecacheHandler@@
+r5apex.exe!0x01dece28 .?AVC_PrecacheRegister@@
+r5apex.exe!0x01e026f0 .?AVC_PropData@@
+r5apex.exe!0x01df4318 .?AVC_PropSurvivalList@@
+r5apex.exe!0x01bef930 .?AVC_SoundscapeSystem@@
+r5apex.exe!0x01bea940 .?AVC_TEBreakModel@@
+r5apex.exe!0x01bea950 .?AVC_TEBreakModel@@
+r5apex.exe!0x01be6d10 .?AVC_TEEffectDispatch@@
+r5apex.exe!0x01be6d20 .?AVC_TEEffectDispatch@@
+r5apex.exe!0x01be6c70 .?AVC_TEExplosion@@
+r5apex.exe!0x01be6c80 .?AVC_TEExplosion@@
+r5apex.exe!0x0105e388 .?AVC_TEGibEvent@@
+r5apex.exe!0x0105e398 .?AVC_TEGibEvent@@
+r5apex.exe!0x01be3a30 .?AVC_TEPhysicsProp@@
+r5apex.exe!0x01be3a40 .?AVC_TEPhysicsProp@@
+r5apex.exe!0x01e10750 .?AVC_TEProjectileTrail@@
+r5apex.exe!0x01e10760 .?AVC_TEProjectileTrail@@
+r5apex.exe!0x01dde270 .?AVC_TEScriptParticleSystem@@
+r5apex.exe!0x01dde280 .?AVC_TEScriptParticleSystem@@
+r5apex.exe!0x01db0e00 .?AVC_TEScriptParticleSystemOnEntity@@
+r5apex.exe!0x01db0e10 .?AVC_TEScriptParticleSystemOnEntity@@
+r5apex.exe!0x01de3000 .?AVC_TEScriptParticleSystemOnEntityWithPos@@
+r5apex.exe!0x01de3010 .?AVC_TEScriptParticleSystemOnEntityWithPos@@
+r5apex.exe!0x01bee5a0 .?AVC_TEShatterSurface@@
+r5apex.exe!0x01bee5b0 .?AVC_TEShatterSurface@@
+r5apex.exe!0x01beb610 .?AVC_TESoundDispatch@@
+r5apex.exe!0x01beb620 .?AVC_TESoundDispatch@@
+r5apex.exe!0x01063428 .?AVC_TempEntsSystem@@
+r5apex.exe!0x01dcbbd0 .?AVC_TraceFilterSkipTwoEntities@@
+r5apex.exe!0x01dcbc00 .?AVC_TraceFilterSkipTwoEntities@@
+r5apex.exe!0x01dcbc30 .?AVC_TraceFilterSkipTwoEntities@@
+r5apex.exe!0x01dcbc60 .?AVC_TraceFilterSkipTwoEntities@@
+r5apex.exe!0x01dcbc90 .?AVC_TraceFilterSkipTwoEntities@@
+r5apex.exe!0x01dcbcc0 .?AVC_TraceFilterSkipTwoEntities@@
+r5apex.exe!0x01dcbcf0 .?AVC_TraceFilterSkipTwoEntities@@
+r5apex.exe!0x01dcbd20 .?AVC_TraceFilterSkipTwoEntities@@
+r5apex.exe!0x01e15400 .?AVC_TurretList@@
+r5apex.exe!0x01e1c390 .?AVC_WeaponXList@@
+r5apex.exe!0x0113f350 .?AVClientDataBlockReceiver@@
+r5apex.exe!0x0184b380 .?AVClientModeFullscreen@@
+r5apex.exe!0x00d4d470 .?AVDNameStatusNode@@
+r5apex.exe!0x00d4d480 .?AVDNameStatusNode@@
+r5apex.exe!0x00d4d490 .?AVDNameStatusNode@@
+r5apex.exe!0x00d4d4a0 .?AVDNameStatusNode@@
+r5apex.exe!0x01035400 .?AVDenuvoTrialV2@@
+r5apex.exe!0x01823d10 .?AVHardwareConfigDX11@@
+r5apex.exe!0x01063aa8 .?AVIPredictionSystem_Client@@
+r5apex.exe!0x0182caa0 .?AVIVP_BetterDebugmanager@@
+r5apex.exe!0x01194bb0 .?AVImeTextStore@@
+r5apex.exe!0x01194bb8 .?AVImeTextStore@@
+r5apex.exe!0x01194bc0 .?AVImeTextStore@@
+r5apex.exe!0x01194bc8 .?AVImeTextStore@@
+r5apex.exe!0x01194bd0 .?AVImeTextStore@@
+r5apex.exe!0x01194bd8 .?AVImeTextStore@@
+r5apex.exe!0x01194be0 .?AVImeTextStore@@
+r5apex.exe!0x01194be8 .?AVImeTextStore@@
+r5apex.exe!0x01124af8 .?AVMapSettingsReseter@@
+r5apex.exe!0x01e21180 .?AVMonitorDefaultChanges@@
+r5apex.exe!0x01160040 .?AVSVC_UserMessage@@
+r5apex.exe!0x010555c8 .?AVVPanelWrapper@@
+r5apex.exe!0x01e57c70 .?AVbad_alloc@std@@
+r5apex.exe!0x20936fb8 .?AVstl_critical_section_win7@details@Concurrency@@
+r5apex.exe!0x209380a8 .?AVstl_critical_section_win7@details@Concurrency@@
 ```
 
