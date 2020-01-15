@@ -14,5 +14,5 @@ macro_rules! current_target {
 
 #[allow(unused_macros)]
 macro_rules! branch {
-	(pe32 $pe32:tt pe64 $pe64:tt) => ($pe32);
+	(pe32 { $($pe32:tt)* } pe64 $pe64:tt) => { $($pe32)* };
 }

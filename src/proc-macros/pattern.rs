@@ -137,6 +137,8 @@ pub enum Atom {
 	///
 	/// Reads the dword under the cursor and adds it to the saved cursor for the given slot and continues matching.
 	Pir(u8),
+	/// Given a cursor pointing to the vtable follows it to its type name.
+	VTypeName,
 	/// Compares the cursor with the value in the given save slot and fails if they're not equal.
 	Check(u8),
 	/// Checks if the cursor is aligned to `(1 << value)`.
