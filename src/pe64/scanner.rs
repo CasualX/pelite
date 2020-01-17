@@ -241,6 +241,35 @@ impl<'a, 'pat, P: Scan<'a>> Exec<'pat, P> {
 						return false;
 					}
 				},
+				pat::Atom::VTypeName => {
+					branch! {
+						pe32 {
+							fn get<'a, S: Scan<'a>>(scan: S, cursor: u32) -> Option<u32> {
+								if (cursor & 3) != 0 { return None; }
+								let col_ptr = scan.read::<u32>(cursor.wrapping_sub(4))?;
+								let col_rva = scan.pointer(col_ptr)?;
+								let type_ptr = scan.read::<u32>(col_rva.wrapping_add(12))?;
+								let type_rva = scan.pointer(type_ptr)?;
+								Some(type_rva.wrapping_add(8))
+							}
+						}
+						pe64 {
+							fn get<'a, S: Scan<'a>>(scan: S, cursor: u32) -> Option<u32> {
+								if (cursor & 7) != 0 { return None; }
+								let col_ptr = scan.read::<u64>(cursor.wrapping_sub(8))?;
+								let col_rva = scan.pointer(col_ptr)?;
+								let type_rva = scan.read::<u32>(col_rva.wrapping_add(12))?;
+								Some(type_rva.wrapping_add(16))
+							}
+						}
+					}
+					if let Some(cursor) = get(self.pe, self.cursor) {
+						self.cursor = cursor;
+					}
+					else {
+						return false;
+					}
+				},
 				pat::Atom::Check(slot) => {
 					if let Some(&rva) = save.get(slot as usize) {
 						if rva != self.cursor {
