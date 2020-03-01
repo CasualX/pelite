@@ -13,6 +13,7 @@ pub fn print(bin: PeFile<'_>, dll_name: &str) {
 	player_resource(bin, dll_name);
 	view_render(bin, dll_name);
 	client_state(bin, dll_name);
+	projectile_speed(bin, dll_name);
 	println!("```\n");
 }
 
@@ -151,5 +152,15 @@ fn client_state(bin: PeFile<'_>, dll_name: &str) {
 	}
 	else {
 		eprintln!("unable to find LevelName");
+	}
+}
+
+fn projectile_speed(bin: PeFile<'_>, _dll_name: &str) {
+	// Find near the string 'Speed(%f) is greater than sv_maxvelocity(%f)'
+	let mut save = [0; 4];
+	if bin.scanner().finds_code(pat!("488B05${*[24]*\"sv_maxvelocity\"} F30F59BBu4"), &mut save) {
+		let projectile_speed = save[1];
+		println!("CWeaponX!{:#x} m_flProjectileSpeed", projectile_speed);
+		println!("CWeaponX!{:#x} m_flProjectileScale", projectile_speed + 8);
 	}
 }
