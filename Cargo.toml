@@ -1,6 +1,6 @@
 [package]
 name = "pelite"
-version = "0.8.0"
+version = "0.8.1"
 authors = ["Casper <CasualX@users.noreply.github.com>"]
 edition = "2018"
 
@@ -13,6 +13,7 @@ readme = "readme.md"
 
 keywords = ["exe", "dll", "mui", "bin", "pe"]
 categories = ["parser-implementations", "command-line-utilities"]
+exclude = ["tests/pocs/blob"]
 
 license = "MIT"
 
