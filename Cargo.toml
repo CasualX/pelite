@@ -1,6 +1,6 @@
 [package]
 name = "pelite"
-version = "0.7.1"
+version = "0.7.2"
 authors = ["Casper <CasualX@users.noreply.github.com>"]
 
 description = "Lightweight, memory-safe, zero-allocation library for reading and navigating PE binaries."
@@ -12,6 +12,7 @@ readme = "readme.md"
 
 keywords = ["exe", "dll", "mui", "bin", "pe"]
 categories = ["parsing", "command-line-utilities"]
+exclude = ["tests/pocs/blob"]
 
 license = "MIT"
 
