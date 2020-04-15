@@ -33,6 +33,19 @@ pub enum FindError {
 	/// Encountered a directory when expecting a data entry.
 	UnDirectory,
 }
+impl FindError {
+	/// Returns a simple string representation of the error.
+	pub fn to_str(self) -> &'static str {
+		match self {
+			FindError::Pe(err) => err.to_str(),
+			FindError::Bad8Path => "invalid utf8 path",
+			FindError::NotFound => "entry not found",
+			FindError::NoRootPath => "missing '/' root",
+			FindError::UnDataEntry => "unexpected data entry",
+			FindError::UnDirectory => "unexpected directory",
+		}
+	}
+}
 impl From<crate::Error> for FindError {
 	fn from(err: crate::Error) -> FindError {
 		FindError::Pe(err)
@@ -45,19 +58,12 @@ impl From<str::Utf8Error> for FindError {
 }
 impl fmt::Display for FindError {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		error::Error::description(self).fmt(f)
+		self.to_str().fmt(f)
 	}
 }
 impl error::Error for FindError {
 	fn description(&self) -> &str {
-		match self {
-			FindError::Pe(err) => err.description(),
-			FindError::Bad8Path => "Invalid utf8 path",
-			FindError::NotFound => "Entry not found",
-			FindError::NoRootPath => "Missing '/' root",
-			FindError::UnDataEntry => "Unexpected data entry",
-			FindError::UnDirectory => "Unexpected directory",
-		}
+		self.to_str()
 	}
 	fn cause(&self) -> Option<&dyn error::Error> {
 		self.source()
