@@ -87,43 +87,35 @@ impl Error {
 	pub fn is_null(self) -> bool {
 		self == Error::Null
 	}
-}
 
-impl fmt::Display for Error {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+	/// Returns a simple string representation of the error.
+	pub fn to_str(self) -> &'static str {
 		match self {
-			Error::Null => f.write_str("Null address reference"),
-			Error::Bounds => f.write_str("Bounds check failed"),
-			Error::ZeroFill => f.write_str("Zero filled data reference"),
-			Error::Unmapped => f.write_str("Overlay data reference"),
-			Error::Misaligned => f.write_str("Address misaligned"),
-			Error::BadMagic => f.write_str("Unknown magic number"),
-			Error::PeMagic => f.write_str("Retry with the correct parser"),
-			Error::Insanity => f.write_str("Data insanity"),
-			Error::Invalid => f.write_str("Invalid data"),
-			Error::Overflow => f.write_str("Overflow error"),
-			Error::Encoding => f.write_str("Encoding error"),
-			Error::Aliasing => f.write_str("Aliasing error"),
-		}
-	}
-}
-
-impl error::Error for Error {
-	fn description(&self) -> &str {
-		match self {
-			Error::Null => "null address",
-			Error::Bounds => "out of bounds",
-			Error::ZeroFill => "zero fill",
-			Error::Unmapped => "unmapped",
-			Error::Misaligned => "misaligned",
-			Error::BadMagic => "bad magic",
-			Error::PeMagic => "incorrect bitness",
-			Error::Insanity => "insanity",
+			Error::Null => "null address reference",
+			Error::Bounds => "bounds check failed",
+			Error::ZeroFill => "zero filled data reference",
+			Error::Unmapped => "overlay data reference",
+			Error::Misaligned => "address misaligned",
+			Error::BadMagic => "unknown magic number",
+			Error::PeMagic => "try again with correct parser",
+			Error::Insanity => "data insanity",
 			Error::Invalid => "invalid data",
 			Error::Overflow => "overflow error",
 			Error::Encoding => "encoding error",
 			Error::Aliasing => "aliasing error",
 		}
+	}
+}
+
+impl fmt::Display for Error {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		f.write_str(self.to_str())
+	}
+}
+
+impl error::Error for Error {
+	fn description(&self) -> &str {
+		self.to_str()
 	}
 }
 

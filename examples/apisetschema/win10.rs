@@ -1,5 +1,4 @@
 use std::{fmt, mem, slice};
-use std::error::Error as _;
 use pelite::{Result, Error, Pod};
 use pelite::util::AlignTo;
 use super::image::*;
@@ -108,7 +107,7 @@ impl<'a> fmt::Debug for Entry<'a> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		f.debug_struct("Entry")
 			.field("is_sealed", &self.is_sealed())
-			.field("name", &self.name().map(String::from_utf16_lossy).unwrap_or_else(|err| err.description().into()))
+			.field("name", &self.name().map(String::from_utf16_lossy).unwrap_or_else(|err| err.to_string()))
 			.field("values", &self.values())
 			.finish()
 	}
@@ -165,8 +164,8 @@ impl<'a> fmt::Debug for Value<'a> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		f.debug_struct("Value")
 			.field("is_sealed", &self.is_sealed())
-			.field("api_set_name", &self.api_set_name().map(String::from_utf16_lossy).unwrap_or_else(|err| err.description().into()))
-			.field("host_name", &self.host_name().map(String::from_utf16_lossy).unwrap_or_else(|err| err.description().into()))
+			.field("api_set_name", &self.api_set_name().map(String::from_utf16_lossy).unwrap_or_else(|err| err.to_string()))
+			.field("host_name", &self.host_name().map(String::from_utf16_lossy).unwrap_or_else(|err| err.to_string()))
 			.finish()
 	}
 }

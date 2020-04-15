@@ -1,5 +1,5 @@
 
-use std::{io, mem, ptr, slice};
+use std::{io, mem, ptr};
 use std::ffi::OsStr;
 use std::path::Path;
 use std::os::windows::ffi::OsStrExt;
@@ -48,7 +48,7 @@ impl ImageMap {
 					let dos_header = view as *const IMAGE_DOS_HEADER;
 					let nt_header = (view as usize + (*dos_header).e_lfanew as usize) as *const IMAGE_NT_HEADERS64;
 					let size_of = (*nt_header).OptionalHeader.SizeOfImage;
-					let bytes = slice::from_raw_parts_mut(view as *mut u8, size_of as usize);
+					let bytes = ptr::slice_from_raw_parts_mut(view as *mut u8, size_of as usize);
 					return Ok(ImageMap { handle: map, bytes });
 				}
 				let err = io::Error::last_os_error();
@@ -120,7 +120,7 @@ impl FileMap {
 		let vq_result = VirtualQuery(view, &mut mem_basic_info, mem::size_of_val(&mem_basic_info));
 		debug_assert_eq!(vq_result, mem::size_of_val(&mem_basic_info));
 		// Now have enough information to construct the FileMap
-		let bytes = slice::from_raw_parts_mut(view as *mut u8, mem_basic_info.RegionSize as usize);
+		let bytes = ptr::slice_from_raw_parts_mut(view as *mut u8, mem_basic_info.RegionSize as usize);
 		Ok(FileMap { handle: map, bytes })
 	}
 }

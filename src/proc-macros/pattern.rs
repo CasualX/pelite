@@ -55,26 +55,12 @@ pub struct ParsePatError {
 }
 impl fmt::Display for ParsePatError {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		write!(f, "Syntax Error @{}: {}.", self.position, error::Error::description(self))
+		write!(f, "Syntax Error @{}: {}.", self.position, self.kind.to_str())
 	}
 }
 impl error::Error for ParsePatError {
 	fn description(&self) -> &str {
-		match self.kind {
-			PatError::UnpairedHexDigit => "Unpaired hex digit",
-			PatError::UnknownChar => "Unknown character",
-			PatError::ManyOverflow => "Many range exceeded",
-			PatError::ManyRange => "Many bounds nonsensical",
-			PatError::ManyInvalid => "Many invalid syntax",
-			PatError::SaveOverflow => "Save store overflow",
-			PatError::StackError => "Stack unbalanced",
-			PatError::StackInvalid => "Stack must follow jump",
-			PatError::UnclosedQuote => "String missing end quote",
-			PatError::AlignedOperand => "Aligned operand error",
-			PatError::ReadOperand => "Read operand error",
-			PatError::SubPattern => "Sub pattern error",
-			PatError::SubOverflow => "Sub pattern too large",
-		}
+		self.kind.to_str()
 	}
 }
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
@@ -92,6 +78,25 @@ enum PatError {
 	ReadOperand,
 	SubPattern,
 	SubOverflow,
+}
+impl PatError {
+	fn to_str(self) -> &'static str {
+		match self {
+			PatError::UnpairedHexDigit => "unpaired hex digit",
+			PatError::UnknownChar => "unknown character",
+			PatError::ManyOverflow => "many range exceeded",
+			PatError::ManyRange => "many bounds nonsensical",
+			PatError::ManyInvalid => "many invalid syntax",
+			PatError::SaveOverflow => "save store overflow",
+			PatError::StackError => "stack unbalanced",
+			PatError::StackInvalid => "stack must follow jump",
+			PatError::UnclosedQuote => "string missing end quote",
+			PatError::AlignedOperand => "aligned operand error",
+			PatError::ReadOperand => "read operand error",
+			PatError::SubPattern => "sub pattern error",
+			PatError::SubOverflow => "sub pattern too large",
+		}
+	}
 }
 
 //----------------------------------------------------------------
@@ -545,7 +550,7 @@ fn parse_helper(pat: &mut &str, result: &mut Vec<Atom>) -> Result<(), PatError> 
 				save += 1;
 			},
 			// Allow spaces as padding
-			b' ' => {},
+			b' ' | b'\n' | b'\r' | b'\t' => {},
 			// Everything else is illegal
 			_ => {
 				return Err(PatError::UnknownChar);
