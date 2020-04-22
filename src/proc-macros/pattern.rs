@@ -410,10 +410,12 @@ fn parse_helper(pat: &mut &str, result: &mut Vec<Atom>) -> Result<(), PatError> 
 					return Err(PatError::ManyInvalid);
 				}
 				// Turn the lower bound into skip ops
-				if lower_bound >= 256 {
-					result.push(Atom::Rangext((lower_bound >> 8) as u8));
+				if lower_bound > 0 {
+					if lower_bound >= 256 {
+						result.push(Atom::Rangext((lower_bound >> 8) as u8));
+					}
+					result.push(Atom::Skip((lower_bound & 0xff) as u8));
 				}
-				result.push(Atom::Skip((lower_bound & 0xff) as u8));
 				// Second many part is optional
 				if chr == b']' {
 					continue;
