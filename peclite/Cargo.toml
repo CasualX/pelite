@@ -1,0 +1,10 @@
+[package]
+name = "peclite"
+version = "0.1.0"
+
+[lib]
+name = "peclite"
+crate-type = ["staticlib"]
+
+[dependencies]
+pelite = { path = "../" }

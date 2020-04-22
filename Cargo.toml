@@ -14,7 +14,7 @@ categories = ["parser-implementations", "command-line-utilities"]
 exclude = ["tests/pocs/blob"]
 
 [workspace]
-members = [".", "./src/proc-macros", "./wasm"]
+members = [".", "./src/proc-macros", "./wasm", "./peclite"]
 
 [features]
 default = ["mmap", "derive_pod"]

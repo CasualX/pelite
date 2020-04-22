@@ -4,7 +4,7 @@ PE view.
 
 use std::{cmp, slice};
 
-use crate::{Error, Result};
+use crate::Result;
 
 use super::image::*;
 use super::pe::validate_headers;

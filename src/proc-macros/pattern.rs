@@ -172,8 +172,8 @@ pub enum Atom {
 	Nop,
 }
 
-/// Patterns are a vector of [`Atom`](enum.Atom.html)s.
-pub type Pattern = Vec<Atom>;
+/// Patterns are an array of [`Atom`](enum.Atom.html)s.
+pub type Pattern = Box<[Atom]>;
 
 /// Returns the length of the save array needed for this signature.
 pub fn save_len(pat: &[Atom]) -> usize {
@@ -286,7 +286,7 @@ pub fn parse(pat: &str) -> Result<Pattern, ParsePatError> {
 	let mut result = Vec::with_capacity(pat.len() / 2);
 	let mut pat_end = pat;
 	match parse_helper(&mut pat_end, &mut result) {
-		Ok(()) => Ok(result),
+		Ok(()) => Ok(result.into_boxed_slice()),
 		Err(kind) => {
 			let position = pat_end.as_ptr() as usize - pat.as_ptr() as usize;
 			Err(ParsePatError { kind, position })
@@ -595,44 +595,48 @@ mod tests {
 
 	const _: [(); 2] = [(); std::mem::size_of::<Atom>()];
 
+	macro_rules! array {
+		($($tt:tt)*) => { vec![$($tt)*].into_boxed_slice() };
+	}
+
 	#[test]
 	fn patterns() {
 		use self::Atom::*;
 
-		assert_eq!(parse("12 34 56 ? ?"), Ok(vec![Save(0), Byte(0x12), Byte(0x34), Byte(0x56)]));
+		assert_eq!(parse("12 34 56 ? ?"), Ok(array![Save(0), Byte(0x12), Byte(0x34), Byte(0x56)]));
 
-		assert_eq!(parse("B9'?? 68???? E8${'} 8B"), Ok(vec![
+		assert_eq!(parse("B9'?? 68???? E8${'} 8B"), Ok(array![
 			Save(0), Byte(0xB9), Save(1), Skip(2), Byte(0x68), Skip(4), Byte(0xE8), Push(4), Jump4, Save(2), Pop, Byte(0x8B)
 		]));
 
-		assert_eq!(parse("${%{${%{}}}}"), Ok(vec![
+		assert_eq!(parse("${%{${%{}}}}"), Ok(array![
 			Save(0), Push(4), Jump4, Push(1), Jump1, Push(4), Jump4, Push(1), Jump1
 		]));
 
-		assert_eq!(parse("24 5A9e D0 AFBea3 fCdd"), Ok(vec![
+		assert_eq!(parse("24 5A9e D0 AFBea3 fCdd"), Ok(array![
 			Save(0), Byte(0x24), Byte(0x5A), Byte(0x9E), Byte(0xD0), Byte(0xAF), Byte(0xBE), Byte(0xA3), Byte(0xFC), Byte(0xDD)
 		]));
 
-		assert_eq!(parse("\"string\""), Ok(vec![
+		assert_eq!(parse("\"string\""), Ok(array![
 			Save(0), Byte(115), Byte(116), Byte(114), Byte(105), Byte(110), Byte(103)
 		]));
 
-		assert_eq!(parse("*{FF D8 42}"), Ok(vec![
+		assert_eq!(parse("*{FF D8 42}"), Ok(array![
 			Save(0), Push(PTR_SKIP), Ptr, Byte(0xFF), Byte(0xD8), Byte(0x42)
 		]));
-		assert_eq!(parse("*{\"hello\"00}"), Ok(vec![
+		assert_eq!(parse("*{\"hello\"00}"), Ok(array![
 			Save(0), Push(PTR_SKIP), Ptr, Byte(104), Byte(101), Byte(108), Byte(108), Byte(111), Byte(0)
 		]));
 
-		assert_eq!(parse("b8 [16] 50 [13-42] ff"), Ok(vec![
+		assert_eq!(parse("b8 [16] 50 [13-42] ff"), Ok(array![
 			Save(0), Byte(0xb8), Skip(16), Byte(0x50), Skip(13), Many(29), Byte(0xff)
 		]));
 
-		assert_eq!(parse("e9 $ @4"), Ok(vec![
+		assert_eq!(parse("e9 $ @4"), Ok(array![
 			Save(0), Byte(0xe9), Jump4, Aligned(4)
 		]));
 
-		assert_eq!(parse("83 c0 2a ( 6a ? | 68 ? ? ? ? ) e8"), Ok(vec![
+		assert_eq!(parse("83 c0 2a ( 6a ? | 68 ? ? ? ? ) e8"), Ok(array![
 			Save(0), Byte(0x83), Byte(0xc0), Byte(0x2a),
 			Case(3), Byte(0x6a), Skip(1), Break(3),
 			Nop, Byte(0x68), Skip(4), Byte(0xe8),
