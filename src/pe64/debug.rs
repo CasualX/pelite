@@ -143,13 +143,12 @@ impl<'a, P: Pe<'a>> Dir<'a, P> {
 	}
 	/// Gets the raw data of this debug directory entry.
 	pub fn data(&self) -> Option<&'a [u8]> {
-		let image = self.pe.image();
 		let size = self.image.SizeOfData as usize;
 		let offset = match self.pe.align() {
 			Align::File => self.image.PointerToRawData,
 			Align::Section => self.image.AddressOfRawData,
 		} as usize;
-		image.get(offset..offset.wrapping_add(size))
+		self.pe.image_slice(offset, size)
 	}
 	/// Interprets the directory entry.
 	pub fn entry(&self) -> Result<Entry<'a>> {

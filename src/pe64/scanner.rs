@@ -554,7 +554,7 @@ impl<'a, 'pat, P: Pe<'a>> Matches<'pat, P> {
 					// If section overlaps with the scanning range
 					if section.VirtualAddress < self.range.end && u32::wrapping_add(section.VirtualAddress, section.VirtualSize) > self.range.start {
 						// Get the image slice for this section for further processing, skipping corrupt section headers
-						if let Some(slice) = image.get(section.PointerToRawData as usize..u32::wrapping_add(section.PointerToRawData, section.SizeOfRawData) as usize) {
+						if let Some(slice) = self.scanner.pe.image_slice(section.PointerToRawData as usize, section.SizeOfRawData as usize) {
 							if self.next_section(qsbuf, section.VirtualAddress, slice, save) {
 								return true;
 							}
