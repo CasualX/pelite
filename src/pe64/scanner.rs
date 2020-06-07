@@ -547,7 +547,6 @@ impl<'a, 'pat, P: Pe<'a>> Matches<'pat, P> {
 		let mut qsbuf = [0u8; QS_BUF_LEN];
 		let qsbuf = self.setup(&mut qsbuf);
 
-		let image = self.scanner.pe.image();
 		match self.scanner.pe.align() {
 			Align::File => {
 				for section in self.scanner.pe.section_headers() {
@@ -564,7 +563,11 @@ impl<'a, 'pat, P: Pe<'a>> Matches<'pat, P> {
 				false
 			},
 			Align::Section => {
-				self.next_section(qsbuf, 0, image, save)
+				if let Some(slice) = self.scanner.pe.image_slice(self.range.start as usize, (self.range.end - self.range.start) as usize) {
+					self.next_section(qsbuf, self.range.start, slice, save)
+				} else {
+					false
+				}
 			},
 		}
 	}
