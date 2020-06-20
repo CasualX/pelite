@@ -326,7 +326,7 @@ FILETYPE {}
 FILESUBTYPE {}",
 				fixed.dwFileVersion.Major, fixed.dwFileVersion.Minor, fixed.dwFileVersion.Patch, fixed.dwFileVersion.Build,
 				fixed.dwProductVersion.Major, fixed.dwProductVersion.Minor, fixed.dwProductVersion.Patch, fixed.dwProductVersion.Build,
-				fixed.dwFileFlagsMask, fixed.dwFileFlags, fixed.dwFileOS >> 16,	fixed.dwFileOS & 0xffff, fixed.dwFileType, fixed.dwFileSubtype);
+				fixed.dwFileFlagsMask, fixed.dwFileFlags, fixed.dwFileOS >> 16, fixed.dwFileOS & 0xffff, fixed.dwFileType, fixed.dwFileSubtype);
 		}
 		true
 	}
