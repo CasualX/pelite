@@ -2,6 +2,8 @@
 Resources.
 */
 
+use std::prelude::v1::*;
+
 use std::{char, fmt, iter, mem, slice};
 
 use crate::{Pod, Error, Result};

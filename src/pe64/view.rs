@@ -2,6 +2,8 @@
 PE view.
 */
 
+use std::prelude::v1::*;
+
 use std::{cmp, slice};
 
 use crate::{Error, Result};

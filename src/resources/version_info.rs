@@ -40,13 +40,19 @@ fn example(bin: PeFile<'_>) -> Result<(), pelite::resources::FindError> {
 
  */
 
-use std::{char, cmp, fmt, mem, slice};
+#[cfg(not(feature = "std"))]
+use hashbrown::HashMap;
+#[cfg(feature = "std")]
 use std::collections::HashMap;
+
+use std::prelude::v1::*;
+use std::{char, cmp, fmt, mem, slice};
+
 use std::fmt::Write;
 
 use crate::image::VS_FIXEDFILEINFO;
-use crate::{Error, Result, Pod};
-use crate::util::{AlignTo, FmtUtf16, wstrn};
+use crate::util::{wstrn, AlignTo, FmtUtf16};
+use crate::{Error, Pod, Result};
 
 //----------------------------------------------------------------
 
@@ -362,7 +368,7 @@ FILESUBTYPE {}",
 
 /// VersionInfo parsed into HashMaps.
 #[derive(Clone, Debug, Default)]
-#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
+#[cfg_attr(all(feature = "std", feature = "serde"), derive(::serde::Serialize))]
 pub struct FileInfo<'a> {
 	pub fixed: Option<&'a VS_FIXEDFILEINFO>,
 	pub strings: HashMap<Language, HashMap<String, String>>,
@@ -409,7 +415,7 @@ impl<'a> Visit<'a> for FileInfo<'a> {
 	},
 */
 
-#[cfg(feature = "serde")]
+#[cfg(all(feature = "std", feature = "serde"))]
 mod serde {
 	use crate::util::serde_helper::*;
 	use super::{Language, VersionInfo};

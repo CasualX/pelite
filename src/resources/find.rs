@@ -2,8 +2,10 @@
 Resources Find API.
 */
 
-use std::{error, fmt, str};
-use std::path::Path;
+use std::{fmt, str};
+
+#[cfg(feature = "std")]
+use std::{error, path::Path};
 
 use super::{Resources, Directory, Entry, Name, DataEntry};
 
@@ -61,6 +63,7 @@ impl fmt::Display for FindError {
 		self.to_str().fmt(f)
 	}
 }
+#[cfg(feature = "std")]
 impl error::Error for FindError {
 	fn description(&self) -> &str {
 		self.to_str()
@@ -162,6 +165,7 @@ impl<'a> Directory<'a> {
 
 //------------------------------------------------
 
+#[cfg(feature = "std")]
 impl<'a> Resources<'a> {
 	/// Finds a file or directory by its path.
 	pub fn find<P: AsRef<Path> + ?Sized>(&self, path: &P) -> Result<Entry<'a>, FindError> {
@@ -193,6 +197,7 @@ impl<'a> Resources<'a> {
 		}
 	}
 }
+#[cfg(feature = "std")]
 impl<'a> Directory<'a> {
 	/// Finds a file or directory by its path.
 	pub fn find<P: AsRef<Path> + ?Sized>(&self, path: &P) -> Result<Entry<'a>, FindError> {

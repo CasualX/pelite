@@ -14,6 +14,8 @@ Due to small but incompatible differences the two formats are not unified.
 
 #![recursion_limit = "128"]
 #![allow(ellipsis_inclusive_range_patterns)]
+#![cfg_attr(not(feature = "std"), no_std)]
+extern crate no_std_compat as std;
 
 #[macro_use]
 pub mod util;
@@ -61,6 +63,8 @@ pub use self::pe32 as pe;
 pub use self::pe64 as pe;
 
 pub mod base_relocs;
+
+#[cfg(any(feature = "std", feature = "resources_nostd"))]
 pub mod resources;
 pub mod rich_structure;
 pub mod security;
