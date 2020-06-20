@@ -63,6 +63,8 @@ pub use self::pe32 as pe;
 pub use self::pe64 as pe;
 
 pub mod base_relocs;
+
+#[cfg(any(feature = "std", feature = "resources_nostd"))]
 pub mod resources;
 pub mod rich_structure;
 pub mod security;

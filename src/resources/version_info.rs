@@ -40,7 +40,11 @@ fn example(bin: PeFile<'_>) -> Result<(), pelite::resources::FindError> {
 
  */
 
+#[cfg(not(feature = "std"))]
 use hashbrown::HashMap;
+#[cfg(feature = "std")]
+use std::collections::HashMap;
+
 use std::prelude::v1::*;
 use std::{char, cmp, fmt, mem, slice};
 
@@ -364,7 +368,7 @@ FILESUBTYPE {}",
 
 /// VersionInfo parsed into HashMaps.
 #[derive(Clone, Debug, Default)]
-#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
+#[cfg_attr(all(feature = "std", feature = "serde"), derive(::serde::Serialize))]
 pub struct FileInfo<'a> {
 	pub fixed: Option<&'a VS_FIXEDFILEINFO>,
 	pub strings: HashMap<Language, HashMap<String, String>>,
@@ -411,7 +415,7 @@ impl<'a> Visit<'a> for FileInfo<'a> {
 	},
 */
 
-#[cfg(feature = "serde")]
+#[cfg(all(feature = "std", feature = "serde"))]
 mod serde {
 	use crate::util::serde_helper::*;
 	use super::{Language, VersionInfo};
