@@ -2,7 +2,9 @@
 PE file.
 */
 
-use crate::{Result};
+use std::prelude::v1::*;
+
+use crate::Result;
 
 use super::pe::validate_headers;
 use super::{Align, Pe, PeObject};

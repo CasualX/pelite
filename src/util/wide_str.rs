@@ -2,6 +2,7 @@
 Length word prefixed wide string.
 */
 
+use std::prelude::v1::*;
 use std::{char, fmt, mem, slice, ops};
 
 use crate::util::FromBytes;

@@ -38,7 +38,12 @@ Here's a resource to learn more about signature scanning: [wiki.alliedmods.net](
 
 #![allow(ellipsis_inclusive_range_patterns)]
 
-use std::{cmp, error, fmt, mem, str};
+use std::prelude::v1::*;
+
+use std::{cmp, fmt, mem, str};
+
+#[cfg(feature = "std")]
+use std::error;
 
 /// Max recursion depth.
 pub const STACK_SIZE: usize = 4;
@@ -58,6 +63,7 @@ impl fmt::Display for ParsePatError {
 		write!(f, "Syntax Error @{}: {}.", self.position, self.kind.to_str())
 	}
 }
+#[cfg(feature = "std")]
 impl error::Error for ParsePatError {
 	fn description(&self) -> &str {
 		self.kind.to_str()

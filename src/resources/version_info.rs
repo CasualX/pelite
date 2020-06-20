@@ -40,13 +40,15 @@ fn example(bin: PeFile<'_>) -> Result<(), pelite::resources::FindError> {
 
  */
 
+use hashbrown::HashMap;
+use std::prelude::v1::*;
 use std::{char, cmp, fmt, mem, slice};
-use std::collections::HashMap;
+
 use std::fmt::Write;
 
 use crate::image::VS_FIXEDFILEINFO;
-use crate::{Error, Result, Pod};
-use crate::util::{AlignTo, FmtUtf16, wstrn};
+use crate::util::{wstrn, AlignTo, FmtUtf16};
+use crate::{Error, Pod, Result};
 
 //----------------------------------------------------------------
 
@@ -320,7 +322,7 @@ FILETYPE {}
 FILESUBTYPE {}",
 				fixed.dwFileVersion.Major, fixed.dwFileVersion.Minor, fixed.dwFileVersion.Patch, fixed.dwFileVersion.Build,
 				fixed.dwProductVersion.Major, fixed.dwProductVersion.Minor, fixed.dwProductVersion.Patch, fixed.dwProductVersion.Build,
-				fixed.dwFileFlagsMask, fixed.dwFileFlags, fixed.dwFileOS >> 16, fixed.dwFileOS & 0xffff, fixed.dwFileType, fixed.dwFileSubtype);
+				fixed.dwFileFlagsMask, fixed.dwFileFlags, fixed.dwFileOS >> 16,	fixed.dwFileOS & 0xffff, fixed.dwFileType, fixed.dwFileSubtype);
 		}
 		true
 	}

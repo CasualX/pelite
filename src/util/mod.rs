@@ -2,6 +2,8 @@
 Utilities and other tidbits.
 */
 
+use std::prelude::v1::*;
+
 // For testing, assert that structs have specified ABI size
 #[cfg(test)]
 macro_rules! assert_size_of {
@@ -104,6 +106,7 @@ pub fn wstrn(buf: &[u16]) -> &[u16] {
 }
 
 /// Bits of entropy represented in a given byte slice.
+#[cfg(feature = "std")]
 pub fn shannon_entropy(data: &[u8]) -> f64 {
 	let mut map = [0usize; 256];
 

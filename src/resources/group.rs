@@ -40,12 +40,17 @@ for (name, group) in resources.icons().filter_map(Result::ok) {
 
  */
 
-use std::{fmt, io, mem, slice};
-use crate::{Error};
-use crate::util::{AlignTo};
-use crate::Pod;
+use std::prelude::v1::*;
 
-use super::{Resources, FindError};
+#[cfg(feature = "std")]
+use std::io;
+
+use crate::util::AlignTo;
+use crate::Error;
+use crate::Pod;
+use std::{fmt, mem, slice};
+
+use super::{FindError, Resources};
 
 use self::image::*;
 
@@ -129,6 +134,7 @@ impl<'a> GroupResource<'a> {
 			.bytes().map_err(FindError::Pe)
 	}
 	/// Reassemble the file.
+	#[cfg(feature = "std")]
 	pub fn write(&self, dest: &mut dyn io::Write) -> io::Result<()> {
 		// Start by appending the header
 		dest.write(self.image.as_bytes())?;

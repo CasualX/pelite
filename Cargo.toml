@@ -19,9 +19,10 @@ members = [".", "./src/proc-macros", "./wasm"]
 [features]
 default = ["mmap", "derive_pod"]
 unsafe_alignment = []
-mmap = ["libc", "winapi"]
+mmap = ["std", "libc", "winapi"]
 unstable = []
 derive_pod = ["dataview/derive_pod"]
+std = ["no-std-compat/std"]
 
 [badges]
 appveyor = { repository = "CasualX/pelite", branch = "master", service = "github" }
@@ -41,6 +42,8 @@ pelite-macros = { path = "src/proc-macros", version = "0.1.0" }
 dataview = { version = "0.1", default-features = false }
 serde = { version = "1.0", optional = true, features = ["derive"] }
 data-encoding = { version = "2.1", optional = true }
+no-std-compat = { version = "0.4.0", features = ["alloc"] }
+hashbrown = "0.8.0"
 
 [target.'cfg(unix)'.dependencies]
 libc = { version = "0.2", optional = true }

@@ -29,11 +29,13 @@ fn example(file: PeFile<'_>) -> pelite::Result<()> {
 ```
  */
 
+use std::prelude::v1::*;
+
 use std::{cmp, fmt, iter, mem, slice};
 
 use crate::image::{IMAGE_BASE_RELOCATION, IMAGE_REL_BASED_ABSOLUTE};
-use crate::util::{AlignTo, extend_in_place};
-use crate::{Result, Error};
+use crate::util::{extend_in_place, AlignTo};
+use crate::{Error, Result};
 
 /// Base Relocations Directory.
 ///
@@ -44,7 +46,7 @@ pub struct BaseRelocs<'a> {
 }
 impl<'a> BaseRelocs<'a> {
 	pub(crate) unsafe fn new(relocs: &'a [u8]) -> BaseRelocs<'a> {
-		debug_assert!(relocs.as_ptr().aligned_to(4), 0); // $1
+		debug_assert!(relocs.as_ptr().aligned_to(4)); // $1
 		BaseRelocs { relocs }
 	}
 	/// Parse a base relocations directory.
