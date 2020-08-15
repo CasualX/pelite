@@ -65,7 +65,7 @@ fn analyze(config: Config, image: &[u8], file_name: &str) -> pelite::Result<()> 
 	for sect in image.section_headers() {
 		if let Ok(bytes) = image.get_section_bytes(sect) {
 			for s in config.clone().enumerate(sect.VirtualAddress, bytes) {
-				println!("{}!{}:{:#x} {} {:?}", file_name, sect.Name, s.address, if s.has_nul { "!" } else { "?" }, std::str::from_utf8(s.string).unwrap());
+				println!("{}!{:?}:{:#x} {} {:?}", file_name, sect.name(), s.address, if s.has_nul { "!" } else { "?" }, std::str::from_utf8(s.string).unwrap());
 			}
 		}
 	}

@@ -68,9 +68,7 @@ pub fn concommands(bin: PeFile<'_>) -> Vec<ConCommand<'_>> {
 	}
 	let vftable = save[1];
 	// Find all concommands in .data
-	let data_section = bin.section_headers().iter()
-		.find(|sect| &sect.Name == b".data\0\0\0")
-		.expect("unable to find `.data` section");
+	let data_section = bin.section_headers().by_name(".data").expect("unable to find `.data` section");
 	// Find matches by scanning for the ConCommand vtable
 	let pat = pat!("@3 *{'} (0000000000000000|*{}) 0100000000000000 *{}");
 	let mut matches = bin.scanner().matches(pat, data_section.virtual_range());

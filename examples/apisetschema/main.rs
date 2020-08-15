@@ -17,7 +17,7 @@ pub mod win10;
 fn main() {
 	let filemap = pelite::FileMap::open(r"C:\Windows\System32\ApiSetSchema.dll").unwrap();
 	let pefile = pelite::PeFile::from_bytes(&filemap).unwrap();
-	let section = pefile.section_headers().iter().find(|sect| &sect.Name == b".apiset\0").unwrap();
+	let section = pefile.section_headers().by_name(".apiset").unwrap();
 	println!("Section: {:#x?}", section);
 	let apisetschema = win10::Schema::parse(pefile.get_section_bytes(section).unwrap());
 	println!("Contents: {:#?}", apisetschema);

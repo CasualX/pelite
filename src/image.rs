@@ -17,7 +17,6 @@ Sources:
 use std::fmt;
 
 use crate::Pod;
-use crate::util::StringN;
 
 #[cfg(windows)]
 extern "C" {
@@ -363,7 +362,8 @@ pub const IMAGE_SCN_MEM_WRITE: u32              = 0x80000000;
 #[cfg_attr(feature = "serde", derive(::serde::Serialize))]
 #[repr(C)]
 pub struct IMAGE_SECTION_HEADER {
-	pub Name: StringN<[u8; IMAGE_SIZEOF_SHORT_NAME]>,
+	#[cfg_attr(feature = "serde", serde(serialize_with = "crate::wrap::sections::serialize_name"))]
+	pub Name: [u8; IMAGE_SIZEOF_SHORT_NAME],
 	pub VirtualSize: u32,
 	pub VirtualAddress: u32,
 	pub SizeOfRawData: u32,
@@ -373,15 +373,6 @@ pub struct IMAGE_SECTION_HEADER {
 	pub NumberOfRelocations: u16,
 	pub NumberOfLinenumbers: u16,
 	pub Characteristics: u32,
-}
-
-impl IMAGE_SECTION_HEADER {
-	pub fn virtual_range(&self) -> std::ops::Range<u32> {
-		self.VirtualAddress..u32::wrapping_add(self.VirtualAddress, self.VirtualSize)
-	}
-	pub fn raw_range(&self) -> std::ops::Range<u32> {
-		self.PointerToRawData..u32::wrapping_add(self.PointerToRawData, self.SizeOfRawData)
-	}
 }
 
 //----------------------------------------------------------------
