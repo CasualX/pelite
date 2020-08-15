@@ -40,7 +40,7 @@ fn tiny_c_1024() {
 		assert_eq!(data_dir.Size, 0);
 	}
 
-	let sections = file.section_headers();
+	let sections = file.section_headers().as_slice();
 	assert_eq!(sections[0].VirtualSize, 0x4);
 	assert_eq!(sections[0].VirtualAddress, 0x1000);
 	assert_eq!(sections[0].SizeOfRawData, 0x200);
@@ -74,7 +74,7 @@ fn tiny_c_468() {
 		assert_eq!(data_dir.Size, 0);
 	}
 
-	let sections = file.section_headers();
+	let sections = file.section_headers().as_slice();
 	assert_eq!(sections[0].VirtualSize, 0x4);
 	assert_eq!(sections[0].VirtualAddress, 0x1D0);
 	assert_eq!(sections[0].SizeOfRawData, 0x4);
@@ -104,7 +104,7 @@ fn tiny_356() {
 
 	assert_eq!(file.data_directory().len(), image::IMAGE_NUMBEROF_DIRECTORY_ENTRIES);
 
-	let sections = file.section_headers();
+	let sections = file.section_headers().as_slice();
 	assert_eq!(sections[0].VirtualSize, 0x4);
 	assert_eq!(sections[0].VirtualAddress, 0x160);
 	assert_eq!(sections[0].SizeOfRawData, 0x4);

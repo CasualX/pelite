@@ -58,6 +58,7 @@ mod pe;
 mod view;
 mod file;
 mod headers;
+pub(crate) mod sections;
 pub(crate) mod exports;
 pub(crate) mod imports;
 mod load_config;

@@ -90,7 +90,7 @@ pub fn convars(bin: PeFile<'_>) -> Vec<ConVar<'_>> {
 	// Get the virtual address of the ConVar vtable
 	let vftable = bin.optional_header().ImageBase + save[1] as u64;
 	// Find the data section
-	let data_section = bin.section_headers().iter().find(|section| &section.Name == b".data\0\0\0").unwrap();
+	let data_section = bin.section_headers().by_name(".data").unwrap();
 	// Scan the data section for pointers to the vtable
 	let data_data = bin.derva_slice::<u64>(data_section.VirtualAddress, data_section.SizeOfRawData as usize / 8).unwrap();
 	let mut convars = Vec::new();
