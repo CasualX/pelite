@@ -27,15 +27,7 @@ pub mod stringify;
 #[path = "proc-macros/pattern.rs"]
 pub mod pattern;
 
-#[macro_export]
-macro_rules! pattern {
-	($s:literal) => {{
-		#[$crate::pattern_attribute]
-		const PATTERN: &[$crate::pattern::Atom] = &pattern!($s); PATTERN
-	}};
-}
-#[doc(hidden)]
-pub use pelite_macros::pattern_attribute;
+pub use pelite_macros::pattern;
 
 mod error;
 pub use self::error::{Error, Result};
