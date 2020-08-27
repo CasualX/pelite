@@ -599,6 +599,7 @@ pub(crate) fn serialize_pe<'a, P: Pe<'a>, S: serde::Serializer>(pe: P, serialize
 	state.serialize_field("tls", &pe.tls().ok())?;
 	state.serialize_field("load_config", &pe.load_config().ok())?;
 	state.serialize_field("security", &pe.security().ok())?;
+	#[cfg(any(feature = "std", feature = "resources_nostd"))]
 	state.serialize_field("resources", &pe.resources().ok())?;
 	state.end()
 }

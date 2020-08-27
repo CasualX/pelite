@@ -186,6 +186,7 @@ impl<'a> fmt::Debug for Block<'a> {
 mod serde {
 	use crate::util::serde_helper::*;
 	use super::BaseRelocs;
+	use std::prelude::v1::*;
 
 	impl<'a> Serialize for BaseRelocs<'a> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
