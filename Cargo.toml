@@ -22,7 +22,7 @@ unsafe_alignment = []
 mmap = ["std", "libc", "winapi"]
 unstable = []
 derive_pod = ["dataview/derive_pod"]
-std = ["no-std-compat/std"]
+std = ["no-std-compat/std", "serde/std"]
 resources_nostd = ["hashbrown"]
 
 [badges]
@@ -41,7 +41,7 @@ default-target = "x86_64-pc-windows-msvc"
 [dependencies]
 pelite-macros = { path = "src/proc-macros", version = "0.1.0" }
 dataview = { version = "0.1", default-features = false }
-serde = { version = "1.0", optional = true, features = ["derive"] }
+serde = { version = "1.0", optional = true, default-features = false, features = ["derive", "alloc"] }
 data-encoding = { version = "2.1", optional = true }
 no-std-compat = { version = "0.4.0", features = ["alloc"] }
 hashbrown = { version = "0.8.0", optional = true }
