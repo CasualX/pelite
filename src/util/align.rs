@@ -1,16 +1,4 @@
 
-/// Ensures alignment of at least 16 bytes.
-#[repr(C, align(16))]
-pub struct Align16<T>(pub T);
-
-/// Ensures alignment of at least 512 bytes.
-#[repr(C, align(512))]
-pub struct Align512<T>(pub T);
-
-/// Ensures alignment of at least 4K bytes.
-#[repr(C, align(4096))]
-pub struct Align4K<T>(pub T);
-
 /// Helper to implement generic alignment operator.
 pub trait AlignTo {
 	type TAlign;
