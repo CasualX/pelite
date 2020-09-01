@@ -1,5 +1,7 @@
 use proc_macro::*;
 
+use pelite_pattern as pattern;
+
 /// Compile time pattern parser.
 ///
 /// Pending function-like proc-macro stabilisation this attribute does a textual replacement of `pattern!` invocations.
@@ -71,6 +73,3 @@ fn parse_str_literal(input: &str) -> (usize, String) {
 	(consumed, string)
 }
 
-// Total hack to get the pattern parse code in here :)
-#[allow(unused)]
-mod pattern;

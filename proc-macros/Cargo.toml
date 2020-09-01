@@ -12,3 +12,6 @@ license = "MIT"
 [lib]
 proc-macro = true
 path = "lib.rs"
+
+[dependencies]
+pelite-pattern = { version = "0.1", path = "../pattern" }

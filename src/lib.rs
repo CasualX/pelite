@@ -24,8 +24,7 @@ pub mod image;
 
 pub mod stringify;
 
-#[path = "proc-macros/pattern.rs"]
-pub mod pattern;
+pub use pelite_pattern as pattern;
 
 #[macro_export]
 macro_rules! pattern {

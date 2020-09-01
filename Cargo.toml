@@ -14,7 +14,7 @@ categories = ["parser-implementations", "command-line-utilities"]
 exclude = ["tests/pocs/blob"]
 
 [workspace]
-members = [".", "./src/proc-macros", "./wasm"]
+members = [".", "./proc-macros", "./wasm"]
 
 [features]
 default = ["mmap", "derive_pod"]
@@ -22,7 +22,7 @@ unsafe_alignment = []
 mmap = ["std", "libc", "winapi"]
 unstable = []
 derive_pod = ["dataview/derive_pod"]
-std = ["no-std-compat/std", "serde/std"]
+std = ["pelite-pattern/std", "no-std-compat/std", "serde/std"]
 resources_nostd = ["hashbrown"]
 
 [badges]
@@ -39,7 +39,8 @@ all-features = true
 default-target = "x86_64-pc-windows-msvc"
 
 [dependencies]
-pelite-macros = { path = "src/proc-macros", version = "0.1.0" }
+pelite-macros = { path = "./proc-macros", version = "0.1.0" }
+pelite-pattern = { path = "./pattern", version = "0.1.0" }
 dataview = { version = "0.1", default-features = false }
 serde = { version = "1.0", optional = true, default-features = false, features = ["derive", "alloc"] }
 data-encoding = { version = "2.1", optional = true }
