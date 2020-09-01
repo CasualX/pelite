@@ -4,44 +4,30 @@ use pelite_pattern as pattern;
 
 /// Compile time pattern parser.
 ///
-/// Pending function-like proc-macro stabilisation this attribute does a textual replacement of `pattern!` invocations.
-/// The macro invocation is replaced with a const array expression of the pattern atoms.
-///
-/// See `pelite::pattern` macro for the macro rules wrapper around this implementation detail.
-///
 /// ```ignore
-/// #[pattern_attribute]
-/// const PATTERN: &[pelite::pattern::Atom] = &pattern!("pattern string");
+/// const PATTERN: &[pelite::pattern::Atom] = pattern!("pattern string");
 /// ```
-#[proc_macro_attribute]
-pub fn pattern_attribute(_args: TokenStream, input: TokenStream) -> TokenStream {
-	let input = input.to_string();
-	let mut input: &str = &input;
-	let mut result = String::new();
-	while let Some(pos) = input.find("pattern!") {
-		// Add all the text before the input
-		result.push_str(&input[..pos]);
-		// Find, parse and splice the pattern string
-		let (consumed, string) = parse_str_literal(&input[pos + 8..]);
-		let pattern = match pattern::parse(&string) {
-			Ok(pattern) => pattern,
-			Err(err) => panic!("invalid pattern syntax: {}", err),
-		};
-		result.push_str(&format!("{{ use ::pelite::pattern::Atom::*; {:?} }}", pattern));
-		// Continue looking for other patterns to parse
-		input = &input[pos + 8 + consumed..];
-	}
-	// Add all the remaining text and parse
-	result.push_str(input);
-	result.parse().unwrap()
+#[proc_macro]
+pub fn pattern(input: TokenStream) -> TokenStream {
+	let input = input.into_iter().collect::<Vec<_>>();
+
+	let string = match &input[..] {
+		[TokenTree::Literal(lit)] => parse_str_literal(&lit),
+		_ => panic!("expected a single string literal to parse"),
+	};
+
+	let pattern = match pattern::parse(&string) {
+		Ok(pattern) => pattern,
+		Err(err) => panic!("invalid pattern syntax: {}", err),
+	};
+
+	format!("{{ use ::pelite::pattern::Atom::*; &{:?} }}", pattern).parse().unwrap()
 }
 
-fn parse_str_literal(input: &str) -> (usize, String) {
+fn parse_str_literal(input: &Literal) -> String {
+	let input = input.to_string();
 	let mut chars = input.chars();
 	let mut string = String::new();
-	if chars.next() != Some('(') {
-		panic!("expected macro invocation with parenthesis")
-	}
 	if chars.next() != Some('"') {
 		panic!("expected string literal starting with a `\"` and no extraneous whitespace");
 	}
@@ -66,10 +52,6 @@ fn parse_str_literal(input: &str) -> (usize, String) {
 		};
 		string.push(chr);
 	}
-	if chars.next() != Some(')') {
-		panic!("expected macro invocation with parenthesis and no extraneous whitespace");
-	}
-	let consumed = chars.as_str().as_ptr() as usize - input.as_ptr() as usize;
-	(consumed, string)
+	string
 }
 

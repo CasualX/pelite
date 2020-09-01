@@ -8,6 +8,8 @@ use std::ops::Range;
 use super::Pe;
 use super::image::*;
 
+pub use crate::wrap::sections::*;
+
 /// Describes the PE headers.
 #[derive(Copy, Clone)]
 pub struct Headers<P> {

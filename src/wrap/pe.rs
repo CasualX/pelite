@@ -93,7 +93,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 		}
 	}
 	#[inline]
-	pub fn section_headers(&self) -> &'a [image::IMAGE_SECTION_HEADER] {
+	pub fn section_headers(&self) -> &'a super::sections::SectionHeaders {
 		match self {
 			Wrap::T32(pe32) => pe32.section_headers(),
 			Wrap::T64(pe64) => pe64.section_headers(),
