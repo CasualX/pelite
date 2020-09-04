@@ -1,6 +1,5 @@
 use std::fmt;
 use super::{Resources, Directory, Entry};
-use crate::stringify::RSRC_TYPES;
 
 /// Art used to format a directory tree.
 #[derive(Debug)]
@@ -87,7 +86,7 @@ impl<'a, 'd> TreeFmt<'a, 'd> {
 			f.write_str(prefix)?;
 			// Print the file_name
 			match e.name() {
-				Ok(name) => write!(f, "{}", name.rename_id(if root { &RSRC_TYPES } else { &[] })),
+				Ok(name) => write!(f, "{}", name.rename_id(if root { &super::RSRC_TYPES } else { &[] })),
 				Err(err) => write!(f, "{}", err),
 			}.and_then(|_| {
 				f.write_str(if e.is_dir() { "/\n" } else { "\n" })

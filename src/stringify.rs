@@ -255,14 +255,6 @@ enum1! {
 	RT_MANIFEST => "RT_MANIFEST",
 }
 
-pub(crate) static RSRC_TYPES: [Option<&str>; 25] = [
-	/* 0*/ None, Some("#CURSOR"), Some("#BITMAP"), Some("#ICON"), Some("#MENU"),
-	/* 5*/ Some("#DIALOG"), Some("#STRING"), Some("#FONTDIR"), Some("#FONT"), Some("#ACCELERATOR"),
-	/*10*/ Some("#RCDATA"), Some("#MESSAGETABLE"), Some("#GROUP_CURSOR"), None, Some("#GROUP_ICON"),
-	/*15*/ None, Some("#VERSION"), Some("#DLGINCLUDE"), None, Some("#PLUGPLAY"),
-	/*20*/ Some("#VXD"), Some("#ANICURSOR"), Some("#ANIICON"), Some("#HTML"), Some("#MANIFEST"),
-];
-
 enum1! {
 	/// Stringifies the `IMAGE_REL_BASED_*` constants for [`IMAGE_BASE_RELOCATION` types](../image/struct.IMAGE_BASE_RELOCATION.html).
 	RelocType(reloc_type: u8),

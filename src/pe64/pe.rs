@@ -549,6 +549,7 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	/// See the [resources](resources/index.html) module for more information.
 	///
 	/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) if the image has no resources. Any other error indicates some form of corruption.
+	#[cfg(any(feature = "std", feature = "resources_nostd"))]
 	fn resources(self) -> Result<crate::resources::Resources<'a>> where Self: Copy {
 		let datadir = self.data_directory().get(IMAGE_DIRECTORY_ENTRY_RESOURCE).ok_or(Error::Bounds)?;
 		let bytes = self.slice_bytes(datadir.VirtualAddress)?;

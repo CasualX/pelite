@@ -228,7 +228,7 @@ impl<'a> Name<'a> {
 				}
 				// Followed by a predefined resource type name
 				else {
-					match crate::stringify::RSRC_TYPES.get(id as usize) {
+					match RSRC_TYPES.get(id as usize) {
 						Some(&Some(name)) if string == name => true,
 						_ => false,
 					}
@@ -451,6 +451,16 @@ impl<'a> fmt::Debug for DataEntry<'a> {
 
 //----------------------------------------------------------------
 
+static RSRC_TYPES: [Option<&str>; 25] = [
+	/* 0*/ None, Some("#CURSOR"), Some("#BITMAP"), Some("#ICON"), Some("#MENU"),
+	/* 5*/ Some("#DIALOG"), Some("#STRING"), Some("#FONTDIR"), Some("#FONT"), Some("#ACCELERATOR"),
+	/*10*/ Some("#RCDATA"), Some("#MESSAGETABLE"), Some("#GROUP_CURSOR"), None, Some("#GROUP_ICON"),
+	/*15*/ None, Some("#VERSION"), Some("#DLGINCLUDE"), None, Some("#PLUGPLAY"),
+	/*20*/ Some("#VXD"), Some("#ANICURSOR"), Some("#ANIICON"), Some("#HTML"), Some("#MANIFEST"),
+];
+
+//----------------------------------------------------------------
+
 /*
 	[
 		{
@@ -479,7 +489,7 @@ mod serde {
 	impl<'a> Serialize for NamedDirectoryEntry<'a> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			let mut state = serializer.serialize_struct("DirectoryEntry", 2)?;
-			state.serialize_field("name", &self.0.name().ok().map(|name| name.rename_id(&crate::stringify::RSRC_TYPES)))?;
+			state.serialize_field("name", &self.0.name().ok().map(|name| name.rename_id(&super::RSRC_TYPES)))?;
 			state.serialize_field(if self.0.is_dir() { "directory" } else { "data" }, &self.0.entry().ok())?;
 			state.end()
 		}

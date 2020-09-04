@@ -260,6 +260,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 		}
 	}
 	#[inline]
+	#[cfg(any(feature = "std", feature = "resources_nostd"))]
 	pub fn resources(&self) -> Result<crate::resources::Resources<'a>> {
 		match self {
 			Wrap::T32(pe32) => pe32.resources(),
