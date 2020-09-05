@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [0.9.0] 2020-09-05
+
+- Renamed resources icons and cursors methods.
+- Refactored resources paths.
+- Removed Apex Legends analysis into the apexbot repository.
+- Added function to get the save length required for a pattern.
+- Fixed incorrect parsing of square brackets when the lower bound is zero.
+- Improved findsig utility displaying the right number of save columns.
+- Added JSON output to findsig utility.
+- Removed DosImage section from serialized PE headers.
+- Added newtype wrappers for section headers.
+- Added method to easily search for section header by name.
+- Fixed optional mmap feature breaking the build if not present.
+- Refactored Pod trait into its own crate: dataview.
+- Relaxed image size check in PeView.
+- Added no_std support, thanks h33p!
+- Removed proc-macro expression workaround.
+- Removed align structs.
+- Fixed feature cfg errors and warnings.
+
 ## [0.8.1] 2020-04-15
 
 Small patch to remove the `pocs/blob` file from the published crate.
