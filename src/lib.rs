@@ -32,7 +32,9 @@ pub use pelite_macros::pattern;
 mod error;
 pub use self::error::{Error, Result};
 
+#[cfg(feature = "mmap")]
 mod mmap;
+#[cfg(feature = "mmap")]
 pub use self::mmap::*;
 
 pub mod pe64;
