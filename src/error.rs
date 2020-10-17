@@ -118,9 +118,9 @@ impl fmt::Display for Error {
 
 #[cfg(feature = "std")]
 impl error::Error for Error {
-	fn description(&self) -> &str {
-		self.to_str()
-	}
+    fn source(&self) -> Option<&(dyn error::Error + 'static)> {
+        None
+    }
 }
 
 /// Specialized `Result` type for PE errors.
