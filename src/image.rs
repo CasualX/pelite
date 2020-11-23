@@ -397,7 +397,7 @@ pub struct IMAGE_EXPORT_DIRECTORY {
 
 #[derive(Copy, Clone, Debug)]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize))]
-#[repr(C)]
+#[repr(packed)]
 pub struct IMAGE_IMPORT_DESCRIPTOR {
 	pub OriginalFirstThunk: u32,
 	pub TimeDateStamp: u32,
