@@ -55,4 +55,4 @@ winapi = { version = "0.3", optional = true, features = ["fileapi", "memoryapi",
 [dev-dependencies]
 rand = "0.5"
 lde = "0.3"
-format_xml = "0.1"
+format_xml = "0.2"
