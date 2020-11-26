@@ -49,7 +49,7 @@ fn main() {
 	let vguimatsurface_dll  = open(csgo_path, "bin/vguimatsurface.dll").unwrap();
 	let vphysics_dll        = open(csgo_path, "bin/vphysics.dll").unwrap();
 	let vstdlib_dll         = open(csgo_path, "bin/vstdlib.dll").unwrap();
-	let client_dll          = open(csgo_path, "csgo/bin/client_panorama.dll").unwrap();
+	let client_dll          = open(csgo_path, "csgo/bin/client.dll").unwrap();
 	let matchmaking_dll     = open(csgo_path, "csgo/bin/matchmaking.dll").unwrap();
 	let server_dll          = open(csgo_path, "csgo/bin/server.dll").unwrap();
 
@@ -74,10 +74,10 @@ fn main() {
 	cvars::print(engine_file, "engine.dll");
 
 	println!("## Client.dll\n");
-	interfaces::print(client_file, "client_panorama.dll");
-	cvars::print(client_file, "client_panorama.dll");
-	kbutton::print(client_file, "client_panorama.dll");
-	classes::print(client_file, "client_panorama.dll");
+	interfaces::print(client_file, "client.dll");
+	cvars::print(client_file, "client.dll");
+	kbutton::print(client_file, "client.dll");
+	classes::print(client_file, "client.dll");
 	datamaps::print(client_file);
 	recvtables::print(client_file);
 	weapondata::print(client_file);
