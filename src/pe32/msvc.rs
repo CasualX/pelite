@@ -7,6 +7,8 @@ References:
 [2]: [Reversing Microsoft Visual C++ Part II: Classes, Methods and RTTI](http://www.openrce.org/articles/full_view/23)  
 */
 
+use std::mem;
+
 use crate::{util::CStr, Pod};
 
 use super::Ptr;
@@ -256,19 +258,16 @@ unsafe impl Pod for RTTIBaseClassDescriptor {}
 
 //----------------------------------------------------------------
 
-#[test]
-fn sizes() {
-	assert_size_of!(8, TypeDescriptor); // Unsized
-	assert_size_of!(12, PMD);
-	assert_size_of!(36, FuncInfo);
-	assert_size_of!(8, UnwindMapEntry);
-	assert_size_of!(20, TryBlockMapEntry);
-	assert_size_of!(16, HandlerType);
-	assert_size_of!(8, ESTypeList);
-	assert_size_of!(16, ThrowInfo);
-	assert_size_of!(4, CatchableTypeArray); // Unsized
-	assert_size_of!(28, CatchableType);
-	assert_size_of!(20, RTTICompleteObjectLocator);
-	assert_size_of!(16, RTTIClassHierarchyDescriptor);
-	assert_size_of!(24, RTTIBaseClassDescriptor);
-}
+const _: [(); 8] = [(); mem::size_of::<TypeDescriptor>()]; // Unsized
+const _: [(); 12] = [(); mem::size_of::<PMD>()];
+const _: [(); 36] = [(); mem::size_of::<FuncInfo>()];
+const _: [(); 8] = [(); mem::size_of::<UnwindMapEntry>()];
+const _: [(); 20] = [(); mem::size_of::<TryBlockMapEntry>()];
+const _: [(); 16] = [(); mem::size_of::<HandlerType>()];
+const _: [(); 8] = [(); mem::size_of::<ESTypeList>()];
+const _: [(); 16] = [(); mem::size_of::<ThrowInfo>()];
+const _: [(); 4] = [(); mem::size_of::<CatchableTypeArray>()]; // Unsized
+const _: [(); 28] = [(); mem::size_of::<CatchableType>()];
+const _: [(); 20] = [(); mem::size_of::<RTTICompleteObjectLocator>()];
+const _: [(); 16] = [(); mem::size_of::<RTTIClassHierarchyDescriptor>()];
+const _: [(); 24] = [(); mem::size_of::<RTTIBaseClassDescriptor>()];

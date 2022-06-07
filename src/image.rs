@@ -14,7 +14,7 @@ Sources:
 #![allow(non_snake_case)]
 #![allow(non_camel_case_types)]
 
-use std::fmt;
+use std::{fmt, mem};
 
 use crate::Pod;
 
@@ -1007,40 +1007,37 @@ unsafe impl Pod for IMAGE_DEBUG_VC_FEATURE {}
 
 //----------------------------------------------------------------
 
-#[test]
-fn sizes() {
-	assert_size_of!(64, IMAGE_DOS_HEADER);
-	assert_size_of!(20, IMAGE_FILE_HEADER);
-	assert_size_of!(8, IMAGE_DATA_DIRECTORY);
-	assert_size_of!(96, IMAGE_OPTIONAL_HEADER32); // Unsized
-	assert_size_of!(112, IMAGE_OPTIONAL_HEADER64); // Unsized
-	assert_size_of!(120, IMAGE_NT_HEADERS32); // Unsized
-	assert_size_of!(136, IMAGE_NT_HEADERS64); // Unsized
-	assert_size_of!(40, IMAGE_SECTION_HEADER);
-	assert_size_of!(40, IMAGE_EXPORT_DIRECTORY);
-	assert_size_of!(20, IMAGE_IMPORT_DESCRIPTOR);
-	assert_size_of!(16, IMAGE_RESOURCE_DIRECTORY);
-	assert_size_of!(8, IMAGE_RESOURCE_DIRECTORY_ENTRY);
-	assert_size_of!(16, IMAGE_RESOURCE_DATA_ENTRY);
-	assert_size_of!(8, IMAGE_BASE_RELOCATION);
-	assert_size_of!(18 * 4, IMAGE_LOAD_CONFIG_DIRECTORY32);
-	assert_size_of!(28 * 4, IMAGE_LOAD_CONFIG_DIRECTORY64);
-	assert_size_of!(3 * 4, IMAGE_LOAD_CONFIG_CODE_INTEGRITY);
-	assert_size_of!(2 * 4, IMAGE_DYNAMIC_RELOCATION_TABLE); // Unsized
-	assert_size_of!(2 * 4, IMAGE_DYNAMIC_RELOCATION32); // Unsized
-	assert_size_of!(4 * 4, IMAGE_DYNAMIC_RELOCATION64); // Unsized
-	assert_size_of!(22 * 4, IMAGE_GUARDCF32);
-	assert_size_of!(36 * 4, IMAGE_GUARDCF64);
-	assert_size_of!(24, IMAGE_TLS_DIRECTORY32);
-	assert_size_of!(40, IMAGE_TLS_DIRECTORY64);
-	assert_size_of!(2, UNWIND_CODE);
-	assert_size_of!(4, UNWIND_INFO); // Unsized
-	assert_size_of!(12, RUNTIME_FUNCTION);
-	assert_size_of!(4, SCOPE_TABLE); // Unsized
-	assert_size_of!(16, SCOPE_RECORD);
-	assert_size_of!(16, GUID);
-	assert_size_of!(28, IMAGE_DEBUG_DIRECTORY);
-	assert_size_of!(16, IMAGE_DEBUG_CV_INFO_PDB20); // Unsized
-	assert_size_of!(24, IMAGE_DEBUG_CV_INFO_PDB70); // Unsized
-	assert_size_of!(12, IMAGE_DEBUG_MISC); // Unsized
-}
+const _: [(); 64] = [(); mem::size_of::<IMAGE_DOS_HEADER>()];
+const _: [(); 20] = [(); mem::size_of::<IMAGE_FILE_HEADER>()];
+const _: [(); 8] = [(); mem::size_of::<IMAGE_DATA_DIRECTORY>()];
+const _: [(); 96] = [(); mem::size_of::<IMAGE_OPTIONAL_HEADER32>()]; // Unsized
+const _: [(); 112] = [(); mem::size_of::<IMAGE_OPTIONAL_HEADER64>()]; // Unsized
+const _: [(); 120] = [(); mem::size_of::<IMAGE_NT_HEADERS32>()]; // Unsized
+const _: [(); 136] = [(); mem::size_of::<IMAGE_NT_HEADERS64>()]; // Unsized
+const _: [(); 40] = [(); mem::size_of::<IMAGE_SECTION_HEADER>()];
+const _: [(); 40] = [(); mem::size_of::<IMAGE_EXPORT_DIRECTORY>()];
+const _: [(); 20] = [(); mem::size_of::<IMAGE_IMPORT_DESCRIPTOR>()];
+const _: [(); 16] = [(); mem::size_of::<IMAGE_RESOURCE_DIRECTORY>()];
+const _: [(); 8] = [(); mem::size_of::<IMAGE_RESOURCE_DIRECTORY_ENTRY>()];
+const _: [(); 16] = [(); mem::size_of::<IMAGE_RESOURCE_DATA_ENTRY>()];
+const _: [(); 8] = [(); mem::size_of::<IMAGE_BASE_RELOCATION>()];
+const _: [(); 18 * 4] = [(); mem::size_of::<IMAGE_LOAD_CONFIG_DIRECTORY32>()];
+const _: [(); 28 * 4] = [(); mem::size_of::<IMAGE_LOAD_CONFIG_DIRECTORY64>()];
+const _: [(); 3 * 4] = [(); mem::size_of::<IMAGE_LOAD_CONFIG_CODE_INTEGRITY>()];
+const _: [(); 2 * 4] = [(); mem::size_of::<IMAGE_DYNAMIC_RELOCATION_TABLE>()]; // Unsized
+const _: [(); 2 * 4] = [(); mem::size_of::<IMAGE_DYNAMIC_RELOCATION32>()]; // Unsized
+const _: [(); 4 * 4] = [(); mem::size_of::<IMAGE_DYNAMIC_RELOCATION64>()]; // Unsized
+const _: [(); 22 * 4] = [(); mem::size_of::<IMAGE_GUARDCF32>()];
+const _: [(); 36 * 4] = [(); mem::size_of::<IMAGE_GUARDCF64>()];
+const _: [(); 24] = [(); mem::size_of::<IMAGE_TLS_DIRECTORY32>()];
+const _: [(); 40] = [(); mem::size_of::<IMAGE_TLS_DIRECTORY64>()];
+const _: [(); 2] = [(); mem::size_of::<UNWIND_CODE>()];
+const _: [(); 4] = [(); mem::size_of::<UNWIND_INFO>()]; // Unsized
+const _: [(); 12] = [(); mem::size_of::<RUNTIME_FUNCTION>()];
+const _: [(); 4] = [(); mem::size_of::<SCOPE_TABLE>()]; // Unsized
+const _: [(); 16] = [(); mem::size_of::<SCOPE_RECORD>()];
+const _: [(); 16] = [(); mem::size_of::<GUID>()];
+const _: [(); 28] = [(); mem::size_of::<IMAGE_DEBUG_DIRECTORY>()];
+const _: [(); 16] = [(); mem::size_of::<IMAGE_DEBUG_CV_INFO_PDB20>()]; // Unsized
+const _: [(); 24] = [(); mem::size_of::<IMAGE_DEBUG_CV_INFO_PDB70>()]; // Unsized
+const _: [(); 12] = [(); mem::size_of::<IMAGE_DEBUG_MISC>()]; // Unsized
