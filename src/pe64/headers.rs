@@ -31,8 +31,12 @@ impl<'a, P: Pe<'a>> Headers<P> {
 	/// Calculates the optional header's CheckSum.
 	pub fn check_sum(&self) -> u32 {
 		let image = self.pe.image();
-		let check_sum_position = (self.pe.dos_header().e_lfanew as usize +
-			offset_of!(IMAGE_NT_HEADERS, OptionalHeader.CheckSum)) / 4;
+		let opt_header_checksum_offset = {
+			use dataview::Pod;
+			let value = IMAGE_NT_HEADERS::zeroed();
+			&value.OptionalHeader.CheckSum as *const _ as usize - &value as *const _ as usize
+		};
+		let check_sum_position = (self.pe.dos_header().e_lfanew as usize + opt_header_checksum_offset) / 4;
 		let dwords = unsafe { slice::from_raw_parts(image.as_ptr() as *const u32, image.len() / 4) };
 		let mut check_sum = 0u64;
 		for i in 0..dwords.len() {
