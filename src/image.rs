@@ -795,7 +795,6 @@ pub const UWOP_PUSH_MACHFRAME: u8  = 10; // info == 0: no error-code, 1: error-c
 pub struct UNWIND_CODE {
 	pub CodeOffset: u8,
 	pub UnwindOpInfo: u8,
-	pub FrameOffset: u16,
 }
 
 pub const UNW_FLAG_NHANDLER: u8  = 0x00;
@@ -1034,7 +1033,7 @@ fn sizes() {
 	assert_size_of!(36 * 4, IMAGE_GUARDCF64);
 	assert_size_of!(24, IMAGE_TLS_DIRECTORY32);
 	assert_size_of!(40, IMAGE_TLS_DIRECTORY64);
-	assert_size_of!(4, UNWIND_CODE);
+	assert_size_of!(2, UNWIND_CODE);
 	assert_size_of!(4, UNWIND_INFO); // Unsized
 	assert_size_of!(12, RUNTIME_FUNCTION);
 	assert_size_of!(4, SCOPE_TABLE); // Unsized
