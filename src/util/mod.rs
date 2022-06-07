@@ -4,12 +4,6 @@ Utilities and other tidbits.
 
 use std::prelude::v1::*;
 
-macro_rules! offset_of {
-	($ty:ty, $($field_bits:tt)*) => {
-		unsafe { &(*(0 as *const $ty)).$($field_bits)* as *const _ as usize }
-	}
-}
-
 mod c_str;
 #[allow(dead_code)]
 mod wide_str;
