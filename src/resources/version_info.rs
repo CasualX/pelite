@@ -564,7 +564,7 @@ fn parse_tlv<'a>(state: &mut Parser<'a>) -> Result<TLV<'a>> {
 	// This is tricky, the struct contains a fixed and variable length parts
 	// However the length field includes the size of the fixed part
 	// Further complicating things, if the variable length part is absent the total length is set to zero (?!)
-	let length = cmp::max(4, words[0] as usize / 2).align_to(2);
+	let length = cmp::max(4, words[0] as usize / 2);
 	// Oh god why, interpret the value_length
 	let value_length = match state.vlt {
 		ValueLengthType::Zero if words[1] == 0 => 0,
@@ -578,7 +578,8 @@ fn parse_tlv<'a>(state: &mut Parser<'a>) -> Result<TLV<'a>> {
 	if length > words.len() {
 		return Err(Error::Invalid);
 	}
-	state.words = &words[length..];
+	// The length does not contain padding to align to a 32-bit boundary
+	state.words = &words[cmp::min(length.align_to(2), words.len())..];
 	words = &words[..length];
 
 	// Parse the nul terminated szKey
@@ -595,7 +596,8 @@ fn parse_tlv<'a>(state: &mut Parser<'a>) -> Result<TLV<'a>> {
 		return Err(Error::Invalid);
 	}
 	let value = &words[..value_length];
-	let children = &words[value.len().align_to(2)..];
+	// The length does not contain padding to align to a 32-bit boundary
+	let children = &words[cmp::min(value.len().align_to(2), words.len())..];
 
 	Ok(TLV { key, value, children })
 }
@@ -624,4 +626,57 @@ fn test_parse_tlv_oob()
 	parser = Parser::new_zero(&[8, 10, 0, 0, 0, 0]);
 	assert_eq!(parser.next(), Some(Err(Error::Invalid)));
 	assert_eq!(parser.next(), None);
+}
+
+#[test]
+fn test_parse_254() {
+	static WORDS: [u16; 397] = [
+		794, 52, 0, 86, 83, 95, 86, 69, 82, 83, 73, 79, 78, 95, 73, 78,
+		70, 79, 0, 0, 1213, 65263, 0, 1, 607, 22, 25, 2013, 607, 22, 25, 2013,
+		63, 0, 0, 0, 4, 0, 2, 0, 0, 0, 0, 0, 0, 0, 68, 0,
+		1, 86, 97, 114, 70, 105, 108, 101, 73, 110, 102, 111, 0, 0, 36, 4,
+		0, 84, 114, 97, 110, 115, 108, 97, 116, 105, 111, 110, 0, 0, 0, 1200,
+		634, 0, 1, 83, 116, 114, 105, 110, 103, 70, 105, 108, 101, 73, 110, 102,
+		111, 0, 598, 0, 1, 48, 48, 48, 48, 48, 52, 98, 48, 0, 58, 13,
+		1, 67, 111, 109, 112, 97, 110, 121, 78, 97, 109, 101, 0, 0, 66, 69,
+		46, 69, 115, 115, 101, 110, 116, 105, 97, 108, 0, 0, 66, 13, 1, 70,
+		105, 108, 101, 68, 101, 115, 99, 114, 105, 112, 116, 105, 111, 110, 0, 0,
+		66, 69, 46, 69, 115, 115, 101, 110, 116, 105, 97, 108, 0, 0, 62, 15,
+		1, 70, 105, 108, 101, 86, 101, 114, 115, 105, 111, 110, 0, 0, 50, 50,
+		46, 54, 48, 55, 46, 50, 48, 49, 51, 46, 50, 53, 0, 0, 66, 17,
+		1, 73, 110, 116, 101, 114, 110, 97, 108, 78, 97, 109, 101, 0, 66, 69,
+		46, 69, 115, 115, 101, 110, 116, 105, 97, 108, 46, 100, 108, 108, 0, 0,
+		40, 2, 1, 76, 101, 103, 97, 108, 67, 111, 112, 121, 114, 105, 103, 104,
+		116, 0, 32, 0, 74, 17, 1, 79, 114, 105, 103, 105, 110, 97, 108, 70,
+		105, 108, 101, 110, 97, 109, 101, 0, 66, 69, 46, 69, 115, 115, 101, 110,
+		116, 105, 97, 108, 46, 100, 108, 108, 0, 0, 58, 13, 1, 80, 114, 111,
+		100, 117, 99, 116, 78, 97, 109, 101, 0, 0, 66, 69, 46, 69, 115, 115,
+		101, 110, 116, 105, 97, 108, 0, 0, 66, 15, 1, 80, 114, 111, 100, 117,
+		99, 116, 86, 101, 114, 115, 105, 111, 110, 0, 50, 50, 46, 54, 48, 55,
+		46, 50, 48, 49, 51, 46, 50, 53, 0, 0, 70, 15, 1, 65, 115, 115,
+		101, 109, 98, 108, 121, 32, 86, 101, 114, 115, 105, 111, 110, 0, 50, 50,
+		46, 54, 48, 55, 46, 50, 48, 49, 51, 46, 50, 53, 0];
+
+	let vi = VersionInfo { words: &WORDS };
+	let fi = vi.file_info();
+	assert!(fi.fixed.is_some());
+
+	let mut strings = HashMap::new();
+	strings.insert(Language { lang_id: 0, charset_id: 1200 }, {
+		let mut strings = HashMap::new();
+		strings.insert(String::from("FileDescription"), String::from("BE.Essential"));
+		strings.insert(String::from("Assembly Version"), String::from("22.607.2013.25"));
+		strings.insert(String::from("ProductVersion"), String::from("22.607.2013.25"));
+		strings.insert(String::from("CompanyName"), String::from("BE.Essential"));
+		strings.insert(String::from("OriginalFilename"), String::from("BE.Essential.dll"));
+		strings.insert(String::from("FileVersion"), String::from("22.607.2013.25"));
+		strings.insert(String::from("InternalName"), String::from("BE.Essential.dll"));
+		strings.insert(String::from("LegalCopyright"), String::from(" "));
+		strings.insert(String::from("ProductName"), String::from("BE.Essential"));
+		strings
+	});
+
+	assert_eq!(fi.strings, strings);
+	assert_eq!(fi.langs, &[Language { lang_id: 0, charset_id: 1200 }]);
+	// panic!("{:#?}", fi);
 }
