@@ -1,0 +1,79 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  ci-linux:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        rust:
+          - stable
+          - beta
+          - nightly
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+
+      - name: Install toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: ${{ matrix.rust }}
+          default: true
+
+      - name: Cargo check
+        uses: actions-rs/cargo@v1
+        with:
+          command: check
+          args: --verbose --all-features
+
+      - name: Cargo test
+        uses: actions-rs/cargo@v1
+        with:
+          command: test
+          args: --verbose --no-fail-fast -- --nocapture
+
+  ci-windows:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        rust:
+          - stable
+          - beta
+          - nightly
+        target:
+          - x86_64-pc-windows-msvc
+          - i686-pc-windows-msvc
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+
+      - name: Install toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: ${{ matrix.rust }}
+          target: ${{ matrix.target }}
+          default: true
+
+      - name: Cargo check
+        uses: actions-rs/cargo@v1
+        with:
+          command: check
+          args: --target=${{ matrix.target }} --verbose --all-features
+
+      - name: Cargo test
+        uses: actions-rs/cargo@v1
+        with:
+          command: test
+          args: --target=${{ matrix.target }} --verbose --no-fail-fast -- --nocapture
