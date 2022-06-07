@@ -4,20 +4,6 @@ Utilities and other tidbits.
 
 use std::prelude::v1::*;
 
-// For testing, assert that structs have specified ABI size
-#[cfg(test)]
-macro_rules! assert_size_of {
-	($size_of:expr, $ident:ident) => (assert_eq!($size_of, std::mem::size_of::<$ident>(),
-		concat!("Unexpected sizeof(", stringify!($ident), ")")));
-}
-
-#[test]
-#[should_panic]
-fn assert_size_of() {
-	struct Foo(i32);
-	assert_size_of!(8, Foo);
-}
-
 macro_rules! offset_of {
 	($ty:ty, $($field_bits:tt)*) => {
 		unsafe { &(*(0 as *const $ty)).$($field_bits)* as *const _ as usize }
