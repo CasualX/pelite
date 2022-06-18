@@ -72,7 +72,7 @@ const INVALID_ARG: &'static str = "invalid argument was given";
 #[derive(Debug)]
 struct Parameters {
 	path: PathBuf,
-	hex: bool,
+	_hex: bool,
 	dos: bool,
 	nt: bool,
 	sections: bool,
@@ -90,7 +90,7 @@ impl Default for Parameters {
 		// Initialize the default arguments of the program
 		let mut vars = Parameters {
 			path: PathBuf::new(),
-			hex: false,
+			_hex: false,
 			dos: false,
 			nt: false,
 			sections: false,

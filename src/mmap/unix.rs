@@ -21,10 +21,11 @@ impl FileMap {
 
 		// Find its file size aligned to page boundary
 		let size = unsafe {
-			let mut stat = mem::uninitialized();
-			if libc::fstat(fd, &mut stat) < 0 {
+			let mut stat = mem::MaybeUninit::uninit();
+			if libc::fstat(fd, stat.as_mut_ptr()) < 0 {
 				return Err(io::Error::last_os_error());
 			}
+			let stat = stat.assume_init();
 			// Round up to nearest multiple of page_size
 			let page_size = libc::sysconf(libc::_SC_PAGE_SIZE) as usize;
 			(stat.st_size as usize).align_to(page_size)
