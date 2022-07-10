@@ -8,7 +8,7 @@ crate-type = ["cdylib"]
 
 [dependencies.pelite]
 path = ".."
-version = "0.9.0"
+version = "0.10.0"
 features = ["serde", "data-encoding"]
 
 [dependencies]

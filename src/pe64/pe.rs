@@ -308,7 +308,7 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	fn derva_into<T>(self, rva: Rva, dest: &mut T) -> Result<()> where T: ?Sized + Pod {
 		let len = mem::size_of_val(dest);
 		let bytes = self.slice(rva, len, 1)?;
-		dest.as_bytes_mut().copy_from_slice(&bytes[..len]);
+		dataview::bytes_mut(dest).copy_from_slice(&bytes[..len]);
 		Ok(())
 	}
 	/// Reads an array of pod `T` with given length.
@@ -395,7 +395,7 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	fn deref_into<T>(self, ptr: Ptr<T>, dest: &mut T) -> Result<()> where T: ?Sized + Pod {
 		let len = mem::size_of_val(dest);
 		let bytes = self.read(ptr.into(), len, 1)?;
-		dest.as_bytes_mut().copy_from_slice(&bytes[..len]);
+		dataview::bytes_mut(dest).copy_from_slice(&bytes[..len]);
 		Ok(())
 	}
 	/// Reads an array of pod `T` with given length.

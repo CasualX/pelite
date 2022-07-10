@@ -47,7 +47,6 @@ use std::io;
 
 use crate::util::AlignTo;
 use crate::Error;
-use crate::Pod;
 use std::{fmt, mem, slice};
 
 use super::{FindError, Resources};
@@ -137,7 +136,7 @@ impl<'a> GroupResource<'a> {
 	#[cfg(feature = "std")]
 	pub fn write(&self, dest: &mut dyn io::Write) -> io::Result<()> {
 		// Start by appending the header
-		dest.write(self.image.as_bytes())?;
+		dest.write(dataview::bytes(self.image))?;
 		// Write all the icon entries
 		let entries = self.entries();
 		let mut image_offset = (6 + entries.len() * 16) as u32;
@@ -145,10 +144,10 @@ impl<'a> GroupResource<'a> {
 			// Fixup the dwImageOffset field of the icon entry
 			// NOTE! It is expected that the actual icon data size matches dwBytesInRes information!
 			let mut icon_entry = [0u32; 4];
-			icon_entry.as_bytes_mut()[..14].copy_from_slice(entry.as_bytes());
+			dataview::bytes_mut(&mut icon_entry)[..14].copy_from_slice(dataview::bytes(entry));
 			icon_entry[3] = image_offset;
 			image_offset += entry.bytes_in_resource();
-			dest.write(icon_entry.as_bytes())?;
+			dest.write(dataview::bytes(&icon_entry))?;
 		}
 		// Append the bytes for every entry
 		for entry in entries {
