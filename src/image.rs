@@ -654,7 +654,7 @@ pub struct IMAGE_DYNAMIC_RELOCATION32 {
 #[cfg_attr(feature = "serde", derive(::serde::Serialize))]
 #[repr(C)]
 pub struct IMAGE_DYNAMIC_RELOCATION64 {
-	pub Symbol: u64,
+	pub Symbol: [u32; 2], // 64-bit packed int
 	pub BaseRelocSize: u32,
 }
 
@@ -1026,7 +1026,7 @@ const _: [(); 28 * 4] = [(); mem::size_of::<IMAGE_LOAD_CONFIG_DIRECTORY64>()];
 const _: [(); 3 * 4] = [(); mem::size_of::<IMAGE_LOAD_CONFIG_CODE_INTEGRITY>()];
 const _: [(); 2 * 4] = [(); mem::size_of::<IMAGE_DYNAMIC_RELOCATION_TABLE>()]; // Unsized
 const _: [(); 2 * 4] = [(); mem::size_of::<IMAGE_DYNAMIC_RELOCATION32>()]; // Unsized
-const _: [(); 4 * 4] = [(); mem::size_of::<IMAGE_DYNAMIC_RELOCATION64>()]; // Unsized
+const _: [(); 3 * 4] = [(); mem::size_of::<IMAGE_DYNAMIC_RELOCATION64>()]; // Unsized
 const _: [(); 22 * 4] = [(); mem::size_of::<IMAGE_GUARDCF32>()];
 const _: [(); 36 * 4] = [(); mem::size_of::<IMAGE_GUARDCF64>()];
 const _: [(); 24] = [(); mem::size_of::<IMAGE_TLS_DIRECTORY32>()];
