@@ -2,6 +2,7 @@
 Abstract over mapped images and file binaries.
 */
 
+use dataview::PodMethods;
 use std::{cmp, mem, ptr, slice};
 
 use crate::{Error, Result};

@@ -40,14 +40,14 @@ for (name, group) in resources.icons().filter_map(Result::ok) {
 
  */
 
-use std::prelude::v1::*;
+use dataview::PodMethods;
+ use std::prelude::v1::*;
 
 #[cfg(feature = "std")]
 use std::io;
 
 use crate::util::AlignTo;
 use crate::Error;
-use crate::Pod;
 use std::{fmt, mem, slice};
 
 use super::{FindError, Resources};

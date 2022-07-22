@@ -2,6 +2,7 @@
 PE headers.
  */
 
+use dataview::PodMethods;
 use std::slice;
 use std::ops::Range;
 
@@ -32,7 +33,6 @@ impl<'a, P: Pe<'a>> Headers<P> {
 	pub fn check_sum(&self) -> u32 {
 		let image = self.pe.image();
 		let opt_header_checksum_offset = {
-			use dataview::Pod;
 			let value = IMAGE_NT_HEADERS::zeroed();
 			&value.OptionalHeader.CheckSum as *const _ as usize - &value as *const _ as usize
 		};

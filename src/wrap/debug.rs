@@ -1,3 +1,4 @@
+use dataview::PodMethods;
 use crate::*;
 use super::Wrap;
 

@@ -1,3 +1,4 @@
+use dataview::PodMethods;
 use pelite::pe32::{image, Pe, PeFile};
 use pelite::{FileMap, Pod};
 
