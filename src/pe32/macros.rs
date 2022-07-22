@@ -9,7 +9,7 @@ macro_rules! current_target {
 }
 #[cfg(not(all(windows, target_pointer_width = "32")))]
 macro_rules! current_target {
-	($($tt:tt)*) => ();
+    ($($tt:tt)*) => {};
 }
 
 #[allow(unused_macros)]

@@ -34,17 +34,17 @@ use pelite::{FileMap, Result};
 use pelite::pe64::{Pe, PeFile};
 
 fn file_map<P: AsRef<Path> + ?Sized>(path: &P) -> Result<()> {
-	let path = path.as_ref();
-	if let Ok(map) = FileMap::open(path) {
-		let file = PeFile::from_bytes(&map)?;
+    let path = path.as_ref();
+    if let Ok(map) = FileMap::open(path) {
+        let file = PeFile::from_bytes(&map)?;
 
-		// Access the file contents through the Pe trait
-		let image_base = file.optional_header().ImageBase;
-		println!("The preferred load address of {:?} is {}.", path, image_base);
+        // Access the file contents through the Pe trait
+        let image_base = file.optional_header().ImageBase;
+        println!("The preferred load address of {:?} is {}.", path, image_base);
 
-		// See the respective modules to access other parts of the PE file.
-	}
-	Ok(())
+        // See the respective modules to access other parts of the PE file.
+    }
+    Ok(())
 }
 ```
 
@@ -67,17 +67,17 @@ use pelite::{ImageMap, Result};
 use pelite::pe64::{Pe, PeView};
 
 fn image_map<P: AsRef<Path> + ?Sized>(path: &P) -> Result<()> {
-	let path = path.as_ref();
-	if let Ok(image) = ImageMap::open(path) {
-		let view = PeView::from_bytes(&image)?;
+    let path = path.as_ref();
+    if let Ok(image) = ImageMap::open(path) {
+        let view = PeView::from_bytes(&image)?;
 
-		// Access the image contents through the Pe trait
-		let image_size = view.optional_header().SizeOfImage;
-		println!("The size of image in memory of {:?} is {}", path, image_size);
+        // Access the image contents through the Pe trait
+        let image_size = view.optional_header().SizeOfImage;
+        println!("The size of image in memory of {:?} is {}", path, image_size);
 
-		// See the respective modules to access other parts of the PE image.
-	}
-	Ok(())
+        // See the respective modules to access other parts of the PE image.
+    }
+    Ok(())
 }
 # }
 ```
@@ -103,13 +103,13 @@ use pelite::Result;
 use pelite::pe::{Pe, PeView};
 
 fn image_base() {
-	let view = unsafe { PeView::new() };
+    let view = unsafe { PeView::new() };
 
-	// Access the image contents through the Pe trait
-	let image_size = view.optional_header().SizeOfImage;
-	println!("The size of our image is {}", image_size);
+    // Access the image contents through the Pe trait
+    let image_size = view.optional_header().SizeOfImage;
+    println!("The size of our image is {}", image_size);
 
-	// See the respective modules to access other parts of the PE image.
+    // See the respective modules to access other parts of the PE image.
 }
 # }
 ```
@@ -120,29 +120,29 @@ mod macros;
 
 pub mod image;
 
-mod pe;
-mod view;
+pub(crate) mod base_relocs;
+pub mod debug;
+pub mod exception;
+pub mod exports;
 mod file;
 pub mod headers;
-pub(crate) mod rich_structure;
-pub mod exports;
 pub mod imports;
-pub(crate) mod base_relocs;
 pub mod load_config;
-pub mod resources;
-pub mod tls;
-pub(crate) mod security;
-pub mod exception;
-pub mod debug;
-mod ptr;
-pub mod scanner;
 pub mod msvc;
+mod pe;
+mod ptr;
+pub mod resources;
+pub(crate) mod rich_structure;
+pub mod scanner;
+pub(crate) mod security;
+pub mod tls;
+mod view;
 
-pub use self::image::{Va, Rva};
+pub use self::file::PeFile;
+pub use self::image::{Rva, Va};
 pub use self::pe::{Align, Pe, PeObject};
-pub use self::view::{PeView};
-pub use self::file::{PeFile};
 pub use self::ptr::Ptr;
+pub use self::view::PeView;
 
 #[cfg(feature = "unstable")]
 pub use self::pe::headers_mut;

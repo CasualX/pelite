@@ -37,8 +37,8 @@ mod mmap;
 #[cfg(feature = "mmap")]
 pub use self::mmap::*;
 
-pub mod pe64;
 pub mod pe32;
+pub mod pe64;
 pub(crate) mod wrap;
 pub use self::wrap::*;
 

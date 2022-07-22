@@ -37,42 +37,41 @@ Usage:
 "#;
 
 fn main() {
-	let mut args = env::args_os();
-	if let (Some(_), Some(dll), None) = (args.next(), args.next(), args.next()) {
-		match pelite::FileMap::open(&dll) {
-			Ok(map) => {
-				// Try PE32 and PE32+
-				let result = match pelite::PeFile::from_bytes(&map) {
-					Ok(pe) => lib(pe),
-					Err(err) => Err(err),
-				};
-				// Display errors
-				if let Err(err) = result {
-					eprintln!("module-def: {}", err);
-				}
-			},
-			Err(err) => {
-				eprintln!("module-def: {}", err);
-			},
-		};
-	}
-	else {
-		println!("{}", HELP_TEXT);
-	}
+    let mut args = env::args_os();
+    if let (Some(_), Some(dll), None) = (args.next(), args.next(), args.next()) {
+        match pelite::FileMap::open(&dll) {
+            Ok(map) => {
+                // Try PE32 and PE32+
+                let result = match pelite::PeFile::from_bytes(&map) {
+                    Ok(pe) => lib(pe),
+                    Err(err) => Err(err),
+                };
+                // Display errors
+                if let Err(err) = result {
+                    eprintln!("module-def: {}", err);
+                }
+            }
+            Err(err) => {
+                eprintln!("module-def: {}", err);
+            }
+        };
+    } else {
+        println!("{}", HELP_TEXT);
+    }
 }
 
 fn lib(pe: pelite::PeFile) -> pelite::Result<()> {
-	let exp = pe.exports()?.by()?;
-	let dll_name = exp.dll_name()?;
-	let names = exp
-		.iter_names()
-		.map(|(name, _)| name)
-		.collect::<pelite::Result<Vec<_>>>()?;
+    let exp = pe.exports()?.by()?;
+    let dll_name = exp.dll_name()?;
+    let names = exp
+        .iter_names()
+        .map(|(name, _)| name)
+        .collect::<pelite::Result<Vec<_>>>()?;
 
-	println!("LIBRARY {}\nEXPORTS", dll_name);
-	for name in &names {
-		println!("{}", name);
-	}
+    println!("LIBRARY {}\nEXPORTS", dll_name);
+    for name in &names {
+        println!("{}", name);
+    }
 
-	Ok(())
+    Ok(())
 }

@@ -10,4 +10,4 @@ pub use self::windows::{FileMap, ImageMap};
 #[cfg(all(unix, feature = "libc"))]
 mod unix;
 #[cfg(all(unix, feature = "libc"))]
-pub use self::unix::{FileMap};
+pub use self::unix::FileMap;

@@ -10,16 +10,16 @@ This only allows you to query interfaces which you know by name and version, thi
 */
 
 use pelite;
-use pelite::pe32::{Rva, Va, Ptr, Pe, PeFile};
-use pelite::{util::CStr, Pod};
 use pelite::pattern as pat;
+use pelite::pe32::{Pe, PeFile, Ptr, Rva, Va};
+use pelite::{util::CStr, Pod};
 
 //----------------------------------------------------------------
 
 pub fn print(file: PeFile) {
-	for reg in &interfaces(file).unwrap() {
-		println!("{}!{:08X} {}", reg.dll_name, reg.offset, reg.name);
-	}
+    for reg in &interfaces(file).unwrap() {
+        println!("{}!{:08X} {}", reg.dll_name, reg.offset, reg.name);
+    }
 }
 
 //----------------------------------------------------------------
@@ -31,52 +31,56 @@ pub fn print(file: PeFile) {
 #[derive(Pod, Debug)]
 #[repr(C)]
 pub struct InterfaceReg {
-	create_fn: Va,
-	name: Ptr<CStr>,
-	next: Ptr<InterfaceReg>,
+    create_fn: Va,
+    name: Ptr<CStr>,
+    next: Ptr<InterfaceReg>,
 }
 
 //----------------------------------------------------------------
 
 #[derive(Copy, Clone, Debug)]
 pub struct Interface<'a> {
-	pub dll_name: &'a str,
-	pub name: &'a str,
-	pub offset: Rva,
+    pub dll_name: &'a str,
+    pub name: &'a str,
+    pub offset: Rva,
 }
 
 pub fn interfaces<'a>(file: PeFile<'a>) -> pelite::Result<Vec<Interface<'a>>> {
-	let mut save = [0; 4];
+    let mut save = [0; 4];
 
-	let exports = file.exports()?.by()?;
-	let dll_name = exports.dll_name()?.to_str().unwrap();
+    let exports = file.exports()?.by()?;
+    let dll_name = exports.dll_name()?.to_str().unwrap();
 
-	// Of course, this linked list isn't yet initialized!
-	// Search for the code which constructs this linked list to extract their information
-	let mut list = Vec::new();
+    // Of course, this linked list isn't yet initialized!
+    // Search for the code which constructs this linked list to extract their information
+    let mut list = Vec::new();
 
-	// Find the static initializers which register the interface
-	// ```
-	// push    offset aInterfaceName
-	// push    offset create_fn
-	// mov     ecx, offset interface_reg
-	// call    InterfaceReg::InterfaceReg
-	// retn
-	// ```
+    // Find the static initializers which register the interface
+    // ```
+    // push    offset aInterfaceName
+    // push    offset create_fn
+    // mov     ecx, offset interface_reg
+    // call    InterfaceReg::InterfaceReg
+    // retn
+    // ```
 
-	// Create fn returns the global singleton
-	// ```
-	// mov     eax, offset g_Interface
-	// retn
-	// ```
-	let pat = pat!("68*{'} 68*{B8*'} B9???? E8${55 8BEC} C3");
-	let mut matches = file.scanner().matches_code(pat);
-	while matches.next(&mut save) {
-		// Extract the interface information
-		let name = file.derva_c_str(save[1]).unwrap().to_str().unwrap();
-		let offset = save[2];
-		list.push(Interface { dll_name, name, offset });
-	}
+    // Create fn returns the global singleton
+    // ```
+    // mov     eax, offset g_Interface
+    // retn
+    // ```
+    let pat = pat!("68*{'} 68*{B8*'} B9???? E8${55 8BEC} C3");
+    let mut matches = file.scanner().matches_code(pat);
+    while matches.next(&mut save) {
+        // Extract the interface information
+        let name = file.derva_c_str(save[1]).unwrap().to_str().unwrap();
+        let offset = save[2];
+        list.push(Interface {
+            dll_name,
+            name,
+            offset,
+        });
+    }
 
-	Ok(list)
+    Ok(list)
 }
