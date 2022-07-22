@@ -19,7 +19,7 @@ members = [".", "./src/proc-macros", "./wasm"]
 [features]
 default = ["mmap", "derive_pod"]
 unsafe_alignment = []
-mmap = ["std", "libc", "winapi"]
+mmap = ["std", "libc", "windows-sys"]
 unstable = []
 derive_pod = ["dataview/derive_pod"]
 std = ["no-std-compat/std"]
@@ -50,7 +50,12 @@ hashbrown = { version = "0.8.0", optional = true }
 libc = { version = "0.2", optional = true }
 
 [target.'cfg(windows)'.dependencies]
-winapi = { version = "0.3", optional = true, features = ["fileapi", "memoryapi", "handleapi"] }
+windows-sys = { version = "0.36", optional = true, features = [
+	"Win32_System_Memory",
+	"Win32_Storage_FileSystem",
+	"Win32_Foundation",
+	"Win32_Security",
+] }
 
 [dev-dependencies]
 rand = "0.5"
