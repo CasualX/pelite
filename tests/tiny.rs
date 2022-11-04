@@ -9,8 +9,8 @@ use pelite::{FileMap, Pod};
 // I used Internet Archive's Wayback Machine to download the samples since the original links 404'd
 
 fn assert_memcmp<T: std::fmt::Debug + Pod>(lhs: &T, rhs: &T) {
-	let lhs_bytes = lhs.as_bytes();
-	let rhs_bytes = rhs.as_bytes();
+	let lhs_bytes = dataview::bytes(lhs);
+	let rhs_bytes = dataview::bytes(rhs);
 	assert_eq!(lhs_bytes, rhs_bytes, "lhs: {:?} rhs: {:?}", lhs, rhs);
 }
 

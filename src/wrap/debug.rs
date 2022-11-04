@@ -225,7 +225,7 @@ impl<'a> Iterator for PgoIter<'a> {
 		if self.image.len() >= 3 {
 			let rva = self.image[0];
 			let size = self.image[1];
-			let name = CStr::from_bytes(self.image[2..].as_bytes())?;
+			let name = CStr::from_bytes(dataview::bytes(&self.image[2..]))?;
 			let len = name.len() >> 2;
 			self.image = &self.image[2 + len + 1..];
 			Some(PgoItem { rva, size, name })
