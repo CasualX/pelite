@@ -20,6 +20,11 @@ pub unsafe trait PeObject<'a> {
 	/// Returns whether this image uses file alignment or section alignment.
 	fn align(&self) -> Align;
 
+	/// Returns the base virtual address of this image.
+	/// 
+	/// For an image on disk, this should be the preferred virtual address. For a memory mapped image, this should be the actual virtual address. 
+	fn base_addr(&self) -> Va;
+
 	// Give a struct name in Serialize implementation
 	#[cfg(feature = "serde")]
 	#[doc(hidden)]
@@ -170,10 +175,9 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 			Err(Error::Null)
 		}
 		else {
-			let (image_base, size_of_image) = {
-				let optional_header = self.optional_header();
-				(optional_header.ImageBase, optional_header.SizeOfImage)
-			};
+			let (image_base, size_of_image) = 
+				(self.base_addr(), self.optional_header().SizeOfImage);
+
 			if rva < size_of_image {
 				Ok(image_base + rva as Va)
 			}
@@ -196,10 +200,9 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 			Err(Error::Null)
 		}
 		else {
-			let (image_base, size_of_image) = {
-				let optional_header = self.optional_header();
-				(optional_header.ImageBase, optional_header.SizeOfImage)
-			};
+			let (image_base, size_of_image) = 
+				(self.base_addr(), self.optional_header().SizeOfImage);
+
 			// Carefully avoid panicking overflow
 			if va < image_base || va - image_base > size_of_image as Va {
 				Err(Error::Bounds)
@@ -268,8 +271,8 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	fn read(&self, va: Va, min_size_of: usize, align: usize) -> Result<&'a [u8]> {
 		unsafe {
 			match (self.align(), self.image()) {
-				(Align::File, image) => read_file(image, va, min_size_of, align),
-				(Align::Section, image) => read_section(image, va, min_size_of, align),
+				(Align::File, image) => read_file(image, self.base_addr(), va, min_size_of, align),
+				(Align::Section, image) => read_section(image, self.base_addr(), va, min_size_of, align),
 			}
 		}
 	}
@@ -575,6 +578,11 @@ unsafe impl<'s, 'a> PeObject<'a> for &'s dyn PeObject<'a> {
 	fn align(&self) -> Align {
 		PeObject::align(*self)
 	}
+
+	fn base_addr(&self) -> Va {
+		PeObject::base_addr(*self)
+	}
+
 	#[cfg(feature = "serde")]
 	fn serde_name(&self) -> &'static str {
 		PeObject::serde_name(*self)
@@ -648,11 +656,9 @@ unsafe fn slice_section(image: &[u8], rva: Rva, min_size_of: usize, align_of: us
 		}
 	}
 }
-unsafe fn read_section(image: &[u8], va: Va, min_size_of: usize, align_of: usize) -> Result<&[u8]> {
-	let (image_base, image_size) = {
-		let optional_header = optional_header(image);
-		(optional_header.ImageBase, optional_header.SizeOfImage)
-	};
+unsafe fn read_section(image: &[u8], image_base: Va, va: Va, min_size_of: usize, align_of: usize) -> Result<&[u8]> {
+	let image_size = optional_header(image).SizeOfImage;
+
 	if va == 0 {
 		Err(Error::Null)
 	}
@@ -709,11 +715,9 @@ unsafe fn slice_file(image: &[u8], rva: Rva, min_size_of: usize, align_of: usize
 	}
 }
 #[inline(never)]
-unsafe fn read_file(image: &[u8], va: Va, min_size_of: usize, align_of: usize) -> Result<&[u8]> {
-	let (image_base, size_of_image) = {
-		let optional_header = optional_header(image);
-		(optional_header.ImageBase, optional_header.SizeOfImage)
-	};
+unsafe fn read_file(image: &[u8], image_base: Va, va: Va, min_size_of: usize, align_of: usize) -> Result<&[u8]> {
+	let size_of_image = optional_header(image).SizeOfImage;
+
 	if va == 0 {
 		Err(Error::Null)
 	}

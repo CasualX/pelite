@@ -120,6 +120,11 @@ unsafe impl<'a> PeObject<'a> for PeView<'a> {
 	fn align(&self) -> Align {
 		Align::Section
 	}
+
+	fn base_addr(&self) -> Va {
+		self.image.as_ptr() as Va
+	}
+
 	#[cfg(feature = "serde")]
 	fn serde_name(&self) -> &'static str {
 		"PeView"
