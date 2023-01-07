@@ -84,7 +84,7 @@ unsafe impl<'a> PeObject<'a> for PeFile<'a> {
 		Align::File
 	}
 
-	fn base_addr(&self) -> super::Va {
+	fn image_base(&self) -> super::Va {
 		self.optional_header().ImageBase
 	}
 	

@@ -23,7 +23,7 @@ pub unsafe trait PeObject<'a> {
 	/// Returns the base virtual address of this image.
 	/// 
 	/// For an image on disk, this should be the preferred virtual address. For a memory mapped image, this should be the actual virtual address. 
-	fn base_addr(&self) -> Va;
+	fn image_base(&self) -> Va;
 
 	// Give a struct name in Serialize implementation
 	#[cfg(feature = "serde")]
@@ -176,7 +176,7 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 		}
 		else {
 			let (image_base, size_of_image) = 
-				(self.base_addr(), self.optional_header().SizeOfImage);
+				(self.image_base(), self.optional_header().SizeOfImage);
 
 			if rva < size_of_image {
 				Ok(image_base + rva as Va)
@@ -201,7 +201,7 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 		}
 		else {
 			let (image_base, size_of_image) = 
-				(self.base_addr(), self.optional_header().SizeOfImage);
+				(self.image_base(), self.optional_header().SizeOfImage);
 
 			// Carefully avoid panicking overflow
 			if va < image_base || va - image_base > size_of_image as Va {
@@ -271,8 +271,8 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	fn read(&self, va: Va, min_size_of: usize, align: usize) -> Result<&'a [u8]> {
 		unsafe {
 			match (self.align(), self.image()) {
-				(Align::File, image) => read_file(image, self.base_addr(), va, min_size_of, align),
-				(Align::Section, image) => read_section(image, self.base_addr(), va, min_size_of, align),
+				(Align::File, image) => read_file(image, self.image_base(), va, min_size_of, align),
+				(Align::Section, image) => read_section(image, self.image_base(), va, min_size_of, align),
 			}
 		}
 	}
@@ -579,8 +579,8 @@ unsafe impl<'s, 'a> PeObject<'a> for &'s dyn PeObject<'a> {
 		PeObject::align(*self)
 	}
 
-	fn base_addr(&self) -> Va {
-		PeObject::base_addr(*self)
+	fn image_base(&self) -> Va {
+		PeObject::image_base(*self)
 	}
 
 	#[cfg(feature = "serde")]
@@ -626,7 +626,7 @@ unsafe fn nt_headers(image: &[u8]) -> &IMAGE_NT_HEADERS {
 unsafe fn file_header(image: &[u8]) -> &IMAGE_FILE_HEADER {
 	&nt_headers(image).FileHeader
 }
-unsafe fn optional_header(image: &[u8]) -> &IMAGE_OPTIONAL_HEADER {
+pub(crate) unsafe fn optional_header(image: &[u8]) -> &IMAGE_OPTIONAL_HEADER {
 	&nt_headers(image).OptionalHeader
 }
 unsafe fn data_directory(image: &[u8]) -> &[IMAGE_DATA_DIRECTORY] {

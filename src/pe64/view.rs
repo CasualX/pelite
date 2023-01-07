@@ -9,13 +9,14 @@ use std::{cmp, slice};
 use crate::Result;
 
 use super::image::*;
-use super::pe::validate_headers;
+use super::pe::{validate_headers, optional_header};
 use super::{Align, Pe, PeObject};
 
 /// View into a mapped PE image.
 #[derive(Copy, Clone)]
 pub struct PeView<'a> {
 	image: &'a [u8],
+	base_address: Va 
 }
 
 current_target! {
@@ -29,6 +30,13 @@ current_target! {
 }
 impl<'a> PeView<'a> {
 	/// Constructs a view from a byte slice.
+	/// 
+	/// # Notes
+	/// 
+	/// The base virtual address of image is assumed to be the one present in the image's optional header.
+	/// When dynamic base (ASLR) is enabled, this may not always be the actual base address. Hence consider
+	/// using [`PeView::from_bytes_and_base()`] (for images manually copied into memory) or [`PeView::module`] 
+	/// (for images loaded by the operating system) instead.
 	///
 	/// # Errors
 	///
@@ -49,8 +57,34 @@ impl<'a> PeView<'a> {
 	pub fn from_bytes<T: AsRef<[u8]> + ?Sized>(image: &'a T) -> Result<PeView<'a>> {
 		let image = image.as_ref();
 		let _ = validate_headers(image)?;
-		Ok(PeView { image })
+		let base_address = unsafe { optional_header(image).ImageBase };
+		Ok(PeView { image, base_address })
 	}
+
+	/// Constructs a view from a byte slice and the base virtual address of the image.
+	///
+	/// # Errors
+	///
+	/// * [`Bounds`](../enum.Error.html#variant.Bounds):
+	///   The byte slice is too small to fit the PE headers.
+	///
+	/// * [`Misaligned`](../enum.Error.html#variant.Misaligned):
+	///   The minimum alignment of 4 is not satisfied.
+	///
+	/// * [`BadMagic`](../enum.Error.html#variant.BadMagic):
+	///   This is not a PE file.
+	///
+	/// * [`PeMagic`](../enum.Error.html#variant.PeMagic):
+	///   Trying to parse a PE32 file with the PE32+ parser and vice versa.
+	///
+	/// * [`Insanity`](../enum.Error.html#variant.Insanity):
+	///   Reasonable limits on `e_lfanew`, `SizeOfHeaders` or `NumberOfSections` are exceeded.
+	pub fn from_bytes_and_base<T: AsRef<[u8]> + ?Sized>(image: &'a T, base_address: Va) -> Result<PeView<'a>> {
+		let image = image.as_ref();
+		let _ = validate_headers(image)?;
+		Ok(PeView { image, base_address })
+	}
+
 	/// Constructs a new view from module handle.
 	///
 	/// # Safety
@@ -66,6 +100,7 @@ impl<'a> PeView<'a> {
 		let nt = &*(base.offset(dos.e_lfanew as isize) as *const IMAGE_NT_HEADERS);
 		PeView {
 			image: slice::from_raw_parts(base, nt.OptionalHeader.SizeOfImage as usize),
+			base_address: base as Va
 		}
 	}
 	/// Converts the view to file alignment.
@@ -121,8 +156,8 @@ unsafe impl<'a> PeObject<'a> for PeView<'a> {
 		Align::Section
 	}
 
-	fn base_addr(&self) -> Va {
-		self.image.as_ptr() as Va
+	fn image_base(&self) -> Va {
+		self.base_address
 	}
 
 	#[cfg(feature = "serde")]
