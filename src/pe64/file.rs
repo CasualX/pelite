@@ -83,6 +83,11 @@ unsafe impl<'a> PeObject<'a> for PeFile<'a> {
 	fn align(&self) -> Align {
 		Align::File
 	}
+
+	fn image_base(&self) -> super::Va {
+		self.optional_header().ImageBase
+	}
+	
 	#[cfg(feature = "serde")]
 	fn serde_name(&self) -> &'static str {
 		"PeFile"

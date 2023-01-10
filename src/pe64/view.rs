@@ -9,13 +9,14 @@ use std::{cmp, slice};
 use crate::Result;
 
 use super::image::*;
-use super::pe::validate_headers;
+use super::pe::{validate_headers, optional_header};
 use super::{Align, Pe, PeObject};
 
 /// View into a mapped PE image.
 #[derive(Copy, Clone)]
 pub struct PeView<'a> {
 	image: &'a [u8],
+	base_address: Va,
 }
 
 current_target! {
@@ -29,6 +30,13 @@ current_target! {
 }
 impl<'a> PeView<'a> {
 	/// Constructs a view from a byte slice.
+	///
+	/// # Notes
+	///
+	/// The base virtual address of image is assumed to be the one present in the image's optional header.
+	/// When dynamic base (ASLR) is enabled, this may not always be the actual base address. Hence consider
+	/// using [`PeView::set_base_address()`] (for images manually copied into memory) or [`PeView::module`]
+	/// (for images loaded by the operating system).
 	///
 	/// # Errors
 	///
@@ -46,11 +54,22 @@ impl<'a> PeView<'a> {
 	///
 	/// * [`Insanity`](../enum.Error.html#variant.Insanity):
 	///   Reasonable limits on `e_lfanew`, `SizeOfHeaders` or `NumberOfSections` are exceeded.
+	#[inline]
 	pub fn from_bytes<T: AsRef<[u8]> + ?Sized>(image: &'a T) -> Result<PeView<'a>> {
 		let image = image.as_ref();
 		let _ = validate_headers(image)?;
-		Ok(PeView { image })
+		let base_address = unsafe { optional_header(image).ImageBase };
+		Ok(PeView { image, base_address })
 	}
+
+	/// Returns a new `PeView` instance with the provided base address.
+	#[inline]
+	#[must_use]
+	pub fn set_base_address(self, base_address: Va) -> PeView<'a> {
+		let PeView { image, .. } = self;
+		PeView { image, base_address }
+	}
+
 	/// Constructs a new view from module handle.
 	///
 	/// # Safety
@@ -66,6 +85,7 @@ impl<'a> PeView<'a> {
 		let nt = &*(base.offset(dos.e_lfanew as isize) as *const IMAGE_NT_HEADERS);
 		PeView {
 			image: slice::from_raw_parts(base, nt.OptionalHeader.SizeOfImage as usize),
+			base_address: base as Va
 		}
 	}
 	/// Converts the view to file alignment.
@@ -120,6 +140,11 @@ unsafe impl<'a> PeObject<'a> for PeView<'a> {
 	fn align(&self) -> Align {
 		Align::Section
 	}
+
+	fn image_base(&self) -> Va {
+		self.base_address
+	}
+
 	#[cfg(feature = "serde")]
 	fn serde_name(&self) -> &'static str {
 		"PeView"
