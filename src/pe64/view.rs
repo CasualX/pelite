@@ -16,7 +16,7 @@ use super::{Align, Pe, PeObject};
 #[derive(Copy, Clone)]
 pub struct PeView<'a> {
 	image: &'a [u8],
-	base_address: Va 
+	base_address: Va,
 }
 
 current_target! {
@@ -30,13 +30,13 @@ current_target! {
 }
 impl<'a> PeView<'a> {
 	/// Constructs a view from a byte slice.
-	/// 
+	///
 	/// # Notes
-	/// 
+	///
 	/// The base virtual address of image is assumed to be the one present in the image's optional header.
 	/// When dynamic base (ASLR) is enabled, this may not always be the actual base address. Hence consider
-	/// using [`PeView::from_bytes_and_base()`] (for images manually copied into memory) or [`PeView::module`] 
-	/// (for images loaded by the operating system) instead.
+	/// using [`PeView::set_base_address()`] (for images manually copied into memory) or [`PeView::module`]
+	/// (for images loaded by the operating system).
 	///
 	/// # Errors
 	///
@@ -54,6 +54,7 @@ impl<'a> PeView<'a> {
 	///
 	/// * [`Insanity`](../enum.Error.html#variant.Insanity):
 	///   Reasonable limits on `e_lfanew`, `SizeOfHeaders` or `NumberOfSections` are exceeded.
+	#[inline]
 	pub fn from_bytes<T: AsRef<[u8]> + ?Sized>(image: &'a T) -> Result<PeView<'a>> {
 		let image = image.as_ref();
 		let _ = validate_headers(image)?;
@@ -61,28 +62,12 @@ impl<'a> PeView<'a> {
 		Ok(PeView { image, base_address })
 	}
 
-	/// Constructs a view from a byte slice and the base virtual address of the image.
-	///
-	/// # Errors
-	///
-	/// * [`Bounds`](../enum.Error.html#variant.Bounds):
-	///   The byte slice is too small to fit the PE headers.
-	///
-	/// * [`Misaligned`](../enum.Error.html#variant.Misaligned):
-	///   The minimum alignment of 4 is not satisfied.
-	///
-	/// * [`BadMagic`](../enum.Error.html#variant.BadMagic):
-	///   This is not a PE file.
-	///
-	/// * [`PeMagic`](../enum.Error.html#variant.PeMagic):
-	///   Trying to parse a PE32 file with the PE32+ parser and vice versa.
-	///
-	/// * [`Insanity`](../enum.Error.html#variant.Insanity):
-	///   Reasonable limits on `e_lfanew`, `SizeOfHeaders` or `NumberOfSections` are exceeded.
-	pub fn from_bytes_and_base<T: AsRef<[u8]> + ?Sized>(image: &'a T, base_address: Va) -> Result<PeView<'a>> {
-		let image = image.as_ref();
-		let _ = validate_headers(image)?;
-		Ok(PeView { image, base_address })
+	/// Returns a new `PeView` instance with the provided base address.
+	#[inline]
+	#[must_use]
+	pub fn set_base_address(self, base_address: Va) -> PeView<'a> {
+		let PeView { image, .. } = self;
+		PeView { image, base_address }
 	}
 
 	/// Constructs a new view from module handle.
