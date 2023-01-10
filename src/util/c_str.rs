@@ -129,7 +129,7 @@ impl fmt::Debug for CStr {
 					bytes = &bytes[1..];
 					f.write_str("\\\\")?;
 				},
-				0x20...0x7E => {
+				0x20..=0x7E => {
 					let (s, tail) = split_f(bytes, |&byte| byte < 0x20 || byte >= 0x80 || byte == b'"' || byte == b'\\');
 					bytes = tail;
 					let s = unsafe { str::from_utf8_unchecked(s) };

@@ -14,7 +14,7 @@ use lde;
 pub fn print(client: PeFile) {
 	let list = weapondata(client).unwrap();
 
-	tprint! {
+	format_xml::print! {
 		"### WeaponData\n\n"
 		"```\n"
 		"class WeaponInfo {{\n"

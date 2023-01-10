@@ -13,7 +13,6 @@ Due to small but incompatible differences the two formats are not unified.
 */
 
 #![recursion_limit = "128"]
-#![allow(ellipsis_inclusive_range_patterns)]
 #![cfg_attr(not(feature = "std"), no_std)]
 extern crate no_std_compat as std;
 

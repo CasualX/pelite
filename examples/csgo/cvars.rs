@@ -14,7 +14,7 @@ pub fn print(bin: PeFile, dll_name: &str) {
 	let cvars = convars(bin);
 	let cmds = concommands(bin);
 
-	tprint! {
+	format_xml::print! {
 		"### ConVars\n\n"
 		for cvar in (&cvars) {
 			"<details>\n"

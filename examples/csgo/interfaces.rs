@@ -19,7 +19,7 @@ use pelite::pe32::*;
 pub fn print(file: PeFile, dll_name: &str) {
 	let ifaces = interfaces(file);
 
-	tprint! {
+	format_xml::print! {
 		"### Interfaces\n\n"
 		"```\n"
 		for iface in (&ifaces) {
