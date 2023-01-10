@@ -17,7 +17,7 @@ use lde;
 pub fn print(client: PeFile) {
 	let classes = recvtables(client).unwrap();
 
-	tprint! {
+	format_xml::print! {
 		"### Recvtables\n\n"
 		for cls in (&classes) {
 			"<details>\n"

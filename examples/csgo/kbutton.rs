@@ -13,7 +13,7 @@ use pelite::pe32::*;
 pub fn print(bin: PeFile<'_>, dll_name: &str) {
 	let btns = buttons(bin);
 
-	tprint! {
+	format_xml::print! {
 		"### Buttons\n\n```\n"
 		for btn in (&btns) {
 			{dll_name}"!"{btn.kbutton;#010x}" kbutton_t "{btn.name}"\n"

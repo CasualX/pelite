@@ -12,7 +12,7 @@ use pelite::pattern as pat;
 pub fn print(client: PeFile, dll_name: &str) {
 	let classes = classes(client);
 
-	tprint! {
+	format_xml::print! {
 		"### ClientClasses\n\n"
 		for cls in (&classes) {
 			"<details>\n"

@@ -300,8 +300,8 @@ pub(crate) fn test<'a, P: Pe<'a>>(pe: P) -> Result<()> {
 	for desc in imports {
 		let _ = format!("{:?}", desc);
 		let _dll_name = desc.dll_name();
-		for _ in desc.iat() {}
-		for _ in desc.int() {}
+		for _ in desc.iat()? {}
+		for _ in desc.int()? {}
 	}
 
 	let iat = pe.iat()?;

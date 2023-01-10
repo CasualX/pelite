@@ -14,7 +14,7 @@ use pelite::pe32::*;
 pub fn print(client: PeFile) {
 	let datamaps = datamaps(client).unwrap();
 
-	tprint! {
+	format_xml::print! {
 		"### Datamaps\n\n"
 		for class in (&datamaps) {
 			"<details>\n"

@@ -100,7 +100,7 @@ fn generate(buckets: &[[u32; 256]; 256], count: usize) {
 
 		// Pick the next byte based on the weight for this byte
 		// FIXME! Use weighted reservoir sampling instead but this is more simple...
-		let mut pick = rng.gen_range(0, total);
+		let mut pick = rng.gen_range(0..total);
 		for i in 0..256 {
 			if pick < bucket[i] {
 				byte = i as u8;
