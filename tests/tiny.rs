@@ -130,14 +130,18 @@ fn tiny_296() {
 		// File header
 		e_cparhdr: 0x014C,
 		e_minalloc: 1,
-		e_maxalloc: 0xBE5D, e_ss: 0x4545,
-		e_sp: 0, e_csum: 0,
-		e_ip: 0, e_cs: 0,
+		e_maxalloc: 0xBE5D,
+		e_ss: 0x4545,
+		e_sp: 0,
+		e_csum: 0,
+		e_ip: 0,
+		e_cs: 0,
 		e_lfarlc: 0x00E0,
 		e_ovno: 0x0103,
 		// Optional header
 		e_res: [0x010B, 8, 4, 0],
-		e_oemid: 0, e_oeminfo: 0,
+		e_oemid: 0,
+		e_oeminfo: 0,
 		e_res2: [0, 0, 0x0124, 0, 0x0124, 0, 0x0128, 0, 0, 0x40],
 		e_lfanew: 4,
 	};

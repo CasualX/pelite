@@ -1,4 +1,3 @@
-
 /// Helper to implement generic alignment operator.
 pub trait AlignTo {
 	type TAlign;

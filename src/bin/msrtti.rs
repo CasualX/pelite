@@ -11,10 +11,10 @@ cargo run --bin msrtti -- "demo/Demo.dll" > demo/demo-rtti.txt
 use std::env;
 use std::process::exit;
 
-use pelite::FileMap;
-use pelite::pe32::{Pe, PeFile, Ptr};
 use pelite::pe32::image::{Rva, Va};
 use pelite::pe32::msvc::*;
+use pelite::pe32::{Pe, PeFile, Ptr};
+use pelite::FileMap;
 
 //----------------------------------------------------------------
 
@@ -129,13 +129,21 @@ fn vtable<'a>(file: PeFile<'a>, types: &mut Vec<Type<'a>>, xref: usize, vrefs: &
 	let col = file.deref(col_ptr)?;
 
 	// Look for an existing type or create a new one
-	let index = if let Some(index) = types.iter_mut().position(|ty| ty.type_ptr == col.type_descriptor && ty.class_ptr == col.class_descriptor) { index }
+	let index = if let Some(index) = types.iter_mut().position(|ty| ty.type_ptr == col.type_descriptor && ty.class_ptr == col.class_descriptor) {
+		index
+	}
 	else {
 		// First time seeing this type, get its descriptors
 		let ty_name = file.deref_c_str(col.type_descriptor.offset(8))?.to_str()?;
 		let class_desc = file.deref(col.class_descriptor)?;
 		// And add it to the list of types
-		types.push(Type { type_ptr: col.type_descriptor, class_ptr: col.class_descriptor, ty_name, class_desc, vtables: Vec::new() });
+		types.push(Type {
+			type_ptr: col.type_descriptor,
+			class_ptr: col.class_descriptor,
+			ty_name,
+			class_desc,
+			vtables: Vec::new(),
+		});
 		types.len() - 1
 	};
 	// Unfortunate due to lexical lifetimes...
@@ -156,7 +164,13 @@ fn vtable<'a>(file: PeFile<'a>, types: &mut Vec<Type<'a>>, xref: usize, vrefs: &
 }
 
 fn print<'a>(_file: PeFile<'a>, ty: &Type<'a>) -> pelite::Result<()> {
-	let kind = match ty.class_desc.attributes & 3 { 0 => " (SI)", 1 => " (MI)", 2 => " (VI)", 3 => " (MI VI)", _ => unreachable!() };
+	let kind = match ty.class_desc.attributes & 3 {
+		0 => " (SI)",
+		1 => " (MI)",
+		2 => " (VI)",
+		3 => " (MI VI)",
+		_ => unreachable!(),
+	};
 	println!("class {}{}", ty.ty_name, kind);
 	Ok(())
 }
@@ -171,7 +185,7 @@ fn print_vtable<'a>(file: PeFile<'a>, ty: &Type<'a>, vtable: &VTable<'a>) -> pel
 		if base_class.pmd.mdisp == vtable.col.offset as i32 {
 			let base_ty_name = file.deref_c_str(base_class.type_descriptor.offset(8))?.to_str()?;
 			println!("{:#010X}: ??_7{}6B@ {{for `{}'}} ({} methods)", vtable.rva, &ty.ty_name[4..], base_ty_name, vtable.vtable.len());
-			return Ok(())
+			return Ok(());
 		}
 	}
 	// Offset was not found... Probably VI, What do now?
@@ -192,8 +206,12 @@ fn print_class<'a>(file: PeFile<'a>, ty: &Type<'a>) -> pelite::Result<()> {
 		let base_class = file.deref(base_class_ptr)?;
 		// Mark virtual inheritance as special...
 		// I'm not sure how to best display this information
-		if base_class.pmd.pdisp != -1 { s += "****: "; }
-		else { s += &format!("{:04X}: ", base_class.pmd.mdisp); }
+		if base_class.pmd.pdisp != -1 {
+			s += "****: ";
+		}
+		else {
+			s += &format!("{:04X}: ", base_class.pmd.mdisp);
+		}
 		let is_last = base_class.num_contained_bases + 1 == stack[depth];
 		if depth > 0 {
 			// Print the margin
@@ -206,7 +224,8 @@ fn print_class<'a>(file: PeFile<'a>, ty: &Type<'a>) -> pelite::Result<()> {
 		}
 		// Get its type name
 		let base_ty_name = file.deref_c_str(base_class.type_descriptor.offset(8))?.to_str()?;
-		s += base_ty_name; s += "\n";
+		s += base_ty_name;
+		s += "\n";
 		// Manage the inheritance stack...
 		stack[depth] -= base_class.num_contained_bases + 1;
 		if base_class.num_contained_bases != 0 {

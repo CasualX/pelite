@@ -1,5 +1,5 @@
 #[allow(unused_imports)] // Lint false positive
-pub(crate) use serde::ser::{Serialize, Serializer, SerializeStruct, SerializeMap, SerializeSeq};
+pub(crate) use serde::ser::{Serialize, SerializeMap, SerializeSeq, SerializeStruct, Serializer};
 
 pub(crate) struct SerdeIter<I>(pub(crate) I);
 impl<T: Serialize, I: Clone + Iterator<Item = T>> Serialize for SerdeIter<I> {

@@ -3,7 +3,7 @@ Length word prefixed wide string.
 */
 
 use std::prelude::v1::*;
-use std::{char, fmt, mem, slice, ops};
+use std::{char, fmt, mem, ops, slice};
 
 use crate::util::FromBytes;
 
@@ -143,8 +143,10 @@ impl serde::Serialize for WideStr {
 #[cfg(test)]
 mod tests {
 	use std::{char, slice};
-	use super::WideStr;
+
 	use crate::util::FromBytes;
+
+	use super::WideStr;
 
 	static WIDE_STR: [u16; 7] = [6, 83, 84, 82, 73, 78, 71];
 	static INVALID_STR: [u16; 4] = [3, b'a' as u16, 0xd800, b'b' as u16];

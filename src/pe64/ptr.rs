@@ -2,18 +2,18 @@
 Typed virtual address.
 */
 
-use std::{cmp, fmt, hash, mem, str};
 use std::marker::PhantomData;
+use std::{cmp, fmt, hash, mem, str};
 
 use crate::Pod;
 
-use super::image::{Va, SignedVa};
+use super::image::{SignedVa, Va};
 
 /// Typed virtual address.
 #[repr(transparent)]
 pub struct Ptr<T: ?Sized = ()> {
 	va: Va,
-	marker: PhantomData<fn() -> T>
+	marker: PhantomData<fn() -> T>,
 }
 
 impl<T: ?Sized> Ptr<T> {
@@ -36,7 +36,10 @@ impl<T: ?Sized> Ptr<T> {
 	}
 	/// Casts the pointer to a different type keeping the pointer address fixed.
 	pub const fn cast<U: ?Sized>(self) -> Ptr<U> {
-		Ptr { va: self.va, marker: Ptr::<U>::MARKER }
+		Ptr {
+			va: self.va,
+			marker: Ptr::<U>::MARKER,
+		}
 	}
 	/// Offsets and casts the pointer.
 	///
@@ -84,7 +87,10 @@ impl<T: ?Sized> Ptr<T> {
 impl<T> Ptr<[T]> {
 	/// Decays the pointer from `[T]` to `T`.
 	pub const fn decay(self) -> Ptr<T> {
-		Ptr { va: self.va, marker: Ptr::<T>::MARKER }
+		Ptr {
+			va: self.va,
+			marker: Ptr::<T>::MARKER,
+		}
 	}
 	/// Pointer arithmetic, gets the pointer of an element at the specified index.
 	pub const fn at(self, i: usize) -> Ptr<T> {

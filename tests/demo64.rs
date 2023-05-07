@@ -1,8 +1,8 @@
-use pelite::{FileMap, Error};
-use pelite::pe64::{Rva, Pe, PeFile};
 use pelite::pe64::exports::{Export, GetProcAddress};
 use pelite::pe64::imports::Import;
+use pelite::pe64::{Pe, PeFile, Rva};
 use pelite::util::CStr;
+use pelite::{Error, FileMap};
 
 const FILE_NAME: &str = "demo/Demo64.dll";
 
@@ -146,12 +146,7 @@ fn base_relocs() {
 	// Test all the iterator impls against this baseline
 	let mut baseline = base_relocs
 		.iter_blocks()
-		.flat_map(move |block| {
-			block.words()
-				.iter()
-				.filter(move |&word| block.type_of(word) != 0)
-				.map(move |word| block.rva_of(word))
-		});
+		.flat_map(move |block| block.words().iter().filter(move |&word| block.type_of(word) != 0).map(move |word| block.rva_of(word)));
 	base_relocs.for_each(|rva, _| {
 		assert_eq!(baseline.next(), Some(rva));
 	});
@@ -216,7 +211,7 @@ fn security() {
 	let file = PeFile::from_bytes(&file_map).unwrap();
 	let security = file.security();
 
-	assert!(match security { Err(Error::Null) => true, _ => false });
+	assert!(matches!(security, Err(Error::Null)));
 }
 
 //----------------------------------------------------------------
@@ -258,8 +253,8 @@ fn scanner() {
 #[cfg(windows)]
 #[test]
 fn imagemap() {
-	use pelite::ImageMap;
 	use pelite::pe64::PeView;
+	use pelite::ImageMap;
 
 	let image = ImageMap::open(FILE_NAME).unwrap();
 	let _view = PeView::from_bytes(&image).unwrap();

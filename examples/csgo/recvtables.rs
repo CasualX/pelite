@@ -8,8 +8,9 @@ use std::mem;
 
 use pelite;
 use pelite::pattern as pat;
-use pelite::{util::CStr, Pod};
 use pelite::pe32::*;
+use pelite::{util::CStr, Pod};
+
 use lde;
 
 //----------------------------------------------------------------
@@ -79,6 +80,7 @@ struct RecvProp {
 	pParentArrayPropName: Ptr<CStr>,
 }
 
+#[rustfmt::skip]
 static PROP_TYPES: [&str; 8] = [
 	"Int",
 	"Float",
@@ -155,7 +157,9 @@ fn recvtable<'a>(client: PeFile<'a>, save: &[Rva; 8]) -> pelite::Result<Class<'a
 			let rva = client.va_to_rva(opcode.read::<Va>(2)).unwrap();
 			let imm = opcode.read::<u32>(6);
 			if rva >= props_rva && rva - props_rva < props_size {
-				unsafe { *(props_ptr.offset((rva - props_rva) as isize) as *mut u32) = imm; }
+				unsafe {
+					*(props_ptr.offset((rva - props_rva) as isize) as *mut u32) = imm;
+				}
 			}
 		}
 		// mov byte ptr addr, imm8
@@ -163,7 +167,9 @@ fn recvtable<'a>(client: PeFile<'a>, save: &[Rva; 8]) -> pelite::Result<Class<'a
 			let rva = client.va_to_rva(opcode.read::<Va>(2)).unwrap();
 			let imm = opcode.read::<u8>(6);
 			if rva >= props_rva && rva - props_rva < props_size {
-				unsafe { *(props_ptr.offset((rva - props_rva) as isize) as *mut u8) = imm; }
+				unsafe {
+					*(props_ptr.offset((rva - props_rva) as isize) as *mut u8) = imm;
+				}
 			}
 		}
 	}
@@ -183,6 +189,6 @@ fn recvtable<'a>(client: PeFile<'a>, save: &[Rva; 8]) -> pelite::Result<Class<'a
 	Ok(Class {
 		base: None,
 		name: net_table_name,
-		props
+		props,
 	})
 }

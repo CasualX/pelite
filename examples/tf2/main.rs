@@ -3,14 +3,14 @@ Team Fortress 2
 ===============
 */
 
-mod interfaces;
 mod classes;
 mod cvars;
+mod interfaces;
 
 //----------------------------------------------------------------
 
-use std::{env, io};
 use std::path::Path;
+use std::{env, io};
 
 use pelite::pe32::PeFile;
 
@@ -18,6 +18,7 @@ fn open(base_path: &Path, dll_file: &str) -> io::Result<pelite::FileMap> {
 	pelite::FileMap::open(&base_path.join(dll_file))
 }
 
+#[rustfmt::skip]
 fn main() {
 	// Get the tf2 folder
 	let tf2_path_buffer;

@@ -3,9 +3,9 @@ The ClientClass links client and server entities.
 */
 
 use pelite;
-use pelite::pe32::{Va, Ptr, Pe, PeFile};
-use pelite::{util::CStr, Pod};
 use pelite::pattern as pat;
+use pelite::pe32::{Pe, PeFile, Ptr, Va};
+use pelite::{util::CStr, Pod};
 
 //----------------------------------------------------------------
 
@@ -78,7 +78,12 @@ pub fn classes<'a>(client: PeFile<'a>) -> Vec<Class<'a>> {
 		let size_of = client.deref_copy::<u32>(client_class.pCreateFn.offset(39)).unwrap_or(0);
 		// Class ids are initialized somewhere else...
 		let class_id = 0;
-		list.push(Class { network_name, address, class_id, size_of })
+		list.push(Class {
+			network_name,
+			address,
+			class_id,
+			size_of,
+		})
 	}
 
 	list.sort_unstable_by_key(|cls| cls.network_name);

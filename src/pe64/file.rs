@@ -87,7 +87,7 @@ unsafe impl<'a> PeObject<'a> for PeFile<'a> {
 	fn image_base(&self) -> super::Va {
 		self.optional_header().ImageBase
 	}
-	
+
 	#[cfg(feature = "serde")]
 	fn serde_name(&self) -> &'static str {
 		"PeFile"
@@ -107,5 +107,5 @@ impl<'a> serde::Serialize for PeFile<'a> {
 
 #[test]
 fn from_byte_slice() {
-	assert!(match PeFile::from_bytes(&[]) { Err(crate::Error::Bounds) => true, _ => false });
+	assert!(matches!(PeFile::from_bytes(&[]), Err(crate::Error::Bounds)));
 }

@@ -2,8 +2,8 @@
 Exception Directory.
 */
 
-use std::{fmt, iter, mem, slice};
 use std::cmp::Ordering;
+use std::{fmt, iter, mem, slice};
 
 use crate::{Error, Result};
 
@@ -23,10 +23,8 @@ pub struct Exception<'a, P> {
 impl<'a, P: Pe<'a>> Exception<'a, P> {
 	pub(crate) fn try_from(pe: P) -> Result<Exception<'a, P>> {
 		let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_EXCEPTION).ok_or(Error::Bounds)?;
-		let (len, rem) = (
-			datadir.Size as usize / mem::size_of::<RUNTIME_FUNCTION>(),
-			datadir.Size as usize % mem::size_of::<RUNTIME_FUNCTION>(),
-		);
+		let len = datadir.Size as usize / mem::size_of::<RUNTIME_FUNCTION>();
+		let rem = datadir.Size as usize % mem::size_of::<RUNTIME_FUNCTION>();
 		if rem != 0 {
 			return Err(Error::Invalid);
 		}
@@ -46,19 +44,19 @@ impl<'a, P: Pe<'a>> Exception<'a, P> {
 	/// The PE specification says that the list of runtime functions should be sorted to allow binary search.
 	/// This function checks if the runtime functions are actually sorted, if not then lookups may fail unexpectedly.
 	pub fn check_sorted(&self) -> bool {
-		self.image.windows(2).all(|window|
-			window[0].BeginAddress <= window[0].EndAddress &&
-			window[0].EndAddress <= window[1].BeginAddress &&
-			window[1].BeginAddress <= window[1].EndAddress
-		)
+		#[rustfmt::skip]
+		fn check_sorted(window: &[RUNTIME_FUNCTION]) -> bool {
+			return
+				window[0].BeginAddress <= window[0].EndAddress &&
+				window[0].EndAddress <= window[1].BeginAddress &&
+				window[1].BeginAddress <= window[1].EndAddress;
+		}
+		self.image.windows(2).all(check_sorted)
 	}
 	/// Gets an iterator over the function records.
-	pub fn functions(&self)
-		-> iter::Map<slice::Iter<'a, RUNTIME_FUNCTION>, impl Clone + FnMut(&'a RUNTIME_FUNCTION) -> Function<'a, P>>
-	{
+	pub fn functions(&self) -> iter::Map<slice::Iter<'a, RUNTIME_FUNCTION>, impl Clone + FnMut(&'a RUNTIME_FUNCTION) -> Function<'a, P>> {
 		let pe = self.pe;
-		self.image.iter()
-			.map(move |image| Function { pe, image })
+		self.image.iter().map(move |image| Function { pe, image })
 	}
 	/// Finds the index of the function for the given program counter.
 	pub fn index_of(&self, pc: Rva) -> std::result::Result<usize, usize> {
@@ -78,12 +76,15 @@ impl<'a, P: Pe<'a>> Exception<'a, P> {
 	///
 	/// The function records are sorted by their address allowing binary search for the record.
 	pub fn lookup_function_entry(&self, pc: Rva) -> Option<Function<'a, P>> {
-		self.index_of(pc).map(|index| Function {
-			pe: self.pe,
-			image: &self.image[index]
-		}).ok()
+		self.index_of(pc)
+			.map(|index| Function {
+				pe: self.pe,
+				image: &self.image[index],
+			})
+			.ok()
 	}
 }
+#[rustfmt::skip]
 impl<'a, P: Pe<'a>> fmt::Debug for Exception<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		f.debug_struct("Exception")
@@ -111,8 +112,12 @@ impl<'a, P: Pe<'a>> Function<'a, P> {
 	}
 	/// Gets the function bytes.
 	pub fn bytes(&self) -> Result<&'a [u8]> {
-		let len = if self.image.BeginAddress > self.image.EndAddress { return Err(Error::Overflow); }
-		else { (self.image.EndAddress - self.image.BeginAddress) as usize };
+		let len = if self.image.BeginAddress > self.image.EndAddress {
+			return Err(Error::Overflow);
+		}
+		else {
+			(self.image.EndAddress - self.image.BeginAddress) as usize
+		};
 		self.pe.derva_slice(self.image.BeginAddress, len)
 	}
 	/// Gets the unwind info.
@@ -121,12 +126,11 @@ impl<'a, P: Pe<'a>> Function<'a, P> {
 		let bytes = self.pe.slice(
 			self.image.UnwindData,
 			mem::size_of::<UNWIND_INFO>(),
-			if cfg!(feature = "unsafe_alignment") { 1 } else { mem::align_of::<UNWIND_INFO>() }
+			if cfg!(feature = "unsafe_alignment") { 1 } else { mem::align_of::<UNWIND_INFO>() },
 		)?;
 		let image = unsafe { &*(bytes.as_ptr() as *const UNWIND_INFO) };
 		// Calculate actual size including size of unwind codes
-		let min_size_of = mem::size_of::<UNWIND_INFO>() +
-			mem::size_of::<UNWIND_CODE>() * image.CountOfCodes as usize;
+		let min_size_of = mem::size_of::<UNWIND_INFO>() + mem::size_of::<UNWIND_CODE>() * image.CountOfCodes as usize;
 		if bytes.len() < min_size_of {
 			return Err(Error::Bounds);
 		}
@@ -134,6 +138,7 @@ impl<'a, P: Pe<'a>> Function<'a, P> {
 		Ok(UnwindInfo { pe: self.pe, image })
 	}
 }
+#[rustfmt::skip]
 impl<'a, P: Pe<'a>> fmt::Debug for Function<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		f.debug_struct("Function")
@@ -176,9 +181,7 @@ impl<'a, P: Pe<'a>> UnwindInfo<'a, P> {
 	}
 	pub fn unwind_codes(&self) -> &'a [UNWIND_CODE] {
 		let len = self.image.CountOfCodes as usize;
-		unsafe {
-			slice::from_raw_parts(self.image.UnwindCode.as_ptr(), len)
-		}
+		unsafe { slice::from_raw_parts(self.image.UnwindCode.as_ptr(), len) }
 	}
 }
 impl<'a, P: Pe<'a>> fmt::Debug for UnwindInfo<'a, P> {

@@ -1,4 +1,5 @@
 use std::{fmt, mem, ops, slice};
+
 use crate::image::*;
 use crate::Pod;
 
@@ -45,6 +46,7 @@ impl ops::Deref for SectionHeader {
 	}
 }
 
+#[rustfmt::skip]
 impl fmt::Debug for SectionHeader {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		let name = self.name();
@@ -149,8 +151,8 @@ pub(crate) fn serialize_name<S: ::serde::ser::Serializer>(name: &[u8; IMAGE_SIZE
 
 #[cfg(feature = "serde")]
 mod serde {
-	use crate::util::serde_helper::*;
 	use super::{SectionHeader, SectionHeaders};
+	use crate::util::serde_helper::*;
 
 	impl serde::Serialize for SectionHeaders {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {

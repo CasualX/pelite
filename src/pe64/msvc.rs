@@ -1,4 +1,3 @@
-
 use crate::{util::CStr, Pod};
 
 use super::Ptr;
@@ -29,7 +28,7 @@ pub struct RTTICompleteObjectLocator {
 	pub signature: u32,
 	pub offset: u32,
 	pub cd_offset: u32,
-	pub type_descriptor: u32, //Ptr<TypeDescriptor>
+	pub type_descriptor: u32,  //Ptr<TypeDescriptor>
 	pub class_descriptor: u32, //Ptr<RTTIClassHierarchyDescriptor>
 }
 

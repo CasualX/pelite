@@ -120,9 +120,25 @@ impl<'a> Iterator for Enumerator<'a> {
 #[test]
 fn testing() {
 	let bytes = b"\x1fC-STRING\0\x80\x81AAAAAAAAAA\xff";
-	let strings: Vec<_> = Config { strict_nul: false, ..Config::default() }.enumerate(0x1000, bytes).collect();
-	assert_eq!(strings, vec![
-		Found { string: b"C-STRING", address: 0x1000 + 1, has_nul: true },
-		Found { string: b"AAAAAAAAAA", address: 0x1000 + 12, has_nul: false },
-	]);
+	let strings: Vec<_> = Config {
+		strict_nul: false,
+		..Config::default()
+	}
+	.enumerate(0x1000, bytes)
+	.collect();
+	assert_eq!(
+		strings,
+		vec![
+			Found {
+				string: b"C-STRING",
+				address: 0x1000 + 1,
+				has_nul: true
+			},
+			Found {
+				string: b"AAAAAAAAAA",
+				address: 0x1000 + 12,
+				has_nul: false
+			},
+		]
+	);
 }

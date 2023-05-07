@@ -24,6 +24,7 @@ struct Binary {
 	name: &'static str,
 }
 
+#[rustfmt::skip]
 static BINS: [Binary; 217] = [
 	Binary { offset: 0x10, len: 0x1400, name: "96emptysections.exe" },
 	Binary { offset: 0x1410, len: 0x494, name: "appendeddata.exe" },

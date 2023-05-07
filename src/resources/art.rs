@@ -1,5 +1,6 @@
 use std::fmt;
-use super::{Resources, Directory, Entry};
+
+use super::{Directory, Entry, Resources};
 
 /// Art used to format a directory tree.
 #[derive(Debug)]
@@ -12,6 +13,7 @@ struct Art {
 	file_tail: &'static str,
 }
 /// Uses [box-drawing characters](https://en.wikipedia.org/wiki/Box-drawing_character) to draw the tree art.
+#[rustfmt::skip]
 static U: Art = Art {
 	margin_draw: "│   ",
 	margin_open: "    ",
@@ -21,6 +23,7 @@ static U: Art = Art {
 	file_tail:   "└── ",
 };
 /// Uses ascii to draw the tree art.
+#[rustfmt::skip]
 static A: Art = Art {
 	margin_draw: "|   ",
 	margin_open: "    ",
@@ -88,9 +91,8 @@ impl<'a, 'd> TreeFmt<'a, 'd> {
 			match e.name() {
 				Ok(name) => write!(f, "{}", name.rename_id(if root { &super::RSRC_TYPES } else { &[] })),
 				Err(err) => write!(f, "{}", err),
-			}.and_then(|_| {
-				f.write_str(if e.is_dir() { "/\n" } else { "\n" })
-			})?;
+			}
+			.and_then(|_| f.write_str(if e.is_dir() { "/\n" } else { "\n" }))?;
 			// If it's a directory, print it recursively
 			if let Ok(Entry::Directory(dir)) = e.entry() {
 				TreeFmt {
@@ -98,7 +100,8 @@ impl<'a, 'd> TreeFmt<'a, 'd> {
 					art: self.art,
 					depth: depth + 1,
 					margin: self.margin | (tail as u32) << depth,
-				}.draw(f)?;
+				}
+				.draw(f)?;
 			}
 		}
 		Ok(())

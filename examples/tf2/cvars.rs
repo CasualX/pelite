@@ -5,8 +5,8 @@ Console Variables.
 #![allow(unused)]
 
 use pelite;
-use pelite::pe32::{Rva, Pe, PeFile};
 use pelite::pattern as pat;
+use pelite::pe32::{Pe, PeFile, Rva};
 
 //----------------------------------------------------------------
 
@@ -49,7 +49,16 @@ pub fn cvars<'a>(file: PeFile<'a>) -> pelite::Result<Vec<ConVar<'a>>> {
 		let default_string = file.derva_c_str(save[3]).unwrap().to_str().unwrap();
 		let name = file.derva_c_str(save[4]).unwrap().to_str().unwrap();
 		let offset = save[5];
-		cvars.push(ConVar { dll_name, name, desc, default_string, offset, flags, min_value, max_value });
+		cvars.push(ConVar {
+			dll_name,
+			name,
+			desc,
+			default_string,
+			offset,
+			flags,
+			min_value,
+			max_value,
+		});
 	}
 
 	// Variant: ConVar with description and with min/max values
@@ -63,7 +72,16 @@ pub fn cvars<'a>(file: PeFile<'a>) -> pelite::Result<Vec<ConVar<'a>>> {
 		let default_string = file.derva_c_str(save[5]).unwrap().to_str().unwrap();
 		let name = file.derva_c_str(save[6]).unwrap().to_str().unwrap();
 		let offset = save[7];
-		cvars.push(ConVar { dll_name, name, desc, default_string, offset, flags, min_value, max_value });
+		cvars.push(ConVar {
+			dll_name,
+			name,
+			desc,
+			default_string,
+			offset,
+			flags,
+			min_value,
+			max_value,
+		});
 	}
 
 	Ok(cvars)

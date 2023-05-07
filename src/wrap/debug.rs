@@ -1,4 +1,9 @@
+use std::{fmt, str};
+
+use crate::image::*;
+use crate::util::CStr;
 use crate::*;
+
 use super::Wrap;
 
 /// Debug directory.
@@ -95,27 +100,35 @@ pub enum Entry<'a> {
 impl<'a> Entry<'a> {
 	/// As a CodeView debug information entry.
 	pub fn as_code_view(self) -> Option<CodeView<'a>> {
-		match self { Entry::CodeView(cv) => Some(cv), _ => None }
+		match self {
+			Entry::CodeView(cv) => Some(cv),
+			_ => None,
+		}
 	}
 	/// As a Dbg information entry.
 	pub fn as_dbg(self) -> Option<Dbg<'a>> {
-		match self { Entry::Dbg(dbg) => Some(dbg), _ => None }
+		match self {
+			Entry::Dbg(dbg) => Some(dbg),
+			_ => None,
+		}
 	}
 	/// As a PGO information entry.
 	pub fn as_pgo(self) -> Option<Pgo<'a>> {
-		match self { Entry::Pgo(pgo) => Some(pgo), _ => None }
+		match self {
+			Entry::Pgo(pgo) => Some(pgo),
+			_ => None,
+		}
 	}
 	/// Unknown format, return as bytes.
 	pub fn as_unknown(self) -> Option<&'a [u8]> {
-		match self { Entry::Unknown(data) => data, _ => None }
+		match self {
+			Entry::Unknown(data) => data,
+			_ => None,
+		}
 	}
 }
 
 //----------------------------------------------------------------
-
-use std::{fmt, str};
-use crate::image::*;
-use crate::util::CStr;
 
 /// CodeView information.
 #[derive(Copy, Clone)]
@@ -249,6 +262,7 @@ pub struct PgoItem<'a> {
 #[cfg(feature = "serde")]
 mod serde2 {
 	use crate::util::serde_helper::*;
+
 	use super::{CodeView, Dbg, Pgo};
 
 	impl<'a> Serialize for CodeView<'a> {

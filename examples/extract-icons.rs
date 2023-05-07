@@ -1,5 +1,5 @@
 use std::env;
-use std::path::{PathBuf};
+use std::path::PathBuf;
 
 use pelite::{FileMap, PeFile};
 

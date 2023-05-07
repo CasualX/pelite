@@ -120,29 +120,29 @@ mod macros;
 
 pub mod image;
 
-mod pe;
-mod view;
+pub(crate) mod base_relocs;
+pub mod debug;
+pub mod exception;
+pub mod exports;
 mod file;
 pub mod headers;
-pub(crate) mod rich_structure;
-pub mod exports;
 pub mod imports;
-pub(crate) mod base_relocs;
 pub mod load_config;
-pub mod resources;
-pub mod tls;
-pub(crate) mod security;
-pub mod exception;
-pub mod debug;
-mod ptr;
-pub mod scanner;
 pub mod msvc;
+mod pe;
+mod ptr;
+pub mod resources;
+pub(crate) mod rich_structure;
+pub mod scanner;
+pub(crate) mod security;
+pub mod tls;
+mod view;
 
-pub use self::image::{Va, Rva};
+pub use self::file::PeFile;
+pub use self::image::{Rva, Va};
 pub use self::pe::{Align, Pe, PeObject};
-pub use self::view::{PeView};
-pub use self::file::{PeFile};
 pub use self::ptr::Ptr;
+pub use self::view::PeView;
 
 #[cfg(feature = "unstable")]
 pub use self::pe::headers_mut;

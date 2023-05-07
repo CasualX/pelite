@@ -1,6 +1,7 @@
 use crate::*;
-use super::Wrap;
+
 use super::imports::Import;
+use super::Wrap;
 
 /// Exported symbol.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
@@ -254,20 +255,12 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::exports::By<'a, Pe32
 	/// Iterate over functions exported by name.
 	#[inline]
 	pub fn iter_names<'s>(&'s self) -> impl 's + Clone + Iterator<Item = (Result<&'a util::CStr>, Result<Export<'a>>)> {
-		(0..self.names().len() as u32)
-			.map(move |hint| (
-				self.name_of_hint(hint as usize),
-				self.hint(hint as usize),
-			))
+		(0..self.names().len() as u32).map(move |hint| (self.name_of_hint(hint as usize), self.hint(hint as usize)))
 	}
 	/// Iterate over functions exported by name, returning their name and index in the functions table.
 	#[inline]
 	pub fn iter_name_indices<'s>(&'s self) -> impl 's + Clone + Iterator<Item = (Result<&'a util::CStr>, usize)> {
-		(0..self.names().len() as u32)
-			.map(move |hint| (
-				self.name_of_hint(hint as usize),
-				self.name_indices()[hint as usize] as usize,
-			))
+		(0..self.names().len() as u32).map(move |hint| (self.name_of_hint(hint as usize), self.name_indices()[hint as usize] as usize))
 	}
 }
 

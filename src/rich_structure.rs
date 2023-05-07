@@ -35,9 +35,8 @@ pub struct RichStructure<'a> {
 impl<'a> RichStructure<'a> {
 	pub(crate) fn try_from(image: &'a [u32]) -> Result<RichStructure<'a>> {
 		// Read as a slice of dwords up until the PE headers
-		let image = image.get(15)
-			.and_then(|e_lfanew| image.get(..(e_lfanew / 4) as usize))
-			.ok_or(Error::Invalid)?;
+		let &e_lfanew = image.get(15).ok_or(Error::Invalid)?;
+		let image = image.get(..(e_lfanew / 4) as usize).ok_or(Error::Invalid)?;
 
 		// Skip the padding zeroes
 		let mut end = image.len();
@@ -88,14 +87,13 @@ impl<'a> RichStructure<'a> {
 	pub fn checksum(&self) -> u32 {
 		Self::_checksum(self.dos_stub, self.records())
 	}
-	fn _checksum<I>(dos_stub: &[u32], records: I) -> u32 where I: Iterator<Item = RichRecord> {
+	fn _checksum<I: Iterator<Item = RichRecord>>(dos_stub: &[u32], records: I) -> u32 {
 		let mut csum = mem::size_of_val(dos_stub) as u32;
 
 		let mut i = 0;
 		for dword in dos_stub {
 			// Zero the e_lfanew field
-			let bytes = if i == 0x3c { [0; 4] }
-			else { unsafe { *(dword as *const _ as *const [u8; 4]) } };
+			let bytes = if i == 0x3c { [0; 4] } else { unsafe { *(dword as *const _ as *const [u8; 4]) } };
 			// Accumulate
 			csum = u32::wrapping_add(csum, (bytes[0] as u32).rotate_left(i + 0));
 			csum = u32::wrapping_add(csum, (bytes[1] as u32).rotate_left(i + 1));
@@ -158,6 +156,7 @@ impl<'a> RichStructure<'a> {
 		}
 	}
 }
+#[rustfmt::skip]
 impl<'a> fmt::Debug for RichStructure<'a> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		f.debug_struct("RichStructure")
@@ -223,6 +222,7 @@ pub enum ObjectKind {
 	C,
 }
 impl From<u16> for ObjectKind {
+	#[rustfmt::skip]
 	fn from(product: u16) -> ObjectKind {
 		match product {
 			0x00ff          | 0x00c9 | 0x009a          | 0x007c | 0x005e | 0x0045          | 0x0006 => ObjectKind::Resource,
@@ -318,7 +318,8 @@ impl<'a> fmt::Debug for RichIter<'a> {
 #[cfg(feature = "serde")]
 mod serde {
 	use crate::util::serde_helper::*;
-	use super::{RichStructure, RichRecord};
+
+	use super::{RichRecord, RichStructure};
 
 	impl<'a> Serialize for RichStructure<'a> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {

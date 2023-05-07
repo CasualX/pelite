@@ -1,7 +1,8 @@
-use crate::*;
-use super::Wrap;
-
 use std::slice;
+
+use crate::*;
+
+use super::Wrap;
 
 /// Imported symbol.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]

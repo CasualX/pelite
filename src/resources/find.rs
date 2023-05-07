@@ -7,7 +7,7 @@ use std::{fmt, str};
 #[cfg(feature = "std")]
 use std::{error, path::Path};
 
-use super::{Resources, Directory, Entry, Name, DataEntry};
+use super::{DataEntry, Directory, Entry, Name, Resources};
 
 //------------------------------------------------
 
@@ -110,30 +110,32 @@ impl<'a> Resources<'a> {
 	/// Gets the icons.
 	pub fn icons(&self) -> impl 'a + Iterator<Item = Result<(Name<'a>, super::group::GroupIcon<'a>), FindError>> + Clone {
 		let resources = *self;
-		let icons = self.root().map_err(FindError::Pe)
-			.and_then(|root| root.get_dir(Name::GROUP_ICON));
+		let icons = self.root().map_err(FindError::Pe).and_then(|root| root.get_dir(Name::GROUP_ICON));
 
-		icons.into_iter().flat_map(move |icons| icons.entries().map(move |de| {
-			let name = de.name()?;
-			// A lot of assumptions being made here...
-			let bytes = de.entry()?.dir().ok_or(FindError::UnDataEntry)?.first_data()?.bytes()?;
-			let group_icon = super::group::GroupIcon::new(resources, bytes)?;
-			Ok((name, group_icon))
-		}))
+		icons.into_iter().flat_map(move |icons| {
+			icons.entries().map(move |de| {
+				let name = de.name()?;
+				// A lot of assumptions being made here...
+				let bytes = de.entry()?.dir().ok_or(FindError::UnDataEntry)?.first_data()?.bytes()?;
+				let group_icon = super::group::GroupIcon::new(resources, bytes)?;
+				Ok((name, group_icon))
+			})
+		})
 	}
 	/// Gets the cursors.
 	pub fn cursors(&self) -> impl 'a + Iterator<Item = Result<(Name<'a>, super::group::GroupCursor<'a>), FindError>> + Clone {
 		let resources = *self;
-		let cursors = self.root().map_err(FindError::Pe)
-			.and_then(|root| root.get_dir(Name::GROUP_CURSOR));
+		let cursors = self.root().map_err(FindError::Pe).and_then(|root| root.get_dir(Name::GROUP_CURSOR));
 
-		cursors.into_iter().flat_map(move |cursors| cursors.entries().map(move |de| {
-			let name = de.name()?;
-			// A lot of assumptions being made here...
-			let bytes = de.entry()?.dir().ok_or(FindError::UnDataEntry)?.first_data()?.bytes()?;
-			let group_cursor = super::group::GroupCursor::new(resources, bytes)?;
-			Ok((name, group_cursor))
-		}))
+		cursors.into_iter().flat_map(move |cursors| {
+			cursors.entries().map(move |de| {
+				let name = de.name()?;
+				// A lot of assumptions being made here...
+				let bytes = de.entry()?.dir().ok_or(FindError::UnDataEntry)?.first_data()?.bytes()?;
+				let group_cursor = super::group::GroupCursor::new(resources, bytes)?;
+				Ok((name, group_cursor))
+			})
+		})
 	}
 }
 impl<'a> Directory<'a> {
@@ -143,7 +145,12 @@ impl<'a> Directory<'a> {
 	}
 	/// Looks up the data entry by name.
 	pub fn get_data(&self, name: Name<'_>) -> Result<DataEntry<'a>, FindError> {
-		self.entries().find(|de| de.name() == Ok(name)).ok_or(FindError::NotFound)?.entry()?.data().ok_or(FindError::UnDirectory)
+		self.entries()
+			.find(|de| de.name() == Ok(name))
+			.ok_or(FindError::NotFound)?
+			.entry()?
+			.data()
+			.ok_or(FindError::UnDirectory)
 	}
 	/// Looks up the directory by name.
 	pub fn get_dir(&self, name: Name<'_>) -> Result<Directory<'a>, FindError> {

@@ -43,8 +43,8 @@ fn example(file: PeFile<'_>) -> pelite::Result<()> {
 
 use std::{fmt, iter, mem, slice};
 
-use crate::{Error, Result};
 use crate::util::CStr;
+use crate::{Error, Result};
 
 use super::image::*;
 use super::Pe;
@@ -96,10 +96,7 @@ impl<'a, P: Pe<'a>> Imports<'a, P> {
 	}
 	/// Iterator over the import descriptors.
 	pub fn iter(&self) -> Iter<'a, P> {
-		Iter {
-			pe: self.pe,
-			iter: self.image.iter(),
-		}
+		Iter { pe: self.pe, iter: self.image.iter() }
 	}
 }
 impl<'a, P: Pe<'a>> IntoIterator for Imports<'a, P> {
@@ -109,6 +106,7 @@ impl<'a, P: Pe<'a>> IntoIterator for Imports<'a, P> {
 		self.iter()
 	}
 }
+#[rustfmt::skip]
 impl<'a, P: Pe<'a>> fmt::Debug for Imports<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		f.debug_list()
@@ -150,6 +148,7 @@ impl<'a, P: Pe<'a>> IAT<'a, P> {
 		self.image.iter().map(move |va| (va, import_from_va(pe, va)))
 	}
 }
+#[rustfmt::skip]
 impl<'a, P: Pe<'a>> fmt::Debug for IAT<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		f.debug_struct("IAT")
@@ -231,6 +230,7 @@ impl<'a, P: Pe<'a>> Desc<'a, P> {
 		Ok(slice.iter().map(move |va| import_from_va(pe, va)))
 	}
 }
+#[rustfmt::skip]
 impl<'a, P: Pe<'a>> fmt::Debug for Desc<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		f.debug_struct("Imports")
@@ -262,7 +262,8 @@ impl<'a, P: Pe<'a>> fmt::Debug for Desc<'a, P> {
 #[cfg(feature = "serde")]
 mod serde {
 	use crate::util::serde_helper::*;
-	use super::{Pe, Imports, IAT, Desc};
+
+	use super::{Desc, Imports, Pe, IAT};
 
 	impl<'a, P: Pe<'a>> Serialize for Imports<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
@@ -279,11 +280,7 @@ mod serde {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			let mut state = serializer.serialize_struct("Desc", 2)?;
 			state.serialize_field("dll_name", &self.dll_name().ok())?;
-			let int = self.int().map(|int| {
-				SerdeIter(int.filter_map(|import| {
-					import.ok()
-				}))
-			});
+			let int = self.int().map(|int| SerdeIter(int.filter_map(|import| import.ok())));
 			state.serialize_field("int", &int.ok())?;
 			state.end()
 		}
@@ -300,8 +297,12 @@ pub(crate) fn test<'a, P: Pe<'a>>(pe: P) -> Result<()> {
 	for desc in imports {
 		let _ = format!("{:?}", desc);
 		let _dll_name = desc.dll_name();
-		for _ in desc.iat() {}
-		for _ in desc.int() {}
+		if let Ok(iat) = desc.iat() {
+			for _ in iat {}
+		}
+		if let Ok(int) = desc.int() {
+			for _ in int {}
+		}
 	}
 
 	let iat = pe.iat()?;

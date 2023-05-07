@@ -7,6 +7,7 @@ Weapon Data.
 use pelite;
 use pelite::pattern as pat;
 use pelite::pe32::*;
+
 use lde;
 
 //----------------------------------------------------------------

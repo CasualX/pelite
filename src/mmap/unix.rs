@@ -1,7 +1,8 @@
-use std::{io, mem, ptr, slice};
 use std::fs::File;
-use std::path::Path;
 use std::os::unix::io::AsRawFd;
+use std::path::Path;
+use std::{io, mem, ptr, slice};
+
 use crate::util::AlignTo;
 
 /// Memory mapped file.
@@ -33,14 +34,7 @@ impl FileMap {
 
 		// Mmap the file
 		unsafe {
-			let ptr = libc::mmap(
-				ptr::null_mut(),
-				size as libc::size_t,
-				libc::PROT_READ,
-				libc::MAP_PRIVATE,
-				fd,
-				0
-			);
+			let ptr = libc::mmap(ptr::null_mut(), size as libc::size_t, libc::PROT_READ, libc::MAP_PRIVATE, fd, 0);
 			if ptr == libc::MAP_FAILED {
 				Err(io::Error::last_os_error())
 			}
@@ -60,8 +54,6 @@ impl Drop for FileMap {
 }
 impl AsRef<[u8]> for FileMap {
 	fn as_ref(&self) -> &[u8] {
-		unsafe {
-			slice::from_raw_parts(self.ptr as *const _, self.size)
-		}
+		unsafe { slice::from_raw_parts(self.ptr as *const _, self.size) }
 	}
 }

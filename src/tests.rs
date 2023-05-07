@@ -2,7 +2,7 @@
 Run tests on a variety of cute binaries.
  */
 
-use crate::{pe32, pe64, Wrap, PeFile};
+use crate::{pe32, pe64, PeFile, Wrap};
 
 #[path = "../tests/pocs/pocs.rs"]
 mod pocs;

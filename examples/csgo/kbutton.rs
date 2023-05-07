@@ -6,9 +6,9 @@ From the Source SDK 2013: https://github.com/ValveSoftware/source-sdk-2013/blob/
 
  */
 
-use pelite::Pod;
 use pelite::pattern as pat;
 use pelite::pe32::*;
+use pelite::Pod;
 
 pub fn print(bin: PeFile<'_>, dll_name: &str) {
 	let btns = buttons(bin);
@@ -40,7 +40,8 @@ fn buttons<'a>(file: PeFile<'a>) -> Vec<Button<'a>> {
 
 	// Match the ConCommand in .data section...
 	let section = file.section_headers().iter().find(|sect| &sect.Name == b".data\0\0\0").unwrap();
-	let mut matches = file.scanner().matches(pat!("@2 00000000 00000000 *{'\"+\"} *{} 00000000 *55 8BEC [8-80] B9*{'}"), section.virtual_range());
+	let scanner = file.scanner();
+	let mut matches = scanner.matches(pat!("@2 00000000 00000000 *{'\"+\"} *{} 00000000 *55 8BEC [8-80] B9*{'}"), section.virtual_range());
 	while matches.next(&mut save) {
 		let name = file.derva_c_str(save[1]).unwrap().to_str().unwrap();
 		let kbutton = save[2];

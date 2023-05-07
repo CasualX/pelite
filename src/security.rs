@@ -24,6 +24,7 @@ fn example(file: PeFile<'_>) -> pelite::Result<()> {
 */
 
 use std::{fmt, mem};
+
 use crate::image::WIN_CERTIFICATE;
 use crate::util::AlignTo;
 
@@ -43,9 +44,7 @@ impl<'a> Security<'a> {
 	/// Returns the underlying security directory image.
 	pub fn image(&self) -> &'a WIN_CERTIFICATE {
 		// Safety checked by new
-		unsafe {
-			&*(self.image.as_ptr() as *const _)
-		}
+		unsafe { &*(self.image.as_ptr() as *const _) }
 	}
 	/// Gets the type of the certificate.
 	///
@@ -70,9 +69,7 @@ impl<'a> Security<'a> {
 	/// ```
 	pub fn certificate_data(&self) -> &'a [u8] {
 		// Safety checked by new
-		unsafe {
-			self.image.get_unchecked(8..)
-		}
+		unsafe { self.image.get_unchecked(8..) }
 	}
 }
 impl<'a> fmt::Debug for Security<'a> {
@@ -86,8 +83,8 @@ impl<'a> fmt::Debug for Security<'a> {
 
 #[cfg(feature = "serde")]
 mod serde {
-	use crate::util::serde_helper::*;
 	use super::Security;
+	use crate::util::serde_helper::*;
 
 	impl<'a> Serialize for Security<'a> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
@@ -96,8 +93,7 @@ mod serde {
 			state.serialize_field("certificate_type", &self.certificate_type())?;
 			if cfg!(feature = "data-encoding") && is_human_readable {
 				#[cfg(feature = "data-encoding")]
-				state.serialize_field("certificate_data",
-					&data_encoding::BASE64.encode(self.certificate_data()))?;
+				state.serialize_field("certificate_data", &data_encoding::BASE64.encode(self.certificate_data()))?;
 			}
 			else {
 				state.serialize_field("certificate_data", &self.certificate_data())?;

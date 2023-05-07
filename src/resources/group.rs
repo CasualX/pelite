@@ -40,14 +40,13 @@ for (name, group) in resources.icons().filter_map(Result::ok) {
 
  */
 
-use std::prelude::v1::*;
-
 #[cfg(feature = "std")]
 use std::io;
+use std::prelude::v1::*;
+use std::{fmt, mem, slice};
 
 use crate::util::AlignTo;
 use crate::Error;
-use std::{fmt, mem, slice};
 
 use super::{FindError, Resources};
 
@@ -126,11 +125,7 @@ impl<'a> GroupResource<'a> {
 	}
 	/// Gets the image data for the given icon id.
 	pub fn image(&self, id: u16) -> Result<&'a [u8], FindError> {
-		self.resources.root()?
-			.get_dir(self.ty().into())?
-			.get_dir(id.into())?
-			.first_data()?
-			.bytes().map_err(FindError::Pe)
+		self.resources.root()?.get_dir(self.ty().into())?.get_dir(id.into())?.first_data()?.bytes().map_err(FindError::Pe)
 	}
 	/// Reassemble the file.
 	#[cfg(feature = "std")]
@@ -163,6 +158,7 @@ impl<'a> GroupResource<'a> {
 	}
 }
 
+#[rustfmt::skip]
 impl fmt::Debug for GroupResource<'_> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		f.debug_struct("GroupResource")
@@ -178,9 +174,9 @@ impl serde::Serialize for GroupResource<'_> {
 		let mut bytes = Vec::new();
 		mem::forget(self.write(&mut bytes));
 		#[cfg(feature = "data-encoding")]
-		{if serializer.is_human_readable() {
+		if serializer.is_human_readable() {
 			return serializer.serialize_str(&data_encoding::BASE64.encode(&bytes));
-		}}
+		}
 		serializer.serialize_bytes(&bytes)
 	}
 }

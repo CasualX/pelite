@@ -9,8 +9,7 @@ fn main() {
 	let mut args_os = env::args_os();
 	match (args_os.next(), args_os.next(), args_os.next(), args_os.next()) {
 		(Some(_), Some(path), Some(lang), None) => {
-			let lang = lang.to_str().unwrap()
-				.parse().expect("lang parameter");
+			let lang = lang.to_str().unwrap().parse().expect("lang parameter");
 			print_version_info(Path::new(&path), Some(lang));
 		},
 		(Some(_), Some(path), None, None) => {
@@ -24,28 +23,29 @@ fn main() {
 
 fn print_version_info(path: &Path, lang: Option<u16>) {
 	// Map the file into memory
-	let file_map = pelite::FileMap::open(path)
-		.expect("cannot open the file specified");
+	let file_map = pelite::FileMap::open(path).expect("cannot open the file specified");
 
 	// Interpret as a PE image
-	let image = pelite::PeFile::from_bytes(file_map.as_ref())
-		.expect("file is not a PE image");
+	let image = pelite::PeFile::from_bytes(file_map.as_ref()).expect("file is not a PE image");
 
 	// Extract the resources from the image
 	let resources = image.resources().expect("resources not found");
 
 	// Extract the version info from the resources
 	let version_info = match lang {
-		Some(lang) => resources.find_resource_ex(&[pelite::resources::Name::VERSION, 1.into(), lang.into()])
+		Some(lang) => resources
+			.find_resource_ex(&[pelite::resources::Name::VERSION, 1.into(), lang.into()])
 			.and_then(|bytes| Ok(pelite::resources::version_info::VersionInfo::try_from(bytes)?)),
 		None => resources.version_info(),
-	}.expect("version info not found");
+	}
+	.expect("version info not found");
 
 	// Print the version info strings
 	struct Printer;
 	impl pelite::resources::version_info::Visit<'_> for Printer {
 		fn version_info(&mut self, _key: &[u16], fixed: Option<&pelite::image::VS_FIXEDFILEINFO>) -> bool {
 			if let Some(fixed) = fixed {
+				#[rustfmt::skip]
 				println!("{:<20} {}.{}.{}.{}\n{:<20} {}.{}.{}.{}\n{:<20} {:#x}\n{:<20} {:#x}\n{:<20} {}, {}\n{:<20} {}\n{:<20} {}",
 					"FileVersion", fixed.dwFileVersion.Major, fixed.dwFileVersion.Minor, fixed.dwFileVersion.Patch, fixed.dwFileVersion.Build,
 					"ProductVersion", fixed.dwProductVersion.Major, fixed.dwProductVersion.Minor, fixed.dwProductVersion.Patch, fixed.dwProductVersion.Build,
@@ -53,7 +53,8 @@ fn print_version_info(path: &Path, lang: Option<u16>) {
 					"FileFlags", fixed.dwFileFlags,
 					"FileOS", fixed.dwFileOS >> 16, fixed.dwFileOS & 0xffff,
 					"FileType", fixed.dwFileType,
-					"FileSubtype", fixed.dwFileSubtype);
+					"FileSubtype", fixed.dwFileSubtype,
+				);
 			}
 			true
 		}
