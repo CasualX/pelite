@@ -1,0 +1,5 @@
+edition = "2021"
+hard_tabs = true
+match_block_trailing_comma = true
+control_brace_style = "ClosingNextLine"
+max_width = 200

@@ -24,11 +24,11 @@ fn example(file: PeFile<'_>) -> pelite::Result<()> {
 
 use std::{fmt, iter, mem, slice};
 
-use crate::{util::CStr};
-use crate::{Error, Result};
 use crate::util::AlignTo;
+use crate::util::CStr;
+use crate::{Error, Result};
 
-use super::{Align, Pe, image::*};
+use super::{image::*, Align, Pe};
 
 //----------------------------------------------------------------
 
@@ -63,16 +63,11 @@ impl<'a, P: Pe<'a>> Debug<'a, P> {
 	}
 	/// Gets the CodeView PDB file name.
 	pub fn pdb_file_name(&self) -> Option<&'a CStr> {
-		self.into_iter()
-			.filter_map(|dir| dir.entry().ok().and_then(Entry::as_code_view).map(|cv| cv.pdb_file_name()))
-			.next()
+		self.into_iter().find_map(|dir| dir.entry().ok().and_then(Entry::as_code_view).map(|cv| cv.pdb_file_name()))
 	}
 	/// Iterator over the debug directories.
 	pub fn iter(&self) -> Iter<'a, P> {
-		Iter {
-			pe: self.pe,
-			iter: self.image.iter()
-		}
+		Iter { pe: self.pe, iter: self.image.iter() }
 	}
 }
 impl<'a, P: Pe<'a>> IntoIterator for Debug<'a, P> {
@@ -157,7 +152,7 @@ impl<'a, P: Pe<'a>> Dir<'a, P> {
 			IMAGE_DEBUG_TYPE_CODEVIEW => Ok(Entry::CodeView(code_view(&self)?)),
 			IMAGE_DEBUG_TYPE_MISC => Ok(Entry::Dbg(dbg(&self)?)),
 			IMAGE_DEBUG_TYPE_POGO => Ok(Entry::Pgo(pgo(&self)?)),
-			_ => Ok(Entry::Unknown(self.data()))
+			_ => Ok(Entry::Unknown(self.data())),
 		}
 	}
 }
@@ -174,7 +169,7 @@ impl<'a, P: Pe<'a>> fmt::Debug for Dir<'a, P> {
 
 //----------------------------------------------------------------
 
-pub use crate::wrap::debug::{Entry, CodeView, Dbg, Pgo, PgoIter, PgoItem};
+pub use crate::wrap::debug::{CodeView, Dbg, Entry, Pgo, PgoItem, PgoIter};
 
 fn code_view<'a, P: Pe<'a>>(dir: &Dir<'a, P>) -> Result<CodeView<'a>> {
 	let bytes = dir.data().ok_or(Error::Bounds)?;
@@ -251,7 +246,8 @@ fn pgo<'a, P: Pe<'a>>(dir: &Dir<'a, P>) -> Result<Pgo<'a>> {
 #[cfg(feature = "serde")]
 mod serde {
 	use crate::util::serde_helper::*;
-	use super::{Pe, Debug, Dir};
+
+	use super::{Debug, Dir, Pe};
 
 	impl<'a, P: Pe<'a>> Serialize for Debug<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
@@ -289,9 +285,7 @@ pub(crate) fn test<'a, P: Pe<'a>>(pe: P) -> Result<()> {
 				let _pdb_file_name = cv.pdb_file_name();
 			},
 			Ok(Entry::Dbg(_dbg)) => (),
-			Ok(Entry::Pgo(pgo)) => {
-				for _sec in pgo {}
-			},
+			Ok(Entry::Pgo(pgo)) => for _sec in pgo {},
 			Ok(Entry::Unknown(_data)) => (),
 			Err(_) => (),
 		}

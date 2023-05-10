@@ -54,19 +54,19 @@ impl<T> Wrap<T, T> {
 	}
 }
 
-mod pe;
-mod view;
+pub(crate) mod debug;
+pub(crate) mod exports;
 mod file;
 mod headers;
-pub(crate) mod sections;
-pub(crate) mod exports;
 pub(crate) mod imports;
 mod load_config;
-mod tls;
-pub(crate) mod debug;
+mod pe;
 mod scanner;
+pub(crate) mod sections;
+mod tls;
+mod view;
 
 pub use self::file::PeFile;
-pub use self::view::PeView;
-pub use self::pe::Align;
 pub(crate) use self::pe::get_section_bytes;
+pub use self::pe::Align;
+pub use self::view::PeView;

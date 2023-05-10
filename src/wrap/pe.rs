@@ -1,4 +1,5 @@
 use crate::*;
+
 use super::Wrap;
 
 /// The specific alignment used by the view.
@@ -124,42 +125,42 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 	//----------------------------------------------------------------
 
 	#[inline]
-	pub fn derva<T>(&self, rva: u32) -> Result<&'a T> where T: Pod {
+	pub fn derva<T: Pod>(&self, rva: u32) -> Result<&'a T> {
 		match self {
 			Wrap::T32(pe32) => pe32.derva(rva),
 			Wrap::T64(pe64) => pe64.derva(rva),
 		}
 	}
 	#[inline]
-	pub fn derva_copy<T>(&self, rva: u32) -> Result<T> where T: Copy + Pod {
+	pub fn derva_copy<T: Copy + Pod>(&self, rva: u32) -> Result<T> {
 		match self {
 			Wrap::T32(pe32) => pe32.derva_copy(rva),
 			Wrap::T64(pe64) => pe64.derva_copy(rva),
 		}
 	}
 	#[inline]
-	pub fn derva_into<T>(&self, rva: u32, dest: &mut T) -> Result<()> where T: ?Sized + Pod {
+	pub fn derva_into<T: ?Sized + Pod>(&self, rva: u32, dest: &mut T) -> Result<()> {
 		match self {
 			Wrap::T32(pe32) => pe32.derva_into(rva, dest),
 			Wrap::T64(pe64) => pe64.derva_into(rva, dest),
 		}
 	}
 	#[inline]
-	pub fn derva_slice<T>(&self, rva: u32, len: usize) -> Result<&'a [T]> where T: Pod {
+	pub fn derva_slice<T: Pod>(&self, rva: u32, len: usize) -> Result<&'a [T]> {
 		match self {
 			Wrap::T32(pe32) => pe32.derva_slice(rva, len),
 			Wrap::T64(pe64) => pe64.derva_slice(rva, len),
 		}
 	}
 	#[inline]
-	pub fn derva_slice_f<T, F>(&self, rva: u32, f: F) -> Result<&'a [T]> where T: Pod, F: FnMut(&'a T) -> bool {
+	pub fn derva_slice_f<T: Pod, F: FnMut(&'a T) -> bool>(&self, rva: u32, f: F) -> Result<&'a [T]> {
 		match self {
 			Wrap::T32(pe32) => pe32.derva_slice_f(rva, f),
 			Wrap::T64(pe64) => pe64.derva_slice_f(rva, f),
 		}
 	}
 	#[inline]
-	pub fn derva_slice_s<T>(&self, rva: u32, sentinel: T) -> Result<&'a [T]> where T: PartialEq + Pod {
+	pub fn derva_slice_s<T: PartialEq + Pod>(&self, rva: u32, sentinel: T) -> Result<&'a [T]> {
 		match self {
 			Wrap::T32(pe32) => pe32.derva_slice_s(rva, sentinel),
 			Wrap::T64(pe64) => pe64.derva_slice_s(rva, sentinel),
@@ -173,7 +174,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 		}
 	}
 	#[inline]
-	pub fn derva_string<T>(&self, rva: u32) -> Result<&'a T> where T: util::FromBytes + ?Sized {
+	pub fn derva_string<T: ?Sized + util::FromBytes>(&self, rva: u32) -> Result<&'a T> {
 		match self {
 			Wrap::T32(pe32) => pe32.derva_string(rva),
 			Wrap::T64(pe64) => pe64.derva_string(rva),

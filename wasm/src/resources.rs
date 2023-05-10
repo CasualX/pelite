@@ -1,7 +1,9 @@
 use std::mem;
+
 use pelite::resources::FindError::NotFound;
 use pelite::Error::Null;
-use crate::{PeFile, wasm::*};
+
+use crate::{wasm::*, PeFile};
 
 enum ResourceName {
 	String(Box<str>),
@@ -12,7 +14,7 @@ impl ResourceName {
 		unsafe {
 			if ptr.is_null() {
 				let [_, len]: [usize; 2] = mem::transmute(ptr);
-				return ResourceName::Id(len as u32)
+				return ResourceName::Id(len as u32);
 			}
 			else {
 				ResourceName::String(Box::from_raw(ptr))

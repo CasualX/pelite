@@ -13,6 +13,7 @@ Sources:
 
 #![allow(non_snake_case)]
 #![allow(non_camel_case_types)]
+#![cfg_attr(rustfmt, rustfmt::skip)]
 
 use std::{fmt, mem};
 
@@ -388,9 +389,9 @@ pub struct IMAGE_EXPORT_DIRECTORY {
 	pub Base: u32,
 	pub NumberOfFunctions: u32,
 	pub NumberOfNames: u32,
-	pub AddressOfFunctions: u32,     // RVA from base of image
-	pub AddressOfNames: u32,         // RVA from base of image
-	pub AddressOfNameOrdinals: u32,  // RVA from base of image
+	pub AddressOfFunctions: u32,    // RVA from base of image
+	pub AddressOfNames: u32,        // RVA from base of image
+	pub AddressOfNameOrdinals: u32, // RVA from base of image
 }
 
 //----------------------------------------------------------------

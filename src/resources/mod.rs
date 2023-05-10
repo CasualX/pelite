@@ -3,11 +3,10 @@ Resources.
 */
 
 use std::prelude::v1::*;
-
 use std::{char, fmt, iter, mem, slice};
 
-use crate::{Pod, Error, Result};
 use crate::image::*;
+use crate::{Error, Pod, Result};
 
 //----------------------------------------------------------------
 
@@ -16,8 +15,8 @@ pub use self::find::FindError;
 
 mod art;
 
-pub mod version_info;
 pub mod group;
+pub mod version_info;
 
 //----------------------------------------------------------------
 
@@ -49,7 +48,7 @@ impl<'a> Resources<'a> {
 	}
 
 	#[inline]
-	fn slice<T>(&self, offset: u32) -> Result<&'a T> where T: Pod {
+	fn slice<T: Pod>(&self, offset: u32) -> Result<&'a T> {
 		let start = offset as usize;
 		let end = mem::size_of::<T>().wrapping_add(start);
 		// Alignment checking
@@ -63,7 +62,7 @@ impl<'a> Resources<'a> {
 	}
 	#[inline]
 	#[allow(dead_code)] // unused for now...
-	fn slice_len<T>(&self, offset: u32, len: usize) -> Result<&'a [T]> where T: Pod {
+	fn slice_len<T: Pod>(&self, offset: u32, len: usize) -> Result<&'a [T]> {
 		let start = offset as usize;
 		let size_of = mem::size_of::<T>().checked_mul(len).ok_or(Error::Overflow)?;
 		let end = start.wrapping_add(size_of);
@@ -172,6 +171,7 @@ impl<'a> Directory<'a> {
 		self.entries().try_for_each(|e| e.fsck())
 	}
 }
+#[rustfmt::skip]
 impl<'a> fmt::Debug for Directory<'a> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		f.debug_struct("Directory")
@@ -441,6 +441,7 @@ impl<'a> DataEntry<'a> {
 		Ok(())
 	}
 }
+#[rustfmt::skip]
 impl<'a> fmt::Debug for DataEntry<'a> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		f.debug_struct("DataEntry")
@@ -452,11 +453,36 @@ impl<'a> fmt::Debug for DataEntry<'a> {
 //----------------------------------------------------------------
 
 static RSRC_TYPES: [Option<&str>; 25] = [
-	/* 0*/ None, Some("#CURSOR"), Some("#BITMAP"), Some("#ICON"), Some("#MENU"),
-	/* 5*/ Some("#DIALOG"), Some("#STRING"), Some("#FONTDIR"), Some("#FONT"), Some("#ACCELERATOR"),
-	/*10*/ Some("#RCDATA"), Some("#MESSAGETABLE"), Some("#GROUP_CURSOR"), None, Some("#GROUP_ICON"),
-	/*15*/ None, Some("#VERSION"), Some("#DLGINCLUDE"), None, Some("#PLUGPLAY"),
-	/*20*/ Some("#VXD"), Some("#ANICURSOR"), Some("#ANIICON"), Some("#HTML"), Some("#MANIFEST"),
+	// 0
+	None,
+	Some("#CURSOR"),
+	Some("#BITMAP"),
+	Some("#ICON"),
+	Some("#MENU"),
+	// 5
+	Some("#DIALOG"),
+	Some("#STRING"),
+	Some("#FONTDIR"),
+	Some("#FONT"),
+	Some("#ACCELERATOR"),
+	// 10
+	Some("#RCDATA"),
+	Some("#MESSAGETABLE"),
+	Some("#GROUP_CURSOR"),
+	None,
+	Some("#GROUP_ICON"),
+	// 15
+	None,
+	Some("#VERSION"),
+	Some("#DLGINCLUDE"),
+	None,
+	Some("#PLUGPLAY"),
+	// 20
+	Some("#VXD"),
+	Some("#ANICURSOR"),
+	Some("#ANIICON"),
+	Some("#HTML"),
+	Some("#MANIFEST"),
 ];
 
 //----------------------------------------------------------------
@@ -482,7 +508,8 @@ static RSRC_TYPES: [Option<&str>; 25] = [
 #[cfg(feature = "serde")]
 mod serde {
 	use crate::util::serde_helper::*;
-	use super::{Resources, Directory, Name, DirectoryEntry, DataEntry};
+
+	use super::{DataEntry, Directory, DirectoryEntry, Name, Resources};
 
 	// Rename the toplevel directory ids to their names
 	struct NamedDirectoryEntry<'a>(DirectoryEntry<'a>);
@@ -552,9 +579,15 @@ pub(crate) fn test(resources: Resources<'_>) -> Result<()> {
 				let mut id_entries;
 				let mut named_entries;
 				let mut entries: &mut dyn Iterator<Item = _> = match name {
-					Name::Id(_) => { id_entries = dir.id_entries(); &mut id_entries },
-					Name::Wide(_) => { named_entries = dir.named_entries(); &mut named_entries },
-					Name::Str(_) => unreachable!()
+					Name::Id(_) => {
+						id_entries = dir.id_entries();
+						&mut id_entries
+					},
+					Name::Wide(_) => {
+						named_entries = dir.named_entries();
+						&mut named_entries
+					},
+					Name::Str(_) => unreachable!(),
 				};
 				assert!((&mut entries).any(|entry| entry.name() == Ok(name)));
 			}

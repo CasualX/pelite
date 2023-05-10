@@ -9,18 +9,18 @@ macro_rules! tprint {
 	};
 }
 
-mod interfaces;
 mod classes;
-mod datamaps;
 mod cvars;
+mod datamaps;
+mod interfaces;
+mod kbutton;
 mod recvtables;
 mod weapondata;
-mod kbutton;
 
 //----------------------------------------------------------------
 
-use std::{env, io};
 use std::path::Path;
+use std::{env, io};
 
 use pelite::pe32::PeFile;
 
@@ -28,6 +28,7 @@ fn open(base_path: &Path, dll_file: &str) -> io::Result<pelite::FileMap> {
 	pelite::FileMap::open(&base_path.join(dll_file))
 }
 
+#[rustfmt::skip]
 fn main() {
 	// Get the csgo folder
 	let csgo_path_buffer;
@@ -95,5 +96,4 @@ fn main() {
 	interfaces::print(vphysics_file, "vphysics.dll");
 	interfaces::print(vstdlib_file, "vstdlib.dll");
 	interfaces::print(matchmaking_file, "matchmaking.dll");
-
 }

@@ -32,13 +32,13 @@ fn example(file: PeFile<'_>, pat: &[pat::Atom]) {
 ```
 */
 
-use std::{cmp, mem, ptr};
 use std::ops::Range;
+use std::{cmp, mem, ptr};
 
-use crate::{Pod, pattern as pat};
 use crate::util::AlignTo;
+use crate::{pattern as pat, Pod};
 
-use super::{Align, Rva, Pe, image::*};
+use super::{image::*, Align, Pe, Rva};
 
 /// Size of the prefix buffer for search optimization.
 const QS_BUF_LEN: usize = 16;
@@ -354,8 +354,7 @@ impl<'a, 'pat, P: Scan<'a>> Exec<'pat, P> {
 					self.pc = self.pc + next as usize;
 					return true;
 				},
-				pat::Atom::Nop => {
-				},
+				pat::Atom::Nop => {},
 			}
 		}
 		return true;
@@ -497,7 +496,14 @@ impl<'a, 'pat, P: Pe<'a>> Matches<'pat, P> {
 		let byte = qsbuf[0];
 		// Find all places with matching byte
 		// TODO! Replace with actual memchr
-		for i in slice.iter().enumerate().filter_map(|(i, &a)| if a == byte { Some(i as u32) } else { None }) {
+		for i in slice.iter().enumerate().filter_map(|(i, &a)| {
+			if a == byte {
+				Some(i as u32)
+			}
+			else {
+				None
+			}
+		}) {
 			self.hits += 1;
 			let cursor = self.range.start + i;
 			if self.scanner.exec(cursor, self.pat, save) {
@@ -563,9 +569,7 @@ impl<'a, 'pat, P: Pe<'a>> Matches<'pat, P> {
 				}
 				false
 			},
-			Align::Section => {
-				self.next_section(qsbuf, 0, image, save)
-			},
+			Align::Section => self.next_section(qsbuf, 0, image, save),
 		}
 	}
 	fn next_section(&mut self, qsbuf: &[u8], base: Rva, slice: &'a [u8], save: &mut [Rva]) -> bool {
@@ -611,7 +615,7 @@ pub(crate) fn test<'a, P: Pe<'a>>(pe: P) -> crate::Result<()> {
 // Test the core scanner engine
 #[test]
 fn exec_tests_parse_docs() {
-	use crate::pattern::{Atom, parse};
+	use crate::pattern::{parse, Atom};
 
 	fn exec(bytes: &[u8], pat: &[Atom], save: &mut [Rva]) -> bool {
 		Exec { pe: bytes, pat, cursor: 0, pc: 0 }.exec(save)
@@ -621,13 +625,15 @@ fn exec_tests_parse_docs() {
 		let bytes = [0x55, 0x89, 0xe5, 0x83, 0xff, 0xec];
 		let pat = parse("55 89 e5 83 ? ec").unwrap();
 		assert!(exec(&bytes, &pat, &mut []));
-	}{
+	}
+	{
 		let bytes = [0xb9, 0x37, 0x13, 0x00, 0x00];
 		let pat = parse("b9 '37 13 00 00").unwrap();
 		let mut save = [0; 2];
 		assert!(exec(&bytes, &pat, &mut save));
 		assert_eq!(save[1], 1);
-	}{
+	}
+	{
 		let mut bytes = [0; 64];
 		bytes[0] = 0xb8;
 		bytes[17] = 0x50;
@@ -636,42 +642,49 @@ fn exec_tests_parse_docs() {
 		let mut save = [0; 2];
 		assert!(exec(&bytes, &pat, &mut save));
 		assert_eq!(save[1], 41);
-	}{
+	}
+	{
 		let bytes = [0x31, 0xc0, 0x74, (-3i8) as u8];
 		let pat = parse("31 c0 74 % 'c0").unwrap();
 		let mut save = [0; 2];
 		assert!(exec(&bytes, &pat, &mut save));
 		assert_eq!(save[1], 1);
-	}{
+	}
+	{
 		let bytes = [0xe8, 10, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0x31, 0xc0, 0xc3];
 		let pat = parse("e8 $ '31 c0 c3").unwrap();
 		let mut save = [0; 2];
 		assert!(exec(&bytes, &pat, &mut save));
 		assert_eq!(save[1], 15);
-	}{
+	}
+	{
 		let bytes = [0x68, 10, 0, 0, 0, 1, 2, 3, 4, 5, 0x31, 0xc0, 0xc3];
 		let pat = parse("68 * '31 c0 c3").unwrap();
 		let mut save = [0; 2];
 		assert!(exec(&bytes, &pat, &mut save));
 		assert_eq!(save[1], 10);
-	}{
+	}
+	{
 		let bytes = b"\xb8\x0a\x00\x00\x00\x01\x02\x03\x04\x05STRING\x00";
 		let pat = parse(r#"b8 * "STRING" 00"#).unwrap();
 		assert!(exec(bytes, &pat, &mut []));
-	}{
+	}
+	{
 		let bytes = [0xe8, 10, 0, 0, 0, 0x83, 0xf0, 0x5c, 0xc3, 5, 6, 7, 8, 9, 10];
 		let pat = parse("e8 $ { ' } 83 f0 5c c3").unwrap();
 		let mut save = [0; 2];
 		assert!(exec(&bytes, &pat, &mut save));
 		assert_eq!(save[1], 15);
-	}{
+	}
+	{
 		let bytes = [0xe8, 0xff, 0xa0, 0x78, 0x56, 0x34, 0x12];
 		let pat = parse("e8 i1 a0 u4").unwrap();
 		let mut save = [0; 3];
 		assert!(exec(&bytes, &pat, &mut save));
 		assert_eq!(save[1], (-1i8) as u32);
 		assert_eq!(save[2], 0x12345678);
-	}{
+	}
+	{
 		let bytes1 = [0x83, 0xc0, 0x2a, 0x6a, 0x00, 0xe8];
 		let bytes2 = [0x83, 0xc0, 0x2a, 0x68, 0x00, 0x00, 0x00, 0x10, 0xe8];
 		let pat = parse("83 c0 2a ( 6a ? | 68 ? ? ? ? ) e8").unwrap();

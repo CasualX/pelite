@@ -1,6 +1,6 @@
-use crate::{Error, Result};
 use crate::security::Security;
 use crate::util::AlignTo;
+use crate::{Error, Result};
 
 use super::image::*;
 use super::{Align, Pe};

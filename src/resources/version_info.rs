@@ -40,15 +40,14 @@ fn example(bin: PeFile<'_>) -> Result<(), pelite::resources::FindError> {
 
  */
 
-#[cfg(not(feature = "std"))]
-use hashbrown::HashMap;
 #[cfg(feature = "std")]
 use std::collections::HashMap;
-
+use std::fmt::Write;
 use std::prelude::v1::*;
 use std::{char, cmp, fmt, mem, slice};
 
-use std::fmt::Write;
+#[cfg(not(feature = "std"))]
+use hashbrown::HashMap;
 
 use crate::image::VS_FIXEDFILEINFO;
 use crate::util::{wstrn, AlignTo, FmtUtf16};
@@ -76,9 +75,15 @@ impl Language {
 			let num = word.wrapping_sub('0' as u16);
 			let upper = word.wrapping_sub('A' as u16).wrapping_add(10);
 			let lower = word.wrapping_sub('a' as u16).wrapping_add(10);
-			if word >= 'a' as u16 { lower }
-			else if word >= 'A' as u16 { upper }
-			else { num }
+			if word >= 'a' as u16 {
+				lower
+			}
+			else if word >= 'A' as u16 {
+				upper
+			}
+			else {
+				num
+			}
 		}
 		let mut digits = [0u16; 8];
 		for i in 0..8 {
@@ -201,8 +206,7 @@ impl<'a> VersionInfo<'a> {
 						visit.enter_scope(2);
 						for string in Parser::new_words(string_table.children).filter_map(Result::ok) {
 							// Strip the nul terminator...
-							let value = if string.value.last() != Some(&0) { string.value }
-							else { &string.value[..string.value.len() - 1] };
+							let value = if string.value.last() != Some(&0) { string.value } else { &string.value[..string.value.len() - 1] };
 							visit.string(string.key, value);
 						}
 						visit.exit_scope(2);
@@ -223,6 +227,7 @@ impl<'a> VersionInfo<'a> {
 		}
 	}
 }
+#[rustfmt::skip]
 impl fmt::Debug for VersionInfo<'_> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		let file_info = self.file_info();
@@ -239,9 +244,15 @@ impl fmt::Debug for VersionInfo<'_> {
 /// Visitor pattern to view the version information details.
 #[allow(unused_variables)]
 pub trait Visit<'a> {
-	fn version_info(&mut self, key: &'a [u16], fixed: Option<&'a VS_FIXEDFILEINFO>) -> bool { true }
-	fn file_info(&mut self, key: &'a [u16]) -> bool { true }
-	fn string_table(&mut self, lang: &'a [u16]) -> bool { true }
+	fn version_info(&mut self, key: &'a [u16], fixed: Option<&'a VS_FIXEDFILEINFO>) -> bool {
+		true
+	}
+	fn file_info(&mut self, key: &'a [u16]) -> bool {
+		true
+	}
+	fn string_table(&mut self, lang: &'a [u16]) -> bool {
+		true
+	}
 	fn string(&mut self, key: &'a [u16], value: &'a [u16]) {}
 	fn var(&mut self, key: &'a [u16], value: &'a [u16]) {}
 	fn enter_scope(&mut self, depth: usize) {}
@@ -315,6 +326,7 @@ impl<'a, F: FnMut(&str, &str)> Visit<'a> for QueryStrings<F> {
 impl<'a> Visit<'a> for String {
 	fn version_info(&mut self, _key: &'a [u16], fixed: Option<&'a VS_FIXEDFILEINFO>) -> bool {
 		if let Some(fixed) = fixed {
+			#[rustfmt::skip]
 			let _ = writeln!(self, "\
 1 VERSIONINFO
 FILEVERSION {}, {}, {}, {}
@@ -326,7 +338,8 @@ FILETYPE {}
 FILESUBTYPE {}",
 				fixed.dwFileVersion.Major, fixed.dwFileVersion.Minor, fixed.dwFileVersion.Patch, fixed.dwFileVersion.Build,
 				fixed.dwProductVersion.Major, fixed.dwProductVersion.Minor, fixed.dwProductVersion.Patch, fixed.dwProductVersion.Build,
-				fixed.dwFileFlagsMask, fixed.dwFileFlags, fixed.dwFileOS >> 16, fixed.dwFileOS & 0xffff, fixed.dwFileType, fixed.dwFileSubtype);
+				fixed.dwFileFlagsMask, fixed.dwFileFlags, fixed.dwFileOS >> 16, fixed.dwFileOS & 0xffff, fixed.dwFileType, fixed.dwFileSubtype,
+			);
 		}
 		true
 	}
@@ -418,6 +431,7 @@ impl<'a> Visit<'a> for FileInfo<'a> {
 #[cfg(all(feature = "std", feature = "serde"))]
 mod serde {
 	use crate::util::serde_helper::*;
+
 	use super::{Language, VersionInfo};
 
 	impl Serialize for Language {
@@ -468,6 +482,7 @@ pub(crate) fn test(version_info: VersionInfo<'_>) {
 //----------------------------------------------------------------
 
 /// Fixed file info constants.
+#[rustfmt::skip]
 pub mod image {
 pub const VS_FF_DEBUG: u32        = 0x01;
 pub const VS_FF_PRERELEASE: u32   = 0x02;
@@ -519,11 +534,15 @@ pub const VFT2_FONT_TRUETYPE: u32         = 0x00000003;
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 struct TLV<'a> {
 	pub key: &'a [u16],
-	pub value: &'a [u16], // DWORD aligned
+	pub value: &'a [u16],    // DWORD aligned
 	pub children: &'a [u16], // DWORD aligned
 }
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
-enum ValueLengthType { Zero, Bytes, Words }
+enum ValueLengthType {
+	Zero,
+	Bytes,
+	Words,
+}
 #[derive(Clone)]
 struct Parser<'a> {
 	words: &'a [u16],
@@ -603,8 +622,7 @@ fn parse_tlv<'a>(state: &mut Parser<'a>) -> Result<TLV<'a>> {
 }
 
 #[test]
-fn test_parse_tlv_oob()
-{
+fn test_parse_tlv_oob() {
 	let mut parser;
 
 	// TLV header too short
@@ -630,6 +648,7 @@ fn test_parse_tlv_oob()
 
 #[test]
 fn test_parse_254() {
+	#[rustfmt::skip]
 	static WORDS: [u16; 397] = [
 		794, 52, 0, 86, 83, 95, 86, 69, 82, 83, 73, 79, 78, 95, 73, 78,
 		70, 79, 0, 0, 1213, 65263, 0, 1, 607, 22, 25, 2013, 607, 22, 25, 2013,
@@ -655,7 +674,8 @@ fn test_parse_254() {
 		99, 116, 86, 101, 114, 115, 105, 111, 110, 0, 50, 50, 46, 54, 48, 55,
 		46, 50, 48, 49, 51, 46, 50, 53, 0, 0, 70, 15, 1, 65, 115, 115,
 		101, 109, 98, 108, 121, 32, 86, 101, 114, 115, 105, 111, 110, 0, 50, 50,
-		46, 54, 48, 55, 46, 50, 48, 49, 51, 46, 50, 53, 0];
+		46, 54, 48, 55, 46, 50, 48, 49, 51, 46, 50, 53, 0,
+	];
 
 	let vi = VersionInfo { words: &WORDS };
 	let fi = vi.file_info();

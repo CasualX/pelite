@@ -1,4 +1,3 @@
-
 #[cfg(test)]
 pub(crate) fn test<'a, P: super::Pe<'a>>(pe: P) -> crate::Result<()> {
 	let rich_structure = pe.rich_structure()?;

@@ -7,7 +7,7 @@ use std::io::{self, Write};
 use std::path::PathBuf;
 use std::process;
 
-use pelite::{FileMap, Wrap, PeFile};
+use pelite::{FileMap, PeFile, Wrap};
 
 //----------------------------------------------------------------
 
@@ -102,20 +102,28 @@ impl Default for Parameters {
 			resources: false,
 			debug_info: false,
 		};
-		
+
 		// Get args and print help text
 		let mut args = env::args_os();
 		let (_, mut args) = (args.next(), args.peekable());
-		
+
 		if args.peek().is_none() {
 			print!("{}", HELP_TEXT);
 			process::exit(0);
 		}
 
 		// Get the input binary path
-		vars.path = args.next()
+		vars.path = args
+			.next()
 			.map(|path| PathBuf::from(path))
-			.map_or(None, |path| if path.starts_with("-") { None } else { Some(path) })
+			.map_or(None, |path| {
+				if path.starts_with("-") {
+					None
+				}
+				else {
+					Some(path)
+				}
+			})
 			.unwrap_or_else(|| abort(NO_INPUT_VAL));
 
 		// Parse the options for the program
@@ -137,7 +145,8 @@ impl Default for Parameters {
 				}
 			}
 			else if arg.starts_with("-") {
-				let mut it = arg.chars(); it.next();
+				let mut it = arg.chars();
+				it.next();
 				while let Some(opt) = it.next() {
 					match opt {
 						'd' => vars.dos = true,
@@ -158,7 +167,7 @@ impl Default for Parameters {
 				abort(INVALID_ARG);
 			}
 		}
-		
+
 		vars
 	}
 }

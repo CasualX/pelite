@@ -1,5 +1,6 @@
 use pelite::pattern as pat;
-use crate::{PeFile, wasm::*};
+
+use crate::{wasm::*, PeFile};
 
 #[no_mangle]
 pub unsafe fn pefileScannerExec(pefile: *mut PeFile, rva: u32, pat: *mut str) {

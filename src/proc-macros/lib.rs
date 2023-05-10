@@ -31,18 +31,16 @@ fn parse_str_literal(input: &Literal) -> String {
 	}
 	loop {
 		let chr = match chars.next() {
-			Some('\\') => {
-				match chars.next() {
-					Some('\\') => '\\',
-					Some('\'') => '\'',
-					Some('\"') => '\"',
-					Some('t') => '\t',
-					Some('r') => '\r',
-					Some('n') => '\n',
-					Some('u') => panic!("unicode escape sequence not supported"),
-					Some(chr) => panic!("unknown escape sequence: {}", chr),
-					None => panic!(""),
-				}
+			Some('\\') => match chars.next() {
+				Some('\\') => '\\',
+				Some('\'') => '\'',
+				Some('\"') => '\"',
+				Some('t') => '\t',
+				Some('r') => '\r',
+				Some('n') => '\n',
+				Some('u') => panic!("unicode escape sequence not supported"),
+				Some(chr) => panic!("unknown escape sequence: {}", chr),
+				None => panic!(""),
 			},
 			Some('"') => break,
 			Some(chr) => chr,

@@ -55,8 +55,8 @@ fn example(file: PeFile<'_>) -> pelite::Result<()> {
 
 use std::{fmt, ops};
 
-use crate::{Error, Result};
 use crate::util::CStr;
+use crate::{Error, Result};
 
 use super::image::*;
 use super::imports::Import;
@@ -136,7 +136,12 @@ impl<'a, P: Pe<'a>> Exports<'a, P> {
 			Err(Error::Null) => &[],
 			Err(e) => return Err(e),
 		};
-		Ok(By { exp: *self, functions, names, name_indices })
+		Ok(By {
+			exp: *self,
+			functions,
+			names,
+			name_indices,
+		})
 	}
 	fn is_forwarded(&self, rva: Rva) -> bool {
 		// An export is forward if its rva points within data directory bounds
@@ -275,12 +280,8 @@ impl<'a, P: Pe<'a>> By<'a, P> {
 	/// Looks up an `Export` by its import.
 	pub fn import(&self, import: Import) -> Result<Export<'a>> {
 		match import {
-			Import::ByName { hint, name } => {
-				self.hint_name_(hint, name)
-			},
-			Import::ByOrdinal { ord } => {
-				self.ordinal(ord)
-			}
+			Import::ByName { hint, name } => self.hint_name_(hint, name),
+			Import::ByOrdinal { ord } => self.ordinal(ord),
 		}
 	}
 	/// Looks up an export by its index.
@@ -347,19 +348,11 @@ impl<'a, P: Pe<'a>> By<'a, P> {
 	}
 	/// Iterate over functions exported by name.
 	pub fn iter_names<'s>(&'s self) -> impl 's + Clone + Iterator<Item = (Result<&'a CStr>, Result<Export<'a>>)> {
-		(0..self.names().len() as u32)
-			.map(move |hint| (
-				self.name_of_hint(hint as usize),
-				self.hint(hint as usize),
-			))
+		(0..self.names().len() as u32).map(move |hint| (self.name_of_hint(hint as usize), self.hint(hint as usize)))
 	}
 	/// Iterate over functions exported by name, returning their name and index in the functions table.
 	pub fn iter_name_indices<'s>(&'s self) -> impl 's + Clone + Iterator<Item = (Result<&'a CStr>, usize)> {
-		(0..self.names().len() as u32)
-			.map(move |hint| (
-				self.name_of_hint(hint as usize),
-				self.name_indices[hint as usize] as usize,
-			))
+		(0..self.names().len() as u32).map(move |hint| (self.name_of_hint(hint as usize), self.name_indices[hint as usize] as usize))
 	}
 }
 impl<'a, P: Pe<'a>> fmt::Debug for By<'a, P> {
@@ -428,7 +421,8 @@ impl<'b, 'a, P: Pe<'a>, S: AsRef<[u8]> + ?Sized> GetProcAddress<'a, &'b S> for P
 #[cfg(feature = "serde")]
 mod serde {
 	use crate::util::serde_helper::*;
-	use super::{Pe, Exports, By};
+
+	use super::{By, Exports, Pe};
 
 	impl<'a, P: Pe<'a>> Serialize for Exports<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
@@ -443,9 +437,9 @@ mod serde {
 			state.serialize_field("version", &self.image.Version)?;
 			state.serialize_field("ordinal_base", &self.ordinal_base())?;
 			state.serialize_field("functions", &self.functions())?;
-			let names = self.iter_name_indices().filter_map(|(name, index)| {
-				name.ok().and_then(|name| name.to_str().ok()).map(|name| (name, index))
-			});
+			let names = self
+				.iter_name_indices()
+				.filter_map(|(name, index)| name.ok().and_then(|name| name.to_str().ok()).map(|name| (name, index)));
 			state.serialize_field("names", &SerdeKV(names))?;
 			state.end()
 		}

@@ -6,8 +6,8 @@ Datamaps manage entity state.
 
 use pelite;
 use pelite::pattern as pat;
-use pelite::{util::CStr, Pod};
 use pelite::pe32::*;
+use pelite::{util::CStr, Pod};
 
 //----------------------------------------------------------------
 
@@ -72,7 +72,7 @@ struct datamap_t {
 	dataNumFields: i32,
 	dataClassName: Ptr<CStr>,
 	baseMap: Ptr<datamap_t>,
-	chains_validated: u8, //bool
+	chains_validated: u8,        //bool
 	packed_offsets_computed: u8, //bool
 	_pad: [u8; 2],
 	packed_size: i32,
@@ -157,7 +157,8 @@ fn dataclass<'a>(client: PeFile<'a>, datamap: &datamap_t, tydescs: &[typedescrip
 	let mut fields = Vec::new();
 	for tydesc in tydescs {
 		if let Ok(field_name) = client.deref_c_str(tydesc.fieldName) {
-			let ty = client.deref(tydesc.td)
+			let ty = client
+				.deref(tydesc.td)
 				.and_then(|td| client.deref_c_str(td.dataClassName))
 				.map(|name| name.to_str().unwrap())
 				.unwrap_or(*FIELD_TYPES.get(tydesc.fieldType as usize).unwrap_or(&"?"));
@@ -171,13 +172,12 @@ fn dataclass<'a>(client: PeFile<'a>, datamap: &datamap_t, tydescs: &[typedescrip
 	fields.sort_by_key(|field| field.offset);
 
 	let class_name = client.deref_c_str(datamap.dataClassName)?.to_str().unwrap();
-	let base_class = client.deref(datamap.baseMap).and_then(|basemap| {
-		Ok(client.deref_c_str(basemap.dataClassName)?.to_str().unwrap())
-	}).ok();
+	let basemap = client.deref(datamap.baseMap)?;
+	let base_class = client.deref_c_str(basemap.dataClassName)?.to_str().unwrap();
 
 	Ok(Class {
 		name: class_name,
-		base: base_class,
+		base: Some(base_class),
 		fields,
 	})
 }

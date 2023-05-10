@@ -30,7 +30,6 @@ fn example(file: PeFile<'_>) -> pelite::Result<()> {
  */
 
 use std::prelude::v1::*;
-
 use std::{cmp, fmt, iter, mem, slice};
 
 use crate::image::{IMAGE_BASE_RELOCATION, IMAGE_REL_BASED_ABSOLUTE};
@@ -46,14 +45,16 @@ pub struct BaseRelocs<'a> {
 }
 impl<'a> BaseRelocs<'a> {
 	pub(crate) unsafe fn new(relocs: &'a [u8]) -> BaseRelocs<'a> {
-		debug_assert!(relocs.as_ptr().aligned_to(4)); // $1
+		// $1
+		debug_assert!(relocs.as_ptr().aligned_to(4));
 		BaseRelocs { relocs }
 	}
 	/// Parse a base relocations directory.
 	///
 	/// Requires relocs argument pointer to have an alignment of 4 or an error is returned.
 	pub fn parse(relocs: &'a [u8]) -> Result<BaseRelocs<'a>> {
-		if !(cfg!(feature = "unsafe_alignment") || relocs.as_ptr().aligned_to(4)) { // $1
+		// $1
+		if !(cfg!(feature = "unsafe_alignment") || relocs.as_ptr().aligned_to(4)) {
 			return Err(Error::Misaligned);
 		}
 		Ok(BaseRelocs { relocs })
@@ -71,7 +72,7 @@ impl<'a> BaseRelocs<'a> {
 		self.fold((), |(), rva, ty| f(rva, ty))
 	}
 	/// Folds over the base relocations with internal iteration.
-	pub fn fold<T, F>(&self, init: T, mut f: F) -> T where F: FnMut(T, u32, u8) -> T {
+	pub fn fold<T, F: FnMut(T, u32, u8) -> T>(&self, init: T, mut f: F) -> T {
 		let mut accum = init;
 		for block in self.iter_blocks() {
 			for word in block.words() {
@@ -100,7 +101,8 @@ pub struct IterBlocks<'a> {
 }
 impl<'a> IterBlocks<'a> {
 	fn peek(&self) -> Option<Block<'a>> {
-		if mem::size_of_val(self.data) >= mem::size_of::<IMAGE_BASE_RELOCATION>() { // $2
+		// $2
+		if mem::size_of_val(self.data) >= mem::size_of::<IMAGE_BASE_RELOCATION>() {
 			Some(unsafe {
 				// The blocks pointer is dword aligned (see $1) and is at least large enough (see $2).
 				let image_p = self.data.as_ptr() as *const IMAGE_BASE_RELOCATION;
@@ -123,8 +125,8 @@ impl<'a> Iterator for IterBlocks<'a> {
 			let block_size = block.image.SizeOfBlock;
 			// Avoid infinite loop by skipping at least the image base relocation header
 			let block_size = cmp::max(block_size, mem::size_of::<IMAGE_BASE_RELOCATION>() as u32);
-			// Ensure that the data pointer remains dword aligned
-			let block_size = block_size.align_to(4); // $1
+			// Ensure that the data pointer remains dword aligned $1
+			let block_size = block_size.align_to(4);
 			// Clamp the length to the data size
 			let block_size = cmp::min(block_size as usize, self.data.len());
 			self.data = &self.data[block_size..];
@@ -164,6 +166,7 @@ impl<'a> Block<'a> {
 		(word >> 12) as u8
 	}
 }
+#[rustfmt::skip]
 impl<'a> fmt::Debug for Block<'a> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		f.debug_struct("Block")
@@ -185,6 +188,7 @@ impl<'a> fmt::Debug for Block<'a> {
 #[cfg(feature = "serde")]
 mod serde {
 	use crate::util::serde_helper::*;
+
 	use super::BaseRelocs;
 
 	impl<'a> Serialize for BaseRelocs<'a> {

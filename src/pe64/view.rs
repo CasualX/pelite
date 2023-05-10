@@ -9,7 +9,7 @@ use std::{cmp, slice};
 use crate::Result;
 
 use super::image::*;
-use super::pe::{validate_headers, optional_header};
+use super::pe::{optional_header, validate_headers};
 use super::{Align, Pe, PeObject};
 
 /// View into a mapped PE image.
@@ -85,7 +85,7 @@ impl<'a> PeView<'a> {
 		let nt = &*(base.offset(dos.e_lfanew as isize) as *const IMAGE_NT_HEADERS);
 		PeView {
 			image: slice::from_raw_parts(base, nt.OptionalHeader.SizeOfImage as usize),
-			base_address: base as Va
+			base_address: base as Va,
 		}
 	}
 	/// Converts the view to file alignment.
@@ -165,10 +165,11 @@ impl<'a> serde::Serialize for PeView<'a> {
 #[cfg(test)]
 mod tests {
 	use crate::Error;
+
 	use super::PeView;
 
 	#[test]
 	fn from_byte_slice() {
-		assert!(match PeView::from_bytes(&[]) { Err(Error::Bounds) => true, _ => false });
+		assert!(matches!(PeView::from_bytes(&[]), Err(Error::Bounds)));
 	}
 }

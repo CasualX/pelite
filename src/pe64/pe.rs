@@ -4,10 +4,10 @@ Abstract over mapped images and file binaries.
 
 use std::{cmp, mem, ptr, slice};
 
+use crate::{util::AlignTo, util::CStr, util::FromBytes, Pod};
 use crate::{Error, Result};
-use crate::{util::CStr, util::FromBytes, util::AlignTo, Pod};
 
-use super::{Ptr, image::*};
+use super::{image::*, Ptr};
 
 //----------------------------------------------------------------
 
@@ -21,8 +21,8 @@ pub unsafe trait PeObject<'a> {
 	fn align(&self) -> Align;
 
 	/// Returns the base virtual address of this image.
-	/// 
-	/// For an image on disk, this should be the preferred virtual address. For a memory mapped image, this should be the actual virtual address. 
+	///
+	/// For an image on disk, this should be the preferred virtual address. For a memory mapped image, this should be the actual virtual address.
 	fn image_base(&self) -> Va;
 
 	// Give a struct name in Serialize implementation
@@ -93,14 +93,17 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 			// If the calculating the section end address overflows the corrupt section will be skipped
 			#[allow(non_snake_case)]
 			let VirtualEnd = it.VirtualAddress.wrapping_add(cmp::max(it.VirtualSize, it.SizeOfRawData));
-			if it.VirtualAddress <= rva && rva < VirtualEnd { // $1
+			// $1
+			if it.VirtualAddress <= rva && rva < VirtualEnd {
 				// Check if the raw data reference is sane
-				if let None = it.PointerToRawData.checked_add(it.SizeOfRawData) { // $2
+				// $2
+				if let None = it.PointerToRawData.checked_add(it.SizeOfRawData) {
 					return Err(Error::Overflow);
 				}
 				// Calculate the offset in the section. cannot underflow, see $1
 				let section_offset = rva - it.VirtualAddress;
-				return if section_offset < it.SizeOfRawData { // $3
+				// $3
+				return if section_offset < it.SizeOfRawData {
 					// Calculate the final offset in the file. cannot overflow, see $2 and $3
 					Ok((section_offset + it.PointerToRawData) as usize)
 				}
@@ -138,14 +141,17 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 			// If the calculating the section end address overflows the corrupt section will be skipped
 			#[allow(non_snake_case)]
 			let EndOfRawData = it.PointerToRawData.wrapping_add(it.SizeOfRawData);
-			if it.PointerToRawData as usize <= file_offset && file_offset < EndOfRawData as usize { // $1
+			// $1
+			if it.PointerToRawData as usize <= file_offset && file_offset < EndOfRawData as usize {
 				// Check if the virtual reference is sane
-				if let None = it.VirtualAddress.checked_add(it.VirtualSize) { // $2
+				// $2
+				if let None = it.VirtualAddress.checked_add(it.VirtualSize) {
 					return Err(Error::Overflow);
 				}
 				// Calculate the offset in the section. cannot underflow, see $1
 				let section_offset = file_offset as Rva - it.PointerToRawData;
-				return if section_offset < it.VirtualSize { // $3
+				// $3
+				return if section_offset < it.VirtualSize {
 					// Calculate the final virtual address. cannot overflow, see $2 and $3
 					Ok(section_offset + it.VirtualAddress)
 				}
@@ -175,8 +181,8 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 			Err(Error::Null)
 		}
 		else {
-			let (image_base, size_of_image) = 
-				(self.image_base(), self.optional_header().SizeOfImage);
+			let image_base = self.image_base();
+			let size_of_image = self.optional_header().SizeOfImage;
 
 			if rva < size_of_image {
 				Ok(image_base + rva as Va)
@@ -200,8 +206,8 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 			Err(Error::Null)
 		}
 		else {
-			let (image_base, size_of_image) = 
-				(self.image_base(), self.optional_header().SizeOfImage);
+			let image_base = self.image_base();
+			let size_of_image = self.optional_header().SizeOfImage;
 
 			// Carefully avoid panicking overflow
 			if va < image_base || va - image_base > size_of_image as Va {
@@ -239,7 +245,10 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	/// Slices the image at the specified rva returning a byte slice with no alignment or minimum size.
 	///
 	/// Shorthand to invoke [`slice(rva, 0, 1)`](#tymethod.slice).
-	fn slice_bytes(self, rva: Rva) -> Result<&'a [u8]> where Self: Sized {
+	fn slice_bytes(self, rva: Rva) -> Result<&'a [u8]>
+	where
+		Self: Sized,
+	{
 		self.slice(rva, 0, 1)
 	}
 
@@ -280,14 +289,17 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	/// Reads the image at the specified va returning a byte slice with no alignment or minimum size.
 	///
 	/// Shorthand to invoke [`read(va, 0, 1)`](#tymethod.read).
-	fn read_bytes(self, va: Va) -> Result<&'a [u8]> where Self: Sized {
+	fn read_bytes(self, va: Va) -> Result<&'a [u8]>
+	where
+		Self: Sized,
+	{
 		self.read(va, 0, 1)
 	}
 
 	//----------------------------------------------------------------
 
 	/// Reads an aligned pod `T`.
-	fn derva<T>(self, rva: Rva) -> Result<&'a T> where T: Pod {
+	fn derva<T: Pod>(self, rva: Rva) -> Result<&'a T> {
 		let align = if cfg!(feature = "unsafe_alignment") { 1 } else { mem::align_of::<T>() };
 		let bytes = self.slice(rva, mem::size_of::<T>(), align)?;
 		// This is safe as per Pod bound, min_size_of and align
@@ -297,7 +309,7 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 		}
 	}
 	/// Reads an unaligned pod `T`.
-	fn derva_copy<T>(self, rva: Rva) -> Result<T> where T: Copy + Pod {
+	fn derva_copy<T: Copy + Pod>(self, rva: Rva) -> Result<T> {
 		let bytes = self.slice(rva, mem::size_of::<T>(), 1)?;
 		// This is safe as per Pod bound and min_size_of
 		unsafe {
@@ -308,21 +320,19 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	/// Reads and byte-wise copies the content to the given destination.
 	///
 	/// Allows reading of an unaligned array of data.
-	fn derva_into<T>(self, rva: Rva, dest: &mut T) -> Result<()> where T: ?Sized + Pod {
+	fn derva_into<T: ?Sized + Pod>(self, rva: Rva, dest: &mut T) -> Result<()> {
 		let len = mem::size_of_val(dest);
 		let bytes = self.slice(rva, len, 1)?;
 		dataview::bytes_mut(dest).copy_from_slice(&bytes[..len]);
 		Ok(())
 	}
 	/// Reads an array of pod `T` with given length.
-	fn derva_slice<T>(self, rva: Rva, len: usize) -> Result<&'a [T]> where T: Pod {
+	fn derva_slice<T: Pod>(self, rva: Rva, len: usize) -> Result<&'a [T]> {
 		let min_size_of = mem::size_of::<T>().checked_mul(len).ok_or(Error::Overflow)?;
 		let align = if cfg!(feature = "unsafe_alignment") { 1 } else { mem::align_of::<T>() };
 		let bytes = self.slice(rva, min_size_of, align)?;
 		// This is safe as per Pod bound, min_size_of and align
-		unsafe {
-			Ok(slice::from_raw_parts(bytes.as_ptr() as *const T, len))
-		}
+		unsafe { Ok(slice::from_raw_parts(bytes.as_ptr() as *const T, len)) }
 	}
 	/// Reads an array of pod `T`.
 	///
@@ -330,7 +340,7 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	/// The length of the array is the index when the callable `f` returns `true`.
 	///
 	/// The returned slice contains all `T` up to but not including the element for which the callable returned `true`.
-	fn derva_slice_f<T, F>(self, rva: Rva, mut f: F) -> Result<&'a [T]> where T: Pod, F: FnMut(&'a T) -> bool {
+	fn derva_slice_f<T: Pod, F: FnMut(&'a T) -> bool>(self, rva: Rva, mut f: F) -> Result<&'a [T]> {
 		let align = if cfg!(feature = "unsafe_alignment") { 1 } else { mem::align_of::<T>() };
 		let bytes = self.slice(rva, 0, align)?;
 		let mut len = 0;
@@ -357,7 +367,7 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	/// The length of the array is determined by a [sentinel value](https://en.wikipedia.org/wiki/Sentinel_value), a special value of `T` which marks the end of the array.
 	///
 	/// The returned slice contains all `T` up to but not including the sentinel value.
-	fn derva_slice_s<T>(self, rva: Rva, sentinel: T) -> Result<&'a [T]> where T: PartialEq + Pod {
+	fn derva_slice_s<T: PartialEq + Pod>(self, rva: Rva, sentinel: T) -> Result<&'a [T]> {
 		self.derva_slice_f(rva, |tee| *tee == sentinel)
 	}
 	/// Reads a nul-terminated C string.
@@ -365,7 +375,7 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 		self.derva_string(rva)
 	}
 	/// Reads a string.
-	fn derva_string<T>(self, rva: Rva) -> Result<&'a T> where T: FromBytes + ?Sized {
+	fn derva_string<T: FromBytes + ?Sized>(self, rva: Rva) -> Result<&'a T> {
 		let bytes = self.slice(rva, T::MIN_SIZE_OF, T::ALIGN_OF)?;
 		unsafe { T::from_bytes(bytes).ok_or(Error::Encoding) }
 	}
@@ -374,7 +384,7 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	// Deref impls for `Ptr`s
 
 	/// Dereferences the pointer to a pod `T`.
-	fn deref<T>(self, ptr: Ptr<T>) -> Result<&'a T> where T: Pod {
+	fn deref<T: Pod>(self, ptr: Ptr<T>) -> Result<&'a T> {
 		let align = if cfg!(feature = "unsafe_alignment") { 1 } else { mem::align_of::<T>() };
 		let bytes = self.read(ptr.into(), mem::size_of::<T>(), align)?;
 		// This is safe as per Pod bound, min_size_of and align
@@ -384,7 +394,7 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 		}
 	}
 	/// Dereferences the pointer to an unaligned pod `T`.
-	fn deref_copy<T>(self, ptr: Ptr<T>) -> Result<T> where T: Copy + Pod {
+	fn deref_copy<T: Copy + Pod>(self, ptr: Ptr<T>) -> Result<T> {
 		let bytes = self.read(ptr.into(), mem::size_of::<T>(), 1)?;
 		// This is safe as per Pod bound and min_size_of
 		unsafe {
@@ -395,21 +405,19 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	/// Reads and byte-wise copies the content to the given destination.
 	///
 	/// Allows reading of an unaligned array of data.
-	fn deref_into<T>(self, ptr: Ptr<T>, dest: &mut T) -> Result<()> where T: ?Sized + Pod {
+	fn deref_into<T: ?Sized + Pod>(self, ptr: Ptr<T>, dest: &mut T) -> Result<()> {
 		let len = mem::size_of_val(dest);
 		let bytes = self.read(ptr.into(), len, 1)?;
 		dataview::bytes_mut(dest).copy_from_slice(&bytes[..len]);
 		Ok(())
 	}
 	/// Reads an array of pod `T` with given length.
-	fn deref_slice<T>(self, ptr: Ptr<[T]>, len: usize) -> Result<&'a [T]> where T: Pod {
+	fn deref_slice<T: Pod>(self, ptr: Ptr<[T]>, len: usize) -> Result<&'a [T]> {
 		let min_size_of = mem::size_of::<T>().checked_mul(len).ok_or(Error::Overflow)?;
 		let align = if cfg!(feature = "unsafe_alignment") { 1 } else { mem::align_of::<T>() };
 		let bytes = self.read(ptr.into(), min_size_of, align)?;
 		// This is safe as per Pod bound, min_size_of and align
-		unsafe {
-			Ok(slice::from_raw_parts(bytes.as_ptr() as *const T, len))
-		}
+		unsafe { Ok(slice::from_raw_parts(bytes.as_ptr() as *const T, len)) }
 	}
 	/// Reads an array of pod `T`.
 	///
@@ -417,7 +425,7 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	/// The length of the array is the index when the callable `f` returns `true`.
 	///
 	/// The returned slice contains all `T` up to but not including the element for which the callable returned `true`.
-	fn deref_slice_f<T, F>(self, ptr: Ptr<[T]>, mut f: F) -> Result<&'a [T]> where T: Pod, F: FnMut(&'a T) -> bool {
+	fn deref_slice_f<T: Pod, F: FnMut(&'a T) -> bool>(self, ptr: Ptr<[T]>, mut f: F) -> Result<&'a [T]> {
 		let align = if cfg!(feature = "unsafe_alignment") { 1 } else { mem::align_of::<T>() };
 		let bytes = self.read(ptr.into(), 0, align)?;
 		let mut len = 0;
@@ -444,7 +452,7 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	/// The length of the array is determined by a [sentinel value](https://en.wikipedia.org/wiki/Sentinel_value), a special value of `T` which marks the end of the array.
 	///
 	/// The returned slice contains all `T` up to but not including the sentinel value.
-	fn deref_slice_s<T>(self, ptr: Ptr<[T]>, sentinel: T) -> Result<&'a [T]> where T: PartialEq + Pod {
+	fn deref_slice_s<T: PartialEq + Pod>(self, ptr: Ptr<[T]>, sentinel: T) -> Result<&'a [T]> {
 		self.deref_slice_f(ptr, |tee| *tee == sentinel)
 	}
 	/// Dereferences the pointer to a nul-terminated C string.
@@ -452,7 +460,7 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 		self.deref_string(ptr)
 	}
 	/// Dereferences the pointer to a string.
-	fn deref_string<T>(self, ptr: Ptr<T>) -> Result<&'a T> where T: FromBytes + ?Sized {
+	fn deref_string<T: FromBytes + ?Sized>(self, ptr: Ptr<T>) -> Result<&'a T> {
 		let bytes = self.read(ptr.into(), T::MIN_SIZE_OF, T::ALIGN_OF)?;
 		unsafe { T::from_bytes(bytes).ok_or(Error::Encoding) }
 	}
@@ -553,7 +561,10 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	///
 	/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) if the image has no resources. Any other error indicates some form of corruption.
 	#[cfg(any(feature = "std", feature = "resources_nostd"))]
-	fn resources(self) -> Result<crate::resources::Resources<'a>> where Self: Copy {
+	fn resources(self) -> Result<crate::resources::Resources<'a>>
+	where
+		Self: Copy,
+	{
 		let datadir = self.data_directory().get(IMAGE_DIRECTORY_ENTRY_RESOURCE).ok_or(Error::Bounds)?;
 		let bytes = self.slice_bytes(datadir.VirtualAddress)?;
 		let size = cmp::min(datadir.Size as usize, bytes.len());
@@ -686,7 +697,8 @@ unsafe fn range_file(image: &[u8], rva: Rva, min_size_of: usize) -> Result<&[u8]
 		// If the calculating the section end address overflows the corrupt section will be skipped
 		#[allow(non_snake_case)]
 		let VirtualEnd = it.VirtualAddress.wrapping_add(cmp::max(it.VirtualSize, it.SizeOfRawData));
-		if it.VirtualAddress <= rva && rva < VirtualEnd { // $1
+		// $1
+		if it.VirtualAddress <= rva && rva < VirtualEnd {
 			// Isolate and range check the pointer and size of raw data
 			// If this fails immediately abort and return an error
 			let section_range = it.PointerToRawData as usize..it.PointerToRawData.wrapping_add(it.SizeOfRawData) as usize;
@@ -770,9 +782,7 @@ pub(crate) fn validate_headers(image: &[u8]) -> Result<u32> {
 	}
 	let nt = unsafe { &*(image.as_ptr().offset(dos.e_lfanew as isize) as *const IMAGE_NT_HEADERS) };
 	// Verify the NT headers
-	if nt.Signature != IMAGE_NT_HEADERS_SIGNATURE ||
-		!(nt.OptionalHeader.Magic == IMAGE_NT_OPTIONAL_HDR32_MAGIC || nt.OptionalHeader.Magic == IMAGE_NT_OPTIONAL_HDR64_MAGIC)
-	{
+	if nt.Signature != IMAGE_NT_HEADERS_SIGNATURE || !(nt.OptionalHeader.Magic == IMAGE_NT_OPTIONAL_HDR32_MAGIC || nt.OptionalHeader.Magic == IMAGE_NT_OPTIONAL_HDR64_MAGIC) {
 		return Err(Error::BadMagic);
 	}
 	if nt.OptionalHeader.SizeOfHeaders as usize > image.len() {
@@ -787,9 +797,7 @@ pub(crate) fn validate_headers(image: &[u8]) -> Result<u32> {
 	}
 
 	// Verify the data directory
-	let num_rva_sizes = cmp::min(
-		nt.OptionalHeader.NumberOfRvaAndSizes as usize,
-		IMAGE_NUMBEROF_DIRECTORY_ENTRIES);
+	let num_rva_sizes = cmp::min(nt.OptionalHeader.NumberOfRvaAndSizes as usize, IMAGE_NUMBEROF_DIRECTORY_ENTRIES);
 	let size_of_data_dir = num_rva_sizes * mem::size_of::<IMAGE_DATA_DIRECTORY>();
 	if nt_end + size_of_data_dir > image.len() {
 		return Err(Error::Bounds);
@@ -802,6 +810,7 @@ pub(crate) fn validate_headers(image: &[u8]) -> Result<u32> {
 	// u16 * sizeof(T) casted to usize, cannot reasonably overflow
 	let size_of_sections = nt.FileHeader.NumberOfSections as usize * mem::size_of::<IMAGE_SECTION_HEADER>();
 	// e_lfanew is checked for reasonable values, the others then cannot reasonably cause overflow
+	#[rustfmt::skip]
 	let start_of_sections = dos.e_lfanew as usize
 		+ (mem::size_of::<IMAGE_NT_HEADERS>() - mem::size_of::<IMAGE_OPTIONAL_HEADER>())
 		+ nt.FileHeader.SizeOfOptionalHeader as usize;

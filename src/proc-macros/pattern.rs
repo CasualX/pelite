@@ -183,14 +183,22 @@ pub type Pattern = Vec<Atom>;
 
 /// Returns the length of the save array needed for this signature.
 pub fn save_len(pat: &[Atom]) -> usize {
-	pat.iter().filter_map(|&atom| {
-		match atom {
-			Atom::Save(slot) | Atom::Pir(slot) | Atom::Check(slot) | Atom::Zero(slot) |
-			Atom::ReadI8(slot) | Atom::ReadI16(slot) | Atom::ReadI32(slot) |
-			Atom::ReadU8(slot) | Atom::ReadU16(slot)| Atom::ReadU32(slot) => Some(slot as usize + 1),
+	pat.iter()
+		.filter_map(|&atom| match atom {
+			Atom::Save(slot)
+			| Atom::Pir(slot)
+			| Atom::Check(slot)
+			| Atom::Zero(slot)
+			| Atom::ReadI8(slot)
+			| Atom::ReadI16(slot)
+			| Atom::ReadI32(slot)
+			| Atom::ReadU8(slot)
+			| Atom::ReadU16(slot)
+			| Atom::ReadU32(slot) => Some(slot as usize + 1),
 			_ => None,
-		}
-	}).max().unwrap_or(0)
+		})
+		.max()
+		.unwrap_or(0)
 }
 
 /// Pattern parser.
@@ -456,32 +464,44 @@ fn parse_helper(pat: &mut &str, result: &mut Vec<Atom>) -> Result<(), PatError> 
 			// Match a byte
 			b'0'...b'9' | b'A'...b'F' | b'a'...b'f' => {
 				// High nibble of the byte
-				let hi = if chr >= b'a' { chr - b'a' + 10 }
-					else if chr >= b'A' { chr - b'A' + 10 }
-					else { chr - b'0' };
+				let hi = if chr >= b'a' {
+					chr - b'a' + 10
+				}
+				else if chr >= b'A' {
+					chr - b'A' + 10
+				}
+				else {
+					chr - b'0'
+				};
 				chr = iter.next().cloned().ok_or(PatError::UnpairedHexDigit)?;
 				// Low nibble of the byte
-				let lo = if chr >= b'a' && chr <= b'f' { chr - b'a' + 10 }
-					else if chr >= b'A' && chr <= b'F' { chr - b'A' + 10 }
-					else if chr >= b'0' && chr <= b'9' { chr - b'0' }
-					else { return Err(PatError::UnpairedHexDigit); };
+				let lo = if chr >= b'a' && chr <= b'f' {
+					chr - b'a' + 10
+				}
+				else if chr >= b'A' && chr <= b'F' {
+					chr - b'A' + 10
+				}
+				else if chr >= b'0' && chr <= b'9' {
+					chr - b'0'
+				}
+				else {
+					return Err(PatError::UnpairedHexDigit);
+				};
 				// Add byte to the pattern
 				result.push(Atom::Byte((hi << 4) + lo));
 			},
 			// Match raw bytes
-			b'"' => {
-				loop {
-					if let Some(chr) = iter.next().cloned() {
-						if chr != b'"' {
-							result.push(Atom::Byte(chr));
-						}
-						else {
-							break;
-						}
+			b'"' => loop {
+				if let Some(chr) = iter.next().cloned() {
+					if chr != b'"' {
+						result.push(Atom::Byte(chr));
 					}
 					else {
-						return Err(PatError::UnclosedQuote);
+						break;
 					}
+				}
+				else {
+					return Err(PatError::UnclosedQuote);
 				}
 			},
 			// Save the cursor
@@ -579,12 +599,9 @@ fn parse_helper(pat: &mut &str, result: &mut Vec<Atom>) -> Result<(), PatError> 
 	// Remove redundant atoms at the end
 	fn is_redundant(atom: &Atom) -> bool {
 		return match atom {
-			| Atom::Skip(_)
-			| Atom::Rangext(_)
-			| Atom::Pop
-			| Atom::Many(_) => true,
+			Atom::Skip(_) | Atom::Rangext(_) | Atom::Pop | Atom::Many(_) => true,
 			_ => false,
-		}
+		};
 	}
 	while result.last().map(is_redundant).unwrap_or(false) {
 		result.pop();
@@ -601,6 +618,7 @@ mod tests {
 
 	const _: [(); 2] = [(); std::mem::size_of::<Atom>()];
 
+	#[rustfmt::skip]
 	#[test]
 	fn patterns() {
 		use self::Atom::*;

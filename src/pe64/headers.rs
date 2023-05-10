@@ -2,11 +2,11 @@
 PE headers.
  */
 
-use std::slice;
 use std::ops::Range;
+use std::slice;
 
-use super::Pe;
 use super::image::*;
+use super::Pe;
 
 pub use crate::wrap::sections::*;
 
@@ -31,6 +31,7 @@ impl<'a, P: Pe<'a>> Headers<P> {
 	/// Calculates the optional header's CheckSum.
 	pub fn check_sum(&self) -> u32 {
 		let image = self.pe.image();
+		#[rustfmt::skip]
 		let check_sum_position = (
 			self.pe.dos_header().e_lfanew as usize +
 			dataview::offset_of!(IMAGE_NT_HEADERS.OptionalHeader) +
@@ -92,9 +93,10 @@ impl<'a, P: Pe<'a>> Headers<P> {
 
 #[cfg(feature = "serde")]
 mod serde {
-	use crate::util::serde_helper::*;
 	use crate::stringify;
-	use super::{Pe, Headers};
+	use crate::util::serde_helper::*;
+
+	use super::{Headers, Pe};
 
 	impl<'a, P: Pe<'a>> Serialize for Headers<P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
@@ -108,7 +110,9 @@ mod serde {
 		}
 	}
 
-	struct Details<P> { pe: P }
+	struct Details<P> {
+		pe: P,
+	}
 	impl<'a, P: Pe<'a>> Serialize for Details<P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			let mut state = serializer.serialize_struct("Details", 11)?;
@@ -130,7 +134,10 @@ mod serde {
 			state.serialize_field("DataDirectory.Names", &SerdeIter(data_directory_names))?;
 
 			let data_directory_sects = self.pe.data_directory().iter().map(|dd| {
-				self.pe.section_headers().iter().position(|&sect| dd.VirtualAddress >= sect.VirtualAddress && dd.VirtualAddress < sect.VirtualAddress + sect.VirtualSize)
+				self.pe
+					.section_headers()
+					.iter()
+					.position(|&sect| dd.VirtualAddress >= sect.VirtualAddress && dd.VirtualAddress < sect.VirtualAddress + sect.VirtualSize)
 			});
 			state.serialize_field("DataDirectory.Sections", &SerdeIter(data_directory_sects))?;
 

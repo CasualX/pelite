@@ -2,6 +2,7 @@
 // FIXME! Should I keep this GUID implementation or defer to another GUID library?
 
 use std::fmt;
+
 use crate::image::GUID;
 
 #[inline(always)]
@@ -11,10 +12,12 @@ fn group(guid: &GUID) -> (u32, u16, u16, u16, u64) {
 	let g3 = guid.Data3;
 	// Mind the (little-) endianness
 	let g4 = (guid.Data4[0] as u16) << 8 | guid.Data4[1] as u16;
-	let g5 =
-		(guid.Data4[2] as u64) << 8*5 | (guid.Data4[3] as u64) << 8*4 |
-		(guid.Data4[4] as u64) << 8*3 | (guid.Data4[5] as u64) << 8*2 |
-		(guid.Data4[6] as u64) << 8*1 | (guid.Data4[7] as u64) << 8*0;
+	let g5 = (guid.Data4[2] as u64) << 8 * 5
+		| (guid.Data4[3] as u64) << 8 * 4
+		| (guid.Data4[4] as u64) << 8 * 3
+		| (guid.Data4[5] as u64) << 8 * 2
+		| (guid.Data4[6] as u64) << 8 * 1
+		| (guid.Data4[7] as u64) << 8 * 0;
 	(g1, g2, g3, g4, g5)
 }
 

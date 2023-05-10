@@ -2,10 +2,10 @@
 Find patterns utility.
  */
 
-use std::{cmp, env};
-use std::path::Path;
-use std::io::{self, Write};
 use std::ffi::OsStr;
+use std::io::{self, Write};
+use std::path::Path;
+use std::{cmp, env};
 
 use pelite::pattern as pat;
 
@@ -66,8 +66,12 @@ fn main() {
 				let mut first = true;
 				while matches.next(save) {
 					if json {
-						if first { first = false; }
-						else { print!(","); }
+						if first {
+							first = false;
+						}
+						else {
+							print!(",");
+						}
 						print_json(save);
 					}
 					else {
@@ -75,7 +79,7 @@ fn main() {
 					}
 				}
 			});
-		}
+		},
 		// Must be a valid PE file
 		Err(err) => {
 			panic!("Not a valid PE file: {}", err);
@@ -91,8 +95,12 @@ fn process_patterns(patterns: &[String], json: bool, f: &mut dyn FnMut(&[pat::At
 		}
 		let mut first = true;
 		for pat in patterns {
-			if first { first = false; }
-			else { print!(","); }
+			if first {
+				first = false;
+			}
+			else {
+				print!(",");
+			}
 			process_pattern(pat, json, f);
 		}
 		if json {
@@ -157,8 +165,12 @@ fn print_json(save: &[u32]) {
 	print!("[");
 	let mut first = true;
 	for value in save {
-		if first { first = false; }
-		else { print!(","); }
+		if first {
+			first = false;
+		}
+		else {
+			print!(",");
+		}
 		print!("{}", value);
 	}
 	print!("]");

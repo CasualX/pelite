@@ -1,5 +1,7 @@
 use std::ops::Range;
+
 use crate::*;
+
 use super::Wrap;
 
 /// Pattern scanner.

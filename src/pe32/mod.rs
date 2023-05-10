@@ -122,46 +122,46 @@ pub mod image;
 
 // I love Rust <3
 
-#[path = "../pe64/pe.rs"]
-mod pe;
-#[path = "../pe64/view.rs"]
-mod view;
+#[path = "../pe64/base_relocs.rs"]
+pub(crate) mod base_relocs;
+#[path = "../pe64/debug.rs"]
+pub mod debug;
+#[path = "../pe64/exception.rs"]
+pub mod exception;
+#[path = "../pe64/exports.rs"]
+pub mod exports;
 #[path = "../pe64/file.rs"]
 mod file;
 #[path = "../pe64/headers.rs"]
 pub mod headers;
-#[path = "../pe64/rich_structure.rs"]
-pub(crate) mod rich_structure;
-#[path = "../pe64/exports.rs"]
-pub mod exports;
 #[path = "../pe64/imports.rs"]
 pub mod imports;
-#[path = "../pe64/base_relocs.rs"]
-pub(crate) mod base_relocs;
 #[path = "../pe64/load_config.rs"]
 pub mod load_config;
-#[path = "../pe64/resources.rs"]
-pub mod resources;
-#[path = "../pe64/tls.rs"]
-pub mod tls;
-#[path = "../pe64/security.rs"]
-pub(crate) mod security;
-#[path = "../pe64/exception.rs"]
-pub mod exception;
-#[path = "../pe64/debug.rs"]
-pub mod debug;
+#[path = "../pe64/pe.rs"]
+mod pe;
 #[path = "../pe64/ptr.rs"]
 mod ptr;
+#[path = "../pe64/resources.rs"]
+pub mod resources;
+#[path = "../pe64/rich_structure.rs"]
+pub(crate) mod rich_structure;
 #[path = "../pe64/scanner.rs"]
 pub mod scanner;
+#[path = "../pe64/security.rs"]
+pub(crate) mod security;
+#[path = "../pe64/tls.rs"]
+pub mod tls;
+#[path = "../pe64/view.rs"]
+mod view;
 
 pub mod msvc;
 
-pub use self::image::{Va, Rva};
+pub use self::file::PeFile;
+pub use self::image::{Rva, Va};
 pub use self::pe::{Align, Pe, PeObject};
-pub use self::view::{PeView};
-pub use self::file::{PeFile};
 pub use self::ptr::Ptr;
+pub use self::view::PeView;
 
 #[cfg(feature = "unstable")]
 pub use self::pe::headers_mut;

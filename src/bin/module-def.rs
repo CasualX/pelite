@@ -64,10 +64,7 @@ fn main() {
 fn lib(pe: pelite::PeFile) -> pelite::Result<()> {
 	let exp = pe.exports()?.by()?;
 	let dll_name = exp.dll_name()?;
-	let names = exp
-		.iter_names()
-		.map(|(name, _)| name)
-		.collect::<pelite::Result<Vec<_>>>()?;
+	let names = exp.iter_names().map(|(name, _)| name).collect::<pelite::Result<Vec<_>>>()?;
 
 	println!("LIBRARY {}\nEXPORTS", dll_name);
 	for name in &names {

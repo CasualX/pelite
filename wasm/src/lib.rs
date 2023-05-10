@@ -1,14 +1,16 @@
 #![allow(non_snake_case)]
 
 use std::ptr;
+
 use pelite::Error::Null;
+
 use crate::wasm::*;
 
-mod wasm;
-mod scanner;
-mod resources;
-mod headers;
 mod base_relocs;
+mod headers;
+mod resources;
+mod scanner;
+mod wasm;
 
 pub struct PeFile {
 	image: Box<[u8]>,

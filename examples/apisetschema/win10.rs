@@ -1,6 +1,8 @@
 use std::{fmt, mem, slice};
-use pelite::{Result, Error, Pod};
+
 use pelite::util::AlignTo;
+use pelite::{Error, Pod, Result};
+
 use super::image::*;
 
 //----------------------------------------------------------------
@@ -42,6 +44,7 @@ impl<'a> Schema<'a> {
 		Ok(Entries { schema: *self, entries, hashes })
 	}
 }
+#[rustfmt::skip]
 impl<'a> fmt::Debug for Schema<'a> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		f.debug_struct("Schema")
@@ -74,13 +77,15 @@ impl<'a> Entries<'a> {
 		self.schema.header().Count as usize
 	}
 	pub fn at(&self, i: usize) -> Option<Entry<'a>> {
-		self.entries.get(i)
-			.map(|image| Entry { schema: self.schema, image })
+		self.entries.get(i).map(|image| Entry { schema: self.schema, image })
 	}
 }
+#[rustfmt::skip]
 impl<'a> fmt::Debug for Entries<'a> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		f.debug_list().entries(self.iter()).finish()
+		f.debug_list()
+			.entries(self.iter())
+			.finish()
 	}
 }
 
@@ -103,6 +108,7 @@ impl<'a> Entry<'a> {
 		Ok(Values { schema: self.schema, image })
 	}
 }
+#[rustfmt::skip]
 impl<'a> fmt::Debug for Entry<'a> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		f.debug_struct("Entry")
@@ -132,13 +138,15 @@ impl<'a> Values<'a> {
 		self.image.len()
 	}
 	pub fn at(&self, i: usize) -> Option<Value<'a>> {
-		self.image.get(i)
-			.map(|image| Value { schema: self.schema, image })
+		self.image.get(i).map(|image| Value { schema: self.schema, image })
 	}
 }
+#[rustfmt::skip]
 impl<'a> fmt::Debug for Values<'a> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		f.debug_list().entries(self.iter()).finish()
+		f.debug_list()
+			.entries(self.iter())
+			.finish()
 	}
 }
 
@@ -160,6 +168,7 @@ impl<'a> Value<'a> {
 		self.schema.slice_len(self.image.ValueOffset, (self.image.ValueLength / 2) as usize)
 	}
 }
+#[rustfmt::skip]
 impl<'a> fmt::Debug for Value<'a> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		f.debug_struct("Value")

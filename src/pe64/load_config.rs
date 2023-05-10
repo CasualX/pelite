@@ -71,7 +71,8 @@ impl<'a, P: Pe<'a>> fmt::Debug for LoadConfig<'a, P> {
 #[cfg(feature = "serde")]
 mod serde {
 	use crate::util::serde_helper::*;
-	use super::{Pe, LoadConfig};
+
+	use super::{LoadConfig, Pe};
 
 	impl<'a, P: Pe<'a>> Serialize for LoadConfig<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {

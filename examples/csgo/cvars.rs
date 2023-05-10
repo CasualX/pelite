@@ -5,8 +5,8 @@
 
 use pelite;
 use pelite::pattern as pat;
-use pelite::{util::CStr, Pod};
 use pelite::pe32::*;
+use pelite::{util::CStr, Pod};
 
 //----------------------------------------------------------------
 
@@ -118,12 +118,19 @@ fn convar<'a>(bin: PeFile<'a>, save: &[u32; 12]) -> pelite::Result<ConVar<'a>> {
 	let min_float = f32::from_bits(save[3]);
 	let min_value = if has_min { Some(min_float) } else { None };
 	let address = save[4];
-	let desc = if save[6] == 0 { None }
-	else { Some(bin.derva_c_str(save[6])?.to_str().unwrap()) };
+	let desc = if save[6] == 0 { None } else { Some(bin.derva_c_str(save[6])?.to_str().unwrap()) };
 	let flags = save[7];
 	let default = bin.derva_c_str(save[8])?.to_str().unwrap();
 	let name = bin.derva_c_str(save[9])?.to_str().unwrap();
-	Ok(ConVar { address, name, desc, default, flags, min_value, max_value })
+	Ok(ConVar {
+		address,
+		name,
+		desc,
+		default,
+		flags,
+		min_value,
+		max_value,
+	})
 }
 
 //----------------------------------------------------------------
@@ -161,7 +168,8 @@ pub fn concommands<'a>(bin: PeFile<'a>) -> Vec<ConCommand<'a>> {
 	// The ConCommand constructors are already evaluated by the compiler and the global data structures already filled in
 	// Perform a fairly slow signature scan for these instances...
 	let data_section = bin.section_headers().iter().find(|sect| &sect.Name == b".data\0\0\0").unwrap();
-	let mut matches = bin.scanner().matches(pat!("@2 *{*{}*{}*{}*} 00000000 00000000 *{'} (*{'}|00000000) u4 *{'}"), data_section.virtual_range());
+	let scanner = bin.scanner();
+	let mut matches = scanner.matches(pat!("@2 *{*{}*{}*{}*} 00000000 00000000 *{'} (*{'}|00000000) u4 *{'}"), data_section.virtual_range());
 	while matches.next(&mut save) {
 		// Filter false-positives...
 		if let Ok(cmd) = concommand(bin, &save) {
@@ -177,8 +185,7 @@ pub fn concommands<'a>(bin: PeFile<'a>) -> Vec<ConCommand<'a>> {
 fn concommand<'a>(bin: PeFile<'a>, save: &[u32; 8]) -> pelite::Result<ConCommand<'a>> {
 	let address = save[0];
 	let name = bin.derva_c_str(save[1])?.to_str()?;
-	let desc = if save[2] == 0 { None }
-	else { Some(bin.derva_c_str(save[2])?.to_str()?) };
+	let desc = if save[2] == 0 { None } else { Some(bin.derva_c_str(save[2])?.to_str()?) };
 	let flags = save[3];
 	let callback = save[4];
 	Ok(ConCommand { address, name, desc, flags, callback })
