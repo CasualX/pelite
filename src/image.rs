@@ -576,19 +576,48 @@ pub struct IMAGE_LOAD_CONFIG_DIRECTORY32 {
 	pub LockPrefixTable: u32,
 	pub MaximumAllocationSize: u32,
 	pub VirtualMemoryThreshold: u32,
-	pub ProcessAffinityMask: u32,
 	pub ProcessHeapFlags: u32,
+	pub ProcessAffinityMask: u32,
 	pub CSDVersion: u16,
 	pub DependentLoadFlags: u16,
 	pub EditList: u32,
 	pub SecurityCookie: u32,
 	pub SEHandlerTable: u32,
 	pub SEHandlerCount: u32,
+	pub GuardCFCheckFunctionPointer: u32,
+	pub GuardCFDispatchFunctionPointer: u32,
+	pub GuardCFFunctionTable: u32,
+	pub GuardCFFunctionCount: u32,
+	pub GuardFlags: u32,
+	pub CodeIntegrity: IMAGE_LOAD_CONFIG_CODE_INTEGRITY,
+	pub GuardAddressTakenIatEntryTable: u32,
+	pub GuardAddressTakenIatEntryCount: u32,
+	pub GuardLongJumpTargetTable: u32,
+	pub GuardLongJumpTargetCount: u32,
+	pub DynamicValueRelocTable: u32,
+	pub CHPEMetadataPointer: u32,
+	pub GuardRFFailureRoutine: u32,
+	pub GuardRFFailureRoutineFunctionPointer: u32,
+	pub DynamicValueRelocTableOffset: u32,
+	pub DynamicValueRelocTableSection: u16,
+	pub Reserved2: u16,
+	pub GuardRFVerifyStackPointerFunctionPointer: u32,
+	pub HotPatchTableOffset: u32,
+	pub Reserved3: u32,
+	pub EnclaveConfigurationPointer: u32,
+	pub VolatileMetadataPointer: u32,
+	pub GuardEHContinuationTable: u32,
+	pub GuardEHContinuationCount: u32,
+	pub GuardXFGCheckFunctionPointer: u32,
+	pub GuardXFGDispatchFunctionPointer: u32,
+	pub GuardXFGTableDispatchFunctionPointer: u32,
+	pub CastGuardOsDeterminedFailureMode: u32,
+	pub GuardMemcpyFunctionPointer: u32,
 }
 
 #[derive(Copy, Clone, Debug)]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize))]
-#[repr(C)]
+#[repr(C, packed(4))]
 pub struct IMAGE_LOAD_CONFIG_DIRECTORY64 {
 	pub Size: u32,
 	pub TimeDateStamp: u32,
@@ -609,6 +638,35 @@ pub struct IMAGE_LOAD_CONFIG_DIRECTORY64 {
 	pub SecurityCookie: u64,
 	pub SEHandlerTable: u64,
 	pub SEHandlerCount: u64,
+	pub GuardCFCheckFunctionPointer: u64,
+	pub GuardCFDispatchFunctionPointer: u64,
+	pub GuardCFFunctionTable: u64,
+	pub GuardCFFunctionCount: u64,
+	pub GuardFlags: u32,
+	pub CodeIntegrity: IMAGE_LOAD_CONFIG_CODE_INTEGRITY,
+	pub GuardAddressTakenIatEntryTable: u64,
+	pub GuardAddressTakenIatEntryCount: u64,
+	pub GuardLongJumpTargetTable: u64,
+	pub GuardLongJumpTargetCount: u64,
+	pub DynamicValueRelocTable: u64,
+	pub CHPEMetadataPointer: u64,
+	pub GuardRFFailureRoutine: u64,
+	pub GuardRFFailureRoutineFunctionPointer: u64,
+	pub DynamicValueRelocTableOffset: u32,
+	pub DynamicValueRelocTableSection: u16,
+	pub Reserved2: u16,
+	pub GuardRFVerifyStackPointerFunctionPointer: u64,
+	pub HotPatchTableOffset: u32,
+	pub Reserved3: u32,
+	pub EnclaveConfigurationPointer: u64,
+	pub VolatileMetadataPointer: u64,
+	pub GuardEHContinuationTable: u64,
+	pub GuardEHContinuationCount: u64,
+	pub GuardXFGCheckFunctionPointer: u64,
+	pub GuardXFGDispatchFunctionPointer: u64,
+	pub GuardXFGTableDispatchFunctionPointer: u64,
+	pub CastGuardOsDeterminedFailureMode: u64,
+	pub GuardMemcpyFunctionPointer: u64,
 }
 
 //----------------------------------------------------------------
@@ -1022,8 +1080,8 @@ const _: [(); 16] = [(); mem::size_of::<IMAGE_RESOURCE_DIRECTORY>()];
 const _: [(); 8] = [(); mem::size_of::<IMAGE_RESOURCE_DIRECTORY_ENTRY>()];
 const _: [(); 16] = [(); mem::size_of::<IMAGE_RESOURCE_DATA_ENTRY>()];
 const _: [(); 8] = [(); mem::size_of::<IMAGE_BASE_RELOCATION>()];
-const _: [(); 18 * 4] = [(); mem::size_of::<IMAGE_LOAD_CONFIG_DIRECTORY32>()];
-const _: [(); 28 * 4] = [(); mem::size_of::<IMAGE_LOAD_CONFIG_DIRECTORY64>()];
+const _: [(); 192] = [(); mem::size_of::<IMAGE_LOAD_CONFIG_DIRECTORY32>()];
+const _: [(); 320] = [(); mem::size_of::<IMAGE_LOAD_CONFIG_DIRECTORY64>()];
 const _: [(); 3 * 4] = [(); mem::size_of::<IMAGE_LOAD_CONFIG_CODE_INTEGRITY>()];
 const _: [(); 2 * 4] = [(); mem::size_of::<IMAGE_DYNAMIC_RELOCATION_TABLE>()]; // Unsized
 const _: [(); 2 * 4] = [(); mem::size_of::<IMAGE_DYNAMIC_RELOCATION32>()]; // Unsized
