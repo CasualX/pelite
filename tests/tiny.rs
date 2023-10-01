@@ -1,4 +1,4 @@
-use pelite::pe32::{image, Pe, PeFile};
+use pelite::pe32::{image, Pe, PeFile, PeObject};
 use pelite::{FileMap, Pod};
 
 // For fun let's try loading tiny PE files.
@@ -46,6 +46,10 @@ fn tiny_c_1024() {
 	assert_eq!(sections[0].SizeOfRawData, 0x200);
 	assert_eq!(sections[0].PointerToRawData, 0x200);
 	assert_eq!(sections[0].Characteristics, 0x60000020);
+
+	let view = file.to_view();
+	assert_eq!(&view[0x1000..0x1200], &file.image()[0x200..0x400]);
+	assert!(view[0x1200..].iter().all(|&byte| byte == 0));
 }
 
 /*
