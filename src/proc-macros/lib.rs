@@ -7,7 +7,15 @@ use proc_macro::*;
 /// ```
 #[proc_macro]
 pub fn pattern(input: TokenStream) -> TokenStream {
-	let input = input.into_iter().collect::<Vec<_>>();
+	let mut input = input.into_iter().collect::<Vec<_>>();
+
+	// When calling the macro with a macro_rules capture, say $pat, the TokenTree
+	// will instead be a no-delimiter Group containing the expanded value of $pat.
+	// Unpack no-delimiter groups to handle this
+	match &input[..] {
+		[TokenTree::Group(g)] if g.delimiter() == Delimiter::None => input = g.stream().into_iter().collect::<Vec<_>>(),
+		_ => (),
+	};
 
 	let string = match &input[..] {
 		[TokenTree::Literal(lit)] => parse_str_literal(&lit),
