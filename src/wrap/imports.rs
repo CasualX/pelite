@@ -1,4 +1,4 @@
-use std::slice;
+use ::std::slice;
 
 use crate::*;
 

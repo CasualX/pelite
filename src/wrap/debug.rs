@@ -1,4 +1,4 @@
-use std::{fmt, str};
+use ::std::{fmt, str};
 
 use crate::image::*;
 use crate::util::CStr;
