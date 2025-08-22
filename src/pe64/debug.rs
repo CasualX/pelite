@@ -176,7 +176,7 @@ fn code_view<'a, P: Pe<'a>>(dir: &Dir<'a, P>) -> Result<CodeView<'a>> {
 	if bytes.len() < 16 {
 		return Err(Error::Bounds);
 	}
-	if !(cfg!(feature = "unsafe_alignment") || bytes.as_ptr().aligned_to(4)) {
+	if !bytes.as_ptr().aligned_to(4) {
 		return Err(Error::Misaligned);
 	}
 	let cv_signature = unsafe { &*(bytes.as_ptr() as *const [u8; 4]) };
@@ -206,7 +206,7 @@ fn dbg<'a, P: Pe<'a>>(dir: &Dir<'a, P>) -> Result<Dbg<'a>> {
 	if data.len() < mem::size_of::<IMAGE_DEBUG_MISC>() {
 		return Err(Error::Bounds);
 	}
-	if !(cfg!(feature = "unsafe_alignment") || data.as_ptr().aligned_to(4)) {
+	if !data.as_ptr().aligned_to(4) {
 		return Err(Error::Misaligned);
 	}
 	let image = unsafe { &*(data.as_ptr() as *const IMAGE_DEBUG_MISC) };
@@ -218,7 +218,7 @@ fn pgo<'a, P: Pe<'a>>(dir: &Dir<'a, P>) -> Result<Pgo<'a>> {
 	if data.len() < 4 {
 		return Err(Error::Bounds);
 	}
-	if !(cfg!(feature = "unsafe_alignment") || data.as_ptr().aligned_to(4)) {
+	if !data.as_ptr().aligned_to(4) {
 		return Err(Error::Misaligned);
 	}
 	let len = data.len() / 4;

@@ -300,7 +300,7 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 
 	/// Reads an aligned pod `T`.
 	fn derva<T: Pod>(self, rva: Rva) -> Result<&'a T> {
-		let align = if cfg!(feature = "unsafe_alignment") { 1 } else { mem::align_of::<T>() };
+		let align = mem::align_of::<T>();
 		let bytes = self.slice(rva, mem::size_of::<T>(), align)?;
 		// This is safe as per Pod bound, min_size_of and align
 		unsafe {
@@ -329,7 +329,7 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	/// Reads an array of pod `T` with given length.
 	fn derva_slice<T: Pod>(self, rva: Rva, len: usize) -> Result<&'a [T]> {
 		let min_size_of = mem::size_of::<T>().checked_mul(len).ok_or(Error::Overflow)?;
-		let align = if cfg!(feature = "unsafe_alignment") { 1 } else { mem::align_of::<T>() };
+		let align = mem::align_of::<T>();
 		let bytes = self.slice(rva, min_size_of, align)?;
 		// This is safe as per Pod bound, min_size_of and align
 		unsafe { Ok(slice::from_raw_parts(bytes.as_ptr() as *const T, len)) }
@@ -341,7 +341,7 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	///
 	/// The returned slice contains all `T` up to but not including the element for which the callable returned `true`.
 	fn derva_slice_f<T: Pod, F: FnMut(&'a T) -> bool>(self, rva: Rva, mut f: F) -> Result<&'a [T]> {
-		let align = if cfg!(feature = "unsafe_alignment") { 1 } else { mem::align_of::<T>() };
+		let align = mem::align_of::<T>();
 		let bytes = self.slice(rva, 0, align)?;
 		let mut len = 0;
 		loop {
@@ -385,7 +385,7 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 
 	/// Dereferences the pointer to a pod `T`.
 	fn deref<T: Pod>(self, ptr: Ptr<T>) -> Result<&'a T> {
-		let align = if cfg!(feature = "unsafe_alignment") { 1 } else { mem::align_of::<T>() };
+		let align = mem::align_of::<T>();
 		let bytes = self.read(ptr.into(), mem::size_of::<T>(), align)?;
 		// This is safe as per Pod bound, min_size_of and align
 		unsafe {
@@ -414,7 +414,7 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	/// Reads an array of pod `T` with given length.
 	fn deref_slice<T: Pod>(self, ptr: Ptr<[T]>, len: usize) -> Result<&'a [T]> {
 		let min_size_of = mem::size_of::<T>().checked_mul(len).ok_or(Error::Overflow)?;
-		let align = if cfg!(feature = "unsafe_alignment") { 1 } else { mem::align_of::<T>() };
+		let align = mem::align_of::<T>();
 		let bytes = self.read(ptr.into(), min_size_of, align)?;
 		// This is safe as per Pod bound, min_size_of and align
 		unsafe { Ok(slice::from_raw_parts(bytes.as_ptr() as *const T, len)) }
@@ -426,7 +426,7 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	///
 	/// The returned slice contains all `T` up to but not including the element for which the callable returned `true`.
 	fn deref_slice_f<T: Pod, F: FnMut(&'a T) -> bool>(self, ptr: Ptr<[T]>, mut f: F) -> Result<&'a [T]> {
-		let align = if cfg!(feature = "unsafe_alignment") { 1 } else { mem::align_of::<T>() };
+		let align = mem::align_of::<T>();
 		let bytes = self.read(ptr.into(), 0, align)?;
 		let mut len = 0;
 		loop {
@@ -716,34 +716,36 @@ unsafe fn range_file(image: &[u8], rva: Rva, min_size_of: usize) -> Result<&[u8]
 #[inline(never)]
 unsafe fn slice_file(image: &[u8], rva: Rva, min_size_of: usize, align_of: usize) -> Result<&[u8]> {
 	if rva == 0 {
-		Err(Error::Null)
+		return Err(Error::Null);
 	}
-	else if !usize::wrapping_add(image.as_ptr() as usize, rva as usize).aligned_to(align_of) {
-		Err(Error::Misaligned)
+
+	let bytes = range_file(image, rva, min_size_of)?;
+
+	if !(bytes.as_ptr() as usize).aligned_to(align_of) {
+		return Err(Error::Misaligned);
 	}
-	else {
-		range_file(image, rva, min_size_of)
-	}
+
+	Ok(bytes)
 }
 #[inline(never)]
 unsafe fn read_file(image: &[u8], image_base: Va, va: Va, min_size_of: usize, align_of: usize) -> Result<&[u8]> {
 	let size_of_image = optional_header(image).SizeOfImage;
 
 	if va == 0 {
-		Err(Error::Null)
+		return Err(Error::Null);
 	}
-	else if va < image_base || va - image_base > size_of_image as Va {
-		Err(Error::Bounds)
+	if va < image_base || va - image_base > size_of_image as Va {
+		return Err(Error::Bounds);
 	}
-	else {
-		let rva = (va - image_base) as Rva;
-		if !usize::wrapping_add(image.as_ptr() as usize, rva as usize).aligned_to(align_of) {
-			Err(Error::Misaligned)
-		}
-		else {
-			range_file(image, rva, min_size_of)
-		}
+
+	let rva = (va - image_base) as Rva;
+	let bytes = range_file(image, rva, min_size_of)?;
+
+	if !(bytes.as_ptr() as usize).aligned_to(align_of) {
+		return Err(Error::Misaligned);
 	}
+
+	Ok(bytes)
 }
 
 //----------------------------------------------------------------
