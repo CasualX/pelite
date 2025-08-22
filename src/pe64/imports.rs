@@ -51,7 +51,9 @@ use super::Pe;
 
 //----------------------------------------------------------------
 
-pub use crate::wrap::imports::Import;
+pub use crate::Import;
+
+//----------------------------------------------------------------
 
 // Gets the import from the import name table.
 //

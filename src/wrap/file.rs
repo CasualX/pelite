@@ -1,6 +1,4 @@
-use crate::*;
-
-use super::Wrap;
+use super::*;
 
 /// Format agnostic PE file.
 pub type PeFile<'a> = Wrap<pe32::PeFile<'a>, pe64::PeFile<'a>>;

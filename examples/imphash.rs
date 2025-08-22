@@ -48,12 +48,11 @@ fn imphash(image: &[u8]) -> pelite::Result<u64> {
 		let dll_name = desc.dll_name()?;
 		dll_name.hash(&mut h);
 		for imp in desc.int()? {
-			use pelite::pe32::imports::Import;
 			match imp {
-				Ok(Import::ByName { hint: _, name }) => {
+				Ok(pelite::Import::ByName { hint: _, name }) => {
 					name.hash(&mut h);
 				},
-				Ok(Import::ByOrdinal { ord }) => {
+				Ok(pelite::Import::ByOrdinal { ord }) => {
 					ord.hash(&mut h);
 				},
 				Err(err) => {

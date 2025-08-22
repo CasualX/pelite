@@ -1,14 +1,11 @@
-use std::{fmt, mem, ops, slice};
-
-use crate::image::*;
-use crate::Pod;
+use super::*;
 
 //----------------------------------------------------------------
 
 /// Section header.
 #[derive(Copy, Clone)]
 #[repr(transparent)]
-pub struct SectionHeader(IMAGE_SECTION_HEADER);
+pub struct SectionHeader(image::IMAGE_SECTION_HEADER);
 
 impl SectionHeader {
 	/// Returns the name as a byte slice.
@@ -17,7 +14,7 @@ impl SectionHeader {
 		crate::util::trimn(&self.0.Name)
 	}
 	/// Returns the name.
-	pub fn name(&self) -> Result<&str, &[u8]> {
+	pub fn name(&self) -> core::result::Result<&str, &[u8]> {
 		crate::util::parsen(&self.0.Name)
 	}
 	/// Returns the virtual range.
@@ -39,9 +36,9 @@ impl SectionHeader {
 unsafe impl Pod for SectionHeader {}
 
 impl ops::Deref for SectionHeader {
-	type Target = IMAGE_SECTION_HEADER;
+	type Target = image::IMAGE_SECTION_HEADER;
 	#[inline]
-	fn deref(&self) -> &IMAGE_SECTION_HEADER {
+	fn deref(&self) -> &image::IMAGE_SECTION_HEADER {
 		&self.0
 	}
 }
@@ -69,15 +66,15 @@ impl fmt::Debug for SectionHeader {
 
 /// Section headers.
 #[repr(transparent)]
-pub struct SectionHeaders([IMAGE_SECTION_HEADER]);
+pub struct SectionHeaders([image::IMAGE_SECTION_HEADER]);
 
 impl SectionHeaders {
-	pub(crate) fn new(image: &[IMAGE_SECTION_HEADER]) -> &SectionHeaders {
+	pub(crate) fn new(image: &[image::IMAGE_SECTION_HEADER]) -> &SectionHeaders {
 		unsafe { mem::transmute(image) }
 	}
 	/// Returns the underlying slice of section headers.
 	#[inline]
-	pub fn image(&self) -> &[IMAGE_SECTION_HEADER] {
+	pub fn image(&self) -> &[image::IMAGE_SECTION_HEADER] {
 		&self.0
 	}
 	/// Gets the section headers as a slice of `SectionHeader`.
@@ -95,11 +92,11 @@ impl SectionHeaders {
 	pub fn by_name<S: ?Sized + AsRef<[u8]>>(&self, name: &S) -> Option<&SectionHeader> {
 		// Names have a max length, if larger they will never match
 		let name = name.as_ref();
-		if name.len() > IMAGE_SIZEOF_SHORT_NAME {
+		if name.len() > image::IMAGE_SIZEOF_SHORT_NAME {
 			return None;
 		}
 		// Copy the prefix into a new buffer for easy comparison
-		let mut name_buf = [0u8; IMAGE_SIZEOF_SHORT_NAME];
+		let mut name_buf = [0u8; image::IMAGE_SIZEOF_SHORT_NAME];
 		for i in 0..name.len() {
 			name_buf[i] = name[i];
 		}
@@ -142,7 +139,7 @@ impl fmt::Debug for SectionHeaders {
 //----------------------------------------------------------------
 
 #[cfg(feature = "serde")]
-pub(crate) fn serialize_name<S: ::serde::ser::Serializer>(name: &[u8; IMAGE_SIZEOF_SHORT_NAME], serializer: S) -> Result<S::Ok, S::Error> {
+pub(crate) fn serialize_name<S: ::serde::ser::Serializer>(name: &[u8; image::IMAGE_SIZEOF_SHORT_NAME], serializer: S) -> core::result::Result<S::Ok, S::Error> {
 	match crate::util::parsen(name) {
 		Ok(name) => serializer.serialize_str(name),
 		Err(name) => serializer.serialize_bytes(name),

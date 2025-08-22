@@ -1,10 +1,4 @@
-use std::{fmt, str};
-
-use crate::image::*;
-use crate::util::CStr;
-use crate::*;
-
-use super::Wrap;
+use super::*;
 
 /// Debug directory.
 impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::debug::Debug<'a, Pe32>, pe64::debug::Debug<'a, Pe64>> {
@@ -26,7 +20,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::debug::Debug<'a, Pe3
 	}
 	/// Gets the CodeView PDB file name.
 	#[inline]
-	pub fn pdb_file_name(&self) -> Option<&'a util::CStr> {
+	pub fn pdb_file_name(&self) -> Option<&'a CStr> {
 		match self {
 			Wrap::T32(debug) => debug.pdb_file_name(),
 			Wrap::T64(debug) => debug.pdb_file_name(),
@@ -134,9 +128,9 @@ impl<'a> Entry<'a> {
 #[derive(Copy, Clone)]
 pub enum CodeView<'a> {
 	/// CodeView 2.0 debug information.
-	Cv20 { image: &'a IMAGE_DEBUG_CV_INFO_PDB20, pdb_file_name: &'a CStr },
+	Cv20 { image: &'a image::IMAGE_DEBUG_CV_INFO_PDB20, pdb_file_name: &'a CStr },
 	/// CodeView 7.0 debug information.
-	Cv70 { image: &'a IMAGE_DEBUG_CV_INFO_PDB70, pdb_file_name: &'a CStr },
+	Cv70 { image: &'a image::IMAGE_DEBUG_CV_INFO_PDB70, pdb_file_name: &'a CStr },
 }
 impl<'a> CodeView<'a> {
 	pub fn format(&self) -> &'a str {
@@ -183,11 +177,11 @@ impl<'a> fmt::Debug for CodeView<'a> {
 /// Debug information.
 #[derive(Copy, Clone)]
 pub struct Dbg<'a> {
-	pub image: &'a IMAGE_DEBUG_MISC,
+	pub image: &'a image::IMAGE_DEBUG_MISC,
 }
 impl<'a> Dbg<'a> {
 	/// Gets the underlying information image.
-	pub fn image(&self) -> &'a IMAGE_DEBUG_MISC {
+	pub fn image(&self) -> &'a image::IMAGE_DEBUG_MISC {
 		self.image
 	}
 }

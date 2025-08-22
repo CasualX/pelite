@@ -57,14 +57,14 @@ use std::{fmt, ops};
 
 use crate::util::CStr;
 use crate::{Error, Result};
+use crate::Import;
 
 use super::image::*;
-use super::imports::Import;
 use super::Pe;
 
 //----------------------------------------------------------------
 
-pub use crate::wrap::exports::Export;
+pub use crate::Export;
 
 //----------------------------------------------------------------
 

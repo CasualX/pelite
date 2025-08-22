@@ -1,6 +1,4 @@
-use crate::*;
-
-use super::Wrap;
+use super::*;
 
 /// The specific alignment used by the view.
 ///
@@ -167,14 +165,14 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 		}
 	}
 	#[inline]
-	pub fn derva_c_str(&self, rva: u32) -> Result<&'a util::CStr> {
+	pub fn derva_c_str(&self, rva: u32) -> Result<&'a CStr> {
 		match self {
 			Wrap::T32(pe32) => pe32.derva_c_str(rva),
 			Wrap::T64(pe64) => pe64.derva_c_str(rva),
 		}
 	}
 	#[inline]
-	pub fn derva_string<T: ?Sized + util::FromBytes>(&self, rva: u32) -> Result<&'a T> {
+	pub fn derva_string<T: ?Sized + FromBytes>(&self, rva: u32) -> Result<&'a T> {
 		match self {
 			Wrap::T32(pe32) => pe32.derva_string(rva),
 			Wrap::T64(pe64) => pe64.derva_string(rva),

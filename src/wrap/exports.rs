@@ -1,7 +1,4 @@
-use crate::*;
-
-use super::imports::Import;
-use super::Wrap;
+use super::*;
 
 /// Exported symbol.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
@@ -13,7 +10,7 @@ pub enum Export<'a> {
 	///
 	/// Format of the string is `"DllName.ExportName"`.
 	/// For more information see this [blog post](https://blogs.msdn.microsoft.com/oldnewthing/20060719-24/?p=30473) by Raymond Chen.
-	Forward(&'a util::CStr),
+	Forward(&'a CStr),
 }
 impl<'a> Export<'a> {
 	/// Returns some if the symbol is exported.
@@ -26,7 +23,7 @@ impl<'a> Export<'a> {
 	}
 	/// Returns some if the symbol is forwarded.
 	#[inline]
-	pub fn forward(self) -> Option<&'a util::CStr> {
+	pub fn forward(self) -> Option<&'a CStr> {
 		match self {
 			Export::Forward(name) => Some(name),
 			_ => None,
@@ -54,7 +51,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::exports::Exports<'a,
 	}
 	/// Gets the export directory's name for this library.
 	#[inline]
-	pub fn dll_name(&self) -> Result<&'a util::CStr> {
+	pub fn dll_name(&self) -> Result<&'a CStr> {
 		match self {
 			Wrap::T32(exports) => exports.dll_name(),
 			Wrap::T64(exports) => exports.dll_name(),
@@ -122,7 +119,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::exports::By<'a, Pe32
 	}
 	/// Gets the export directory's name for this library.
 	#[inline]
-	pub fn dll_name(&self) -> Result<&'a util::CStr> {
+	pub fn dll_name(&self) -> Result<&'a CStr> {
 		match self {
 			Wrap::T32(by) => by.dll_name(),
 			Wrap::T64(by) => by.dll_name(),
@@ -226,7 +223,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::exports::By<'a, Pe32
 	}
 	/// Looks up the name for a hint.
 	#[inline]
-	pub fn name_of_hint(&self, hint: usize) -> Result<&'a util::CStr> {
+	pub fn name_of_hint(&self, hint: usize) -> Result<&'a CStr> {
 		match self {
 			Wrap::T32(by) => by.name_of_hint(hint),
 			Wrap::T64(by) => by.name_of_hint(hint),
@@ -254,12 +251,12 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::exports::By<'a, Pe32
 	}
 	/// Iterate over functions exported by name.
 	#[inline]
-	pub fn iter_names<'s>(&'s self) -> impl 's + Clone + Iterator<Item = (Result<&'a util::CStr>, Result<Export<'a>>)> {
+	pub fn iter_names<'s>(&'s self) -> impl 's + Clone + Iterator<Item = (Result<&'a CStr>, Result<Export<'a>>)> {
 		(0..self.names().len() as u32).map(move |hint| (self.name_of_hint(hint as usize), self.hint(hint as usize)))
 	}
 	/// Iterate over functions exported by name, returning their name and index in the functions table.
 	#[inline]
-	pub fn iter_name_indices<'s>(&'s self) -> impl 's + Clone + Iterator<Item = (Result<&'a util::CStr>, usize)> {
+	pub fn iter_name_indices<'s>(&'s self) -> impl 's + Clone + Iterator<Item = (Result<&'a CStr>, usize)> {
 		(0..self.names().len() as u32).map(move |hint| (self.name_of_hint(hint as usize), self.name_indices()[hint as usize] as usize))
 	}
 }

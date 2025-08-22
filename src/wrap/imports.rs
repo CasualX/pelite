@@ -1,8 +1,4 @@
-use std::slice;
-
-use crate::*;
-
-use super::Wrap;
+use super::*;
 
 /// Imported symbol.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
@@ -12,7 +8,7 @@ pub enum Import<'a> {
 	///
 	/// The hint is an index in the export names table that may contain the desired symbol.
 	/// For more information see this [blog post](https://blogs.msdn.microsoft.com/oldnewthing/20100317-00/?p=14573) by Raymond Chen.
-	ByName { hint: usize, name: &'a util::CStr },
+	ByName { hint: usize, name: &'a CStr },
 	/// Imported by ordinal.
 	ByOrdinal { ord: u16 },
 }
@@ -76,7 +72,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::imports::IAT<'a, Pe3
 	}
 	/// Iterate over the IAT.
 	#[inline]
-	pub fn iter(&self) -> Wrap<impl Clone + Iterator<Item = (&'a u32, Result<pe32::imports::Import<'a>>)>, impl Clone + Iterator<Item = (&'a u64, Result<pe64::imports::Import<'a>>)>> {
+	pub fn iter(&self) -> Wrap<impl Clone + Iterator<Item = (&'a u32, Result<Import<'a>>)>, impl Clone + Iterator<Item = (&'a u64, Result<Import<'a>>)>> {
 		match self {
 			Wrap::T32(iat) => Wrap::T32(iat.iter()),
 			Wrap::T64(iat) => Wrap::T64(iat.iter()),
@@ -104,7 +100,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::imports::Desc<'a, Pe
 	}
 	/// Gets the name of the DLL imported from.
 	#[inline]
-	pub fn dll_name(&self) -> Result<&'a util::CStr> {
+	pub fn dll_name(&self) -> Result<&'a CStr> {
 		match self {
 			Wrap::T32(desc) => desc.dll_name(),
 			Wrap::T64(desc) => desc.dll_name(),

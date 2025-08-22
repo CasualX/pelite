@@ -1,6 +1,4 @@
-use crate::*;
-
-use super::Wrap;
+use super::*;
 
 /// TLS Directory.
 impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::tls::Tls<'a, Pe32>, pe64::tls::Tls<'a, Pe64>> {

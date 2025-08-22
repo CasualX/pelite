@@ -1,14 +1,10 @@
-use std::ops::Range;
-
-use crate::*;
-
-use super::Wrap;
+use super::*;
 
 /// Pattern scanner.
 impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::scanner::Scanner<Pe32>, pe64::scanner::Scanner<Pe64>> {
 	/// Finds the unique match for the pattern in the given range.
 	#[inline]
-	pub fn finds(&self, pat: &[pattern::Atom], range: Range<u32>, save: &mut [u32]) -> bool {
+	pub fn finds(&self, pat: &[pattern::Atom], range: ops::Range<u32>, save: &mut [u32]) -> bool {
 		match self {
 			Wrap::T32(scanner) => scanner.finds(pat, range, save),
 			Wrap::T64(scanner) => scanner.finds(pat, range, save),
@@ -24,7 +20,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::scanner::Scanner<Pe3
 	}
 	/// Returns an iterator over the matches of a pattern within the given range.
 	#[inline]
-	pub fn matches<'pat>(&self, pat: &'pat [pattern::Atom], range: Range<u32>) -> Wrap<pe32::scanner::Matches<'pat, Pe32>, pe64::scanner::Matches<'pat, Pe64>> {
+	pub fn matches<'pat>(&self, pat: &'pat [pattern::Atom], range: ops::Range<u32>) -> Wrap<pe32::scanner::Matches<'pat, Pe32>, pe64::scanner::Matches<'pat, Pe64>> {
 		match self {
 			Wrap::T32(scanner) => Wrap::T32(scanner.matches(pat, range)),
 			Wrap::T64(scanner) => Wrap::T64(scanner.matches(pat, range)),
@@ -67,7 +63,7 @@ impl<'a, 'pat, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::scanner::Match
 	}
 	/// Gets the remaining range to scan.
 	#[inline]
-	pub fn range(&self) -> Range<u32> {
+	pub fn range(&self) -> ops::Range<u32> {
 		match self {
 			Wrap::T32(matches) => matches.range(),
 			Wrap::T64(matches) => matches.range(),

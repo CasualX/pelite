@@ -1,6 +1,4 @@
-use crate::*;
-
-use super::Wrap;
+use super::*;
 
 /// Format agnostic PE view.
 pub type PeView<'a> = Wrap<pe32::PeView<'a>, pe64::PeView<'a>>;
