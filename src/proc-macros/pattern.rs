@@ -493,12 +493,16 @@ fn parse_helper(pat: &mut &str, result: &mut Vec<Atom>) -> Result<(), PatError> 
 			// Match raw bytes
 			b'"' => loop {
 				if let Some(chr) = iter.next().cloned() {
-					if chr != b'"' {
-						result.push(Atom::Byte(chr));
-					}
-					else {
+					if chr == b'"' {
+						// Handle escaped quotes `""`
+						if iter.as_slice().first() == Some(&b'"') {
+							iter.next();
+							result.push(Atom::Byte(b'"'));
+							continue;
+						}
 						break;
 					}
+					result.push(Atom::Byte(chr));
 				}
 				else {
 					return Err(PatError::UnclosedQuote);
@@ -639,6 +643,12 @@ mod tests {
 
 		assert_eq!(parse("\"string\""), Ok(vec![
 			Save(0), Byte(115), Byte(116), Byte(114), Byte(105), Byte(110), Byte(103)
+		]));
+
+		assert_eq!(parse("\"string\"\"quote\"\"string\""), Ok(vec![
+			Save(0), Byte(115), Byte(116), Byte(114), Byte(105), Byte(110), Byte(103),
+			Byte(34), Byte(113), Byte(117), Byte(111), Byte(116), Byte(101), Byte(34),
+			Byte(115), Byte(116), Byte(114), Byte(105), Byte(110), Byte(103)
 		]));
 
 		assert_eq!(parse("*{FF D8 42}"), Ok(vec![
