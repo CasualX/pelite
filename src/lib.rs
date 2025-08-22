@@ -64,6 +64,5 @@ pub mod rich_structure;
 pub mod security;
 pub mod strings;
 
-// FIXME! Causes STATUS_STACK_BUFFER_OVERRUN in CI on nightly x86_64-pc-windows-msvc
-// #[cfg(test)]
-// mod tests;
+#[cfg(test)]
+mod tests;
