@@ -36,7 +36,7 @@ This requires knowledge with reverse engineering programs.
 Here's a resource to learn more about signature scanning: [wiki.alliedmods.net](https://wiki.alliedmods.net/Signature_scanning).
 */
 
-#![allow(ellipsis_inclusive_range_patterns)]
+#![allow(ellipsis_inclusive_range_patterns, unexpected_cfgs)]
 
 use std::prelude::v1::*;
 

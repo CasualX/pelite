@@ -1,0 +1,11 @@
+[package]
+name = "sigscanpro"
+version = "0.1.0"
+authors = ["Casper <CasualX@users.noreply.github.com>"]
+edition = "2021"
+
+[lib]
+crate-type = ["rlib", "staticlib", "cdylib"]
+
+[dependencies]
+pelite = { path = "../" }
