@@ -19,7 +19,7 @@ resolver = "2"
 
 [features]
 default = ["mmap", "derive_pod"]
-mmap = ["std", "libc", "winapi"]
+mmap = ["std", "libc", "windows-sys"]
 unstable = []
 derive_pod = ["dataview/derive_pod"]
 basenc = ["dep:basenc"]
@@ -43,7 +43,7 @@ basenc = { version = "1.0.0-alpha.2", optional = true, default-features = false,
 libc = { version = "0.2.189", optional = true }
 
 [target.'cfg(windows)'.dependencies]
-winapi = { version = "0.3", optional = true, features = ["fileapi", "memoryapi", "handleapi"] }
+windows-sys = { version = ">= 0.59.0, < 0.62", optional = true, features = ["Win32_Storage_FileSystem", "Win32_System_Memory", "Win32_Security"] }
 
 [dev-dependencies]
 lde = "0.3"
