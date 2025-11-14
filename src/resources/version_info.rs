@@ -205,8 +205,9 @@ impl<'a> VersionInfo<'a> {
 
 						visit.enter_scope(2);
 						for string in Parser::new_words(string_table.children).filter_map(Result::ok) {
-							// Strip the nul terminator...
-							let value = if string.value.last() != Some(&0) { string.value } else { &string.value[..string.value.len() - 1] };
+							// MS docs: String structure: A zero-terminated string
+							// Take up to the first null
+							let value = wstrn(string.value);
 							visit.string(string.key, value);
 						}
 						visit.exit_scope(2);
