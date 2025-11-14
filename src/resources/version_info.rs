@@ -611,9 +611,8 @@ fn parse_tlv<'a>(state: &mut Parser<'a>) -> Result<TLV<'a>> {
 	words = &words[key.len().align_to(2) + 4..];
 
 	// Split the remaining words between the Value and Children
-	if value_length > words.len() {
-		return Err(Error::Invalid);
-	}
+	// Sometimes the value_length is incorrect, but we still try to handle it gracefully
+	let value_length = cmp::min(value_length, words.len());
 	let value = &words[..value_length];
 	// The length does not contain padding to align to a 32-bit boundary
 	let children = &words[cmp::min(value.len().align_to(2), words.len())..];
