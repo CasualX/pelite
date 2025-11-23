@@ -241,12 +241,13 @@ fn security() {
 //----------------------------------------------------------------
 
 #[test]
-fn exception() {
+fn exception_x64() {
 	let file_map = FileMap::open(FILE_NAME).unwrap();
 	let file = PeFile::from_bytes(&file_map).unwrap();
-	let exception = file.exception().unwrap();
+	let exception = file.exception_x64().unwrap();
 
 	assert_eq!(exception.functions().len(), 38);
+	assert!(matches!(file.exception_arm64(), Err(Error::Invalid)));
 }
 
 //----------------------------------------------------------------

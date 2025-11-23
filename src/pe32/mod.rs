@@ -126,8 +126,6 @@ pub mod image;
 pub(crate) mod base_relocs;
 #[path = "../pe64/debug.rs"]
 pub mod debug;
-#[path = "../pe64/exception.rs"]
-pub mod exception;
 #[path = "../pe64/exports.rs"]
 pub mod exports;
 #[path = "../pe64/file.rs"]

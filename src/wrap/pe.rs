@@ -245,13 +245,6 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 		}
 	}
 	#[inline]
-	pub fn exception(&self) -> Result<Wrap<pe32::exception::Exception<'a, Pe32>, pe64::exception::Exception<'a, Pe64>>> {
-		match self {
-			Wrap::T32(pe32) => pe32.exception().map(Wrap::T32),
-			Wrap::T64(pe64) => pe64.exception().map(Wrap::T64),
-		}
-	}
-	#[inline]
 	pub fn debug(&self) -> Result<Wrap<pe32::debug::Debug<'a, Pe32>, pe64::debug::Debug<'a, Pe64>>> {
 		match self {
 			Wrap::T32(pe32) => pe32.debug().map(Wrap::T32),

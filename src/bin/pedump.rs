@@ -24,6 +24,8 @@ SYNOPSIS:
          [-i | --imports]
          [-e | --exports]
          [-r | --relocs]
+         [-t | --tls]
+         [-c | --exceptions]
          [-x | --resources]
          [-g | --debug-info]
 
@@ -55,6 +57,9 @@ OPTIONS:
   -t, --tls
       Print the TLS directory.
 
+  -c, --exceptions
+      Print the exception directory.
+
   -x, --resources
       Print the embedded resource filesystem.
 
@@ -81,6 +86,7 @@ struct Parameters {
 	relocs: bool,
 	load_config: bool,
 	tls: bool,
+	exceptions: bool,
 	resources: bool,
 	debug_info: bool,
 }
@@ -99,6 +105,7 @@ impl Default for Parameters {
 			relocs: false,
 			load_config: false,
 			tls: false,
+			exceptions: false,
 			resources: false,
 			debug_info: false,
 		};
@@ -139,6 +146,7 @@ impl Default for Parameters {
 					"--relocs" => vars.relocs = true,
 					"--load-config" => vars.load_config = true,
 					"--tls" => vars.tls = true,
+					"--exceptions" => vars.exceptions = true,
 					"--resources" => vars.resources = true,
 					"--debug-info" => vars.debug_info = true,
 					_ => abort(INVALID_ARG),
@@ -157,6 +165,7 @@ impl Default for Parameters {
 						'r' => vars.relocs = true,
 						'l' => vars.load_config = true,
 						't' => vars.tls = true,
+						'c' => vars.exceptions = true,
 						'x' => vars.resources = true,
 						'g' => vars.debug_info = true,
 						_ => abort(INVALID_ARG),
@@ -280,6 +289,18 @@ fn dump_pe64(args: &Parameters, file: pelite::pe64::PeFile) {
 			println!("No TLS Directory found.");
 		}
 	}
+	if args.exceptions {
+		print!("{}", SEPARATOR);
+		if let Ok(exceptions) = file.exception_x64() {
+			print!("{:#?}", exceptions);
+		}
+		else if let Ok(exceptions) = file.exception_arm64() {
+			print!("{:#?}", exceptions);
+		}
+		else {
+			println!("No Exception Directory found.");
+		}
+	}
 	if args.debug_info {
 		print!("{}", SEPARATOR);
 		if let Ok(debug) = file.debug() {
@@ -360,6 +381,10 @@ fn dump_pe32(args: &Parameters, file: pelite::pe32::PeFile) {
 		else {
 			println!("No TLS Directory found.");
 		}
+	}
+	if args.exceptions {
+		print!("{}", SEPARATOR);
+		println!("Exception directories are not supported for PE32 images.");
 	}
 	if args.debug_info {
 		print!("{}", SEPARATOR);

@@ -537,13 +537,29 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 		super::security::try_from(self)
 	}
 
-	/// Gets the Exception Directory.
-	///
-	/// See the [exception](exception/index.html) module for more information.
-	///
-	/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) if the image has no exception directory. Any other error indicates some form of corruption.
-	fn exception(self) -> Result<super::exception::Exception<'a, Self>> {
-		super::exception::Exception::try_from(self)
+	branch! {
+		pe32 {}
+		pe64 {
+			/// Gets the x64 Exception Directory.
+			///
+			/// See the [x64 exception](exception_x64/index.html) module for more information.
+			///
+			/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) if the image has no exception directory.
+			/// Any other error indicates an unsupported machine type or some form of corruption.
+			fn exception_x64(self) -> Result<super::exception_x64::ExceptionX64<'a, Self>> {
+				super::exception_x64::ExceptionX64::try_from(self)
+			}
+
+			/// Gets the ARM64 Exception Directory.
+			///
+			/// See the [ARM64 exception](exception_arm64/index.html) module for more information.
+			///
+			/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) if the image has no exception directory.
+			/// Any other error indicates an unsupported machine type or some form of corruption.
+			fn exception_arm64(self) -> Result<super::exception_arm64::ExceptionArm64<'a, Self>> {
+				super::exception_arm64::ExceptionArm64::try_from(self)
+			}
+		}
 	}
 
 	/// Gets the Debug Directory.

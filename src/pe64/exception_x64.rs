@@ -1,5 +1,5 @@
 /*!
-Exception Directory.
+x64 Exception Directory.
 */
 
 use core::cmp::Ordering;
@@ -16,20 +16,27 @@ use super::Pe;
 ///
 /// For more information see the [module-level documentation](index.html).
 #[derive(Copy, Clone)]
-pub struct Exception<'a, P> {
+pub struct ExceptionX64<'a, P> {
 	pe: P,
 	image: &'a [RUNTIME_FUNCTION],
 }
-impl<'a, P: Pe<'a>> Exception<'a, P> {
-	pub(crate) fn try_from(pe: P) -> Result<Exception<'a, P>> {
+impl<'a, P: Pe<'a>> ExceptionX64<'a, P> {
+	/// Parses the X64 exception directory for the given PE.
+	pub(crate) fn try_from(pe: P) -> Result<ExceptionX64<'a, P>> {
 		let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_EXCEPTION).ok_or(Error::Bounds)?;
+		if datadir.VirtualAddress == 0 {
+			return Err(Error::Null);
+		}
+		if pe.file_header().Machine != IMAGE_FILE_MACHINE_AMD64 {
+			return Err(Error::Invalid);
+		}
 		let len = datadir.Size as usize / mem::size_of::<RUNTIME_FUNCTION>();
 		let rem = datadir.Size as usize % mem::size_of::<RUNTIME_FUNCTION>();
 		if rem != 0 {
 			return Err(Error::Invalid);
 		}
 		let image = pe.derva_slice(datadir.VirtualAddress, len)?;
-		Ok(Exception { pe, image })
+		Ok(ExceptionX64 { pe, image })
 	}
 	/// Gets the PE instance.
 	pub fn pe(&self) -> P {
@@ -54,9 +61,9 @@ impl<'a, P: Pe<'a>> Exception<'a, P> {
 		self.image.windows(2).all(check_sorted)
 	}
 	/// Gets an iterator over the function records.
-	pub fn functions(&self) -> iter::Map<slice::Iter<'a, RUNTIME_FUNCTION>, impl Clone + FnMut(&'a RUNTIME_FUNCTION) -> Function<'a, P>> {
+	pub fn functions(&self) -> iter::Map<slice::Iter<'a, RUNTIME_FUNCTION>, impl Clone + FnMut(&'a RUNTIME_FUNCTION) -> FunctionX64<'a, P>> {
 		let pe = self.pe;
-		self.image.iter().map(move |image| Function { pe, image })
+		self.image.iter().map(move |image| FunctionX64 { pe, image })
 	}
 	/// Finds the index of the function for the given program counter.
 	pub fn index_of(&self, pc: Rva) -> core::result::Result<usize, usize> {
@@ -75,9 +82,9 @@ impl<'a, P: Pe<'a>> Exception<'a, P> {
 	/// Finds the function for the given 'program counter' address.
 	///
 	/// The function records are sorted by their address allowing binary search for the record.
-	pub fn lookup_function_entry(&self, pc: Rva) -> Option<Function<'a, P>> {
+	pub fn lookup_function_entry(&self, pc: Rva) -> Option<FunctionX64<'a, P>> {
 		self.index_of(pc)
-			.map(|index| Function {
+			.map(|index| FunctionX64 {
 				pe: self.pe,
 				image: &self.image[index],
 			})
@@ -85,11 +92,26 @@ impl<'a, P: Pe<'a>> Exception<'a, P> {
 	}
 }
 #[rustfmt::skip]
-impl<'a, P: Pe<'a>> fmt::Debug for Exception<'a, P> {
+impl<'a, P: Pe<'a>> fmt::Debug for ExceptionX64<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		f.debug_struct("Exception")
-			.field("functions.len", &self.image.len())
-			.finish()
+		writeln!(f, "ExceptionX64 {{")?;
+		writeln!(f, "    functions.len: {},", self.image.len())?;
+		writeln!(f, "    functions: [")?;
+		for (index, function) in self.functions().enumerate() {
+			let image = function.image();
+			let size = image.EndAddress.saturating_sub(image.BeginAddress);
+			writeln!(
+				f,
+				"        [{:04}] begin=0x{:08x} end=0x{:08x} size=0x{:04x} unwind=0x{:08x},",
+				index,
+				image.BeginAddress,
+				image.EndAddress,
+				size,
+				image.UnwindData
+			)?;
+		}
+		writeln!(f, "    ]")?;
+		write!(f, "}}")
 	}
 }
 
@@ -97,11 +119,11 @@ impl<'a, P: Pe<'a>> fmt::Debug for Exception<'a, P> {
 
 /// Runtime function.
 #[derive(Copy, Clone)]
-pub struct Function<'a, P> {
+pub struct FunctionX64<'a, P> {
 	pe: P,
 	image: &'a RUNTIME_FUNCTION,
 }
-impl<'a, P: Pe<'a>> Function<'a, P> {
+impl<'a, P: Pe<'a>> FunctionX64<'a, P> {
 	/// Gets the PE instance.
 	pub fn pe(&self) -> P {
 		self.pe
@@ -121,7 +143,7 @@ impl<'a, P: Pe<'a>> Function<'a, P> {
 		self.pe.derva_slice(self.image.BeginAddress, len)
 	}
 	/// Gets the unwind info.
-	pub fn unwind_info(&self) -> Result<UnwindInfo<'a, P>> {
+	pub fn unwind_info(&self) -> Result<UnwindInfoX64<'a, P>> {
 		// Read as many bytes as we can for interpretation
 		let bytes = self.pe.slice(
 			self.image.UnwindData,
@@ -135,13 +157,13 @@ impl<'a, P: Pe<'a>> Function<'a, P> {
 			return Err(Error::Bounds);
 		}
 		// Ok
-		Ok(UnwindInfo { pe: self.pe, image })
+		Ok(UnwindInfoX64 { pe: self.pe, image })
 	}
 }
 #[rustfmt::skip]
-impl<'a, P: Pe<'a>> fmt::Debug for Function<'a, P> {
+impl<'a, P: Pe<'a>> fmt::Debug for FunctionX64<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		f.debug_struct("Function")
+		f.debug_struct("FunctionX64")
 			.field("bytes.len", &self.bytes().map(<[_]>::len))
 			.finish()
 	}
@@ -151,11 +173,11 @@ impl<'a, P: Pe<'a>> fmt::Debug for Function<'a, P> {
 
 /// Unwind info.
 #[derive(Copy, Clone)]
-pub struct UnwindInfo<'a, P> {
+pub struct UnwindInfoX64<'a, P> {
 	pe: P,
 	image: &'a UNWIND_INFO,
 }
-impl<'a, P: Pe<'a>> UnwindInfo<'a, P> {
+impl<'a, P: Pe<'a>> UnwindInfoX64<'a, P> {
 	/// Gets the PE instance.
 	pub fn pe(&self) -> P {
 		self.pe
@@ -184,9 +206,9 @@ impl<'a, P: Pe<'a>> UnwindInfo<'a, P> {
 		unsafe { slice::from_raw_parts(self.image.UnwindCode.as_ptr(), len) }
 	}
 }
-impl<'a, P: Pe<'a>> fmt::Debug for UnwindInfo<'a, P> {
+impl<'a, P: Pe<'a>> fmt::Debug for UnwindInfoX64<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		f.debug_struct("UnwindInfo")
+		f.debug_struct("UnwindInfoX64")
 			.field("version", &self.version())
 			.field("flags", &self.flags())
 			.field("size_of_prolog", &self.size_of_prolog())
@@ -201,7 +223,7 @@ impl<'a, P: Pe<'a>> fmt::Debug for UnwindInfo<'a, P> {
 
 #[cfg(test)]
 pub(crate) fn test<'a, P: Pe<'a>>(pe: P) -> Result<()> {
-	let exception = pe.exception()?;
+	let exception = pe.exception_x64()?;
 	let _ = format!("{:?}", exception);
 
 	let sorted = exception.check_sorted();
