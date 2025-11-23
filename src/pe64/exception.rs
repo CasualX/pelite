@@ -87,9 +87,24 @@ impl<'a, P: Pe<'a>> Exception<'a, P> {
 #[rustfmt::skip]
 impl<'a, P: Pe<'a>> fmt::Debug for Exception<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		f.debug_struct("Exception")
-			.field("functions.len", &self.image.len())
-			.finish()
+		writeln!(f, "Exception {{")?;
+		writeln!(f, "    functions.len: {},", self.image.len())?;
+		writeln!(f, "    functions: [")?;
+		for (index, function) in self.functions().enumerate() {
+			let image = function.image();
+			let size = image.EndAddress.saturating_sub(image.BeginAddress);
+			writeln!(
+				f,
+				"        [{:04}] begin=0x{:08x} end=0x{:08x} size=0x{:04x} unwind=0x{:08x},",
+				index,
+				image.BeginAddress,
+				image.EndAddress,
+				size,
+				image.UnwindData
+			)?;
+		}
+		writeln!(f, "    ]")?;
+		write!(f, "}}")
 	}
 }
 

@@ -7,6 +7,7 @@ use std::io::{self, Write};
 use std::path::PathBuf;
 use std::process;
 
+use pelite::image::IMAGE_FILE_MACHINE_ARM64;
 use pelite::{FileMap, PeFile, Wrap};
 
 //----------------------------------------------------------------
@@ -24,6 +25,8 @@ SYNOPSIS:
          [-i | --imports]
          [-e | --exports]
          [-r | --relocs]
+         [-t | --tls]
+         [-c | --exceptions]
          [-x | --resources]
          [-g | --debug-info]
 
@@ -55,6 +58,9 @@ OPTIONS:
   -t, --tls
       Print the TLS directory.
 
+  -c, --exceptions
+      Print the exception directory.
+
   -x, --resources
       Print the embedded resource filesystem.
 
@@ -81,6 +87,7 @@ struct Parameters {
 	relocs: bool,
 	load_config: bool,
 	tls: bool,
+	exceptions: bool,
 	resources: bool,
 	debug_info: bool,
 }
@@ -99,6 +106,7 @@ impl Default for Parameters {
 			relocs: false,
 			load_config: false,
 			tls: false,
+			exceptions: false,
 			resources: false,
 			debug_info: false,
 		};
@@ -139,6 +147,7 @@ impl Default for Parameters {
 					"--relocs" => vars.relocs = true,
 					"--load-config" => vars.load_config = true,
 					"--tls" => vars.tls = true,
+					"--exceptions" => vars.exceptions = true,
 					"--resources" => vars.resources = true,
 					"--debug-info" => vars.debug_info = true,
 					_ => abort(INVALID_ARG),
@@ -157,6 +166,7 @@ impl Default for Parameters {
 						'r' => vars.relocs = true,
 						'l' => vars.load_config = true,
 						't' => vars.tls = true,
+						'c' => vars.exceptions = true,
 						'x' => vars.resources = true,
 						'g' => vars.debug_info = true,
 						_ => abort(INVALID_ARG),
@@ -280,6 +290,24 @@ fn dump_pe64(args: &Parameters, file: pelite::pe64::PeFile) {
 			println!("No TLS Directory found.");
 		}
 	}
+	if args.exceptions {
+		use pelite::pe64::exception_arm64::Arm64ExceptionExt;
+
+		print!("{}", SEPARATOR);
+		let machine = file.file_header().Machine;
+		if machine == IMAGE_FILE_MACHINE_ARM64 {
+			match file.exception_arm64() {
+				Ok(exceptions) => print!("{:#?}", exceptions),
+				Err(_) => println!("No Exception Directory found."),
+			}
+		}
+		else if let Ok(exceptions) = file.exception() {
+			print!("{:#?}", exceptions);
+		}
+		else {
+			println!("No Exception Directory found.");
+		}
+	}
 	if args.debug_info {
 		print!("{}", SEPARATOR);
 		if let Ok(debug) = file.debug() {
@@ -359,6 +387,25 @@ fn dump_pe32(args: &Parameters, file: pelite::pe32::PeFile) {
 		}
 		else {
 			println!("No TLS Directory found.");
+		}
+	}
+	if args.exceptions {
+		print!("{}", SEPARATOR);
+		if let Ok(exceptions) = file.exception() {
+			println!("Exception Directory - {} entries", exceptions.image().len());
+			for (index, func) in exceptions.functions().enumerate() {
+				let image = func.image();
+				println!(
+					"[{:04}] begin=0x{:08x} end=0x{:08x} unwind=0x{:08x}",
+					index,
+					image.BeginAddress,
+					image.EndAddress,
+					image.UnwindData,
+				);
+			}
+		}
+		else {
+			println!("No Exception Directory found.");
 		}
 	}
 	if args.debug_info {

@@ -96,6 +96,7 @@ pub struct IMAGE_DOS_HEADER {
 pub const IMAGE_FILE_MACHINE_I386: u16  = 0x014c;
 pub const IMAGE_FILE_MACHINE_IA64: u16  = 0x0200;
 pub const IMAGE_FILE_MACHINE_AMD64: u16 = 0x8664;
+pub const IMAGE_FILE_MACHINE_ARM64: u16 = 0xaa64;
 
 pub const IMAGE_FILE_RELOCS_STRIPPED: u16         = 0x0001;
 pub const IMAGE_FILE_EXECUTABLE_IMAGE: u16        = 0x0002;
@@ -828,6 +829,14 @@ pub struct RUNTIME_FUNCTION {
 #[derive(Copy, Clone, Debug)]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize))]
 #[repr(C)]
+pub struct IMAGE_ARM64_RUNTIME_FUNCTION_ENTRY {
+	pub BeginAddress: u32,
+	pub UnwindData: u32,
+}
+
+#[derive(Copy, Clone, Debug)]
+#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
+#[repr(C)]
 pub struct SCOPE_RECORD {
 	pub BeginAddress: u32,
 	pub EndAddress: u32,
@@ -996,6 +1005,7 @@ unsafe impl Pod for WIN_CERTIFICATE {}
 unsafe impl Pod for UNWIND_CODE {}
 unsafe impl Pod for UNWIND_INFO {}
 unsafe impl Pod for RUNTIME_FUNCTION {}
+unsafe impl Pod for IMAGE_ARM64_RUNTIME_FUNCTION_ENTRY {}
 unsafe impl Pod for SCOPE_RECORD {}
 unsafe impl Pod for SCOPE_TABLE {}
 unsafe impl Pod for GUID {}
@@ -1035,6 +1045,7 @@ const _: [(); 40] = [(); mem::size_of::<IMAGE_TLS_DIRECTORY64>()];
 const _: [(); 2] = [(); mem::size_of::<UNWIND_CODE>()];
 const _: [(); 4] = [(); mem::size_of::<UNWIND_INFO>()]; // Unsized
 const _: [(); 12] = [(); mem::size_of::<RUNTIME_FUNCTION>()];
+const _: [(); 8] = [(); mem::size_of::<IMAGE_ARM64_RUNTIME_FUNCTION_ENTRY>()];
 const _: [(); 4] = [(); mem::size_of::<SCOPE_TABLE>()]; // Unsized
 const _: [(); 16] = [(); mem::size_of::<SCOPE_RECORD>()];
 const _: [(); 16] = [(); mem::size_of::<GUID>()];
