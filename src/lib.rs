@@ -50,10 +50,10 @@ pub use self::pir::Pir;
 pub use dataview::Pod;
 
 /// Defaults to the current platform if it is available.
-#[cfg(all(windows, target_pointer_width = "32"))]
+#[cfg(target_pointer_width = "32")]
 pub use self::pe32 as pe;
 /// Defaults to the current platform if it is available.
-#[cfg(all(windows, target_pointer_width = "64"))]
+#[cfg(target_pointer_width = "64")]
 pub use self::pe64 as pe;
 
 pub mod base_relocs;
