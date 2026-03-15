@@ -87,23 +87,35 @@ pub struct FileMap {
 impl FileMap {
 	/// Maps the whole file into memory.
 	pub fn open<P: AsRef<Path> + ?Sized>(path: &P) -> io::Result<FileMap> {
-		unsafe { Self::_open(path.as_ref()) }
-	}
-	unsafe fn _open(path: &Path) -> io::Result<FileMap> {
-		// Get its file handle
-		let file = {
-			// Get the path as a nul terminated wide string
-			let path: &OsStr = path.as_ref();
-			let mut wpath: Vec<u16> = path.encode_wide().collect();
-			wpath.push(0);
-			CreateFileW(wpath.as_ptr(), GENERIC_READ, FILE_SHARE_READ, ptr::null_mut(), OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL)
-		};
-		if file == INVALID_HANDLE_VALUE {
-			return Err(io::Error::last_os_error());
+		unsafe {
+			let file = Self::_create_file(path.as_ref())?;
+			Self::from_handle(file, true)
 		}
+	}
+
+	unsafe fn _create_file(path: &Path) -> io::Result<HANDLE> {
+		// Get the path as a nul terminated wide string
+		let path: &OsStr = path.as_ref();
+		let mut wpath: Vec<u16> = path.encode_wide().collect();
+		wpath.push(0);
+		let file = CreateFileW(wpath.as_ptr(), GENERIC_READ, FILE_SHARE_READ, ptr::null_mut(), OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+		if file != INVALID_HANDLE_VALUE {
+			Ok(file)
+		} else {
+			Err(io::Error::last_os_error())
+		}
+	}
+
+	/// Construct a FileMap from a raw file handle.
+	/// If `close_handle` is true, the file handle will be closed as soon as the file mapping is created.
+	/// # Safety
+	/// Assumes that a valid open file handle is provided.
+	pub unsafe fn from_handle(file: HANDLE, close_handle: bool) -> io::Result<FileMap> {
 		// Create the memory file mapping
 		let map = CreateFileMappingW(file, ptr::null_mut(), PAGE_READONLY, 0, 0, ptr::null());
-		CloseHandle(file);
+		if close_handle {
+			CloseHandle(file);
+		}
 		if map == NULL {
 			return Err(io::Error::last_os_error());
 		}
