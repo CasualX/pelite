@@ -205,8 +205,9 @@ impl<'a> VersionInfo<'a> {
 
 						visit.enter_scope(2);
 						for string in Parser::new_words(string_table.children).filter_map(Result::ok) {
-							// Strip the nul terminator...
-							let value = if string.value.last() != Some(&0) { string.value } else { &string.value[..string.value.len() - 1] };
+							// MS docs: String structure: A zero-terminated string
+							// Take up to the first null
+							let value = wstrn(string.value);
 							visit.string(string.key, value);
 						}
 						visit.exit_scope(2);
@@ -594,26 +595,24 @@ fn parse_tlv<'a>(state: &mut Parser<'a>) -> Result<TLV<'a>> {
 	// let wType = words[2];
 
 	// Split the input where this structure ends and the next sibling begins
-	if length > words.len() {
-		return Err(Error::Invalid);
-	}
 	// The length does not contain padding to align to a 32-bit boundary
 	state.words = &words[cmp::min(length.align_to(2), words.len())..];
-	words = &words[..length];
+	words = words.get(..length).ok_or(Error::Invalid)?;
 
 	// Parse the nul terminated szKey
-	let key = wstrn(&words[3..]);
-	if words[3..].len() == key.len() {
+	let key_area = words.get(3..).ok_or(Error::Invalid)?;
+	let key = wstrn(key_area);
+	if key_area.len() == key.len() {
 		return Err(Error::Invalid);
 	}
 
 	// Padding for the Value
-	words = &words[key.len().align_to(2) + 4..];
+	let offset = key.len().align_to(2) + 4;
+	words = words.get(offset..).ok_or(Error::Invalid)?;
 
 	// Split the remaining words between the Value and Children
-	if value_length > words.len() {
-		return Err(Error::Invalid);
-	}
+	// Sometimes the value_length is incorrect, but we still try to handle it gracefully
+	let value_length = cmp::min(value_length, words.len());
 	let value = &words[..value_length];
 	// The length does not contain padding to align to a 32-bit boundary
 	let children = &words[cmp::min(value.len().align_to(2), words.len())..];
@@ -642,6 +641,11 @@ fn test_parse_tlv_oob() {
 
 	// TLV value field larger than the data
 	parser = Parser::new_zero(&[8, 10, 0, 0, 0, 0]);
+	assert_eq!(parser.next(), Some(Err(Error::Invalid)));
+	assert_eq!(parser.next(), None);
+
+	// TLV key + padding exceeds structure length
+	parser = Parser::new_zero(&[14, 0, 0, 65, 66, 67, 0]);
 	assert_eq!(parser.next(), Some(Err(Error::Invalid)));
 	assert_eq!(parser.next(), None);
 }
