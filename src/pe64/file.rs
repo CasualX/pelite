@@ -2,7 +2,10 @@
 PE file.
 */
 
-use std::prelude::v1::*;
+use core::prelude::v1::*;
+
+#[cfg(feature = "alloc")]
+use alloc::vec::Vec;
 
 use crate::Result;
 
@@ -11,9 +14,7 @@ use super::{Align, Pe, PeObject};
 
 /// View into an unmapped PE file.
 #[derive(Copy, Clone)]
-pub struct PeFile<'a> {
-	image: &'a [u8],
-}
+pub struct PeFile<'a>(&'a [u8]);
 
 impl<'a> PeFile<'a> {
 	/// Constructs a file view from a byte slice.
@@ -37,10 +38,14 @@ impl<'a> PeFile<'a> {
 	pub fn from_bytes<T: AsRef<[u8]> + ?Sized>(image: &'a T) -> Result<PeFile<'a>> {
 		let image = image.as_ref();
 		let _ = validate_headers(image)?;
-		Ok(PeFile { image })
+		Ok(PeFile(image))
 	}
+	
 	/// Converts the file to section alignment.
+	#[cfg(feature = "alloc")]
 	pub fn to_view(self) -> Vec<u8> {
+    use alloc::vec;
+
 		let (sizeof_headers, sizeof_image) = {
 			let optional_header = self.optional_header();
 			(optional_header.SizeOfHeaders, optional_header.SizeOfImage)
@@ -78,7 +83,7 @@ unsafe impl<'a> Pe<'a> for PeFile<'a> {}
 
 unsafe impl<'a> PeObject<'a> for PeFile<'a> {
 	fn image(&self) -> &'a [u8] {
-		self.image
+		self.0
 	}
 	fn align(&self) -> Align {
 		Align::File
@@ -98,7 +103,7 @@ unsafe impl<'a> PeObject<'a> for PeFile<'a> {
 
 #[cfg(feature = "serde")]
 impl<'a> serde::Serialize for PeFile<'a> {
-	fn serialize<S: serde::Serializer>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error> {
+	fn serialize<S: serde::Serializer>(&self, serializer: S) -> core::result::Result<S::Ok, S::Error> {
 		super::pe::serialize_pe(*self, serializer)
 	}
 }

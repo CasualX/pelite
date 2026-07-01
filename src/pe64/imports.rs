@@ -41,7 +41,7 @@ fn example(file: PeFile<'_>) -> pelite::Result<()> {
 ```
 */
 
-use std::{fmt, iter, mem, slice};
+use core::{fmt, iter, mem, slice};
 
 use crate::util::CStr;
 use crate::{Error, Result};
@@ -290,14 +290,12 @@ mod serde {
 }
 
 //----------------------------------------------------------------
-
 #[cfg(test)]
 pub(crate) fn test<'a, P: Pe<'a>>(pe: P) -> Result<()> {
 	let imports = pe.imports()?;
-	let _ = format!("{:?}", imports);
 
 	for desc in imports {
-		let _ = format!("{:?}", desc);
+
 		let _dll_name = desc.dll_name();
 		if let Ok(iat) = desc.iat() {
 			for _ in iat {}
@@ -309,7 +307,6 @@ pub(crate) fn test<'a, P: Pe<'a>>(pe: P) -> Result<()> {
 
 	let iat = pe.iat()?;
 	for (va, import) in iat.iter() {
-		let _ = format!("{:?}", import);
 		if import.is_ok() {
 			assert_eq!(import_from_va(pe, va), import);
 		}

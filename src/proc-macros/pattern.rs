@@ -38,12 +38,9 @@ Here's a resource to learn more about signature scanning: [wiki.alliedmods.net](
 
 #![allow(ellipsis_inclusive_range_patterns)]
 
-use std::prelude::v1::*;
+use core::prelude::v1::*;
 
-use std::{cmp, fmt, mem, str};
-
-#[cfg(feature = "std")]
-use std::error;
+use core::{cmp, fmt, mem, str};
 
 /// Max recursion depth.
 pub const STACK_SIZE: usize = 4;
@@ -58,17 +55,19 @@ pub struct ParsePatError {
 	kind: PatError,
 	position: usize,
 }
+
 impl fmt::Display for ParsePatError {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		write!(f, "Syntax Error @{}: {}.", self.position, self.kind.to_str())
 	}
 }
-#[cfg(feature = "std")]
-impl error::Error for ParsePatError {
+
+impl core::error::Error for ParsePatError {
 	fn description(&self) -> &str {
 		self.kind.to_str()
 	}
 }
+
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 enum PatError {
 	UnpairedHexDigit,
@@ -85,6 +84,7 @@ enum PatError {
 	SubPattern,
 	SubOverflow,
 }
+
 impl PatError {
 	fn to_str(self) -> &'static str {
 		match self {

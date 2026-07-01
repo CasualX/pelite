@@ -40,14 +40,15 @@ fn example(bin: PeFile<'_>) -> Result<(), pelite::resources::FindError> {
 
  */
 
+use core::fmt::Write;
+use core::prelude::v1::*;
+use core::{char, cmp, fmt, mem, slice};
+
+#[cfg(feature = "alloc")]
+use alloc::string::String;
+
 #[cfg(feature = "std")]
 use std::collections::HashMap;
-use std::fmt::Write;
-use std::prelude::v1::*;
-use std::{char, cmp, fmt, mem, slice};
-
-#[cfg(not(feature = "std"))]
-use hashbrown::HashMap;
 
 use crate::image::VS_FIXEDFILEINFO;
 use crate::util::{wstrn, AlignTo, FmtUtf16};
@@ -67,7 +68,7 @@ pub struct Language {
 unsafe impl Pod for Language {}
 impl Language {
 	/// Parse language hex strings.
-	pub fn parse(lang: &[u16]) -> std::result::Result<Language, &[u16]> {
+	pub fn parse(lang: &[u16]) -> core::result::Result<Language, &[u16]> {
 		if lang.len() != 8 {
 			return Err(lang);
 		}
@@ -111,6 +112,7 @@ impl fmt::Display for Language {
 pub struct VersionInfo<'a> {
 	words: &'a [u16],
 }
+
 impl<'a> VersionInfo<'a> {
 	pub fn try_from(bytes: &'a [u8]) -> Result<VersionInfo<'a>> {
 		// Alignment of 4 bytes is assumed everywhere,
@@ -158,6 +160,7 @@ impl<'a> VersionInfo<'a> {
 		self.visit(&mut file_info);
 		file_info
 	}
+	
 	/// Renders the version info back into its source code form.
 	pub fn source_code(self) -> String {
 		let mut source_code = String::new();
@@ -380,8 +383,9 @@ FILESUBTYPE {}",
 }
 
 /// VersionInfo parsed into HashMaps.
+#[cfg(all(feature = "std", feature = "alloc"))]
 #[derive(Clone, Debug, Default)]
-#[cfg_attr(all(feature = "std", feature = "serde"), derive(::serde::Serialize))]
+#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
 pub struct FileInfo<'a> {
 	pub fixed: Option<&'a VS_FIXEDFILEINFO>,
 	pub strings: HashMap<Language, HashMap<String, String>>,
@@ -389,11 +393,14 @@ pub struct FileInfo<'a> {
 	#[cfg_attr(feature = "serde", serde(skip))]
 	lang: Language,
 }
+
 impl<'a> Visit<'a> for FileInfo<'a> {
+
 	fn version_info(&mut self, _key: &'a [u16], fixed: Option<&'a VS_FIXEDFILEINFO>) -> bool {
 		self.fixed = fixed;
 		true
 	}
+
 	fn string_table(&mut self, lang: &'a [u16]) -> bool {
 		if let Ok(lang) = Language::parse(lang) {
 			self.lang = lang;
@@ -402,6 +409,7 @@ impl<'a> Visit<'a> for FileInfo<'a> {
 		}
 		false
 	}
+
 	fn string(&mut self, key: &'a [u16], value: &'a [u16]) {
 		if let Some(entry) = self.strings.get_mut(&self.lang) {
 			let key = String::from_utf16_lossy(key);
@@ -409,6 +417,7 @@ impl<'a> Visit<'a> for FileInfo<'a> {
 			entry.insert(key, value);
 		}
 	}
+	
 	fn var(&mut self, key: &'a [u16], value: &'a [u16]) {
 		if key == strings::Translation {
 			self.langs = Language::from_slice(value);
@@ -648,6 +657,7 @@ fn test_parse_tlv_oob() {
 
 #[test]
 fn test_parse_254() {
+
 	#[rustfmt::skip]
 	static WORDS: [u16; 397] = [
 		794, 52, 0, 86, 83, 95, 86, 69, 82, 83, 73, 79, 78, 95, 73, 78,
@@ -683,6 +693,7 @@ fn test_parse_254() {
 
 	let mut strings = HashMap::new();
 	strings.insert(Language { lang_id: 0, charset_id: 1200 }, {
+
 		let mut strings = HashMap::new();
 		strings.insert(String::from("FileDescription"), String::from("BE.Essential"));
 		strings.insert(String::from("Assembly Version"), String::from("22.607.2013.25"));

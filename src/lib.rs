@@ -12,9 +12,16 @@ Evidently this is only available on Windows targets.
 Due to small but incompatible differences the two formats are not unified.
 */
 
+#![allow(unused)]
+
 #![recursion_limit = "128"]
 #![allow(ellipsis_inclusive_range_patterns)]
 #![cfg_attr(not(feature = "std"), no_std)]
+
+#[cfg(feature = "alloc")]
+extern crate alloc;
+
+#[cfg(feature = "std")]
 extern crate no_std_compat as std;
 
 #[macro_use]
@@ -24,6 +31,7 @@ pub mod image;
 
 pub mod stringify;
 
+#[cfg(feature = "pattern")]
 #[path = "proc-macros/pattern.rs"]
 pub mod pattern;
 
@@ -34,16 +42,19 @@ pub use self::error::{Error, Result};
 
 #[cfg(feature = "mmap")]
 mod mmap;
+
 #[cfg(feature = "mmap")]
 pub use self::mmap::*;
 
 pub mod pe32;
 pub mod pe64;
+
 pub(crate) mod wrap;
 pub use self::wrap::*;
 
 #[cfg(feature = "unstable")]
 mod pir;
+
 #[cfg(feature = "unstable")]
 pub use self::pir::Pir;
 
@@ -58,8 +69,9 @@ pub use self::pe64 as pe;
 
 pub mod base_relocs;
 
-#[cfg(any(feature = "std", feature = "resources_nostd"))]
+#[cfg(all(feature = "alloc", feature = "std"))]
 pub mod resources;
+
 pub mod rich_structure;
 pub mod security;
 pub mod strings;

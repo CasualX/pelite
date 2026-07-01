@@ -2,9 +2,15 @@
 PE view.
 */
 
-use std::prelude::v1::*;
+use core::prelude::v1::*;
 
-use std::{cmp, slice};
+use core::{cmp, slice};
+
+#[cfg(feature = "alloc")]
+use alloc::vec::Vec;
+
+#[cfg(feature = "alloc")]
+use alloc::vec;
 
 use crate::Result;
 
@@ -88,8 +94,11 @@ impl<'a> PeView<'a> {
 			base_address: base as Va,
 		}
 	}
+
 	/// Converts the view to file alignment.
-	pub fn to_file(self) -> Vec<u8> {
+	#[cfg(feature = "alloc")]
+	pub fn to_vec(self) -> Vec<u8> {
+
 		let (sizeof_headers, sizeof_image) = {
 			let optional_header = self.optional_header();
 			(optional_header.SizeOfHeaders, optional_header.SizeOfImage)
@@ -105,6 +114,46 @@ impl<'a> PeView<'a> {
 
 		// Zero fill the underlying file
 		let mut vec = vec![0u8; file_size as usize];
+
+		// Start by copying the headers
+		let image = self.image();
+		unsafe {
+			// Validated by constructor
+			let dest_headers = vec.get_unchecked_mut(..sizeof_headers as usize);
+			let src_headers = image.get_unchecked(..sizeof_headers as usize);
+			dest_headers.copy_from_slice(src_headers);
+		}
+
+		// Copy the section image data
+		for section in self.section_headers() {
+			let dest = vec.get_mut(section.PointerToRawData as usize..u32::wrapping_add(section.PointerToRawData, section.SizeOfRawData) as usize);
+			let src = image.get(section.VirtualAddress as usize..u32::wrapping_add(section.VirtualAddress, section.VirtualSize) as usize);
+			// Skip invalid sections...
+			if let (Some(dest), Some(src)) = (dest, src) {
+				dest.copy_from_slice(src);
+			}
+		}
+
+		vec
+	}
+
+	pub fn to_vec_fixed<const N: usize>(self) -> heapless::Vec<u8, N> {
+
+		let (sizeof_headers, sizeof_image) = {
+			let optional_header = self.optional_header();
+			(optional_header.SizeOfHeaders, optional_header.SizeOfImage)
+		};
+
+		// Figure out the size of the file image
+		let mut file_size = sizeof_headers;
+		for section in self.section_headers() {
+			file_size = cmp::max(file_size, u32::wrapping_add(section.PointerToRawData, section.SizeOfRawData));
+		}
+		// Clamp to the actual image size...
+		file_size = cmp::min(file_size, sizeof_image);
+
+		// Zero fill the underlying file
+		let mut vec = heapless::Vec::new();
 
 		// Start by copying the headers
 		let image = self.image();
@@ -155,7 +204,7 @@ unsafe impl<'a> PeObject<'a> for PeView<'a> {
 
 #[cfg(feature = "serde")]
 impl<'a> serde::Serialize for PeView<'a> {
-	fn serialize<S: serde::Serializer>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error> {
+	fn serialize<S: serde::Serializer>(&self, serializer: S) -> core::result::Result<S::Ok, S::Error> {
 		super::pe::serialize_pe(*self, serializer)
 	}
 }

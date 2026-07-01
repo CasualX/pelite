@@ -2,8 +2,8 @@
 Typed virtual address.
 */
 
-use std::marker::PhantomData;
-use std::{cmp, fmt, hash, mem, str};
+use core::marker::PhantomData;
+use core::{cmp, fmt, hash, mem, str};
 
 use crate::Pod;
 

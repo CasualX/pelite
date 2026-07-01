@@ -2,6 +2,8 @@
 Analyzing strings in binary data.
  */
 
+use heapless::Vec;
+
 #[derive(Copy, Clone, Debug)]
 pub enum Heuristic {
 	/// Printable ascii heuristic.
@@ -120,7 +122,7 @@ impl<'a> Iterator for Enumerator<'a> {
 #[test]
 fn testing() {
 	let bytes = b"\x1fC-STRING\0\x80\x81AAAAAAAAAA\xff";
-	let strings: Vec<_> = Config {
+	let strings: heapless::Vec<_, 64> = Config {
 		strict_nul: false,
 		..Config::default()
 	}
@@ -128,7 +130,7 @@ fn testing() {
 	.collect();
 	assert_eq!(
 		strings,
-		vec![
+		[
 			Found {
 				string: b"C-STRING",
 				address: 0x1000 + 1,

@@ -28,8 +28,11 @@ pub(crate) fn try_from<'a, P: Pe<'a>>(pe: P) -> Result<Security<'a>> {
 	Ok(unsafe { Security::new(image) })
 }
 
+#[cfg(feature = "alloc")]
 #[cfg(test)]
 pub(crate) fn test<'a, P: Pe<'a>>(pe: P) -> Result<()> {
+    use alloc::format;
+
 	let security = pe.security()?;
 	let _ = format!("{:?}", security);
 	let _certificate_type = security.certificate_type();

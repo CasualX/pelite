@@ -24,6 +24,7 @@ fn example<'a>(file: PeFile<'a>) -> Result<&'a [u8], FindError> {
 ```
 */
 
+#[cfg(all(feature = "alloc", feature = "std"))]
 #[cfg(test)]
 pub(crate) fn test<'a, P: super::Pe<'a>>(pe: P) -> crate::Result<()> {
 	pe.resources().and_then(crate::resources::test)

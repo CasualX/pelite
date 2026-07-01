@@ -244,6 +244,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 			Wrap::T64(pe64) => pe64.security(),
 		}
 	}
+
 	#[inline]
 	pub fn exception(&self) -> Result<Wrap<pe32::exception::Exception<'a, Pe32>, pe64::exception::Exception<'a, Pe64>>> {
 		match self {
@@ -251,6 +252,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 			Wrap::T64(pe64) => pe64.exception().map(Wrap::T64),
 		}
 	}
+
 	#[inline]
 	pub fn debug(&self) -> Result<Wrap<pe32::debug::Debug<'a, Pe32>, pe64::debug::Debug<'a, Pe64>>> {
 		match self {
@@ -258,14 +260,17 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 			Wrap::T64(pe64) => pe64.debug().map(Wrap::T64),
 		}
 	}
+
 	#[inline]
-	#[cfg(any(feature = "std", feature = "resources_nostd"))]
+	#[cfg(all(any(feature = "std", feature = "resources_nostd"), feature = "alloc"))]
 	pub fn resources(&self) -> Result<crate::resources::Resources<'a>> {
 		match self {
 			Wrap::T32(pe32) => pe32.resources(),
 			Wrap::T64(pe64) => pe64.resources(),
 		}
 	}
+	
+	#[cfg(feature = "scanner")]
 	#[inline]
 	pub fn scanner(&self) -> Wrap<pe32::scanner::Scanner<Pe32>, pe64::scanner::Scanner<Pe64>> {
 		match self {

@@ -1,7 +1,7 @@
 // Provide implementations for image GUID here
 // FIXME! Should I keep this GUID implementation or defer to another GUID library?
 
-use std::fmt;
+use core::fmt;
 
 use crate::image::GUID;
 
@@ -29,10 +29,12 @@ fn lower_dashed(guid: &GUID, f: &mut fmt::Formatter) -> fmt::Result {
 // 	let (g1, g2, g3, g4, g5) = group(guid);
 // 	write!(f, "{{{:08X}-{:04X}-{:04X}-{:04X}-{:012X}}}", g1, g2, g3, g4, g5)
 // }
+
 fn lower_hex(guid: &GUID, f: &mut fmt::Formatter) -> fmt::Result {
 	let (g1, g2, g3, g4, g5) = group(guid);
 	write!(f, "{:08x}{:04x}{:04x}{:04x}{:012x}", g1, g2, g3, g4, g5)
 }
+
 fn upper_hex(guid: &GUID, f: &mut fmt::Formatter) -> fmt::Result {
 	let (g1, g2, g3, g4, g5) = group(guid);
 	write!(f, "{:08X}{:04X}{:04X}{:04X}{:012X}", g1, g2, g3, g4, g5)
@@ -44,18 +46,21 @@ impl fmt::Display for GUID {
 		lower_dashed(self, f)
 	}
 }
+
 /// example: `{00000000-0000-0000-c000-000000000046}`
 impl fmt::Debug for GUID {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		lower_dashed(self, f)
 	}
 }
+
 /// example: `0000000000000000c000000000000046`
 impl fmt::LowerHex for GUID {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		lower_hex(self, f)
 	}
 }
+
 /// example: `0000000000000000C000000000000046`
 impl fmt::UpperHex for GUID {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -65,7 +70,7 @@ impl fmt::UpperHex for GUID {
 
 #[cfg(feature = "serde")]
 impl serde::Serialize for GUID {
-	fn serialize<S: serde::Serializer>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error> {
+	fn serialize<S: serde::Serializer>(&self, serializer: S) -> core::result::Result<S::Ok, S::Error> {
 		serializer.collect_str(self)
 	}
 }

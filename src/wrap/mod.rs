@@ -1,4 +1,4 @@
-use std::{fmt, mem, ops, slice, str};
+use core::{fmt, mem, ops, slice, str};
 
 use crate::{image, pattern, pe32, pe64, rich_structure, Result, Error};
 use crate::util::{CStr, FromBytes};
@@ -65,14 +65,21 @@ mod headers;
 pub(crate) mod imports;
 mod load_config;
 mod pe;
+
+#[cfg(feature = "scanner")]
 mod scanner;
+
 pub(crate) mod sections;
 mod tls;
+
+#[cfg(feature = "alloc")]
 mod view;
 
 pub use self::file::PeFile;
 pub(crate) use self::pe::get_section_bytes;
 pub use self::pe::Align;
+
+#[cfg(feature = "alloc")]
 pub use self::view::PeView;
 
 pub use self::imports::Import;

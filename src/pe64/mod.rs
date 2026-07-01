@@ -133,16 +133,23 @@ mod pe;
 mod ptr;
 pub mod resources;
 pub(crate) mod rich_structure;
+
+#[cfg(feature = "scanner")]
 pub mod scanner;
+
 pub(crate) mod security;
 pub mod tls;
+
+#[cfg(feature = "alloc")]
 mod view;
 
-pub use self::file::PeFile;
-pub use self::image::{Rva, Va};
-pub use self::pe::{Align, Pe, PeObject};
-pub use self::ptr::Ptr;
-pub use self::view::PeView;
+pub use file::PeFile;
+pub use image::{Rva, Va};
+pub use pe::{Align, Pe, PeObject};
+pub use ptr::Ptr;
+
+#[cfg(feature = "alloc")]
+pub use view::PeView;
 
 #[cfg(feature = "unstable")]
-pub use self::pe::headers_mut;
+pub use pe::headers_mut;

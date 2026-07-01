@@ -22,7 +22,7 @@ fn example(file: PeFile<'_>) -> pelite::Result<()> {
 ```
 */
 
-use std::{fmt, iter, mem, slice};
+use core::{fmt, iter, mem, slice};
 
 use crate::util::AlignTo;
 use crate::util::CStr;
