@@ -14,10 +14,8 @@ pub(crate) fn try_from<'a, P: Pe<'a>>(pe: P) -> Result<BaseRelocs<'a>> {
 #[cfg(test)]
 pub(crate) fn test<'a, P: Pe<'a>>(pe: P) -> Result<()> {
 	let base_relocs = pe.base_relocs()?;
-	let _ = format!("{:?}", base_relocs);
 
 	let mut baseline = base_relocs.iter_blocks().flat_map(move |block| {
-		let _ = format!("{:?}", block);
 		block
 			.words()
 			.iter()

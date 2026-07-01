@@ -147,11 +147,16 @@ pub mod resources;
 #[path = "../pe64/rich_structure.rs"]
 pub(crate) mod rich_structure;
 #[path = "../pe64/scanner.rs"]
+
+#[cfg(feature = "scanner")]
 pub mod scanner;
+
 #[path = "../pe64/security.rs"]
 pub(crate) mod security;
 #[path = "../pe64/tls.rs"]
 pub mod tls;
+
+#[cfg(feature = "alloc")]
 #[path = "../pe64/view.rs"]
 mod view;
 
@@ -161,6 +166,8 @@ pub use self::file::PeFile;
 pub use self::image::{Rva, Va};
 pub use self::pe::{Align, Pe, PeObject};
 pub use self::ptr::Ptr;
+
+#[cfg(feature = "alloc")]
 pub use self::view::PeView;
 
 #[cfg(feature = "unstable")]

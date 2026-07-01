@@ -2,8 +2,8 @@
 Stringify image constants.
 */
 
-use std::mem;
-use std::str::FromStr;
+use core::mem;
+use core::str::FromStr;
 
 use crate::image::*;
 

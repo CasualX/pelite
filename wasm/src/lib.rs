@@ -9,7 +9,10 @@ use crate::wasm::*;
 mod base_relocs;
 mod headers;
 mod resources;
+
+#[cfg(feature = "scanner")]
 mod scanner;
+
 mod wasm;
 
 pub struct PeFile {

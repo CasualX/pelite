@@ -2,8 +2,11 @@
 Length word prefixed wide string.
 */
 
-use std::prelude::v1::*;
-use std::{char, fmt, mem, ops, slice};
+use core::prelude::v1::*;
+use core::{char, fmt, mem, ops, slice};
+
+#[cfg(feature = "alloc")]
+use alloc::string::String;
 
 use crate::util::FromBytes;
 
@@ -13,9 +16,7 @@ use crate::util::FromBytes;
 ///
 /// Used as the string format for file names by the PE resources.
 #[derive(Eq, PartialEq, Ord, PartialOrd, Hash)]
-pub struct WideStr {
-	words: [u16],
-}
+pub struct WideStr([u16]);
 
 impl WideStr {
 	pub fn from_str<'a>(s: &str, buffer: &'a mut [u16]) -> &'a WideStr {
@@ -28,12 +29,14 @@ impl WideStr {
 		buffer[0] = n;
 		unsafe { WideStr::from_words_unchecked(buffer) }
 	}
+	
 	/// Constructs the wide string from a length word prefixed word slice.
 	pub fn from_words(words: &[u16]) -> Option<&WideStr> {
 		let len = *words.get(0)? as usize + 1;
 		let words = words.get(0..len)?;
 		Some(unsafe { WideStr::from_words_unchecked(words) })
 	}
+
 	/// Interprets a word slice as a length word prefixed wide string.
 	///
 	/// # Safety
@@ -42,7 +45,9 @@ impl WideStr {
 	pub unsafe fn from_words_unchecked(words: &[u16]) -> &WideStr {
 		mem::transmute(words)
 	}
+	
 	/// Encodes the string as an UTF8 validated `String`.
+	#[cfg(feature = "alloc")]
 	pub fn to_string(&self) -> Result<String, char::DecodeUtf16Error> {
 		char::decode_utf16(self.as_ref().iter().cloned()).collect()
 	}
@@ -73,13 +78,13 @@ impl ops::Deref for WideStr {
 	type Target = [u16];
 	#[inline]
 	fn deref(&self) -> &[u16] {
-		unsafe { self.words.get_unchecked(1..) }
+		unsafe { self.0.get_unchecked(1..) }
 	}
 }
 impl AsRef<[u16]> for WideStr {
 	#[inline]
 	fn as_ref(&self) -> &[u16] {
-		unsafe { self.words.get_unchecked(1..) }
+		unsafe { self.0.get_unchecked(1..) }
 	}
 }
 
@@ -139,12 +144,15 @@ impl serde::Serialize for WideStr {
 }
 
 //----------------------------------------------------------------
-
+#[cfg(feature = "alloc")]
 #[cfg(test)]
 mod tests {
-	use std::{char, slice};
+	use core::{char, slice};
 
-	use crate::util::FromBytes;
+	use alloc::format;
+use heapless::CString;
+
+use crate::util::FromBytes;
 
 	use super::WideStr;
 
@@ -155,7 +163,8 @@ mod tests {
 	#[test]
 	fn units() {
 		let wide_str = WideStr::from_words(&WIDE_STR).unwrap();
-		assert_eq!(wide_str.to_string(), Ok(String::from("STRING")));
+    	let cstring = CString::<5>::from_bytes_with_nul(b"STRING\0").unwrap();
+		assert_eq!(wide_str.to_string().unwrap().as_str(), cstring.to_str().unwrap());
 		assert_eq!(wide_str.len(), 6);
 		assert_eq!(wide_str.as_ref(), &WIDE_STR[1..]);
 	}

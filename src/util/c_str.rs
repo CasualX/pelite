@@ -2,7 +2,7 @@
 Nul-terminated C string.
 */
 
-use std::{cmp, fmt, mem, ops, str};
+use core::{cmp, fmt, mem, ops, str};
 
 use crate::util::{split_f, FromBytes};
 
@@ -10,9 +10,7 @@ use crate::util::{split_f, FromBytes};
 
 /// Nul-terminated C string.
 #[derive(Eq, Ord, Hash)]
-pub struct CStr {
-	bytes: [u8],
-}
+pub struct CStr([u8]);
 
 impl CStr {
 	/// Returns the empty nul-terminated C string.
@@ -50,7 +48,7 @@ impl CStr {
 	}
 	/// Gets the C string as a nul terminated byte slice.
 	pub fn c_str(&self) -> &[u8] {
-		&self.bytes
+		&self.0
 	}
 	/// Casts the C string to an UTF8 validated `str`.
 	pub fn to_str(&self) -> Result<&str, str::Utf8Error> {
@@ -90,8 +88,8 @@ impl ops::Deref for CStr {
 impl AsRef<[u8]> for CStr {
 	fn as_ref(&self) -> &[u8] {
 		// Strip the nul byte
-		let len = self.bytes.len() - 1;
-		unsafe { self.bytes.get_unchecked(..len) }
+		let len = self.0.len() - 1;
+		unsafe { self.0.get_unchecked(..len) }
 	}
 }
 
@@ -181,17 +179,20 @@ impl serde::Serialize for CStr {
 
 //----------------------------------------------------------------
 
+#[cfg(feature = "alloc")]
 #[cfg(test)]
 mod tests {
+	use alloc::format;
 	use super::CStr;
 
 	#[test]
 	fn from_bytes() {
-		assert_eq!(CStr::from_bytes(b"this is a c str\0").unwrap().c_str(), b"this is a c str\0");
-		assert_eq!(CStr::from_bytes(b"no nul terminator"), None);
-		assert_eq!(CStr::from_bytes(b"valid utf8\0").unwrap().to_str(), Ok("valid utf8"));
-		assert_eq!(CStr::from_bytes(b"length is eighteen\0").unwrap().len(), 18);
-		assert_eq!(CStr::from_bytes(b"length is eighteen\0").unwrap().len(), 18);
+		unsafe {
+			assert_eq!(CStr::from_bytes_unchecked(b"this is a c str\0").c_str(), b"this is a c str\0");
+			assert_eq!(CStr::from_bytes(b"no nul terminator"), None);
+			assert_eq!(CStr::from_bytes_unchecked(b"valid utf8\0").to_str(), Ok("valid utf8"));
+			assert_eq!(CStr::from_bytes_unchecked(b"length is eighteen\0").len(), 18);
+		}
 	}
 
 	#[test]

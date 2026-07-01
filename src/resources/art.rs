@@ -1,4 +1,6 @@
-use std::fmt;
+use core::fmt;
+
+use crate::resources::types::RSRC_TYPES;
 
 use super::{Directory, Entry, Resources};
 
@@ -12,6 +14,7 @@ struct Art {
 	file_entry: &'static str,
 	file_tail: &'static str,
 }
+
 /// Uses [box-drawing characters](https://en.wikipedia.org/wiki/Box-drawing_character) to draw the tree art.
 #[rustfmt::skip]
 static U: Art = Art {
@@ -22,6 +25,7 @@ static U: Art = Art {
 	file_entry:  "├── ",
 	file_tail:   "└── ",
 };
+
 /// Uses ascii to draw the tree art.
 #[rustfmt::skip]
 static A: Art = Art {
@@ -47,7 +51,9 @@ struct TreeFmt<'a: 'd, 'd> {
 	depth: u32,
 	margin: u32,
 }
+
 impl<'a, 'd> TreeFmt<'a, 'd> {
+
 	fn root(root: &'d Directory<'a>, art: TreeArt) -> TreeFmt<'a, 'd> {
 		let art = match art {
 			TreeArt::Ascii => &A,
@@ -55,6 +61,7 @@ impl<'a, 'd> TreeFmt<'a, 'd> {
 		};
 		TreeFmt { dir: root, art, depth: !0, margin: 0 }
 	}
+
 	fn dir(dir: &'d Directory<'a>, art: TreeArt) -> TreeFmt<'a, 'd> {
 		let art = match art {
 			TreeArt::Ascii => &A,
@@ -78,6 +85,7 @@ impl<'a, 'd> TreeFmt<'a, 'd> {
 			for open in (0..depth).map(|i| self.margin & (1 << i) != 0) {
 				f.write_str(if open { self.art.margin_open } else { self.art.margin_draw })?;
 			}
+
 			// Write the prefix
 			let tail = entries.len() == 0;
 			let prefix = match (tail, e.is_dir()) {
@@ -86,10 +94,11 @@ impl<'a, 'd> TreeFmt<'a, 'd> {
 				(false, true) => self.art.dir_entry,
 				(true, true) => self.art.dir_tail,
 			};
+
 			f.write_str(prefix)?;
 			// Print the file_name
 			match e.name() {
-				Ok(name) => write!(f, "{}", name.rename_id(if root { &super::RSRC_TYPES } else { &[] })),
+				Ok(name) => write!(f, "{}", name.rename_id(if root { &RSRC_TYPES } else { &[] })),
 				Err(err) => write!(f, "{}", err),
 			}
 			.and_then(|_| f.write_str(if e.is_dir() { "/\n" } else { "\n" }))?;
@@ -104,6 +113,7 @@ impl<'a, 'd> TreeFmt<'a, 'd> {
 				.draw(f)?;
 			}
 		}
+
 		Ok(())
 	}
 }

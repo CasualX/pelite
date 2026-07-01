@@ -2,8 +2,8 @@
 Exception Directory.
 */
 
-use std::cmp::Ordering;
-use std::{fmt, iter, mem, slice};
+use core::cmp::Ordering;
+use core::{fmt, iter, mem, slice};
 
 use crate::{Error, Result};
 
@@ -59,7 +59,7 @@ impl<'a, P: Pe<'a>> Exception<'a, P> {
 		self.image.iter().map(move |image| Function { pe, image })
 	}
 	/// Finds the index of the function for the given program counter.
-	pub fn index_of(&self, pc: Rva) -> std::result::Result<usize, usize> {
+	pub fn index_of(&self, pc: Rva) -> core::result::Result<usize, usize> {
 		self.image.binary_search_by(|rf| {
 			if pc < rf.BeginAddress {
 				Ordering::Less
@@ -202,12 +202,10 @@ impl<'a, P: Pe<'a>> fmt::Debug for UnwindInfo<'a, P> {
 #[cfg(test)]
 pub(crate) fn test<'a, P: Pe<'a>>(pe: P) -> Result<()> {
 	let exception = pe.exception()?;
-	let _ = format!("{:?}", exception);
 
 	let sorted = exception.check_sorted();
 
 	for (index, function) in exception.functions().enumerate() {
-		let _ = format!("{:?}", function);
 		let _bytes = function.bytes();
 
 		if sorted {
@@ -217,7 +215,6 @@ pub(crate) fn test<'a, P: Pe<'a>>(pe: P) -> Result<()> {
 		}
 
 		if let Ok(unwind_info) = function.unwind_info() {
-			let _ = format!("{:?}", unwind_info);
 			let _version = unwind_info.version();
 			let _flags = unwind_info.flags();
 			let _size_of_prolog = unwind_info.size_of_prolog();

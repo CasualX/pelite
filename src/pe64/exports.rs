@@ -53,7 +53,7 @@ fn example(file: PeFile<'_>) -> pelite::Result<()> {
 ```
 */
 
-use std::{fmt, ops};
+use core::{fmt, ops};
 
 use crate::util::CStr;
 use crate::{Error, Result};
@@ -264,7 +264,7 @@ impl<'a, P: Pe<'a>> By<'a, P> {
 			let i = lower_bound + (upper_bound - lower_bound) / 2;
 			let name_rva = self.names[i];
 			let name_it = self.exp.pe.derva_c_str(name_rva)?.as_ref();
-			use std::cmp::Ordering::*;
+			use core::cmp::Ordering::*;
 			match name.cmp(name_it) {
 				Less => upper_bound = i,
 				Greater => lower_bound = i + 1,
@@ -447,11 +447,11 @@ mod serde {
 }
 
 //----------------------------------------------------------------
-
 #[cfg(test)]
 pub(crate) fn test<'a, P: Pe<'a>>(pe: P) -> Result<()> {
+    use heapless::index_map::FnvIndexMap;
+
 	let by = pe.exports()?.by()?;
-	let _ = format!("{:?}", by);
 
 	let _dll_name = by.dll_name();
 	let _ordinal_base = by.ordinal_base();
@@ -460,11 +460,11 @@ pub(crate) fn test<'a, P: Pe<'a>>(pe: P) -> Result<()> {
 	let sorted = by.check_sorted()?;
 
 	// Count occurances of each export name
-	use std::collections::HashMap;
-	let mut occurances = HashMap::<_, i32>::new();
+	let mut occurrences = FnvIndexMap::<&str, i32, 16>::new();
 	for (name, _) in by.iter_names() {
 		if let Ok(name) = name {
-			*occurances.entry(name).or_default() += 1;
+			let key = name.to_str().unwrap();
+			*occurrences.entry(key).or_insert(0).unwrap() += 1;
 		}
 	}
 
@@ -476,7 +476,7 @@ pub(crate) fn test<'a, P: Pe<'a>>(pe: P) -> Result<()> {
 
 		if let Ok(name) = name {
 			// Only do some name lookups if the export is actually unique
-			let unique = occurances[name] == 1;
+			let unique = occurrences[name.to_str().unwrap()] == 1;
 
 			// Lookup the export by its name
 			if unique {

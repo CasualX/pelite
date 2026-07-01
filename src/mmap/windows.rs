@@ -18,6 +18,7 @@ pub struct ImageMap {
 	handle: HANDLE,
 	bytes: *mut [u8],
 }
+
 impl ImageMap {
 	/// Maps the executable image into memory with correctly aligned sections.
 	pub fn open<P: AsRef<Path> + ?Sized>(path: &P) -> io::Result<ImageMap> {
@@ -58,16 +59,19 @@ impl ImageMap {
 		Err(io::Error::last_os_error())
 	}
 }
+
 impl AsRawHandle for ImageMap {
 	fn as_raw_handle(&self) -> RawHandle {
 		self.handle as RawHandle
 	}
 }
+
 impl AsRef<[u8]> for ImageMap {
 	fn as_ref(&self) -> &[u8] {
 		unsafe { &*self.bytes }
 	}
 }
+
 impl Drop for ImageMap {
 	fn drop(&mut self) {
 		unsafe {
@@ -84,6 +88,7 @@ pub struct FileMap {
 	handle: HANDLE,
 	bytes: *mut [u8],
 }
+
 impl FileMap {
 	/// Maps the whole file into memory.
 	pub fn open<P: AsRef<Path> + ?Sized>(path: &P) -> io::Result<FileMap> {
@@ -123,16 +128,19 @@ impl FileMap {
 		Ok(FileMap { handle: map, bytes })
 	}
 }
+
 impl AsRawHandle for FileMap {
 	fn as_raw_handle(&self) -> RawHandle {
 		self.handle as RawHandle
 	}
 }
+
 impl AsRef<[u8]> for FileMap {
 	fn as_ref(&self) -> &[u8] {
 		unsafe { &*self.bytes }
 	}
 }
+
 impl Drop for FileMap {
 	fn drop(&mut self) {
 		unsafe {

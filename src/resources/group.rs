@@ -40,10 +40,17 @@ for (name, group) in resources.icons().filter_map(Result::ok) {
 
  */
 
-#[cfg(feature = "std")]
-use std::io;
-use std::prelude::v1::*;
-use std::{fmt, mem, slice};
+use core::prelude::v1::*;
+use core::{fmt, mem, slice};
+
+#[cfg(feature = "alloc")]
+use alloc::boxed::Box;
+
+#[cfg(feature = "alloc")]
+use alloc::vec::Vec;
+
+#[cfg(not(feature = "alloc"))]
+use heapless::Vec;
 
 use crate::util::AlignTo;
 use crate::Error;
@@ -60,6 +67,7 @@ pub enum ResourceType {
 	Icon,
 	Cursor,
 }
+
 impl ResourceType {
 	#[inline]
 	pub fn id(self) -> u16 {
@@ -69,6 +77,7 @@ impl ResourceType {
 		}
 	}
 }
+
 impl<'a> From<ResourceType> for super::Name<'a> {
 	fn from(resource_type: ResourceType) -> super::Name<'a> {
 		resource_type.id().into()
@@ -81,7 +90,9 @@ pub struct GroupResource<'a> {
 	resources: Resources<'a>,
 	image: &'a GRPICONDIR,
 }
+
 impl<'a> GroupResource<'a> {
+
 	/// Parses the GroupResource from the byte slice.
 	///
 	/// The pixel data of the group resource is stored in separate data entries, requiring the resources to access.
@@ -102,10 +113,12 @@ impl<'a> GroupResource<'a> {
 		}
 		Ok(GroupResource { resources, image })
 	}
+
 	/// Gets the Group header.
 	pub fn header(&self) -> &'a GRPICONDIR {
 		self.image
 	}
+
 	/// Gets the Group entries.
 	pub fn entries(&self) -> &'a [GRPICONDIRENTRY] {
 		let len = self.image.idCount as usize;
@@ -115,6 +128,7 @@ impl<'a> GroupResource<'a> {
 			slice::from_raw_parts(ptr, len)
 		}
 	}
+
 	/// Gets the Group resource type.
 	pub fn ty(&self) -> ResourceType {
 		match self.image.idType {
@@ -123,38 +137,68 @@ impl<'a> GroupResource<'a> {
 			_ => unreachable!(), // Checked by constructor
 		}
 	}
+
 	/// Gets the image data for the given icon id.
 	pub fn image(&self, id: u16) -> Result<&'a [u8], FindError> {
-		self.resources.root()?.get_dir(self.ty().into())?.get_dir(id.into())?.first_data()?.bytes().map_err(FindError::Pe)
+		let root = self.resources.root()?;
+
+		let name: super::Name<'_> = self.ty().into();
+		let dir = root.get_dir(name)?;
+
+		let sub_dir = dir.get_dir(id.into())?;
+		
+		sub_dir.first_data()?.bytes().map_err(FindError::Pe)
 	}
-	/// Reassemble the file.
-	#[cfg(feature = "std")]
-	pub fn write(&self, dest: &mut dyn io::Write) -> io::Result<()> {
-		// Start by appending the header
-		dest.write(dataview::bytes(self.image))?;
-		// Write all the icon entries
+
+	#[cfg(feature = "alloc")]
+	pub fn to_ico_bytes(&self) -> core::result::Result<Vec<u8>, Box<dyn core::error::Error>> {
+		let mut buffer = Vec::new();
+
+		buffer.extend_from_slice(dataview::bytes(self.image));
+
 		let entries = self.entries();
 		let mut image_offset = (6 + entries.len() * 16) as u32;
 		for entry in entries {
-			// Fixup the dwImageOffset field of the icon entry
-			// NOTE! It is expected that the actual icon data size matches dwBytesInRes information!
 			let mut icon_entry = [0u32; 4];
 			dataview::bytes_mut(&mut icon_entry)[..14].copy_from_slice(dataview::bytes(entry));
 			icon_entry[3] = image_offset;
 			image_offset += entry.bytes_in_resource();
-			dest.write(dataview::bytes(&icon_entry))?;
+			buffer.extend_from_slice(dataview::bytes(&icon_entry));
 		}
-		// Append the bytes for every entry
+		
 		for entry in entries {
-			// Find the Icon data and append it
-			// FIXME! What do if dwBytesInRes does not match the icon data size?
-			// Ignoring this check may lead to corrupt icon files
 			if let Ok(bytes) = self.image(entry.nId) {
-				// assert_eq!(entry.bytes_in_resource() as usize, bytes.len());
-				dest.write(bytes)?;
+				buffer.extend_from_slice(bytes);
 			}
 		}
-		Ok(())
+
+		Ok(buffer)
+	}
+
+	// #[cfg(not(feature = "alloc"))]
+	pub fn to_ico_bytes_fixed<const N: usize>(&self) -> core::result::Result<heapless::Vec<u8, N>, core::convert::Infallible> {
+		
+		let mut buffer = heapless::Vec::new();
+
+		buffer.extend_from_slice(dataview::bytes(self.image));
+
+		let entries = self.entries();
+		let mut image_offset = (6 + entries.len() * 16) as u32;
+		for entry in entries {
+			let mut icon_entry = [0u32; 4];
+			dataview::bytes_mut(&mut icon_entry)[..14].copy_from_slice(dataview::bytes(entry));
+			icon_entry[3] = image_offset;
+			image_offset += entry.bytes_in_resource();
+			buffer.extend_from_slice(dataview::bytes(&icon_entry));
+		}
+		
+		for entry in entries {
+			if let Ok(bytes) = self.image(entry.nId) {
+				buffer.extend_from_slice(bytes);
+			}
+		}
+
+		Ok(buffer)
 	}
 }
 
@@ -168,11 +212,13 @@ impl fmt::Debug for GroupResource<'_> {
 	}
 }
 
-#[cfg(feature = "serde")]
+#[cfg(all(feature = "serde", feature = "alloc"))]
 impl serde::Serialize for GroupResource<'_> {
 	fn serialize<S: serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-		let mut bytes = Vec::new();
-		mem::forget(self.write(&mut bytes));
+
+		let bytes = self.to_ico_bytes()
+			.map_err(|e| serde::ser::Error::custom("failed to serialize ICO"))?;
+
 		#[cfg(feature = "data-encoding")]
 		if serializer.is_human_readable() {
 			return serializer.serialize_str(&data_encoding::BASE64.encode(&bytes));
@@ -191,6 +237,7 @@ pub type GroupCursor<'a> = GroupResource<'a>;
 #[allow(non_snake_case)]
 pub mod image {
 	use crate::Pod;
+
 	#[derive(Copy, Clone, Debug)]
 	#[repr(C)]
 	pub struct GRPICONDIR {
@@ -199,6 +246,7 @@ pub mod image {
 		pub idCount: u16,
 		pub idEntries: [GRPICONDIRENTRY; 0],
 	}
+
 	#[derive(Copy, Clone, Debug)]
 	#[repr(C)]
 	pub struct GRPICONDIRENTRY {
@@ -212,11 +260,13 @@ pub mod image {
 		pub dwBytesInResHi: u16,
 		pub nId: u16,
 	}
+
 	impl GRPICONDIRENTRY {
 		pub fn bytes_in_resource(&self) -> u32 {
 			self.dwBytesInResHi as u32 * 0x10000 + self.dwBytesInResLo as u32
 		}
 	}
+	
 	unsafe impl Pod for GRPICONDIR {}
 	unsafe impl Pod for GRPICONDIRENTRY {}
 }

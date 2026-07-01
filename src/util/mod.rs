@@ -2,7 +2,7 @@
 Utilities and other tidbits.
 */
 
-use std::prelude::v1::*;
+use core::prelude::v1::*;
 
 mod align;
 mod c_str;
@@ -12,6 +12,9 @@ mod wide_str;
 
 #[cfg(feature = "serde")]
 pub(crate) mod serde_helper;
+
+#[cfg(feature = "alloc")]
+use alloc::vec::Vec;
 
 pub use self::c_str::CStr;
 // pub use self::wide_str::WideStr;
@@ -75,7 +78,7 @@ pub(crate) fn trimn(buf: &[u8]) -> &[u8] {
 
 /// Parses an optionally nul-terminated string from byte buffer.
 pub(crate) fn parsen(buf: &[u8]) -> Result<&str, &[u8]> {
-	std::str::from_utf8(trimn(buf)).map_err(|_| buf)
+	core::str::from_utf8(trimn(buf)).map_err(|_| buf)
 }
 
 /// Reads an optionally nul-terminated wide char string from buffer.
@@ -130,11 +133,22 @@ pub fn shannon_entropy(data: &[u8]) -> f64 {
 ///
 /// The underlying Vec is only extended once the callable returns without panicking.
 /// If the callable panics, any already initialised elements are lost and leaked.
+#[cfg(feature = "alloc")]
 pub(crate) unsafe fn extend_in_place<'a, T, F: FnMut(&'a mut [T])>(vec: &'a mut Vec<T>, additional: usize, mut f: F) {
 	let vec_len = vec.len();
 	if vec_len + additional > vec.capacity() {
 		vec.reserve(additional);
 	}
-	f(std::slice::from_raw_parts_mut(vec.as_mut_ptr().offset(vec_len as isize), additional));
+	f(core::slice::from_raw_parts_mut(vec.as_mut_ptr().offset(vec_len as isize), additional));
 	vec.set_len(vec_len + additional);
 }
+
+pub(crate) unsafe fn extend_in_place_fixed<'a, T, F: FnMut(&'a mut [T]), const N: usize>(
+	vec: &'a mut heapless::Vec<T, N>,
+	additional: usize, mut f: F
+) {
+	let vec_len = vec.len();
+	f(core::slice::from_raw_parts_mut(vec.as_mut_ptr().offset(vec_len as isize), additional));
+	vec.set_len(vec_len + additional);
+}
+

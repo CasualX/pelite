@@ -11,7 +11,7 @@ Rich Structure.
 // * http://bytepointer.com/articles/rich_header_lifewire_vxmags_29A-8.009.htm
 // * https://pdfs.semanticscholar.org/44ad/fa896e6598b1723507060126125a0cad39a1.pdf
 
-use std::{fmt, iter, mem, result};
+use core::{fmt, iter, mem, result};
 
 use crate::{Error, Result};
 
@@ -32,6 +32,7 @@ pub struct RichStructure<'a> {
 	dos_stub: &'a [u32],
 	image: &'a [u32],
 }
+
 impl<'a> RichStructure<'a> {
 	pub(crate) fn try_from(image: &'a [u32]) -> Result<RichStructure<'a>> {
 		// Read as a slice of dwords up until the PE headers
@@ -77,16 +78,19 @@ impl<'a> RichStructure<'a> {
 
 		Ok(RichStructure { dos_stub, image })
 	}
+
 	/// Returns the Rich image without the padding.
 	pub fn image(&self) -> &'a [u32] {
 		self.image
 	}
+
 	/// Calculate the checksum.
 	///
 	/// The checksum should be equal to the xor key.
 	pub fn checksum(&self) -> u32 {
 		Self::_checksum(self.dos_stub, self.records())
 	}
+
 	fn _checksum<I: Iterator<Item = RichRecord>>(dos_stub: &[u32], records: I) -> u32 {
 		let mut csum = mem::size_of_val(dos_stub) as u32;
 
@@ -109,16 +113,19 @@ impl<'a> RichStructure<'a> {
 
 		csum
 	}
+
 	/// Gets the xor key.
 	pub fn xor_key(&self) -> u32 {
 		self.image[1]
 	}
+
 	/// Gets the records.
 	pub fn records(&self) -> RichIter<'a> {
 		let iter = &self.image[4..self.image.len() - 2];
 		let key = self.xor_key();
 		RichIter { iter, key }
 	}
+
 	/// Encodes a new set of records.
 	///
 	/// If the destination does not have the right len, returns Err with the right len.
@@ -156,6 +163,7 @@ impl<'a> RichStructure<'a> {
 		}
 	}
 }
+
 #[rustfmt::skip]
 impl<'a> fmt::Debug for RichStructure<'a> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -180,6 +188,7 @@ pub struct RichRecord {
 	pub product: u16,
 	pub count: u32,
 }
+
 impl RichRecord {
 	/// Decodes the record with the given key.
 	pub fn decode(key: u32, values: &[u32; 2]) -> RichRecord {

@@ -26,7 +26,7 @@ fn example(file: PeFile<'_>) -> pelite::Result<()> {
 ```
 */
 
-use std::fmt;
+use core::fmt;
 
 use crate::{Error, Result};
 
@@ -110,9 +110,11 @@ mod serde {
 }
 
 //----------------------------------------------------------------
-
+#[cfg(feature = "alloc")]
 #[cfg(test)]
 pub(crate) fn test<'a, P: Pe<'a>>(pe: P) -> Result<()> {
+    use alloc::format;
+
 	let tls = pe.tls()?;
 	let _ = format!("{:?}", tls);
 	let _raw_data = tls.raw_data();
