@@ -607,8 +607,14 @@ fn parse_tlv<'a>(state: &mut Parser<'a>) -> Result<TLV<'a>> {
 		return Err(Error::Invalid);
 	}
 
-	// Padding for the Value
-	words = &words[key.len().align_to(2) + 4..];
+	// Padding for the Value. When the declared length is odd, aligning the key up
+	// to a 32-bit boundary can push this offset one past the end of the node, so
+	// bound it instead of slicing unchecked (which panics on malformed input).
+	let value_start = key.len().align_to(2) + 4;
+	if value_start > words.len() {
+		return Err(Error::Invalid);
+	}
+	words = &words[value_start..];
 
 	// Split the remaining words between the Value and Children
 	if value_length > words.len() {
@@ -642,6 +648,13 @@ fn test_parse_tlv_oob() {
 
 	// TLV value field larger than the data
 	parser = Parser::new_zero(&[8, 10, 0, 0, 0, 0]);
+	assert_eq!(parser.next(), Some(Err(Error::Invalid)));
+	assert_eq!(parser.next(), None);
+
+	// TLV whose odd declared length makes the key's 32-bit alignment push the
+	// value offset one word past the node end. Previously sliced unchecked and
+	// panicked; must now report Invalid. (wLength=14 -> 7 words, key "ABC"+nul.)
+	parser = Parser::new_zero(&[14, 0, 1, 65, 66, 67, 0]);
 	assert_eq!(parser.next(), Some(Err(Error::Invalid)));
 	assert_eq!(parser.next(), None);
 }
