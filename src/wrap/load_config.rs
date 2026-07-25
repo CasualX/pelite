@@ -22,7 +22,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::load_config::LoadCon
 	}
 	/// Gets the default security cookie for the image.
 	#[inline]
-	pub fn security_cookie(&self) -> Result<&'a u32> {
+	pub fn security_cookie(&self) -> Result<&'a u64> {
 		match self {
 			Wrap::T32(load_config) => load_config.security_cookie(),
 			Wrap::T64(load_config) => load_config.security_cookie(),

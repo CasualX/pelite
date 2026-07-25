@@ -51,7 +51,7 @@ impl<'a, P: Pe<'a>> LoadConfig<'a, P> {
 		self.image
 	}
 	/// Gets the default security cookie for the image.
-	pub fn security_cookie(&self) -> Result<&'a u32> {
+	pub fn security_cookie(&self) -> Result<&'a u64> {
 		self.pe.deref(self.image.SecurityCookie.into())
 	}
 	/// Gets the structured exception handler table.
