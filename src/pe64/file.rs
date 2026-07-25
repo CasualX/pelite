@@ -4,6 +4,7 @@ PE file.
 
 use std::prelude::v1::*;
 
+use crate::util::AlignTo;
 use crate::Result;
 
 use super::pe::validate_headers;
@@ -41,9 +42,9 @@ impl<'a> PeFile<'a> {
 	}
 	/// Converts the file to section alignment.
 	pub fn to_view(self) -> Vec<u8> {
-		let (sizeof_headers, sizeof_image) = {
+		let (sizeof_headers, sizeof_image, section_alignment) = {
 			let optional_header = self.optional_header();
-			(optional_header.SizeOfHeaders, optional_header.SizeOfImage)
+			(optional_header.SizeOfHeaders, optional_header.SizeOfImage, optional_header.SectionAlignment)
 		};
 
 		// Zero fill the underlying image
@@ -60,11 +61,11 @@ impl<'a> PeFile<'a> {
 
 		// Copy the section file data
 		for section in self.section_headers() {
-			let dest = vec.get_mut(section.VirtualAddress as usize..u32::wrapping_add(section.VirtualAddress, section.VirtualSize) as usize);
+			let dest = vec.get_mut(section.VirtualAddress as usize..u32::wrapping_add(section.VirtualAddress, section.VirtualSize).align_to(section_alignment) as usize);
 			let src = image.get(section.PointerToRawData as usize..u32::wrapping_add(section.PointerToRawData, section.SizeOfRawData) as usize);
 			// Skip invalid sections...
 			if let (Some(dest), Some(src)) = (dest, src) {
-				dest.copy_from_slice(src);
+				dest[..src.len()].copy_from_slice(src);
 			}
 		}
 
