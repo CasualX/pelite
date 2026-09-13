@@ -91,9 +91,9 @@ mod serde {
 			let is_human_readable = serializer.is_human_readable();
 			let mut state = serializer.serialize_struct("Security", 2)?;
 			state.serialize_field("certificate_type", &self.certificate_type())?;
-			if cfg!(feature = "data-encoding") && is_human_readable {
-				#[cfg(feature = "data-encoding")]
-				state.serialize_field("certificate_data", &data_encoding::BASE64.encode(self.certificate_data()))?;
+			if cfg!(feature = "basenc") && is_human_readable {
+				#[cfg(feature = "basenc")]
+				state.serialize_field("certificate_data", &basenc::Base64Std.encode(self.certificate_data()))?;
 			}
 			else {
 				state.serialize_field("certificate_data", &self.certificate_data())?;

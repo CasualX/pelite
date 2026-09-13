@@ -5,7 +5,7 @@ Counter-Strike: Global Offensive
 
 macro_rules! tprint {
 	($($tt:tt)*) => {
-		print!("{}", format_xml::template!{$($tt)*});
+		format_xml::print! {$($tt)*}
 	};
 }
 
