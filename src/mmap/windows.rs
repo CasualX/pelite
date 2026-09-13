@@ -23,7 +23,7 @@ impl ImageMap {
 	pub fn open<P: AsRef<Path> + ?Sized>(path: &P) -> io::Result<ImageMap> {
 		unsafe { Self::_open(path.as_ref()) }
 	}
-	unsafe fn _open(path: &Path) -> io::Result<ImageMap> {
+	unsafe fn _open(path: &Path) -> io::Result<ImageMap> { unsafe {
 		// Get its file handle
 		let file = {
 			// Get the path as a nul terminated wide string
@@ -56,7 +56,7 @@ impl ImageMap {
 			}
 		}
 		Err(io::Error::last_os_error())
-	}
+	}}
 }
 impl AsRawHandle for ImageMap {
 	fn as_raw_handle(&self) -> RawHandle {
@@ -89,7 +89,7 @@ impl FileMap {
 	pub fn open<P: AsRef<Path> + ?Sized>(path: &P) -> io::Result<FileMap> {
 		unsafe { Self::_open(path.as_ref()) }
 	}
-	unsafe fn _open(path: &Path) -> io::Result<FileMap> {
+	unsafe fn _open(path: &Path) -> io::Result<FileMap> { unsafe {
 		// Get its file handle
 		let file = {
 			// Get the path as a nul terminated wide string
@@ -121,7 +121,7 @@ impl FileMap {
 		// Now have enough information to construct the FileMap
 		let bytes = ptr::slice_from_raw_parts_mut(view as *mut u8, mem_basic_info.RegionSize as usize);
 		Ok(FileMap { handle: map, bytes })
-	}
+	}}
 }
 impl AsRawHandle for FileMap {
 	fn as_raw_handle(&self) -> RawHandle {

@@ -624,32 +624,32 @@ pub(crate) fn serialize_pe<'a, P: Pe<'a>, S: serde::Serializer>(pe: P, serialize
 //----------------------------------------------------------------
 // Implementation helpers
 
-unsafe fn dos_header(image: &[u8]) -> &IMAGE_DOS_HEADER {
+unsafe fn dos_header(image: &[u8]) -> &IMAGE_DOS_HEADER { unsafe {
 	&*(image.as_ptr() as *const IMAGE_DOS_HEADER)
-}
-unsafe fn dos_image(image: &[u8]) -> &[u8] {
+}}
+unsafe fn dos_image(image: &[u8]) -> &[u8] { unsafe {
 	image.get_unchecked(..dos_header(image).e_lfanew as usize)
-}
-unsafe fn nt_headers(image: &[u8]) -> &IMAGE_NT_HEADERS {
+}}
+unsafe fn nt_headers(image: &[u8]) -> &IMAGE_NT_HEADERS { unsafe {
 	&*(image.as_ptr().offset(dos_header(image).e_lfanew as isize) as *const IMAGE_NT_HEADERS)
-}
-unsafe fn file_header(image: &[u8]) -> &IMAGE_FILE_HEADER {
+}}
+unsafe fn file_header(image: &[u8]) -> &IMAGE_FILE_HEADER { unsafe {
 	&nt_headers(image).FileHeader
-}
-pub(crate) unsafe fn optional_header(image: &[u8]) -> &IMAGE_OPTIONAL_HEADER {
+}}
+pub(crate) unsafe fn optional_header(image: &[u8]) -> &IMAGE_OPTIONAL_HEADER { unsafe {
 	&nt_headers(image).OptionalHeader
-}
-unsafe fn data_directory(image: &[u8]) -> &[IMAGE_DATA_DIRECTORY] {
+}}
+unsafe fn data_directory(image: &[u8]) -> &[IMAGE_DATA_DIRECTORY] { unsafe {
 	let opt = optional_header(image);
 	let len = cmp::min(opt.NumberOfRvaAndSizes as usize, IMAGE_NUMBEROF_DIRECTORY_ENTRIES);
 	slice::from_raw_parts(opt.DataDirectory.as_ptr(), len)
-}
-unsafe fn section_headers(image: &[u8]) -> &super::headers::SectionHeaders {
+}}
+unsafe fn section_headers(image: &[u8]) -> &super::headers::SectionHeaders { unsafe {
 	let nt = nt_headers(image);
 	let data = (&nt.OptionalHeader as *const _ as *const u8).offset(nt.FileHeader.SizeOfOptionalHeader as isize) as *const IMAGE_SECTION_HEADER;
 	let raw = slice::from_raw_parts(data, nt.FileHeader.NumberOfSections as usize);
 	super::headers::SectionHeaders::new(raw)
-}
+}}
 
 unsafe fn slice_section(image: &[u8], rva: Rva, min_size_of: usize, align_of: usize) -> Result<&[u8]> {
 	let start = rva as usize;
@@ -666,7 +666,7 @@ unsafe fn slice_section(image: &[u8], rva: Rva, min_size_of: usize, align_of: us
 		}
 	}
 }
-unsafe fn read_section(image: &[u8], image_base: Va, va: Va, min_size_of: usize, align_of: usize) -> Result<&[u8]> {
+unsafe fn read_section(image: &[u8], image_base: Va, va: Va, min_size_of: usize, align_of: usize) -> Result<&[u8]> { unsafe {
 	let image_size = optional_header(image).SizeOfImage;
 
 	if va == 0 {
@@ -687,9 +687,9 @@ unsafe fn read_section(image: &[u8], image_base: Va, va: Va, min_size_of: usize,
 			}
 		}
 	}
-}
+}}
 
-unsafe fn range_file(image: &[u8], rva: Rva, min_size_of: usize) -> Result<&[u8]> {
+unsafe fn range_file(image: &[u8], rva: Rva, min_size_of: usize) -> Result<&[u8]> { unsafe {
 	// This code has been carefully designed to avoid panicking on overflow
 	for it in section_headers(image) {
 		// Compare if rva is contained within the virtual address space of a section
@@ -712,9 +712,9 @@ unsafe fn range_file(image: &[u8], rva: Rva, min_size_of: usize) -> Result<&[u8]
 		}
 	}
 	Err(Error::Bounds)
-}
+}}
 #[inline(never)]
-unsafe fn slice_file(image: &[u8], rva: Rva, min_size_of: usize, align_of: usize) -> Result<&[u8]> {
+unsafe fn slice_file(image: &[u8], rva: Rva, min_size_of: usize, align_of: usize) -> Result<&[u8]> { unsafe {
 	if rva == 0 {
 		return Err(Error::Null);
 	}
@@ -726,9 +726,9 @@ unsafe fn slice_file(image: &[u8], rva: Rva, min_size_of: usize, align_of: usize
 	}
 
 	Ok(bytes)
-}
+}}
 #[inline(never)]
-unsafe fn read_file(image: &[u8], image_base: Va, va: Va, min_size_of: usize, align_of: usize) -> Result<&[u8]> {
+unsafe fn read_file(image: &[u8], image_base: Va, va: Va, min_size_of: usize, align_of: usize) -> Result<&[u8]> { unsafe {
 	let size_of_image = optional_header(image).SizeOfImage;
 
 	if va == 0 {
@@ -746,7 +746,7 @@ unsafe fn read_file(image: &[u8], image_base: Va, va: Va, min_size_of: usize, al
 	}
 
 	Ok(bytes)
-}
+}}
 
 //----------------------------------------------------------------
 
@@ -831,7 +831,7 @@ pub(crate) fn validate_headers(image: &[u8]) -> Result<u32> {
 ///
 /// No checks of any kind are performed, before calling this function ensure the byte slice points to a valid PE image by running it through the `PeFile::from_bytes` constructor.
 #[cfg(feature = "unstable")]
-pub unsafe fn headers_mut(image: &mut [u8]) -> (&mut IMAGE_DOS_HEADER, &mut IMAGE_NT_HEADERS, &mut [IMAGE_DATA_DIRECTORY], &mut [IMAGE_SECTION_HEADER]) {
+pub unsafe fn headers_mut(image: &mut [u8]) -> (&mut IMAGE_DOS_HEADER, &mut IMAGE_NT_HEADERS, &mut [IMAGE_DATA_DIRECTORY], &mut [IMAGE_SECTION_HEADER]) { unsafe {
 	let dos = &mut *(image.as_mut_ptr() as *mut IMAGE_DOS_HEADER);
 	let nt = &mut *(image.as_mut_ptr().offset(dos.e_lfanew as isize) as *mut IMAGE_NT_HEADERS);
 	let dd_ptr = nt.OptionalHeader.DataDirectory.as_mut_ptr();
@@ -841,4 +841,4 @@ pub unsafe fn headers_mut(image: &mut [u8]) -> (&mut IMAGE_DOS_HEADER, &mut IMAG
 	let sections_len = nt.FileHeader.NumberOfSections as usize;
 	let sections = slice::from_raw_parts_mut(sections_ptr, sections_len);
 	(dos, nt, dd, sections)
-}
+}}

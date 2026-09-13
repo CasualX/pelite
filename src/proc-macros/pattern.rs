@@ -407,7 +407,7 @@ fn parse_helper(pat: &mut &str, result: &mut Vec<Atom>) -> Result<(), PatError> 
 					chr = iter.next().cloned().ok_or(PatError::ManyInvalid)?;
 					match chr {
 						b'-' | b']' => break,
-						chr @ b'0'...b'9' => {
+						chr @ b'0'..=b'9' => {
 							at_least_one_char = true;
 							lower_bound = lower_bound * 10 + (chr - b'0') as u32;
 							if lower_bound >= 16384 {
@@ -437,7 +437,7 @@ fn parse_helper(pat: &mut &str, result: &mut Vec<Atom>) -> Result<(), PatError> 
 					chr = iter.next().cloned().ok_or(PatError::ManyInvalid)?;
 					match chr {
 						b']' => break,
-						chr @ b'0'...b'9' => {
+						chr @ b'0'..=b'9' => {
 							upper_bound = upper_bound * 10 + (chr - b'0') as u32;
 							if upper_bound >= 16384 {
 								return Err(PatError::ManyOverflow);
@@ -459,7 +459,7 @@ fn parse_helper(pat: &mut &str, result: &mut Vec<Atom>) -> Result<(), PatError> 
 				}
 			},
 			// Match a byte
-			b'0'...b'9' | b'A'...b'F' | b'a'...b'f' => {
+			b'0'..=b'9' | b'A'..=b'F' | b'a'..=b'f' => {
 				// High nibble of the byte
 				let hi = if chr >= b'a' {
 					chr - b'a' + 10

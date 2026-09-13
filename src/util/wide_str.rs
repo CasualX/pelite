@@ -40,7 +40,7 @@ impl WideStr {
 	///
 	/// Ensure the slice's first word equals the length of the slice + 1.
 	pub unsafe fn from_words_unchecked(words: &[u16]) -> &WideStr {
-		mem::transmute(words)
+		unsafe { mem::transmute(words) }
 	}
 	/// Encodes the string as an UTF8 validated `String`.
 	pub fn to_string(&self) -> Result<String, char::DecodeUtf16Error> {
@@ -51,14 +51,14 @@ impl WideStr {
 impl FromBytes for WideStr {
 	const MIN_SIZE_OF: usize = 2;
 	const ALIGN_OF: usize = 2;
-	unsafe fn from_bytes(bytes: &[u8]) -> Option<&WideStr> {
+	unsafe fn from_bytes(bytes: &[u8]) -> Option<&WideStr> { unsafe {
 		let p = bytes.as_ptr() as *const u16;
 		let len = *p as usize + 1;
 		if len * 2 > bytes.len() {
 			return None;
 		}
 		Some(WideStr::from_words_unchecked(slice::from_raw_parts(p, len)))
-	}
+	}}
 }
 
 impl PartialEq<str> for WideStr {

@@ -20,7 +20,7 @@ use core::{fmt, mem};
 use crate::Pod;
 
 #[cfg(windows)]
-extern "C" {
+unsafe extern "C" {
 	#[cfg(target_env = "msvc")]
 	static __ImageBase: IMAGE_DOS_HEADER;
 	#[cfg(target_env = "gnu")]

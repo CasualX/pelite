@@ -24,7 +24,7 @@ current_target! {
 		/// Constructs a view of the module this code is executing in.
 		#[inline]
 		pub unsafe fn new() -> PeView<'static> {
-			Self::module(image_base() as *const _ as *const u8)
+			unsafe { Self::module(image_base() as *const _ as *const u8) }
 		}
 	}
 }
@@ -80,13 +80,13 @@ impl<'a> PeView<'a> {
 	/// No sanity or safety checks are done to make sure this is really PE32(+) image.
 	/// When using this with a `HMODULE` from the system the caller must be sure this is a PE32(+) image.
 	#[inline]
-	pub unsafe fn module(base: *const u8) -> PeView<'a> {
+	pub unsafe fn module(base: *const u8) -> PeView<'a> { unsafe {
 		let dos = &*(base as *const IMAGE_DOS_HEADER);
 		let nt = &*(base.offset(dos.e_lfanew as isize) as *const IMAGE_NT_HEADERS);
 		PeView {
 			image: slice::from_raw_parts(base, nt.OptionalHeader.SizeOfImage as usize),
 			base_address: base as Va,
-		}
+		}}
 	}
 	/// Converts the view to file alignment.
 	pub fn to_file(self) -> Vec<u8> {

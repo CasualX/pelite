@@ -125,7 +125,7 @@ impl<'a> Directory<'a> {
 		self.image
 	}
 	/// Gets the directory entries.
-	pub fn entries(&self) -> Entries<'a, impl Clone + FnMut(&'a IMAGE_RESOURCE_DIRECTORY_ENTRY) -> DirectoryEntry<'a>> {
+	pub fn entries(&self) -> Entries<'a, impl Clone + FnMut(&'a IMAGE_RESOURCE_DIRECTORY_ENTRY) -> DirectoryEntry<'a> + use<'a>> {
 		// Validated by constructor
 		let slice = unsafe {
 			let p = (self.image as *const IMAGE_RESOURCE_DIRECTORY).offset(1) as *const IMAGE_RESOURCE_DIRECTORY_ENTRY;
@@ -138,7 +138,7 @@ impl<'a> Directory<'a> {
 	/// Gets the named entries in this directory.
 	///
 	/// Note that while it would be a violation of the format spec, there's no strict safety guarantee that these are only named entries.
-	pub fn named_entries(&self) -> Entries<'a, impl Clone + FnMut(&'a IMAGE_RESOURCE_DIRECTORY_ENTRY) -> DirectoryEntry<'a>> {
+	pub fn named_entries(&self) -> Entries<'a, impl Clone + FnMut(&'a IMAGE_RESOURCE_DIRECTORY_ENTRY) -> DirectoryEntry<'a> + use<'a>> {
 		// Validated by constructor
 		let slice = unsafe {
 			// Named entries come first in the array (see chapter "PE File Resources" in "Peering Inside the PE: A Tour of the Win32 Portable Executable File Format")
@@ -152,7 +152,7 @@ impl<'a> Directory<'a> {
 	/// Gets the id entries in this directory.
 	///
 	/// Note that while it would be a violation of the format spec, there's no strict safety guarantee that these are only id entries.
-	pub fn id_entries(&self) -> Entries<'a, impl Clone + FnMut(&'a IMAGE_RESOURCE_DIRECTORY_ENTRY) -> DirectoryEntry<'a>> {
+	pub fn id_entries(&self) -> Entries<'a, impl Clone + FnMut(&'a IMAGE_RESOURCE_DIRECTORY_ENTRY) -> DirectoryEntry<'a> + use<'a>> {
 		// Validated by the constructor
 		let slice = unsafe {
 			// Id entries come last in the array

@@ -2,7 +2,7 @@
 name = "pelite"
 version = "0.10.0"
 authors = ["Casper <CasualX@users.noreply.github.com>"]
-edition = "2018"
+edition = "2024"
 license = "MIT"
 
 description = "Lightweight, memory-safe, zero-allocation library for reading and navigating PE binaries."
