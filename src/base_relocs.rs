@@ -33,7 +33,7 @@ use alloc::vec::Vec;
 use core::{cmp, fmt, iter, mem, slice};
 
 use crate::image::{IMAGE_BASE_RELOCATION, IMAGE_REL_BASED_ABSOLUTE};
-use crate::util::{extend_in_place, AlignTo};
+use crate::util::AlignTo;
 use crate::{Error, Result};
 
 /// Base Relocations Directory.
@@ -236,30 +236,35 @@ pub fn build(mut rvas: &[u32], mut types: &[u8]) -> Vec<u8> {
 		// Size of block should be multiple of 4 to ensure alignment
 		let size = (8 + 2 * n).align_to(4);
 
-		unsafe {
-			extend_in_place(&mut result, size, |bytes| {
-				// Encode the relocation block header
-				let block_ptr = bytes.as_mut_ptr() as *mut IMAGE_BASE_RELOCATION;
-				(*block_ptr).VirtualAddress = start;
-				(*block_ptr).SizeOfBlock = size as u32;
-				// Encode the type and offsets
-				let words = slice::from_raw_parts_mut(block_ptr.offset(1) as *mut u16, n.align_to(2));
-				for i in 0..n {
-					let rva = *rvas.get_unchecked(i);
-					let ty = *types.get_unchecked(i);
-					words[i] = encode_type_offset(start, rva, ty);
-				}
-				// Add alignment padding
-				if n < words.len() {
-					words[n] = 0;
-				}
-			});
+		// Encode as bytes because Vec<u8> does not guarantee the alignment required
+		// to write IMAGE_BASE_RELOCATION or u16 values through typed pointers.
+		result.reserve(size);
+		result.extend_from_slice(&start.to_ne_bytes());
+		result.extend_from_slice(&(size as u32).to_ne_bytes());
+		for i in 0..n {
+			let word = encode_type_offset(start, rvas[i], types[i]);
+			result.extend_from_slice(&word.to_ne_bytes());
+		}
+		// Add alignment padding.
+		if n % 2 != 0 {
+			result.extend_from_slice(&0u16.to_ne_bytes());
 		}
 
 		rvas = &rvas[n..];
 		types = &types[n..];
 	}
 	result
+}
+
+#[test]
+fn test_build_unaligned_storage() {
+	let result = build(&[1000, 1002], &[3, 3]);
+	let mut expected = Vec::new();
+	expected.extend_from_slice(&0u32.to_ne_bytes());
+	expected.extend_from_slice(&12u32.to_ne_bytes());
+	expected.extend_from_slice(&0x33e8u16.to_ne_bytes());
+	expected.extend_from_slice(&0x33eau16.to_ne_bytes());
+	assert_eq!(result, expected);
 }
 
 #[cfg(windows)]
