@@ -54,7 +54,7 @@ impl<'a> BaseRelocs<'a> {
 	/// Requires relocs argument pointer to have an alignment of 4 or an error is returned.
 	pub fn parse(relocs: &'a [u8]) -> Result<BaseRelocs<'a>> {
 		// $1
-		if !(cfg!(feature = "unsafe_alignment") || relocs.as_ptr().aligned_to(4)) {
+		if !relocs.as_ptr().aligned_to(4) {
 			return Err(Error::Misaligned);
 		}
 		Ok(BaseRelocs { relocs })

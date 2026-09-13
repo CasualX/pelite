@@ -126,7 +126,7 @@ impl<'a, P: Pe<'a>> Function<'a, P> {
 		let bytes = self.pe.slice(
 			self.image.UnwindData,
 			mem::size_of::<UNWIND_INFO>(),
-			if cfg!(feature = "unsafe_alignment") { 1 } else { mem::align_of::<UNWIND_INFO>() },
+			mem::align_of::<UNWIND_INFO>(),
 		)?;
 		let image = unsafe { &*(bytes.as_ptr() as *const UNWIND_INFO) };
 		// Calculate actual size including size of unwind codes

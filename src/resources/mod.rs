@@ -51,7 +51,7 @@ impl<'a> Resources<'a> {
 		let start = offset as usize;
 		let end = mem::size_of::<T>().wrapping_add(start);
 		// Alignment checking
-		if !cfg!(feature = "unsafe_alignment") && start & (mem::align_of::<T>() - 1) != 0 {
+		if start & (mem::align_of::<T>() - 1) != 0 {
 			return Err(Error::Misaligned);
 		}
 		// Range checking done by the indexing operator
@@ -66,7 +66,7 @@ impl<'a> Resources<'a> {
 		let size_of = mem::size_of::<T>().checked_mul(len).ok_or(Error::Overflow)?;
 		let end = start.wrapping_add(size_of);
 		// Alignment checking
-		if !cfg!(feature = "unsafe_alignment") && start & (mem::align_of::<T>() - 1) != 0 {
+		if start & (mem::align_of::<T>() - 1) != 0 {
 			return Err(Error::Misaligned);
 		}
 		// Range checking done by the indexing operator
@@ -77,7 +77,7 @@ impl<'a> Resources<'a> {
 	fn slice_ws(&self, offset: u32) -> Result<&'a [u16]> {
 		let offset = offset as usize;
 		// Alignment checking
-		if !cfg!(feature = "unsafe_alignment") && offset & 1 != 0 {
+		if offset & 1 != 0 {
 			return Err(Error::Misaligned);
 		}
 		// The name is prefixed by its length in words

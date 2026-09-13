@@ -19,7 +19,6 @@ resolver = "2"
 
 [features]
 default = ["mmap", "derive_pod"]
-unsafe_alignment = []
 mmap = ["std", "libc", "winapi"]
 unstable = []
 derive_pod = ["dataview/derive_pod"]
