@@ -23,7 +23,7 @@ jobs:
       fail-fast: false
       matrix:
         rust:
-          - "1.85"
+          - "1.95"
           - stable
           - beta
           - nightly
@@ -44,7 +44,7 @@ jobs:
         run: cargo check --lib --no-default-features
 
       - name: Check no_std serialization support
-        run: cargo check --lib --no-default-features --features serde,data-encoding
+        run: cargo check --lib --no-default-features --features serde,basenc
 
       - name: Run tests
         run: cargo test --all-features --no-fail-fast

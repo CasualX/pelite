@@ -175,9 +175,9 @@ impl serde::Serialize for GroupResource<'_> {
 	fn serialize<S: serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 		let mut bytes = Vec::new();
 		mem::forget(self.write(&mut bytes));
-		#[cfg(feature = "data-encoding")]
+		#[cfg(feature = "basenc")]
 		if serializer.is_human_readable() {
-			return serializer.serialize_str(&data_encoding::BASE64.encode(&bytes));
+			return serializer.serialize_str(&basenc::Base64Std.encode(&bytes));
 		}
 		serializer.serialize_bytes(&bytes)
 	}

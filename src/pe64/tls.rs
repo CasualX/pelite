@@ -96,9 +96,9 @@ mod serde {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			let is_human_readable = serializer.is_human_readable();
 			let mut state = serializer.serialize_struct("Tls", 2)?;
-			if cfg!(feature = "data-encoding") && is_human_readable {
-				#[cfg(feature = "data-encoding")]
-				state.serialize_field("raw_data", &self.raw_data().ok().map(|data| data_encoding::BASE64.encode(data)))?;
+			if cfg!(feature = "basenc") && is_human_readable {
+				#[cfg(feature = "basenc")]
+				state.serialize_field("raw_data", &self.raw_data().ok().map(|data| basenc::Base64Std.encode(data)))?;
 			}
 			else {
 				state.serialize_field("raw_data", &self.raw_data().ok())?;

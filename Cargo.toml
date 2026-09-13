@@ -23,6 +23,7 @@ unsafe_alignment = []
 mmap = ["std", "libc", "winapi"]
 unstable = []
 derive_pod = ["dataview/derive_pod"]
+basenc = ["dep:basenc"]
 std = []
 
 [profile.release]
@@ -37,7 +38,7 @@ default-target = "x86_64-pc-windows-msvc"
 pelite-macros = { path = "src/proc-macros", version = "0.1.1" }
 dataview = { version = "1.0", default-features = false }
 serde = { version = "1.0", optional = true, features = ["derive"] }
-data-encoding = { version = "2.11", optional = true }
+basenc = { version = "1.0.0-alpha.2", optional = true, default-features = false, features = ["alloc"] }
 
 [target.'cfg(unix)'.dependencies]
 libc = { version = "0.2.189", optional = true }
@@ -47,5 +48,5 @@ winapi = { version = "0.3", optional = true, features = ["fileapi", "memoryapi",
 
 [dev-dependencies]
 lde = "0.3"
-rand = "0.10"
+urandom = "1.0.0-alpha.3"
 format_xml = "0.3"
