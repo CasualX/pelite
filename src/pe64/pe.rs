@@ -779,6 +779,9 @@ pub(crate) fn validate_headers(image: &[u8]) -> Result<u32> {
 	if nt_end > image.len() {
 		return Err(Error::Bounds);
 	}
+	if !image.as_ptr().wrapping_add(dos.e_lfanew as usize).aligned_to(mem::align_of::<IMAGE_NT_HEADERS>()) {
+		return Err(Error::Misaligned);
+	}
 	let nt = unsafe { &*(image.as_ptr().offset(dos.e_lfanew as isize) as *const IMAGE_NT_HEADERS) };
 	// Verify the NT headers
 	if nt.Signature != IMAGE_NT_HEADERS_SIGNATURE || !(nt.OptionalHeader.Magic == IMAGE_NT_OPTIONAL_HDR32_MAGIC || nt.OptionalHeader.Magic == IMAGE_NT_OPTIONAL_HDR64_MAGIC) {
