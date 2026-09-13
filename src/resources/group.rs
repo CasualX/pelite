@@ -40,10 +40,12 @@ for (name, group) in resources.icons().filter_map(Result::ok) {
 
  */
 
+#[cfg(all(feature = "std", feature = "serde"))]
+use alloc::vec::Vec;
+use core::{fmt, mem, slice};
+
 #[cfg(feature = "std")]
 use std::io;
-use std::prelude::v1::*;
-use std::{fmt, mem, slice};
 
 use crate::util::AlignTo;
 use crate::Error;
@@ -168,7 +170,7 @@ impl fmt::Debug for GroupResource<'_> {
 	}
 }
 
-#[cfg(feature = "serde")]
+#[cfg(all(feature = "std", feature = "serde"))]
 impl serde::Serialize for GroupResource<'_> {
 	fn serialize<S: serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 		let mut bytes = Vec::new();

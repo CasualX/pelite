@@ -2,10 +2,7 @@
 Errors and Results.
 */
 
-use std::{fmt, result, str};
-
-#[cfg(feature = "std")]
-use std::error;
+use core::{error, fmt, result, str};
 
 /// Errors while parsing the PE binary.
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Hash)]
@@ -116,7 +113,6 @@ impl fmt::Display for Error {
 	}
 }
 
-#[cfg(feature = "std")]
 impl error::Error for Error {
 	fn description(&self) -> &str {
 		self.to_str()

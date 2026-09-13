@@ -26,7 +26,7 @@ fn example(file: PeFile<'_>) -> pelite::Result<()> {
 ```
 */
 
-use std::fmt;
+use core::fmt;
 
 use crate::{Error, Result};
 

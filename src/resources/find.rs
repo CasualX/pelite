@@ -2,10 +2,10 @@
 Resources Find API.
 */
 
-use std::{fmt, str};
+use core::{error, fmt, str};
 
 #[cfg(feature = "std")]
-use std::{error, path::Path};
+use std::path::Path;
 
 use super::{DataEntry, Directory, Entry, Name, Resources};
 
@@ -63,7 +63,6 @@ impl fmt::Display for FindError {
 		self.to_str().fmt(f)
 	}
 }
-#[cfg(feature = "std")]
 impl error::Error for FindError {
 	fn description(&self) -> &str {
 		self.to_str()

@@ -2,8 +2,8 @@
 PE headers.
  */
 
-use std::ops::Range;
-use std::slice;
+use core::ops::Range;
+use core::slice;
 
 use super::image::*;
 use super::Pe;

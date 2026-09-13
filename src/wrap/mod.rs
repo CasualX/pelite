@@ -1,4 +1,4 @@
-use std::{fmt, mem, ops, slice, str};
+use core::{fmt, mem, ops, slice, str};
 
 use crate::{image, pattern, pe32, pe64, rich_structure, Result, Error};
 use crate::util::{CStr, FromBytes};

@@ -11,7 +11,7 @@ Rich Structure.
 // * http://bytepointer.com/articles/rich_header_lifewire_vxmags_29A-8.009.htm
 // * https://pdfs.semanticscholar.org/44ad/fa896e6598b1723507060126125a0cad39a1.pdf
 
-use std::{fmt, iter, mem, result};
+use core::{fmt, iter, mem, result};
 
 use crate::{Error, Result};
 

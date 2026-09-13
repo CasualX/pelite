@@ -23,7 +23,7 @@ fn example(file: PeFile<'_>) -> pelite::Result<()> {
 ```
 */
 
-use std::{fmt, mem};
+use core::{fmt, mem};
 
 use crate::image::WIN_CERTIFICATE;
 use crate::util::AlignTo;

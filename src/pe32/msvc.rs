@@ -7,7 +7,7 @@ References:
 [2]: [Reversing Microsoft Visual C++ Part II: Classes, Methods and RTTI](http://www.openrce.org/articles/full_view/23)  
 */
 
-use std::mem;
+use core::mem;
 
 use crate::{util::CStr, Pod};
 

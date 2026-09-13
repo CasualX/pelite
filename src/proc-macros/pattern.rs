@@ -38,12 +38,10 @@ Here's a resource to learn more about signature scanning: [wiki.alliedmods.net](
 
 #![allow(ellipsis_inclusive_range_patterns)]
 
-use std::prelude::v1::*;
+extern crate alloc;
 
-use std::{cmp, fmt, mem, str};
-
-#[cfg(feature = "std")]
-use std::error;
+use alloc::vec::Vec;
+use core::{cmp, fmt, mem, str};
 
 /// Max recursion depth.
 pub const STACK_SIZE: usize = 4;
@@ -63,8 +61,7 @@ impl fmt::Display for ParsePatError {
 		write!(f, "Syntax Error @{}: {}.", self.position, self.kind.to_str())
 	}
 }
-#[cfg(feature = "std")]
-impl error::Error for ParsePatError {
+impl core::error::Error for ParsePatError {
 	fn description(&self) -> &str {
 		self.kind.to_str()
 	}
@@ -616,7 +613,7 @@ fn parse_helper(pat: &mut &str, result: &mut Vec<Atom>) -> Result<(), PatError> 
 mod tests {
 	use super::*;
 
-	const _: [(); 2] = [(); std::mem::size_of::<Atom>()];
+	const _: [(); 2] = [(); mem::size_of::<Atom>()];
 
 	#[rustfmt::skip]
 	#[test]

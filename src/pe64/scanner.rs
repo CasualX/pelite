@@ -32,8 +32,8 @@ fn example(file: PeFile<'_>, pat: &[pat::Atom]) {
 ```
 */
 
-use std::ops::Range;
-use std::{cmp, mem, ptr};
+use core::ops::Range;
+use core::{cmp, mem, ptr};
 
 use crate::util::AlignTo;
 use crate::{pattern as pat, Pod};

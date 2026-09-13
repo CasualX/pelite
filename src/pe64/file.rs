@@ -2,7 +2,7 @@
 PE file.
 */
 
-use std::prelude::v1::*;
+use alloc::{vec, vec::Vec};
 
 use crate::Result;
 
@@ -98,7 +98,7 @@ unsafe impl<'a> PeObject<'a> for PeFile<'a> {
 
 #[cfg(feature = "serde")]
 impl<'a> serde::Serialize for PeFile<'a> {
-	fn serialize<S: serde::Serializer>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error> {
+	fn serialize<S: serde::Serializer>(&self, serializer: S) -> core::result::Result<S::Ok, S::Error> {
 		super::pe::serialize_pe(*self, serializer)
 	}
 }

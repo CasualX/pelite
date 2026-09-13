@@ -40,14 +40,14 @@ fn example(bin: PeFile<'_>) -> Result<(), pelite::resources::FindError> {
 
  */
 
-#[cfg(feature = "std")]
-use std::collections::HashMap;
-use std::fmt::Write;
-use std::prelude::v1::*;
-use std::{char, cmp, fmt, mem, slice};
-
+use alloc::string::String;
 #[cfg(not(feature = "std"))]
-use hashbrown::HashMap;
+use alloc::collections::BTreeMap as Map;
+use core::fmt::Write;
+use core::{char, cmp, fmt, mem, slice};
+
+#[cfg(feature = "std")]
+use std::collections::HashMap as Map;
 
 use crate::image::VS_FIXEDFILEINFO;
 use crate::util::{wstrn, AlignTo, FmtUtf16};
@@ -56,7 +56,7 @@ use crate::{Error, Pod, Result};
 //----------------------------------------------------------------
 
 /// Language and charset pair.
-#[derive(Copy, Clone, Debug, Default, Eq, PartialEq, Hash)]
+#[derive(Copy, Clone, Debug, Default, Eq, Ord, PartialEq, PartialOrd, Hash)]
 #[repr(C)]
 pub struct Language {
 	/// References [langID](https://docs.microsoft.com/en-us/windows/desktop/menurc/versioninfo-resource#langID) constants.
@@ -67,7 +67,7 @@ pub struct Language {
 unsafe impl Pod for Language {}
 impl Language {
 	/// Parse language hex strings.
-	pub fn parse(lang: &[u16]) -> std::result::Result<Language, &[u16]> {
+	pub fn parse(lang: &[u16]) -> core::result::Result<Language, &[u16]> {
 		if lang.len() != 8 {
 			return Err(lang);
 		}
@@ -152,7 +152,7 @@ impl<'a> VersionInfo<'a> {
 	pub fn strings<F: FnMut(&str, &str)>(self, lang: Language, f: F) {
 		self.visit(&mut QueryStrings { lang, f });
 	}
-	/// Parse the version info into HashMaps.
+	/// Parse the version info into owned maps.
 	pub fn file_info(self) -> FileInfo<'a> {
 		let mut file_info = FileInfo::default();
 		self.visit(&mut file_info);
@@ -379,14 +379,14 @@ FILESUBTYPE {}",
 	}
 }
 
-/// VersionInfo parsed into HashMaps.
+/// VersionInfo parsed into owned maps.
 #[derive(Clone, Debug, Default)]
 #[cfg_attr(all(feature = "std", feature = "serde"), derive(::serde::Serialize))]
 pub struct FileInfo<'a> {
 	pub fixed: Option<&'a VS_FIXEDFILEINFO>,
-	pub strings: HashMap<Language, HashMap<String, String>>,
+	pub strings: Map<Language, Map<String, String>>,
 	pub langs: &'a [Language],
-	#[cfg_attr(feature = "serde", serde(skip))]
+	#[cfg_attr(all(feature = "std", feature = "serde"), serde(skip))]
 	lang: Language,
 }
 impl<'a> Visit<'a> for FileInfo<'a> {
@@ -397,7 +397,7 @@ impl<'a> Visit<'a> for FileInfo<'a> {
 	fn string_table(&mut self, lang: &'a [u16]) -> bool {
 		if let Ok(lang) = Language::parse(lang) {
 			self.lang = lang;
-			self.strings.insert(lang, HashMap::new());
+			self.strings.insert(lang, Map::new());
 			return true;
 		}
 		false
@@ -681,9 +681,9 @@ fn test_parse_254() {
 	let fi = vi.file_info();
 	assert!(fi.fixed.is_some());
 
-	let mut strings = HashMap::new();
+	let mut strings = Map::new();
 	strings.insert(Language { lang_id: 0, charset_id: 1200 }, {
-		let mut strings = HashMap::new();
+		let mut strings = Map::new();
 		strings.insert(String::from("FileDescription"), String::from("BE.Essential"));
 		strings.insert(String::from("Assembly Version"), String::from("22.607.2013.25"));
 		strings.insert(String::from("ProductVersion"), String::from("22.607.2013.25"));

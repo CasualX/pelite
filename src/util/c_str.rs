@@ -2,7 +2,7 @@
 Nul-terminated C string.
 */
 
-use std::{cmp, fmt, mem, ops, str};
+use core::{cmp, fmt, mem, ops, str};
 
 use crate::util::{split_f, FromBytes};
 
