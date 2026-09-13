@@ -71,23 +71,23 @@ impl Language {
 		if lang.len() != 8 {
 			return Err(lang);
 		}
-		fn digit(word: u16) -> u16 {
-			let num = word.wrapping_sub('0' as u16);
-			let upper = word.wrapping_sub('A' as u16).wrapping_add(10);
-			let lower = word.wrapping_sub('a' as u16).wrapping_add(10);
-			if word >= 'a' as u16 {
-				lower
+		fn digit(word: u16) -> Option<u16> {
+			if word >= b'0' as u16 && word <= b'9' as u16 {
+				Some(word - b'0' as u16)
 			}
-			else if word >= 'A' as u16 {
-				upper
+			else if word >= b'A' as u16 && word <= b'F' as u16 {
+				Some(word - b'A' as u16 + 10)
+			}
+			else if word >= b'a' as u16 && word <= b'f' as u16 {
+				Some(word - b'a' as u16 + 10)
 			}
 			else {
-				num
+				None
 			}
 		}
 		let mut digits = [0u16; 8];
 		for i in 0..8 {
-			digits[i] = digit(lang[i]);
+			digits[i] = digit(lang[i]).ok_or(lang)?;
 		}
 		let lang_id = (digits[0] << 12) | (digits[1] << 8) | (digits[2] << 4) | digits[3];
 		let charset_id = (digits[4] << 12) | (digits[5] << 8) | (digits[6] << 4) | digits[7];
@@ -95,8 +95,19 @@ impl Language {
 	}
 	fn from_slice<'a>(words: &'a [u16]) -> &'a [Language] {
 		let len = words.len() / 2;
+		// Language is a repr(C) pair of u16s, so the input has sufficient
+		// alignment and every possible bit pattern is valid.
 		unsafe { slice::from_raw_parts(words.as_ptr() as *const Language, len) }
 	}
+}
+
+#[test]
+fn test_language_parse() {
+	const LANGUAGE: Language = Language { lang_id: 0x0409, charset_id: 0x04b0 };
+	assert_eq!(Language::parse(utf16!("040904B0")), Ok(LANGUAGE));
+	assert_eq!(Language::parse(utf16!("040904b0")), Ok(LANGUAGE));
+	assert!(Language::parse(utf16!("0409")).is_err());
+	assert!(Language::parse(utf16!("040904G0")).is_err());
 }
 impl fmt::Display for Language {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -176,7 +187,8 @@ impl<'a> VersionInfo<'a> {
 			const VS_FIXEDFILEINFO_SIZEOF: usize = mem::size_of::<VS_FIXEDFILEINFO>();
 			let fixed = match mem::size_of_val(version_info.value) {
 				0 => None,
-				VS_FIXEDFILEINFO_SIZEOF => {
+				VS_FIXEDFILEINFO_SIZEOF if version_info.value.as_ptr().aligned_to(mem::align_of::<VS_FIXEDFILEINFO>()) => {
+					// The size and alignment are checked, and every field accepts every possible bit pattern.
 					let value = unsafe { &*(version_info.value.as_ptr() as *const VS_FIXEDFILEINFO) };
 					Some(value)
 				},
@@ -196,7 +208,7 @@ impl<'a> VersionInfo<'a> {
 
 				// MS docs: L"StringFileInfo"
 				visit.enter_scope(1);
-				if file_info.key == &self::strings::StringFileInfo {
+				if file_info.key == utf16!("StringFileInfo") {
 					// MS docs: This member is always equal to zero.
 					for string_table in Parser::new_zero(file_info.children).filter_map(Result::ok) {
 						if !visit.string_table(string_table.key) {
@@ -213,7 +225,7 @@ impl<'a> VersionInfo<'a> {
 					}
 				}
 				// MS docs: L"VarFileInfo"
-				else if file_info.key == &self::strings::VarFileInfo {
+				else if file_info.key == utf16!("VarFileInfo") {
 					for var in Parser::new_bytes(file_info.children).filter_map(Result::ok) {
 						visit.var(var.key, var.value);
 					}
@@ -273,10 +285,10 @@ impl<'a> Visit<'a> for QueryFixed<'a> {
 struct QueryTranslation<'a>(&'a [Language]);
 impl<'a> Visit<'a> for QueryTranslation<'a> {
 	fn file_info(&mut self, key: &'a [u16]) -> bool {
-		key == strings::VarFileInfo
+		key == utf16!("VarFileInfo")
 	}
 	fn var(&mut self, key: &'a [u16], value: &'a [u16]) {
-		if key == strings::Translation {
+		if key == utf16!("Translation") {
 			self.0 = Language::from_slice(value);
 		}
 	}
@@ -289,7 +301,7 @@ struct QueryValue<'z> {
 }
 impl<'a, 'z> Visit<'a> for QueryValue<'z> {
 	fn file_info(&mut self, key: &'a [u16]) -> bool {
-		key == strings::StringFileInfo
+		key == utf16!("StringFileInfo")
 	}
 	fn string_table(&mut self, lang: &'a [u16]) -> bool {
 		match Language::parse(lang) {
@@ -356,7 +368,7 @@ FILESUBTYPE {}",
 	}
 	fn var(&mut self, key: &'a [u16], value: &'a [u16]) {
 		// Don't know how to interpret any other Var key...
-		if key != strings::Translation {
+		if key != utf16!("Translation") {
 			return;
 		}
 		struct PrintLangs<'a>(&'a [Language]);
@@ -410,7 +422,7 @@ impl<'a> Visit<'a> for FileInfo<'a> {
 		}
 	}
 	fn var(&mut self, key: &'a [u16], value: &'a [u16]) {
-		if key == strings::Translation {
+		if key == utf16!("Translation") {
 			self.langs = Language::from_slice(value);
 		}
 	}
@@ -445,28 +457,6 @@ mod serde {
 			self.file_info().serialize(serializer)
 		}
 	}
-}
-
-//----------------------------------------------------------------
-
-mod strings {
-	#![allow(non_upper_case_globals)]
-	// static VS_VERSION_INFO: [u16; 15] = [86u16, 83, 95, 86, 69, 82, 83, 73, 79, 78, 95, 73, 78, 70, 79];
-	pub(super) static StringFileInfo: [u16; 14] = [83u16, 116, 114, 105, 110, 103, 70, 105, 108, 101, 73, 110, 102, 111];
-	pub(super) static VarFileInfo: [u16; 11] = [86u16, 97, 114, 70, 105, 108, 101, 73, 110, 102, 111];
-	pub(super) static Translation: [u16; 11] = [84u16, 114, 97, 110, 115, 108, 97, 116, 105, 111, 110];
-	// static Comments: [u16; 8] = [67u16, 111, 109, 109, 101, 110, 116, 115];
-	// static CompanyName: [u16; 11] = [67u16, 111, 109, 112, 97, 110, 121, 78, 97, 109, 101];
-	// static FileDescription: [u16; 15] = [70u16, 105, 108, 101, 68, 101, 115, 99, 114, 105, 112, 116, 105, 111, 110];
-	// static FileVersion: [u16; 11] = [70u16, 105, 108, 101, 86, 101, 114, 115, 105, 111, 110];
-	// static InternalName: [u16; 12] = [73u16, 110, 116, 101, 114, 110, 97, 108, 78, 97, 109, 101];
-	// static LegalCopyright: [u16; 14] = [76u16, 101, 103, 97, 108, 67, 111, 112, 121, 114, 105, 103, 104, 116];
-	// static LegalTrademarks: [u16; 15] = [76u16, 101, 103, 97, 108, 84, 114, 97, 100, 101, 109, 97, 114, 107, 115];
-	// static OriginalFilename: [u16; 16] = [79u16, 114, 105, 103, 105, 110, 97, 108, 70, 105, 108, 101, 110, 97, 109, 101];
-	// static PrivateBuild: [u16; 12] = [80u16, 114, 105, 118, 97, 116, 101, 66, 117, 105, 108, 100];
-	// static ProductName: [u16; 11] = [80u16, 114, 111, 100, 117, 99, 116, 78, 97, 109, 101];
-	// static ProductVersion: [u16; 14] = [80u16, 114, 111, 100, 117, 99, 116, 86, 101, 114, 115, 105, 111, 110];
-	// static SpecialBuild: [u16; 12] = [83u16, 112, 101, 99, 105, 97, 108, 66, 117, 105, 108, 100];
 }
 
 //----------------------------------------------------------------
@@ -607,8 +597,11 @@ fn parse_tlv<'a>(state: &mut Parser<'a>) -> Result<TLV<'a>> {
 		return Err(Error::Invalid);
 	}
 
-	// Padding for the Value
-	words = &words[key.len().align_to(2) + 4..];
+	// Padding for the Value. When the node occupies an odd number of words,
+	// aligning the key up to a 32-bit boundary can push this offset one past the end of the node,
+	// so bound it instead of slicing unchecked (which panics on malformed input).
+	let value_start = key.len().align_to(2) + 4;
+	words = words.get(value_start..).ok_or(Error::Invalid)?;
 
 	// Split the remaining words between the Value and Children
 	if value_length > words.len() {
@@ -640,10 +633,30 @@ fn test_parse_tlv_oob() {
 	assert_eq!(parser.next(), Some(Err(Error::Invalid)));
 	assert_eq!(parser.next(), None);
 
+	// TLV whose seven-word declared length makes the key's 32-bit alignment push
+	// the value offset one word past the node end. Previously sliced unchecked
+	// and panicked; must now report Invalid. (wLength=14, key "ABC"+nul.)
+	parser = Parser::new_zero(&[14, 0, 1, 65, 66, 67, 0]);
+	assert_eq!(parser.next(), Some(Err(Error::Invalid)));
+	assert_eq!(parser.next(), None);
+
 	// TLV value field larger than the data
 	parser = Parser::new_zero(&[8, 10, 0, 0, 0, 0]);
 	assert_eq!(parser.next(), Some(Err(Error::Invalid)));
 	assert_eq!(parser.next(), None);
+}
+
+#[test]
+fn test_misaligned_fixed() {
+	#[repr(align(4))]
+	struct Aligned<T>(T);
+
+	let mut storage = Aligned([0u16; 31]);
+	let words = &mut storage.0[1..];
+	words[0] = 60; // wLength: header, empty key, and 52-byte value
+	words[1] = 52; // wValueLength in bytes
+	assert!(!words.as_ptr().aligned_to(mem::align_of::<VS_FIXEDFILEINFO>()));
+	assert!(VersionInfo { words }.fixed().is_none());
 }
 
 #[test]
@@ -680,6 +693,7 @@ fn test_parse_254() {
 		46, 54, 48, 55, 46, 50, 48, 49, 51, 46, 50, 53, 0,
 	]);
 
+	assert!(WORDS.0.as_ptr().aligned_to(mem::align_of::<VS_FIXEDFILEINFO>()));
 	let vi = VersionInfo { words: &WORDS.0 };
 	let fi = vi.file_info();
 	assert!(fi.fixed.is_some());

@@ -7,6 +7,8 @@ use alloc::vec::Vec;
 mod align;
 mod c_str;
 mod guid;
+#[macro_use]
+pub(crate) mod utf16;
 #[allow(dead_code)]
 mod wide_str;
 
