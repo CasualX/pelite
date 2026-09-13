@@ -52,11 +52,11 @@ impl<'a, P: Pe<'a>> LoadConfig<'a, P> {
 	}
 	/// Gets the default security cookie for the image.
 	pub fn security_cookie(&self) -> Result<&'a u32> {
-		self.pe.deref(self.image.SecurityCookie.into())
+		self.pe.deref(Va::from(self.image.SecurityCookie).into())
 	}
 	/// Gets the structured exception handler table.
 	pub fn se_handler_table(&self) -> Result<&'a [Va]> {
-		self.pe.deref_slice(self.image.SEHandlerTable.into(), self.image.SEHandlerCount as usize)
+		self.pe.deref_slice(Va::from(self.image.SEHandlerTable).into(), Va::from(self.image.SEHandlerCount) as usize)
 	}
 }
 impl<'a, P: Pe<'a>> fmt::Debug for LoadConfig<'a, P> {
