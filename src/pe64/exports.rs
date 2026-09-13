@@ -56,8 +56,8 @@ fn example(file: PeFile<'_>) -> pelite::Result<()> {
 use core::{fmt, ops};
 
 use crate::util::CStr;
-use crate::{Error, Result};
 use crate::Import;
+use crate::{Error, Result};
 
 use super::image::*;
 use super::Pe;

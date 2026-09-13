@@ -1,8 +1,8 @@
 use pelite::pe64::exports::GetProcAddress;
 use pelite::pe64::{Pe, PeFile, Rva};
 use pelite::util::CStr;
-use pelite::{Export, Import};
 use pelite::{Error, FileMap};
+use pelite::{Export, Import};
 
 const FILE_NAME: &str = "demo/Demo64.dll";
 

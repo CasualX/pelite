@@ -1,8 +1,8 @@
 use core::{fmt, mem, ops, slice, str};
 
-use crate::{image, pattern, pe32, pe64, rich_structure, Result, Error};
 use crate::util::{CStr, FromBytes};
 use crate::Pod;
+use crate::{image, pattern, pe32, pe64, rich_structure, Error, Result};
 
 /// Wraps 32-bit and 64-bit variants.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
@@ -75,5 +75,5 @@ pub(crate) use self::pe::get_section_bytes;
 pub use self::pe::Align;
 pub use self::view::PeView;
 
-pub use self::imports::Import;
 pub use self::exports::Export;
+pub use self::imports::Import;

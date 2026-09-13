@@ -40,9 +40,9 @@ fn example(bin: PeFile<'_>) -> Result<(), pelite::resources::FindError> {
 
  */
 
-use alloc::string::String;
 #[cfg(not(feature = "std"))]
 use alloc::collections::BTreeMap as Map;
+use alloc::string::String;
 use core::fmt::Write;
 use core::{char, cmp, fmt, mem, slice};
 
