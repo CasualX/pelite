@@ -1,7 +1,7 @@
 // Provide implementations for image GUID here
 // FIXME! Should I keep this GUID implementation or defer to another GUID library?
 
-use std::fmt;
+use core::fmt;
 
 use crate::image::GUID;
 
@@ -65,7 +65,7 @@ impl fmt::UpperHex for GUID {
 
 #[cfg(feature = "serde")]
 impl serde::Serialize for GUID {
-	fn serialize<S: serde::Serializer>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error> {
+	fn serialize<S: serde::Serializer>(&self, serializer: S) -> core::result::Result<S::Ok, S::Error> {
 		serializer.collect_str(self)
 	}
 }

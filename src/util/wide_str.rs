@@ -2,8 +2,8 @@
 Length word prefixed wide string.
 */
 
-use std::prelude::v1::*;
-use std::{char, fmt, mem, ops, slice};
+use alloc::string::String;
+use core::{char, fmt, mem, ops, slice};
 
 use crate::util::FromBytes;
 
@@ -142,7 +142,7 @@ impl serde::Serialize for WideStr {
 
 #[cfg(test)]
 mod tests {
-	use std::{char, slice};
+	use core::{char, slice};
 
 	use crate::util::FromBytes;
 

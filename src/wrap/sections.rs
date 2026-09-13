@@ -19,14 +19,14 @@ impl SectionHeader {
 	}
 	/// Returns the virtual range.
 	#[inline]
-	pub fn virtual_range(&self) -> std::ops::Range<u32> {
+	pub fn virtual_range(&self) -> core::ops::Range<u32> {
 		let start = self.0.VirtualAddress;
 		let end = u32::wrapping_add(self.0.VirtualAddress, self.0.VirtualSize);
 		start..end
 	}
 	/// Returns the file range.
 	#[inline]
-	pub fn file_range(&self) -> std::ops::Range<u32> {
+	pub fn file_range(&self) -> core::ops::Range<u32> {
 		let start = self.0.PointerToRawData;
 		let end = u32::wrapping_add(self.0.PointerToRawData, self.0.SizeOfRawData);
 		start..end

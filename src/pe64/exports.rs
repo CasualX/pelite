@@ -53,7 +53,7 @@ fn example(file: PeFile<'_>) -> pelite::Result<()> {
 ```
 */
 
-use std::{fmt, ops};
+use core::{fmt, ops};
 
 use crate::util::CStr;
 use crate::{Error, Result};
@@ -264,7 +264,7 @@ impl<'a, P: Pe<'a>> By<'a, P> {
 			let i = lower_bound + (upper_bound - lower_bound) / 2;
 			let name_rva = self.names[i];
 			let name_it = self.exp.pe.derva_c_str(name_rva)?.as_ref();
-			use std::cmp::Ordering::*;
+			use core::cmp::Ordering::*;
 			match name.cmp(name_it) {
 				Less => upper_bound = i,
 				Greater => lower_bound = i + 1,

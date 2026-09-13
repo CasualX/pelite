@@ -2,7 +2,7 @@
 Abstract over mapped images and file binaries.
 */
 
-use std::{cmp, mem, ptr, slice};
+use core::{cmp, mem, ptr, slice};
 
 use crate::{util::AlignTo, util::CStr, util::FromBytes, Pod};
 use crate::{Error, Result};
@@ -560,7 +560,6 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	/// See the [resources](resources/index.html) module for more information.
 	///
 	/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) if the image has no resources. Any other error indicates some form of corruption.
-	#[cfg(any(feature = "std", feature = "resources_nostd"))]
 	fn resources(self) -> Result<crate::resources::Resources<'a>>
 	where
 		Self: Copy,
@@ -605,7 +604,7 @@ unsafe impl<'s, 'a> Pe<'a> for &'s dyn PeObject<'a> {}
 //----------------------------------------------------------------
 
 #[cfg(feature = "serde")]
-pub(crate) fn serialize_pe<'a, P: Pe<'a>, S: serde::Serializer>(pe: P, serializer: S) -> std::result::Result<S::Ok, S::Error> {
+pub(crate) fn serialize_pe<'a, P: Pe<'a>, S: serde::Serializer>(pe: P, serializer: S) -> core::result::Result<S::Ok, S::Error> {
 	use crate::util::serde_helper::*;
 
 	let mut state = serializer.serialize_struct(pe.serde_name(), 10)?;

@@ -2,8 +2,7 @@
 Resources.
 */
 
-use std::prelude::v1::*;
-use std::{char, fmt, iter, mem, slice};
+use core::{char, fmt, iter, mem, slice};
 
 use crate::image::*;
 use crate::{Error, Pod, Result};
@@ -507,6 +506,8 @@ static RSRC_TYPES: [Option<&str>; 25] = [
 
 #[cfg(feature = "serde")]
 mod serde {
+	use alloc::string::String;
+
 	use crate::util::serde_helper::*;
 
 	use super::{DataEntry, Directory, DirectoryEntry, Name, Resources};

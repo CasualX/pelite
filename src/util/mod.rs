@@ -2,7 +2,7 @@
 Utilities and other tidbits.
 */
 
-use std::prelude::v1::*;
+use alloc::vec::Vec;
 
 mod align;
 mod c_str;
@@ -75,7 +75,7 @@ pub(crate) fn trimn(buf: &[u8]) -> &[u8] {
 
 /// Parses an optionally nul-terminated string from byte buffer.
 pub(crate) fn parsen(buf: &[u8]) -> Result<&str, &[u8]> {
-	std::str::from_utf8(trimn(buf)).map_err(|_| buf)
+	core::str::from_utf8(trimn(buf)).map_err(|_| buf)
 }
 
 /// Reads an optionally nul-terminated wide char string from buffer.
@@ -135,6 +135,6 @@ pub(crate) unsafe fn extend_in_place<'a, T, F: FnMut(&'a mut [T])>(vec: &'a mut 
 	if vec_len + additional > vec.capacity() {
 		vec.reserve(additional);
 	}
-	f(std::slice::from_raw_parts_mut(vec.as_mut_ptr().offset(vec_len as isize), additional));
+	f(core::slice::from_raw_parts_mut(vec.as_mut_ptr().offset(vec_len as isize), additional));
 	vec.set_len(vec_len + additional);
 }

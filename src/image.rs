@@ -15,7 +15,7 @@ Sources:
 #![allow(non_camel_case_types)]
 #![cfg_attr(rustfmt, rustfmt::skip)]
 
-use std::{fmt, mem};
+use core::{fmt, mem};
 
 use crate::Pod;
 
@@ -166,7 +166,7 @@ pub struct IMAGE_VERSION<T> {
 }
 #[cfg(feature = "serde")]
 impl<T: fmt::Display> serde::Serialize for IMAGE_VERSION<T> {
-	fn serialize<S: serde::Serializer>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error> {
+	fn serialize<S: serde::Serializer>(&self, serializer: S) -> core::result::Result<S::Ok, S::Error> {
 		serializer.collect_str(self)
 	}
 }
@@ -486,7 +486,7 @@ pub struct VS_VERSION {
 }
 #[cfg(feature = "serde")]
 impl serde::Serialize for VS_VERSION {
-	fn serialize<S: serde::Serializer>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error> {
+	fn serialize<S: serde::Serializer>(&self, serializer: S) -> core::result::Result<S::Ok, S::Error> {
 		serializer.collect_str(self)
 	}
 }
@@ -502,7 +502,7 @@ impl fmt::Display for VS_VERSION {
 }
 
 #[cfg(feature = "serde")]
-fn ser_fixed_file_info_struc_version<S: serde::Serializer>(&version: &u32, serializer: S) -> std::result::Result<S::Ok, S::Error> {
+fn ser_fixed_file_info_struc_version<S: serde::Serializer>(&version: &u32, serializer: S) -> core::result::Result<S::Ok, S::Error> {
 	let version = IMAGE_VERSION {
 		Major: (version >> 16) as u16,
 		Minor: (version & 0xffff) as u16,

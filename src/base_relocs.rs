@@ -29,8 +29,8 @@ fn example(file: PeFile<'_>) -> pelite::Result<()> {
 ```
  */
 
-use std::prelude::v1::*;
-use std::{cmp, fmt, iter, mem, slice};
+use alloc::vec::Vec;
+use core::{cmp, fmt, iter, mem, slice};
 
 use crate::image::{IMAGE_BASE_RELOCATION, IMAGE_REL_BASED_ABSOLUTE};
 use crate::util::{extend_in_place, AlignTo};
@@ -187,6 +187,8 @@ impl<'a> fmt::Debug for Block<'a> {
 
 #[cfg(feature = "serde")]
 mod serde {
+	use alloc::vec::Vec;
+
 	use crate::util::serde_helper::*;
 
 	use super::BaseRelocs;
