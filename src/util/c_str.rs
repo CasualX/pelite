@@ -46,7 +46,7 @@ impl CStr {
 	///
 	/// Ensure that the byte slice ends with the only nul byte.
 	pub unsafe fn from_bytes_unchecked(bytes: &[u8]) -> &CStr {
-		mem::transmute(bytes)
+		unsafe { mem::transmute(bytes) }
 	}
 	/// Gets the C string as a nul terminated byte slice.
 	pub fn c_str(&self) -> &[u8] {
@@ -129,7 +129,7 @@ impl fmt::Debug for CStr {
 					bytes = &bytes[1..];
 					f.write_str("\\\\")?;
 				},
-				0x20...0x7E => {
+				0x20..=0x7E => {
 					let (s, tail) = split_f(bytes, |&byte| byte < 0x20 || byte >= 0x80 || byte == b'"' || byte == b'\\');
 					bytes = tail;
 					let s = unsafe { str::from_utf8_unchecked(s) };

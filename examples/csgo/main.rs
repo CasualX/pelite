@@ -3,12 +3,6 @@ Counter-Strike: Global Offensive
 ================================
 */
 
-macro_rules! tprint {
-	($($tt:tt)*) => {
-		format_xml::print! {$($tt)*}
-	};
-}
-
 mod classes;
 mod cvars;
 mod datamaps;

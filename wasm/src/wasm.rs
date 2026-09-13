@@ -1,7 +1,7 @@
 use std::error;
 
 #[allow(dead_code)]
-extern "C" {
+unsafe extern "C" {
 	fn setJSON(ptr: *const u8, len: usize);
 	fn setError(ptr: *const u8, len: usize);
 	fn setData(ptr: *const u8, len: usize);
@@ -37,21 +37,21 @@ pub fn set_error<E: error::Error>(error: E) {
 	}
 }
 
-#[no_mangle]
-pub unsafe fn bytesAllocate(len: usize) -> *mut u8 {
+#[unsafe(no_mangle)]
+pub unsafe fn bytesAllocate(len: usize) -> *mut u8 { unsafe {
 	let boxed = vec![0u8; len].into_boxed_slice();
 	let raw = Box::into_raw(boxed);
 	(*raw).as_mut_ptr()
-}
-#[no_mangle]
-pub unsafe fn bytesFree(data: *mut [u8]) {
+}}
+#[unsafe(no_mangle)]
+pub unsafe fn bytesFree(data: *mut [u8]) { unsafe {
 	let boxed = Box::from_raw(data);
 	drop(boxed);
-}
-pub unsafe fn take_bytes(data: *mut [u8]) -> Option<Box<[u8]>> {
+}}
+pub unsafe fn take_bytes(data: *mut [u8]) -> Option<Box<[u8]>> { unsafe {
 	if data.is_null() {
 		return None;
 	}
 	let boxed = Box::from_raw(data);
 	Some(boxed)
-}
+}}

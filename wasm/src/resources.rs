@@ -29,16 +29,16 @@ impl ResourceName {
 	}
 }
 
-#[no_mangle]
-pub unsafe fn pefileResourcesTree(pefile: *mut PeFile) {
+#[unsafe(no_mangle)]
+pub unsafe fn pefileResourcesTree(pefile: *mut PeFile) { unsafe {
 	match (*pefile).as_ref().resources() {
 		Ok(resources) => set_json(resources),
 		Err(Null) => set_null(),
 		Err(err) => set_error(err),
 	}
-}
-#[no_mangle]
-pub unsafe fn pefileResourcesFindData(pefile: *mut PeFile, path: *mut str) {
+}}
+#[unsafe(no_mangle)]
+pub unsafe fn pefileResourcesFindData(pefile: *mut PeFile, path: *mut str) { unsafe {
 	let path = Box::from_raw(path);
 	let path = &*path;
 	match (*pefile).as_ref().resources() {
@@ -50,9 +50,9 @@ pub unsafe fn pefileResourcesFindData(pefile: *mut PeFile, path: *mut str) {
 		Err(Null) => set_null(),
 		Err(err) => set_error(err),
 	}
-}
-#[no_mangle]
-pub unsafe fn pefileResourcesFindResource(pefile: *mut PeFile, ty: *mut str, name: *mut str) {
+}}
+#[unsafe(no_mangle)]
+pub unsafe fn pefileResourcesFindResource(pefile: *mut PeFile, ty: *mut str, name: *mut str) { unsafe {
 	let ty = ResourceName::from(ty);
 	let name = ResourceName::from(name);
 	let path = &[ty.as_name(), name.as_name()];
@@ -65,9 +65,9 @@ pub unsafe fn pefileResourcesFindResource(pefile: *mut PeFile, ty: *mut str, nam
 		Err(Null) => set_null(),
 		Err(err) => set_error(err),
 	}
-}
-#[no_mangle]
-pub unsafe fn pefileResourcesFindResourceEx(pefile: *mut PeFile, ty: *mut str, name: *mut str, lang: *mut str) {
+}}
+#[unsafe(no_mangle)]
+pub unsafe fn pefileResourcesFindResourceEx(pefile: *mut PeFile, ty: *mut str, name: *mut str, lang: *mut str) { unsafe {
 	let ty = ResourceName::from(ty);
 	let name = ResourceName::from(name);
 	let lang = ResourceName::from(lang);
@@ -81,9 +81,9 @@ pub unsafe fn pefileResourcesFindResourceEx(pefile: *mut PeFile, ty: *mut str, n
 		Err(Null) => set_null(),
 		Err(err) => set_error(err),
 	}
-}
-#[no_mangle]
-pub unsafe fn pefileResourcesVersionInfo(pefile: *mut PeFile) {
+}}
+#[unsafe(no_mangle)]
+pub unsafe fn pefileResourcesVersionInfo(pefile: *mut PeFile) { unsafe {
 	match (*pefile).as_ref().resources() {
 		Ok(resources) => match resources.version_info() {
 			Ok(version_info) => set_json(version_info),
@@ -93,9 +93,9 @@ pub unsafe fn pefileResourcesVersionInfo(pefile: *mut PeFile) {
 		Err(Null) => set_null(),
 		Err(err) => set_error(err),
 	}
-}
-#[no_mangle]
-pub unsafe fn pefileResourcesManifest(pefile: *mut PeFile) {
+}}
+#[unsafe(no_mangle)]
+pub unsafe fn pefileResourcesManifest(pefile: *mut PeFile) { unsafe {
 	match (*pefile).as_ref().resources() {
 		Ok(resources) => match resources.manifest() {
 			Ok(manifest) => set_string(manifest),
@@ -105,4 +105,4 @@ pub unsafe fn pefileResourcesManifest(pefile: *mut PeFile) {
 		Err(Null) => set_null(),
 		Err(err) => set_error(err),
 	}
-}
+}}

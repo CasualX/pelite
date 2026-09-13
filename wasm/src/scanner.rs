@@ -2,8 +2,8 @@ use pelite::pattern as pat;
 
 use crate::{wasm::*, PeFile};
 
-#[no_mangle]
-pub unsafe fn pefileScannerExec(pefile: *mut PeFile, rva: u32, pat: *mut str) {
+#[unsafe(no_mangle)]
+pub unsafe fn pefileScannerExec(pefile: *mut PeFile, rva: u32, pat: *mut str) { unsafe {
 	let pattern = match pat::parse(&Box::from_raw(pat)) {
 		Ok(pattern) => pattern,
 		Err(err) => return set_error(err),
@@ -16,9 +16,9 @@ pub unsafe fn pefileScannerExec(pefile: *mut PeFile, rva: u32, pat: *mut str) {
 	else {
 		set_null();
 	}
-}
-#[no_mangle]
-pub unsafe fn pefileScannerFinds(pefile: *mut PeFile, pat: *mut str, start: u32, end: u32) {
+}}
+#[unsafe(no_mangle)]
+pub unsafe fn pefileScannerFinds(pefile: *mut PeFile, pat: *mut str, start: u32, end: u32) { unsafe {
 	let pattern = match pat::parse(&Box::from_raw(pat)) {
 		Ok(pattern) => pattern,
 		Err(err) => return set_error(err),
@@ -33,13 +33,13 @@ pub unsafe fn pefileScannerFinds(pefile: *mut PeFile, pat: *mut str, start: u32,
 	else {
 		set_null();
 	}
-}
-#[no_mangle]
-pub unsafe fn pefileScannerFindsCode(pefile: *mut PeFile, pat: *mut str) {
+}}
+#[unsafe(no_mangle)]
+pub unsafe fn pefileScannerFindsCode(pefile: *mut PeFile, pat: *mut str) { unsafe {
 	pefileScannerFinds(pefile, pat, !0, 0)
-}
-#[no_mangle]
-pub unsafe fn pefileScannerMatches(pefile: *mut PeFile, pat: *mut str, start: u32, end: u32, mut offset: usize, limit: usize) {
+}}
+#[unsafe(no_mangle)]
+pub unsafe fn pefileScannerMatches(pefile: *mut PeFile, pat: *mut str, start: u32, end: u32, mut offset: usize, limit: usize) { unsafe {
 	let pattern = match pat::parse(&Box::from_raw(pat)) {
 		Ok(pattern) => pattern,
 		Err(err) => return set_error(err),
@@ -63,8 +63,8 @@ pub unsafe fn pefileScannerMatches(pefile: *mut PeFile, pat: *mut str, start: u3
 		}
 	}
 	set_json(result);
-}
-#[no_mangle]
-pub unsafe fn pefileScannerMatchesCode(pefile: *mut PeFile, pat: *mut str, offset: usize, limit: usize) {
+}}
+#[unsafe(no_mangle)]
+pub unsafe fn pefileScannerMatchesCode(pefile: *mut PeFile, pat: *mut str, offset: usize, limit: usize) { unsafe {
 	pefileScannerMatches(pefile, pat, !0, 0, offset, limit)
-}
+}}
