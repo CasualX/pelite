@@ -217,8 +217,8 @@ impl<'a> VersionInfo<'a> {
 
 						visit.enter_scope(2);
 						for string in Parser::new_words(string_table.children).filter_map(Result::ok) {
-							// Strip the nul terminator...
-							let value = if string.value.last() != Some(&0) { string.value } else { &string.value[..string.value.len() - 1] };
+							// String values are nul terminated; ignore any trailing data.
+							let value = wstrn(string.value);
 							visit.string(string.key, value);
 						}
 						visit.exit_scope(2);
@@ -604,9 +604,9 @@ fn parse_tlv<'a>(state: &mut Parser<'a>) -> Result<TLV<'a>> {
 	words = words.get(value_start..).ok_or(Error::Invalid)?;
 
 	// Split the remaining words between the Value and Children
-	if value_length > words.len() {
-		return Err(Error::Invalid);
-	}
+	// Some producers emit a value length larger than the containing node.
+	// Preserve the available value instead of rejecting the entire node.
+	let value_length = cmp::min(value_length, words.len());
 	let value = &words[..value_length];
 	// The length does not contain padding to align to a 32-bit boundary
 	let children = &words[cmp::min(value.len().align_to(2), words.len())..];
@@ -640,9 +640,16 @@ fn test_parse_tlv_oob() {
 	assert_eq!(parser.next(), Some(Err(Error::Invalid)));
 	assert_eq!(parser.next(), None);
 
-	// TLV value field larger than the data
-	parser = Parser::new_zero(&[8, 10, 0, 0, 0, 0]);
-	assert_eq!(parser.next(), Some(Err(Error::Invalid)));
+	// A value length larger than the node is clamped to the available data.
+	parser = Parser::new_words(&[12, 10, 1, 0, 0x1111, 0x2222]);
+	assert_eq!(
+		parser.next(),
+		Some(Ok(TLV {
+			key: &[],
+			value: &[0x1111, 0x2222],
+			children: &[]
+		}))
+	);
 	assert_eq!(parser.next(), None);
 }
 
