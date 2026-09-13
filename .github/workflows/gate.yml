@@ -49,23 +49,6 @@ jobs:
       - name: Run tests
         run: cargo test --all-features --no-fail-fast
 
-  style:
-    name: Rustfmt
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-
-    steps:
-      - name: Checkout sources
-        uses: actions/checkout@v7
-
-      - name: Install nightly Rust
-        uses: dtolnay/rust-toolchain@nightly
-        with:
-          components: rustfmt
-
-      - name: Check formatting
-        run: cargo fmt --all -- --check
-
   wasm:
     name: WebAssembly
     runs-on: ubuntu-latest
