@@ -44,7 +44,7 @@ impl<'a> PeView<'a> {
 	///   The byte slice is too small to fit the PE headers.
 	///
 	/// * [`Misaligned`](../enum.Error.html#variant.Misaligned):
-	///   The minimum alignment of 4 is not satisfied.
+	///   The image base or PE headers do not satisfy their alignment requirements.
 	///
 	/// * [`BadMagic`](../enum.Error.html#variant.BadMagic):
 	///   This is not a PE file.
@@ -164,12 +164,30 @@ impl<'a> serde::Serialize for PeView<'a> {
 
 #[cfg(test)]
 mod tests {
+	use core::mem;
+
 	use crate::Error;
 
-	use super::PeView;
+	use super::{PeView, IMAGE_DOS_SIGNATURE, IMAGE_NT_HEADERS};
 
 	#[test]
 	fn from_byte_slice() {
 		assert!(matches!(PeView::from_bytes(&[]), Err(Error::Bounds)));
+	}
+
+	#[test]
+	fn misaligned_nt_headers() {
+		if mem::align_of::<IMAGE_NT_HEADERS>() <= 4 {
+			return;
+		}
+
+		#[repr(align(8))]
+		struct Aligned([u8; 256]);
+
+		let mut image = Aligned([0; 256]);
+		image.0[..2].copy_from_slice(&IMAGE_DOS_SIGNATURE.to_le_bytes());
+		image.0[60..64].copy_from_slice(&68u32.to_le_bytes());
+
+		assert!(matches!(PeView::from_bytes(&image.0), Err(Error::Misaligned)));
 	}
 }
