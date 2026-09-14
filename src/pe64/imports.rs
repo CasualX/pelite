@@ -76,7 +76,7 @@ fn import_from_va<'a, P: Pe<'a>>(pe: P, &va: &'a Va) -> Result<Import<'a>> {
 
 /// Import directory.
 ///
-/// For more information see the [module-level documentation](index.html).
+/// For more information see the [module-level documentation][self].
 #[derive(Copy, Clone)]
 pub struct Imports<'a, P> {
 	pe: P,
@@ -121,7 +121,7 @@ impl<'a, P: Pe<'a>> fmt::Debug for Imports<'a, P> {
 
 /// Import Address Table.
 ///
-/// For more information see the [module-level documentation](index.html).
+/// For more information see the [module-level documentation][self].
 #[derive(Copy, Clone)]
 pub struct IAT<'a, P> {
 	pe: P,
@@ -220,7 +220,7 @@ impl<'a, P: Pe<'a>> Desc<'a, P> {
 	/// After being loaded as a library their values are resolved to the addresses of the imported functions.
 	///
 	/// Otherwise these contain references to the imported functions.
-	/// See [`import_from_va`](struct.Desc.html#import_from_va) to get their names.
+	/// See [`Desc::int`] to get their names.
 	pub fn iat(&self) -> Result<slice::Iter<'a, Va>> {
 		let slice = self.pe.derva_slice_s(self.image.FirstThunk.get(), 0)?;
 		Ok(slice.iter())

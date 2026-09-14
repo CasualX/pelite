@@ -40,19 +40,19 @@ impl<'a> PeView<'a> {
 	///
 	/// # Errors
 	///
-	/// * [`Bounds`](../enum.Error.html#variant.Bounds):
+	/// * [`Bounds`][crate::Error::Bounds]:
 	///   The byte slice is too small to fit the PE headers.
 	///
-	/// * [`Misaligned`](../enum.Error.html#variant.Misaligned):
+	/// * [`Misaligned`][crate::Error::Misaligned]:
 	///   The image base or PE headers do not satisfy their alignment requirements.
 	///
-	/// * [`BadMagic`](../enum.Error.html#variant.BadMagic):
+	/// * [`BadMagic`][crate::Error::BadMagic]:
 	///   This is not a PE file.
 	///
-	/// * [`PeMagic`](../enum.Error.html#variant.PeMagic):
+	/// * [`PeMagic`][crate::Error::PeMagic]:
 	///   Trying to parse a PE32 file with the PE32+ parser and vice versa.
 	///
-	/// * [`Insanity`](../enum.Error.html#variant.Insanity):
+	/// * [`Insanity`][crate::Error::Insanity]:
 	///   Reasonable limits on `e_lfanew`, `SizeOfHeaders` or `NumberOfSections` are exceeded.
 	#[inline]
 	pub fn from_bytes<T: AsRef<[u8]> + ?Sized>(image: &'a T) -> Result<PeView<'a>> {

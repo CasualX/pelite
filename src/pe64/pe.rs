@@ -74,13 +74,13 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	///
 	/// # Errors
 	///
-	/// * [`Overflow`](../enum.Error.html#variant.Overflow):
+	/// * [`Overflow`][crate::Error::Overflow]:
 	///   The rva is contained within a corrupt section where the range bounds overflow.
 	///
-	/// * [`ZeroFill`](../enum.Error.html#variant.ZeroFill):
+	/// * [`ZeroFill`][crate::Error::ZeroFill]:
 	///   The rva points to part of a section zero filled and is not available on disk.
 	///
-	/// * [`Bounds`](../enum.Error.html#variant.Bounds):
+	/// * [`Bounds`][crate::Error::Bounds]:
 	///   The rva falls outside any valid section or the PE headers.
 	fn rva_to_file_offset(self, rva: Rva) -> Result<usize> {
 		// Consider rva inside headers to be valid
@@ -122,13 +122,13 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	///
 	/// # Errors
 	///
-	/// * [`Overflow`](../enum.Error.html#variant.Overflow):
+	/// * [`Overflow`][crate::Error::Overflow]:
 	///   The file offset is contained within a corrupt section where the range bounds overflow.
 	///
-	/// * [`Unmapped`](../enum.Error.html#variant.Unmapped):
+	/// * [`Unmapped`][crate::Error::Unmapped]:
 	///   The file offset points to part of a section not mapped and is not available in virtual memory.
 	///
-	/// * [`Bounds`](../enum.Error.html#variant.Bounds):
+	/// * [`Bounds`][crate::Error::Bounds]:
 	///   The file offset falls outside any valid section or PE headers.
 	fn file_offset_to_rva(self, file_offset: usize) -> Result<Rva> {
 		// Consider rva inside headers to be valid
@@ -171,10 +171,10 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	///
 	/// # Errors
 	///
-	/// * [`Null`](../enum.Error.html#variant.Null):
+	/// * [`Null`][crate::Error::Null]:
 	///   The rva is zero.
 	///
-	/// * [`Bounds`](../enum.Error.html#variant.Bounds):
+	/// * [`Bounds`][crate::Error::Bounds]:
 	///   The rva does not fall within the virtual image bounds.
 	fn rva_to_va(self, rva: Rva) -> Result<Va> {
 		if rva == 0 {
@@ -196,10 +196,10 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	///
 	/// # Errors
 	///
-	/// * [`Null`](../enum.Error.html#variant.Null):
+	/// * [`Null`][crate::Error::Null]:
 	///   The va is zero.
 	///
-	/// * [`Bounds`](../enum.Error.html#variant.Bounds):
+	/// * [`Bounds`][crate::Error::Bounds]:
 	///   The va does not fall within the virtual image bounds.
 	fn va_to_rva(self, va: Va) -> Result<Rva> {
 		if va == 0 {
@@ -231,7 +231,7 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	///
 	/// # Errors
 	///
-	/// * [`Null`](../enum.Error.html#variant.Null):
+	/// * [`Null`][crate::Error::Null]:
 	///   The rva is zero.
 	fn slice(&self, rva: Rva, min_size_of: usize, align: usize) -> Result<&'a [u8]> {
 		unsafe {
@@ -256,10 +256,10 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	///
 	/// # Errors
 	///
-	/// * [`Null`](../enum.Error.html#variant.Null):
+	/// * [`Null`][crate::Error::Null]:
 	///   The virtual address or pointer to raw data is zero.
 	///
-	/// * [`Bounds`](../enum.Error.html#variant.Bounds):
+	/// * [`Bounds`][crate::Error::Bounds]:
 	///   The data referenced by the section header is out of bounds.
 	fn get_section_bytes(self, section_header: &IMAGE_SECTION_HEADER) -> Result<&'a [u8]> {
 		crate::wrap::get_section_bytes(self.image(), section_header, self.align())
@@ -275,7 +275,7 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	///
 	/// # Errors
 	///
-	/// * [`Null`](../enum.Error.html#variant.Null):
+	/// * [`Null`][crate::Error::Null]:
 	///   The va is zero.
 	fn read(&self, va: Va, min_size_of: usize, align: usize) -> Result<&'a [u8]> {
 		unsafe {
@@ -476,63 +476,63 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 
 	/// Gets the Export Directory.
 	///
-	/// See the [exports](exports/index.html) module for more information.
+	/// See the [exports][super::exports] module for more information.
 	///
-	/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) if the image has no exports. Any other error indiciates some form of corruption.
+	/// Returns [`Err(Null)`][crate::Error::Null] if the image has no exports. Any other error indiciates some form of corruption.
 	fn exports(self) -> Result<super::exports::Exports<'a, Self>> {
 		super::exports::Exports::try_from(self)
 	}
 
 	/// Gets the Import Directory.
 	///
-	/// See the [imports](imports/index.html) module for more information.
+	/// See the [imports][super::imports] module for more information.
 	///
-	/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) if the image has no imports. Any other error indicates some form of corruption.
+	/// Returns [`Err(Null)`][crate::Error::Null] if the image has no imports. Any other error indicates some form of corruption.
 	fn imports(self) -> Result<super::imports::Imports<'a, Self>> {
 		super::imports::Imports::try_from(self)
 	}
 
 	/// Gets the Import Address Table.
 	///
-	/// See the [imports](imports/index.html) module for more information.
+	/// See the [imports][super::imports] module for more information.
 	///
-	/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) if the image has no iat. Any other error indicates some form of corruption.
+	/// Returns [`Err(Null)`][crate::Error::Null] if the image has no iat. Any other error indicates some form of corruption.
 	fn iat(self) -> Result<super::imports::IAT<'a, Self>> {
 		super::imports::IAT::try_from(self)
 	}
 
 	/// Gets the Base Relocations Directory.
 	///
-	/// See the [base relocations](base_relocs/index.html) module for more information.
+	/// See the [base relocations][crate::base_relocs] module for more information.
 	///
-	/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) if the image has no base relocations. Any other error indicates some form of corruption.
+	/// Returns [`Err(Null)`][crate::Error::Null] if the image has no base relocations. Any other error indicates some form of corruption.
 	fn base_relocs(self) -> Result<crate::base_relocs::BaseRelocs<'a>> {
 		super::base_relocs::try_from(self)
 	}
 
 	/// Gets the Load Config Directory.
 	///
-	/// See the [load config](load_config/index.html) module for more information.
+	/// See the [load config][super::load_config] module for more information.
 	///
-	/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) if the image has no load config. Any other error indicates some form of corruption.
+	/// Returns [`Err(Null)`][crate::Error::Null] if the image has no load config. Any other error indicates some form of corruption.
 	fn load_config(self) -> Result<super::load_config::LoadConfig<'a, Self>> {
 		super::load_config::LoadConfig::try_from(self)
 	}
 
 	/// Gets the TLS Directory.
 	///
-	/// See the [tls](tls/index.html) module for more information.
+	/// See the [tls][super::tls] module for more information.
 	///
-	/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) if the image has no tls. Any other error indicates some form of corruption.
+	/// Returns [`Err(Null)`][crate::Error::Null] if the image has no tls. Any other error indicates some form of corruption.
 	fn tls(self) -> Result<super::tls::Tls<'a, Self>> {
 		super::tls::Tls::try_from(self)
 	}
 
 	/// Gets the Security Directory.
 	///
-	/// See the [security](security/index.html) module for more information.
+	/// See the [security][crate::security] module for more information.
 	///
-	/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) if the image has no security info. Any other error indicates some form of corruption.
+	/// Returns [`Err(Null)`][crate::Error::Null] if the image has no security info. Any other error indicates some form of corruption.
 	fn security(self) -> Result<crate::security::Security<'a>> {
 		super::security::try_from(self)
 	}
@@ -542,9 +542,9 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 		pe64 {
 			/// Gets the x64 Exception Directory.
 			///
-			/// See the [x64 exception](exception_x64/index.html) module for more information.
+			/// See the [x64 exception][super::exception_x64] module for more information.
 			///
-			/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) if the image has no exception directory.
+			/// Returns [`Err(Null)`][crate::Error::Null] if the image has no exception directory.
 			/// Any other error indicates an unsupported machine type or some form of corruption.
 			fn exception_x64(self) -> Result<super::exception_x64::ExceptionX64<'a, Self>> {
 				super::exception_x64::ExceptionX64::try_from(self)
@@ -552,9 +552,9 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 
 			/// Gets the ARM64 Exception Directory.
 			///
-			/// See the [ARM64 exception](exception_arm64/index.html) module for more information.
+			/// See the [ARM64 exception][super::exception_arm64] module for more information.
 			///
-			/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) if the image has no exception directory.
+			/// Returns [`Err(Null)`][crate::Error::Null] if the image has no exception directory.
 			/// Any other error indicates an unsupported machine type or some form of corruption.
 			fn exception_arm64(self) -> Result<super::exception_arm64::ExceptionArm64<'a, Self>> {
 				super::exception_arm64::ExceptionArm64::try_from(self)
@@ -564,18 +564,18 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 
 	/// Gets the Debug Directory.
 	///
-	/// See the [debug](debug/index.html) module for more information.
+	/// See the [debug][super::debug] module for more information.
 	///
-	/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) if the image has no debug info. Any other error indicates some form of corruption.
+	/// Returns [`Err(Null)`][crate::Error::Null] if the image has no debug info. Any other error indicates some form of corruption.
 	fn debug(self) -> Result<super::debug::Debug<'a, Self>> {
 		super::debug::Debug::try_from(self)
 	}
 
 	/// Gets the Resources.
 	///
-	/// See the [resources](resources/index.html) module for more information.
+	/// See the [resources][super::resources] module for more information.
 	///
-	/// Returns [`Err(Null)`](../enum.Error.html#variant.Null) if the image has no resources. Any other error indicates some form of corruption.
+	/// Returns [`Err(Null)`][crate::Error::Null] if the image has no resources. Any other error indicates some form of corruption.
 	fn resources(self) -> Result<crate::resources::Resources<'a>>
 	where
 		Self: Copy,
@@ -588,7 +588,7 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 
 	/// Gets Scanner access.
 	///
-	/// See the [scanner](scanner/index.html) module for more information.
+	/// See the [scanner][super::scanner] module for more information.
 	fn scanner(self) -> super::scanner::Scanner<Self> {
 		super::scanner::Scanner::new(self)
 	}

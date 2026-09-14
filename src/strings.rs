@@ -37,7 +37,7 @@ impl Default for Config {
 	}
 }
 impl Config {
-	/// Constructs the [enumerator](struct.Enumerator.html) with this configuration.
+	/// Constructs the [`Enumerator`] with this configuration.
 	///
 	/// Given the `base` argument the relative virtual address of the `bytes` slice.
 	pub fn enumerate(self, base: u32, bytes: &'_ [u8]) -> Enumerator<'_> {

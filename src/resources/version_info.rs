@@ -179,7 +179,7 @@ impl<'a> VersionInfo<'a> {
 	/// Parse the version information.
 	///
 	/// Because of the super convoluted format, the visitor pattern is used.
-	/// Implement the [`Visit` trait](trait.Visit.html) to get the desired information.
+	/// Implement the [`Visit`] trait to get the desired information.
 	///
 	/// To keep the API simple all errors are ignored, any invalid or corrupted data is skipped.
 	pub fn visit(self, visit: &mut dyn Visit<'a>) {

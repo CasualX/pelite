@@ -14,7 +14,7 @@ use super::Pe;
 
 /// Exception Directory.
 ///
-/// For more information see the [module-level documentation](index.html).
+/// For more information see the [module-level documentation][self].
 #[derive(Copy, Clone)]
 pub struct ExceptionX64<'a, P> {
 	pe: P,

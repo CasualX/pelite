@@ -1,9 +1,9 @@
 /*!
 Your adventure starts with a choice:
 
-Do you wish to inspect 64-bit PE binares? ⟶ [continue](pe64/index.html)
+Do you wish to inspect 64-bit PE binares? ⟶ [continue][crate::pe64]
 
-Do you wish to inspect 32-bit PE binaries? ⟶ [continue](pe32/index.html)
+Do you wish to inspect 32-bit PE binaries? ⟶ [continue][crate::pe32]
 
 The `pelite::pe` module is aliased to the target of the compiled crate.
 Use it if you want to work with modules in your own process.

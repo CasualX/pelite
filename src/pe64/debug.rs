@@ -34,7 +34,7 @@ use super::{image::*, Align, Pe};
 
 /// Debug directory.
 ///
-/// For more information see the [module-level documentation](index.html).
+/// For more information see the [module-level documentation][self].
 #[derive(Copy, Clone)]
 pub struct Debug<'a, P> {
 	pe: P,
