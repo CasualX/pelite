@@ -213,7 +213,7 @@ impl<'a, P: Pe<'a>> Desc<'a, P> {
 	}
 	/// Gets the name of the DLL imported from.
 	pub fn dll_name(&self) -> Result<&'a CStr> {
-		self.pe.derva_c_str(self.image.Name)
+		self.pe.derva_c_str(self.image.Name.get())
 	}
 	/// Gets the import address table.
 	///
@@ -222,12 +222,12 @@ impl<'a, P: Pe<'a>> Desc<'a, P> {
 	/// Otherwise these contain references to the imported functions.
 	/// See [`import_from_va`](struct.Desc.html#import_from_va) to get their names.
 	pub fn iat(&self) -> Result<slice::Iter<'a, Va>> {
-		let slice = self.pe.derva_slice_s(self.image.FirstThunk, 0)?;
+		let slice = self.pe.derva_slice_s(self.image.FirstThunk.get(), 0)?;
 		Ok(slice.iter())
 	}
 	/// Gets the import name table.
 	pub fn int(&self) -> Result<iter::Map<slice::Iter<'a, Va>, impl Clone + FnMut(&'a Va) -> Result<Import<'a>>>> {
-		let slice = self.pe.derva_slice_s(self.image.OriginalFirstThunk, 0)?;
+		let slice = self.pe.derva_slice_s(self.image.OriginalFirstThunk.get(), 0)?;
 		let pe = self.pe;
 		Ok(slice.iter().map(move |va| import_from_va(pe, va)))
 	}

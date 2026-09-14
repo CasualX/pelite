@@ -1,4 +1,4 @@
-use pelite::pe32::{image, Pe, PeFile, PeObject};
+use pelite::pe32::{image, Pe, PeFile, PeObject, PeView};
 use pelite::{FileMap, Pod};
 
 // For fun let's try loading tiny PE files.
@@ -310,6 +310,28 @@ fn tiny_import_209() {
 	assert_eq!(kernel32.dll_name().unwrap(), "KERNEL32.dll");
 	assert_eq!(kernel32.iat().unwrap().len(), 1);
 	assert_eq!(kernel32.int().unwrap().len(), 1);
+}
+
+/*
+Import descriptors may appear at RVAs that are not naturally aligned.
+Regression test for https://github.com/CasualX/pelite/issues/246.
+*/
+
+#[test]
+fn unaligned_import_descriptors() {
+	let file_map = FileMap::open("tests/tiny/tiny.import.209").unwrap();
+	let file = PeFile::from_bytes(&file_map).unwrap();
+	let mut image = file.to_view();
+
+	// Relocate the descriptor and its null terminator to an odd RVA.
+	let descriptors = image[0x8c..0xb4].to_vec();
+	image[0x101..0x129].copy_from_slice(&descriptors);
+	image[0x88..0x8c].copy_from_slice(&0x101u32.to_le_bytes());
+
+	let view = PeView::from_bytes(&image).unwrap();
+	let imports = view.imports().unwrap();
+	assert_eq!(imports.image().len(), 1);
+	assert_eq!(imports.into_iter().next().unwrap().dll_name().unwrap(), "KERNEL32.dll");
 }
 
 /*
