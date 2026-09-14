@@ -1264,57 +1264,57 @@ unsafe impl Pod for IMAGE_DEBUG_VC_FEATURE {}
 
 //----------------------------------------------------------------
 
-const _: [(); 64] = [(); mem::size_of::<IMAGE_DOS_HEADER>()];
-const _: [(); 20] = [(); mem::size_of::<IMAGE_FILE_HEADER>()];
-const _: [(); 8] = [(); mem::size_of::<IMAGE_DATA_DIRECTORY>()];
-const _: [(); 96] = [(); mem::size_of::<IMAGE_OPTIONAL_HEADER32>()]; // Unsized
-const _: [(); 112] = [(); mem::size_of::<IMAGE_OPTIONAL_HEADER64>()]; // Unsized
-const _: [(); 4] = [(); mem::align_of::<IMAGE_OPTIONAL_HEADER64>()];
-const _: [(); 24] = [(); mem::offset_of!(IMAGE_OPTIONAL_HEADER64, ImageBase)];
-const _: [(); 72] = [(); mem::offset_of!(IMAGE_OPTIONAL_HEADER64, SizeOfStackReserve)];
-const _: [(); 108] = [(); mem::offset_of!(IMAGE_OPTIONAL_HEADER64, NumberOfRvaAndSizes)];
-const _: [(); 120] = [(); mem::size_of::<IMAGE_NT_HEADERS32>()]; // Unsized
-const _: [(); 136] = [(); mem::size_of::<IMAGE_NT_HEADERS64>()]; // Unsized
-const _: [(); 4] = [(); mem::align_of::<IMAGE_NT_HEADERS64>()];
-const _: [(); 40] = [(); mem::size_of::<IMAGE_SECTION_HEADER>()];
-const _: [(); 40] = [(); mem::size_of::<IMAGE_EXPORT_DIRECTORY>()];
-const _: [(); 20] = [(); mem::size_of::<IMAGE_IMPORT_DESCRIPTOR>()];
-const _: [(); 1] = [(); mem::align_of::<IMAGE_IMPORT_DESCRIPTOR>()];
-const _: [(); 16] = [(); mem::size_of::<IMAGE_RESOURCE_DIRECTORY>()];
-const _: [(); 8] = [(); mem::size_of::<IMAGE_RESOURCE_DIRECTORY_ENTRY>()];
-const _: [(); 16] = [(); mem::size_of::<IMAGE_RESOURCE_DATA_ENTRY>()];
-const _: [(); 8] = [(); mem::size_of::<IMAGE_BASE_RELOCATION>()];
-const _: [(); 4] = [(); mem::size_of::<IMAGE_U32>()];
-const _: [(); 1] = [(); mem::align_of::<IMAGE_U32>()];
-const _: [(); 8] = [(); mem::size_of::<IMAGE_U64>()];
-const _: [(); 4] = [(); mem::align_of::<IMAGE_U64>()];
-const _: [(); 196] = [(); mem::size_of::<IMAGE_LOAD_CONFIG_DIRECTORY32>()];
-const _: [(); 44] = [(); mem::offset_of!(IMAGE_LOAD_CONFIG_DIRECTORY32, ProcessHeapFlags)];
-const _: [(); 48] = [(); mem::offset_of!(IMAGE_LOAD_CONFIG_DIRECTORY32, ProcessAffinityMask)];
-const _: [(); 328] = [(); mem::size_of::<IMAGE_LOAD_CONFIG_DIRECTORY64>()];
-const _: [(); 4] = [(); mem::align_of::<IMAGE_LOAD_CONFIG_DIRECTORY64>()];
-const _: [(); 24] = [(); mem::offset_of!(IMAGE_LOAD_CONFIG_DIRECTORY64, DeCommitFreeBlockThreshold)];
-const _: [(); 144] = [(); mem::offset_of!(IMAGE_LOAD_CONFIG_DIRECTORY64, GuardFlags)];
-const _: [(); 320] = [(); mem::offset_of!(IMAGE_LOAD_CONFIG_DIRECTORY64, UmaFunctionPointers)];
-const _: [(); 3 * 4] = [(); mem::size_of::<IMAGE_LOAD_CONFIG_CODE_INTEGRITY>()];
-const _: [(); 2 * 4] = [(); mem::size_of::<IMAGE_DYNAMIC_RELOCATION_TABLE>()]; // Unsized
-const _: [(); 2 * 4] = [(); mem::size_of::<IMAGE_DYNAMIC_RELOCATION32>()]; // Unsized
-const _: [(); 3 * 4] = [(); mem::size_of::<IMAGE_DYNAMIC_RELOCATION64>()]; // Unsized
-const _: [(); 31 * 4] = [(); mem::size_of::<IMAGE_GUARDCF32>()];
-const _: [(); 120] = [(); mem::offset_of!(IMAGE_GUARDCF32, UmaFunctionPointers)];
-const _: [(); 54 * 4] = [(); mem::size_of::<IMAGE_GUARDCF64>()];
-const _: [(); 4] = [(); mem::align_of::<IMAGE_GUARDCF64>()];
-const _: [(); 208] = [(); mem::offset_of!(IMAGE_GUARDCF64, UmaFunctionPointers)];
-const _: [(); 24] = [(); mem::size_of::<IMAGE_TLS_DIRECTORY32>()];
-const _: [(); 40] = [(); mem::size_of::<IMAGE_TLS_DIRECTORY64>()];
-const _: [(); 2] = [(); mem::size_of::<UNWIND_CODE>()];
-const _: [(); 4] = [(); mem::size_of::<UNWIND_INFO>()]; // Unsized
-const _: [(); 12] = [(); mem::size_of::<RUNTIME_FUNCTION>()];
-const _: [(); 8] = [(); mem::size_of::<IMAGE_ARM64_RUNTIME_FUNCTION_ENTRY>()];
-const _: [(); 4] = [(); mem::size_of::<SCOPE_TABLE>()]; // Unsized
-const _: [(); 16] = [(); mem::size_of::<SCOPE_RECORD>()];
-const _: [(); 16] = [(); mem::size_of::<GUID>()];
-const _: [(); 28] = [(); mem::size_of::<IMAGE_DEBUG_DIRECTORY>()];
-const _: [(); 16] = [(); mem::size_of::<IMAGE_DEBUG_CV_INFO_PDB20>()]; // Unsized
-const _: [(); 24] = [(); mem::size_of::<IMAGE_DEBUG_CV_INFO_PDB70>()]; // Unsized
-const _: [(); 12] = [(); mem::size_of::<IMAGE_DEBUG_MISC>()]; // Unsized
+assert_sizeof!(64, IMAGE_DOS_HEADER);
+assert_sizeof!(20, IMAGE_FILE_HEADER);
+assert_sizeof!(8, IMAGE_DATA_DIRECTORY);
+assert_sizeof!(96, IMAGE_OPTIONAL_HEADER32); // Unsized
+assert_sizeof!(112, IMAGE_OPTIONAL_HEADER64); // Unsized
+assert_alignof!(4, IMAGE_OPTIONAL_HEADER64);
+assert_offsetof!(24, IMAGE_OPTIONAL_HEADER64, ImageBase);
+assert_offsetof!(72, IMAGE_OPTIONAL_HEADER64, SizeOfStackReserve);
+assert_offsetof!(108, IMAGE_OPTIONAL_HEADER64, NumberOfRvaAndSizes);
+assert_sizeof!(120, IMAGE_NT_HEADERS32); // Unsized
+assert_sizeof!(136, IMAGE_NT_HEADERS64); // Unsized
+assert_alignof!(4, IMAGE_NT_HEADERS64);
+assert_sizeof!(40, IMAGE_SECTION_HEADER);
+assert_sizeof!(40, IMAGE_EXPORT_DIRECTORY);
+assert_sizeof!(20, IMAGE_IMPORT_DESCRIPTOR);
+assert_alignof!(1, IMAGE_IMPORT_DESCRIPTOR);
+assert_sizeof!(16, IMAGE_RESOURCE_DIRECTORY);
+assert_sizeof!(8, IMAGE_RESOURCE_DIRECTORY_ENTRY);
+assert_sizeof!(16, IMAGE_RESOURCE_DATA_ENTRY);
+assert_sizeof!(8, IMAGE_BASE_RELOCATION);
+assert_sizeof!(4, IMAGE_U32);
+assert_alignof!(1, IMAGE_U32);
+assert_sizeof!(8, IMAGE_U64);
+assert_alignof!(4, IMAGE_U64);
+assert_sizeof!(196, IMAGE_LOAD_CONFIG_DIRECTORY32);
+assert_offsetof!(44, IMAGE_LOAD_CONFIG_DIRECTORY32, ProcessHeapFlags);
+assert_offsetof!(48, IMAGE_LOAD_CONFIG_DIRECTORY32, ProcessAffinityMask);
+assert_sizeof!(328, IMAGE_LOAD_CONFIG_DIRECTORY64);
+assert_alignof!(4, IMAGE_LOAD_CONFIG_DIRECTORY64);
+assert_offsetof!(24, IMAGE_LOAD_CONFIG_DIRECTORY64, DeCommitFreeBlockThreshold);
+assert_offsetof!(144, IMAGE_LOAD_CONFIG_DIRECTORY64, GuardFlags);
+assert_offsetof!(320, IMAGE_LOAD_CONFIG_DIRECTORY64, UmaFunctionPointers);
+assert_sizeof!(3 * 4, IMAGE_LOAD_CONFIG_CODE_INTEGRITY);
+assert_sizeof!(2 * 4, IMAGE_DYNAMIC_RELOCATION_TABLE); // Unsized
+assert_sizeof!(2 * 4, IMAGE_DYNAMIC_RELOCATION32); // Unsized
+assert_sizeof!(3 * 4, IMAGE_DYNAMIC_RELOCATION64); // Unsized
+assert_sizeof!(31 * 4, IMAGE_GUARDCF32);
+assert_offsetof!(120, IMAGE_GUARDCF32, UmaFunctionPointers);
+assert_sizeof!(54 * 4, IMAGE_GUARDCF64);
+assert_alignof!(4, IMAGE_GUARDCF64);
+assert_offsetof!(208, IMAGE_GUARDCF64, UmaFunctionPointers);
+assert_sizeof!(24, IMAGE_TLS_DIRECTORY32);
+assert_sizeof!(40, IMAGE_TLS_DIRECTORY64);
+assert_sizeof!(2, UNWIND_CODE);
+assert_sizeof!(4, UNWIND_INFO); // Unsized
+assert_sizeof!(12, RUNTIME_FUNCTION);
+assert_sizeof!(8, IMAGE_ARM64_RUNTIME_FUNCTION_ENTRY);
+assert_sizeof!(4, SCOPE_TABLE); // Unsized
+assert_sizeof!(16, SCOPE_RECORD);
+assert_sizeof!(16, GUID);
+assert_sizeof!(28, IMAGE_DEBUG_DIRECTORY);
+assert_sizeof!(16, IMAGE_DEBUG_CV_INFO_PDB20); // Unsized
+assert_sizeof!(24, IMAGE_DEBUG_CV_INFO_PDB70); // Unsized
+assert_sizeof!(12, IMAGE_DEBUG_MISC); // Unsized

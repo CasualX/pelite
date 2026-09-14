@@ -2,6 +2,27 @@
 Utilities and other tidbits.
 */
 
+macro_rules! assert_sizeof {
+	($expected:expr, $ty:ty $(,)?) => {
+		#[cfg(test)]
+		const _: [(); $expected] = [(); core::mem::size_of::<$ty>()];
+	};
+}
+
+macro_rules! assert_alignof {
+	($expected:expr, $ty:ty $(,)?) => {
+		#[cfg(test)]
+		const _: [(); $expected] = [(); core::mem::align_of::<$ty>()];
+	};
+}
+
+macro_rules! assert_offsetof {
+	($expected:expr, $ty:ty, $field:tt $(,)?) => {
+		#[cfg(test)]
+		const _: [(); $expected] = [(); core::mem::offset_of!($ty, $field)];
+	};
+}
+
 mod align;
 mod c_str;
 mod guid;
