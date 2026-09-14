@@ -122,7 +122,8 @@ pub mod image;
 
 pub(crate) mod base_relocs;
 pub mod debug;
-pub mod exception;
+pub mod exception_arm64;
+pub mod exception_x64;
 pub mod exports;
 mod file;
 pub mod headers;
