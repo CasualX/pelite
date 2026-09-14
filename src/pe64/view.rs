@@ -58,7 +58,7 @@ impl<'a> PeView<'a> {
 	pub fn from_bytes<T: AsRef<[u8]> + ?Sized>(image: &'a T) -> Result<PeView<'a>> {
 		let image = image.as_ref();
 		let _ = validate_headers(image)?;
-		let base_address = unsafe { optional_header(image).ImageBase };
+		let base_address = unsafe { optional_header(image).ImageBase.into() };
 		Ok(PeView { image, base_address })
 	}
 

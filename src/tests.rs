@@ -2,10 +2,21 @@
 Run tests on a variety of cute binaries.
  */
 
-use crate::{Error, pe32, pe64, PeFile, Wrap};
+use crate::{Error, pe32, pe64, PeFile, PeView, Wrap};
 
 #[path = "../tests/pocs/pocs.rs"]
 mod pocs;
+
+#[test]
+fn wrap_four_byte_aligned_nt_headers() {
+	let (_, pe32) = pocs::iter().find(|(name, _)| *name == "tiny.exe").unwrap();
+	assert!(matches!(PeFile::from_bytes(&pe32), Ok(Wrap::T32(_))));
+	assert!(matches!(PeView::from_bytes(&pe32), Ok(Wrap::T32(_))));
+
+	let (_, pe64) = pocs::iter().find(|(name, _)| *name == "tinyW7x64.exe").unwrap();
+	assert!(matches!(PeFile::from_bytes(&pe64), Ok(Wrap::T64(_))));
+	assert!(matches!(PeView::from_bytes(&pe64), Ok(Wrap::T64(_))));
+}
 
 macro_rules! test {
 	($image:expr, $module:ident) => {

@@ -93,7 +93,7 @@ unsafe impl<'a> PeObject<'a> for PeFile<'a> {
 	}
 
 	fn image_base(&self) -> super::Va {
-		self.optional_header().ImageBase
+		self.optional_header().ImageBase.into()
 	}
 
 	#[cfg(feature = "serde")]
