@@ -30,7 +30,7 @@ use crate::util::AlignTo;
 
 /// Security Directory.
 ///
-/// For more information see the [module-level documentation](index.html).
+/// For more information see the [module-level documentation][self].
 #[derive(Copy, Clone)]
 pub struct Security<'a> {
 	image: &'a [u8], // unsafe: MUST BE DWORD ALIGNED!
@@ -50,9 +50,9 @@ impl<'a> Security<'a> {
 	///
 	/// List of known certificate types:
 	///
-	/// * [X.509: `WIN_CERT_TYPE_X509`](../../image/constant.WIN_CERT_TYPE_X509.html)
-	/// * [PKCS SignedData: `WIN_CERT_TYPE_PKCS_SIGNED_DATA`](../../image/constant.WIN_CERT_TYPE_PKCS_SIGNED_DATA.html)
-	/// * [PKCS1_MODULE_SIGN: `WIN_CERT_TYPE_PKCS1_SIGN`](../../image/constant.WIN_CERT_TYPE_PKCS1_SIGN.html)
+	/// * [X.509: `WIN_CERT_TYPE_X509`][crate::image::WIN_CERT_TYPE_X509]
+	/// * [PKCS SignedData: `WIN_CERT_TYPE_PKCS_SIGNED_DATA`][crate::image::WIN_CERT_TYPE_PKCS_SIGNED_DATA]
+	/// * [PKCS1_MODULE_SIGN: `WIN_CERT_TYPE_PKCS1_SIGN`][crate::image::WIN_CERT_TYPE_PKCS1_SIGN]
 	pub fn certificate_type(&self) -> u16 {
 		self.image().wCertificateType
 	}

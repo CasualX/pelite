@@ -3,11 +3,11 @@ Fun with MS Api Set Schemas
 
 Resources:
 
-* https://ofekshilon.com/2016/03/27/on-api-ms-win-xxxxx-dll-and-other-dependency-walker-glitches/
-* https://blog.quarkslab.com/runtime-dll-name-resolution-apisetschema-part-i.html
-* https://blog.quarkslab.com/runtime-dll-name-resolution-apisetschema-part-ii.html
-* https://lucasg.github.io/2017/10/15/Api-set-resolution/
-* https://www.geoffchappell.com/studies/windows/win32/apisetschema/index.htm
+- <https://ofekshilon.com/2016/03/27/on-api-ms-win-xxxxx-dll-and-other-dependency-walker-glitches/>
+- <https://blog.quarkslab.com/runtime-dll-name-resolution-apisetschema-part-i.html>
+- <https://blog.quarkslab.com/runtime-dll-name-resolution-apisetschema-part-ii.html>
+- <https://lucasg.github.io/2017/10/15/Api-set-resolution/>
+- <https://www.geoffchappell.com/studies/windows/win32/apisetschema/index.htm>
 
  */
 

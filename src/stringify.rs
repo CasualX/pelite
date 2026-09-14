@@ -96,7 +96,7 @@ macro_rules! flags {
 //----------------------------------------------------------------
 
 enum1! {
-	/// Stringifies the `IMAGE_FILE_MACHINE_*` constants for [`IMAGE_FILE_HEADER::Machine`](../image/struct.IMAGE_FILE_HEADER.html#Machine.v).
+	/// Stringifies the `IMAGE_FILE_MACHINE_*` constants for [`IMAGE_FILE_HEADER::Machine`].
 	Machine(machine: u16),
 	IMAGE_FILE_MACHINE_I386 => "i386",
 	IMAGE_FILE_MACHINE_AMD64 => "AMD64",
@@ -105,7 +105,7 @@ enum1! {
 }
 
 flags! {
-	/// Stringifies the `IMAGE_FILE_*` flag indices for [`IMAGE_FILE_HEADER::Characteristics`](../image/struct.IMAGE_FILE_HEADER.html#Characteristics.v).
+	/// Stringifies the `IMAGE_FILE_*` flag indices for [`IMAGE_FILE_HEADER::Characteristics`].
 	FileChars(file_chars: u16),
 	/*0001*/ 0, IMAGE_FILE_RELOCS_STRIPPED => "RELOCS_STRIPPED",
 	/*0002*/ 1, IMAGE_FILE_EXECUTABLE_IMAGE => "EXECUTABLE_IMAGE",
@@ -134,7 +134,7 @@ enum1! {
 }
 
 enum1! {
-	/// Stringifies the `IMAGE_SUBSYSTEM_*` constants for [`IMAGE_OPTIONAL_HEADER::Subsystem`](../image/struct.IMAGE_OPTIONAL_HEADER64.html#Subsystem.v).
+	/// Stringifies the `IMAGE_SUBSYSTEM_*` constants for [`IMAGE_OPTIONAL_HEADER::Subsystem`][IMAGE_OPTIONAL_HEADER64::Subsystem].
 	Subsystem(subsystem: u16),
 	IMAGE_SUBSYSTEM_UNKNOWN => "Unknown",
 	IMAGE_SUBSYSTEM_NATIVE => "Native",
@@ -153,7 +153,7 @@ enum1! {
 }
 
 flags! {
-	/// Stringifies the `IMAGE_DLLCHARACTERISTICS_*` flag indices for [`IMAGE_OPTIONAL_HEADER::DllCharacteristics`](../image/struct.IMAGE_OPTIONAL_HEADER64.html#DllCharacteristics.v).
+	/// Stringifies the `IMAGE_DLLCHARACTERISTICS_*` flag indices for [`IMAGE_OPTIONAL_HEADER::DllCharacteristics`][IMAGE_OPTIONAL_HEADER64::DllCharacteristics].
 	DllChars(dll_chars: u16),
 	/*0001*/ 0, IMAGE_DLLCHARACTERISTICS_0 => "Reserved",
 	/*0002*/ 1, IMAGE_DLLCHARACTERISTICS_1 => "Reserved",
@@ -174,7 +174,7 @@ flags! {
 }
 
 enum1! {
-	/// Stringifies the `IMAGE_DIRECTORY_ENTRY_*` constants for [`IMAGE_OPTIONAL_HEADER::DataDirectory`](../image/struct.IMAGE_OPTIONAL_HEADER64.html#DataDirectory.v).
+	/// Stringifies the `IMAGE_DIRECTORY_ENTRY_*` constants for [`IMAGE_OPTIONAL_HEADER::DataDirectory`][IMAGE_OPTIONAL_HEADER64::DataDirectory].
 	DirectoryEntry(entry: usize),
 	IMAGE_DIRECTORY_ENTRY_EXPORT => "Export Directory",
 	IMAGE_DIRECTORY_ENTRY_IMPORT => "Import Directory",
@@ -194,7 +194,7 @@ enum1! {
 }
 
 flags! {
-	/// Stringifies the `IMAGE_SCN_*` flag indices for [`IMAGE_SECTION_HEADER::Characteristics`](../image/struct.IMAGE_SECTION_HEADER.html#Characteristics.v).
+	/// Stringifies the `IMAGE_SCN_*` flag indices for [`IMAGE_SECTION_HEADER::Characteristics`].
 	SectionChars(section_chars: u32),
 	/*00000001*/ 0, IMAGE_SCN_0 => "Reserved",
 	/*00000002*/ 1, IMAGE_SCN_1 => "Reserved",
@@ -231,7 +231,7 @@ flags! {
 }
 
 enum1! {
-	/// Stringifies the `RT_*` constants for [`IMAGE_RESOURCE_DIRECTORY_ENTRY::Name`](../image/struct.IMAGE_RESOURCE_DIRECTORY_ENTRY.html#Name.v).
+	/// Stringifies the `RT_*` constants for [`IMAGE_RESOURCE_DIRECTORY_ENTRY::Name`].
 	ResourceName(name: u16),
 	RT_CURSOR => "RT_CURSOR",
 	RT_BITMAP => "RT_BITMAP",
@@ -257,7 +257,7 @@ enum1! {
 }
 
 enum1! {
-	/// Stringifies the `IMAGE_REL_BASED_*` constants for [`IMAGE_BASE_RELOCATION` types](../image/struct.IMAGE_BASE_RELOCATION.html).
+	/// Stringifies the `IMAGE_REL_BASED_*` constants for [`IMAGE_BASE_RELOCATION`] types.
 	RelocType(reloc_type: u8),
 	IMAGE_REL_BASED_ABSOLUTE => "ABSOLUTE",
 	IMAGE_REL_BASED_HIGH => "HIGH",
@@ -271,7 +271,7 @@ enum1! {
 }
 
 enum1! {
-	/// Stringifies the `UWOP_*` constants for [`UNWIND_CODE` operations](../image/struct.UNWIND_CODE.html).
+	/// Stringifies the `UWOP_*` constants for [`UNWIND_CODE`] operations.
 	UnwindOp(unwind_op: u8),
 	UWOP_PUSH_NONVOL => "push nonvol",
 	UWOP_ALLOC_LARGE => "alloc large",
@@ -285,7 +285,7 @@ enum1! {
 }
 
 enum1! {
-	/// Stringifies the `UNW_FLAG_*` constants for [`UNWIND_INFO` flags](..image/struct.UNWIND_INFO.html).
+	/// Stringifies the `UNW_FLAG_*` constants for [`UNWIND_INFO`] flags.
 	UnwindFlag(unwind_flag: u8),
 	UNW_FLAG_NHANDLER => "NHANDLER",
 	UNW_FLAG_EHANDLER => "EHANDLER",
@@ -295,7 +295,7 @@ enum1! {
 }
 
 enum1! {
-	/// Stringifies the `IMAGE_DEBUG_TYPE_*` constants for [`IMAGE_DEBUG_DIRECTORY::Type`](../image/struct.IMAGE_DEBUG_DIRECTORY.html#Type.v).
+	/// Stringifies the `IMAGE_DEBUG_TYPE_*` constants for [`IMAGE_DEBUG_DIRECTORY::Type`].
 	DebugType(debug_type: u32),
 	IMAGE_DEBUG_TYPE_UNKNOWN => "Unknown",
 	IMAGE_DEBUG_TYPE_COFF => "COFF",

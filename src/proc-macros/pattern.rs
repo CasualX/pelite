@@ -25,9 +25,9 @@ To find all matches of a pattern, eg. find all locations which call a function o
 
 # How to use patterns?
 
-Patterns can be created statically from its [atoms](enum.Atom.html) or [parsed](fn.parse.html) from a string.
+Patterns can be created statically from its [atoms][Atom] or [parse] from a string.
 
-Create a scanner instance for [PE32](../pe32/trait.Pe.html#method.scanner) or [PE32+](../pe64/trait.Pe.html#method.scanner) and follow their documentation.
+Create a scanner instance for [PE32][crate::pe32::Pe::scanner] or [PE32+][crate::pe64::Pe::scanner] and follow their documentation.
 
 # How to create patterns?
 
@@ -175,7 +175,7 @@ pub enum Atom {
 	Nop,
 }
 
-/// Patterns are a vector of [`Atom`](enum.Atom.html)s.
+/// Patterns are a vector of [`Atom`].
 pub type Pattern = Vec<Atom>;
 
 /// Returns the length of the save array needed for this signature.

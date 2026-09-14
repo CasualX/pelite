@@ -70,7 +70,7 @@ pub use crate::Export;
 
 /// Export directory.
 ///
-/// For more information see the [module-level documentation](index.html).
+/// For more information see the [module-level documentation][self].
 #[derive(Copy, Clone)]
 pub struct Exports<'a, P> {
 	pe: P,
@@ -374,13 +374,13 @@ impl<'a, P: Pe<'a>> fmt::Debug for By<'a, P> {
 pub trait GetProcAddress<'a, T>: Pe<'a> {
 	/// Convenient method to get an exported function.
 	///
-	/// Note that calling this method many times is less efficient than caching a [`By`](struct.By.html) instance, such is the trade-off for convenience.
+	/// Note that calling this method many times is less efficient than caching a [`By`] instance, such is the trade-off for convenience.
 	fn get_export(self, name: T) -> Result<Export<'a>>;
 	/// Convenient method to get the address of an exported function.
 	///
 	/// Note that this method does not support forwarded exports and will return `Err(Null)` instead.
 	///
-	/// Note that calling this method many times is less efficient than caching a [`By`](struct.By.html) instance, such is the trade-off for convenience.
+	/// Note that calling this method many times is less efficient than caching a [`By`] instance, such is the trade-off for convenience.
 	#[inline(never)]
 	fn get_proc_address(self, name: T) -> Result<Va> {
 		self.rva_to_va(self.get_export(name)?.symbol().ok_or(Error::Null)?)

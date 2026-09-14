@@ -37,7 +37,7 @@ use super::Pe;
 
 /// TLS Directory.
 ///
-/// For more information see the [module-level documentation](index.html).
+/// For more information see the [module-level documentation][self].
 #[derive(Copy, Clone)]
 pub struct Tls<'a, P> {
 	pe: P,

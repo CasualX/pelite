@@ -3,8 +3,8 @@ Some MSVC structs for RTTI and exception handling.
 
 References:
 
-[1]: [Reversing Microsoft Visual C++ Part I: Exception Handling](http://www.openrce.org/articles/full_view/21)  
-[2]: [Reversing Microsoft Visual C++ Part II: Classes, Methods and RTTI](http://www.openrce.org/articles/full_view/23)  
+- [Reversing Microsoft Visual C++ Part I: Exception Handling](http://www.openrce.org/articles/full_view/21)
+- [Reversing Microsoft Visual C++ Part II: Classes, Methods and RTTI](http://www.openrce.org/articles/full_view/23)
 */
 
 use core::mem;
@@ -210,7 +210,7 @@ pub struct RTTICompleteObjectLocator {
 
 /// Class Hierarchy Descriptor.
 ///
-/// Describes the inheritance hierarchy of the class, it is shared by all [COL](struct.RTTICompleteObjectLocator.html)s.
+/// Describes the inheritance hierarchy of the class, it is shared by all [COL][RTTICompleteObjectLocator].
 #[derive(Copy, Clone, Debug)]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize))]
 #[repr(C)]
@@ -225,7 +225,7 @@ pub struct RTTIClassHierarchyDescriptor {
 	pub base_class_array: Ptr<[Ptr<RTTIBaseClassDescriptor>]>,
 }
 
-/// Entry in the [Base Class Array](struct.RTTIClassHierarchyDescriptor.html#base_class_array.v).
+/// Entry in the [Base Class Array][RTTIClassHierarchyDescriptor::base_class_array].
 #[derive(Copy, Clone, Debug)]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize))]
 #[repr(C)]

@@ -3,9 +3,9 @@ Group Icons and Cursors.
 
 References:
 
-* http://msdn.microsoft.com/en-us/library/ms997538.aspx
-* https://devblogs.microsoft.com/oldnewthing/20120720-00/?p=7083
-* https://github.com/MathewSachin/NIco/wiki/Ico,-Cur-and-PE-Formats
+* <http://msdn.microsoft.com/en-us/library/ms997538.aspx>
+* <https://devblogs.microsoft.com/oldnewthing/20120720-00/?p=7083>
+* <https://github.com/MathewSachin/NIco/wiki/Ico,-Cur-and-PE-Formats>
 
 # Examples
 

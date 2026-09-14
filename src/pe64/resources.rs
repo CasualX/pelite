@@ -1,7 +1,7 @@
 /*!
 Resource Directory.
 
-See [here](../../resources/index.html) for the API docs.
+See the [`resources`][crate::resources] module for the API docs.
 
 # Examples
 

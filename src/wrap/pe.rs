@@ -2,7 +2,7 @@ use super::*;
 
 /// The specific alignment used by the view.
 ///
-/// See [the module-level documentation](index.html#getting-started) for more information.
+/// See the [`pe32`][crate::pe32] or [`pe64`][crate::pe64] module-level documentation for more information.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum Align {
 	/// The view uses file alignment, typically 512 bytes.

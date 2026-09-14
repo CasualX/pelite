@@ -3,8 +3,8 @@ Gets the hash of the import library.
 
 References:
 
-* https://github.com/erocarrera/pefile/blob/4c57c1443bb504281dcc00e1ddec9d62c5e39b35/pefile.py#L3824
-* https://www.fireeye.com/blog/threat-research/2014/01/tracking-malware-import-hashing.html
+- <https://github.com/erocarrera/pefile/blob/4c57c1443bb504281dcc00e1ddec9d62c5e39b35/pefile.py#L3824>
+- <https://www.fireeye.com/blog/threat-research/2014/01/tracking-malware-import-hashing.html>
 */
 
 use std::collections::hash_map::DefaultHasher;

@@ -15,17 +15,17 @@ PE files exist in two states:
 
   This alignment relates to the block size of the underlying file system storage.
 
-This library provides a way to interact with either format through the [`Pe`](trait.Pe.html) trait.
+This library provides a way to interact with either format through the [`Pe`] trait.
 
 ## Executable files on disk
 
 To load a file on disk, read it into memory using the [filesystem API](https://doc.rust-lang.org/std/fs/),
 read it using the [`memmap` crate](https://crates.io/crates/memmap) or get it done quickly and without any
-additional dependencies using the provided [`FileMap`](../struct.FileMap.html) loader.
+additional dependencies using the provided [`FileMap`][crate::FileMap] loader.
 
-Take a byte slice of the entire file contents and construct it with [`PeFile::from_bytes`](struct.PeFile.html#method.from_bytes).
+Take a byte slice of the entire file contents and construct it with [`PeFile::from_bytes`].
 
-Import the [`Pe`](trait.Pe.html) trait to continue from here.
+Import the [`Pe`] trait to continue from here.
 
 ```
 # #![allow(dead_code)]
@@ -50,14 +50,14 @@ fn file_map<P: AsRef<Path> + ?Sized>(path: &P) -> Result<()> {
 
 ## Executable images in memory
 
-To simulate the system loading and mapping images with virtual memory alignment use the [`ImageMap`](../struct.ImageMap.html) loader.
+To simulate the system loading and mapping images with virtual memory alignment use the [`ImageMap`][crate::ImageMap] loader.
 Note however that this is only available on Windows targets as this maps the image using Windows file mapping facilities.
 
-Take a byte slice of the entire image and construct it with [`PeView::from_bytes`](struct.PeView.html#method.from_bytes).
+Take a byte slice of the entire image and construct it with [`PeView::from_bytes`].
 
-Import the [`Pe`](trait.Pe.html) trait to continue from here.
+Import the [`Pe`] trait to continue from here.
 
-If you don't know which to choose, go with [`PeFile`](struct.PeFile.html).
+If you don't know which to choose, go with [`PeFile`].
 
 ```
 # #[cfg(windows)] {
@@ -85,14 +85,14 @@ fn image_map<P: AsRef<Path> + ?Sized>(path: &P) -> Result<()> {
 # Advanced usage
 
 When working with already loaded libraries in your own process there is the `pelite::pe` module alias which points to the correct module for your target.
-[`pelite::pe32`](../pe32/index.html) if compiled for 32-bit targets and [`pelite::pe64`](../pe64/index.html) for 64-bit targets.
+[`pelite::pe32`][crate::pe32] if compiled for 32-bit targets and [`pelite::pe64`][crate::pe64] for 64-bit targets.
 
 Evidently this alias is only available on Windows targets.
 
-Access the your own module with [`PeView::new`](struct.PeView.html#method.new) to construct a view into your own image.
+Access the your own module with [`PeView::new`][crate::pe::PeView::new] to construct a view into your own image.
 This is mostly safe, but be cautious when using it to read from writable sections.
 
-Access other modules in the process with [`PeView::module`](struct.PeView.html#method.module) to construct a view into other images in the process.
+Access other modules in the process with [`PeView::module`] to construct a view into other images in the process.
 This is mostly safe, but be even more cautious when using it to read from writable sections since other libraries written in other languages such as C/C++ respect rust memory aliasing rules even less.
 
 ```

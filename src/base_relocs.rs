@@ -38,7 +38,7 @@ use crate::{Error, Result};
 
 /// Base Relocations Directory.
 ///
-/// For more information see the [module-level documentation](index.html).
+/// For more information see the [module-level documentation][self].
 #[derive(Copy, Clone)]
 pub struct BaseRelocs<'a> {
 	relocs: &'a [u8],

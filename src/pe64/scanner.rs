@@ -1,7 +1,7 @@
 /*!
 Pattern Scanner.
 
-See the [`pattern`](../../pattern/index.html) module for more information about patterns.
+See the [`pattern`][mod@crate::pattern] module for more information about patterns.
 
 # Examples
 
@@ -47,7 +47,7 @@ const QS_BUF_LEN: usize = 16;
 
 /// Pattern scanner.
 ///
-/// For more information see the [module-level documentation](index.html).
+/// For more information see the [module-level documentation][self].
 #[derive(Copy, Clone)]
 pub struct Scanner<P> {
 	pe: P,
@@ -412,7 +412,7 @@ impl<'a, 'pat, P: Scan<'a>> Exec<'pat, P> {
 
 /// An iterator over the matches of a pattern.
 ///
-/// Created with the method [`matches`](struct.Scanner.html#method.matches).
+/// Created with the method [`Scanner::matches`].
 #[derive(Clone)]
 pub struct Matches<'pat, P> {
 	scanner: Scanner<P>,
@@ -436,7 +436,7 @@ impl<'a, 'pat, P: Pe<'a>> Matches<'pat, P> {
 	}
 	/// Performance counter.
 	///
-	/// Number of times the slow [`exec`](struct.Scanner.html#method.exec) was invoked.
+	/// Number of times the slow [`Scanner::exec`] was invoked.
 	pub fn hits(&self) -> u32 {
 		self.hits
 	}
