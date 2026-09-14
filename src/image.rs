@@ -181,6 +181,52 @@ impl<T: fmt::Display> fmt::Display for IMAGE_VERSION<T> {
 	}
 }
 
+/// A 32-bit image value stored with byte alignment.
+///
+/// Some PE structures may not be naturally aligned. Representing their 32-bit
+/// members this way preserves the image layout without making the whole
+/// containing structure packed (and consequently awkward to borrow from).
+#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
+#[repr(transparent)]
+pub struct IMAGE_U32(pub [u8; 4]);
+impl IMAGE_U32 {
+	#[inline]
+	pub const fn new(value: u32) -> IMAGE_U32 {
+		IMAGE_U32(value.to_ne_bytes())
+	}
+	#[inline]
+	pub const fn get(self) -> u32 {
+		u32::from_ne_bytes(self.0)
+	}
+	#[inline]
+	pub fn set(&mut self, value: u32) {
+		self.0 = value.to_ne_bytes();
+	}
+}
+impl From<u32> for IMAGE_U32 {
+	#[inline]
+	fn from(value: u32) -> IMAGE_U32 {
+		IMAGE_U32::new(value)
+	}
+}
+impl From<IMAGE_U32> for u32 {
+	#[inline]
+	fn from(value: IMAGE_U32) -> u32 {
+		value.get()
+	}
+}
+impl fmt::Debug for IMAGE_U32 {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		self.get().fmt(f)
+	}
+}
+#[cfg(feature = "serde")]
+impl serde::Serialize for IMAGE_U32 {
+	fn serialize<S: serde::Serializer>(&self, serializer: S) -> core::result::Result<S::Ok, S::Error> {
+		serializer.serialize_u32(self.get())
+	}
+}
+
 /// A 64-bit image value stored with four-byte alignment.
 ///
 /// Some PE structures are packed to four-byte boundaries. Representing their
@@ -442,20 +488,23 @@ pub struct IMAGE_EXPORT_DIRECTORY {
 
 //----------------------------------------------------------------
 
+/// Import descriptor.
+///
+/// Import descriptor tables are not required to be naturally aligned.
 #[derive(Copy, Clone, Debug)]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize))]
 #[repr(C)]
 pub struct IMAGE_IMPORT_DESCRIPTOR {
-	pub OriginalFirstThunk: u32,
-	pub TimeDateStamp: u32,
-	pub ForwarderChain: u32,
-	pub Name: u32,
-	pub FirstThunk: u32,
+	pub OriginalFirstThunk: IMAGE_U32,
+	pub TimeDateStamp: IMAGE_U32,
+	pub ForwarderChain: IMAGE_U32,
+	pub Name: IMAGE_U32,
+	pub FirstThunk: IMAGE_U32,
 }
 impl IMAGE_IMPORT_DESCRIPTOR {
 	pub fn is_null(&self) -> bool {
 		// This is all that really marks an empty import descriptor
-		self.FirstThunk == 0
+		self.FirstThunk.get() == 0
 	}
 }
 
@@ -1088,6 +1137,7 @@ unsafe impl Pod for IMAGE_RESOURCE_DATA_ENTRY {}
 unsafe impl Pod for VS_VERSION {}
 unsafe impl Pod for VS_FIXEDFILEINFO {}
 unsafe impl Pod for IMAGE_BASE_RELOCATION {}
+unsafe impl Pod for IMAGE_U32 {}
 unsafe impl Pod for IMAGE_U64 {}
 unsafe impl Pod for IMAGE_LOAD_CONFIG_DIRECTORY32 {}
 unsafe impl Pod for IMAGE_LOAD_CONFIG_DIRECTORY64 {}
@@ -1125,10 +1175,13 @@ const _: [(); 136] = [(); mem::size_of::<IMAGE_NT_HEADERS64>()]; // Unsized
 const _: [(); 40] = [(); mem::size_of::<IMAGE_SECTION_HEADER>()];
 const _: [(); 40] = [(); mem::size_of::<IMAGE_EXPORT_DIRECTORY>()];
 const _: [(); 20] = [(); mem::size_of::<IMAGE_IMPORT_DESCRIPTOR>()];
+const _: [(); 1] = [(); mem::align_of::<IMAGE_IMPORT_DESCRIPTOR>()];
 const _: [(); 16] = [(); mem::size_of::<IMAGE_RESOURCE_DIRECTORY>()];
 const _: [(); 8] = [(); mem::size_of::<IMAGE_RESOURCE_DIRECTORY_ENTRY>()];
 const _: [(); 16] = [(); mem::size_of::<IMAGE_RESOURCE_DATA_ENTRY>()];
 const _: [(); 8] = [(); mem::size_of::<IMAGE_BASE_RELOCATION>()];
+const _: [(); 4] = [(); mem::size_of::<IMAGE_U32>()];
+const _: [(); 1] = [(); mem::align_of::<IMAGE_U32>()];
 const _: [(); 8] = [(); mem::size_of::<IMAGE_U64>()];
 const _: [(); 4] = [(); mem::align_of::<IMAGE_U64>()];
 const _: [(); 196] = [(); mem::size_of::<IMAGE_LOAD_CONFIG_DIRECTORY32>()];
