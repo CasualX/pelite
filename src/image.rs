@@ -15,7 +15,7 @@ Sources:
 #![allow(non_camel_case_types)]
 #![cfg_attr(rustfmt, rustfmt::skip)]
 
-use core::{fmt, mem};
+use core::{fmt, marker, mem};
 
 use crate::Pod;
 
@@ -128,6 +128,38 @@ pub struct IMAGE_FILE_HEADER {
 }
 
 //----------------------------------------------------------------
+
+/// Describes a typed field in an image structure.
+///
+/// The image type parameter prevents mixing fields belonging to different structures.
+/// Parsers can use the value type to bounds-check and copy the field without requiring it to be naturally aligned in the image.
+pub struct Field<Image, Value> {
+	offset: usize,
+	marker: marker::PhantomData<fn() -> (Image, Value)>,
+}
+impl<Image, Value> Field<Image, Value> {
+	/// Describes a field at the given byte offset from the start of the image
+	/// structure.
+	///
+	/// This can be used to access fields introduced by newer format revisions
+	/// before a named field descriptor is available in Pelite.
+	#[inline]
+	pub const fn from_offset(offset: usize) -> Self {
+		Self { offset, marker: marker::PhantomData }
+	}
+	/// Returns the byte offset from the start of the image structure.
+	#[inline]
+	pub const fn offset(self) -> usize {
+		self.offset
+	}
+}
+impl<Image, Value> Copy for Field<Image, Value> {}
+impl<Image, Value> Clone for Field<Image, Value> {
+	#[inline]
+	fn clone(&self) -> Self {
+		*self
+	}
+}
 
 #[derive(Copy, Clone, Debug)]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize))]
@@ -766,6 +798,64 @@ pub struct IMAGE_LOAD_CONFIG_DIRECTORY64 {
 	pub UmaFunctionPointers: IMAGE_U64,
 }
 
+macro_rules! impl_load_config_fields {
+	($image:ty, $va:ty) => {
+		impl $image {
+			pub const SIZE: Field<Self, u32> = Field::from_offset(mem::offset_of!(Self, Size));
+			pub const TIME_DATE_STAMP: Field<Self, u32> = Field::from_offset(mem::offset_of!(Self, TimeDateStamp));
+			pub const VERSION: Field<Self, IMAGE_VERSION<u16>> = Field::from_offset(mem::offset_of!(Self, Version));
+			pub const GLOBAL_FLAGS_CLEAR: Field<Self, u32> = Field::from_offset(mem::offset_of!(Self, GlobalFlagsClear));
+			pub const GLOBAL_FLAGS_SET: Field<Self, u32> = Field::from_offset(mem::offset_of!(Self, GlobalFlagsSet));
+			pub const CRITICAL_SECTION_DEFAULT_TIMEOUT: Field<Self, u32> = Field::from_offset(mem::offset_of!(Self, CriticalSectionDefaultTimeout));
+			pub const DECOMMIT_FREE_BLOCK_THRESHOLD: Field<Self, $va> = Field::from_offset(mem::offset_of!(Self, DeCommitFreeBlockThreshold));
+			pub const DECOMMIT_TOTAL_FREE_THRESHOLD: Field<Self, $va> = Field::from_offset(mem::offset_of!(Self, DeCommitTotalFreeThreshold));
+			pub const LOCK_PREFIX_TABLE: Field<Self, $va> = Field::from_offset(mem::offset_of!(Self, LockPrefixTable));
+			pub const MAXIMUM_ALLOCATION_SIZE: Field<Self, $va> = Field::from_offset(mem::offset_of!(Self, MaximumAllocationSize));
+			pub const VIRTUAL_MEMORY_THRESHOLD: Field<Self, $va> = Field::from_offset(mem::offset_of!(Self, VirtualMemoryThreshold));
+			pub const PROCESS_HEAP_FLAGS: Field<Self, u32> = Field::from_offset(mem::offset_of!(Self, ProcessHeapFlags));
+			pub const PROCESS_AFFINITY_MASK: Field<Self, $va> = Field::from_offset(mem::offset_of!(Self, ProcessAffinityMask));
+			pub const CSD_VERSION: Field<Self, u16> = Field::from_offset(mem::offset_of!(Self, CSDVersion));
+			pub const DEPENDENT_LOAD_FLAGS: Field<Self, u16> = Field::from_offset(mem::offset_of!(Self, DependentLoadFlags));
+			pub const EDIT_LIST: Field<Self, $va> = Field::from_offset(mem::offset_of!(Self, EditList));
+			pub const SECURITY_COOKIE: Field<Self, $va> = Field::from_offset(mem::offset_of!(Self, SecurityCookie));
+			pub const SE_HANDLER_TABLE: Field<Self, $va> = Field::from_offset(mem::offset_of!(Self, SEHandlerTable));
+			pub const SE_HANDLER_COUNT: Field<Self, $va> = Field::from_offset(mem::offset_of!(Self, SEHandlerCount));
+			pub const GUARD_CF_CHECK_FUNCTION_POINTER: Field<Self, $va> = Field::from_offset(mem::offset_of!(Self, GuardCFCheckFunctionPointer));
+			pub const GUARD_CF_DISPATCH_FUNCTION_POINTER: Field<Self, $va> = Field::from_offset(mem::offset_of!(Self, GuardCFDispatchFunctionPointer));
+			pub const GUARD_CF_FUNCTION_TABLE: Field<Self, $va> = Field::from_offset(mem::offset_of!(Self, GuardCFFunctionTable));
+			pub const GUARD_CF_FUNCTION_COUNT: Field<Self, $va> = Field::from_offset(mem::offset_of!(Self, GuardCFFunctionCount));
+			pub const GUARD_FLAGS: Field<Self, u32> = Field::from_offset(mem::offset_of!(Self, GuardFlags));
+			pub const CODE_INTEGRITY: Field<Self, IMAGE_LOAD_CONFIG_CODE_INTEGRITY> = Field::from_offset(mem::offset_of!(Self, CodeIntegrity));
+			pub const GUARD_ADDRESS_TAKEN_IAT_ENTRY_TABLE: Field<Self, $va> = Field::from_offset(mem::offset_of!(Self, GuardAddressTakenIatEntryTable));
+			pub const GUARD_ADDRESS_TAKEN_IAT_ENTRY_COUNT: Field<Self, $va> = Field::from_offset(mem::offset_of!(Self, GuardAddressTakenIatEntryCount));
+			pub const GUARD_LONG_JUMP_TARGET_TABLE: Field<Self, $va> = Field::from_offset(mem::offset_of!(Self, GuardLongJumpTargetTable));
+			pub const GUARD_LONG_JUMP_TARGET_COUNT: Field<Self, $va> = Field::from_offset(mem::offset_of!(Self, GuardLongJumpTargetCount));
+			pub const DYNAMIC_VALUE_RELOC_TABLE: Field<Self, $va> = Field::from_offset(mem::offset_of!(Self, DynamicValueRelocTable));
+			pub const CHPE_METADATA_POINTER: Field<Self, $va> = Field::from_offset(mem::offset_of!(Self, CHPEMetadataPointer));
+			pub const GUARD_RF_FAILURE_ROUTINE: Field<Self, $va> = Field::from_offset(mem::offset_of!(Self, GuardRFFailureRoutine));
+			pub const GUARD_RF_FAILURE_ROUTINE_FUNCTION_POINTER: Field<Self, $va> = Field::from_offset(mem::offset_of!(Self, GuardRFFailureRoutineFunctionPointer));
+			pub const DYNAMIC_VALUE_RELOC_TABLE_OFFSET: Field<Self, u32> = Field::from_offset(mem::offset_of!(Self, DynamicValueRelocTableOffset));
+			pub const DYNAMIC_VALUE_RELOC_TABLE_SECTION: Field<Self, u16> = Field::from_offset(mem::offset_of!(Self, DynamicValueRelocTableSection));
+			pub const RESERVED2: Field<Self, u16> = Field::from_offset(mem::offset_of!(Self, Reserved2));
+			pub const GUARD_RF_VERIFY_STACK_POINTER_FUNCTION_POINTER: Field<Self, $va> = Field::from_offset(mem::offset_of!(Self, GuardRFVerifyStackPointerFunctionPointer));
+			pub const HOT_PATCH_TABLE_OFFSET: Field<Self, u32> = Field::from_offset(mem::offset_of!(Self, HotPatchTableOffset));
+			pub const RESERVED3: Field<Self, u32> = Field::from_offset(mem::offset_of!(Self, Reserved3));
+			pub const ENCLAVE_CONFIGURATION_POINTER: Field<Self, $va> = Field::from_offset(mem::offset_of!(Self, EnclaveConfigurationPointer));
+			pub const VOLATILE_METADATA_POINTER: Field<Self, $va> = Field::from_offset(mem::offset_of!(Self, VolatileMetadataPointer));
+			pub const GUARD_EH_CONTINUATION_TABLE: Field<Self, $va> = Field::from_offset(mem::offset_of!(Self, GuardEHContinuationTable));
+			pub const GUARD_EH_CONTINUATION_COUNT: Field<Self, $va> = Field::from_offset(mem::offset_of!(Self, GuardEHContinuationCount));
+			pub const GUARD_XFG_CHECK_FUNCTION_POINTER: Field<Self, $va> = Field::from_offset(mem::offset_of!(Self, GuardXFGCheckFunctionPointer));
+			pub const GUARD_XFG_DISPATCH_FUNCTION_POINTER: Field<Self, $va> = Field::from_offset(mem::offset_of!(Self, GuardXFGDispatchFunctionPointer));
+			pub const GUARD_XFG_TABLE_DISPATCH_FUNCTION_POINTER: Field<Self, $va> = Field::from_offset(mem::offset_of!(Self, GuardXFGTableDispatchFunctionPointer));
+			pub const CAST_GUARD_OS_DETERMINED_FAILURE_MODE: Field<Self, $va> = Field::from_offset(mem::offset_of!(Self, CastGuardOsDeterminedFailureMode));
+			pub const GUARD_MEMCPY_FUNCTION_POINTER: Field<Self, $va> = Field::from_offset(mem::offset_of!(Self, GuardMemcpyFunctionPointer));
+			pub const UMA_FUNCTION_POINTERS: Field<Self, $va> = Field::from_offset(mem::offset_of!(Self, UmaFunctionPointers));
+		}
+	};
+}
+impl_load_config_fields!(IMAGE_LOAD_CONFIG_DIRECTORY32, u32);
+impl_load_config_fields!(IMAGE_LOAD_CONFIG_DIRECTORY64, IMAGE_U64);
+
 //----------------------------------------------------------------
 // Control flow guard bits of the LoadConfig
 //
@@ -826,8 +916,18 @@ pub const IMAGE_GUARD_CF_LONGJUMP_TABLE_PRESENT: u32          = 0x00010000;
 pub const IMAGE_GUARD_RF_INSTRUMENTED: u32                    = 0x00020000;
 pub const IMAGE_GUARD_RF_ENABLE: u32                          = 0x00040000;
 pub const IMAGE_GUARD_RF_STRICT: u32                          = 0x00080000;
+pub const IMAGE_GUARD_RETPOLINE_PRESENT: u32                  = 0x00100000;
+pub const IMAGE_GUARD_EH_CONTINUATION_TABLE_PRESENT: u32      = 0x00400000;
+pub const IMAGE_GUARD_XFG_ENABLED: u32                        = 0x00800000;
+pub const IMAGE_GUARD_CASTGUARD_PRESENT: u32                  = 0x01000000;
+pub const IMAGE_GUARD_MEMCPY_PRESENT: u32                     = 0x02000000;
 pub const IMAGE_GUARD_CF_FUNCTION_TABLE_SIZE_MASK: u32        = 0xF0000000;
 pub const IMAGE_GUARD_CF_FUNCTION_TABLE_SIZE_SHIFT: u32       = 28;
+
+pub const IMAGE_GUARD_FLAG_FID_SUPPRESSED: u8         = 0x01;
+pub const IMAGE_GUARD_FLAG_EXPORT_SUPPRESSED: u8      = 0x02;
+pub const IMAGE_GUARD_FLAG_FID_LANGEXCPTHANDLER: u8   = 0x04;
+pub const IMAGE_GUARD_FLAG_FID_XFG: u8                = 0x08;
 
 #[derive(Copy, Clone, Debug)]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize))]
@@ -844,7 +944,7 @@ pub struct IMAGE_GUARDCF32 {
 	pub GuardLongJumpTargetTable: u32,
 	pub GuardLongJumpTargetCount: u32,
 	pub DynamicValueRelocTable: u32,
-	pub HybridMetadataPointer: u32,
+	pub CHPEMetadataPointer: u32,
 	pub GuardRFFailureRoutine: u32,
 	pub GuardRFFailureRoutineFunctionPointer: u32,
 	pub DynamicValueRelocTableOffset: u32,
@@ -854,33 +954,51 @@ pub struct IMAGE_GUARDCF32 {
 	pub HotPatchTableOffset: u32,
 	pub Reserved3: u32,
 	pub EnclaveConfigurationPointer: u32,
+	pub VolatileMetadataPointer: u32,
+	pub GuardEHContinuationTable: u32,
+	pub GuardEHContinuationCount: u32,
+	pub GuardXFGCheckFunctionPointer: u32,
+	pub GuardXFGDispatchFunctionPointer: u32,
+	pub GuardXFGTableDispatchFunctionPointer: u32,
+	pub CastGuardOsDeterminedFailureMode: u32,
+	pub GuardMemcpyFunctionPointer: u32,
+	pub UmaFunctionPointers: u32,
 }
 
 #[derive(Copy, Clone, Debug)]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize))]
 #[repr(C)]
 pub struct IMAGE_GUARDCF64 {
-	pub GuardCFCheckFunctionPointer: u64,
-	pub GuardCFDispatchFunctionPointer: u64,
-	pub GuardCFFunctionTable: u64,
-	pub GuardCFFunctionCount: u64,
+	pub GuardCFCheckFunctionPointer: IMAGE_U64,
+	pub GuardCFDispatchFunctionPointer: IMAGE_U64,
+	pub GuardCFFunctionTable: IMAGE_U64,
+	pub GuardCFFunctionCount: IMAGE_U64,
 	pub GuardFlags: u32,
 	pub CodeIntegrity: IMAGE_LOAD_CONFIG_CODE_INTEGRITY,
-	pub GuardAddressTakenIatEntryTable: u64,
-	pub GuardAddressTakenIatEntryCount: u64,
-	pub GuardLongJumpTargetTable: u64,
-	pub GuardLongJumpTargetCount: u64,
-	pub DynamicValueRelocTable: u64,
-	pub HybridMetadataPointer: u64,
-	pub GuardRFFailureRoutine: u64,
-	pub GuardRFFailureRoutineFunctionPointer: u64,
+	pub GuardAddressTakenIatEntryTable: IMAGE_U64,
+	pub GuardAddressTakenIatEntryCount: IMAGE_U64,
+	pub GuardLongJumpTargetTable: IMAGE_U64,
+	pub GuardLongJumpTargetCount: IMAGE_U64,
+	pub DynamicValueRelocTable: IMAGE_U64,
+	pub CHPEMetadataPointer: IMAGE_U64,
+	pub GuardRFFailureRoutine: IMAGE_U64,
+	pub GuardRFFailureRoutineFunctionPointer: IMAGE_U64,
 	pub DynamicValueRelocTableOffset: u32,
 	pub DynamicValueRelocTableSection: u16,
 	pub Reserved2: u16,
-	pub GuardRFVerifyStackPointerFunctionPointer: u64,
+	pub GuardRFVerifyStackPointerFunctionPointer: IMAGE_U64,
 	pub HotPatchTableOffset: u32,
 	pub Reserved3: u32,
-	pub EnclaveConfigurationPointer: u64,
+	pub EnclaveConfigurationPointer: IMAGE_U64,
+	pub VolatileMetadataPointer: IMAGE_U64,
+	pub GuardEHContinuationTable: IMAGE_U64,
+	pub GuardEHContinuationCount: IMAGE_U64,
+	pub GuardXFGCheckFunctionPointer: IMAGE_U64,
+	pub GuardXFGDispatchFunctionPointer: IMAGE_U64,
+	pub GuardXFGTableDispatchFunctionPointer: IMAGE_U64,
+	pub CastGuardOsDeterminedFailureMode: IMAGE_U64,
+	pub GuardMemcpyFunctionPointer: IMAGE_U64,
+	pub UmaFunctionPointers: IMAGE_U64,
 }
 
 //----------------------------------------------------------------
@@ -1196,8 +1314,11 @@ const _: [(); 3 * 4] = [(); mem::size_of::<IMAGE_LOAD_CONFIG_CODE_INTEGRITY>()];
 const _: [(); 2 * 4] = [(); mem::size_of::<IMAGE_DYNAMIC_RELOCATION_TABLE>()]; // Unsized
 const _: [(); 2 * 4] = [(); mem::size_of::<IMAGE_DYNAMIC_RELOCATION32>()]; // Unsized
 const _: [(); 3 * 4] = [(); mem::size_of::<IMAGE_DYNAMIC_RELOCATION64>()]; // Unsized
-const _: [(); 22 * 4] = [(); mem::size_of::<IMAGE_GUARDCF32>()];
-const _: [(); 36 * 4] = [(); mem::size_of::<IMAGE_GUARDCF64>()];
+const _: [(); 31 * 4] = [(); mem::size_of::<IMAGE_GUARDCF32>()];
+const _: [(); 120] = [(); mem::offset_of!(IMAGE_GUARDCF32, UmaFunctionPointers)];
+const _: [(); 54 * 4] = [(); mem::size_of::<IMAGE_GUARDCF64>()];
+const _: [(); 4] = [(); mem::align_of::<IMAGE_GUARDCF64>()];
+const _: [(); 208] = [(); mem::offset_of!(IMAGE_GUARDCF64, UmaFunctionPointers)];
 const _: [(); 24] = [(); mem::size_of::<IMAGE_TLS_DIRECTORY32>()];
 const _: [(); 40] = [(); mem::size_of::<IMAGE_TLS_DIRECTORY64>()];
 const _: [(); 2] = [(); mem::size_of::<UNWIND_CODE>()];

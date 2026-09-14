@@ -12,12 +12,14 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::load_config::LoadCon
 			Wrap::T64(load_config) => Wrap::T64(load_config.pe()),
 		}
 	}
-	/// Returns the underlying load config directory image.
+	/// Copies the load config directory into the latest known image structure.
+	///
+	/// Fields which are not present in this revision of the directory are zero.
 	#[inline]
-	pub fn image(&self) -> Wrap<&'a image::IMAGE_LOAD_CONFIG_DIRECTORY32, &'a image::IMAGE_LOAD_CONFIG_DIRECTORY64> {
+	pub fn image_copy(&self) -> Wrap<image::IMAGE_LOAD_CONFIG_DIRECTORY32, image::IMAGE_LOAD_CONFIG_DIRECTORY64> {
 		match self {
-			Wrap::T32(load_config) => Wrap::T32(load_config.image()),
-			Wrap::T64(load_config) => Wrap::T64(load_config.image()),
+			Wrap::T32(load_config) => Wrap::T32(load_config.image_copy()),
+			Wrap::T64(load_config) => Wrap::T64(load_config.image_copy()),
 		}
 	}
 	/// Gets the default security cookie for the image.

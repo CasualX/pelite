@@ -195,6 +195,30 @@ fn tls() {
 //----------------------------------------------------------------
 
 #[test]
+fn load_config() {
+	let file_map = FileMap::open(FILE_NAME).unwrap();
+	let file = PeFile::from_bytes(&file_map).unwrap();
+	let load_config = file.load_config().unwrap();
+	let image = load_config.image_copy();
+
+	// This VS2013 image has a 112-byte load config. Fields appended in newer
+	// revisions must be zero rather than bytes copied from the rest of .rdata.
+	assert_eq!(image.Size, 0x70);
+	assert_eq!(image.SecurityCookie.get(), 0x180005000);
+	assert_eq!(image.GuardCFCheckFunctionPointer.get(), 0);
+	assert_eq!(image.GuardFlags, 0);
+	assert_eq!(image.UmaFunctionPointers.get(), 0);
+
+	use pelite::pe64::image::IMAGE_LOAD_CONFIG_DIRECTORY;
+	assert_eq!(load_config.get(IMAGE_LOAD_CONFIG_DIRECTORY::SIZE), Some(0x70));
+	assert_eq!(load_config.get(IMAGE_LOAD_CONFIG_DIRECTORY::SECURITY_COOKIE).map(|value| value.get()), Some(0x180005000));
+	assert_eq!(load_config.get(IMAGE_LOAD_CONFIG_DIRECTORY::GUARD_FLAGS), None);
+	assert_eq!(load_config.get(IMAGE_LOAD_CONFIG_DIRECTORY::HOT_PATCH_TABLE_OFFSET), None);
+}
+
+//----------------------------------------------------------------
+
+#[test]
 fn debug() {
 	let file_map = FileMap::open(FILE_NAME).unwrap();
 	let file = PeFile::from_bytes(&file_map).unwrap();
