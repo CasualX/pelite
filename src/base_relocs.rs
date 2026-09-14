@@ -270,9 +270,6 @@ fn test_build_unaligned_storage() {
 #[cfg(windows)]
 #[test]
 fn test_build_self() {
-	if crate::image::IMAGE_BASE_PANICS {
-		return;
-	}
 	use crate::pe::*;
 	let view = unsafe { PeView::new() };
 	if let Ok(base_relocs) = view.base_relocs() {
