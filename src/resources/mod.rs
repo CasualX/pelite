@@ -5,6 +5,7 @@ Resources.
 use core::{char, fmt, iter, mem, slice};
 
 use crate::image::*;
+use crate::util::AlignTo;
 use crate::{Error, Pod, Result};
 
 //----------------------------------------------------------------
@@ -49,9 +50,10 @@ impl<'a> Resources<'a> {
 	#[inline]
 	fn slice<T: Pod>(&self, offset: u32) -> Result<&'a T> {
 		let start = offset as usize;
-		let end = mem::size_of::<T>().wrapping_add(start);
+		let end = mem::size_of::<T>().checked_add(start).ok_or(Error::Overflow)?;
 		// Alignment checking
-		if start & (mem::align_of::<T>() - 1) != 0 {
+		let align = mem::align_of::<T>();
+		if start & (align - 1) != 0 || !self.section.as_ptr().wrapping_add(start).aligned_to(align) {
 			return Err(Error::Misaligned);
 		}
 		// Range checking done by the indexing operator
@@ -64,9 +66,10 @@ impl<'a> Resources<'a> {
 	fn slice_len<T: Pod>(&self, offset: u32, len: usize) -> Result<&'a [T]> {
 		let start = offset as usize;
 		let size_of = mem::size_of::<T>().checked_mul(len).ok_or(Error::Overflow)?;
-		let end = start.wrapping_add(size_of);
+		let end = start.checked_add(size_of).ok_or(Error::Overflow)?;
 		// Alignment checking
-		if start & (mem::align_of::<T>() - 1) != 0 {
+		let align = mem::align_of::<T>();
+		if start & (align - 1) != 0 || !self.section.as_ptr().wrapping_add(start).aligned_to(align) {
 			return Err(Error::Misaligned);
 		}
 		// Range checking done by the indexing operator
@@ -75,20 +78,14 @@ impl<'a> Resources<'a> {
 	}
 	#[inline]
 	fn slice_ws(&self, offset: u32) -> Result<&'a [u16]> {
-		let offset = offset as usize;
-		// Alignment checking
-		if offset & 1 != 0 {
-			return Err(Error::Misaligned);
-		}
 		// The name is prefixed by its length in words
-		let len = self.section.get(offset..offset + 2).ok_or(Error::Bounds)?;
-		let len = unsafe { *(len.as_ptr() as *const u16) } as usize;
+		let len = *self.slice::<u16>(offset)? as usize;
 		// Extract the name given its length
-		let name = self.section.get(offset + 2..offset + 2 + len * 2).ok_or(Error::Bounds)?;
-		let name = unsafe { slice::from_raw_parts(name.as_ptr() as *const u16, len) };
-		Ok(name)
+		let offset = offset.checked_add(mem::size_of::<u16>() as u32).ok_or(Error::Overflow)?;
+		self.slice_len(offset, len)
 	}
 }
+
 impl<'a> fmt::Debug for Resources<'a> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		f.write_str("Resources { .. }")
@@ -565,6 +562,9 @@ mod serde {
 }
 
 //----------------------------------------------------------------
+
+#[cfg(test)]
+mod tests;
 
 #[cfg(test)]
 pub(crate) fn test(resources: Resources<'_>) -> Result<()> {
