@@ -10,12 +10,15 @@ pub fn iter() -> impl Iterator<Item = (&'static str, &'static [u8])> {
 	BINS.iter().map(|bin| {
 		let start = bin.offset as usize;
 		let end = start + bin.len as usize;
-		let bytes = &BLOB[start..end];
+		let bytes = &BLOB.0[start..end];
 		(bin.name, bytes)
 	})
 }
 
-static BLOB: [u8; 0x46670] = *include_bytes!("pocs.blob");
+#[repr(align(16))]
+struct Aligned<T>(T);
+
+static BLOB: Aligned<[u8; 0x46670]> = Aligned(*include_bytes!("pocs.blob"));
 
 #[derive(Copy, Clone, Debug)]
 struct Binary {
