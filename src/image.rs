@@ -389,7 +389,7 @@ pub struct IMAGE_OPTIONAL_HEADER64 {
 	pub SizeOfUninitializedData: u32,
 	pub AddressOfEntryPoint: u32,
 	pub BaseOfCode: u32,
-	pub ImageBase: u64,
+	pub ImageBase: IMAGE_U64,
 	pub SectionAlignment: u32,
 	pub FileAlignment: u32,
 	pub OperatingSystemVersion: IMAGE_VERSION<u16>,
@@ -401,10 +401,10 @@ pub struct IMAGE_OPTIONAL_HEADER64 {
 	pub CheckSum: u32,
 	pub Subsystem: u16,
 	pub DllCharacteristics: u16,
-	pub SizeOfStackReserve: u64,
-	pub SizeOfStackCommit: u64,
-	pub SizeOfHeapReserve: u64,
-	pub SizeOfHeapCommit: u64,
+	pub SizeOfStackReserve: IMAGE_U64,
+	pub SizeOfStackCommit: IMAGE_U64,
+	pub SizeOfHeapReserve: IMAGE_U64,
+	pub SizeOfHeapCommit: IMAGE_U64,
 	pub LoaderFlags: u32,
 	pub NumberOfRvaAndSizes: u32,
 	#[cfg_attr(feature = "serde", serde(skip))]
@@ -1298,8 +1298,13 @@ const _: [(); 20] = [(); mem::size_of::<IMAGE_FILE_HEADER>()];
 const _: [(); 8] = [(); mem::size_of::<IMAGE_DATA_DIRECTORY>()];
 const _: [(); 96] = [(); mem::size_of::<IMAGE_OPTIONAL_HEADER32>()]; // Unsized
 const _: [(); 112] = [(); mem::size_of::<IMAGE_OPTIONAL_HEADER64>()]; // Unsized
+const _: [(); 4] = [(); mem::align_of::<IMAGE_OPTIONAL_HEADER64>()];
+const _: [(); 24] = [(); mem::offset_of!(IMAGE_OPTIONAL_HEADER64, ImageBase)];
+const _: [(); 72] = [(); mem::offset_of!(IMAGE_OPTIONAL_HEADER64, SizeOfStackReserve)];
+const _: [(); 108] = [(); mem::offset_of!(IMAGE_OPTIONAL_HEADER64, NumberOfRvaAndSizes)];
 const _: [(); 120] = [(); mem::size_of::<IMAGE_NT_HEADERS32>()]; // Unsized
 const _: [(); 136] = [(); mem::size_of::<IMAGE_NT_HEADERS64>()]; // Unsized
+const _: [(); 4] = [(); mem::align_of::<IMAGE_NT_HEADERS64>()];
 const _: [(); 40] = [(); mem::size_of::<IMAGE_SECTION_HEADER>()];
 const _: [(); 40] = [(); mem::size_of::<IMAGE_EXPORT_DIRECTORY>()];
 const _: [(); 20] = [(); mem::size_of::<IMAGE_IMPORT_DESCRIPTOR>()];

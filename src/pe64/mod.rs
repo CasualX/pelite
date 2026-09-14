@@ -39,7 +39,7 @@ fn file_map<P: AsRef<Path> + ?Sized>(path: &P) -> Result<()> {
 		let file = PeFile::from_bytes(&map)?;
 
 		// Access the file contents through the Pe trait
-		let image_base = file.optional_header().ImageBase;
+		let image_base = file.optional_header().ImageBase.get();
 		println!("The preferred load address of {:?} is {}.", path, image_base);
 
 		// See the respective modules to access other parts of the PE file.
