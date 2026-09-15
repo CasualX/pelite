@@ -8,17 +8,18 @@
  * @example
  * ```
  * // Load the PeLite wasm library.
- * let pelite = await pelite("pelite.wasm");
+ * import createPeLite from "./pelite.js";
+ * const pelite = await createPeLite("pkg/pelite.wasm");
  * // Instantiate the PeFile class with an ArrayBuffer containing the executable.
- * let pefile = new pelite.PeFile(arrayBuffer);
+ * const pefile = pelite.PeFile.fromBuffer(arrayBuffer);
  * ```
  *
- * @param {string} wasmPath - Path to the wasm module.
- * @returns {PeLite}
+ * @param {string} [wasmPath="pkg/pelite.wasm"] - Path to the wasm module.
+ * @returns {Promise<PeLite>}
  */
-async function pelite(wasmPath) {
-	let textDecoder = new TextDecoder('utf-8');
-	let textEncoder = new TextEncoder('utf-8');
+export async function pelite(wasmPath = "pkg/pelite.wasm") {
+	const textDecoder = new TextDecoder("utf-8");
+	const textEncoder = new TextEncoder();
 	let result = null;
 	let arrayConstructor = Uint8Array;
 	let imports = {
@@ -50,18 +51,23 @@ async function pelite(wasmPath) {
 	};
 	// Reads the result
 	function wrapResult() {
-		let localResult = result;
+		const localResult = result;
 		result = null;
 		arrayConstructor = Uint8Array;
+		if (localResult instanceof Error) {
+			throw localResult;
+		}
 		return localResult;
 	}
 	async function load(wasmPath, imports) {
-		let response = await fetch(wasmPath);
-		let arrayBuffer = await response.arrayBuffer();
-		let wasm = await WebAssembly.instantiate(arrayBuffer, imports);
-		return wasm;
+		const response = await fetch(wasmPath);
+		if (!response.ok) {
+			throw new Error(`Unable to load ${wasmPath}: ${response.status} ${response.statusText}`);
+		}
+		const arrayBuffer = await response.arrayBuffer();
+		return WebAssembly.instantiate(arrayBuffer, imports);
 	}
-	let { module, instance } = await load(wasmPath, imports);
+	const { module, instance } = await load(wasmPath, imports);
 	function copyString(string) {
 		let array = textEncoder.encode(string);
 		let ptr = instance.exports.bytesAllocate(array.length);
@@ -93,12 +99,12 @@ async function pelite(wasmPath) {
 		 * @param {Number} ptr The address where the image is located in the WASM linear memory.
 		 * @param {Number} len The length of the image.
 		 */
-		 constructor(ptr, len) {
+		constructor(ptr, len) {
 			this.ptr = ptr;
 			this.len = len;
 			this.data = new Uint8Array(instance.exports.memory.buffer, ptr, len);
 			this.address = instance.exports.pefileNew(ptr, len);
-			if (this.address == 0)
+			if (this.address === 0)
 				throw wrapResult();
 		}
 		/**
@@ -549,12 +555,17 @@ async function pelite(wasmPath) {
 		 * @remarks This invalidates all the returned typed array buffers!
 		 */
 		dispose() {
-			instance.exports.pefileDrop(this.address);
+			if (this.address !== 0) {
+				instance.exports.pefileDrop(this.address);
+				this.address = 0;
+			}
 		}
 	}
 	return {
-		module: module,
-		instance: instance,
-		PeFile: PeFile,
+		module,
+		instance,
+		PeFile,
 	};
 }
+
+export default pelite;

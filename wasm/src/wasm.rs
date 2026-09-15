@@ -1,6 +1,7 @@
 use std::error;
 
 #[allow(dead_code)]
+#[link(wasm_import_module = "env")]
 unsafe extern "C" {
 	fn setJSON(ptr: *const u8, len: usize);
 	fn setError(ptr: *const u8, len: usize);
