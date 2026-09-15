@@ -44,6 +44,7 @@ struct ClientClass {
 
 //----------------------------------------------------------------
 
+#[allow(dead_code)]
 #[derive(Debug)]
 pub struct Class<'a> {
 	pub network_name: &'a str,
