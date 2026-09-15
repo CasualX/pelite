@@ -5,7 +5,7 @@ Find patterns utility.
 use std::ffi::OsStr;
 use std::io::{self, Write};
 use std::path::Path;
-use std::{cmp, env};
+use std::env;
 
 use pelite::pattern as pat;
 
@@ -62,9 +62,11 @@ fn main() {
 	match pelite::PeFile::from_bytes(&file_map) {
 		Ok(file) => {
 			process_patterns(&patterns, json, &mut |pattern, save| {
+				let captures_len = pat::captures_len(pattern);
 				let mut matches = file.scanner().matches(pattern, file.headers().image_range());
 				let mut first = true;
 				while matches.next(save) {
+					let captures = &save[..captures_len];
 					if json {
 						if first {
 							first = false;
@@ -72,10 +74,10 @@ fn main() {
 						else {
 							print!(",");
 						}
-						print_json(save);
+						print_json(captures);
 					}
 					else {
-						print_match(file_name, save);
+						print_match(file_name, captures);
 					}
 				}
 			});
@@ -143,9 +145,8 @@ fn process_pattern(pattern_str: &str, json: bool, f: &mut dyn FnMut(&[pat::Atom]
 	else {
 		println!("Pattern `{}` matches:", pattern_str);
 	}
-	let mut save = [0; 32];
-	let save_len = cmp::min(pat::save_len(&pattern), save.len());
-	f(&pattern, &mut save[..save_len]);
+	let mut save = vec![0; pat::save_len(&pattern)];
+	f(&pattern, &mut save);
 	if json {
 		print!("]}}");
 	}

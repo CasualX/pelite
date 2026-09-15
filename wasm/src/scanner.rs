@@ -9,9 +9,10 @@ pub unsafe fn pefileScannerExec(pefile: *mut PeFile, rva: u32, pat: *mut str) { 
 		Err(err) => return set_error(err),
 	};
 	let save_len = pat::save_len(&pattern);
+	let captures_len = pat::captures_len(&pattern);
 	let mut save = vec![0; save_len];
 	if (*pefile).as_ref().scanner().exec(rva, &pattern, &mut save) {
-		set_json(&save);
+		set_json(&save[..captures_len]);
 	}
 	else {
 		set_null();
@@ -24,11 +25,12 @@ pub unsafe fn pefileScannerFinds(pefile: *mut PeFile, pat: *mut str, start: u32,
 		Err(err) => return set_error(err),
 	};
 	let save_len = pat::save_len(&pattern);
+	let captures_len = pat::captures_len(&pattern);
 	let mut save = vec![0; save_len];
 	let pefile = (*pefile).as_ref();
 	let range = if start > end { pefile.headers().code_range() } else { start..end };
 	if pefile.scanner().finds(&pattern, range, &mut save) {
-		set_json(&save);
+		set_json(&save[..captures_len]);
 	}
 	else {
 		set_null();
@@ -45,6 +47,7 @@ pub unsafe fn pefileScannerMatches(pefile: *mut PeFile, pat: *mut str, start: u3
 		Err(err) => return set_error(err),
 	};
 	let save_len = pat::save_len(&pattern);
+	let captures_len = pat::captures_len(&pattern);
 	let mut save = vec![0; save_len];
 	let pefile = (*pefile).as_ref();
 	let range = if start > end { pefile.headers().code_range() } else { start..end };
@@ -55,6 +58,7 @@ pub unsafe fn pefileScannerMatches(pefile: *mut PeFile, pat: *mut str, start: u3
 			offset -= 1;
 		}
 		else {
+			save.truncate(captures_len);
 			result.push(save);
 			save = vec![0; save_len];
 			if result.len() >= limit {
