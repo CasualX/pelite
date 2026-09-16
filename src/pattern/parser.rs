@@ -306,6 +306,10 @@ impl<'a> Parser<'a> {
 					None => {
 						return Err(self.error(ErrorKind::UnclosedQuote));
 					}
+					Some(b'"') if self.pos + 1 < self.bytes.len() && self.bytes[self.pos + 1] == b'"' => {
+						self.pos += 2;
+						return Ok(Token::Atoms(Atoms::one(Atom::Byte(b'"'))));
+					}
 					Some(b'"') => {
 						self.pos += 1;
 						self.string = None;

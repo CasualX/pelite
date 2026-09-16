@@ -29,17 +29,20 @@ Patterns always begin by saving the candidate's RVA in scratch slot 0.
 | `?` | Move forward one byte without reading it |
 | `A0/F8` | Match when `byte & F8 == A0 & F8` |
 | `"hello"00` | Match the UTF-8 bytes of `hello`, then a zero byte |
+| `"say ""hi"""` | Match the UTF-8 bytes of `say "hi"` |
 | `// comment` | Ignore input through the end of the line |
 
-Hexadecimal bytes are case-insensitive. Whitespace is optional between complete
-atoms, so `488BC1` and `48 8B C1` are equivalent. Compound forms such as `skip(12)`,
-`u4[1]`, and `=u4[1]` must remain contiguous. A mask is two hex digits attached to a
-byte with `/`; nibble wildcards are not supported.
+Hexadecimal bytes are case-insensitive.
+Whitespace is optional between complete atoms, so `488BC1` and `48 8B C1` are equivalent.
+Compound forms such as `skip(12)`, `u4[1]`, and `=u4[1]` must remain contiguous.
+A mask is two hex digits attached to a byte with `/`; nibble wildcards are not supported.
 
-Each `?` is exactly `skip(1)`. It does not check that the skipped byte is readable,
-which matters at the end of an image. String escapes are not supported; leave the
-string and use hex bytes when a pattern needs a quote or another special byte.
+Each `?` is exactly `skip(1)`. It does not check that the skipped byte is readable.
 Consecutive wildcard tokens are compiled into a single skip.
+
+Inside a string, two consecutive double quotes (`""`) match one literal double quote byte.
+Backslashes have no special meaning; leave the string and use hex bytes for other special bytes.
+Because adjacent quotes are an escape, separate adjacent quoted strings with whitespace (or combine them).
 
 ## Movement and searching
 

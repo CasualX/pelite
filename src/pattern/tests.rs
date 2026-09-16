@@ -52,6 +52,10 @@ fn unreachable_reads_and_workspace_reuse() {
 #[test]
 #[rustfmt::skip]
 fn lowering() {
+	assert_eq!(parse("\"string\"\"quote\"\"string\"").unwrap(), [
+		Save(0), Byte(b's'), Byte(b't'), Byte(b'r'), Byte(b'i'), Byte(b'n'), Byte(b'g'), Byte(b'"'), Byte(b'q'), Byte(b'u'), Byte(b'o'), Byte(b't'), Byte(b'e'), Byte(b'"'), Byte(b's'), Byte(b't'), Byte(b'r'), Byte(b'i'), Byte(b'n'), Byte(b'g')]);
+	assert_eq!(parse("\"\" \"\" \"\"\"\"").unwrap(), [
+		Save(0), Byte(b'"')]);
 	assert_eq!(parse("80FF? ?? A0/F8 \"é\"00//comment\n@2align(12)").unwrap(), [
 		Save(0), Byte(0x80), Byte(0xff), Skip(3), Fuzzy(0xf8), Byte(0xa0), Byte(0xc3), Byte(0xa9), Byte(0), IsAlign(2), IsAlign(12)]);
 	assert_eq!(parse("skip(0)skip(-0)scan(0)skip(ptr)skip(-ptr)skip(255)skip(-256)skip(0xffff)skip(0x01020304)scan()scan(1)scan(255)scan(65534)").unwrap(), [
@@ -90,6 +94,8 @@ fn const_runtime_parity() {
 		"00aAfF",
 		"80FFA0/F8",
 		"\"\"",
+		"\"double \"\"quote\"\"\"",
+		"\"left\" \"right\"",
 		"\"é😀//${\"00",
 		"AA// comment\nBB",
 	];
@@ -136,6 +142,7 @@ fn diagnostics() {
 	use ErrorKind::*;
 	for (source, kind, position) in [
 		("00 A", UnpairedHexDigit, 3),
+		("\"escaped \"\" quote", UnclosedQuote, 0),
 		("A?", UnpairedHexDigit, 0),
 		("AA/F", UnpairedHexDigit, 0),
 		("AA/*", UnpairedHexDigit, 0),
