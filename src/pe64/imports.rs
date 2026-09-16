@@ -26,46 +26,44 @@ fn import_from_va<'a, P: Pe<'a>>(pe: P, &va: &'a Va) -> Result<Import<'a>> {
 
 //----------------------------------------------------------------
 
-/**
-Import directory.
-
-The import directory lists an image's module dependencies and the symbols
-imported from each one. Each [`ImportDescriptor`] represents one dependency.
-
-The separate [`ImportAddressTable`] provides one combined view of the imported
-symbols. The loader overwrites that table with resolved function pointers.
-
-# Examples
-
-```
-# #![allow(unused_variables)]
-use pelite::pe64::{Pe, PeFile};
-
-# #[allow(dead_code)]
-fn example(file: PeFile<'_>) -> pelite::Result<()> {
-	// Access the import directory and iterate over its DLL descriptors
-	for descriptor in file.imports()? {
-		// Name of the DLL being imported from
-		let dll_name = descriptor.dll_name()?;
-
-		// Import Address Table and Import Name Table for this DLL
-		let addresses = descriptor.iat()?;
-		let names = descriptor.int()?;
-
-		// Pair each address-table slot with its imported symbol
-		for (address, import) in Iterator::zip(addresses, names) {}
-	}
-
-	// Alternatively, iterate over the combined Import Address Table
-	for (address, import) in file.iat()?.iter() {
-		// Null entries can occur where the tables of imported DLLs join
-		if let Ok(import) = import {}
-	}
-
-	Ok(())
-}
-```
-*/
+/// Import directory.
+///
+/// The import directory lists an image's module dependencies and the symbols
+/// imported from each one. Each [`ImportDescriptor`] represents one dependency.
+///
+/// The separate [`ImportAddressTable`] provides one combined view of the imported
+/// symbols. The loader overwrites that table with resolved function pointers.
+///
+/// # Examples
+///
+/// ```
+/// # #![allow(unused_variables)]
+/// use pelite::pe64::{Pe, PeFile};
+///
+/// # #[allow(dead_code)]
+/// fn example(file: PeFile<'_>) -> pelite::Result<()> {
+/// 	// Access the import directory and iterate over its DLL descriptors
+/// 	for descriptor in file.imports()? {
+/// 		// Name of the DLL being imported from
+/// 		let dll_name = descriptor.dll_name()?;
+///
+/// 		// Import Address Table and Import Name Table for this DLL
+/// 		let addresses = descriptor.iat()?;
+/// 		let names = descriptor.int()?;
+///
+/// 		// Pair each address-table slot with its imported symbol
+/// 		for (address, import) in Iterator::zip(addresses, names) {}
+/// 	}
+///
+/// 	// Alternatively, iterate over the combined Import Address Table
+/// 	for (address, import) in file.iat()?.iter() {
+/// 		// Null entries can occur where the tables of imported DLLs join
+/// 		if let Ok(import) = import {}
+/// 	}
+///
+/// 	Ok(())
+/// }
+/// ```
 #[derive(Copy, Clone)]
 pub struct ImportDirectory<'a, P> {
 	pe: P,

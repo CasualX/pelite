@@ -2,33 +2,31 @@ use super::*;
 
 //----------------------------------------------------------------
 
-/**
-TLS Directory.
-
-# Examples
-
-```
-# #![allow(unused_variables)]
-use pelite::pe64::{Pe, PeFile};
-
-# #[allow(dead_code)]
-fn example(file: PeFile<'_>) -> pelite::Result<()> {
-	// Access the TLS directory
-	let tls = file.tls()?;
-
-	// Access the initialized thread-local data
-	let raw_data = tls.raw_data()?;
-
-	// Access the TLS slot
-	let slot = tls.slot()?;
-
-	// Access the TLS callbacks
-	let callbacks = tls.callbacks()?;
-
-	Ok(())
-}
-```
-*/
+/// TLS Directory.
+///
+/// # Examples
+///
+/// ```
+/// # #![allow(unused_variables)]
+/// use pelite::pe64::{Pe, PeFile};
+///
+/// # #[allow(dead_code)]
+/// fn example(file: PeFile<'_>) -> pelite::Result<()> {
+/// 	// Access the TLS directory
+/// 	let tls = file.tls()?;
+///
+/// 	// Access the initialized thread-local data
+/// 	let raw_data = tls.raw_data()?;
+///
+/// 	// Access the TLS slot
+/// 	let slot = tls.slot()?;
+///
+/// 	// Access the TLS callbacks
+/// 	let callbacks = tls.callbacks()?;
+///
+/// 	Ok(())
+/// }
+/// ```
 #[derive(Copy, Clone)]
 pub struct TlsDirectory<'a, P> {
 	pe: P,
