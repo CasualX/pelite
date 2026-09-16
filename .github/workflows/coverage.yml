@@ -1,0 +1,73 @@
+name: Coverage
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: coverage-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  coverage:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Linux
+            os: ubuntu-latest
+            flag: linux
+          - name: Windows
+            os: windows-latest
+            flag: windows
+
+    env:
+      CARGO_TERM_COLOR: always
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v7
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: llvm-tools-preview
+
+      - name: Install cargo-llvm-cov
+        uses: taiki-e/install-action@cargo-llvm-cov
+
+      - name: Run tests with coverage
+        run: cargo llvm-cov --package pelite --all-features --no-fail-fast --html
+
+      - name: Print coverage summary
+        run: cargo llvm-cov report --summary-only
+
+      - name: Export Codecov report
+        run: cargo llvm-cov report --codecov --output-path codecov.json
+
+      - name: Upload HTML report
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage-${{ matrix.flag }}
+          path: target/llvm-cov/html
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Upload report to Codecov
+        if: env.CODECOV_TOKEN != ''
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ env.CODECOV_TOKEN }}
+          files: codecov.json
+          flags: ${{ matrix.flag }}
+          fail_ci_if_error: true

@@ -80,6 +80,18 @@ fn dll_deps(image: &[u8]) -> pelite::Result<()> {
 }
 ```
 
+Coverage
+--------
+
+Coverage uses Rust's LLVM source-based instrumentation through [`cargo-llvm-cov`](https://github.com/taiki-e/cargo-llvm-cov).
+To generate and open a local HTML report:
+
+```console
+rustup component add llvm-tools-preview
+cargo install cargo-llvm-cov --locked
+cargo llvm-cov --package pelite --all-features --html --open
+```
+
 License
 -------
 
