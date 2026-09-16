@@ -10,5 +10,6 @@ target/
 Cargo.lock
 
 # Coverage
-CoverageReport*
-LastCoverageResults.log
+*.profraw
+codecov.json
+lcov.info
