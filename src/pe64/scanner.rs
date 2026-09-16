@@ -559,8 +559,8 @@ impl<'a, 'pat, P: Pe<'a>> ScannerMatches<'pat, P> {
 		let qsbuf = self.setup(&mut qsbuf);
 
 		let image = self.scanner.pe.image();
-		match self.scanner.pe.align() {
-			Align::File => {
+		match self.scanner.pe.layout() {
+			PeLayout::File => {
 				for section in self.scanner.pe.section_headers() {
 					// If section overlaps with the scanning range
 					if section.VirtualAddress < self.range.end && u32::wrapping_add(section.VirtualAddress, section.VirtualSize) > self.range.start {
@@ -574,7 +574,7 @@ impl<'a, 'pat, P: Pe<'a>> ScannerMatches<'pat, P> {
 				}
 				false
 			},
-			Align::Section => self.next_section(qsbuf, 0, image, save),
+			PeLayout::Section => self.next_section(qsbuf, 0, image, save),
 		}
 	}
 	fn next_section(&mut self, qsbuf: &[u8], base: Rva, slice: &'a [u8], save: &mut [Rva]) -> bool {

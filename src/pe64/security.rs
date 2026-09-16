@@ -2,7 +2,7 @@ use super::*;
 
 pub(crate) fn try_from<'a, P: Pe<'a>>(pe: P) -> Result<Security<'a>> {
 	// The security info is part of the mapped image
-	if pe.align() != Align::File {
+	if pe.layout() != PeLayout::File {
 		return Err(Error::Unmapped);
 	}
 	// Manual alignment and size check

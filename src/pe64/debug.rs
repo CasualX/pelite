@@ -133,9 +133,9 @@ impl<'a, P: Pe<'a>> DebugDirectoryEntry<'a, P> {
 	pub fn data(&self) -> Option<&'a [u8]> {
 		let image = self.pe.image();
 		let size = self.image.SizeOfData as usize;
-		let offset = match self.pe.align() {
-			Align::File => self.image.PointerToRawData,
-			Align::Section => self.image.AddressOfRawData,
+		let offset = match self.pe.layout() {
+			PeLayout::File => self.image.PointerToRawData,
+			PeLayout::Section => self.image.AddressOfRawData,
 		} as usize;
 		image.get(offset..offset.wrapping_add(size))
 	}

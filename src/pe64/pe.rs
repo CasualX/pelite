@@ -6,20 +6,20 @@ use super::*;
 
 //----------------------------------------------------------------
 
-pub use crate::wrap::Align;
+pub use crate::wrap::PeLayout;
 
 /// Basic properties shared by file-aligned and mapped PE images.
 ///
 /// # Safety
 ///
 /// Implementors must return a valid PE image for the full lifetime `'a`,
-/// and report alignment and base-address information matching that image.
+/// and report layout and base-address information matching that image.
 pub unsafe trait PeObject<'a> {
 	/// Returns the image as a byte slice.
 	fn image(&self) -> &'a [u8];
 
-	/// Returns whether this image uses file alignment or section alignment.
-	fn align(&self) -> Align;
+	/// Returns whether the image uses file or mapped section layout.
+	fn layout(&self) -> PeLayout;
 
 	/// Returns the base virtual address of this image.
 	///
@@ -242,9 +242,9 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	///   The rva is zero.
 	fn slice(&self, rva: Rva, min_size_of: usize, align: usize) -> Result<&'a [u8]> {
 		unsafe {
-			match (self.align(), self.image()) {
-				(Align::File, image) => slice_file(image, rva, min_size_of, align),
-				(Align::Section, image) => slice_section(image, rva, min_size_of, align),
+			match (self.layout(), self.image()) {
+				(PeLayout::File, image) => slice_file(image, rva, min_size_of, align),
+				(PeLayout::Section, image) => slice_section(image, rva, min_size_of, align),
 			}
 		}
 	}
@@ -269,7 +269,7 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	/// * [`Bounds`][crate::Error::Bounds]:
 	///   The data referenced by the section header is out of bounds.
 	fn get_section_bytes(self, section_header: &IMAGE_SECTION_HEADER) -> Result<&'a [u8]> {
-		crate::wrap::get_section_bytes(self.image(), section_header, self.align())
+		crate::wrap::get_section_bytes(self.image(), section_header, self.layout())
 	}
 
 	/// Reads the image at the specified va.
@@ -286,9 +286,9 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	///   The va is zero.
 	fn read(&self, va: Va, min_size_of: usize, align: usize) -> Result<&'a [u8]> {
 		unsafe {
-			match (self.align(), self.image()) {
-				(Align::File, image) => read_file(image, self.image_base(), va, min_size_of, align),
-				(Align::Section, image) => read_section(image, self.image_base(), va, min_size_of, align),
+			match (self.layout(), self.image()) {
+				(PeLayout::File, image) => read_file(image, self.image_base(), va, min_size_of, align),
+				(PeLayout::Section, image) => read_section(image, self.image_base(), va, min_size_of, align),
 			}
 		}
 	}
@@ -624,8 +624,8 @@ unsafe impl<'s, 'a> PeObject<'a> for &'s dyn PeObject<'a> {
 	fn image(&self) -> &'a [u8] {
 		PeObject::image(*self)
 	}
-	fn align(&self) -> Align {
-		PeObject::align(*self)
+	fn layout(&self) -> PeLayout {
+		PeObject::layout(*self)
 	}
 
 	fn image_base(&self) -> Va {
