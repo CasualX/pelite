@@ -60,7 +60,7 @@ impl<'a, P: Pe<'a>> LoadConfigDirectory<'a, P> {
 	/// Returns the size declared by the load config directory.
 	pub fn size(&self) -> u32 {
 		// `try_from` validates that the complete size field is present.
-		unsafe { raw_ptr::read_unaligned(self.image.as_ptr().cast()) }
+		unsafe { ptr::read_unaligned(self.image.as_ptr().cast()) }
 	}
 	/// Returns the time and date stamp, or zero if the field is absent.
 	pub fn time_date_stamp(&self) -> u32 {
@@ -90,7 +90,7 @@ impl<'a, P: Pe<'a>> LoadConfigDirectory<'a, P> {
 		let bytes = self.image.get(offset..end)?;
 		// Safe because the bounds were checked above and `Pod` permits reading any initialized byte pattern as `T`.
 		// Copying also avoids imposing the field's natural alignment on the image.
-		Some(unsafe { raw_ptr::read_unaligned(bytes.as_ptr().cast()) })
+		Some(unsafe { ptr::read_unaligned(bytes.as_ptr().cast()) })
 	}
 	/// Gets the default security cookie for the image.
 	pub fn security_cookie(&self) -> Result<&'a u32> {
