@@ -121,11 +121,7 @@ impl<'a, P: Pe<'a>> X64RuntimeFunction<'a, P> {
 	/// Gets the unwind info.
 	pub fn unwind_info(&self) -> Result<X64UnwindInfo<'a, P>> {
 		// Read as many bytes as we can for interpretation
-		let bytes = self.pe.slice(
-			self.image.UnwindData,
-			mem::size_of::<UNWIND_INFO>(),
-			mem::align_of::<UNWIND_INFO>(),
-		)?;
+		let bytes = self.pe.slice(self.image.UnwindData, mem::size_of::<UNWIND_INFO>(), mem::align_of::<UNWIND_INFO>())?;
 		let image = unsafe { &*(bytes.as_ptr() as *const UNWIND_INFO) };
 		// Calculate actual size including size of unwind codes
 		let min_size_of = mem::size_of::<UNWIND_INFO>() + mem::size_of::<UNWIND_CODE>() * image.CountOfCodes as usize;

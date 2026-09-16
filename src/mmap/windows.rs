@@ -4,9 +4,9 @@ use std::os::windows::io::{AsRawHandle, RawHandle};
 use std::path::Path;
 use std::{io, mem, ptr};
 
-use windows_sys::Win32::Storage::FileSystem::{CreateFileW, FILE_ATTRIBUTE_NORMAL, FILE_SHARE_READ, OPEN_EXISTING};
 use windows_sys::Win32::Foundation::{CloseHandle, GENERIC_READ, HANDLE, INVALID_HANDLE_VALUE};
-use windows_sys::Win32::System::Memory::{CreateFileMappingW, MapViewOfFile, UnmapViewOfFile, VirtualQuery, FILE_MAP_COPY, FILE_MAP_READ, MEMORY_MAPPED_VIEW_ADDRESS, PAGE_READONLY, SEC_IMAGE};
+use windows_sys::Win32::Storage::FileSystem::{CreateFileW, FILE_ATTRIBUTE_NORMAL, FILE_SHARE_READ, OPEN_EXISTING};
+use windows_sys::Win32::System::Memory::{CreateFileMappingW, FILE_MAP_COPY, FILE_MAP_READ, MEMORY_MAPPED_VIEW_ADDRESS, MapViewOfFile, PAGE_READONLY, SEC_IMAGE, UnmapViewOfFile, VirtualQuery};
 
 //----------------------------------------------------------------
 

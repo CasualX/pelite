@@ -160,7 +160,7 @@ mod tests {
 
 	use crate::Error;
 
-	use super::{PeView, IMAGE_DOS_SIGNATURE, IMAGE_NT_HEADERS};
+	use super::{IMAGE_DOS_SIGNATURE, IMAGE_NT_HEADERS, PeView};
 
 	#[test]
 	fn from_byte_slice() {

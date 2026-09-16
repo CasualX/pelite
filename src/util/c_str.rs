@@ -4,7 +4,7 @@ Nul-terminated C string.
 
 use core::{cmp, fmt, mem, ops, str};
 
-use crate::util::{split_f, FromBytes};
+use crate::util::{FromBytes, split_f};
 
 //----------------------------------------------------------------
 

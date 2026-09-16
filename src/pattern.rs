@@ -9,7 +9,7 @@ mod parser;
 
 pub use self::parser::parse;
 #[doc(hidden)]
-pub use self::parser::{parse_len, parse_const};
+pub use self::parser::{parse_const, parse_len};
 
 mod analysis;
 
@@ -275,8 +275,7 @@ impl Atom {
 			| Atom::TestU8(_)
 			| Atom::TestI16(_)
 			| Atom::TestU16(_)
-			| Atom::TestU32(_)
-		)
+			| Atom::TestU32(_))
 	}
 }
 

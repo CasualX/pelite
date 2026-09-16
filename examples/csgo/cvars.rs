@@ -6,7 +6,7 @@
 use pelite;
 use pelite::pattern as pat;
 use pelite::pe32::*;
-use pelite::{util::CStr, Pod};
+use pelite::{Pod, util::CStr};
 
 //----------------------------------------------------------------
 

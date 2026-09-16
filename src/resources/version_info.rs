@@ -50,7 +50,7 @@ use core::{char, cmp, fmt, mem, slice};
 use std::collections::HashMap as Map;
 
 use crate::image::VS_FIXEDFILEINFO;
-use crate::util::{wstrn, AlignTo, FmtUtf16};
+use crate::util::{AlignTo, FmtUtf16, wstrn};
 use crate::{Error, Pod, Result};
 
 //----------------------------------------------------------------

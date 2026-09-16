@@ -2,8 +2,8 @@
 The code from the readme, try me out with `cargo run --example readme`.
  */
 
-use pelite::pe64::{Pe, PeFile};
 use pelite::FileMap;
+use pelite::pe64::{Pe, PeFile};
 
 fn main() {
 	// Load the desired file into memory
