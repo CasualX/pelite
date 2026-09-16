@@ -1,6 +1,9 @@
 use super::*;
 
-pub(crate) fn try_from<'a, P: Pe<'a>>(pe: P) -> Result<Security<'a>> {
+#[doc(inline)]
+pub use crate::security::*;
+
+pub(crate) fn try_from<'a, P: Pe<'a>>(pe: P) -> Result<SecurityDirectory<'a>> {
 	// The security info is part of the mapped image
 	if pe.layout() != PeLayout::File {
 		return Err(Error::Unmapped);
@@ -20,7 +23,7 @@ pub(crate) fn try_from<'a, P: Pe<'a>>(pe: P) -> Result<Security<'a>> {
 	let start = datadir.VirtualAddress as usize;
 	let end = (datadir.VirtualAddress + datadir.Size) as usize;
 	let image = pe.image().get(start..end).ok_or(Error::Bounds)?;
-	Ok(unsafe { Security::new(image) })
+	Ok(unsafe { SecurityDirectory::new(image) })
 }
 
 #[cfg(test)]

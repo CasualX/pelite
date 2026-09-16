@@ -1,6 +1,9 @@
 #[cfg(test)]
 use super::*;
 
+#[doc(inline)]
+pub use crate::rich_structure::*;
+
 #[cfg(test)]
 pub(crate) fn test_rich_structure<'a, P: Pe<'a>>(pe: P) -> Result<()> {
 	let rich_structure = pe.rich_structure()?;

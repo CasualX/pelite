@@ -32,14 +32,14 @@ use crate::util::AlignTo;
 ///
 /// For more information see the [module-level documentation][self].
 #[derive(Copy, Clone)]
-pub struct Security<'a> {
+pub struct SecurityDirectory<'a> {
 	image: &'a [u8], // unsafe: MUST BE DWORD ALIGNED!
 }
-impl<'a> Security<'a> {
-	pub(crate) unsafe fn new(image: &'a [u8]) -> Security<'a> {
+impl<'a> SecurityDirectory<'a> {
+	pub(crate) unsafe fn new(image: &'a [u8]) -> SecurityDirectory<'a> {
 		debug_assert!(image.as_ptr().aligned_to(mem::align_of::<WIN_CERTIFICATE>()));
 		debug_assert!(image.len() >= 8);
-		Security { image }
+		SecurityDirectory { image }
 	}
 	/// Returns the underlying security directory image.
 	pub fn image(&self) -> &'a WIN_CERTIFICATE {
@@ -72,9 +72,9 @@ impl<'a> Security<'a> {
 		unsafe { self.image.get_unchecked(8..) }
 	}
 }
-impl<'a> fmt::Debug for Security<'a> {
+impl<'a> fmt::Debug for SecurityDirectory<'a> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		f.debug_struct("Security")
+		f.debug_struct("SecurityDirectory")
 			.field("length", &self.image().dwLength)
 			.field("revision", &self.image().wRevision)
 			.field("certificate_type", &self.certificate_type())
@@ -84,10 +84,10 @@ impl<'a> fmt::Debug for Security<'a> {
 }
 
 serde_impl! {
-	impl<'a> Serialize for Security<'a> {
+	impl<'a> Serialize for SecurityDirectory<'a> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			let is_human_readable = serializer.is_human_readable();
-			let mut state = serializer.serialize_struct("Security", 3)?;
+			let mut state = serializer.serialize_struct("SecurityDirectory", 3)?;
 			state.serialize_field("image", self.image())?;
 			state.serialize_field("certificate_type", &self.certificate_type())?;
 			if cfg!(feature = "basenc") && is_human_readable {

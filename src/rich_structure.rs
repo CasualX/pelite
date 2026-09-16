@@ -114,10 +114,10 @@ impl<'a> RichStructure<'a> {
 		self.image[1]
 	}
 	/// Gets the records.
-	pub fn records(&self) -> RichIter<'a> {
+	pub fn records(&self) -> RichRecordIter<'a> {
 		let iter = &self.image[4..self.image.len() - 2];
 		let key = self.xor_key();
-		RichIter { iter, key }
+		RichRecordIter { iter, key }
 	}
 	/// Encodes a new set of records.
 	///
@@ -204,7 +204,7 @@ impl RichRecord {
 /// This allows a mapping of products and the kind of _'language'_ it was generated from.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
-pub enum ObjectKind {
+pub enum RichObjectKind {
 	Unknown,
 	Link,
 	/// Exported symbol.
@@ -221,20 +221,20 @@ pub enum ObjectKind {
 	/// C object.
 	C,
 }
-impl From<u16> for ObjectKind {
+impl From<u16> for RichObjectKind {
 	#[rustfmt::skip]
-	fn from(product: u16) -> ObjectKind {
+	fn from(product: u16) -> RichObjectKind {
 		match product {
-			0x00ff          | 0x00c9 | 0x009a          | 0x007c | 0x005e | 0x0045          | 0x0006 => ObjectKind::Resource,
-			0x0100 | 0x00dc | 0x00ca | 0x009b | 0x0092 | 0x007a | 0x005c | 0x003f                   => ObjectKind::Export,
-			0x0101 | 0x00dd | 0x00cb | 0x009c | 0x0093 | 0x007b | 0x005d | 0x0019          | 0x0002 => ObjectKind::Import,
-			0x0102 | 0x00de | 0x00cc | 0x009d | 0x0091 | 0x0078 | 0x005a | 0x003d          | 0x0004 => ObjectKind::Link,
-			0x0103 | 0x00df | 0x00cd | 0x009e | 0x0095 | 0x007d | 0x000f | 0x0040                   => ObjectKind::Assembly,
-			0x0104 | 0x00e0 | 0x00ce | 0x00aa | 0x0083 | 0x006d | 0x005f | 0x001c | 0x000a | 0x0015 => ObjectKind::C,
-			0x0105 | 0x00e1 | 0x00cf | 0x00ab | 0x0084 | 0x006e | 0x0060 | 0x001d | 0x000b | 0x0016 => ObjectKind::CPP,
+			0x00ff          | 0x00c9 | 0x009a          | 0x007c | 0x005e | 0x0045          | 0x0006 => RichObjectKind::Resource,
+			0x0100 | 0x00dc | 0x00ca | 0x009b | 0x0092 | 0x007a | 0x005c | 0x003f                   => RichObjectKind::Export,
+			0x0101 | 0x00dd | 0x00cb | 0x009c | 0x0093 | 0x007b | 0x005d | 0x0019          | 0x0002 => RichObjectKind::Import,
+			0x0102 | 0x00de | 0x00cc | 0x009d | 0x0091 | 0x0078 | 0x005a | 0x003d          | 0x0004 => RichObjectKind::Link,
+			0x0103 | 0x00df | 0x00cd | 0x009e | 0x0095 | 0x007d | 0x000f | 0x0040                   => RichObjectKind::Assembly,
+			0x0104 | 0x00e0 | 0x00ce | 0x00aa | 0x0083 | 0x006d | 0x005f | 0x001c | 0x000a | 0x0015 => RichObjectKind::C,
+			0x0105 | 0x00e1 | 0x00cf | 0x00ab | 0x0084 | 0x006e | 0x0060 | 0x001d | 0x000b | 0x0016 => RichObjectKind::CPP,
 
-			0x0001 => ObjectKind::Import,
-			_ => ObjectKind::Unknown,
+			0x0001 => RichObjectKind::Import,
+			_ => RichObjectKind::Unknown,
 		}
 	}
 }
@@ -243,11 +243,11 @@ impl From<u16> for ObjectKind {
 
 /// Iterator over the Rich records.
 #[derive(Clone)]
-pub struct RichIter<'a> {
+pub struct RichRecordIter<'a> {
 	iter: &'a [u32],
 	key: u32,
 }
-impl<'a> Iterator for RichIter<'a> {
+impl<'a> Iterator for RichRecordIter<'a> {
 	type Item = RichRecord;
 	fn next(&mut self) -> Option<RichRecord> {
 		if self.iter.len() >= 2 {
@@ -278,7 +278,7 @@ impl<'a> Iterator for RichIter<'a> {
 		}
 	}
 }
-impl<'a> DoubleEndedIterator for RichIter<'a> {
+impl<'a> DoubleEndedIterator for RichRecordIter<'a> {
 	fn next_back(&mut self) -> Option<RichRecord> {
 		let len = self.iter.len();
 		if len >= 2 {
@@ -291,9 +291,9 @@ impl<'a> DoubleEndedIterator for RichIter<'a> {
 		}
 	}
 }
-impl<'a> ExactSizeIterator for RichIter<'a> {}
-impl<'a> iter::FusedIterator for RichIter<'a> {}
-impl<'a> fmt::Debug for RichIter<'a> {
+impl<'a> ExactSizeIterator for RichRecordIter<'a> {}
+impl<'a> iter::FusedIterator for RichRecordIter<'a> {}
+impl<'a> fmt::Debug for RichRecordIter<'a> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		f.debug_list().entries(self.clone()).finish()
 	}
@@ -329,7 +329,7 @@ serde_impl! {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			let mut state = serializer.serialize_struct("RichRecord", 3)?;
 			state.serialize_field("product", &self.product)?;
-			// state.serialize_field("kind", &ObjectKind::from(self.product))?;
+			// state.serialize_field("kind", &RichObjectKind::from(self.product))?;
 			state.serialize_field("build", &self.build)?;
 			state.serialize_field("count", &self.count)?;
 			state.end()

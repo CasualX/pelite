@@ -7,13 +7,13 @@ use core::{error, fmt, str};
 #[cfg(feature = "std")]
 use std::path::Path;
 
-use super::{DataEntry, Directory, Entry, Name, Resources};
+use super::{ResourceDataEntry, ResourceDirectory, ResourceDirectoryTable, ResourceEntry, ResourceName};
 
 //------------------------------------------------
 
 /// Find error.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum FindError {
+pub enum ResourceFindError {
 	/// An error happened when reading the underlying resources.
 	///
 	/// This error indicates the resources are corrupt.
@@ -23,47 +23,47 @@ pub enum FindError {
 	/// For this to work the given path must be valid unicode for the path comparison to make sense.
 	///
 	/// This error means the given path contained non-unicode parts.
-	Bad8Path,
+	InvalidUtf8Path,
 	/// The requested data entry or directory doesn't exist.
 	NotFound,
 	/// Paths from the resources root must start with a `/` or `\`.
-	NoRootPath,
+	MissingRoot,
 	/// Encountered a data entry when expecting a directory.
 	///
 	/// This error means the given path contained a directory name which is actually a data entry.
-	UnDataEntry,
+	UnexpectedDataEntry,
 	/// Encountered a directory when expecting a data entry.
-	UnDirectory,
+	UnexpectedDirectory,
 }
-impl FindError {
+impl ResourceFindError {
 	/// Returns a simple string representation of the error.
 	pub fn to_str(self) -> &'static str {
 		match self {
-			FindError::Pe(err) => err.to_str(),
-			FindError::Bad8Path => "invalid utf8 path",
-			FindError::NotFound => "entry not found",
-			FindError::NoRootPath => "missing '/' root",
-			FindError::UnDataEntry => "unexpected data entry",
-			FindError::UnDirectory => "unexpected directory",
+			ResourceFindError::Pe(err) => err.to_str(),
+			ResourceFindError::InvalidUtf8Path => "invalid utf8 path",
+			ResourceFindError::NotFound => "entry not found",
+			ResourceFindError::MissingRoot => "missing '/' root",
+			ResourceFindError::UnexpectedDataEntry => "unexpected data entry",
+			ResourceFindError::UnexpectedDirectory => "unexpected directory",
 		}
 	}
 }
-impl From<crate::Error> for FindError {
-	fn from(err: crate::Error) -> FindError {
-		FindError::Pe(err)
+impl From<crate::Error> for ResourceFindError {
+	fn from(err: crate::Error) -> ResourceFindError {
+		ResourceFindError::Pe(err)
 	}
 }
-impl From<str::Utf8Error> for FindError {
-	fn from(_err: str::Utf8Error) -> FindError {
-		FindError::Pe(crate::Error::Encoding)
+impl From<str::Utf8Error> for ResourceFindError {
+	fn from(_err: str::Utf8Error) -> ResourceFindError {
+		ResourceFindError::Pe(crate::Error::Encoding)
 	}
 }
-impl fmt::Display for FindError {
+impl fmt::Display for ResourceFindError {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		self.to_str().fmt(f)
 	}
 }
-impl error::Error for FindError {
+impl error::Error for ResourceFindError {
 	fn description(&self) -> &str {
 		self.to_str()
 	}
@@ -72,7 +72,7 @@ impl error::Error for FindError {
 	}
 	fn source(&self) -> Option<&(dyn error::Error + 'static)> {
 		match self {
-			FindError::Pe(err) => Some(err),
+			ResourceFindError::Pe(err) => Some(err),
 			_ => None,
 		}
 	}
@@ -80,117 +80,117 @@ impl error::Error for FindError {
 
 //------------------------------------------------
 
-impl<'a> Resources<'a> {
+impl<'a> ResourceDirectory<'a> {
 	/// Finds a resource by its type and name.
-	pub fn find_resource(&self, path: &[Name<'_>; 2]) -> Result<&'a [u8], FindError> {
+	pub fn find_resource(&self, path: &[ResourceName<'_>; 2]) -> Result<&'a [u8], ResourceFindError> {
 		Ok(self.root()?.get_dir(path[0])?.get_dir(path[1])?.first_data()?.bytes()?)
 	}
 	/// Finds the language directory for a resource with given type and name.
-	pub fn find_resources(&self, path: &[Name<'_>; 2]) -> Result<Directory<'a>, FindError> {
+	pub fn find_resources(&self, path: &[ResourceName<'_>; 2]) -> Result<ResourceDirectoryTable<'a>, ResourceFindError> {
 		self.root()?.get_dir(path[0])?.get_dir(path[1])
 	}
 	/// Finds the resource with specified type, name and language.
-	pub fn find_resource_ex(&self, path: &[Name<'_>; 3]) -> Result<&'a [u8], FindError> {
+	pub fn find_resource_ex(&self, path: &[ResourceName<'_>; 3]) -> Result<&'a [u8], ResourceFindError> {
 		Ok(self.root()?.get_dir(path[0])?.get_dir(path[1])?.get_data(path[2])?.bytes()?)
 	}
 	/// Gets the Version Information.
-	pub fn version_info(&self) -> Result<super::version_info::VersionInfo<'a>, FindError> {
-		let bytes = self.find_resource(&[Name::VERSION, Name::Id(1)])?;
+	pub fn version_info(&self) -> Result<super::version_info::VersionInfo<'a>, ResourceFindError> {
+		let bytes = self.find_resource(&[ResourceName::VERSION, ResourceName::Id(1)])?;
 		let version_info = super::version_info::VersionInfo::try_from(bytes)?;
 		Ok(version_info)
 	}
 	/// Gets the Application Manifest.
-	pub fn manifest(&self) -> Result<&'a str, FindError> {
+	pub fn manifest(&self) -> Result<&'a str, ResourceFindError> {
 		// Ok, new assumption: just take whatever we can find in the Manifest directory
-		let bytes = self.root()?.get_dir(Name::MANIFEST)?.first_dir()?.first_data()?.bytes()?;
+		let bytes = self.root()?.get_dir(ResourceName::MANIFEST)?.first_dir()?.first_data()?.bytes()?;
 		let manifest = str::from_utf8(bytes)?;
 		Ok(manifest)
 	}
 	/// Gets the icons.
-	pub fn icons(&self) -> impl 'a + Iterator<Item = Result<(Name<'a>, super::group::GroupIcon<'a>), FindError>> + Clone {
+	pub fn icons(&self) -> impl 'a + Iterator<Item = Result<(ResourceName<'a>, super::group::GroupIcon<'a>), ResourceFindError>> + Clone {
 		let resources = *self;
-		let icons = self.root().map_err(FindError::Pe).and_then(|root| root.get_dir(Name::GROUP_ICON));
+		let icons = self.root().map_err(ResourceFindError::Pe).and_then(|root| root.get_dir(ResourceName::GROUP_ICON));
 
 		icons.into_iter().flat_map(move |icons| {
 			icons.entries().map(move |de| {
 				let name = de.name()?;
 				// A lot of assumptions being made here...
-				let bytes = de.entry()?.dir().ok_or(FindError::UnDataEntry)?.first_data()?.bytes()?;
+				let bytes = de.entry()?.dir().ok_or(ResourceFindError::UnexpectedDataEntry)?.first_data()?.bytes()?;
 				let group_icon = super::group::GroupIcon::new(resources, bytes)?;
 				Ok((name, group_icon))
 			})
 		})
 	}
 	/// Gets the cursors.
-	pub fn cursors(&self) -> impl 'a + Iterator<Item = Result<(Name<'a>, super::group::GroupCursor<'a>), FindError>> + Clone {
+	pub fn cursors(&self) -> impl 'a + Iterator<Item = Result<(ResourceName<'a>, super::group::GroupCursor<'a>), ResourceFindError>> + Clone {
 		let resources = *self;
-		let cursors = self.root().map_err(FindError::Pe).and_then(|root| root.get_dir(Name::GROUP_CURSOR));
+		let cursors = self.root().map_err(ResourceFindError::Pe).and_then(|root| root.get_dir(ResourceName::GROUP_CURSOR));
 
 		cursors.into_iter().flat_map(move |cursors| {
 			cursors.entries().map(move |de| {
 				let name = de.name()?;
 				// A lot of assumptions being made here...
-				let bytes = de.entry()?.dir().ok_or(FindError::UnDataEntry)?.first_data()?.bytes()?;
+				let bytes = de.entry()?.dir().ok_or(ResourceFindError::UnexpectedDataEntry)?.first_data()?.bytes()?;
 				let group_cursor = super::group::GroupCursor::new(resources, bytes)?;
 				Ok((name, group_cursor))
 			})
 		})
 	}
 }
-impl<'a> Directory<'a> {
+impl<'a> ResourceDirectoryTable<'a> {
 	/// Looks up the entry by name.
-	pub fn get(&self, name: Name<'_>) -> Result<Entry<'a>, FindError> {
-		self.entries().find(|de| de.name() == Ok(name)).ok_or(FindError::NotFound)?.entry().map_err(FindError::Pe)
+	pub fn get(&self, name: ResourceName<'_>) -> Result<ResourceEntry<'a>, ResourceFindError> {
+		self.entries().find(|de| de.name() == Ok(name)).ok_or(ResourceFindError::NotFound)?.entry().map_err(ResourceFindError::Pe)
 	}
 	/// Looks up the data entry by name.
-	pub fn get_data(&self, name: Name<'_>) -> Result<DataEntry<'a>, FindError> {
+	pub fn get_data(&self, name: ResourceName<'_>) -> Result<ResourceDataEntry<'a>, ResourceFindError> {
 		self.entries()
 			.find(|de| de.name() == Ok(name))
-			.ok_or(FindError::NotFound)?
+			.ok_or(ResourceFindError::NotFound)?
 			.entry()?
 			.data()
-			.ok_or(FindError::UnDirectory)
+			.ok_or(ResourceFindError::UnexpectedDirectory)
 	}
 	/// Looks up the directory by name.
-	pub fn get_dir(&self, name: Name<'_>) -> Result<Directory<'a>, FindError> {
-		self.entries().find(|de| de.name() == Ok(name)).ok_or(FindError::NotFound)?.entry()?.dir().ok_or(FindError::UnDataEntry)
+	pub fn get_dir(&self, name: ResourceName<'_>) -> Result<ResourceDirectoryTable<'a>, ResourceFindError> {
+		self.entries().find(|de| de.name() == Ok(name)).ok_or(ResourceFindError::NotFound)?.entry()?.dir().ok_or(ResourceFindError::UnexpectedDataEntry)
 	}
 	/// Gets the first entry.
-	pub fn first(&self) -> Result<Entry<'a>, FindError> {
-		self.entries().next().ok_or(FindError::NotFound)?.entry().map_err(FindError::Pe)
+	pub fn first(&self) -> Result<ResourceEntry<'a>, ResourceFindError> {
+		self.entries().next().ok_or(ResourceFindError::NotFound)?.entry().map_err(ResourceFindError::Pe)
 	}
 	/// Gets the first data entry.
-	pub fn first_data(&self) -> Result<DataEntry<'a>, FindError> {
-		self.entries().next().ok_or(FindError::NotFound)?.entry()?.data().ok_or(FindError::UnDirectory)
+	pub fn first_data(&self) -> Result<ResourceDataEntry<'a>, ResourceFindError> {
+		self.entries().next().ok_or(ResourceFindError::NotFound)?.entry()?.data().ok_or(ResourceFindError::UnexpectedDirectory)
 	}
 	/// Gets the first directory.
-	pub fn first_dir(&self) -> Result<Directory<'a>, FindError> {
-		self.entries().next().ok_or(FindError::NotFound)?.entry()?.dir().ok_or(FindError::UnDataEntry)
+	pub fn first_dir(&self) -> Result<ResourceDirectoryTable<'a>, ResourceFindError> {
+		self.entries().next().ok_or(ResourceFindError::NotFound)?.entry()?.dir().ok_or(ResourceFindError::UnexpectedDataEntry)
 	}
 }
 
 //------------------------------------------------
 
 #[cfg(feature = "std")]
-impl<'a> Resources<'a> {
+impl<'a> ResourceDirectory<'a> {
 	/// Finds a file or directory by its path.
-	pub fn find<P: AsRef<Path> + ?Sized>(&self, path: &P) -> Result<Entry<'a>, FindError> {
+	pub fn find<P: AsRef<Path> + ?Sized>(&self, path: &P) -> Result<ResourceEntry<'a>, ResourceFindError> {
 		self.find_internal(path.as_ref())
 	}
 	/// Finds a file by its path.
-	pub fn find_data<P: AsRef<Path> + ?Sized>(&self, path: &P) -> Result<DataEntry<'a>, FindError> {
-		self.find(path).and_then(|e| e.data().ok_or(FindError::UnDirectory))
+	pub fn find_data<P: AsRef<Path> + ?Sized>(&self, path: &P) -> Result<ResourceDataEntry<'a>, ResourceFindError> {
+		self.find(path).and_then(|e| e.data().ok_or(ResourceFindError::UnexpectedDirectory))
 	}
 	/// Finds a directory by its path.
-	pub fn find_dir<P: AsRef<Path> + ?Sized>(&self, path: &P) -> Result<Directory<'a>, FindError> {
-		self.find(path).and_then(|e| e.dir().ok_or(FindError::UnDataEntry))
+	pub fn find_dir<P: AsRef<Path> + ?Sized>(&self, path: &P) -> Result<ResourceDirectoryTable<'a>, ResourceFindError> {
+		self.find(path).and_then(|e| e.dir().ok_or(ResourceFindError::UnexpectedDataEntry))
 	}
-	fn find_internal(&self, path: &Path) -> Result<Entry<'a>, FindError> {
+	fn find_internal(&self, path: &Path) -> Result<ResourceEntry<'a>, ResourceFindError> {
 		let mut iter = path.iter();
 		if let Some(slash) = iter.next() {
 			// Not an absolute path
 			if slash != "/" && slash != "\\" {
-				Err(FindError::NoRootPath)
+				Err(ResourceFindError::MissingRoot)
 			}
 			// Find the path in the root
 			else {
@@ -199,31 +199,31 @@ impl<'a> Resources<'a> {
 		}
 		else {
 			// The path is empty
-			Err(FindError::NotFound)
+			Err(ResourceFindError::NotFound)
 		}
 	}
 }
 #[cfg(feature = "std")]
-impl<'a> Directory<'a> {
+impl<'a> ResourceDirectoryTable<'a> {
 	/// Finds a file or directory by its path.
-	pub fn find<P: AsRef<Path> + ?Sized>(&self, path: &P) -> Result<Entry<'a>, FindError> {
+	pub fn find<P: AsRef<Path> + ?Sized>(&self, path: &P) -> Result<ResourceEntry<'a>, ResourceFindError> {
 		self.find_internal(path.as_ref())
 	}
 	/// Finds a file by its path.
-	pub fn find_data<P: AsRef<Path> + ?Sized>(&self, path: &P) -> Result<DataEntry<'a>, FindError> {
-		self.find(path).and_then(|e| e.data().ok_or(FindError::UnDirectory))
+	pub fn find_data<P: AsRef<Path> + ?Sized>(&self, path: &P) -> Result<ResourceDataEntry<'a>, ResourceFindError> {
+		self.find(path).and_then(|e| e.data().ok_or(ResourceFindError::UnexpectedDirectory))
 	}
 	/// Finds a directory by its path.
-	pub fn find_dir<P: AsRef<Path> + ?Sized>(&self, path: &P) -> Result<Directory<'a>, FindError> {
-		self.find(path).and_then(|e| e.dir().ok_or(FindError::UnDataEntry))
+	pub fn find_dir<P: AsRef<Path> + ?Sized>(&self, path: &P) -> Result<ResourceDirectoryTable<'a>, ResourceFindError> {
+		self.find(path).and_then(|e| e.dir().ok_or(ResourceFindError::UnexpectedDataEntry))
 	}
-	fn find_internal(&self, path: &Path) -> Result<Entry<'a>, FindError> {
-		let mut entry = Entry::Directory(*self);
+	fn find_internal(&self, path: &Path) -> Result<ResourceEntry<'a>, ResourceFindError> {
+		let mut entry = ResourceEntry::Directory(*self);
 		'parts: for part in path {
 			// The names of resources are UTF16
-			let name = Name::Str(part.to_str().ok_or(FindError::Bad8Path)?);
+			let name = ResourceName::Str(part.to_str().ok_or(ResourceFindError::InvalidUtf8Path)?);
 			match entry {
-				Entry::Directory(dir) => {
+				ResourceEntry::Directory(dir) => {
 					// Find a child with matching name for this part of the path
 					for child in dir.entries() {
 						if child.name() == Ok(name) {
@@ -231,10 +231,10 @@ impl<'a> Directory<'a> {
 							continue 'parts;
 						}
 					}
-					return Err(FindError::NotFound);
+					return Err(ResourceFindError::NotFound);
 				},
-				Entry::DataEntry(_) => {
-					return Err(FindError::UnDataEntry);
+				ResourceEntry::Data(_) => {
+					return Err(ResourceFindError::UnexpectedDataEntry);
 				},
 			};
 		}

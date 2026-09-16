@@ -217,7 +217,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 		}
 	}
 	#[inline]
-	pub fn base_relocs(&self) -> Result<crate::base_relocs::BaseRelocs<'a>> {
+	pub fn base_relocs(&self) -> Result<crate::base_relocs::BaseRelocationDirectory<'a>> {
 		match self {
 			Wrap::T32(pe32) => pe32.base_relocs(),
 			Wrap::T64(pe64) => pe64.base_relocs(),
@@ -238,7 +238,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 		}
 	}
 	#[inline]
-	pub fn security(&self) -> Result<crate::security::Security<'a>> {
+	pub fn security(&self) -> Result<crate::security::SecurityDirectory<'a>> {
 		match self {
 			Wrap::T32(pe32) => pe32.security(),
 			Wrap::T64(pe64) => pe64.security(),
@@ -252,7 +252,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 		}
 	}
 	#[inline]
-	pub fn resources(&self) -> Result<crate::resources::Resources<'a>> {
+	pub fn resources(&self) -> Result<crate::resources::ResourceDirectory<'a>> {
 		match self {
 			Wrap::T32(pe32) => pe32.resources(),
 			Wrap::T64(pe64) => pe64.resources(),

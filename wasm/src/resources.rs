@@ -1,6 +1,6 @@
 use std::mem;
 
-use pelite::resources::FindError::NotFound;
+use pelite::resources::ResourceFindError::NotFound;
 use pelite::Error::Null;
 
 use crate::{wasm::*, PeFile};
@@ -21,10 +21,10 @@ impl ResourceName {
 			}
 		}
 	}
-	fn as_name(&self) -> pelite::resources::Name<'_> {
+	fn as_name(&self) -> pelite::resources::ResourceName<'_> {
 		match self {
-			ResourceName::String(s) => pelite::resources::Name::Str(&s),
-			ResourceName::Id(id) => pelite::resources::Name::Id(*id),
+			ResourceName::String(s) => pelite::resources::ResourceName::Str(&s),
+			ResourceName::Id(id) => pelite::resources::ResourceName::Id(*id),
 		}
 	}
 }
