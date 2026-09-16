@@ -159,7 +159,7 @@ fn base_relocs() {
 		rvas.push(rva);
 		types.push(ty);
 	});
-	let result = pelite::base_relocs::build(&rvas, &types);
+	let result = pelite::base_relocs::BaseRelocationDirectory::build(&rvas, &types);
 	assert_eq!(result, base_relocs.image());
 }
 

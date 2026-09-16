@@ -513,7 +513,7 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	/// See the [base relocations][crate::base_relocs] module for more information.
 	///
 	/// Returns [`Err(Null)`][crate::Error::Null] if the image has no base relocations. Any other error indicates some form of corruption.
-	fn base_relocs(self) -> Result<crate::base_relocs::BaseRelocs<'a>> {
+	fn base_relocs(self) -> Result<crate::base_relocs::BaseRelocationDirectory<'a>> {
 		super::base_relocs::try_from(self)
 	}
 
@@ -540,7 +540,7 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	/// See the [security][crate::security] module for more information.
 	///
 	/// Returns [`Err(Null)`][crate::Error::Null] if the image has no security info. Any other error indicates some form of corruption.
-	fn security(self) -> Result<crate::security::Security<'a>> {
+	fn security(self) -> Result<crate::security::SecurityDirectory<'a>> {
 		super::security::try_from(self)
 	}
 
@@ -578,7 +578,7 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 		super::DebugDirectory::try_from(self)
 	}
 
-	/// Gets the Resources.
+	/// Gets the Resource Directory.
 	///
 	/// Returns the resource directory. See [`crate::resources`] for its API.
 	///
@@ -588,10 +588,10 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	///
 	/// ```
 	/// use pelite::pe64::{Pe, PeFile};
-	/// use pelite::resources::FindError;
+	/// use pelite::resources::ResourceFindError;
 	///
 	/// # #[allow(dead_code)]
-	/// fn manifest<'a>(file: PeFile<'a>) -> Result<&'a [u8], FindError> {
+	/// fn manifest<'a>(file: PeFile<'a>) -> Result<&'a [u8], ResourceFindError> {
 	/// 	// Access the resource directory
 	/// 	let resources = file.resources()?;
 	///
@@ -599,14 +599,14 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	/// 	Ok(resources.find_data("/Manifest/2/1033")?.bytes()?)
 	/// }
 	/// ```
-	fn resources(self) -> Result<crate::resources::Resources<'a>>
+	fn resources(self) -> Result<crate::resources::ResourceDirectory<'a>>
 	where
 		Self: Copy,
 	{
 		let datadir = self.data_directory().get(IMAGE_DIRECTORY_ENTRY_RESOURCE).ok_or(Error::Bounds)?;
 		let bytes = self.slice_bytes(datadir.VirtualAddress)?;
 		let size = cmp::min(datadir.Size as usize, bytes.len());
-		Ok(crate::resources::Resources::new(&bytes[..size], datadir))
+		Ok(crate::resources::ResourceDirectory::new(&bytes[..size], datadir))
 	}
 
 	/// Gets Scanner access.

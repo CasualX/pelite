@@ -13,9 +13,9 @@ The following example prints all group icon resource names which contain a PNG i
 
 ```
 // Aqcuire the resources of a Portable Executable file
-let resources: pelite::resources::Resources;
+let resources: pelite::resources::ResourceDirectory;
 
-# fn example(resources: pelite::resources::Resources<'_>) {
+# fn example(resources: pelite::resources::ResourceDirectory<'_>) {
 // Iterate over the group icons in the resources and throw away any invalid results
 // If the resources contain no group icons the iterator is empty
 for (name, group) in resources.icons().filter_map(Result::ok) {
@@ -50,7 +50,7 @@ use std::io;
 use crate::util::AlignTo;
 use crate::Error;
 
-use super::{FindError, Resources};
+use super::{ResourceDirectory, ResourceFindError};
 
 use self::image::*;
 
@@ -58,36 +58,36 @@ use self::image::*;
 
 /// Icon or Cursor type.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum ResourceType {
+pub enum ResourceGroupType {
 	Icon,
 	Cursor,
 }
-impl ResourceType {
+impl ResourceGroupType {
 	#[inline]
 	pub fn id(self) -> u16 {
 		match self {
-			ResourceType::Icon => crate::image::RT_ICON,
-			ResourceType::Cursor => crate::image::RT_CURSOR,
+			ResourceGroupType::Icon => crate::image::RT_ICON,
+			ResourceGroupType::Cursor => crate::image::RT_CURSOR,
 		}
 	}
 }
-impl<'a> From<ResourceType> for super::Name<'a> {
-	fn from(resource_type: ResourceType) -> super::Name<'a> {
+impl<'a> From<ResourceGroupType> for super::ResourceName<'a> {
+	fn from(resource_type: ResourceGroupType) -> super::ResourceName<'a> {
 		resource_type.id().into()
 	}
 }
 
 /// Group resources, Icons and Cursors.
 #[derive(Copy, Clone)]
-pub struct GroupResource<'a> {
-	resources: Resources<'a>,
+pub struct ResourceGroup<'a> {
+	resources: ResourceDirectory<'a>,
 	image: &'a GRPICONDIR,
 }
-impl<'a> GroupResource<'a> {
-	/// Parses the GroupResource from the byte slice.
+impl<'a> ResourceGroup<'a> {
+	/// Parses the resource group from the byte slice.
 	///
 	/// The pixel data of the group resource is stored in separate data entries, requiring the resources to access.
-	pub fn new(resources: Resources<'a>, bytes: &'a [u8]) -> Result<GroupResource<'a>, Error> {
+	pub fn new(resources: ResourceDirectory<'a>, bytes: &'a [u8]) -> Result<ResourceGroup<'a>, Error> {
 		if !bytes.as_ptr().aligned_to(2) {
 			return Err(Error::Misaligned);
 		}
@@ -102,7 +102,7 @@ impl<'a> GroupResource<'a> {
 		if bytes.len() != total_size {
 			return Err(Error::Bounds);
 		}
-		Ok(GroupResource { resources, image })
+		Ok(ResourceGroup { resources, image })
 	}
 	/// Gets the Group header.
 	pub fn header(&self) -> &'a GRPICONDIR {
@@ -118,16 +118,16 @@ impl<'a> GroupResource<'a> {
 		}
 	}
 	/// Gets the Group resource type.
-	pub fn ty(&self) -> ResourceType {
+	pub fn ty(&self) -> ResourceGroupType {
 		match self.image.idType {
-			1 => ResourceType::Icon,
-			2 => ResourceType::Cursor,
+			1 => ResourceGroupType::Icon,
+			2 => ResourceGroupType::Cursor,
 			_ => unreachable!(), // Checked by constructor
 		}
 	}
 	/// Gets the image data for the given icon id.
-	pub fn image(&self, id: u16) -> Result<&'a [u8], FindError> {
-		self.resources.root()?.get_dir(self.ty().into())?.get_dir(id.into())?.first_data()?.bytes().map_err(FindError::Pe)
+	pub fn image(&self, id: u16) -> Result<&'a [u8], ResourceFindError> {
+		self.resources.root()?.get_dir(self.ty().into())?.get_dir(id.into())?.first_data()?.bytes().map_err(ResourceFindError::Pe)
 	}
 	/// Reassemble the file.
 	#[cfg(feature = "std")]
@@ -161,9 +161,9 @@ impl<'a> GroupResource<'a> {
 }
 
 #[rustfmt::skip]
-impl fmt::Debug for GroupResource<'_> {
+impl fmt::Debug for ResourceGroup<'_> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		f.debug_struct("GroupResource")
+		f.debug_struct("ResourceGroup")
 			.field("type", &self.ty())
 			.field("entries.len", &self.entries().len())
 			.finish()
@@ -171,7 +171,7 @@ impl fmt::Debug for GroupResource<'_> {
 }
 
 #[cfg(all(feature = "std", feature = "serde"))]
-impl serde::Serialize for GroupResource<'_> {
+impl serde::Serialize for ResourceGroup<'_> {
 	fn serialize<S: serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 		let mut bytes = Vec::new();
 		mem::forget(self.write(&mut bytes));
@@ -184,9 +184,9 @@ impl serde::Serialize for GroupResource<'_> {
 }
 
 /// Group Icon.
-pub type GroupIcon<'a> = GroupResource<'a>;
+pub type GroupIcon<'a> = ResourceGroup<'a>;
 /// Group Cursor.
-pub type GroupCursor<'a> = GroupResource<'a>;
+pub type GroupCursor<'a> = ResourceGroup<'a>;
 
 //----------------------------------------------------------------
 

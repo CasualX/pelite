@@ -1,10 +1,13 @@
 use super::*;
 
-pub(crate) fn try_from<'a, P: Pe<'a>>(pe: P) -> Result<BaseRelocs<'a>> {
+#[doc(inline)]
+pub use crate::base_relocs::*;
+
+pub(crate) fn try_from<'a, P: Pe<'a>>(pe: P) -> Result<BaseRelocationDirectory<'a>> {
 	let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_BASERELOC).ok_or(Error::Bounds)?;
 	let relocs = pe.slice(datadir.VirtualAddress, datadir.Size as usize, 4)?; // $1
 	let relocs = unsafe { relocs.get_unchecked(..datadir.Size as usize) };
-	Ok(unsafe { BaseRelocs::new(relocs) })
+	Ok(unsafe { BaseRelocationDirectory::new(relocs) })
 }
 
 #[cfg(test)]

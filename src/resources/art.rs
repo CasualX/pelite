@@ -1,6 +1,6 @@
 use core::fmt;
 
-use super::{Directory, Entry, Resources};
+use super::{ResourceDirectory, ResourceDirectoryTable, ResourceEntry};
 
 /// Art used to format a directory tree.
 #[derive(Debug)]
@@ -42,20 +42,20 @@ enum TreeArt {
 
 #[derive(Clone, Debug)]
 struct TreeFmt<'a: 'd, 'd> {
-	dir: &'d Directory<'a>,
+	dir: &'d ResourceDirectoryTable<'a>,
 	art: &'static Art,
 	depth: u32,
 	margin: u32,
 }
 impl<'a, 'd> TreeFmt<'a, 'd> {
-	fn root(root: &'d Directory<'a>, art: TreeArt) -> TreeFmt<'a, 'd> {
+	fn root(root: &'d ResourceDirectoryTable<'a>, art: TreeArt) -> TreeFmt<'a, 'd> {
 		let art = match art {
 			TreeArt::Ascii => &A,
 			TreeArt::Unicode => &U,
 		};
 		TreeFmt { dir: root, art, depth: !0, margin: 0 }
 	}
-	fn dir(dir: &'d Directory<'a>, art: TreeArt) -> TreeFmt<'a, 'd> {
+	fn dir(dir: &'d ResourceDirectoryTable<'a>, art: TreeArt) -> TreeFmt<'a, 'd> {
 		let art = match art {
 			TreeArt::Ascii => &A,
 			TreeArt::Unicode => &U,
@@ -94,7 +94,7 @@ impl<'a, 'd> TreeFmt<'a, 'd> {
 			}
 			.and_then(|_| f.write_str(if e.is_dir() { "/\n" } else { "\n" }))?;
 			// If it's a directory, print it recursively
-			if let Ok(Entry::Directory(dir)) = e.entry() {
+			if let Ok(ResourceEntry::Directory(dir)) = e.entry() {
 				TreeFmt {
 					dir: &dir,
 					art: self.art,
@@ -108,9 +108,9 @@ impl<'a, 'd> TreeFmt<'a, 'd> {
 	}
 }
 
-impl<'a> fmt::Display for Resources<'a> {
+impl<'a> fmt::Display for ResourceDirectory<'a> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		f.write_str("Resources/\n")?;
+		f.write_str("ResourceDirectory/\n")?;
 		match self.root() {
 			Ok(root) => TreeFmt::root(&root, TreeArt::Ascii).draw(f),
 			Err(err) => err.fmt(f),
@@ -118,9 +118,9 @@ impl<'a> fmt::Display for Resources<'a> {
 	}
 }
 
-impl<'a> fmt::Display for Directory<'a> {
+impl<'a> fmt::Display for ResourceDirectoryTable<'a> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		f.write_str("Directory/\n")?;
+		f.write_str("ResourceDirectoryTable/\n")?;
 		TreeFmt::dir(self, TreeArt::Ascii).draw(f)
 	}
 }

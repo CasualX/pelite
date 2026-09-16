@@ -34,7 +34,7 @@ fn print_version_info(path: &Path, lang: Option<u16>) {
 	// Extract the version info from the resources
 	let version_info = match lang {
 		Some(lang) => resources
-			.find_resource_ex(&[pelite::resources::Name::VERSION, 1.into(), lang.into()])
+			.find_resource_ex(&[pelite::resources::ResourceName::VERSION, 1.into(), lang.into()])
 			.and_then(|bytes| Ok(pelite::resources::version_info::VersionInfo::try_from(bytes)?)),
 		None => resources.version_info(),
 	}
@@ -42,7 +42,7 @@ fn print_version_info(path: &Path, lang: Option<u16>) {
 
 	// Print the version info strings
 	struct Printer;
-	impl pelite::resources::version_info::Visit<'_> for Printer {
+	impl pelite::resources::version_info::VersionInfoVisitor<'_> for Printer {
 		fn version_info(&mut self, _key: &[u16], fixed: Option<&pelite::image::VS_FIXEDFILEINFO>) -> bool {
 			if let Some(fixed) = fixed {
 				#[rustfmt::skip]
