@@ -5,7 +5,7 @@ See [Microsoft's documentation](https://docs.microsoft.com/en-us/windows/desktop
 
 # Examples
 
-See also the `examples/version_info.rs` example which reads and prints the version info of the given file.
+See also the `pelite-cli version-info` command, which reads and prints the version info of a PE file.
 
 ```
 use pelite::PeFile;

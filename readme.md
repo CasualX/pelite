@@ -27,7 +27,10 @@ Note that while the correct name is PE32+, the name PE64 is used as it is a vali
 Tools
 -----
 
-Included are bins showing some uses for the library, [try them out on the demos](demo)!
+The workspace includes a unified CLI for inspecting binaries and version resources,
+extracting strings and icons, hashing imports, finding signatures, generating binary
+data and module-definition files, and dumping MSVC RTTI.
+Run `cargo run -p pelite-cli -- --help` or [try it on the demos](demo).
 
 Library
 -------
