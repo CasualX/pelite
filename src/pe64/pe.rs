@@ -66,13 +66,13 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 		unsafe { data_directory(self.image()) }
 	}
 	/// Returns the section headers.
-	fn section_headers(self) -> &'a super::SectionHeaders {
+	fn section_headers(self) -> &'a super::PeSectionHeaders {
 		unsafe { section_headers(self.image()) }
 	}
 
 	/// Returns the pe headers together in a single struct.
-	fn headers(self) -> super::Headers<Self> {
-		super::Headers::new(self)
+	fn headers(self) -> super::PeHeaders<Self> {
+		super::PeHeaders::new(self)
 	}
 
 	//----------------------------------------------------------------
@@ -699,11 +699,11 @@ unsafe fn data_directory(image: &[u8]) -> &[IMAGE_DATA_DIRECTORY] { unsafe {
 	let len = cmp::min(opt.NumberOfRvaAndSizes as usize, IMAGE_NUMBEROF_DIRECTORY_ENTRIES);
 	slice::from_raw_parts(opt.DataDirectory.as_ptr(), len)
 }}
-unsafe fn section_headers(image: &[u8]) -> &super::SectionHeaders { unsafe {
+unsafe fn section_headers(image: &[u8]) -> &super::PeSectionHeaders { unsafe {
 	let nt = nt_headers(image);
 	let data = (&nt.OptionalHeader as *const _ as *const u8).offset(nt.FileHeader.SizeOfOptionalHeader as isize) as *const IMAGE_SECTION_HEADER;
 	let raw = slice::from_raw_parts(data, nt.FileHeader.NumberOfSections as usize);
-	super::SectionHeaders::new(raw)
+	super::PeSectionHeaders::new(raw)
 }}
 
 unsafe fn slice_section(image: &[u8], rva: Rva, min_size_of: usize, align_of: usize) -> Result<&[u8]> {

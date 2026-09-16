@@ -195,8 +195,7 @@ impl<'a> fmt::Debug for CodeView<'a> {
 /// Debug information.
 #[derive(Copy, Clone)]
 pub struct DebugMisc<'a> {
-	/// Underlying miscellaneous debug information record.
-	pub image: &'a image::IMAGE_DEBUG_MISC,
+	pub(crate) image: &'a image::IMAGE_DEBUG_MISC,
 }
 impl<'a> DebugMisc<'a> {
 	/// Gets the underlying information image.
@@ -219,8 +218,7 @@ impl<'a> fmt::Debug for DebugMisc<'a> {
 /// PGO information.
 #[derive(Copy, Clone)]
 pub struct Pgo<'a> {
-	/// Underlying PGO data as 32-bit words.
-	pub image: &'a [u32],
+	pub(crate) image: &'a [u32],
 }
 impl<'a> Pgo<'a> {
 	/// Gets the underlying image.

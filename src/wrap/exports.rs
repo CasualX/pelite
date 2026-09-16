@@ -3,7 +3,7 @@ use super::*;
 /// Exported symbol.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
-pub enum Export<'a> {
+pub enum ExportSymbol<'a> {
 	/// Standard exported symbol.
 	Symbol(&'a u32),
 	/// This export is forwarded to another dll.
@@ -12,12 +12,12 @@ pub enum Export<'a> {
 	/// For more information see this [blog post](https://blogs.msdn.microsoft.com/oldnewthing/20060719-24/?p=30473) by Raymond Chen.
 	Forward(&'a CStr),
 }
-impl<'a> Export<'a> {
+impl<'a> ExportSymbol<'a> {
 	/// Returns some if the symbol is exported.
 	#[inline]
 	pub fn symbol(self) -> Option<u32> {
 		match self {
-			Export::Symbol(&rva) => Some(rva),
+			ExportSymbol::Symbol(&rva) => Some(rva),
 			_ => None,
 		}
 	}
@@ -25,7 +25,7 @@ impl<'a> Export<'a> {
 	#[inline]
 	pub fn forward(self) -> Option<&'a CStr> {
 		match self {
-			Export::Forward(name) => Some(name),
+			ExportSymbol::Forward(name) => Some(name),
 			_ => None,
 		}
 	}
@@ -165,33 +165,33 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::ExportBy<'a, Pe32>, 
 			Wrap::T64(by) => by.check_sorted(),
 		}
 	}
-	/// Looks up an `Export` by its ordinal.
+	/// Looks up an export by its ordinal.
 	#[inline]
-	pub fn ordinal(&self, ordinal: u16) -> Result<Export<'a>> {
+	pub fn ordinal(&self, ordinal: u16) -> Result<ExportSymbol<'a>> {
 		match self {
 			Wrap::T32(by) => by.ordinal(ordinal),
 			Wrap::T64(by) => by.ordinal(ordinal),
 		}
 	}
-	/// Looks up an `Export` by its name.
+	/// Looks up an export by its name.
 	#[inline]
-	pub fn name_linear<S: AsRef<[u8]> + ?Sized>(&self, name: &S) -> Result<Export<'a>> {
+	pub fn name_linear<S: AsRef<[u8]> + ?Sized>(&self, name: &S) -> Result<ExportSymbol<'a>> {
 		match self {
 			Wrap::T32(by) => by.name_linear(name),
 			Wrap::T64(by) => by.name_linear(name),
 		}
 	}
-	/// Looks up an `Export` by its name.
+	/// Looks up an export by its name.
 	#[inline]
-	pub fn name<S: AsRef<[u8]> + ?Sized>(&self, name: &S) -> Result<Export<'a>> {
+	pub fn name<S: AsRef<[u8]> + ?Sized>(&self, name: &S) -> Result<ExportSymbol<'a>> {
 		match self {
 			Wrap::T32(by) => by.name(name),
 			Wrap::T64(by) => by.name(name),
 		}
 	}
-	/// Looks up an `Export` by its import.
+	/// Looks up an export by its import.
 	#[inline]
-	pub fn import(&self, import: Import) -> Result<Export<'a>> {
+	pub fn import(&self, import: ImportSymbol) -> Result<ExportSymbol<'a>> {
 		match self {
 			Wrap::T32(by) => by.import(import),
 			Wrap::T64(by) => by.import(import),
@@ -199,7 +199,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::ExportBy<'a, Pe32>, 
 	}
 	/// Looks up an export by its index.
 	#[inline]
-	pub fn index(&self, index: usize) -> Result<Export<'a>> {
+	pub fn index(&self, index: usize) -> Result<ExportSymbol<'a>> {
 		match self {
 			Wrap::T32(by) => by.index(index),
 			Wrap::T64(by) => by.index(index),
@@ -207,7 +207,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::ExportBy<'a, Pe32>, 
 	}
 	/// Looks up an export by its hint.
 	#[inline]
-	pub fn hint(&self, hint: usize) -> Result<Export<'a>> {
+	pub fn hint(&self, hint: usize) -> Result<ExportSymbol<'a>> {
 		match self {
 			Wrap::T32(by) => by.hint(hint),
 			Wrap::T64(by) => by.hint(hint),
@@ -215,7 +215,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::ExportBy<'a, Pe32>, 
 	}
 	/// Looks up an export by its hint and falls back to the name if the hint is incorrect.
 	#[inline]
-	pub fn hint_name<S: AsRef<[u8]> + ?Sized>(&self, hint: usize, name: &S) -> Result<Export<'a>> {
+	pub fn hint_name<S: AsRef<[u8]> + ?Sized>(&self, hint: usize, name: &S) -> Result<ExportSymbol<'a>> {
 		match self {
 			Wrap::T32(by) => by.hint_name(hint, name),
 			Wrap::T64(by) => by.hint_name(hint, name),
@@ -231,14 +231,14 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::ExportBy<'a, Pe32>, 
 	}
 	/// Given an index in the functions array, gets the named export.
 	#[inline]
-	pub fn name_lookup(&self, index: usize) -> Result<Import<'a>> {
+	pub fn name_lookup(&self, index: usize) -> Result<ImportSymbol<'a>> {
 		match self {
 			Wrap::T32(by) => by.name_lookup(index),
 			Wrap::T64(by) => by.name_lookup(index),
 		}
 	}
 	#[inline]
-	fn symbol_from_rva(&self, rva: &'a u32) -> Result<Export<'a>> {
+	fn symbol_from_rva(&self, rva: &'a u32) -> Result<ExportSymbol<'a>> {
 		match self {
 			Wrap::T32(by) => by.symbol_from_rva(rva),
 			Wrap::T64(by) => by.symbol_from_rva(rva),
@@ -246,17 +246,17 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::ExportBy<'a, Pe32>, 
 	}
 	/// Iterate over exported functions.
 	#[inline]
-	pub fn iter<'s>(&'s self) -> impl 's + Clone + Iterator<Item = Result<Export<'a>>> {
+	pub fn iter(&self) -> impl Clone + Iterator<Item = Result<ExportSymbol<'a>>> {
 		self.functions().iter().map(move |rva| self.symbol_from_rva(rva))
 	}
 	/// Iterate over functions exported by name.
 	#[inline]
-	pub fn iter_names<'s>(&'s self) -> impl 's + Clone + Iterator<Item = (Result<&'a CStr>, Result<Export<'a>>)> {
+	pub fn iter_names(&self) -> impl Clone + Iterator<Item = (Result<&'a CStr>, Result<ExportSymbol<'a>>)> {
 		(0..self.names().len() as u32).map(move |hint| (self.name_of_hint(hint as usize), self.hint(hint as usize)))
 	}
 	/// Iterate over functions exported by name, returning their name and index in the functions table.
 	#[inline]
-	pub fn iter_name_indices<'s>(&'s self) -> impl 's + Clone + Iterator<Item = (Result<&'a CStr>, usize)> {
+	pub fn iter_name_indices(&self) -> impl Clone + Iterator<Item = (Result<&'a CStr>, usize)> {
 		(0..self.names().len() as u32).map(move |hint| (self.name_of_hint(hint as usize), self.name_indices()[hint as usize] as usize))
 	}
 }
@@ -265,7 +265,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::ExportBy<'a, Pe32>, 
 impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 	/// Convenient method to get an exported function by ordinal.
 	#[inline]
-	pub fn get_export_by_ordinal(&self, ordinal: u16) -> Result<Export<'a>> {
+	pub fn get_export_by_ordinal(&self, ordinal: u16) -> Result<ExportSymbol<'a>> {
 		use pe32::GetProcAddress as _;
 		use pe64::GetProcAddress as _;
 		match self {
@@ -275,7 +275,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 	}
 	/// Convenient method to get an exported function by import.
 	#[inline]
-	pub fn get_export_by_import(&self, import: Import<'a>) -> Result<Export<'a>> {
+	pub fn get_export_by_import(&self, import: ImportSymbol<'a>) -> Result<ExportSymbol<'a>> {
 		use pe32::GetProcAddress as _;
 		use pe64::GetProcAddress as _;
 		match self {
@@ -285,7 +285,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 	}
 	/// Convenient method to get an exported function by name.
 	#[inline]
-	pub fn get_export_by_name<S: ?Sized + AsRef<[u8]>>(&self, name: &S) -> Result<Export<'a>> {
+	pub fn get_export_by_name<S: ?Sized + AsRef<[u8]>>(&self, name: &S) -> Result<ExportSymbol<'a>> {
 		use pe32::GetProcAddress as _;
 		use pe64::GetProcAddress as _;
 		match self {

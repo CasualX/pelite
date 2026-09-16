@@ -66,10 +66,10 @@ impl fmt::Debug for SectionHeader {
 
 /// Section headers.
 #[repr(transparent)]
-pub struct SectionHeaders([image::IMAGE_SECTION_HEADER]);
+pub struct PeSectionHeaders([image::IMAGE_SECTION_HEADER]);
 
-impl SectionHeaders {
-	pub(crate) fn new(image: &[image::IMAGE_SECTION_HEADER]) -> &SectionHeaders {
+impl PeSectionHeaders {
+	pub(crate) fn new(image: &[image::IMAGE_SECTION_HEADER]) -> &PeSectionHeaders {
 		unsafe { mem::transmute(image) }
 	}
 	/// Returns the underlying slice of section headers.
@@ -120,9 +120,9 @@ impl SectionHeaders {
 	}
 }
 
-unsafe impl Pod for SectionHeaders {}
+unsafe impl Pod for PeSectionHeaders {}
 
-impl<'a> IntoIterator for &'a SectionHeaders {
+impl<'a> IntoIterator for &'a PeSectionHeaders {
 	type Item = &'a SectionHeader;
 	type IntoIter = slice::Iter<'a, SectionHeader>;
 	fn into_iter(self) -> Self::IntoIter {
@@ -130,7 +130,7 @@ impl<'a> IntoIterator for &'a SectionHeaders {
 	}
 }
 
-impl fmt::Debug for SectionHeaders {
+impl fmt::Debug for PeSectionHeaders {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		self.as_slice().fmt(f)
 	}
@@ -150,7 +150,7 @@ pub(crate) fn serialize_name<S: serde::ser::Serializer>(name: &[u8; image::IMAGE
 }
 
 serde_impl! {
-	impl serde::Serialize for SectionHeaders {
+	impl serde::Serialize for PeSectionHeaders {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			serializer.collect_seq(self.iter())
 		}

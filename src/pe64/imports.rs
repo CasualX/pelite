@@ -3,7 +3,7 @@ use super::*;
 //----------------------------------------------------------------
 
 #[doc(inline)]
-pub use crate::Import;
+pub use crate::ImportSymbol;
 
 //----------------------------------------------------------------
 
@@ -11,16 +11,16 @@ pub use crate::Import;
 //
 // These aren't actually virtual addresses.
 // This function will decode them to get the import.
-fn import_from_va<'a, P: Pe<'a>>(pe: P, &va: &'a Va) -> Result<Import<'a>> {
+fn import_from_va<'a, P: Pe<'a>>(pe: P, &va: &'a Va) -> Result<ImportSymbol<'a>> {
 	if va & IMAGE_ORDINAL_FLAG == 0 {
 		// TODO! Validate that this really is an Rva in PE32+?
 		let rva = va as Rva;
 		let hint = pe.derva::<u16>(rva)?;
 		let name = pe.derva_c_str(rva + 2)?;
-		Ok(Import::ByName { hint: *hint as usize, name })
+		Ok(ImportSymbol::ByName { hint: *hint as usize, name })
 	}
 	else {
-		Ok(Import::ByOrdinal { ord: va as Ordinal })
+		Ok(ImportSymbol::ByOrdinal { ord: va as Ordinal })
 	}
 }
 
@@ -130,7 +130,7 @@ impl<'a, P: Pe<'a>> ImportAddressTable<'a, P> {
 	/// Iterate over the IAT.
 	///
 	/// When the imports aren't resolved yet the IAT is an alias for the import name table.
-	pub fn iter(&self) -> iter::Map<slice::Iter<'a, Va>, impl Clone + FnMut(&'a Va) -> (&'a Va, Result<Import<'a>>)> {
+	pub fn iter(&self) -> iter::Map<slice::Iter<'a, Va>, impl Clone + FnMut(&'a Va) -> (&'a Va, Result<ImportSymbol<'a>>)> {
 		let pe = self.pe;
 		self.image.iter().map(move |va| (va, import_from_va(pe, va)))
 	}
@@ -213,7 +213,7 @@ impl<'a, P: Pe<'a>> ImportDescriptor<'a, P> {
 		Ok(slice.iter())
 	}
 	/// Gets the import name table.
-	pub fn int(&self) -> Result<iter::Map<slice::Iter<'a, Va>, impl Clone + FnMut(&'a Va) -> Result<Import<'a>>>> {
+	pub fn int(&self) -> Result<iter::Map<slice::Iter<'a, Va>, impl Clone + FnMut(&'a Va) -> Result<ImportSymbol<'a>>>> {
 		let slice = self.pe.derva_slice_s(self.image.OriginalFirstThunk.get(), 0)?;
 		let pe = self.pe;
 		Ok(slice.iter().map(move |va| import_from_va(pe, va)))
