@@ -92,7 +92,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 		}
 	}
 	#[inline]
-	pub fn section_headers(&self) -> &'a super::sections::SectionHeaders {
+	pub fn section_headers(&self) -> &'a super::sections::PeSectionHeaders {
 		match self {
 			Wrap::T32(pe32) => pe32.section_headers(),
 			Wrap::T64(pe64) => pe64.section_headers(),
@@ -182,7 +182,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 	//----------------------------------------------------------------
 
 	#[inline]
-	pub fn headers(&self) -> Wrap<pe32::Headers<Pe32>, pe64::Headers<Pe64>> {
+	pub fn headers(&self) -> Wrap<pe32::PeHeaders<Pe32>, pe64::PeHeaders<Pe64>> {
 		match self {
 			Wrap::T32(pe32) => Wrap::T32(pe32.headers()),
 			Wrap::T64(pe64) => Wrap::T64(pe64.headers()),

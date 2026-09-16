@@ -68,8 +68,8 @@ fn calculate(path: &Path) -> Result<ImportHash> {
 			let dll = strip_library_extension(&dll);
 			for import in descriptor.int()? {
 				let symbol = match import? {
-					pelite::Import::ByName { name, .. } => name.to_str()?.to_ascii_lowercase(),
-					pelite::Import::ByOrdinal { ord } => format!("ord{ord}"),
+					pelite::ImportSymbol::ByName { name, .. } => name.to_str()?.to_ascii_lowercase(),
+					pelite::ImportSymbol::ByOrdinal { ord } => format!("ord{ord}"),
 				};
 				names.push(format!("{dll}.{symbol}"));
 			}

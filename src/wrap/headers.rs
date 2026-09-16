@@ -1,7 +1,7 @@
 use super::*;
 
 /// Describes the PE headers.
-impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::Headers<Pe32>, pe64::Headers<Pe64>> {
+impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::PeHeaders<Pe32>, pe64::PeHeaders<Pe64>> {
 	/// Gets the PE instance.
 	#[inline]
 	pub fn pe(&self) -> Wrap<Pe32, Pe64> {

@@ -4,13 +4,13 @@ pub use crate::wrap::sections::*;
 
 /// Describes the PE headers.
 #[derive(Copy, Clone)]
-pub struct Headers<P> {
+pub struct PeHeaders<P> {
 	pe: P,
 }
 
-impl<'a, P: Pe<'a>> Headers<P> {
-	pub(crate) fn new(pe: P) -> Headers<P> {
-		Headers { pe }
+impl<'a, P: Pe<'a>> PeHeaders<P> {
+	pub(crate) fn new(pe: P) -> PeHeaders<P> {
+		PeHeaders { pe }
 	}
 	/// Gets the PE instance.
 	pub fn pe(&self) -> P {
@@ -86,9 +86,9 @@ impl<'a, P: Pe<'a>> Headers<P> {
 serde_impl! {
 	use crate::stringify;
 
-	impl<'a, P: Pe<'a>> Serialize for Headers<P> {
+	impl<'a, P: Pe<'a>> Serialize for PeHeaders<P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-			let mut state = serializer.serialize_struct("Headers", 5)?;
+			let mut state = serializer.serialize_struct("PeHeaders", 5)?;
 			state.serialize_field("DosHeader", self.pe.dos_header())?;
 			state.serialize_field("NtHeaders", self.pe.nt_headers())?;
 			state.serialize_field("DataDirectory", self.pe.data_directory())?;
@@ -114,7 +114,7 @@ serde_impl! {
 
 			let optional_header = self.pe.optional_header();
 			state.serialize_field("OptionalHeader.Magic", &stringify::OptionalMagic(optional_header.Magic).to_str())?;
-			state.serialize_field("OptionalHeader.CheckSum", &Headers { pe: self.pe }.check_sum())?;
+			state.serialize_field("OptionalHeader.CheckSum", &PeHeaders { pe: self.pe }.check_sum())?;
 			state.serialize_field("OptionalHeader.Subsystem", &stringify::Subsystem(optional_header.Subsystem).to_str())?;
 			state.serialize_field("OptionalHeader.DllCharacteristics", &SerdeIter(stringify::DllChars(optional_header.DllCharacteristics).to_strs()))?;
 
