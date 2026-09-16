@@ -236,12 +236,7 @@ fn pgo<'a, P: Pe<'a>>(dir: &DebugDirectoryEntry<'a, P>) -> Result<Pgo<'a>> {
 	],
 */
 
-#[cfg(feature = "serde")]
-mod serde {
-	use crate::util::serde_helper::*;
-
-	use super::{DebugDirectory, DebugDirectoryEntry, Pe};
-
+serde_impl! {
 	impl<'a, P: Pe<'a>> Serialize for DebugDirectory<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			serializer.collect_seq(self.into_iter())
@@ -250,15 +245,14 @@ mod serde {
 	impl<'a, P: Pe<'a>> Serialize for DebugDirectoryEntry<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			let is_human_readable = serializer.is_human_readable();
-			let mut state = serializer.serialize_struct("DebugDirectoryEntry", 4)?;
+			let mut state = serializer.serialize_struct("DebugDirectoryEntry", 3)?;
+			state.serialize_field("image", self.image)?;
 			if is_human_readable {
 				state.serialize_field("type", &crate::stringify::DebugType(self.image.Type).to_str())?;
 			}
 			else {
 				state.serialize_field("type", &self.image.Type)?;
 			}
-			state.serialize_field("time_date_stamp", &self.image.TimeDateStamp)?;
-			state.serialize_field("version", &self.image.Version)?;
 			state.serialize_field("entry", &self.entry().ok())?;
 			state.end()
 		}

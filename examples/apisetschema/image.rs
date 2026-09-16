@@ -3,7 +3,7 @@
 use pelite::Pod;
 
 #[derive(Copy, Clone, Debug, Pod)]
-#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct API_SET_NAMESPACE_V6 {
 	/// v2 on Windows 7, v4 on Windows 8.1  and v6 on Windows 10
@@ -25,7 +25,7 @@ pub struct API_SET_NAMESPACE_V6 {
 pub const API_SET_SCHEMA_ENTRY_FLAGS_SEALED: u32 = 1;
 
 #[derive(Copy, Clone, Debug, Pod)]
-#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct API_SET_HASH_ENTRY {
 	pub Hash: u32,
@@ -33,7 +33,7 @@ pub struct API_SET_HASH_ENTRY {
 }
 
 #[derive(Copy, Clone, Debug, Pod)]
-#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct API_SET_NAMESPACE_ENTRY {
 	/// sealed flag in bit 0
@@ -51,7 +51,7 @@ pub struct API_SET_NAMESPACE_ENTRY {
 }
 
 #[derive(Copy, Clone, Debug, Pod)]
-#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct API_SET_VALUE_ENTRY {
 	/// sealed flag in bit 0

@@ -139,18 +139,17 @@ impl fmt::Debug for SectionHeaders {
 //----------------------------------------------------------------
 
 #[cfg(feature = "serde")]
-pub(crate) fn serialize_name<S: ::serde::ser::Serializer>(name: &[u8; image::IMAGE_SIZEOF_SHORT_NAME], serializer: S) -> core::result::Result<S::Ok, S::Error> {
+pub(crate) fn serialize_name<S: serde::ser::Serializer>(name: &[u8; image::IMAGE_SIZEOF_SHORT_NAME], serializer: S) -> core::result::Result<S::Ok, S::Error> {
+	if !serializer.is_human_readable() {
+		return serializer.serialize_bytes(name);
+	}
 	match crate::util::parsen(name) {
 		Ok(name) => serializer.serialize_str(name),
 		Err(name) => serializer.serialize_bytes(name),
 	}
 }
 
-#[cfg(feature = "serde")]
-mod serde {
-	use super::{SectionHeader, SectionHeaders};
-	use crate::util::serde_helper::*;
-
+serde_impl! {
 	impl serde::Serialize for SectionHeaders {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			serializer.collect_seq(self.iter())

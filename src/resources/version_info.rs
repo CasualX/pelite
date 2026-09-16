@@ -393,7 +393,7 @@ FILESUBTYPE {}",
 
 /// VersionInfo parsed into owned maps.
 #[derive(Clone, Debug, Default)]
-#[cfg_attr(all(feature = "std", feature = "serde"), derive(::serde::Serialize))]
+#[cfg_attr(all(feature = "std", feature = "serde"), derive(serde::Serialize))]
 pub struct FileInfo<'a> {
 	pub fixed: Option<&'a VS_FIXEDFILEINFO>,
 	pub strings: Map<Language, Map<String, String>>,
@@ -440,18 +440,22 @@ impl<'a> Visit<'a> for FileInfo<'a> {
 	},
 */
 
-#[cfg(all(feature = "std", feature = "serde"))]
-mod serde {
-	use crate::util::serde_helper::*;
-
-	use super::{Language, VersionInfo};
-
+serde_impl! {
 	impl Serialize for Language {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-			serializer.collect_str(self)
+			if serializer.is_human_readable() {
+				serializer.collect_str(self)
+			}
+			else {
+				let mut state = serializer.serialize_struct("Language", 2)?;
+				state.serialize_field("lang_id", &self.lang_id)?;
+				state.serialize_field("charset_id", &self.charset_id)?;
+				state.end()
+			}
 		}
 	}
 
+	#[cfg(feature = "std")]
 	impl<'a> Serialize for VersionInfo<'a> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			self.file_info().serialize(serializer)

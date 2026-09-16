@@ -4,7 +4,7 @@ use super::*;
 
 /// Represents the C++ `std::type_info` class returned by the `typeid` operator.
 #[derive(Debug)]
-#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct TypeDescriptor {
 	/// Vtable of the `type_info` class.
@@ -18,7 +18,7 @@ pub struct TypeDescriptor {
 
 /// Pointer-to-member displacement info.
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct PMD {
 	/// Member displacement.
@@ -33,7 +33,7 @@ pub struct PMD {
 
 /// Fully describes all try/catch blocks and unwindable objects in the function.
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct FuncInfo {
 	/// Compiler version.
@@ -62,7 +62,7 @@ pub struct FuncInfo {
 
 /// Maps an exception state to the action used while unwinding it.
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct UnwindMapEntry {
 	/// Target state.
@@ -77,7 +77,7 @@ pub struct UnwindMapEntry {
 ///
 /// Describes a try block with associated catches.
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct TryBlockMapEntry {
 	/// This `try {}` covers states ranging from `try_low` to `try_high`.
@@ -96,7 +96,7 @@ pub struct TryBlockMapEntry {
 ///
 /// Describes a single catch of a try block.
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct HandlerType {
 	/// * `0x01`: const
@@ -115,7 +115,7 @@ pub struct HandlerType {
 
 /// List of expected exceptions.
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct ESTypeList {
 	/// Number of entries in the list.
@@ -128,7 +128,7 @@ pub struct ESTypeList {
 
 /// Describes a C++ exception object being thrown.
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct ThrowInfo {
 	/// * `0x01`: const
@@ -148,7 +148,7 @@ pub struct ThrowInfo {
 
 /// Variable-length array of types capable of catching an exception.
 #[derive(Debug)]
-#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct CatchableTypeArray {
 	/// Number of entries in the following array.
@@ -160,7 +160,7 @@ pub struct CatchableTypeArray {
 
 /// Describes a type that can catch this exception.
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct CatchableType {
 	/// * `0x01`: simple type (can be copied by memmove)
@@ -186,7 +186,7 @@ pub struct CatchableType {
 ///
 /// Every vftable has its own Complete Object Locator.
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct RTTICompleteObjectLocator {
 	/// Always zero?
@@ -205,7 +205,7 @@ pub struct RTTICompleteObjectLocator {
 ///
 /// Describes the inheritance hierarchy of the class, it is shared by all [COL][RTTICompleteObjectLocator].
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct RTTIClassHierarchyDescriptor {
 	/// Always zero?
@@ -220,7 +220,7 @@ pub struct RTTIClassHierarchyDescriptor {
 
 /// Entry in the [Base Class Array][RTTIClassHierarchyDescriptor::base_class_array].
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct RTTIBaseClassDescriptor {
 	/// Type descriptor of the class.

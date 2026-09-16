@@ -185,14 +185,7 @@ impl<'a> fmt::Debug for Block<'a> {
 	}
 */
 
-#[cfg(feature = "serde")]
-mod serde {
-	use alloc::vec::Vec;
-
-	use crate::util::serde_helper::*;
-
-	use super::BaseRelocs;
-
+serde_impl! {
 	impl<'a> Serialize for BaseRelocs<'a> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			let mut state = serializer.serialize_struct("BaseRelocs", 2)?;

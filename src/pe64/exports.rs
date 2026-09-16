@@ -411,12 +411,7 @@ impl<'b, 'a, P: Pe<'a>, S: AsRef<[u8]> + ?Sized> GetProcAddress<'a, &'b S> for P
 	}
 */
 
-#[cfg(feature = "serde")]
-mod serde {
-	use crate::util::serde_helper::*;
-
-	use super::{ExportBy, ExportDirectory, Pe};
-
+serde_impl! {
 	impl<'a, P: Pe<'a>> Serialize for ExportDirectory<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			self.by().ok().serialize(serializer)
@@ -424,12 +419,13 @@ mod serde {
 	}
 	impl<'a, P: Pe<'a>> Serialize for ExportBy<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-			let mut state = serializer.serialize_struct("ExportDirectory", 6)?;
+			let mut state = serializer.serialize_struct("ExportDirectory", 7)?;
+			state.serialize_field("image", self.image())?;
 			state.serialize_field("dll_name", &self.dll_name().ok())?;
-			state.serialize_field("time_date_stamp", &self.image.TimeDateStamp)?;
-			state.serialize_field("version", &self.image.Version)?;
 			state.serialize_field("ordinal_base", &self.ordinal_base())?;
 			state.serialize_field("functions", &self.functions())?;
+			state.serialize_field("name_rvas", &self.names())?;
+			state.serialize_field("name_indices", &self.name_indices())?;
 			let names = self
 				.iter_name_indices()
 				.filter_map(|(name, index)| name.ok().and_then(|name| name.to_str().ok()).map(|name| (name, index)));

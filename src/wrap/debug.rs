@@ -85,7 +85,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::DebugDirectoryEntry<
 
 /// Decoded contents of a debug directory entry.
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(::serde::Serialize), serde(untagged))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize), serde(untagged))]
 pub enum DebugData<'a> {
 	/// CodeView information, usually including a PDB path.
 	CodeView(CodeView<'a>),
@@ -206,7 +206,11 @@ impl<'a> DebugMisc<'a> {
 }
 impl<'a> fmt::Debug for DebugMisc<'a> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		f.debug_struct("DebugMisc").finish()
+		f.debug_struct("DebugMisc")
+			.field("data_type", &self.image.DataType)
+			.field("length", &self.image.Length)
+			.field("unicode", &self.image.Unicode)
+			.finish()
 	}
 }
 
@@ -266,7 +270,7 @@ impl<'a> Iterator for PgoIter<'a> {
 }
 /// Describes a PGO section.
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 pub struct PgoItem<'a> {
 	/// Relative virtual address of the section.
 	pub rva: u32,
@@ -286,25 +290,21 @@ mod serde2 {
 
 	impl<'a> Serialize for CodeView<'a> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-			let mut state = serializer.serialize_struct("CodeView", 4)?;
+			let mut state = serializer.serialize_struct("CodeView", 3)?;
+			match self {
+				CodeView::Cv20 { image, .. } => state.serialize_field("image", image)?,
+				CodeView::Cv70 { image, .. } => state.serialize_field("image", image)?,
+			}
 			state.serialize_field("format", &self.format())?;
 			state.serialize_field("pdb_file_name", &self.pdb_file_name())?;
-			match self {
-				CodeView::Cv20 { image, .. } => {
-					state.serialize_field("time_date_stamp", &image.TimeDateStamp)?;
-					state.serialize_field("age", &image.Age)?;
-				},
-				CodeView::Cv70 { image, .. } => {
-					state.serialize_field("signature", &image.Signature)?;
-					state.serialize_field("age", &image.Age)?;
-				},
-			}
 			state.end()
 		}
 	}
 	impl<'a> Serialize for DebugMisc<'a> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-			serializer.serialize_struct("DebugMisc", 0)?.end()
+			let mut state = serializer.serialize_struct("DebugMisc", 1)?;
+			state.serialize_field("image", self.image)?;
+			state.end()
 		}
 	}
 	impl<'a> Serialize for Pgo<'a> {

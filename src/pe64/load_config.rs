@@ -110,24 +110,18 @@ impl<'a, P: Pe<'a>> fmt::Debug for LoadConfigDirectory<'a, P> {
 			.field("size", &self.size())
 			.field("time_date_stamp", &self.time_date_stamp())
 			.field("version", &self.version())
+			.field("guard_flags", &format_args!("{:x?}", self.get(IMAGE_LOAD_CONFIG_DIRECTORY::GUARD_FLAGS)))
 			.field("security_cookie", &format_args!("{:x?}", self.security_cookie()))
 			.field("se_handler_table.len", &format_args!("{:?}", self.se_handler_table().map(|seh| seh.len())))
 			.finish()
 	}
 }
 
-#[cfg(feature = "serde")]
-mod serde {
-	use crate::util::serde_helper::*;
-
-	use super::{LoadConfigDirectory, Pe};
-
+serde_impl! {
 	impl<'a, P: Pe<'a>> Serialize for LoadConfigDirectory<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-			let mut state = serializer.serialize_struct("LoadConfigDirectory", 5)?;
-			state.serialize_field("size", &self.size())?;
-			state.serialize_field("time_date_stamp", &self.time_date_stamp())?;
-			state.serialize_field("version", &self.version())?;
+			let mut state = serializer.serialize_struct("LoadConfigDirectory", 3)?;
+			state.serialize_field("image", &self.image_copy())?;
 			state.serialize_field("security_cookie", &self.security_cookie().ok())?;
 			state.serialize_field("se_handler_table", &self.se_handler_table().ok())?;
 			state.end()

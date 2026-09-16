@@ -23,6 +23,24 @@ macro_rules! assert_offsetof {
 	};
 }
 
+#[cfg(feature = "serde")]
+macro_rules! serde_impl {
+	($($tt:tt)*) => {
+		mod _serde {
+			use crate::util::serde_helper::*;
+			use super::*;
+			use core::result::Result;
+
+			$($tt)*
+		}
+	};
+}
+
+#[cfg(not(feature = "serde"))]
+macro_rules! serde_impl {
+	($($tt:tt)*) => {};
+}
+
 mod align;
 mod c_str;
 mod guid;

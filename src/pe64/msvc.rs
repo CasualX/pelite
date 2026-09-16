@@ -2,7 +2,7 @@ use super::*;
 
 /// MSVC run-time type information for a C++ type.
 #[derive(Debug)]
-#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct TypeDescriptor {
 	/// Vtable of the C++ `type_info` class.
@@ -16,7 +16,7 @@ pub struct TypeDescriptor {
 
 /// Pointer-to-member displacement information.
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct PMD {
 	/// Member displacement within the class.
@@ -29,7 +29,7 @@ pub struct PMD {
 
 /// Locates the complete C++ object and its RTTI descriptors.
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct RTTICompleteObjectLocator {
 	/// RTTI format signature.
@@ -46,7 +46,7 @@ pub struct RTTICompleteObjectLocator {
 
 /// Describes the inheritance hierarchy of an MSVC C++ class.
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct RTTIClassHierarchyDescriptor {
 	/// RTTI format signature.
@@ -61,7 +61,7 @@ pub struct RTTIClassHierarchyDescriptor {
 
 /// Describes one base class in an MSVC RTTI hierarchy.
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct RTTIBaseClassDescriptor {
 	/// Image-relative offset of the base class's [`TypeDescriptor`].

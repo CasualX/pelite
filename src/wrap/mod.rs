@@ -6,7 +6,7 @@ use crate::{image, pattern, pe32, pe64, rich_structure, Error, Result};
 
 /// Wraps 32-bit and 64-bit variants.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
-#[cfg_attr(feature = "serde", derive(::serde::Serialize), serde(untagged))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize), serde(untagged))]
 pub enum Wrap<T32, T64> {
 	T32(T32),
 	T64(T64),
