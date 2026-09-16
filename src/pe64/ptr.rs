@@ -3,11 +3,8 @@ Typed virtual address.
 */
 
 use core::marker::PhantomData;
-use core::{cmp, fmt, hash, mem, str};
 
-use crate::Pod;
-
-use super::image::{SignedVa, Va};
+use super::*;
 
 /// Typed virtual address.
 #[repr(transparent)]
@@ -178,7 +175,7 @@ impl<T: ?Sized> fmt::Display for Ptr<T> {
 
 #[cfg(feature = "serde")]
 impl<T: ?Sized> serde::Serialize for Ptr<T> {
-	fn serialize<S: serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+	fn serialize<S: serde::Serializer>(&self, serializer: S) -> core::result::Result<S::Ok, S::Error> {
 		branch! {
 			pe32 { serializer.serialize_u32(self.va) }
 			pe64 { serializer.serialize_u64(self.va) }

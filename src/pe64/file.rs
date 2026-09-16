@@ -2,15 +2,7 @@
 PE file.
 */
 
-use alloc::{vec, vec::Vec};
-
-use core::cmp;
-
-use crate::util::AlignTo;
-use crate::Result;
-
-use super::pe::validate_headers;
-use super::{Align, Pe, PeObject};
+use super::*;
 
 /// View into an unmapped PE file.
 #[derive(Copy, Clone)]
@@ -88,8 +80,8 @@ unsafe impl<'a> PeObject<'a> for PeFile<'a> {
 	fn image(&self) -> &'a [u8] {
 		self.image
 	}
-	fn align(&self) -> Align {
-		Align::File
+	fn layout(&self) -> PeLayout {
+		PeLayout::File
 	}
 
 	fn image_base(&self) -> super::Va {

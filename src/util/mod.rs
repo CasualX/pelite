@@ -39,6 +39,18 @@ pub use self::c_str::CStr;
 pub use self::align::*;
 pub(crate) use self::wide_str::FmtUtf16;
 
+/// Formats a cloneable iterator as a debug list without allocating.
+pub(crate) struct DebugList<I>(pub I);
+impl<I> core::fmt::Debug for DebugList<I>
+where
+	I: Clone + Iterator,
+	I::Item: core::fmt::Debug,
+{
+	fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+		f.debug_list().entries(self.0.clone()).finish()
+	}
+}
+
 /// Converts from a byte slice to a string.
 pub trait FromBytes {
 	/// Minimum size argument.

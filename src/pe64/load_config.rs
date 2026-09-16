@@ -1,4 +1,6 @@
-/*!
+use super::*;
+
+/**
 Load Config Directory.
 
 # Examples
@@ -9,11 +11,16 @@ use pelite::pe64::{image, Pe, PeFile};
 
 # #[allow(dead_code)]
 fn example(file: PeFile<'_>) -> pelite::Result<()> {
-	// Access the load config directory
+	// Access the load config directory and its basic metadata
 	let load_config = file.load_config()?;
-	let size = load_config.get(image::IMAGE_LOAD_CONFIG_DIRECTORY::SIZE);
+	let size = load_config.size();
+	let time_date_stamp = load_config.time_date_stamp();
+	let version = load_config.version();
 
-	// The only bits of interest here
+	// Read a field which is only present in newer directory revisions
+	let guard_flags = load_config.get(image::IMAGE_LOAD_CONFIG_DIRECTORY::GUARD_FLAGS);
+
+	// Access security-related fields when present
 	let security_cookie = load_config.security_cookie()?;
 	let se_handler_table = load_config.se_handler_table()?;
 
@@ -21,24 +28,13 @@ fn example(file: PeFile<'_>) -> pelite::Result<()> {
 }
 ```
 */
-
-use core::{cmp, fmt, mem, ptr};
-
-use crate::{Error, Pod, Result};
-
-use super::image::*;
-use super::Pe;
-
-/// Load Config Directory.
-///
-/// For more information see the [module-level documentation][self].
 #[derive(Copy, Clone)]
-pub struct LoadConfig<'a, P> {
+pub struct LoadConfigDirectory<'a, P> {
 	pe: P,
 	image: &'a [u8],
 }
-impl<'a, P: Pe<'a>> LoadConfig<'a, P> {
-	pub(crate) fn try_from(pe: P) -> Result<LoadConfig<'a, P>> {
+impl<'a, P: Pe<'a>> LoadConfigDirectory<'a, P> {
+	pub(crate) fn try_from(pe: P) -> Result<LoadConfigDirectory<'a, P>> {
 		let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG).ok_or(Error::Bounds)?;
 		let directory_size = datadir.Size as usize;
 		if directory_size < mem::size_of::<u32>() {
@@ -55,11 +51,24 @@ impl<'a, P: Pe<'a>> LoadConfig<'a, P> {
 		}
 		let image_size = cmp::min(directory_size, image_size);
 		let image = &pe.slice(datadir.VirtualAddress, image_size, mem::align_of::<u32>())?[..image_size];
-		Ok(LoadConfig { pe, image })
+		Ok(LoadConfigDirectory { pe, image })
 	}
 	/// Gets the PE instance.
 	pub fn pe(&self) -> P {
 		self.pe
+	}
+	/// Returns the size declared by the load config directory.
+	pub fn size(&self) -> u32 {
+		// `try_from` validates that the complete size field is present.
+		unsafe { raw_ptr::read_unaligned(self.image.as_ptr().cast()) }
+	}
+	/// Returns the time and date stamp, or zero if the field is absent.
+	pub fn time_date_stamp(&self) -> u32 {
+		self.get(IMAGE_LOAD_CONFIG_DIRECTORY::TIME_DATE_STAMP).unwrap_or_default()
+	}
+	/// Returns the load config version, or version `0.0` if the field is absent.
+	pub fn version(&self) -> IMAGE_VERSION<u16> {
+		self.get(IMAGE_LOAD_CONFIG_DIRECTORY::VERSION).unwrap_or(IMAGE_VERSION { Major: 0, Minor: 0 })
 	}
 	/// Copies the load config directory into the latest known image structure.
 	///
@@ -81,7 +90,7 @@ impl<'a, P: Pe<'a>> LoadConfig<'a, P> {
 		let bytes = self.image.get(offset..end)?;
 		// Safe because the bounds were checked above and `Pod` permits reading any initialized byte pattern as `T`.
 		// Copying also avoids imposing the field's natural alignment on the image.
-		Some(unsafe { ptr::read_unaligned(bytes.as_ptr().cast()) })
+		Some(unsafe { raw_ptr::read_unaligned(bytes.as_ptr().cast()) })
 	}
 	/// Gets the default security cookie for the image.
 	pub fn security_cookie(&self) -> Result<&'a u32> {
@@ -95,9 +104,12 @@ impl<'a, P: Pe<'a>> LoadConfig<'a, P> {
 		self.pe.deref_slice(Va::from(table).into(), Va::from(count) as usize)
 	}
 }
-impl<'a, P: Pe<'a>> fmt::Debug for LoadConfig<'a, P> {
+impl<'a, P: Pe<'a>> fmt::Debug for LoadConfigDirectory<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		f.debug_struct("LoadConfig")
+		f.debug_struct("LoadConfigDirectory")
+			.field("size", &self.size())
+			.field("time_date_stamp", &self.time_date_stamp())
+			.field("version", &self.version())
 			.field("security_cookie", &format_args!("{:x?}", self.security_cookie()))
 			.field("se_handler_table.len", &format_args!("{:?}", self.se_handler_table().map(|seh| seh.len())))
 			.finish()
@@ -108,11 +120,14 @@ impl<'a, P: Pe<'a>> fmt::Debug for LoadConfig<'a, P> {
 mod serde {
 	use crate::util::serde_helper::*;
 
-	use super::{LoadConfig, Pe};
+	use super::{LoadConfigDirectory, Pe};
 
-	impl<'a, P: Pe<'a>> Serialize for LoadConfig<'a, P> {
+	impl<'a, P: Pe<'a>> Serialize for LoadConfigDirectory<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-			let mut state = serializer.serialize_struct("LoadConfig", 2)?;
+			let mut state = serializer.serialize_struct("LoadConfigDirectory", 5)?;
+			state.serialize_field("size", &self.size())?;
+			state.serialize_field("time_date_stamp", &self.time_date_stamp())?;
+			state.serialize_field("version", &self.version())?;
 			state.serialize_field("security_cookie", &self.security_cookie().ok())?;
 			state.serialize_field("se_handler_table", &self.se_handler_table().ok())?;
 			state.end()
@@ -121,11 +136,14 @@ mod serde {
 }
 
 #[cfg(test)]
-pub(crate) fn test<'a, P: Pe<'a>>(pe: P) -> Result<()> {
+pub(crate) fn test_load_config<'a, P: Pe<'a>>(pe: P) -> Result<()> {
 	let load_config = pe.load_config()?;
 	let _ = format!("{:?}", load_config);
 	let _image = load_config.image_copy();
-	let _size = load_config.get(IMAGE_LOAD_CONFIG_DIRECTORY::SIZE);
+	let _size = load_config.size();
+	let _time_date_stamp = load_config.time_date_stamp();
+	let _version = load_config.version();
+	let _guard_flags = load_config.get(IMAGE_LOAD_CONFIG_DIRECTORY::GUARD_FLAGS);
 	let _security_cookie = load_config.security_cookie();
 	let _se_handler_table = load_config.se_handler_table();
 	Ok(())

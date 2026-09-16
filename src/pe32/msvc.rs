@@ -1,15 +1,4 @@
-/*!
-Some MSVC structs for RTTI and exception handling.
-
-References:
-
-- [Reversing Microsoft Visual C++ Part I: Exception Handling](http://www.openrce.org/articles/full_view/21)
-- [Reversing Microsoft Visual C++ Part II: Classes, Methods and RTTI](http://www.openrce.org/articles/full_view/23)
-*/
-
-use crate::{util::CStr, Pod};
-
-use super::Ptr;
+use super::*;
 
 //----------------------------------------------------------------
 
@@ -61,7 +50,9 @@ pub struct FuncInfo {
 	pub try_blocks: u32,
 	/// Mapping of catch blocks to try blocks.
 	pub try_block_map: Ptr<UnwindMapEntry>,
+	/// Number of entries in the instruction-pointer-to-state map.
 	pub ip_map_entries: u32,
+	/// Instruction-pointer-to-state mapping table.
 	pub ip_to_state_map: Ptr,
 	/// VC7+ only, expected exceptions list (function "throw" specifier).
 	pub es_type_list: Ptr<ESTypeList>,
@@ -69,6 +60,7 @@ pub struct FuncInfo {
 	pub eh_flags: i32,
 }
 
+/// Maps an exception state to the action used while unwinding it.
 #[derive(Copy, Clone, Debug)]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize))]
 #[repr(C)]
@@ -90,6 +82,7 @@ pub struct UnwindMapEntry {
 pub struct TryBlockMapEntry {
 	/// This `try {}` covers states ranging from `try_low` to `try_high`.
 	pub try_low: i32,
+	/// Highest state covered by the `try` block.
 	pub try_high: i32,
 	/// Highest state inside catch handlers of this try.
 	pub catch_high: i32,
@@ -133,6 +126,7 @@ pub struct ESTypeList {
 
 //----------------------------------------------------------------
 
+/// Describes a C++ exception object being thrown.
 #[derive(Copy, Clone, Debug)]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize))]
 #[repr(C)]
@@ -152,6 +146,7 @@ pub struct ThrowInfo {
 	pub catchable_type_array: Ptr<CatchableTypeArray>,
 }
 
+/// Variable-length array of types capable of catching an exception.
 #[derive(Debug)]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize))]
 #[repr(C)]

@@ -2,23 +2,24 @@
 Abstract over mapped images and file binaries.
 */
 
-use core::{cmp, mem, ptr, slice};
-
-use crate::{util::AlignTo, util::CStr, util::FromBytes, Pod};
-use crate::{Error, Result};
-
-use super::{image::*, Ptr};
+use super::*;
 
 //----------------------------------------------------------------
 
-pub use crate::wrap::Align;
+pub use crate::wrap::PeLayout;
 
+/// Basic properties shared by file-aligned and mapped PE images.
+///
+/// # Safety
+///
+/// Implementors must return a valid PE image for the full lifetime `'a`,
+/// and report layout and base-address information matching that image.
 pub unsafe trait PeObject<'a> {
 	/// Returns the image as a byte slice.
 	fn image(&self) -> &'a [u8];
 
-	/// Returns whether this image uses file alignment or section alignment.
-	fn align(&self) -> Align;
+	/// Returns whether the image uses file or mapped section layout.
+	fn layout(&self) -> PeLayout;
 
 	/// Returns the base virtual address of this image.
 	///
@@ -31,6 +32,12 @@ pub unsafe trait PeObject<'a> {
 	fn serde_name(&self) -> &'static str;
 }
 
+/// Read-only access to a validated PE image.
+///
+/// # Safety
+///
+/// The image supplied by [`PeObject`] must contain valid headers for this
+/// architecture so the unchecked header accessors are sound.
 pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	/// Returns the DOS header.
 	fn dos_header(self) -> &'a IMAGE_DOS_HEADER {
@@ -59,13 +66,13 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 		unsafe { data_directory(self.image()) }
 	}
 	/// Returns the section headers.
-	fn section_headers(self) -> &'a super::headers::SectionHeaders {
+	fn section_headers(self) -> &'a super::SectionHeaders {
 		unsafe { section_headers(self.image()) }
 	}
 
 	/// Returns the pe headers together in a single struct.
-	fn headers(self) -> super::headers::Headers<Self> {
-		super::headers::Headers::new(self)
+	fn headers(self) -> super::Headers<Self> {
+		super::Headers::new(self)
 	}
 
 	//----------------------------------------------------------------
@@ -235,9 +242,9 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	///   The rva is zero.
 	fn slice(&self, rva: Rva, min_size_of: usize, align: usize) -> Result<&'a [u8]> {
 		unsafe {
-			match (self.align(), self.image()) {
-				(Align::File, image) => slice_file(image, rva, min_size_of, align),
-				(Align::Section, image) => slice_section(image, rva, min_size_of, align),
+			match (self.layout(), self.image()) {
+				(PeLayout::File, image) => slice_file(image, rva, min_size_of, align),
+				(PeLayout::Section, image) => slice_section(image, rva, min_size_of, align),
 			}
 		}
 	}
@@ -262,7 +269,7 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	/// * [`Bounds`][crate::Error::Bounds]:
 	///   The data referenced by the section header is out of bounds.
 	fn get_section_bytes(self, section_header: &IMAGE_SECTION_HEADER) -> Result<&'a [u8]> {
-		crate::wrap::get_section_bytes(self.image(), section_header, self.align())
+		crate::wrap::get_section_bytes(self.image(), section_header, self.layout())
 	}
 
 	/// Reads the image at the specified va.
@@ -279,9 +286,9 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	///   The va is zero.
 	fn read(&self, va: Va, min_size_of: usize, align: usize) -> Result<&'a [u8]> {
 		unsafe {
-			match (self.align(), self.image()) {
-				(Align::File, image) => read_file(image, self.image_base(), va, min_size_of, align),
-				(Align::Section, image) => read_section(image, self.image_base(), va, min_size_of, align),
+			match (self.layout(), self.image()) {
+				(PeLayout::File, image) => read_file(image, self.image_base(), va, min_size_of, align),
+				(PeLayout::Section, image) => read_section(image, self.image_base(), va, min_size_of, align),
 			}
 		}
 	}
@@ -314,7 +321,7 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 		// This is safe as per Pod bound and min_size_of
 		unsafe {
 			let p = bytes.as_ptr() as *const T;
-			Ok(ptr::read_unaligned(p))
+			Ok(raw_ptr::read_unaligned(p))
 		}
 	}
 	/// Reads and byte-wise copies the content to the given destination.
@@ -399,7 +406,7 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 		// This is safe as per Pod bound and min_size_of
 		unsafe {
 			let p = bytes.as_ptr() as *const T;
-			Ok(ptr::read_unaligned(p))
+			Ok(raw_ptr::read_unaligned(p))
 		}
 	}
 	/// Reads and byte-wise copies the content to the given destination.
@@ -476,29 +483,29 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 
 	/// Gets the Export Directory.
 	///
-	/// See the [exports][super::exports] module for more information.
+	/// Returns the [`ExportDirectory`](super::ExportDirectory).
 	///
 	/// Returns [`Err(Null)`][crate::Error::Null] if the image has no exports. Any other error indiciates some form of corruption.
-	fn exports(self) -> Result<super::exports::Exports<'a, Self>> {
-		super::exports::Exports::try_from(self)
+	fn exports(self) -> Result<super::ExportDirectory<'a, Self>> {
+		super::ExportDirectory::try_from(self)
 	}
 
 	/// Gets the Import Directory.
 	///
-	/// See the [imports][super::imports] module for more information.
+	/// Returns the [`ImportDirectory`](super::ImportDirectory).
 	///
 	/// Returns [`Err(Null)`][crate::Error::Null] if the image has no imports. Any other error indicates some form of corruption.
-	fn imports(self) -> Result<super::imports::Imports<'a, Self>> {
-		super::imports::Imports::try_from(self)
+	fn imports(self) -> Result<super::ImportDirectory<'a, Self>> {
+		super::ImportDirectory::try_from(self)
 	}
 
 	/// Gets the Import Address Table.
 	///
-	/// See the [imports][super::imports] module for more information.
+	/// Returns the [`ImportAddressTable`](super::ImportAddressTable).
 	///
 	/// Returns [`Err(Null)`][crate::Error::Null] if the image has no iat. Any other error indicates some form of corruption.
-	fn iat(self) -> Result<super::imports::IAT<'a, Self>> {
-		super::imports::IAT::try_from(self)
+	fn iat(self) -> Result<super::ImportAddressTable<'a, Self>> {
+		super::ImportAddressTable::try_from(self)
 	}
 
 	/// Gets the Base Relocations Directory.
@@ -512,20 +519,20 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 
 	/// Gets the Load Config Directory.
 	///
-	/// See the [load config][super::load_config] module for more information.
+	/// Returns the [`LoadConfigDirectory`](super::LoadConfigDirectory).
 	///
 	/// Returns [`Err(Null)`][crate::Error::Null] if the image has no load config. Any other error indicates some form of corruption.
-	fn load_config(self) -> Result<super::load_config::LoadConfig<'a, Self>> {
-		super::load_config::LoadConfig::try_from(self)
+	fn load_config(self) -> Result<super::LoadConfigDirectory<'a, Self>> {
+		super::LoadConfigDirectory::try_from(self)
 	}
 
 	/// Gets the TLS Directory.
 	///
-	/// See the [tls][super::tls] module for more information.
+	/// Returns the [`TlsDirectory`](super::TlsDirectory).
 	///
 	/// Returns [`Err(Null)`][crate::Error::Null] if the image has no tls. Any other error indicates some form of corruption.
-	fn tls(self) -> Result<super::tls::Tls<'a, Self>> {
-		super::tls::Tls::try_from(self)
+	fn tls(self) -> Result<super::TlsDirectory<'a, Self>> {
+		super::TlsDirectory::try_from(self)
 	}
 
 	/// Gets the Security Directory.
@@ -542,40 +549,56 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 		pe64 {
 			/// Gets the x64 Exception Directory.
 			///
-			/// See the [x64 exception][super::exception_x64] module for more information.
+			/// Returns the [`X64ExceptionDirectory`](super::X64ExceptionDirectory).
 			///
 			/// Returns [`Err(Null)`][crate::Error::Null] if the image has no exception directory.
 			/// Any other error indicates an unsupported machine type or some form of corruption.
-			fn exception_x64(self) -> Result<super::exception_x64::ExceptionX64<'a, Self>> {
-				super::exception_x64::ExceptionX64::try_from(self)
+			fn exception_x64(self) -> Result<super::X64ExceptionDirectory<'a, Self>> {
+				super::X64ExceptionDirectory::try_from(self)
 			}
 
 			/// Gets the ARM64 Exception Directory.
 			///
-			/// See the [ARM64 exception][super::exception_arm64] module for more information.
+			/// Returns the [`Arm64ExceptionDirectory`](super::Arm64ExceptionDirectory).
 			///
 			/// Returns [`Err(Null)`][crate::Error::Null] if the image has no exception directory.
 			/// Any other error indicates an unsupported machine type or some form of corruption.
-			fn exception_arm64(self) -> Result<super::exception_arm64::ExceptionArm64<'a, Self>> {
-				super::exception_arm64::ExceptionArm64::try_from(self)
+			fn exception_arm64(self) -> Result<super::Arm64ExceptionDirectory<'a, Self>> {
+				super::Arm64ExceptionDirectory::try_from(self)
 			}
 		}
 	}
 
 	/// Gets the Debug Directory.
 	///
-	/// See the [debug][super::debug] module for more information.
+	/// Returns the [`DebugDirectory`](super::DebugDirectory).
 	///
 	/// Returns [`Err(Null)`][crate::Error::Null] if the image has no debug info. Any other error indicates some form of corruption.
-	fn debug(self) -> Result<super::debug::Debug<'a, Self>> {
-		super::debug::Debug::try_from(self)
+	fn debug(self) -> Result<super::DebugDirectory<'a, Self>> {
+		super::DebugDirectory::try_from(self)
 	}
 
 	/// Gets the Resources.
 	///
-	/// See the [resources][super::resources] module for more information.
+	/// Returns the resource directory. See [`crate::resources`] for its API.
 	///
 	/// Returns [`Err(Null)`][crate::Error::Null] if the image has no resources. Any other error indicates some form of corruption.
+	///
+	/// # Examples
+	///
+	/// ```
+	/// use pelite::pe64::{Pe, PeFile};
+	/// use pelite::resources::FindError;
+	///
+	/// # #[allow(dead_code)]
+	/// fn manifest<'a>(file: PeFile<'a>) -> Result<&'a [u8], FindError> {
+	/// 	// Access the resource directory
+	/// 	let resources = file.resources()?;
+	///
+	/// 	// Find the manifest resource and return its bytes
+	/// 	Ok(resources.find_data("/Manifest/2/1033")?.bytes()?)
+	/// }
+	/// ```
 	fn resources(self) -> Result<crate::resources::Resources<'a>>
 	where
 		Self: Copy,
@@ -588,9 +611,9 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 
 	/// Gets Scanner access.
 	///
-	/// See the [scanner][super::scanner] module for more information.
-	fn scanner(self) -> super::scanner::Scanner<Self> {
-		super::scanner::Scanner::new(self)
+	/// Creates a [`Scanner`](super::Scanner) for this image.
+	fn scanner(self) -> super::Scanner<Self> {
+		super::Scanner::new(self)
 	}
 }
 
@@ -601,8 +624,8 @@ unsafe impl<'s, 'a> PeObject<'a> for &'s dyn PeObject<'a> {
 	fn image(&self) -> &'a [u8] {
 		PeObject::image(*self)
 	}
-	fn align(&self) -> Align {
-		PeObject::align(*self)
+	fn layout(&self) -> PeLayout {
+		PeObject::layout(*self)
 	}
 
 	fn image_base(&self) -> Va {
@@ -660,11 +683,11 @@ unsafe fn data_directory(image: &[u8]) -> &[IMAGE_DATA_DIRECTORY] { unsafe {
 	let len = cmp::min(opt.NumberOfRvaAndSizes as usize, IMAGE_NUMBEROF_DIRECTORY_ENTRIES);
 	slice::from_raw_parts(opt.DataDirectory.as_ptr(), len)
 }}
-unsafe fn section_headers(image: &[u8]) -> &super::headers::SectionHeaders { unsafe {
+unsafe fn section_headers(image: &[u8]) -> &super::SectionHeaders { unsafe {
 	let nt = nt_headers(image);
 	let data = (&nt.OptionalHeader as *const _ as *const u8).offset(nt.FileHeader.SizeOfOptionalHeader as isize) as *const IMAGE_SECTION_HEADER;
 	let raw = slice::from_raw_parts(data, nt.FileHeader.NumberOfSections as usize);
-	super::headers::SectionHeaders::new(raw)
+	super::SectionHeaders::new(raw)
 }}
 
 unsafe fn slice_section(image: &[u8], rva: Rva, min_size_of: usize, align_of: usize) -> Result<&[u8]> {

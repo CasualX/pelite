@@ -1,17 +1,25 @@
-/*!
-Export Directory.
+use super::*;
 
-The export directory contains a list of symbols, well, exported by this module.
-A symbol can refer to a function, static data or a forwarded reference to an exported symbol in another module.
+//----------------------------------------------------------------
 
-Symbols can be exported by name or by their ordinal number. The ordinal number of an exported function is its index in the exported function list plus the ordinal base.
+pub use crate::Export;
+
+//----------------------------------------------------------------
+
+/**
+Export directory.
+
+The export directory contains the symbols exported by an image. A symbol can
+refer to a function, static data, or a forwarded export in another module.
+
+Symbols can be exported by name or ordinal. An exported function's ordinal is
+its index in the export address table plus the ordinal base.
 
 # Examples
 
 ```
 # #![allow(unused_variables)]
-use pelite::pe64::{Pe, PeFile};
-use pelite::pe64::exports::GetProcAddress;
+use pelite::pe64::{GetProcAddress, Pe, PeFile};
 
 # #[allow(dead_code)]
 fn example(file: PeFile<'_>) -> pelite::Result<()> {
@@ -25,23 +33,23 @@ fn example(file: PeFile<'_>) -> pelite::Result<()> {
 	let dll_name = exports.dll_name()?;
 	println!("dll_name: {}", dll_name);
 
-	// To query the exports
+	// Build the validated lookup tables used to query exports
 	let by = exports.by()?;
 
-	// For example: query an export by name
+	// Query an export by name
 	by.name("?__autoclassinit2@Passwds@@QEAAX_K@Z")?;
 
-	// For example: query an export by ordinal
+	// Query an export by ordinal
 	by.ordinal(6)?;
 
-	// For example: iterate over all the exports.
+	// Iterate over all exports, including ordinal-only exports
 	for result in by.iter() {
 		if let Ok(export) = result {
 			println!("export: {:?}", export);
 		}
 	}
 
-	// For example: iterate over the named exports
+	// Iterate over named exports
 	for result in by.iter_names() {
 		if let (Ok(name), Ok(export)) = result {
 			println!("export {}: {:?}", name, export);
@@ -52,36 +60,17 @@ fn example(file: PeFile<'_>) -> pelite::Result<()> {
 }
 ```
 */
-
-use core::{fmt, ops};
-
-use crate::util::CStr;
-use crate::Import;
-use crate::{Error, Result};
-
-use super::image::*;
-use super::Pe;
-
-//----------------------------------------------------------------
-
-pub use crate::Export;
-
-//----------------------------------------------------------------
-
-/// Export directory.
-///
-/// For more information see the [module-level documentation][self].
 #[derive(Copy, Clone)]
-pub struct Exports<'a, P> {
+pub struct ExportDirectory<'a, P> {
 	pe: P,
 	datadir: &'a IMAGE_DATA_DIRECTORY,
 	image: &'a IMAGE_EXPORT_DIRECTORY,
 }
-impl<'a, P: Pe<'a>> Exports<'a, P> {
-	pub(crate) fn try_from(pe: P) -> Result<Exports<'a, P>> {
+impl<'a, P: Pe<'a>> ExportDirectory<'a, P> {
+	pub(crate) fn try_from(pe: P) -> Result<ExportDirectory<'a, P>> {
 		let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_EXPORT).ok_or(Error::Bounds)?;
 		let image = pe.derva(datadir.VirtualAddress)?;
-		Ok(Exports { pe, datadir, image })
+		Ok(ExportDirectory { pe, datadir, image })
 	}
 	/// Gets the PE instance.
 	pub fn pe(&self) -> P {
@@ -120,7 +109,7 @@ impl<'a, P: Pe<'a>> Exports<'a, P> {
 	/// Query the exports.
 	///
 	/// This specifically validates whether the functions, names and name indices are valid.
-	pub fn by(&self) -> Result<By<'a, P>> {
+	pub fn by(&self) -> Result<ExportBy<'a, P>> {
 		let functions = match self.functions() {
 			Ok(functions) => functions,
 			Err(Error::Null) => &[],
@@ -136,7 +125,7 @@ impl<'a, P: Pe<'a>> Exports<'a, P> {
 			Err(Error::Null) => &[],
 			Err(e) => return Err(e),
 		};
-		Ok(By {
+		Ok(ExportBy {
 			exp: *self,
 			functions,
 			names,
@@ -160,12 +149,16 @@ impl<'a, P: Pe<'a>> Exports<'a, P> {
 		}
 	}
 }
-impl<'a, P: Pe<'a>> fmt::Debug for Exports<'a, P> {
+impl<'a, P: Pe<'a>> fmt::Debug for ExportDirectory<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		match self.by() {
-			Ok(by) => by.fmt(f),
-			Err(err) => err.fmt(f),
-		}
+		f.debug_struct("ExportDirectory")
+			.field("dll_name", &format_args!("{:?}", self.dll_name()))
+			.field("time_date_stamp", &self.image.TimeDateStamp)
+			.field("version", &self.image.Version)
+			.field("ordinal_base", &self.ordinal_base())
+			.field("functions.len", &format_args!("{:?}", self.functions().map(<[_]>::len)))
+			.field("names.len", &format_args!("{:?}", self.names().map(<[_]>::len)))
+			.finish()
 	}
 }
 
@@ -173,19 +166,19 @@ impl<'a, P: Pe<'a>> fmt::Debug for Exports<'a, P> {
 
 /// Export directory symbol lookup.
 #[derive(Copy, Clone)]
-pub struct By<'a, P> {
-	exp: Exports<'a, P>,
+pub struct ExportBy<'a, P> {
+	exp: ExportDirectory<'a, P>,
 	functions: &'a [Rva],
 	names: &'a [Rva],
 	name_indices: &'a [u16],
 }
-impl<'a, P: Pe<'a>> ops::Deref for By<'a, P> {
-	type Target = Exports<'a, P>;
-	fn deref(&self) -> &Exports<'a, P> {
+impl<'a, P: Pe<'a>> ops::Deref for ExportBy<'a, P> {
+	type Target = ExportDirectory<'a, P>;
+	fn deref(&self) -> &ExportDirectory<'a, P> {
 		&self.exp
 	}
 }
-impl<'a, P: Pe<'a>> By<'a, P> {
+impl<'a, P: Pe<'a>> ExportBy<'a, P> {
 	/// Gets the export address table.
 	pub fn functions(&self) -> &'a [Rva] {
 		self.functions
@@ -355,9 +348,9 @@ impl<'a, P: Pe<'a>> By<'a, P> {
 		(0..self.names().len() as u32).map(move |hint| (self.name_of_hint(hint as usize), self.name_indices[hint as usize] as usize))
 	}
 }
-impl<'a, P: Pe<'a>> fmt::Debug for By<'a, P> {
+impl<'a, P: Pe<'a>> fmt::Debug for ExportBy<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		f.debug_struct("Exports")
+		f.debug_struct("ExportBy")
 			.field("dll_name", &format_args!("{:?}", self.dll_name()))
 			.field("time_date_stamp", &self.image.TimeDateStamp)
 			.field("version", &self.image.Version)
@@ -374,13 +367,13 @@ impl<'a, P: Pe<'a>> fmt::Debug for By<'a, P> {
 pub trait GetProcAddress<'a, T>: Pe<'a> {
 	/// Convenient method to get an exported function.
 	///
-	/// Note that calling this method many times is less efficient than caching a [`By`] instance, such is the trade-off for convenience.
+	/// Note that calling this method many times is less efficient than caching a [`ExportBy`] instance, such is the trade-off for convenience.
 	fn get_export(self, name: T) -> Result<Export<'a>>;
 	/// Convenient method to get the address of an exported function.
 	///
 	/// Note that this method does not support forwarded exports and will return `Err(Null)` instead.
 	///
-	/// Note that calling this method many times is less efficient than caching a [`By`] instance, such is the trade-off for convenience.
+	/// Note that calling this method many times is less efficient than caching a [`ExportBy`] instance, such is the trade-off for convenience.
 	#[inline(never)]
 	fn get_proc_address(self, name: T) -> Result<Va> {
 		self.rva_to_va(self.get_export(name)?.symbol().ok_or(Error::Null)?)
@@ -422,16 +415,16 @@ impl<'b, 'a, P: Pe<'a>, S: AsRef<[u8]> + ?Sized> GetProcAddress<'a, &'b S> for P
 mod serde {
 	use crate::util::serde_helper::*;
 
-	use super::{By, Exports, Pe};
+	use super::{ExportBy, ExportDirectory, Pe};
 
-	impl<'a, P: Pe<'a>> Serialize for Exports<'a, P> {
+	impl<'a, P: Pe<'a>> Serialize for ExportDirectory<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			self.by().ok().serialize(serializer)
 		}
 	}
-	impl<'a, P: Pe<'a>> Serialize for By<'a, P> {
+	impl<'a, P: Pe<'a>> Serialize for ExportBy<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-			let mut state = serializer.serialize_struct("Exports", 6)?;
+			let mut state = serializer.serialize_struct("ExportDirectory", 6)?;
 			state.serialize_field("dll_name", &self.dll_name().ok())?;
 			state.serialize_field("time_date_stamp", &self.image.TimeDateStamp)?;
 			state.serialize_field("version", &self.image.Version)?;
@@ -449,7 +442,7 @@ mod serde {
 //----------------------------------------------------------------
 
 #[cfg(test)]
-pub(crate) fn test<'a, P: Pe<'a>>(pe: P) -> Result<()> {
+pub(crate) fn test_exports<'a, P: Pe<'a>>(pe: P) -> Result<()> {
 	let by = pe.exports()?.by()?;
 	let _ = format!("{:?}", by);
 

@@ -2,15 +2,7 @@
 PE view.
 */
 
-use alloc::{vec, vec::Vec};
-
-use core::{cmp, slice};
-
-use crate::Result;
-
-use super::image::*;
-use super::pe::{optional_header, validate_headers};
-use super::{Align, Pe, PeObject};
+use super::*;
 
 /// View into a mapped PE image.
 #[derive(Copy, Clone)]
@@ -137,8 +129,8 @@ unsafe impl<'a> PeObject<'a> for PeView<'a> {
 	fn image(&self) -> &'a [u8] {
 		self.image
 	}
-	fn align(&self) -> Align {
-		Align::Section
+	fn layout(&self) -> PeLayout {
+		PeLayout::Section
 	}
 
 	fn image_base(&self) -> Va {

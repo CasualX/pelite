@@ -1,10 +1,18 @@
 /*!
 PE32+ image structures.
+
+This module also contains MSVC ABI structures used for RTTI.
+
+References:
+
+- [Reversing Microsoft Visual C++ Part I: Exception Handling](http://www.openrce.org/articles/full_view/21)
+- [Reversing Microsoft Visual C++ Part II: Classes, Methods and RTTI](http://www.openrce.org/articles/full_view/23)
 */
 
 #![allow(non_camel_case_types)]
 
 pub use crate::image::*;
+pub use super::msvc::*;
 
 pub const IMAGE_NT_OPTIONAL_HDR_MAGIC: u16 = IMAGE_NT_OPTIONAL_HDR64_MAGIC;
 

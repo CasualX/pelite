@@ -72,7 +72,7 @@ mod view;
 
 pub use self::file::PeFile;
 pub(crate) use self::pe::get_section_bytes;
-pub use self::pe::Align;
+pub use self::pe::PeLayout;
 pub use self::view::PeView;
 
 pub use self::exports::Export;

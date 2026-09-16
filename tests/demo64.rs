@@ -1,4 +1,4 @@
-use pelite::pe64::exports::GetProcAddress;
+use pelite::pe64::GetProcAddress;
 use pelite::pe64::{Pe, PeFile, Rva};
 use pelite::util::CStr;
 use pelite::{Error, FileMap};

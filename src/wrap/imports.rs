@@ -8,13 +8,21 @@ pub enum Import<'a> {
 	///
 	/// The hint is an index in the export names table that may contain the desired symbol.
 	/// For more information see this [blog post](https://blogs.msdn.microsoft.com/oldnewthing/20100317-00/?p=14573) by Raymond Chen.
-	ByName { hint: usize, name: &'a CStr },
+	ByName {
+		/// Suggested index in the export name pointer table.
+		hint: usize,
+		/// Imported symbol name.
+		name: &'a CStr,
+	},
 	/// Imported by ordinal.
-	ByOrdinal { ord: u16 },
+	ByOrdinal {
+		/// Export ordinal requested from the target library.
+		ord: u16,
+	},
 }
 
 /// Import directory.
-impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::imports::Imports<'a, Pe32>, pe64::imports::Imports<'a, Pe64>> {
+impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::ImportDirectory<'a, Pe32>, pe64::ImportDirectory<'a, Pe64>> {
 	/// Gets the PE instance.
 	#[inline]
 	pub fn pe(&self) -> Wrap<Pe32, Pe64> {
@@ -33,16 +41,16 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::imports::Imports<'a,
 	}
 	/// Iterator over the import descriptors.
 	#[inline]
-	pub fn iter(&self) -> Wrap<pe32::imports::Iter<'a, Pe32>, pe64::imports::Iter<'a, Pe64>> {
+	pub fn iter(&self) -> Wrap<pe32::ImportDescriptorIter<'a, Pe32>, pe64::ImportDescriptorIter<'a, Pe64>> {
 		match self {
 			Wrap::T32(imports) => Wrap::T32(imports.iter()),
 			Wrap::T64(imports) => Wrap::T64(imports.iter()),
 		}
 	}
 }
-impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> IntoIterator for Wrap<pe32::imports::Imports<'a, Pe32>, pe64::imports::Imports<'a, Pe64>> {
-	type Item = Wrap<pe32::imports::Desc<'a, Pe32>, pe64::imports::Desc<'a, Pe64>>;
-	type IntoIter = Wrap<pe32::imports::Iter<'a, Pe32>, pe64::imports::Iter<'a, Pe64>>;
+impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> IntoIterator for Wrap<pe32::ImportDirectory<'a, Pe32>, pe64::ImportDirectory<'a, Pe64>> {
+	type Item = Wrap<pe32::ImportDescriptor<'a, Pe32>, pe64::ImportDescriptor<'a, Pe64>>;
+	type IntoIter = Wrap<pe32::ImportDescriptorIter<'a, Pe32>, pe64::ImportDescriptorIter<'a, Pe64>>;
 	#[inline]
 	fn into_iter(self) -> Self::IntoIter {
 		match self {
@@ -53,7 +61,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> IntoIterator for Wrap<pe32::imp
 }
 
 /// Import Address Table.
-impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::imports::IAT<'a, Pe32>, pe64::imports::IAT<'a, Pe64>> {
+impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::ImportAddressTable<'a, Pe32>, pe64::ImportAddressTable<'a, Pe64>> {
 	/// Gets the PE instance.
 	#[inline]
 	pub fn pe(&self) -> Wrap<Pe32, Pe64> {
@@ -81,7 +89,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::imports::IAT<'a, Pe3
 }
 
 /// Import library descriptor.
-impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::imports::Desc<'a, Pe32>, pe64::imports::Desc<'a, Pe64>> {
+impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::ImportDescriptor<'a, Pe32>, pe64::ImportDescriptor<'a, Pe64>> {
 	/// Gets the PE instance.
 	#[inline]
 	pub fn pe(&self) -> Wrap<Pe32, Pe64> {

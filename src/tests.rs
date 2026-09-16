@@ -19,20 +19,20 @@ fn wrap_four_byte_aligned_nt_headers() {
 }
 
 macro_rules! test {
-	($image:expr, $module:ident) => {
+	($image:expr, $test:ident) => {
 		match PeFile::from_bytes(&$image) {
-			Ok(Wrap::T32(pe)) => pe32::$module::test(pe),
-			Ok(Wrap::T64(pe)) => pe64::$module::test(pe),
+			Ok(Wrap::T32(pe)) => pe32::$test(pe),
+			Ok(Wrap::T64(pe)) => pe64::$test(pe),
 			Err(err) => Err(err),
 		}
 	};
 }
 
 macro_rules! test_pe64 {
-	($image:expr, $module:ident) => {
+	($image:expr, $test:ident) => {
 		match PeFile::from_bytes(&$image) {
 			Ok(Wrap::T32(_)) => Err(Error::Invalid),
-			Ok(Wrap::T64(pe)) => pe64::$module::test(pe),
+			Ok(Wrap::T64(pe)) => pe64::$test(pe),
 			Err(err) => Err(err),
 		}
 	};
@@ -43,16 +43,16 @@ fn pocs() {
 	for (name, image) in pocs::iter() {
 		println!("\n{}", name);
 
-		println!("  base_relocs...    {:?}", test!(image, base_relocs));
-		println!("  rich_structure... {:?}", test!(image, rich_structure));
-		println!("  exception_x64...  {:?}", test_pe64!(image, exception_x64));
-		println!("  exports...        {:?}", test!(image, exports));
-		println!("  imports...        {:?}", test!(image, imports));
-		println!("  debug...          {:?}", test!(image, debug));
-		println!("  load_config...    {:?}", test!(image, load_config));
-		println!("  security...       {:?}", test!(image, security));
-		println!("  tls...            {:?}", test!(image, tls));
-		println!("  resources...      {:?}", test!(image, resources));
-		println!("  scanner...        {:?}", test!(image, scanner));
+		println!("  base_relocs...    {:?}", test!(image, test_base_relocs));
+		println!("  rich_structure... {:?}", test!(image, test_rich_structure));
+		println!("  exception_x64...  {:?}", test_pe64!(image, test_exception_x64));
+		println!("  exports...        {:?}", test!(image, test_exports));
+		println!("  imports...        {:?}", test!(image, test_imports));
+		println!("  debug...          {:?}", test!(image, test_debug));
+		println!("  load_config...    {:?}", test!(image, test_load_config));
+		println!("  security...       {:?}", test!(image, test_security));
+		println!("  tls...            {:?}", test!(image, test_tls));
+		println!("  resources...      {:?}", test!(image, test_resources));
+		println!("  scanner...        {:?}", test!(image, test_scanner));
 	}
 }
