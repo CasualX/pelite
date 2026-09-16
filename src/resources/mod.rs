@@ -16,6 +16,7 @@ pub use self::find::ResourceFindError;
 mod art;
 
 pub mod group;
+pub mod string_table;
 pub mod version_info;
 
 //----------------------------------------------------------------
@@ -203,6 +204,7 @@ pub enum ResourceName<'a> {
 impl<'a> ResourceName<'a> {
 	pub const MANIFEST: ResourceName<'a> = ResourceName::Id(crate::image::RT_MANIFEST as u32);
 	pub const VERSION: ResourceName<'a> = ResourceName::Id(crate::image::RT_VERSION as u32);
+	pub const STRING: ResourceName<'a> = ResourceName::Id(crate::image::RT_STRING as u32);
 	pub const GROUP_ICON: ResourceName<'a> = ResourceName::Id(crate::image::RT_GROUP_ICON as u32);
 	pub const GROUP_CURSOR: ResourceName<'a> = ResourceName::Id(crate::image::RT_GROUP_CURSOR as u32);
 }
