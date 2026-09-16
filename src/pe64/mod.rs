@@ -116,8 +116,7 @@ fn image_base() {
 */
 
 use alloc::{vec, vec::Vec};
-use core::{cmp, fmt, hash, iter, mem, ops, slice, str};
-use core::ptr as raw_ptr;
+use core::{cmp, fmt, iter, mem, ops, ptr, slice};
 
 use crate::pattern as pat;
 use crate::{base_relocs::*, security::*, util::*};
@@ -142,7 +141,6 @@ mod imports;
 mod load_config;
 mod msvc;
 mod pe;
-mod ptr;
 mod resources;
 mod rich_structure;
 mod scanner;
@@ -160,10 +158,10 @@ pub use self::image::{Rva, Va};
 pub use self::imports::*;
 pub use self::load_config::*;
 pub use self::pe::*;
-pub use self::ptr::*;
 pub use self::scanner::*;
 pub use self::tls::*;
 pub use self::view::*;
+pub use intptr::IntPtr64 as Ptr;
 
 #[cfg(test)]
 pub(crate) use self::{base_relocs::*, resources::*, rich_structure::*, security::*};

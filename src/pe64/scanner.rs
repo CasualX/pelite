@@ -130,7 +130,7 @@ impl<'a> Scan<'a> for &'a [u8] {
 	fn read<T: Copy + Pod>(self, rva: Rva) -> Option<T> {
 		let bytes = self.get(rva as usize..(rva as usize + mem::size_of::<T>()))?;
 		let ptr = bytes.as_ptr() as *const T;
-		Some(unsafe { raw_ptr::read_unaligned(ptr) })
+		Some(unsafe { ptr::read_unaligned(ptr) })
 	}
 	fn pointer(self, va: Va) -> Option<Rva> {
 		Some(va as Rva)

@@ -321,7 +321,7 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 		// This is safe as per Pod bound and min_size_of
 		unsafe {
 			let p = bytes.as_ptr() as *const T;
-			Ok(raw_ptr::read_unaligned(p))
+			Ok(ptr::read_unaligned(p))
 		}
 	}
 	/// Reads and byte-wise copies the content to the given destination.
@@ -406,7 +406,7 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 		// This is safe as per Pod bound and min_size_of
 		unsafe {
 			let p = bytes.as_ptr() as *const T;
-			Ok(raw_ptr::read_unaligned(p))
+			Ok(ptr::read_unaligned(p))
 		}
 	}
 	/// Reads and byte-wise copies the content to the given destination.
