@@ -175,7 +175,12 @@ impl fmt::Display for CStr {
 #[cfg(feature = "serde")]
 impl serde::Serialize for CStr {
 	fn serialize<S: serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-		serializer.collect_str(self)
+		if serializer.is_human_readable() {
+			serializer.collect_str(self)
+		}
+		else {
+			serializer.serialize_bytes(self.as_ref())
+		}
 	}
 }
 

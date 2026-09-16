@@ -75,21 +75,20 @@ impl<'a> Security<'a> {
 impl<'a> fmt::Debug for Security<'a> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		f.debug_struct("Security")
+			.field("length", &self.image().dwLength)
+			.field("revision", &self.image().wRevision)
 			.field("certificate_type", &self.certificate_type())
 			.field("certificate_data.len", &self.certificate_data().len())
 			.finish()
 	}
 }
 
-#[cfg(feature = "serde")]
-mod serde {
-	use super::Security;
-	use crate::util::serde_helper::*;
-
+serde_impl! {
 	impl<'a> Serialize for Security<'a> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			let is_human_readable = serializer.is_human_readable();
-			let mut state = serializer.serialize_struct("Security", 2)?;
+			let mut state = serializer.serialize_struct("Security", 3)?;
+			state.serialize_field("image", self.image())?;
 			state.serialize_field("certificate_type", &self.certificate_type())?;
 			if cfg!(feature = "basenc") && is_human_readable {
 				#[cfg(feature = "basenc")]

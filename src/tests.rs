@@ -56,3 +56,39 @@ fn pocs() {
 		println!("  scanner...        {:?}", test!(image, test_scanner));
 	}
 }
+
+#[cfg(feature = "serde")]
+#[test]
+fn serialize_pocs() {
+	fn check_load_config(config: impl serde::Serialize) {
+		let value = serde_json::to_value(config).unwrap();
+		let fields = value.as_object().unwrap();
+		assert_eq!(fields.len(), 3);
+		assert!(fields.contains_key("security_cookie"));
+		assert!(fields.contains_key("se_handler_table"));
+		let image = fields["image"].as_object().unwrap();
+		assert_eq!(image.len(), 49);
+		assert!(image.contains_key("GlobalFlagsClear"));
+		assert!(image.contains_key("SecurityCookie"));
+		assert!(image.contains_key("CodeIntegrity"));
+		assert!(image.contains_key("UmaFunctionPointers"));
+	}
+
+	let mut load_configs = 0;
+	for (name, image) in pocs::iter() {
+		if let Ok(pe) = PeFile::from_bytes(&image) {
+			serde_json::to_vec(&pe).unwrap_or_else(|err| panic!("failed to serialize {name}: {err}"));
+			match pe {
+				Wrap::T32(pe) => if let Ok(config) = pe32::Pe::load_config(pe) {
+					check_load_config(config);
+					load_configs += 1;
+				},
+				Wrap::T64(pe) => if let Ok(config) = pe64::Pe::load_config(pe) {
+					check_load_config(config);
+					load_configs += 1;
+				},
+			}
+		}
+	}
+	assert!(load_configs > 0);
+}

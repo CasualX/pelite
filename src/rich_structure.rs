@@ -203,7 +203,7 @@ impl RichRecord {
 /// Rich records can identify the product used and with it the _'language'_ of the objects.
 /// This allows a mapping of products and the kind of _'language'_ it was generated from.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
-#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 pub enum ObjectKind {
 	Unknown,
 	Link,
@@ -315,12 +315,7 @@ impl<'a> fmt::Debug for RichIter<'a> {
 	},
 */
 
-#[cfg(feature = "serde")]
-mod serde {
-	use crate::util::serde_helper::*;
-
-	use super::{RichRecord, RichStructure};
-
+serde_impl! {
 	impl<'a> Serialize for RichStructure<'a> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			let mut state = serializer.serialize_struct("RichStructure", 3)?;
@@ -332,7 +327,7 @@ mod serde {
 	}
 	impl Serialize for RichRecord {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-			let mut state = serializer.serialize_struct("RichRecrod", 4)?;
+			let mut state = serializer.serialize_struct("RichRecord", 3)?;
 			state.serialize_field("product", &self.product)?;
 			// state.serialize_field("kind", &ObjectKind::from(self.product))?;
 			state.serialize_field("build", &self.build)?;

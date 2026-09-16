@@ -142,6 +142,7 @@ impl<'a, P: Pe<'a>> fmt::Debug for Arm64RuntimeFunction<'a, P> {
 
 /// Pre-decodes the unwind data.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 pub enum Arm64UnwindData {
 	/// Entry references an `.xdata` record.
 	XData {
@@ -187,6 +188,7 @@ fn decode_xdata_function_length(header: u32) -> Result<Option<Rva>> {
 
 /// Encoding kind stored in the low bits of an ARM64 `.pdata` entry.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 pub enum Arm64PdataKind {
 	/// The remaining bits reference a full `.xdata` record.
 	RefToFullXdata,
@@ -208,6 +210,7 @@ impl Arm64PdataKind {
 
 /// Return-address handling encoded in packed ARM64 unwind data.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 pub enum Arm64ChainedReturn {
 	/// The function is unchained and does not save the link register.
 	Unchained,
@@ -232,6 +235,7 @@ impl Arm64ChainedReturn {
 
 /// Extracted packed unwind data fields.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 pub struct Arm64PackedUnwindInfo {
 	/// Function length in four-byte instruction units.
 	pub function_length: u16,
@@ -270,6 +274,26 @@ impl Arm64PackedUnwindInfo {
 	fn end_address(&self, begin: Rva) -> Result<Rva> {
 		let span = self.function_length_bytes()?;
 		begin.checked_add(span).ok_or(Error::Overflow)
+	}
+}
+
+//----------------------------------------------------------------
+
+serde_impl! {
+	impl<'a, P: Pe<'a>> Serialize for Arm64ExceptionDirectory<'a, P> {
+		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+			serializer.collect_seq(self.functions())
+		}
+	}
+
+	impl<'a, P: Pe<'a>> Serialize for Arm64RuntimeFunction<'a, P> {
+		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+			let mut state = serializer.serialize_struct("Arm64RuntimeFunction", 3)?;
+			state.serialize_field("image", self.image())?;
+			state.serialize_field("end_address", &self.end_address().ok().flatten())?;
+			state.serialize_field("unwind_data", &self.unwind_data().ok())?;
+			state.end()
+		}
 	}
 }
 

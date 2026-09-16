@@ -208,6 +208,38 @@ impl<'a, P: Pe<'a>> fmt::Debug for X64UnwindInfo<'a, P> {
 
 //----------------------------------------------------------------
 
+serde_impl! {
+	impl<'a, P: Pe<'a>> Serialize for X64ExceptionDirectory<'a, P> {
+		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+			serializer.collect_seq(self.functions())
+		}
+	}
+
+	impl<'a, P: Pe<'a>> Serialize for X64RuntimeFunction<'a, P> {
+		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+			let mut state = serializer.serialize_struct("X64RuntimeFunction", 2)?;
+			state.serialize_field("image", self.image())?;
+			state.serialize_field("unwind_info", &self.unwind_info().ok())?;
+			state.end()
+		}
+	}
+
+	impl<'a, P: Pe<'a>> Serialize for X64UnwindInfo<'a, P> {
+		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+			let mut state = serializer.serialize_struct("X64UnwindInfo", 6)?;
+			state.serialize_field("version", &self.version())?;
+			state.serialize_field("flags", &self.flags())?;
+			state.serialize_field("size_of_prolog", &self.size_of_prolog())?;
+			state.serialize_field("frame_register", &self.frame_register())?;
+			state.serialize_field("frame_offset", &self.frame_offset())?;
+			state.serialize_field("unwind_codes", &self.unwind_codes())?;
+			state.end()
+		}
+	}
+}
+
+//----------------------------------------------------------------
+
 #[cfg(test)]
 pub(crate) fn test_exception_x64<'a, P: Pe<'a>>(pe: P) -> Result<()> {
 	let exception = pe.exception_x64()?;

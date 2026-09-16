@@ -306,7 +306,7 @@ impl fmt::Display for Name<'_> {
 
 /// Data or directory entry.
 #[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(::serde::Serialize), serde(untagged))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize), serde(untagged))]
 pub enum Entry<'a> {
 	Directory(Directory<'a>),
 	DataEntry(DataEntry<'a>),
@@ -501,13 +501,8 @@ static RSRC_TYPES: [Option<&str>; 25] = [
 	]
 */
 
-#[cfg(feature = "serde")]
-mod serde {
+serde_impl! {
 	use alloc::string::String;
-
-	use crate::util::serde_helper::*;
-
-	use super::{DataEntry, Directory, DirectoryEntry, Name, Resources};
 
 	// Rename the toplevel directory ids to their names
 	struct NamedDirectoryEntry<'a>(DirectoryEntry<'a>);
@@ -537,7 +532,8 @@ mod serde {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			match self {
 				Name::Id(id) => id.serialize(serializer),
-				Name::Wide(words) => serializer.serialize_str(&String::from_utf16_lossy(words)),
+				Name::Wide(words) if serializer.is_human_readable() => serializer.serialize_str(&String::from_utf16_lossy(words)),
+				Name::Wide(words) => words.serialize(serializer),
 				Name::Str(name) => serializer.serialize_str(name),
 			}
 		}
@@ -552,10 +548,18 @@ mod serde {
 	}
 	impl<'a> Serialize for DataEntry<'a> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-			let mut state = serializer.serialize_struct("DataEntry", 3)?;
-			state.serialize_field("address", &self.image().OffsetToData)?;
+			let is_human_readable = serializer.is_human_readable();
+			let mut state = serializer.serialize_struct("DataEntry", 4)?;
+			state.serialize_field("image", self.image())?;
 			state.serialize_field("size", &self.size())?;
 			state.serialize_field("code_page", &self.code_page())?;
+			if cfg!(feature = "basenc") && is_human_readable {
+				#[cfg(feature = "basenc")]
+				state.serialize_field("bytes", &self.bytes().ok().map(|data| basenc::Base64Std.encode(data)))?;
+			}
+			else {
+				state.serialize_field("bytes", &self.bytes().ok())?;
+			}
 			state.end()
 		}
 	}

@@ -1,7 +1,7 @@
 use pelite::Pod;
 
 #[derive(Debug, Pod)]
-#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct ApiSetMap {
 	pub Version: u32,
@@ -11,7 +11,7 @@ pub struct ApiSetMap {
 }
 
 #[derive(Copy, Clone, Debug, Pod)]
-#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct DllHostDescriptor {
 	pub OffsetDllString: u32,
@@ -20,7 +20,7 @@ pub struct DllHostDescriptor {
 }
 
 #[derive(Debug, Pod)]
-#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct DllRedirector {
 	pub NumberOfRedirections: u32,
@@ -29,7 +29,7 @@ pub struct DllRedirector {
 }
 
 #[derive(Copy, Clone, Debug, Pod)]
-#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct Redirection {
 	pub OffsetRedirection1: u32,

@@ -77,16 +77,12 @@ impl<'a, P: Pe<'a>> fmt::Debug for TlsDirectory<'a, P> {
 
 //----------------------------------------------------------------
 
-#[cfg(feature = "serde")]
-mod serde {
-	use crate::util::serde_helper::*;
-
-	use super::{Pe, TlsDirectory};
-
+serde_impl! {
 	impl<'a, P: Pe<'a>> Serialize for TlsDirectory<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			let is_human_readable = serializer.is_human_readable();
-			let mut state = serializer.serialize_struct("TlsDirectory", 2)?;
+			let mut state = serializer.serialize_struct("TlsDirectory", 4)?;
+			state.serialize_field("image", self.image())?;
 			if cfg!(feature = "basenc") && is_human_readable {
 				#[cfg(feature = "basenc")]
 				state.serialize_field("raw_data", &self.raw_data().ok().map(|data| basenc::Base64Std.encode(data)))?;
@@ -94,6 +90,7 @@ mod serde {
 			else {
 				state.serialize_field("raw_data", &self.raw_data().ok())?;
 			}
+			state.serialize_field("slot", &self.slot().ok())?;
 			state.serialize_field("callbacks", &self.callbacks().ok())?;
 			state.end()
 		}

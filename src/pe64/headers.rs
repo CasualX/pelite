@@ -83,12 +83,8 @@ impl<'a, P: Pe<'a>> Headers<P> {
 	}
 */
 
-#[cfg(feature = "serde")]
-mod serde {
+serde_impl! {
 	use crate::stringify;
-	use crate::util::serde_helper::*;
-
-	use super::{Headers, Pe};
 
 	impl<'a, P: Pe<'a>> Serialize for Headers<P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {

@@ -66,6 +66,16 @@ impl fmt::UpperHex for GUID {
 #[cfg(feature = "serde")]
 impl serde::Serialize for GUID {
 	fn serialize<S: serde::Serializer>(&self, serializer: S) -> core::result::Result<S::Ok, S::Error> {
-		serializer.collect_str(self)
+		if serializer.is_human_readable() {
+			serializer.collect_str(self)
+		}
+		else {
+			let mut bytes = [0u8; 16];
+			bytes[0..4].copy_from_slice(&self.Data1.to_le_bytes());
+			bytes[4..6].copy_from_slice(&self.Data2.to_le_bytes());
+			bytes[6..8].copy_from_slice(&self.Data3.to_le_bytes());
+			bytes[8..16].copy_from_slice(&self.Data4);
+			serde::Serialize::serialize(&bytes, serializer)
+		}
 	}
 }

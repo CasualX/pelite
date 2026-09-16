@@ -2,7 +2,7 @@ use super::*;
 
 /// Imported symbol.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
-#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 pub enum Import<'a> {
 	/// Imported by name.
 	///

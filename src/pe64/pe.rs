@@ -646,17 +646,33 @@ unsafe impl<'s, 'a> Pe<'a> for &'s dyn PeObject<'a> {}
 pub(crate) fn serialize_pe<'a, P: Pe<'a>, S: serde::Serializer>(pe: P, serializer: S) -> core::result::Result<S::Ok, S::Error> {
 	use crate::util::serde_helper::*;
 
-	let mut state = serializer.serialize_struct(pe.serde_name(), 10)?;
+	let fields = branch! { pe32 { 11 } pe64 { 12 } };
+	let mut state = serializer.serialize_struct(pe.serde_name(), fields)?;
 	state.serialize_field("headers", &pe.headers())?;
 	state.serialize_field("rich_structure", &pe.rich_structure().ok())?;
 	state.serialize_field("exports", &pe.exports().ok())?;
 	state.serialize_field("imports", &pe.imports().ok())?;
+	state.serialize_field("iat", &pe.iat().ok())?;
 	state.serialize_field("base_relocs", &pe.base_relocs().ok())?;
 	state.serialize_field("debug", &pe.debug().ok())?;
 	state.serialize_field("tls", &pe.tls().ok())?;
 	state.serialize_field("load_config", &pe.load_config().ok())?;
 	state.serialize_field("security", &pe.security().ok())?;
 	state.serialize_field("resources", &pe.resources().ok())?;
+	branch! {
+		pe32 {}
+		pe64 {
+			if let Ok(exception) = pe.exception_x64() {
+				state.serialize_field("exception", &exception)?;
+			}
+			else if let Ok(exception) = pe.exception_arm64() {
+				state.serialize_field("exception", &exception)?;
+			}
+			else {
+				state.serialize_field("exception", &Option::<()>::None)?;
+			}
+		}
+	}
 	state.end()
 }
 

@@ -249,12 +249,7 @@ impl<'a, P: Pe<'a>> fmt::Debug for ImportDescriptor<'a, P> {
 	]
 */
 
-#[cfg(feature = "serde")]
-mod serde {
-	use crate::util::serde_helper::*;
-
-	use super::{ImportDescriptor, ImportDirectory, Pe, ImportAddressTable};
-
+serde_impl! {
 	impl<'a, P: Pe<'a>> Serialize for ImportDirectory<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			serializer.collect_seq(self.into_iter())
@@ -262,15 +257,18 @@ mod serde {
 	}
 	impl<'a, P: Pe<'a>> Serialize for ImportAddressTable<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-			let iat = self.iter().filter_map(|(_va, import)| import.ok());
+			let iat = self.iter().map(|(address, import)| (address, import.ok()));
 			serializer.collect_seq(iat)
 		}
 	}
 	impl<'a, P: Pe<'a>> Serialize for ImportDescriptor<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-			let mut state = serializer.serialize_struct("ImportDescriptor", 2)?;
+			let mut state = serializer.serialize_struct("ImportDescriptor", 4)?;
+			state.serialize_field("image", self.image())?;
 			state.serialize_field("dll_name", &self.dll_name().ok())?;
-			let int = self.int().map(|int| SerdeIter(int.filter_map(|import| import.ok())));
+			let iat = self.iat().map(SerdeIter);
+			state.serialize_field("iat", &iat.ok())?;
+			let int = self.int().map(|int| SerdeIter(int.map(|import| import.ok())));
 			state.serialize_field("int", &int.ok())?;
 			state.end()
 		}
