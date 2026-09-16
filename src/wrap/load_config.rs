@@ -3,13 +3,37 @@ use crate::*;
 use super::Wrap;
 
 /// Load Config Directory.
-impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::load_config::LoadConfig<'a, Pe32>, pe64::load_config::LoadConfig<'a, Pe64>> {
+impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::LoadConfigDirectory<'a, Pe32>, pe64::LoadConfigDirectory<'a, Pe64>> {
 	/// Gets the PE instance.
 	#[inline]
 	pub fn pe(&self) -> Wrap<Pe32, Pe64> {
 		match self {
 			Wrap::T32(load_config) => Wrap::T32(load_config.pe()),
 			Wrap::T64(load_config) => Wrap::T64(load_config.pe()),
+		}
+	}
+	/// Returns the size declared by the load config directory.
+	#[inline]
+	pub fn size(&self) -> u32 {
+		match self {
+			Wrap::T32(load_config) => load_config.size(),
+			Wrap::T64(load_config) => load_config.size(),
+		}
+	}
+	/// Returns the time and date stamp, or zero if the field is absent.
+	#[inline]
+	pub fn time_date_stamp(&self) -> u32 {
+		match self {
+			Wrap::T32(load_config) => load_config.time_date_stamp(),
+			Wrap::T64(load_config) => load_config.time_date_stamp(),
+		}
+	}
+	/// Returns the load config version, or version `0.0` if the field is absent.
+	#[inline]
+	pub fn version(&self) -> image::IMAGE_VERSION<u16> {
+		match self {
+			Wrap::T32(load_config) => load_config.version(),
+			Wrap::T64(load_config) => load_config.version(),
 		}
 	}
 	/// Copies the load config directory into the latest known image structure.

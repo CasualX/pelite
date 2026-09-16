@@ -1,9 +1,4 @@
-use crate::security::Security;
-use crate::util::AlignTo;
-use crate::{Error, Result};
-
-use super::image::*;
-use super::{Align, Pe};
+use super::*;
 
 pub(crate) fn try_from<'a, P: Pe<'a>>(pe: P) -> Result<Security<'a>> {
 	// The security info is part of the mapped image
@@ -29,7 +24,7 @@ pub(crate) fn try_from<'a, P: Pe<'a>>(pe: P) -> Result<Security<'a>> {
 }
 
 #[cfg(test)]
-pub(crate) fn test<'a, P: Pe<'a>>(pe: P) -> Result<()> {
+pub(crate) fn test_security<'a, P: Pe<'a>>(pe: P) -> Result<()> {
 	let security = pe.security()?;
 	let _ = format!("{:?}", security);
 	let _certificate_type = security.certificate_type();

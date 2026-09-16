@@ -1,7 +1,7 @@
 use super::*;
 
 /// Debug directory.
-impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::debug::Debug<'a, Pe32>, pe64::debug::Debug<'a, Pe64>> {
+impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::DebugDirectory<'a, Pe32>, pe64::DebugDirectory<'a, Pe64>> {
 	/// Gets the PE instance.
 	#[inline]
 	pub fn pe(&self) -> Wrap<Pe32, Pe64> {
@@ -28,7 +28,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::debug::Debug<'a, Pe3
 	}
 	/// Iterator over the debug directories.
 	#[inline]
-	pub fn iter(&self) -> Wrap<pe32::debug::Iter<'a, Pe32>, pe64::debug::Iter<'a, Pe64>> {
+	pub fn iter(&self) -> Wrap<pe32::DebugDirectoryIter<'a, Pe32>, pe64::DebugDirectoryIter<'a, Pe64>> {
 		match self {
 			Wrap::T32(debug) => Wrap::T32(debug.iter()),
 			Wrap::T64(debug) => Wrap::T64(debug.iter()),
@@ -36,9 +36,9 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::debug::Debug<'a, Pe3
 	}
 }
 
-impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> IntoIterator for Wrap<pe32::debug::Debug<'a, Pe32>, pe64::debug::Debug<'a, Pe64>> {
-	type Item = Wrap<pe32::debug::Dir<'a, Pe32>, pe64::debug::Dir<'a, Pe64>>;
-	type IntoIter = Wrap<pe32::debug::Iter<'a, Pe32>, pe64::debug::Iter<'a, Pe64>>;
+impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> IntoIterator for Wrap<pe32::DebugDirectory<'a, Pe32>, pe64::DebugDirectory<'a, Pe64>> {
+	type Item = Wrap<pe32::DebugDirectoryEntry<'a, Pe32>, pe64::DebugDirectoryEntry<'a, Pe64>>;
+	type IntoIter = Wrap<pe32::DebugDirectoryIter<'a, Pe32>, pe64::DebugDirectoryIter<'a, Pe64>>;
 	#[inline]
 	fn into_iter(self) -> Self::IntoIter {
 		self.iter()
@@ -46,7 +46,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> IntoIterator for Wrap<pe32::deb
 }
 
 /// Debug directory entry.
-impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::debug::Dir<'a, Pe32>, pe64::debug::Dir<'a, Pe64>> {
+impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::DebugDirectoryEntry<'a, Pe32>, pe64::DebugDirectoryEntry<'a, Pe64>> {
 	/// Gets the PE instance.
 	#[inline]
 	pub fn pe(&self) -> Wrap<Pe32, Pe64> {
@@ -73,7 +73,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::debug::Dir<'a, Pe32>
 	}
 	/// Interprets the directory entry.
 	#[inline]
-	pub fn entry(&self) -> Result<Entry<'a>> {
+	pub fn entry(&self) -> Result<DebugData<'a>> {
 		match self {
 			Wrap::T32(dir) => dir.entry(),
 			Wrap::T64(dir) => dir.entry(),
@@ -83,40 +83,45 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::debug::Dir<'a, Pe32>
 
 //----------------------------------------------------------------
 
+/// Decoded contents of a debug directory entry.
 #[derive(Copy, Clone, Debug)]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize), serde(untagged))]
-pub enum Entry<'a> {
+pub enum DebugData<'a> {
+	/// CodeView information, usually including a PDB path.
 	CodeView(CodeView<'a>),
-	Dbg(Dbg<'a>),
+	/// Miscellaneous debug information.
+	Misc(DebugMisc<'a>),
+	/// Profile-guided optimization information.
 	Pgo(Pgo<'a>),
+	/// An unrecognized debug entry and its available raw bytes.
 	Unknown(Option<&'a [u8]>),
 }
-impl<'a> Entry<'a> {
+impl<'a> DebugData<'a> {
 	/// As a CodeView debug information entry.
 	pub fn as_code_view(self) -> Option<CodeView<'a>> {
 		match self {
-			Entry::CodeView(cv) => Some(cv),
+			DebugData::CodeView(cv) => Some(cv),
 			_ => None,
 		}
 	}
-	/// As a Dbg information entry.
-	pub fn as_dbg(self) -> Option<Dbg<'a>> {
+	/// As a miscellaneous debug information entry.
+	pub fn as_misc(self) -> Option<DebugMisc<'a>> {
 		match self {
-			Entry::Dbg(dbg) => Some(dbg),
+			DebugData::Misc(misc) => Some(misc),
 			_ => None,
 		}
 	}
 	/// As a PGO information entry.
 	pub fn as_pgo(self) -> Option<Pgo<'a>> {
 		match self {
-			Entry::Pgo(pgo) => Some(pgo),
+			DebugData::Pgo(pgo) => Some(pgo),
 			_ => None,
 		}
 	}
 	/// Unknown format, return as bytes.
 	pub fn as_unknown(self) -> Option<&'a [u8]> {
 		match self {
-			Entry::Unknown(data) => data,
+			DebugData::Unknown(data) => data,
 			_ => None,
 		}
 	}
@@ -128,11 +133,22 @@ impl<'a> Entry<'a> {
 #[derive(Copy, Clone)]
 pub enum CodeView<'a> {
 	/// CodeView 2.0 debug information.
-	Cv20 { image: &'a image::IMAGE_DEBUG_CV_INFO_PDB20, pdb_file_name: &'a CStr },
+	Cv20 {
+		/// Underlying CodeView 2.0 record.
+		image: &'a image::IMAGE_DEBUG_CV_INFO_PDB20,
+		/// Nul-terminated PDB path following the record.
+		pdb_file_name: &'a CStr,
+	},
 	/// CodeView 7.0 debug information.
-	Cv70 { image: &'a image::IMAGE_DEBUG_CV_INFO_PDB70, pdb_file_name: &'a CStr },
+	Cv70 {
+		/// Underlying CodeView 7.0 record.
+		image: &'a image::IMAGE_DEBUG_CV_INFO_PDB70,
+		/// Nul-terminated PDB path following the record.
+		pdb_file_name: &'a CStr,
+	},
 }
 impl<'a> CodeView<'a> {
+	/// Returns the four-byte CodeView format signature as a string.
 	pub fn format(&self) -> &'a str {
 		let cv_signature = match self {
 			CodeView::Cv20 { image, .. } => &image.CvSignature,
@@ -140,12 +156,14 @@ impl<'a> CodeView<'a> {
 		} as *const _ as *const [u8; 4];
 		unsafe { str::from_utf8_unchecked(&*cv_signature) }
 	}
+	/// Returns the PDB age used to match the image with its symbols.
 	pub fn age(&self) -> u32 {
 		match self {
 			CodeView::Cv20 { image, .. } => image.Age,
 			CodeView::Cv70 { image, .. } => image.Age,
 		}
 	}
+	/// Returns the recorded PDB path.
 	pub fn pdb_file_name(&self) -> &'a CStr {
 		match self {
 			CodeView::Cv20 { pdb_file_name, .. } => pdb_file_name,
@@ -176,18 +194,19 @@ impl<'a> fmt::Debug for CodeView<'a> {
 
 /// Debug information.
 #[derive(Copy, Clone)]
-pub struct Dbg<'a> {
+pub struct DebugMisc<'a> {
+	/// Underlying miscellaneous debug information record.
 	pub image: &'a image::IMAGE_DEBUG_MISC,
 }
-impl<'a> Dbg<'a> {
+impl<'a> DebugMisc<'a> {
 	/// Gets the underlying information image.
 	pub fn image(&self) -> &'a image::IMAGE_DEBUG_MISC {
 		self.image
 	}
 }
-impl<'a> fmt::Debug for Dbg<'a> {
+impl<'a> fmt::Debug for DebugMisc<'a> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		f.debug_struct("Dbg").finish()
+		f.debug_struct("DebugMisc").finish()
 	}
 }
 
@@ -196,6 +215,7 @@ impl<'a> fmt::Debug for Dbg<'a> {
 /// PGO information.
 #[derive(Copy, Clone)]
 pub struct Pgo<'a> {
+	/// Underlying PGO data as 32-bit words.
 	pub image: &'a [u32],
 }
 impl<'a> Pgo<'a> {
@@ -218,7 +238,9 @@ impl<'a> IntoIterator for Pgo<'a> {
 }
 impl<'a> fmt::Debug for Pgo<'a> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		f.debug_list().entries(self.iter()).finish()
+		f.debug_struct("Pgo")
+			.field("sections", &crate::util::DebugList(self.iter()))
+			.finish()
 	}
 }
 /// Iterator over PGO sections.
@@ -246,8 +268,11 @@ impl<'a> Iterator for PgoIter<'a> {
 #[derive(Copy, Clone, Debug)]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize))]
 pub struct PgoItem<'a> {
+	/// Relative virtual address of the section.
 	pub rva: u32,
+	/// Size of the section in bytes.
 	pub size: u32,
+	/// Nul-terminated section name.
 	pub name: &'a CStr,
 }
 
@@ -257,7 +282,7 @@ pub struct PgoItem<'a> {
 mod serde2 {
 	use crate::util::serde_helper::*;
 
-	use super::{CodeView, Dbg, Pgo};
+	use super::{CodeView, DebugMisc, Pgo};
 
 	impl<'a> Serialize for CodeView<'a> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
@@ -277,9 +302,9 @@ mod serde2 {
 			state.end()
 		}
 	}
-	impl<'a> Serialize for Dbg<'a> {
+	impl<'a> Serialize for DebugMisc<'a> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-			serializer.serialize_struct("Dbg", 0)?.end()
+			serializer.serialize_struct("DebugMisc", 0)?.end()
 		}
 	}
 	impl<'a> Serialize for Pgo<'a> {

@@ -1,27 +1,20 @@
-/*!
-ARM64 Exception Directory.
-
-Reference: <https://learn.microsoft.com/en-us/cpp/build/arm64-exception-handling?view=msvc-170>
-*/
-
-use core::{fmt, iter, mem, slice};
-
-use crate::{Error, Result};
-
-use super::image::*;
-use super::Pe;
+use super::*;
 
 //----------------------------------------------------------------
 
-/// Exception Directory for ARM64 images.
+/// Exception directory for ARM64 images.
+///
+/// See Microsoft's [ARM64 exception handling documentation][docs].
+///
+/// [docs]: https://learn.microsoft.com/en-us/cpp/build/arm64-exception-handling?view=msvc-170
 #[derive(Copy, Clone)]
-pub struct ExceptionArm64<'a, P> {
+pub struct Arm64ExceptionDirectory<'a, P> {
 	pe: P,
 	image: &'a [IMAGE_ARM64_RUNTIME_FUNCTION_ENTRY],
 }
-impl<'a, P: Pe<'a>> ExceptionArm64<'a, P> {
+impl<'a, P: Pe<'a>> Arm64ExceptionDirectory<'a, P> {
 	/// Parses the ARM64 exception directory for the given PE.
-	pub(crate) fn try_from(pe: P) -> Result<ExceptionArm64<'a, P>> {
+	pub(crate) fn try_from(pe: P) -> Result<Arm64ExceptionDirectory<'a, P>> {
 		let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_EXCEPTION).ok_or(Error::Bounds)?;
 		if datadir.VirtualAddress == 0 {
 			return Err(Error::Null);
@@ -35,7 +28,7 @@ impl<'a, P: Pe<'a>> ExceptionArm64<'a, P> {
 			return Err(Error::Invalid);
 		}
 		let image = pe.derva_slice(datadir.VirtualAddress, len)?;
-		Ok(ExceptionArm64 { pe, image })
+		Ok(Arm64ExceptionDirectory { pe, image })
 	}
 	/// Gets the PE instance.
 	pub fn pe(&self) -> P {
@@ -50,38 +43,16 @@ impl<'a, P: Pe<'a>> ExceptionArm64<'a, P> {
 		self.image.windows(2).all(|window| window[0].BeginAddress <= window[1].BeginAddress)
 	}
 	/// Gets an iterator over the function records.
-	pub fn functions(&self) -> iter::Map<slice::Iter<'a, IMAGE_ARM64_RUNTIME_FUNCTION_ENTRY>, impl Clone + FnMut(&'a IMAGE_ARM64_RUNTIME_FUNCTION_ENTRY) -> FunctionArm64<'a, P>> {
+	pub fn functions(&self) -> iter::Map<slice::Iter<'a, IMAGE_ARM64_RUNTIME_FUNCTION_ENTRY>, impl Clone + FnMut(&'a IMAGE_ARM64_RUNTIME_FUNCTION_ENTRY) -> Arm64RuntimeFunction<'a, P>> {
 		let pe = self.pe;
-		self.image.iter().map(move |image| FunctionArm64 { pe, image })
+		self.image.iter().map(move |image| Arm64RuntimeFunction { pe, image })
 	}
 }
-impl<'a, P: Pe<'a>> fmt::Debug for ExceptionArm64<'a, P> {
+impl<'a, P: Pe<'a>> fmt::Debug for Arm64ExceptionDirectory<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		writeln!(f, "ExceptionArm64 {{")?;
-		writeln!(f, "    functions.len: {},", self.image.len())?;
-		writeln!(f, "    functions: [")?;
-		for (index, function) in self.functions().enumerate() {
-			let begin = function.begin_address();
-			let unwind = function.raw_unwind_data();
-			write!(f, "        [{:04}] begin=0x{:08x} unwind=0x{:08x}", index, begin, unwind)?;
-			match function.end_address() {
-				Ok(Some(end)) => {
-					let size = end.saturating_sub(begin);
-					write!(f, " end=0x{:08x} size=0x{:04x}", end, size)?;
-				},
-				Ok(None) => {},
-				Err(err) => {
-					write!(f, " <end err: {:?}>", err)?;
-				},
-			}
-			writeln!(f, ",")?;
-			match function.unwind_data() {
-				Ok(data) => writeln!(f, "            {:?}", data)?,
-				Err(err) => writeln!(f, "            <unwind decode error: {:?}>", err)?,
-			}
-		}
-		writeln!(f, "    ]")?;
-		write!(f, "}}")
+		f.debug_struct("Arm64ExceptionDirectory")
+			.field("functions", &crate::util::DebugList(self.functions()))
+			.finish()
 	}
 }
 
@@ -89,11 +60,11 @@ impl<'a, P: Pe<'a>> fmt::Debug for ExceptionArm64<'a, P> {
 
 /// ARM64 runtime function.
 #[derive(Copy, Clone)]
-pub struct FunctionArm64<'a, P> {
+pub struct Arm64RuntimeFunction<'a, P> {
 	pe: P,
 	image: &'a IMAGE_ARM64_RUNTIME_FUNCTION_ENTRY,
 }
-impl<'a, P: Pe<'a>> FunctionArm64<'a, P> {
+impl<'a, P: Pe<'a>> Arm64RuntimeFunction<'a, P> {
 	/// Gets the PE instance.
 	pub fn pe(&self) -> P {
 		self.pe
@@ -147,9 +118,23 @@ impl<'a, P: Pe<'a>> FunctionArm64<'a, P> {
 		decode_xdata_function_length(header)
 	}
 }
-impl<'a, P: Pe<'a>> fmt::Debug for FunctionArm64<'a, P> {
+impl<'a, P: Pe<'a>> fmt::Debug for Arm64RuntimeFunction<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		f.debug_struct("FunctionArm64").field("begin", &self.begin_address()).field("unwind_data", &self.unwind_data()).finish()
+		let begin = self.begin_address();
+		let mut debug = f.debug_struct("Arm64RuntimeFunction");
+		debug.field("begin", &format_args!("{:#010x}", begin));
+		debug.field("unwind", &format_args!("{:#010x}", self.raw_unwind_data()));
+		match self.end_address() {
+			Ok(Some(end)) => {
+				debug.field("end", &format_args!("{:#010x}", end));
+				debug.field("size", &format_args!("{:#06x}", end.saturating_sub(begin)));
+			},
+			Ok(None) => {},
+			Err(err) => {
+				debug.field("end", &err);
+			},
+		}
+		debug.field("unwind_data", &self.unwind_data()).finish()
 	}
 }
 
@@ -159,24 +144,27 @@ impl<'a, P: Pe<'a>> fmt::Debug for FunctionArm64<'a, P> {
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum Arm64UnwindData {
 	/// Entry references an `.xdata` record.
-	XData { address: Rva },
+	XData {
+		/// Address of the full unwind record.
+		address: Rva,
+	},
 	/// Entry encodes unwind information inline.
-	PackedFunction(PackedUnwindInfo),
+	PackedFunction(Arm64PackedUnwindInfo),
 	/// Entry encodes a fragment of a large function inline.
-	PackedFragment(PackedUnwindInfo),
+	PackedFragment(Arm64PackedUnwindInfo),
 }
 impl Arm64UnwindData {
 	fn decode(raw: u32) -> Result<Arm64UnwindData> {
 		let flag_bits = (raw & 0b11) as u32;
-		let flag = Arm64FnPdataFlags::from_bits(flag_bits).ok_or(Error::Invalid)?;
+		let flag = Arm64PdataKind::from_bits(flag_bits).ok_or(Error::Invalid)?;
 		match flag {
-			Arm64FnPdataFlags::RefToFullXdata => Ok(Arm64UnwindData::XData { address: raw & !0b11 }),
-			Arm64FnPdataFlags::PackedUnwindFunction => {
-				let info = PackedUnwindInfo::from_raw(raw)?;
+			Arm64PdataKind::RefToFullXdata => Ok(Arm64UnwindData::XData { address: raw & !0b11 }),
+			Arm64PdataKind::PackedUnwindFunction => {
+				let info = Arm64PackedUnwindInfo::from_raw(raw)?;
 				Ok(Arm64UnwindData::PackedFunction(info))
 			},
-			Arm64FnPdataFlags::PackedUnwindFragment => {
-				let info = PackedUnwindInfo::from_raw(raw)?;
+			Arm64PdataKind::PackedUnwindFragment => {
+				let info = Arm64PackedUnwindInfo::from_raw(raw)?;
 				Ok(Arm64UnwindData::PackedFragment(info))
 			},
 		}
@@ -197,37 +185,46 @@ fn decode_xdata_function_length(header: u32) -> Result<Option<Rva>> {
 	len.checked_mul(4).map(Some).ok_or(Error::Overflow)
 }
 
+/// Encoding kind stored in the low bits of an ARM64 `.pdata` entry.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum Arm64FnPdataFlags {
+pub enum Arm64PdataKind {
+	/// The remaining bits reference a full `.xdata` record.
 	RefToFullXdata,
+	/// The entry contains packed unwind data for a complete function.
 	PackedUnwindFunction,
+	/// The entry contains packed unwind data for a function fragment.
 	PackedUnwindFragment,
 }
-impl Arm64FnPdataFlags {
-	fn from_bits(bits: u32) -> Option<Arm64FnPdataFlags> {
+impl Arm64PdataKind {
+	fn from_bits(bits: u32) -> Option<Arm64PdataKind> {
 		match bits {
-			0 => Some(Arm64FnPdataFlags::RefToFullXdata),
-			1 => Some(Arm64FnPdataFlags::PackedUnwindFunction),
-			2 => Some(Arm64FnPdataFlags::PackedUnwindFragment),
+			0 => Some(Arm64PdataKind::RefToFullXdata),
+			1 => Some(Arm64PdataKind::PackedUnwindFunction),
+			2 => Some(Arm64PdataKind::PackedUnwindFragment),
 			_ => None,
 		}
 	}
 }
 
+/// Return-address handling encoded in packed ARM64 unwind data.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum Arm64FnPdataCr {
+pub enum Arm64ChainedReturn {
+	/// The function is unchained and does not save the link register.
 	Unchained,
+	/// The function is unchained and saves the link register.
 	UnchainedSavedLr,
+	/// The function is chained and uses pointer authentication.
 	ChainedWithPac,
+	/// The function is chained without pointer authentication.
 	Chained,
 }
-impl Arm64FnPdataCr {
-	fn from_bits(bits: u32) -> Option<Arm64FnPdataCr> {
+impl Arm64ChainedReturn {
+	fn from_bits(bits: u32) -> Option<Arm64ChainedReturn> {
 		match bits {
-			0 => Some(Arm64FnPdataCr::Unchained),
-			1 => Some(Arm64FnPdataCr::UnchainedSavedLr),
-			2 => Some(Arm64FnPdataCr::ChainedWithPac),
-			3 => Some(Arm64FnPdataCr::Chained),
+			0 => Some(Arm64ChainedReturn::Unchained),
+			1 => Some(Arm64ChainedReturn::UnchainedSavedLr),
+			2 => Some(Arm64ChainedReturn::ChainedWithPac),
+			3 => Some(Arm64ChainedReturn::Chained),
 			_ => None,
 		}
 	}
@@ -235,29 +232,35 @@ impl Arm64FnPdataCr {
 
 /// Extracted packed unwind data fields.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub struct PackedUnwindInfo {
+pub struct Arm64PackedUnwindInfo {
+	/// Function length in four-byte instruction units.
 	pub function_length: u16,
+	/// Encoded count of saved floating-point registers.
 	pub reg_f: u8,
+	/// Encoded count of saved integer registers.
 	pub reg_i: u8,
+	/// Whether the integer parameter registers are homed.
 	pub homed_parameter_registers: bool,
-	pub cr: Arm64FnPdataCr,
+	/// Return-address handling mode.
+	pub chained_return: Arm64ChainedReturn,
+	/// Encoded stack-frame size in 16-byte units.
 	pub frame_size: u16,
 }
-impl PackedUnwindInfo {
-	fn from_raw(raw: u32) -> Result<PackedUnwindInfo> {
+impl Arm64PackedUnwindInfo {
+	fn from_raw(raw: u32) -> Result<Arm64PackedUnwindInfo> {
 		let function_length = ((raw >> 2) & 0x7ff) as u16;
 		let reg_f = ((raw >> 13) & 0x7) as u8;
 		let reg_i = ((raw >> 16) & 0xf) as u8;
 		let homed = ((raw >> 20) & 0x1) != 0;
-		let cr_bits = (raw >> 21) & 0x3;
-		let cr = Arm64FnPdataCr::from_bits(cr_bits).ok_or(Error::Invalid)?;
+		let chained_return_bits = (raw >> 21) & 0x3;
+		let chained_return = Arm64ChainedReturn::from_bits(chained_return_bits).ok_or(Error::Invalid)?;
 		let frame_size = ((raw >> 23) & 0x1ff) as u16;
-		Ok(PackedUnwindInfo {
+		Ok(Arm64PackedUnwindInfo {
 			function_length,
 			reg_f,
 			reg_i,
 			homed_parameter_registers: homed,
-			cr,
+			chained_return,
 			frame_size,
 		})
 	}
@@ -287,7 +290,7 @@ mod tests {
 				assert_eq!(info.reg_f, 2);
 				assert_eq!(info.reg_i, 4);
 				assert!(info.homed_parameter_registers);
-				assert_eq!(info.cr, Arm64FnPdataCr::ChainedWithPac);
+				assert_eq!(info.chained_return, Arm64ChainedReturn::ChainedWithPac);
 				assert_eq!(info.frame_size, 0x100 & 0x1ff);
 				assert_eq!(info.end_address(0x1000).unwrap(), 0x1000 + (0x3f * 4));
 			},

@@ -1,7 +1,7 @@
 use super::*;
 
 /// Pattern scanner.
-impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::scanner::Scanner<Pe32>, pe64::scanner::Scanner<Pe64>> {
+impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::Scanner<Pe32>, pe64::Scanner<Pe64>> {
 	/// Finds the unique match for the pattern in the given range.
 	#[inline]
 	pub fn finds(&self, pat: &[pattern::Atom], range: ops::Range<u32>, save: &mut [u32]) -> bool {
@@ -20,7 +20,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::scanner::Scanner<Pe3
 	}
 	/// Returns an iterator over the matches of a pattern within the given range.
 	#[inline]
-	pub fn matches<'pat>(&self, pat: &'pat [pattern::Atom], range: ops::Range<u32>) -> Wrap<pe32::scanner::Matches<'pat, Pe32>, pe64::scanner::Matches<'pat, Pe64>> {
+	pub fn matches<'pat>(&self, pat: &'pat [pattern::Atom], range: ops::Range<u32>) -> Wrap<pe32::ScannerMatches<'pat, Pe32>, pe64::ScannerMatches<'pat, Pe64>> {
 		match self {
 			Wrap::T32(scanner) => Wrap::T32(scanner.matches(pat, range)),
 			Wrap::T64(scanner) => Wrap::T64(scanner.matches(pat, range)),
@@ -28,7 +28,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::scanner::Scanner<Pe3
 	}
 	/// Returns an iterator over the code matches of a pattern.
 	#[inline]
-	pub fn matches_code<'pat>(&self, pat: &'pat [pattern::Atom]) -> Wrap<pe32::scanner::Matches<'pat, Pe32>, pe64::scanner::Matches<'pat, Pe64>> {
+	pub fn matches_code<'pat>(&self, pat: &'pat [pattern::Atom]) -> Wrap<pe32::ScannerMatches<'pat, Pe32>, pe64::ScannerMatches<'pat, Pe64>> {
 		match self {
 			Wrap::T32(scanner) => Wrap::T32(scanner.matches_code(pat)),
 			Wrap::T64(scanner) => Wrap::T64(scanner.matches_code(pat)),
@@ -44,10 +44,10 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::scanner::Scanner<Pe3
 	}
 }
 
-impl<'a, 'pat, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::scanner::Matches<'pat, Pe32>, pe64::scanner::Matches<'pat, Pe64>> {
+impl<'a, 'pat, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::ScannerMatches<'pat, Pe32>, pe64::ScannerMatches<'pat, Pe64>> {
 	/// Gets the scanner instance.
 	#[inline]
-	pub fn scanner(&self) -> Wrap<pe32::scanner::Scanner<Pe32>, pe64::scanner::Scanner<Pe64>> {
+	pub fn scanner(&self) -> Wrap<pe32::Scanner<Pe32>, pe64::Scanner<Pe64>> {
 		match self {
 			Wrap::T32(matches) => Wrap::T32(matches.scanner()),
 			Wrap::T64(matches) => Wrap::T64(matches.scanner()),

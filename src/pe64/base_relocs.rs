@@ -1,8 +1,4 @@
-use crate::base_relocs::BaseRelocs;
-use crate::{Error, Result};
-
-use super::image::*;
-use super::Pe;
+use super::*;
 
 pub(crate) fn try_from<'a, P: Pe<'a>>(pe: P) -> Result<BaseRelocs<'a>> {
 	let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_BASERELOC).ok_or(Error::Bounds)?;
@@ -12,7 +8,7 @@ pub(crate) fn try_from<'a, P: Pe<'a>>(pe: P) -> Result<BaseRelocs<'a>> {
 }
 
 #[cfg(test)]
-pub(crate) fn test<'a, P: Pe<'a>>(pe: P) -> Result<()> {
+pub(crate) fn test_base_relocs<'a, P: Pe<'a>>(pe: P) -> Result<()> {
 	let base_relocs = pe.base_relocs()?;
 	let _ = format!("{:?}", base_relocs);
 

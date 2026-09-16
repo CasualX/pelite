@@ -115,6 +115,18 @@ fn image_base() {
 ```
 */
 
+use alloc::{vec, vec::Vec};
+use core::{cmp, fmt, hash, iter, mem, ops, slice, str};
+use core::{marker::*, ops::*};
+use core::ptr as raw_ptr;
+
+use crate::pattern as pat;
+use crate::{base_relocs::*, security::*, util::*};
+use crate::{Error, Pod, Result};
+
+use self::image::*;
+use self::pe::{optional_header, validate_headers};
+
 #[macro_use]
 mod macros;
 
@@ -123,43 +135,50 @@ pub mod image;
 // I love Rust <3
 
 #[path = "../pe64/base_relocs.rs"]
-pub(crate) mod base_relocs;
+mod base_relocs;
 #[path = "../pe64/debug.rs"]
-pub mod debug;
+mod debug;
 #[path = "../pe64/exports.rs"]
-pub mod exports;
+mod exports;
 #[path = "../pe64/file.rs"]
 mod file;
 #[path = "../pe64/headers.rs"]
-pub mod headers;
+mod headers;
 #[path = "../pe64/imports.rs"]
-pub mod imports;
+mod imports;
 #[path = "../pe64/load_config.rs"]
-pub mod load_config;
+mod load_config;
 #[path = "../pe64/pe.rs"]
 mod pe;
 #[path = "../pe64/ptr.rs"]
 mod ptr;
 #[path = "../pe64/resources.rs"]
-pub mod resources;
+mod resources;
 #[path = "../pe64/rich_structure.rs"]
-pub(crate) mod rich_structure;
+mod rich_structure;
 #[path = "../pe64/scanner.rs"]
-pub mod scanner;
+mod scanner;
 #[path = "../pe64/security.rs"]
-pub(crate) mod security;
+mod security;
 #[path = "../pe64/tls.rs"]
-pub mod tls;
+mod tls;
 #[path = "../pe64/view.rs"]
 mod view;
 
-pub mod msvc;
+mod msvc;
 
-pub use self::file::PeFile;
+pub use self::debug::*;
+pub use self::exports::*;
+pub use self::file::*;
+pub use self::headers::*;
 pub use self::image::{Rva, Va};
-pub use self::pe::{Align, Pe, PeObject};
-pub use self::ptr::Ptr;
-pub use self::view::PeView;
+pub use self::imports::*;
+pub use self::load_config::*;
+pub use self::pe::*;
+pub use self::ptr::*;
+pub use self::scanner::*;
+pub use self::tls::*;
+pub use self::view::*;
 
-#[cfg(feature = "unstable")]
-pub use self::pe::headers_mut;
+#[cfg(test)]
+pub(crate) use self::{base_relocs::*, resources::*, rich_structure::*, security::*};

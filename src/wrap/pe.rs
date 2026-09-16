@@ -182,7 +182,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 	//----------------------------------------------------------------
 
 	#[inline]
-	pub fn headers(&self) -> Wrap<pe32::headers::Headers<Pe32>, pe64::headers::Headers<Pe64>> {
+	pub fn headers(&self) -> Wrap<pe32::Headers<Pe32>, pe64::Headers<Pe64>> {
 		match self {
 			Wrap::T32(pe32) => Wrap::T32(pe32.headers()),
 			Wrap::T64(pe64) => Wrap::T64(pe64.headers()),
@@ -196,21 +196,21 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 		}
 	}
 	#[inline]
-	pub fn exports(&self) -> Result<Wrap<pe32::exports::Exports<'a, Pe32>, pe64::exports::Exports<'a, Pe64>>> {
+	pub fn exports(&self) -> Result<Wrap<pe32::ExportDirectory<'a, Pe32>, pe64::ExportDirectory<'a, Pe64>>> {
 		match self {
 			Wrap::T32(pe32) => pe32.exports().map(Wrap::T32),
 			Wrap::T64(pe64) => pe64.exports().map(Wrap::T64),
 		}
 	}
 	#[inline]
-	pub fn imports(&self) -> Result<Wrap<pe32::imports::Imports<'a, Pe32>, pe64::imports::Imports<'a, Pe64>>> {
+	pub fn imports(&self) -> Result<Wrap<pe32::ImportDirectory<'a, Pe32>, pe64::ImportDirectory<'a, Pe64>>> {
 		match self {
 			Wrap::T32(pe32) => pe32.imports().map(Wrap::T32),
 			Wrap::T64(pe64) => pe64.imports().map(Wrap::T64),
 		}
 	}
 	#[inline]
-	pub fn iat(&self) -> Result<Wrap<pe32::imports::IAT<'a, Pe32>, pe64::imports::IAT<'a, Pe64>>> {
+	pub fn iat(&self) -> Result<Wrap<pe32::ImportAddressTable<'a, Pe32>, pe64::ImportAddressTable<'a, Pe64>>> {
 		match self {
 			Wrap::T32(pe32) => pe32.iat().map(Wrap::T32),
 			Wrap::T64(pe64) => pe64.iat().map(Wrap::T64),
@@ -224,14 +224,14 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 		}
 	}
 	#[inline]
-	pub fn load_config(&self) -> Result<Wrap<pe32::load_config::LoadConfig<'a, Pe32>, pe64::load_config::LoadConfig<'a, Pe64>>> {
+	pub fn load_config(&self) -> Result<Wrap<pe32::LoadConfigDirectory<'a, Pe32>, pe64::LoadConfigDirectory<'a, Pe64>>> {
 		match self {
 			Wrap::T32(pe32) => pe32.load_config().map(Wrap::T32),
 			Wrap::T64(pe64) => pe64.load_config().map(Wrap::T64),
 		}
 	}
 	#[inline]
-	pub fn tls(&self) -> Result<Wrap<pe32::tls::Tls<'a, Pe32>, pe64::tls::Tls<'a, Pe64>>> {
+	pub fn tls(&self) -> Result<Wrap<pe32::TlsDirectory<'a, Pe32>, pe64::TlsDirectory<'a, Pe64>>> {
 		match self {
 			Wrap::T32(pe32) => pe32.tls().map(Wrap::T32),
 			Wrap::T64(pe64) => pe64.tls().map(Wrap::T64),
@@ -245,7 +245,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 		}
 	}
 	#[inline]
-	pub fn debug(&self) -> Result<Wrap<pe32::debug::Debug<'a, Pe32>, pe64::debug::Debug<'a, Pe64>>> {
+	pub fn debug(&self) -> Result<Wrap<pe32::DebugDirectory<'a, Pe32>, pe64::DebugDirectory<'a, Pe64>>> {
 		match self {
 			Wrap::T32(pe32) => pe32.debug().map(Wrap::T32),
 			Wrap::T64(pe64) => pe64.debug().map(Wrap::T64),
@@ -259,7 +259,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 		}
 	}
 	#[inline]
-	pub fn scanner(&self) -> Wrap<pe32::scanner::Scanner<Pe32>, pe64::scanner::Scanner<Pe64>> {
+	pub fn scanner(&self) -> Wrap<pe32::Scanner<Pe32>, pe64::Scanner<Pe64>> {
 		match self {
 			Wrap::T32(pe32) => Wrap::T32(pe32.scanner()),
 			Wrap::T64(pe64) => Wrap::T64(pe64.scanner()),

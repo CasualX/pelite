@@ -11,8 +11,7 @@ cargo run --bin msrtti -- "demo/Demo.dll" > demo/demo-rtti.txt
 use std::env;
 use std::process::exit;
 
-use pelite::pe32::image::{Rva, Va};
-use pelite::pe32::msvc::*;
+use pelite::pe32::image::{RTTIClassHierarchyDescriptor, RTTICompleteObjectLocator, Rva, TypeDescriptor, Va};
 use pelite::pe32::{Pe, PeFile, Ptr};
 use pelite::FileMap;
 

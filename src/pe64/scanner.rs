@@ -1,5 +1,12 @@
-/*!
-Pattern Scanner.
+use super::*;
+
+/// Size of the prefix buffer for search optimization.
+const QS_BUF_LEN: usize = 16;
+
+//----------------------------------------------------------------
+
+/**
+Pattern scanner.
 
 See the [`pattern`][mod@crate::pattern] module for more information about patterns.
 
@@ -7,47 +14,30 @@ See the [`pattern`][mod@crate::pattern] module for more information about patter
 
 ```
 # #![allow(unused_variables)]
-use pelite::pe64::{Pe, PeFile};
 use pelite::pattern as pat;
+use pelite::pe64::{Pe, PeFile};
 
 # #[allow(dead_code)]
-fn example(file: PeFile<'_>, pat: &[pat::Atom]) {
-	// Gets the pattern scanner interface
+fn example(file: PeFile<'_>, pattern: &[pat::Atom]) {
+	// Get the pattern scanner interface
 	let scanner = file.scanner();
 
-	// Capture references in the pattern in a save array
+	// Captured references from the pattern are written into this array
 	let mut save = [0; 8];
 
-	// Finds a singular code match
-	if scanner.finds_code(pat, &mut save) {
+	// Find a unique match in the code range
+	if scanner.finds_code(pattern, &mut save) {
 		println!("{:x?}", save);
 	}
 
-	// Finds all the code matches for the pattern
-	let mut matches = scanner.matches_code(pat);
+	// Find all matches in the code range
+	let mut matches = scanner.matches_code(pattern);
 	while matches.next(&mut save) {
 		println!("{:x?}", save);
 	}
 }
 ```
 */
-
-use core::ops::Range;
-use core::{cmp, mem, ptr};
-
-use crate::util::AlignTo;
-use crate::{pattern as pat, Pod};
-
-use super::{image::*, Align, Pe, Rva};
-
-/// Size of the prefix buffer for search optimization.
-const QS_BUF_LEN: usize = 16;
-
-//----------------------------------------------------------------
-
-/// Pattern scanner.
-///
-/// For more information see the [module-level documentation][self].
 #[derive(Copy, Clone)]
 pub struct Scanner<P> {
 	pe: P,
@@ -69,7 +59,7 @@ impl<'a, P: Pe<'a>> Scanner<P> {
 	/// After checking uniqueness, the pattern is reexecutes at the known match RVA to restore the save array.
 	///
 	/// Use `matches(pat, range).next(save)` if just the first match is desired.
-	pub fn finds(&self, pat: &[pat::Atom], range: Range<Rva>, save: &mut [Rva]) -> bool {
+	pub fn finds(&self, pat: &[pat::Atom], range: ops::Range<Rva>, save: &mut [Rva]) -> bool {
 		let mut matches = self.matches(pat, range);
 		if !matches.next(save) {
 			return false;
@@ -89,13 +79,13 @@ impl<'a, P: Pe<'a>> Scanner<P> {
 		self.finds(pat, self.pe.headers().code_range(), save)
 	}
 	/// Returns an iterator over the matches of a pattern within the given range.
-	pub fn matches<'pat>(&self, pat: &'pat [pat::Atom], range: Range<Rva>) -> Matches<'pat, P> {
-		Matches { scanner: *self, pat, range, hits: 0, matched: !0 }
+	pub fn matches<'pat>(&self, pat: &'pat [pat::Atom], range: ops::Range<Rva>) -> ScannerMatches<'pat, P> {
+		ScannerMatches { scanner: *self, pat, range, hits: 0, matched: !0 }
 	}
 	/// Returns an iterator over the code matches of a pattern.
 	///
 	/// Restricts the range to the code section. See [`matches`](#matches) for more information.
-	pub fn matches_code<'pat>(&self, pat: &'pat [pat::Atom]) -> Matches<'pat, P> {
+	pub fn matches_code<'pat>(&self, pat: &'pat [pat::Atom]) -> ScannerMatches<'pat, P> {
 		self.matches(pat, self.pe.headers().code_range())
 	}
 	/// Pattern interpreter, returns if the pattern matches the binary image at the given rva.
@@ -140,7 +130,7 @@ impl<'a> Scan<'a> for &'a [u8] {
 	fn read<T: Copy + Pod>(self, rva: Rva) -> Option<T> {
 		let bytes = self.get(rva as usize..(rva as usize + mem::size_of::<T>()))?;
 		let ptr = bytes.as_ptr() as *const T;
-		Some(unsafe { ptr::read_unaligned(ptr) })
+		Some(unsafe { raw_ptr::read_unaligned(ptr) })
 	}
 	fn pointer(self, va: Va) -> Option<Rva> {
 		Some(va as Rva)
@@ -417,15 +407,15 @@ impl<'a, 'pat, P: Scan<'a>> Exec<'pat, P> {
 ///
 /// Created with the method [`Scanner::matches`].
 #[derive(Clone)]
-pub struct Matches<'pat, P> {
+pub struct ScannerMatches<'pat, P> {
 	scanner: Scanner<P>,
 	pat: &'pat [pat::Atom],
-	range: Range<Rva>,
+	range: ops::Range<Rva>,
 	hits: u32,
 	matched: Rva,
 }
 
-impl<'a, 'pat, P: Pe<'a>> Matches<'pat, P> {
+impl<'a, 'pat, P: Pe<'a>> ScannerMatches<'pat, P> {
 	/// Gets the scanner instance.
 	pub fn scanner(&self) -> Scanner<P> {
 		self.scanner
@@ -435,7 +425,7 @@ impl<'a, 'pat, P: Pe<'a>> Matches<'pat, P> {
 		self.pat
 	}
 	/// Gets the remaining range to scan.
-	pub fn range(&self) -> Range<Rva> {
+	pub fn range(&self) -> ops::Range<Rva> {
 		self.range.clone()
 	}
 	/// Performance counter.
@@ -609,7 +599,7 @@ impl<'a, 'pat, P: Pe<'a>> Matches<'pat, P> {
 //----------------------------------------------------------------
 
 #[cfg(test)]
-pub(crate) fn test<'a, P: Pe<'a>>(pe: P) -> crate::Result<()> {
+pub(crate) fn test_scanner<'a, P: Pe<'a>>(pe: P) -> crate::Result<()> {
 	use crate::pattern::Atom::*;
 	let scanner = pe.scanner();
 	let mut save = [0; 4];

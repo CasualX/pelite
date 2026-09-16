@@ -1,5 +1,8 @@
 #[cfg(test)]
-pub(crate) fn test<'a, P: super::Pe<'a>>(pe: P) -> crate::Result<()> {
+use super::*;
+
+#[cfg(test)]
+pub(crate) fn test_rich_structure<'a, P: Pe<'a>>(pe: P) -> Result<()> {
 	let rich_structure = pe.rich_structure()?;
 	let _checksum = rich_structure.checksum();
 

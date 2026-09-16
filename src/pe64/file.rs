@@ -2,15 +2,7 @@
 PE file.
 */
 
-use alloc::{vec, vec::Vec};
-
-use core::cmp;
-
-use crate::util::AlignTo;
-use crate::Result;
-
-use super::pe::validate_headers;
-use super::{Align, Pe, PeObject};
+use super::*;
 
 /// View into an unmapped PE file.
 #[derive(Copy, Clone)]

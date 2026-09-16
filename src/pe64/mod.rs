@@ -115,35 +115,55 @@ fn image_base() {
 ```
 */
 
+use alloc::{vec, vec::Vec};
+use core::{cmp, fmt, hash, iter, mem, ops, slice, str};
+use core::ptr as raw_ptr;
+
+use crate::pattern as pat;
+use crate::{base_relocs::*, security::*, util::*};
+use crate::{Error, Pod, Result};
+
+use self::image::*;
+use self::pe::{optional_header, validate_headers};
+
 #[macro_use]
 mod macros;
 
 pub mod image;
 
-pub(crate) mod base_relocs;
-pub mod debug;
-pub mod exception_arm64;
-pub mod exception_x64;
-pub mod exports;
+mod base_relocs;
+mod debug;
+mod exception_arm64;
+mod exception_x64;
+mod exports;
 mod file;
-pub mod headers;
-pub mod imports;
-pub mod load_config;
-pub mod msvc;
+mod headers;
+mod imports;
+mod load_config;
+mod msvc;
 mod pe;
 mod ptr;
-pub mod resources;
-pub(crate) mod rich_structure;
-pub mod scanner;
-pub(crate) mod security;
-pub mod tls;
+mod resources;
+mod rich_structure;
+mod scanner;
+mod security;
+mod tls;
 mod view;
 
-pub use self::file::PeFile;
+pub use self::debug::*;
+pub use self::exception_arm64::*;
+pub use self::exception_x64::*;
+pub use self::exports::*;
+pub use self::file::*;
+pub use self::headers::*;
 pub use self::image::{Rva, Va};
-pub use self::pe::{Align, Pe, PeObject};
-pub use self::ptr::Ptr;
-pub use self::view::PeView;
+pub use self::imports::*;
+pub use self::load_config::*;
+pub use self::pe::*;
+pub use self::ptr::*;
+pub use self::scanner::*;
+pub use self::tls::*;
+pub use self::view::*;
 
-#[cfg(feature = "unstable")]
-pub use self::pe::headers_mut;
+#[cfg(test)]
+pub(crate) use self::{base_relocs::*, resources::*, rich_structure::*, security::*};

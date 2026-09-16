@@ -32,7 +32,7 @@ impl<'a> Export<'a> {
 }
 
 /// Export directory.
-impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::exports::Exports<'a, Pe32>, pe64::exports::Exports<'a, Pe64>> {
+impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::ExportDirectory<'a, Pe32>, pe64::ExportDirectory<'a, Pe64>> {
 	/// Gets the PE instance.
 	#[inline]
 	pub fn pe(&self) -> Wrap<Pe32, Pe64> {
@@ -91,7 +91,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::exports::Exports<'a,
 	}
 	/// Query the exports.
 	#[inline]
-	pub fn by(&self) -> Result<Wrap<pe32::exports::By<'a, Pe32>, pe64::exports::By<'a, Pe64>>> {
+	pub fn by(&self) -> Result<Wrap<pe32::ExportBy<'a, Pe32>, pe64::ExportBy<'a, Pe64>>> {
 		match self {
 			Wrap::T32(exports) => Wrap::T32(exports.by()).transpose(),
 			Wrap::T64(exports) => Wrap::T64(exports.by()).transpose(),
@@ -100,7 +100,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::exports::Exports<'a,
 }
 
 /// Export directory symbol lookup.
-impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::exports::By<'a, Pe32>, pe64::exports::By<'a, Pe64>> {
+impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::ExportBy<'a, Pe32>, pe64::ExportBy<'a, Pe64>> {
 	/// Gets the PE instance.
 	#[inline]
 	pub fn pe(&self) -> Wrap<Pe32, Pe64> {
@@ -266,8 +266,8 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 	/// Convenient method to get an exported function by ordinal.
 	#[inline]
 	pub fn get_export_by_ordinal(&self, ordinal: u16) -> Result<Export<'a>> {
-		use pe32::exports::GetProcAddress as _;
-		use pe64::exports::GetProcAddress as _;
+		use pe32::GetProcAddress as _;
+		use pe64::GetProcAddress as _;
 		match self {
 			Wrap::T32(pe32) => pe32.get_export(ordinal),
 			Wrap::T64(pe64) => pe64.get_export(ordinal),
@@ -276,8 +276,8 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 	/// Convenient method to get an exported function by import.
 	#[inline]
 	pub fn get_export_by_import(&self, import: Import<'a>) -> Result<Export<'a>> {
-		use pe32::exports::GetProcAddress as _;
-		use pe64::exports::GetProcAddress as _;
+		use pe32::GetProcAddress as _;
+		use pe64::GetProcAddress as _;
 		match self {
 			Wrap::T32(pe32) => pe32.get_export(import),
 			Wrap::T64(pe64) => pe64.get_export(import),
@@ -286,8 +286,8 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 	/// Convenient method to get an exported function by name.
 	#[inline]
 	pub fn get_export_by_name<S: ?Sized + AsRef<[u8]>>(&self, name: &S) -> Result<Export<'a>> {
-		use pe32::exports::GetProcAddress as _;
-		use pe64::exports::GetProcAddress as _;
+		use pe32::GetProcAddress as _;
+		use pe64::GetProcAddress as _;
 		match self {
 			Wrap::T32(pe32) => pe32.get_export(name),
 			Wrap::T64(pe64) => pe64.get_export(name),

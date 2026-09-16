@@ -1,53 +1,4 @@
-/*!
-Import Directory and the IAT.
-
-The import directory lists all the module dependencies and their imported symbols by this module.
-
-The Import Address Table (IAT) lists all the imported symbols for all the modules in one big list.
-When the imports are resolved the IAT is overwritten with pointers to the resolved functions.
-
-# Examples
-
-```
-# #![allow(unused_variables)]
-use pelite::pe64::{Pe, PeFile};
-
-# #[allow(dead_code)]
-fn example(file: PeFile<'_>) -> pelite::Result<()> {
-	// Access the import directory
-	let imports = file.imports()?;
-
-	// Iterate over the import descriptors
-	for desc in imports {
-		// DLL being imported from
-		let dll_name = desc.dll_name()?;
-
-		// Import Address Table and Import Name Table for this imported DLL
-		let iat = desc.iat()?;
-		let int = desc.int()?;
-
-		// Iterate over the imported functions from this DLL
-		for (va, import) in Iterator::zip(iat, int) {}
-	}
-
-	// Iterate over the IAT
-	for (va, import) in file.iat()?.iter() {
-		// The IAT may contains Null entries where the IAT of imported modules join
-		if let Ok(import) = import {}
-	}
-
-	Ok(())
-}
-```
-*/
-
-use core::{fmt, iter, mem, slice};
-
-use crate::util::CStr;
-use crate::{Error, Result};
-
-use super::image::*;
-use super::Pe;
+use super::*;
 
 //----------------------------------------------------------------
 
@@ -74,19 +25,56 @@ fn import_from_va<'a, P: Pe<'a>>(pe: P, &va: &'a Va) -> Result<Import<'a>> {
 
 //----------------------------------------------------------------
 
-/// Import directory.
-///
-/// For more information see the [module-level documentation][self].
+/**
+Import directory.
+
+The import directory lists an image's module dependencies and the symbols
+imported from each one. Each [`ImportDescriptor`] represents one dependency.
+
+The separate [`ImportAddressTable`] provides one combined view of the imported
+symbols. The loader overwrites that table with resolved function pointers.
+
+# Examples
+
+```
+# #![allow(unused_variables)]
+use pelite::pe64::{Pe, PeFile};
+
+# #[allow(dead_code)]
+fn example(file: PeFile<'_>) -> pelite::Result<()> {
+	// Access the import directory and iterate over its DLL descriptors
+	for descriptor in file.imports()? {
+		// Name of the DLL being imported from
+		let dll_name = descriptor.dll_name()?;
+
+		// Import Address Table and Import Name Table for this DLL
+		let addresses = descriptor.iat()?;
+		let names = descriptor.int()?;
+
+		// Pair each address-table slot with its imported symbol
+		for (address, import) in Iterator::zip(addresses, names) {}
+	}
+
+	// Alternatively, iterate over the combined Import Address Table
+	for (address, import) in file.iat()?.iter() {
+		// Null entries can occur where the tables of imported DLLs join
+		if let Ok(import) = import {}
+	}
+
+	Ok(())
+}
+```
+*/
 #[derive(Copy, Clone)]
-pub struct Imports<'a, P> {
+pub struct ImportDirectory<'a, P> {
 	pe: P,
 	image: &'a [IMAGE_IMPORT_DESCRIPTOR],
 }
-impl<'a, P: Pe<'a>> Imports<'a, P> {
-	pub(crate) fn try_from(pe: P) -> Result<Imports<'a, P>> {
+impl<'a, P: Pe<'a>> ImportDirectory<'a, P> {
+	pub(crate) fn try_from(pe: P) -> Result<ImportDirectory<'a, P>> {
 		let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_IMPORT).ok_or(Error::Bounds)?;
 		let image = pe.derva_slice_f(datadir.VirtualAddress, |image: &IMAGE_IMPORT_DESCRIPTOR| image.is_null())?;
-		Ok(Imports { pe, image })
+		Ok(ImportDirectory { pe, image })
 	}
 	/// Gets the PE instance.
 	pub fn pe(&self) -> P {
@@ -97,22 +85,22 @@ impl<'a, P: Pe<'a>> Imports<'a, P> {
 		self.image
 	}
 	/// Iterator over the import descriptors.
-	pub fn iter(&self) -> Iter<'a, P> {
-		Iter { pe: self.pe, iter: self.image.iter() }
+	pub fn iter(&self) -> ImportDescriptorIter<'a, P> {
+		ImportDescriptorIter { pe: self.pe, iter: self.image.iter() }
 	}
 }
-impl<'a, P: Pe<'a>> IntoIterator for Imports<'a, P> {
-	type Item = Desc<'a, P>;
-	type IntoIter = Iter<'a, P>;
-	fn into_iter(self) -> Iter<'a, P> {
+impl<'a, P: Pe<'a>> IntoIterator for ImportDirectory<'a, P> {
+	type Item = ImportDescriptor<'a, P>;
+	type IntoIter = ImportDescriptorIter<'a, P>;
+	fn into_iter(self) -> ImportDescriptorIter<'a, P> {
 		self.iter()
 	}
 }
 #[rustfmt::skip]
-impl<'a, P: Pe<'a>> fmt::Debug for Imports<'a, P> {
+impl<'a, P: Pe<'a>> fmt::Debug for ImportDirectory<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		f.debug_list()
-			.entries(self.into_iter())
+		f.debug_struct("ImportDirectory")
+			.field("descriptors", &crate::util::DebugList(self.iter()))
 			.finish()
 	}
 }
@@ -120,19 +108,17 @@ impl<'a, P: Pe<'a>> fmt::Debug for Imports<'a, P> {
 //----------------------------------------------------------------
 
 /// Import Address Table.
-///
-/// For more information see the [module-level documentation][self].
 #[derive(Copy, Clone)]
-pub struct IAT<'a, P> {
+pub struct ImportAddressTable<'a, P> {
 	pe: P,
 	image: &'a [Va],
 }
-impl<'a, P: Pe<'a>> IAT<'a, P> {
-	pub(crate) fn try_from(pe: P) -> Result<IAT<'a, P>> {
+impl<'a, P: Pe<'a>> ImportAddressTable<'a, P> {
+	pub(crate) fn try_from(pe: P) -> Result<ImportAddressTable<'a, P>> {
 		let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_IAT).ok_or(Error::Bounds)?;
 		// Ignore datadir.Size not being a multiple of sizeof(Va), not that big of a deal...
 		let image = pe.derva_slice(datadir.VirtualAddress, datadir.Size as usize / mem::size_of::<Va>())?;
-		Ok(IAT { pe, image })
+		Ok(ImportAddressTable { pe, image })
 	}
 	/// Gets the PE instance.
 	pub fn pe(&self) -> P {
@@ -151,9 +137,9 @@ impl<'a, P: Pe<'a>> IAT<'a, P> {
 	}
 }
 #[rustfmt::skip]
-impl<'a, P: Pe<'a>> fmt::Debug for IAT<'a, P> {
+impl<'a, P: Pe<'a>> fmt::Debug for ImportAddressTable<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		f.debug_struct("IAT")
+		f.debug_struct("ImportAddressTable")
 			.field("iat.len", &self.image.len())
 			.finish()
 	}
@@ -161,20 +147,22 @@ impl<'a, P: Pe<'a>> fmt::Debug for IAT<'a, P> {
 
 //----------------------------------------------------------------
 
+/// Iterator over the descriptors in an import directory.
 #[derive(Clone)]
-pub struct Iter<'a, P> {
+pub struct ImportDescriptorIter<'a, P> {
 	pe: P,
 	iter: slice::Iter<'a, IMAGE_IMPORT_DESCRIPTOR>,
 }
-impl<'a, P: Pe<'a>> Iter<'a, P> {
+impl<'a, P: Pe<'a>> ImportDescriptorIter<'a, P> {
+	/// Returns the unconsumed import descriptor records.
 	pub fn image(&self) -> &'a [IMAGE_IMPORT_DESCRIPTOR] {
 		self.iter.as_slice()
 	}
 }
-impl<'a, P: Pe<'a>> Iterator for Iter<'a, P> {
-	type Item = Desc<'a, P>;
-	fn next(&mut self) -> Option<Desc<'a, P>> {
-		self.iter.next().map(|image| Desc { pe: self.pe, image })
+impl<'a, P: Pe<'a>> Iterator for ImportDescriptorIter<'a, P> {
+	type Item = ImportDescriptor<'a, P>;
+	fn next(&mut self) -> Option<ImportDescriptor<'a, P>> {
+		self.iter.next().map(|image| ImportDescriptor { pe: self.pe, image })
 	}
 	fn size_hint(&self) -> (usize, Option<usize>) {
 		self.iter.size_hint()
@@ -182,27 +170,27 @@ impl<'a, P: Pe<'a>> Iterator for Iter<'a, P> {
 	fn count(self) -> usize {
 		self.iter.count()
 	}
-	fn nth(&mut self, n: usize) -> Option<Desc<'a, P>> {
-		self.iter.nth(n).map(|image| Desc { pe: self.pe, image })
+	fn nth(&mut self, n: usize) -> Option<ImportDescriptor<'a, P>> {
+		self.iter.nth(n).map(|image| ImportDescriptor { pe: self.pe, image })
 	}
 }
-impl<'a, P: Pe<'a>> DoubleEndedIterator for Iter<'a, P> {
-	fn next_back(&mut self) -> Option<Desc<'a, P>> {
-		self.iter.next_back().map(|image| Desc { pe: self.pe, image })
+impl<'a, P: Pe<'a>> DoubleEndedIterator for ImportDescriptorIter<'a, P> {
+	fn next_back(&mut self) -> Option<ImportDescriptor<'a, P>> {
+		self.iter.next_back().map(|image| ImportDescriptor { pe: self.pe, image })
 	}
 }
-impl<'a, P: Pe<'a>> ExactSizeIterator for Iter<'a, P> {}
-impl<'a, P: Pe<'a>> iter::FusedIterator for Iter<'a, P> {}
+impl<'a, P: Pe<'a>> ExactSizeIterator for ImportDescriptorIter<'a, P> {}
+impl<'a, P: Pe<'a>> iter::FusedIterator for ImportDescriptorIter<'a, P> {}
 
 //----------------------------------------------------------------
 
 /// Import library descriptor.
 #[derive(Copy, Clone)]
-pub struct Desc<'a, P> {
+pub struct ImportDescriptor<'a, P> {
 	pe: P,
 	image: &'a IMAGE_IMPORT_DESCRIPTOR,
 }
-impl<'a, P: Pe<'a>> Desc<'a, P> {
+impl<'a, P: Pe<'a>> ImportDescriptor<'a, P> {
 	/// Gets the PE instance.
 	pub fn pe(&self) -> P {
 		self.pe
@@ -220,7 +208,7 @@ impl<'a, P: Pe<'a>> Desc<'a, P> {
 	/// After being loaded as a library their values are resolved to the addresses of the imported functions.
 	///
 	/// Otherwise these contain references to the imported functions.
-	/// See [`Desc::int`] to get their names.
+	/// See [`ImportDescriptor::int`] to get their names.
 	pub fn iat(&self) -> Result<slice::Iter<'a, Va>> {
 		let slice = self.pe.derva_slice_s(self.image.FirstThunk.get(), 0)?;
 		Ok(slice.iter())
@@ -233,9 +221,9 @@ impl<'a, P: Pe<'a>> Desc<'a, P> {
 	}
 }
 #[rustfmt::skip]
-impl<'a, P: Pe<'a>> fmt::Debug for Desc<'a, P> {
+impl<'a, P: Pe<'a>> fmt::Debug for ImportDescriptor<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		f.debug_struct("Imports")
+		f.debug_struct("ImportDescriptor")
 			.field("dll_name", &format_args!("{:?}", self.dll_name()))
 			.field("iat.len", &format_args!("{:?}", &self.iat().map(|iter| iter.len())))
 			.field("int.len", &format_args!("{:?}", &self.int().map(|iter| iter.len())))
@@ -265,22 +253,22 @@ impl<'a, P: Pe<'a>> fmt::Debug for Desc<'a, P> {
 mod serde {
 	use crate::util::serde_helper::*;
 
-	use super::{Desc, Imports, Pe, IAT};
+	use super::{ImportDescriptor, ImportDirectory, Pe, ImportAddressTable};
 
-	impl<'a, P: Pe<'a>> Serialize for Imports<'a, P> {
+	impl<'a, P: Pe<'a>> Serialize for ImportDirectory<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			serializer.collect_seq(self.into_iter())
 		}
 	}
-	impl<'a, P: Pe<'a>> Serialize for IAT<'a, P> {
+	impl<'a, P: Pe<'a>> Serialize for ImportAddressTable<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			let iat = self.iter().filter_map(|(_va, import)| import.ok());
 			serializer.collect_seq(iat)
 		}
 	}
-	impl<'a, P: Pe<'a>> Serialize for Desc<'a, P> {
+	impl<'a, P: Pe<'a>> Serialize for ImportDescriptor<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-			let mut state = serializer.serialize_struct("Desc", 2)?;
+			let mut state = serializer.serialize_struct("ImportDescriptor", 2)?;
 			state.serialize_field("dll_name", &self.dll_name().ok())?;
 			let int = self.int().map(|int| SerdeIter(int.filter_map(|import| import.ok())));
 			state.serialize_field("int", &int.ok())?;
@@ -292,7 +280,7 @@ mod serde {
 //----------------------------------------------------------------
 
 #[cfg(test)]
-pub(crate) fn test<'a, P: Pe<'a>>(pe: P) -> Result<()> {
+pub(crate) fn test_imports<'a, P: Pe<'a>>(pe: P) -> Result<()> {
 	let imports = pe.imports()?;
 	let _ = format!("{:?}", imports);
 
