@@ -1,15 +1,4 @@
-/*!
-Rich Structure.
- */
-
-// References:
-//
-// * https://github.com/dishather/richprint
-// * https://ntcore.com/?p=27
-// * https://securelist.com/the-devils-in-the-rich-header/84348/
-// * http://bytepointer.com/articles/the_microsoft_rich_header.htm
-// * http://bytepointer.com/articles/rich_header_lifewire_vxmags_29A-8.009.htm
-// * https://pdfs.semanticscholar.org/44ad/fa896e6598b1723507060126125a0cad39a1.pdf
+//! Rich structure parsing and encoding.
 
 use core::{fmt, iter, mem, result};
 
@@ -27,6 +16,15 @@ const DANS_MARKER: u32 = 0x536e6144; // "DanS"
 const RICH_MARKER: u32 = 0x68636952; // "Rich"
 
 /// Rich structure.
+///
+/// References:
+///
+/// * <https://github.com/dishather/richprint>
+/// * <https://ntcore.com/?p=27>
+/// * <https://securelist.com/the-devils-in-the-rich-header/84348/>
+/// * <http://bytepointer.com/articles/the_microsoft_rich_header.htm>
+/// * <http://bytepointer.com/articles/rich_header_lifewire_vxmags_29A-8.009.htm>
+/// * <https://pdfs.semanticscholar.org/44ad/fa896e6598b1723507060126125a0cad39a1.pdf>
 #[derive(Copy, Clone)]
 pub struct RichStructure<'a> {
 	dos_stub: &'a [u32],

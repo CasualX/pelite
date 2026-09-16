@@ -1,33 +1,31 @@
 use super::*;
 
-/**
-Load Config Directory.
-
-# Examples
-
-```
-# #![allow(unused_variables)]
-use pelite::pe64::{image, Pe, PeFile};
-
-# #[allow(dead_code)]
-fn example(file: PeFile<'_>) -> pelite::Result<()> {
-	// Access the load config directory and its basic metadata
-	let load_config = file.load_config()?;
-	let size = load_config.size();
-	let time_date_stamp = load_config.time_date_stamp();
-	let version = load_config.version();
-
-	// Read a field which is only present in newer directory revisions
-	let guard_flags = load_config.get(image::IMAGE_LOAD_CONFIG_DIRECTORY::GUARD_FLAGS);
-
-	// Access security-related fields when present
-	let security_cookie = load_config.security_cookie()?;
-	let se_handler_table = load_config.se_handler_table()?;
-
-	Ok(())
-}
-```
-*/
+/// Load Config Directory.
+///
+/// # Examples
+///
+/// ```
+/// # #![allow(unused_variables)]
+/// use pelite::pe64::{image, Pe, PeFile};
+///
+/// # #[allow(dead_code)]
+/// fn example(file: PeFile<'_>) -> pelite::Result<()> {
+/// 	// Access the load config directory and its basic metadata
+/// 	let load_config = file.load_config()?;
+/// 	let size = load_config.size();
+/// 	let time_date_stamp = load_config.time_date_stamp();
+/// 	let version = load_config.version();
+///
+/// 	// Read a field which is only present in newer directory revisions
+/// 	let guard_flags = load_config.get(image::IMAGE_LOAD_CONFIG_DIRECTORY::GUARD_FLAGS);
+///
+/// 	// Access security-related fields when present
+/// 	let security_cookie = load_config.security_cookie()?;
+/// 	let se_handler_table = load_config.se_handler_table()?;
+///
+/// 	Ok(())
+/// }
+/// ```
 #[derive(Copy, Clone)]
 pub struct LoadConfigDirectory<'a, P> {
 	pe: P,

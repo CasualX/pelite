@@ -2,29 +2,27 @@ use super::*;
 
 //----------------------------------------------------------------
 
-/**
-Debug directory.
-
-# Examples
-
-```
-# #![allow(unused_variables)]
-use pelite::pe64::{Pe, PeFile};
-
-# #[allow(dead_code)]
-fn example(file: PeFile<'_>) -> pelite::Result<()> {
-	// Access the debug directory
-	let debug = file.debug()?;
-
-	// Get the CodeView PDB file name
-	if let Some(pdb_file_name) = debug.pdb_file_name() {
-		println!("PDB: {}", pdb_file_name);
-	}
-
-	Ok(())
-}
-```
-*/
+/// Debug directory.
+///
+/// # Examples
+///
+/// ```
+/// # #![allow(unused_variables)]
+/// use pelite::pe64::{Pe, PeFile};
+///
+/// # #[allow(dead_code)]
+/// fn example(file: PeFile<'_>) -> pelite::Result<()> {
+/// 	// Access the debug directory
+/// 	let debug = file.debug()?;
+///
+/// 	// Get the CodeView PDB file name
+/// 	if let Some(pdb_file_name) = debug.pdb_file_name() {
+/// 		println!("PDB: {}", pdb_file_name);
+/// 	}
+///
+/// 	Ok(())
+/// }
+/// ```
 #[derive(Copy, Clone)]
 pub struct DebugDirectory<'a, P> {
 	pe: P,

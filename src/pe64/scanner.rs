@@ -5,39 +5,37 @@ const QS_BUF_LEN: usize = 16;
 
 //----------------------------------------------------------------
 
-/**
-Pattern scanner.
-
-See the [`pattern`][mod@crate::pattern] module for more information about patterns.
-
-# Examples
-
-```
-# #![allow(unused_variables)]
-use pelite::pattern as pat;
-use pelite::pe64::{Pe, PeFile};
-
-# #[allow(dead_code)]
-fn example(file: PeFile<'_>, pattern: &[pat::Atom]) {
-	// Get the pattern scanner interface
-	let scanner = file.scanner();
-
-	// Captured references from the pattern are written into this array
-	let mut save = [0; 8];
-
-	// Find a unique match in the code range
-	if scanner.finds_code(pattern, &mut save) {
-		println!("{:x?}", save);
-	}
-
-	// Find all matches in the code range
-	let mut matches = scanner.matches_code(pattern);
-	while matches.next(&mut save) {
-		println!("{:x?}", save);
-	}
-}
-```
-*/
+/// Pattern scanner.
+///
+/// See the [`pattern`][mod@crate::pattern] module for more information about patterns.
+///
+/// # Examples
+///
+/// ```
+/// # #![allow(unused_variables)]
+/// use pelite::pattern as pat;
+/// use pelite::pe64::{Pe, PeFile};
+///
+/// # #[allow(dead_code)]
+/// fn example(file: PeFile<'_>, pattern: &[pat::Atom]) {
+/// 	// Get the pattern scanner interface
+/// 	let scanner = file.scanner();
+///
+/// 	// Captured references from the pattern are written into this array
+/// 	let mut save = [0; 8];
+///
+/// 	// Find a unique match in the code range
+/// 	if scanner.finds_code(pattern, &mut save) {
+/// 		println!("{:x?}", save);
+/// 	}
+///
+/// 	// Find all matches in the code range
+/// 	let mut matches = scanner.matches_code(pattern);
+/// 	while matches.next(&mut save) {
+/// 		println!("{:x?}", save);
+/// 	}
+/// }
+/// ```
 #[derive(Copy, Clone)]
 pub struct Scanner<P> {
 	pe: P,

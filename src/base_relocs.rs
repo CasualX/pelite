@@ -1,33 +1,4 @@
-/*!
-Base Relocations Directory.
-
-The base relocations directory describes a list of addresses to pointer values within its module which need to be patched when the module is located at a different address than its preferred load address.
-When the module contains pointers to itself these pointers need to be fixed when the module is loaded at a different address than its preferred load address.
-
-For a quick and easy overview of how the base relocations are laid out, see this helpful [stackoverflow answer](https://stackoverflow.com/a/22513813).
-
-# Examples
-
-```
-# #![allow(unused_variables)]
-use pelite::pe64::{Pe, PeFile};
-
-# #[allow(dead_code)]
-fn example(file: PeFile<'_>) -> pelite::Result<()> {
-	// Access the base relocations
-	let base_relocs = file.base_relocs()?;
-
-	// Iterate over the rva which need relocation
-	// Padding relocations of type absolute are skipped
-	base_relocs.for_each(|rva, ty| {});
-
-	// Iterate over the relocation blocks
-	for block in base_relocs.iter_blocks() {}
-
-	Ok(())
-}
-```
- */
+//! Base relocation directory parsing and encoding.
 
 use alloc::vec::Vec;
 use core::{cmp, fmt, iter, mem, slice};
@@ -38,7 +9,32 @@ use crate::{Error, Result};
 
 /// Base Relocations Directory.
 ///
-/// For more information see the [module-level documentation][self].
+/// The base relocations directory describes a list of addresses to pointer values within its module which need to be patched when the module is located at a different address than its preferred load address.
+/// When the module contains pointers to itself these pointers need to be fixed when the module is loaded at a different address than its preferred load address.
+///
+/// For a quick and easy overview of how the base relocations are laid out, see this helpful [stackoverflow answer](https://stackoverflow.com/a/22513813).
+///
+/// # Examples
+///
+/// ```
+/// # #![allow(unused_variables)]
+/// use pelite::pe64::{Pe, PeFile};
+///
+/// # #[allow(dead_code)]
+/// fn example(file: PeFile<'_>) -> pelite::Result<()> {
+/// 	// Access the base relocations
+/// 	let base_relocs = file.base_relocs()?;
+///
+/// 	// Iterate over the rva which need relocation
+/// 	// Padding relocations of type absolute are skipped
+/// 	base_relocs.for_each(|rva, ty| {});
+///
+/// 	// Iterate over the relocation blocks
+/// 	for block in base_relocs.iter_blocks() {}
+///
+/// 	Ok(())
+/// }
+/// ```
 #[derive(Copy, Clone)]
 pub struct BaseRelocationDirectory<'a> {
 	relocs: &'a [u8],

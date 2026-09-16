@@ -7,60 +7,58 @@ pub use crate::Export;
 
 //----------------------------------------------------------------
 
-/**
-Export directory.
-
-The export directory contains the symbols exported by an image. A symbol can
-refer to a function, static data, or a forwarded export in another module.
-
-Symbols can be exported by name or ordinal. An exported function's ordinal is
-its index in the export address table plus the ordinal base.
-
-# Examples
-
-```
-# #![allow(unused_variables)]
-use pelite::pe64::{GetProcAddress, Pe, PeFile};
-
-# #[allow(dead_code)]
-fn example(file: PeFile<'_>) -> pelite::Result<()> {
-	// Most convenient way to get the address of an export
-	file.get_proc_address("ThrowException")?;
-
-	// Access the export directory
-	let exports = file.exports()?;
-
-	// Print the export DLL name
-	let dll_name = exports.dll_name()?;
-	println!("dll_name: {}", dll_name);
-
-	// Build the validated lookup tables used to query exports
-	let by = exports.by()?;
-
-	// Query an export by name
-	by.name("?__autoclassinit2@Passwds@@QEAAX_K@Z")?;
-
-	// Query an export by ordinal
-	by.ordinal(6)?;
-
-	// Iterate over all exports, including ordinal-only exports
-	for result in by.iter() {
-		if let Ok(export) = result {
-			println!("export: {:?}", export);
-		}
-	}
-
-	// Iterate over named exports
-	for result in by.iter_names() {
-		if let (Ok(name), Ok(export)) = result {
-			println!("export {}: {:?}", name, export);
-		}
-	}
-
-	Ok(())
-}
-```
-*/
+/// Export directory.
+///
+/// The export directory contains the symbols exported by an image. A symbol can
+/// refer to a function, static data, or a forwarded export in another module.
+///
+/// Symbols can be exported by name or ordinal. An exported function's ordinal is
+/// its index in the export address table plus the ordinal base.
+///
+/// # Examples
+///
+/// ```
+/// # #![allow(unused_variables)]
+/// use pelite::pe64::{GetProcAddress, Pe, PeFile};
+///
+/// # #[allow(dead_code)]
+/// fn example(file: PeFile<'_>) -> pelite::Result<()> {
+/// 	// Most convenient way to get the address of an export
+/// 	file.get_proc_address("ThrowException")?;
+///
+/// 	// Access the export directory
+/// 	let exports = file.exports()?;
+///
+/// 	// Print the export DLL name
+/// 	let dll_name = exports.dll_name()?;
+/// 	println!("dll_name: {}", dll_name);
+///
+/// 	// Build the validated lookup tables used to query exports
+/// 	let by = exports.by()?;
+///
+/// 	// Query an export by name
+/// 	by.name("?__autoclassinit2@Passwds@@QEAAX_K@Z")?;
+///
+/// 	// Query an export by ordinal
+/// 	by.ordinal(6)?;
+///
+/// 	// Iterate over all exports, including ordinal-only exports
+/// 	for result in by.iter() {
+/// 		if let Ok(export) = result {
+/// 			println!("export: {:?}", export);
+/// 		}
+/// 	}
+///
+/// 	// Iterate over named exports
+/// 	for result in by.iter_names() {
+/// 		if let (Ok(name), Ok(export)) = result {
+/// 			println!("export {}: {:?}", name, export);
+/// 		}
+/// 	}
+///
+/// 	Ok(())
+/// }
+/// ```
 #[derive(Copy, Clone)]
 pub struct ExportDirectory<'a, P> {
 	pe: P,
