@@ -11,7 +11,7 @@ Dumps the RunTime Type Information, each associated vtable and class hierarchy f
 Limited to PE32 (32bit binaries) only. Pull requests are welcome to support PE32+ and/or GNU ABI!
 
 ```bat
-cargo run --bin msrtti -- "demo/Demo.dll" > demo/Demo-rtti.txt
+cargo run -p pelite-cli -- msrtti "demo/Demo.dll" > demo/Demo-rtti.txt
 ```
 
 The result can be seen [here](Demo-rtti.txt).
@@ -22,7 +22,7 @@ The result can be seen [here](Demo-rtti.txt).
 Dumps the PE headers.
 
 ```bat
-cargo run --bin pedump -- "demo/Demo64.dll" -dnsiertxg > demo/Demo64-pe.txt
+cargo run -p pelite-cli -- dump "demo/Demo64.dll" -dnsiertxg > demo/Demo64-pe.txt
 ```
 
 The result can be seen [here](Demo64-pe.txt).
@@ -33,8 +33,8 @@ Generate PE Module-Definition file
 Prints a [Module-Defintion](https://msdn.microsoft.com/en-us/library/28d6s79h.aspx) file for the given input DLL.
 
 ```bat
-cargo run --bin module-def -- "demo\Demo64.dll" > "demo\Demo64.DEF"
-cargo run --bin module-def -- "demo\Demo.dll" > "demo\Demo.DEF"
+cargo run -p pelite-cli -- module-def "demo\Demo64.dll" > "demo\Demo64.DEF"
+cargo run -p pelite-cli -- module-def "demo\Demo.dll" > "demo\Demo.DEF"
 ```
 
 An Import Library can be created from the Module-Definition file.
@@ -62,7 +62,7 @@ Finds matches of signatures in binaries using a [language designed specifically 
 Play around in interactive mode:
 
 ```bat
-cargo run --bin findsig -- "demo\Demo64.dll"
+cargo run -p pelite-cli -- findsig "demo\Demo64.dll"
 ```
 
 Try out the pattern `E8${B8'???? C3}` to find all `call` instructions to a function which load a constant into `eax` and returns.
@@ -71,7 +71,7 @@ In addition save the address of the constant so it can be extracted later.
 Find signatures by passing them as command line arguments:
 
 ```bat
-cargo run --bin findsig -- "demo\Demo64.dll" "E8${B8'???? C3}"
+cargo run -p pelite-cli -- findsig "demo\Demo64.dll" "E8${B8'???? C3}"
 ```
 
 The result is two matches for this pattern for this particular binary:
