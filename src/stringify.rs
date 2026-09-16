@@ -50,12 +50,14 @@ macro_rules! enum1 {
 macro_rules! flags {
 	(
 		$(#[$meta:meta])*
-		$Item:ident($item:ident: $ty:ty),
+		$vis:vis $Item:ident($item:ident: $ty:ty),
 		$($index:expr, $name:expr => $desc:expr,)*
 	) => {
 		$(#[$meta])*
+		#[allow(dead_code)]
 		#[derive(Copy, Clone)]
-		pub struct $Item(pub $ty);
+		$vis struct $Item(pub $ty);
+		#[allow(dead_code)]
 		impl $Item {
 			/// Gets the code identifier for a flag value given the bit index.
 			pub fn flag_str(index: u32) -> Option<&'static str> {
@@ -106,7 +108,7 @@ enum1! {
 
 flags! {
 	/// Stringifies the `IMAGE_FILE_*` flag indices for [`IMAGE_FILE_HEADER::Characteristics`].
-	FileChars(file_chars: u16),
+	pub FileChars(file_chars: u16),
 	/*0001*/ 0, IMAGE_FILE_RELOCS_STRIPPED => "RELOCS_STRIPPED",
 	/*0002*/ 1, IMAGE_FILE_EXECUTABLE_IMAGE => "EXECUTABLE_IMAGE",
 	/*0004*/ 2, IMAGE_FILE_LINE_NUMS_STRIPPED => "LINE_NUMS_STRIPPED",
@@ -154,7 +156,7 @@ enum1! {
 
 flags! {
 	/// Stringifies the `IMAGE_DLLCHARACTERISTICS_*` flag indices for [`IMAGE_OPTIONAL_HEADER::DllCharacteristics`][IMAGE_OPTIONAL_HEADER64::DllCharacteristics].
-	DllChars(dll_chars: u16),
+	pub DllChars(dll_chars: u16),
 	/*0001*/ 0, IMAGE_DLLCHARACTERISTICS_0 => "Reserved",
 	/*0002*/ 1, IMAGE_DLLCHARACTERISTICS_1 => "Reserved",
 	/*0004*/ 2, IMAGE_DLLCHARACTERISTICS_2 => "Reserved",
@@ -194,8 +196,8 @@ enum1! {
 }
 
 flags! {
-	/// Stringifies the `IMAGE_SCN_*` flag indices for [`IMAGE_SECTION_HEADER::Characteristics`].
-	SectionChars(section_chars: u32),
+	/// Stringifies the single-bit `IMAGE_SCN_*` flags for [`IMAGE_SECTION_HEADER::Characteristics`].
+	SectionFlag(section_flag: u32),
 	/*00000001*/ 0, IMAGE_SCN_0 => "Reserved",
 	/*00000002*/ 1, IMAGE_SCN_1 => "Reserved",
 	/*00000004*/ 2, IMAGE_SCN_2 => "Reserved",
@@ -216,10 +218,6 @@ flags! {
 	/*00020000*/17, IMAGE_SCN_MEM_PURGEABLE => "MEM_PURGEABLE",
 	/*00040000*/18, IMAGE_SCN_MEM_LOCKED => "MEM_LOCKED",
 	/*00080000*/19, IMAGE_SCN_MEM_PRELOAD => "MEM_PRELOAD",
-	/*00100000*/20, IMAGE_SCN_ALIGN_1 => "",
-	/*00200000*/21, IMAGE_SCN_ALIGN_2 => "",
-	/*00400000*/22, IMAGE_SCN_ALIGN_4 => "",
-	/*00800000*/23, IMAGE_SCN_ALIGN_8 => "",
 	/*01000000*/24, IMAGE_SCN_LNK_NRELOC_OVFL => "LNK_NRELOC_OVFL",
 	/*02000000*/25, IMAGE_SCN_MEM_DISCARDABLE => "MEM_DISCARDABLE",
 	/*04000000*/26, IMAGE_SCN_MEM_NOT_CACHED => "MEM_NOT_CACHED",
@@ -228,6 +226,76 @@ flags! {
 	/*20000000*/29, IMAGE_SCN_MEM_EXECUTE => "MEM_EXECUTE",
 	/*40000000*/30, IMAGE_SCN_MEM_READ => "MEM_READ",
 	/*80000000*/31, IMAGE_SCN_MEM_WRITE => "MEM_WRITE",
+}
+
+enum1! {
+	/// Stringifies the encoded `IMAGE_SCN_ALIGN_*BYTES` section alignment values.
+	SectionAlignment(section_alignment: u32),
+	IMAGE_SCN_ALIGN_1BYTES => "1-byte alignment",
+	IMAGE_SCN_ALIGN_2BYTES => "2-byte alignment",
+	IMAGE_SCN_ALIGN_4BYTES => "4-byte alignment",
+	IMAGE_SCN_ALIGN_8BYTES => "8-byte alignment",
+	IMAGE_SCN_ALIGN_16BYTES => "16-byte alignment",
+	IMAGE_SCN_ALIGN_32BYTES => "32-byte alignment",
+	IMAGE_SCN_ALIGN_64BYTES => "64-byte alignment",
+	IMAGE_SCN_ALIGN_128BYTES => "128-byte alignment",
+	IMAGE_SCN_ALIGN_256BYTES => "256-byte alignment",
+	IMAGE_SCN_ALIGN_512BYTES => "512-byte alignment",
+	IMAGE_SCN_ALIGN_1024BYTES => "1024-byte alignment",
+	IMAGE_SCN_ALIGN_2048BYTES => "2048-byte alignment",
+	IMAGE_SCN_ALIGN_4096BYTES => "4096-byte alignment",
+	IMAGE_SCN_ALIGN_8192BYTES => "8192-byte alignment",
+}
+
+/// Stringifies the `IMAGE_SCN_*` values in [`IMAGE_SECTION_HEADER::Characteristics`].
+#[derive(Copy, Clone)]
+pub struct SectionChars(pub u32);
+
+impl SectionChars {
+	const ALIGN_MASK: u32 = 0x00f00000;
+
+	/// Gets the code identifier for a single-bit flag given its bit index.
+	///
+	/// Indices 20 through 23 contain the encoded alignment field and therefore
+	/// are not individual flags. Use [`SectionChars::alignment`] for that field.
+	pub fn flag_str(index: u32) -> Option<&'static str> {
+		SectionFlag::flag_str(index)
+	}
+
+	/// Gets the description for a single-bit flag given its bit index.
+	pub fn flag_desc(index: u32) -> Option<&'static str> {
+		SectionFlag::flag_desc(index)
+	}
+
+	/// Parses either a single-bit flag or an encoded alignment value.
+	pub fn parse_flag(s: &str) -> Option<u32> {
+		SectionFlag::parse_flag(s).or_else(|| s.parse::<SectionAlignment>().ok().map(|value| value.0))
+	}
+
+	/// Gets the encoded section alignment, if one is present and valid.
+	pub fn alignment(self) -> Option<SectionAlignment> {
+		let alignment = SectionAlignment(self.0 & Self::ALIGN_MASK);
+		alignment.to_str().map(|_| alignment)
+	}
+
+	/// Returns an iterator over set flags and the encoded alignment field.
+	pub fn to_strs(self) -> impl Clone + Iterator<Item = &'static str> {
+		// Treat the four alignment bits as one field while retaining bit order.
+		(0..29).filter_map(move |slot| {
+			if slot == 20 {
+				self.alignment().and_then(SectionAlignment::to_str)
+			}
+			else {
+				let index = if slot < 20 { slot } else { slot + 3 };
+				if self.0 & (1u32 << index) != 0 {
+					SectionFlag::flag_str(index)
+				}
+				else {
+					None
+				}
+			}
+		})
+	}
 }
 
 enum1! {
@@ -265,7 +333,9 @@ enum1! {
 	IMAGE_REL_BASED_HIGHLOW => "HIGHLOW",
 	IMAGE_REL_BASED_HIGHADJ => "HIGHADJ",
 	IMAGE_REL_BASED_MACHINE_SPECIFIC_5 => "MACHINE_SPECIFIC_5",
+	IMAGE_REL_BASED_RESERVED => "RESERVED",
 	IMAGE_REL_BASED_MACHINE_SPECIFIC_7 => "MACHINE_SPECIFIC_7",
+	IMAGE_REL_BASED_MACHINE_SPECIFIC_8 => "MACHINE_SPECIFIC_8",
 	IMAGE_REL_BASED_MACHINE_SPECIFIC_9 => "MACHINE_SPECIFIC_9",
 	IMAGE_REL_BASED_DIR64 => "DIR64",
 }
@@ -314,4 +384,47 @@ enum1! {
 	IMAGE_DEBUG_TYPE_ILTCG => "ILTCG",
 	IMAGE_DEBUG_TYPE_MPX => "MPX",
 	IMAGE_DEBUG_TYPE_REPRO => "Repro",
+}
+
+#[cfg(test)]
+mod tests {
+	use super::*;
+
+	#[test]
+	fn section_alignment_round_trips() {
+		let alignments = [
+			IMAGE_SCN_ALIGN_1BYTES, IMAGE_SCN_ALIGN_2BYTES,
+			IMAGE_SCN_ALIGN_4BYTES, IMAGE_SCN_ALIGN_8BYTES,
+			IMAGE_SCN_ALIGN_16BYTES, IMAGE_SCN_ALIGN_32BYTES,
+			IMAGE_SCN_ALIGN_64BYTES, IMAGE_SCN_ALIGN_128BYTES,
+			IMAGE_SCN_ALIGN_256BYTES, IMAGE_SCN_ALIGN_512BYTES,
+			IMAGE_SCN_ALIGN_1024BYTES, IMAGE_SCN_ALIGN_2048BYTES,
+			IMAGE_SCN_ALIGN_4096BYTES, IMAGE_SCN_ALIGN_8192BYTES,
+		];
+
+		for value in alignments {
+			let alignment = SectionAlignment(value);
+			let name = alignment.to_str().unwrap();
+			assert_eq!(name.parse::<SectionAlignment>().unwrap().0, value);
+			assert_eq!(SectionChars::parse_flag(name), Some(value));
+			assert_eq!(SectionChars(value).to_strs().collect::<Vec<_>>(), [name]);
+		}
+	}
+
+	#[test]
+	fn section_flags_include_alignment_once_and_in_order() {
+		let chars = IMAGE_SCN_CNT_CODE | IMAGE_SCN_ALIGN_4BYTES | IMAGE_SCN_MEM_READ;
+		assert_eq!(SectionChars(chars).to_strs().collect::<Vec<_>>(), [
+			"IMAGE_SCN_CNT_CODE",
+			"IMAGE_SCN_ALIGN_4BYTES",
+			"IMAGE_SCN_MEM_READ",
+		]);
+		assert_eq!(SectionChars::flag_str(20), None);
+	}
+
+	#[test]
+	fn relocation_types_cover_defined_values() {
+		assert_eq!(RelocType(IMAGE_REL_BASED_RESERVED).to_str(), Some("IMAGE_REL_BASED_RESERVED"));
+		assert_eq!(RelocType(IMAGE_REL_BASED_MACHINE_SPECIFIC_8).to_str(), Some("IMAGE_REL_BASED_MACHINE_SPECIFIC_8"));
+	}
 }
