@@ -19,7 +19,7 @@ resolver = "2"
 
 [features]
 default = ["mmap", "derive_pod"]
-mmap = ["std", "libc", "windows-sys"]
+mmap = ["std", "dep:libc", "dep:windows-sys"]
 unstable = []
 derive_pod = ["dataview/derive_pod"]
 basenc = ["dep:basenc"]
