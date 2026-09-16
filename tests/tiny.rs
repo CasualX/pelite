@@ -1,4 +1,4 @@
-use pelite::pe32::{image, Pe, PeFile, PeObject, PeView};
+use pelite::pe32::{Pe, PeFile, PeObject, PeView, image};
 use pelite::{FileMap, Pod};
 
 // For fun let's try loading tiny PE files.

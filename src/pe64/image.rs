@@ -11,8 +11,8 @@ References:
 
 #![allow(non_camel_case_types)]
 
-pub use crate::image::*;
 pub use super::msvc::*;
+pub use crate::image::*;
 
 pub const IMAGE_NT_OPTIONAL_HDR_MAGIC: u16 = IMAGE_NT_OPTIONAL_HDR64_MAGIC;
 

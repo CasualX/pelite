@@ -1,8 +1,8 @@
 use core::{fmt, mem, ops, slice, str};
 
-use crate::util::{CStr, FromBytes};
 use crate::Pod;
-use crate::{image, pattern, pe32, pe64, rich_structure, Error, Result};
+use crate::util::{CStr, FromBytes};
+use crate::{Error, Result, image, pattern, pe32, pe64, rich_structure};
 
 /// Wraps 32-bit and 64-bit variants.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
@@ -71,8 +71,8 @@ mod tls;
 mod view;
 
 pub use self::file::PeFile;
-pub(crate) use self::pe::get_section_bytes;
 pub use self::pe::PeLayout;
+pub(crate) use self::pe::get_section_bytes;
 pub use self::view::PeView;
 
 pub use self::exports::Export;

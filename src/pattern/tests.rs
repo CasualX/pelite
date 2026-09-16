@@ -50,6 +50,7 @@ fn unreachable_reads_and_workspace_reuse() {
 }
 
 #[test]
+#[rustfmt::skip]
 fn lowering() {
 	assert_eq!(parse("80FF? ?? A0/F8 \"é\"00//comment\n@2align(12)").unwrap(), [
 		Save(0), Byte(0x80), Byte(0xff), Skip(3), Fuzzy(0xf8), Byte(0xa0), Byte(0xc3), Byte(0xa9), Byte(0), IsAlign(2), IsAlign(12)]);

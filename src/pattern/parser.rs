@@ -30,10 +30,16 @@ struct Atoms {
 }
 impl Atoms {
 	const fn one(atom: Atom) -> Atoms {
-		Atoms { items: [atom, Atom::Nop, Atom::Nop, Atom::Nop], len: 1 }
+		Atoms {
+			items: [atom, Atom::Nop, Atom::Nop, Atom::Nop],
+			len: 1,
+		}
 	}
 	const fn pair(first: Atom, second: Atom) -> Atoms {
-		Atoms { items: [first, second, Atom::Nop, Atom::Nop], len: 2 }
+		Atoms {
+			items: [first, second, Atom::Nop, Atom::Nop],
+			len: 2,
+		}
 	}
 	const fn extended(value: u32, atom: Atom) -> Atoms {
 		let mut items = [Atom::Nop; 4];
@@ -249,12 +255,7 @@ impl<'a> Parser<'a> {
 		}
 		let negative = !scan && self.take(b'-');
 		let pointer = !scan && self.keyword(b"ptr");
-		let value = if pointer {
-			0
-		}
-		else {
-			attempt!(self.number(u32::MAX, ErrorKind::Operand))
-		};
+		let value = if pointer { 0 } else { attempt!(self.number(u32::MAX, ErrorKind::Operand)) };
 		if !self.take(b')') {
 			return Err(self.error(ErrorKind::Operand));
 		}

@@ -278,8 +278,8 @@ fn scanner() {
 #[cfg(windows)]
 #[test]
 fn imagemap() {
-	use pelite::pe64::PeView;
 	use pelite::ImageMap;
+	use pelite::pe64::PeView;
 
 	let image = ImageMap::open(FILE_NAME).unwrap();
 	let _view = PeView::from_bytes(&image).unwrap();

@@ -489,14 +489,7 @@ impl<'a, 'pat, P: Pe<'a>> ScannerMatches<'pat, P> {
 		let byte = qsbuf[0];
 		// Find all places with matching byte
 		// TODO! Replace with actual memchr
-		for i in slice.iter().enumerate().filter_map(|(i, &a)| {
-			if a == byte {
-				Some(i as u32)
-			}
-			else {
-				None
-			}
-		}) {
+		for i in slice.iter().enumerate().filter_map(|(i, &a)| if a == byte { Some(i as u32) } else { None }) {
 			self.hits += 1;
 			let cursor = self.range.start + i;
 			if self.scanner.exec(cursor, self.pat, save) {
@@ -639,7 +632,7 @@ fn exec_goto() {
 
 #[test]
 fn exec_test_values() {
-	use crate::pattern::{save_len, Atom::*};
+	use crate::pattern::{Atom::*, save_len};
 
 	let cases: &[(_, &[u8], u32)] = &[
 		(TestI8(0), &[0x80], 0xffff_ff80),
@@ -692,7 +685,7 @@ fn exec_seek() {
 
 #[test]
 fn exec_tests_parse_docs() {
-	use crate::pattern::{parse, Atom};
+	use crate::pattern::{Atom, parse};
 
 	fn exec(bytes: &[u8], pat: &[Atom], save: &mut [Rva]) -> bool {
 		Exec { pe: bytes, pat, cursor: 0, pc: 0 }.exec(save)
@@ -848,7 +841,7 @@ fn exec_signed_read_slots() {
 
 #[test]
 fn exec_explicit_returns() {
-	use crate::pattern::{save_len, Atom::*};
+	use crate::pattern::{Atom::*, save_len};
 
 	let mut bytes = [0; 32];
 	bytes[0] = 4; // First reference: 0 + 1 + 4 = 5.
@@ -879,7 +872,7 @@ fn exec_explicit_returns() {
 
 #[test]
 fn exec_scan_across_returns() {
-	use crate::pattern::{parse, save_len, Atom::*};
+	use crate::pattern::{Atom::*, parse, save_len};
 
 	let mut bytes = [0; 21];
 	bytes[0] = 9; // First reference goes to the search at 10.
@@ -974,7 +967,7 @@ fn exec_alternatives() {
 
 #[test]
 fn exec_fork_across_returns() {
-	use crate::pattern::{parse, save_len, Atom::*};
+	use crate::pattern::{Atom::*, parse, save_len};
 
 	let mut bytes = [0; 11];
 	bytes[0] = 4; // First scope visits the alternatives at 5.

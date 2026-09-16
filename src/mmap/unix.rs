@@ -35,12 +35,7 @@ impl FileMap {
 		// Mmap the file
 		unsafe {
 			let ptr = libc::mmap(ptr::null_mut(), size as libc::size_t, libc::PROT_READ, libc::MAP_PRIVATE, fd, 0);
-			if ptr == libc::MAP_FAILED {
-				Err(io::Error::last_os_error())
-			}
-			else {
-				Ok(FileMap { ptr, size })
-			}
+			if ptr == libc::MAP_FAILED { Err(io::Error::last_os_error()) } else { Ok(FileMap { ptr, size }) }
 		}
 	}
 }

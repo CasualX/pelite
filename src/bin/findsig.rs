@@ -2,10 +2,10 @@
 Find patterns utility.
  */
 
+use std::env;
 use std::ffi::OsStr;
 use std::io::{self, Write};
 use std::path::Path;
-use std::env;
 
 use pelite::pattern as pat;
 

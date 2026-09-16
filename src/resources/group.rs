@@ -47,8 +47,8 @@ use core::{fmt, mem, slice};
 #[cfg(feature = "std")]
 use std::io;
 
-use crate::util::AlignTo;
 use crate::Error;
+use crate::util::AlignTo;
 
 use super::{ResourceDirectory, ResourceFindError};
 

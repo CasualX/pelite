@@ -1,7 +1,7 @@
 use pelite::Error::Null;
 
-use crate::wasm::*;
 use crate::PeFile;
+use crate::wasm::*;
 
 #[unsafe(no_mangle)]
 pub unsafe fn pefileBaseRelocs(pefile: *mut PeFile) { unsafe {

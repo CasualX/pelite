@@ -123,14 +123,7 @@ impl Default for Parameters {
 		vars.path = args
 			.next()
 			.map(|path| PathBuf::from(path))
-			.map_or(None, |path| {
-				if path.starts_with("-") {
-					None
-				}
-				else {
-					Some(path)
-				}
-			})
+			.map_or(None, |path| if path.starts_with("-") { None } else { Some(path) })
 			.unwrap_or_else(|| abort(NO_INPUT_VAL));
 
 		// Parse the options for the program

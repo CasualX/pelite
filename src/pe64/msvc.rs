@@ -39,7 +39,7 @@ pub struct RTTICompleteObjectLocator {
 	/// Constructor displacement offset.
 	pub cd_offset: u32,
 	/// Image-relative offset of the [`TypeDescriptor`].
-	pub type_descriptor: u32,  //Ptr<TypeDescriptor>
+	pub type_descriptor: u32, //Ptr<TypeDescriptor>
 	/// Image-relative offset of the [`RTTIClassHierarchyDescriptor`].
 	pub class_descriptor: u32, //Ptr<RTTIClassHierarchyDescriptor>
 }

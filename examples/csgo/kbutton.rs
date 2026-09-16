@@ -6,9 +6,9 @@ From the Source SDK 2013: https://github.com/ValveSoftware/source-sdk-2013/blob/
 
  */
 
+use pelite::Pod;
 use pelite::pattern as pat;
 use pelite::pe32::*;
-use pelite::Pod;
 
 pub fn print(bin: PeFile<'_>, dll_name: &str) {
 	let btns = buttons(bin);

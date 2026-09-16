@@ -1,9 +1,10 @@
 use std::mem;
 
-use pelite::resources::ResourceFindError::NotFound;
 use pelite::Error::Null;
+use pelite::resources::ResourceFindError::NotFound;
 
-use crate::{wasm::*, PeFile};
+use crate::PeFile;
+use crate::wasm::*;
 
 enum ResourceName {
 	String(Box<str>),

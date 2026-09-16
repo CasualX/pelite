@@ -87,7 +87,8 @@ const fn merge(states: &mut [State], pc: usize, incoming: State) {
 	if states[pc].reachable {
 		states[pc].initialized = states[pc].initialized.intersection(incoming.initialized);
 		states[pc].clobbered = states[pc].clobbered.union(incoming.clobbered);
-	} else {
+	}
+	else {
 		states[pc].initialized = incoming.initialized;
 		states[pc].clobbered = incoming.clobbered;
 		states[pc].reachable = true;
