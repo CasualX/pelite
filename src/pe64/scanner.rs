@@ -260,6 +260,17 @@ impl<'a, 'pat, P: Pe<'a>, F: FnMut(&SectionHeader) -> bool> ScannerMatches<'a, '
 	}
 }
 
+impl<'a, 'pat, P: Pe<'a>, F: FnMut(&SectionHeader) -> bool> Iterator for ScannerMatches<'a, 'pat, P, F> {
+	type Item = [u32; 256];
+
+	#[inline]
+	fn next(&mut self) -> Option<[u32; 256]> {
+		let mut save = [0; 256];
+		self.next(&mut save)?;
+		Some(save)
+	}
+}
+
 //----------------------------------------------------------------
 
 #[cfg(test)]
