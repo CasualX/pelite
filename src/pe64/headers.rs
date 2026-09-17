@@ -48,16 +48,6 @@ impl<'a, P: Pe<'a>> PeHeaders<P> {
 
 		check_sum as u32
 	}
-	/// Gets the code range from the optional header.
-	pub fn code_range(&self) -> ops::Range<Rva> {
-		let optional_header = self.pe.optional_header();
-		optional_header.BaseOfCode..u32::wrapping_add(optional_header.BaseOfCode, optional_header.SizeOfCode)
-	}
-	/// Gets the full image range excluding the PE headers.
-	pub fn image_range(&self) -> ops::Range<Rva> {
-		let optional_header = self.pe.optional_header();
-		optional_header.SizeOfHeaders..optional_header.SizeOfImage
-	}
 }
 
 /*

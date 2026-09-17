@@ -502,11 +502,11 @@ export async function pelite(wasmPath = "pkg/pelite.wasm") {
 			return wrapResult();
 		}
 		/**
-		 * Finds a single unique match for the given pattern.
-		 * @remarks If there is more than one match null is returned.
+		 * Finds a single unique match starting in section bytes within the given RVA range.
+		 * @remarks If there is no match or more than one match null is returned. Invalid scan sources throw.
 		 * @param {string} pattern The pattern to search for.
 		 * @param {Number} start The relative virtual address to start searching.
-		 * @param {Number} end The relative virtual address to stop searching.
+		 * @param {Number} end The exclusive upper bound for match starting addresses; pattern reads may extend beyond it.
 		 * @returns {Number[]|null}
 		 */
 		scannerFind(pattern, start, end) {
@@ -515,7 +515,7 @@ export async function pelite(wasmPath = "pkg/pelite.wasm") {
 			return wrapResult();
 		}
 		/**
-		 * Finds a single unique code match for the given pattern.
+		 * Finds a single unique match across all sections marked executable.
 		 * @param {string} pattern The pattern to search for.
 		 * @returns {Number[]|null}
 		 */
@@ -525,10 +525,10 @@ export async function pelite(wasmPath = "pkg/pelite.wasm") {
 			return wrapResult();
 		}
 		/**
-		 * Finds all matches of the given pattern.
+		 * Finds matches starting in section bytes within the given RVA range, in section-table order.
 		 * @param {string} pattern The pattern to search for.
 		 * @param {Number} start The relative virtual address to start searching.
-		 * @param {Number} end The relative virtual address to stop searching.
+		 * @param {Number} end The exclusive upper bound for match starting addresses; pattern reads may extend beyond it.
 		 * @param {Number} offset Skip the first X matches.
 		 * @param {Number} limit Stop when X matches have been found.
 		 * @returns {Number[][]}
@@ -539,7 +539,7 @@ export async function pelite(wasmPath = "pkg/pelite.wasm") {
 			return wrapResult();
 		}
 		/**
-		 * Finds all code matches of the given pattern.
+		 * Finds matches across all sections marked executable, in section-table order.
 		 * @param {string} pattern The pattern to search for.
 		 * @param {Number} offset Skip the first X matches.
 		 * @param {Number} limit Stop when X matches have been found.

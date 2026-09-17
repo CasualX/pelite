@@ -93,10 +93,10 @@ pub fn convars<'a>(file: PeFile<'a>) -> Vec<ConVar<'a>> {
 	// 68*{'}   push default            ; Pushes the pDefaultValue argument
 	// 68*{'}   push name               ; Pushes the pName argument
 	// E8$      call create_fn          ; Calls the ConVar::Create factory method
-	let pat = pat!("6A00 51 C70424u4 6Au1 51 C70424u4 B9*{'} 6Au1 (6A00|68*{'}) 68u4 68*{'} 68*{'} E8$");
+	const PAT: &[pat::Atom] = pat!("6A00 51 C70424u4 6Au1 51 C70424u4 B9*{'} 6Au1 (6A00|68*{'}) 68u4 68*{'} 68*{'} E8$");
 
-	let mut matches = file.scanner().matches_code(pat);
-	while matches.next(&mut save) {
+	let mut matches = file.scanner().code().matches(PAT);
+	while matches.next(&mut save).is_some() {
 		if let Ok(cvar) = convar(file, &save) {
 			cvars.push(cvar);
 		}
@@ -167,10 +167,10 @@ pub fn concommands<'a>(bin: PeFile<'a>) -> Vec<ConCommand<'a>> {
 
 	// The ConCommand constructors are already evaluated by the compiler and the global data structures already filled in
 	// Perform a fairly slow signature scan for these instances...
-	let data_section = bin.section_headers().iter().find(|sect| &sect.Name == b".data\0\0\0").unwrap();
-	let scanner = bin.scanner();
-	let mut matches = scanner.matches(pat!("@2 *{*{}*{}*{}*} 00000000 00000000 *{'} (*{'}|00000000) u4 *{'}"), data_section.virtual_range());
-	while matches.next(&mut save) {
+	let mut matches = bin.scanner()
+		.sections(|section| section.name() == Ok(".data"))
+		.matches(pat!("@2 *{*{}*{}*{}*} 00000000 00000000 *{'} (*{'}|00000000) u4 *{'}"));
+	while matches.next(&mut save).is_some() {
 		// Filter false-positives...
 		if let Ok(cmd) = concommand(bin, &save) {
 			cmds.push(cmd);

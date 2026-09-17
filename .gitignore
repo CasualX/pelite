@@ -4,6 +4,7 @@
 
 # Old Prototype
 proto/
+tmp/
 
 # Cargo
 target/

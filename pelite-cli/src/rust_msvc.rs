@@ -1,7 +1,6 @@
 //! Helpers for recognizing data emitted by the current Rust x64 MSVC toolchain.
 
-use pelite::pe64::image::IMAGE_FILE_MACHINE_AMD64;
-use pelite::pe64::{Pe, PeFile, Rva};
+use pelite::pe64::{image, Pe, PeFile, Rva};
 use serde::Serialize;
 
 use crate::{Result, err};
@@ -44,7 +43,7 @@ pub struct FormatTemplate {
 
 pub fn open_x64<'a>(bytes: &'a [u8]) -> Result<PeFile<'a>> {
 	let file = PeFile::from_bytes(bytes).map_err(|error| err(format!("input is not a PE32+ image: {error}")))?;
-	if file.file_header().Machine != IMAGE_FILE_MACHINE_AMD64 {
+	if file.file_header().Machine != image::IMAGE_FILE_MACHINE_AMD64 {
 		return Err(err("input is not an x86-64 PE image"));
 	}
 	Ok(file)
@@ -56,12 +55,11 @@ pub fn open_x64<'a>(bytes: &'a [u8]) -> Result<PeFile<'a>> {
 /// filtering of the referenced Rust data structure.
 pub fn candidate_relative_xrefs(file: PeFile<'_>) -> Vec<Xref> {
 	let pattern = pelite::pattern!("8D ? $'");
-	let code_range = file.headers().code_range();
 	let mut output = Vec::new();
 	let mut save = [0; 3];
-	let mut matches = file.scanner().matches_code(pattern);
-	while matches.next(&mut save) {
-		if !code_range.contains(&save[1]) && file.slice_bytes(save[1]).is_ok() {
+	let mut matches = file.scanner().code().matches(pattern);
+	while matches.next(&mut save).is_some() {
+		if !file.section_headers().by_rva(save[1]).is_some_and(|section| section.Characteristics & image::IMAGE_SCN_MEM_EXECUTE != 0) && file.slice_bytes(save[1]).is_ok() {
 			output.push(Xref {
 				code_rva: save[0],
 				target_rva: save[1],
@@ -75,12 +73,11 @@ pub fn candidate_relative_xrefs(file: PeFile<'_>) -> Vec<Xref> {
 
 pub fn relative_call_xrefs(file: PeFile<'_>) -> Vec<Xref> {
 	let pattern = pelite::pattern!("E8 $'");
-	let code_range = file.headers().code_range();
 	let mut output = Vec::new();
 	let mut save = [0; 3];
-	let mut matches = file.scanner().matches_code(pattern);
-	while matches.next(&mut save) {
-		if code_range.contains(&save[1]) {
+	let mut matches = file.scanner().code().matches(pattern);
+	while matches.next(&mut save).is_some() {
+		if file.section_headers().by_rva(save[1]).is_some_and(|section| section.Characteristics & image::IMAGE_SCN_MEM_EXECUTE != 0) {
 			output.push(Xref {
 				code_rva: save[0],
 				target_rva: save[1],
@@ -94,8 +91,8 @@ pub fn edx_immediates(file: PeFile<'_>) -> Vec<Immediate> {
 	let pattern = pelite::pattern!("BA u4[1]");
 	let mut output = Vec::new();
 	let mut save = [0; 2];
-	let mut matches = file.scanner().matches_code(pattern);
-	while matches.next(&mut save) {
+	let mut matches = file.scanner().code().matches(pattern);
+	while matches.next(&mut save).is_some() {
 		output.push(Immediate { code_rva: save[0], value: save[1] });
 	}
 	output
@@ -133,7 +130,7 @@ pub fn parse_format_template(bytes: &[u8]) -> Option<FormatTemplate> {
 			},
 			0x81..=0xbf => return None,
 			0xc0..=0xff => {
-				let flags = (tag & 1 != 0).then(|| read_u32(bytes, &mut cursor)).transpose_option()?;
+				let flags = transpose_option((tag & 1 != 0).then(|| read_u32(bytes, &mut cursor)))?;
 				if let Some(flags) = flags {
 					let fill = flags & 0x1f_ffff;
 					let valid_fill = char::from_u32(fill).is_some();
@@ -142,12 +139,13 @@ pub fn parse_format_template(bytes: &[u8]) -> Option<FormatTemplate> {
 					if flags & 0x8000_0000 != 0 || !valid_fill || !width_matches || !precision_matches {
 						return None;
 					}
-				} else if tag & 6 != 0 {
+				}
+				else if tag & 6 != 0 {
 					return None;
 				}
-				let width = (tag & 2 != 0).then(|| read_u16(bytes, &mut cursor)).transpose_option()?;
-				let precision = (tag & 4 != 0).then(|| read_u16(bytes, &mut cursor)).transpose_option()?;
-				let explicit = (tag & 8 != 0).then(|| read_u16(bytes, &mut cursor)).transpose_option()?;
+				let width = transpose_option((tag & 2 != 0).then(|| read_u16(bytes, &mut cursor)))?;
+				let precision = transpose_option((tag & 4 != 0).then(|| read_u16(bytes, &mut cursor)))?;
+				let explicit = transpose_option((tag & 8 != 0).then(|| read_u16(bytes, &mut cursor)))?;
 				let argument = explicit.unwrap_or(next_argument);
 				next_argument = argument.checked_add(1)?;
 				let width_argument = if tag & 0x10 != 0 { Some(width?) } else { None };
@@ -262,17 +260,11 @@ fn read_u32(bytes: &[u8], cursor: &mut usize) -> Option<u32> {
 	Some(value)
 }
 
-trait TransposeOption<T> {
-	fn transpose_option(self) -> Option<Option<T>>;
-}
-
-impl<T> TransposeOption<T> for Option<Option<T>> {
-	fn transpose_option(self) -> Option<Option<T>> {
-		match self {
-			Some(Some(value)) => Some(Some(value)),
-			Some(None) => None,
-			None => Some(None),
-		}
+fn transpose_option<T>(value: Option<Option<T>>) -> Option<Option<T>> {
+	match value {
+		Some(Some(value)) => Some(Some(value)),
+		Some(None) => None,
+		None => Some(None),
 	}
 }
 

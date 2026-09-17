@@ -135,8 +135,8 @@ pub fn datamaps<'a>(client: PeFile<'a>) -> pelite::Result<Vec<Class<'a>>> {
 	// ret
 	// .align 16
 	// ```
-	let mut matches = client.scanner().matches_code(pat!("@4 C705????'???? C705*{'}*{'} C3 CCCCCCCCCCCCCCCCCCCCCC"));
-	while matches.next(&mut save) {
+	let mut matches = client.scanner().code().matches(pat!("@4 C705????'???? C705*{'}*{'} C3 CCCCCCCCCCCCCCCCCCCCCC"));
+	while matches.next(&mut save).is_some() {
 		let num = client.derva_copy::<i32>(save[1]).unwrap();
 		let datamap = client.derva::<datamap_t>(save[2]);
 		let tydescs = client.derva_slice::<typedescription_t>(save[3], num as usize);

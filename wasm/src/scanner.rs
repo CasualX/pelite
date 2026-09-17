@@ -29,18 +29,21 @@ pub unsafe fn pefileScannerFinds(pefile: *mut PeFile, pat: *mut str, start: u32,
 	let captures_len = pat::captures_len(&pattern);
 	let mut save = vec![0; save_len];
 	let pefile = (*pefile).as_ref();
-	let range = if start > end { pefile.headers().code_range() } else { start..end };
-	if pefile.scanner().finds(&pattern, range, &mut save) {
-		set_json(&save[..captures_len]);
+	let selection = if start > end {
+		pefile.scanner().code()
 	}
 	else {
-		set_null();
+		pefile.scanner().within(start..end)
+	};
+	match selection.find(&pattern, &mut save) {
+		Some(_) => set_json(&save[..captures_len]),
+		None => set_null(),
 	}
 }}
 #[unsafe(no_mangle)]
-pub unsafe fn pefileScannerFindsCode(pefile: *mut PeFile, pat: *mut str) { unsafe {
-	pefileScannerFinds(pefile, pat, !0, 0)
-}}
+pub unsafe fn pefileScannerFindsCode(pefile: *mut PeFile, pat: *mut str) {
+	unsafe { pefileScannerFinds(pefile, pat, !0, 0) }
+}
 #[unsafe(no_mangle)]
 pub unsafe fn pefileScannerMatches(pefile: *mut PeFile, pat: *mut str, start: u32, end: u32, mut offset: usize, limit: usize) { unsafe {
 	let pattern = match pat::parse(&Box::from_raw(pat)) {
@@ -51,10 +54,19 @@ pub unsafe fn pefileScannerMatches(pefile: *mut PeFile, pat: *mut str, start: u3
 	let captures_len = pat::captures_len(&pattern);
 	let mut save = vec![0; save_len];
 	let pefile = (*pefile).as_ref();
-	let range = if start > end { pefile.headers().code_range() } else { start..end };
-	let mut matches = pefile.scanner().matches(&pattern, range);
+	let selection = if start > end {
+		pefile.scanner().code()
+	}
+	else {
+		pefile.scanner().within(start..end)
+	};
+	let mut matches = selection.matches(&pattern);
 	let mut result = Vec::new();
-	while matches.next(&mut save) {
+	loop {
+		match matches.next(&mut save) {
+			Some(_) => {},
+			None => break,
+		}
 		if offset > 0 {
 			offset -= 1;
 		}
@@ -70,6 +82,6 @@ pub unsafe fn pefileScannerMatches(pefile: *mut PeFile, pat: *mut str, start: u3
 	set_json(result);
 }}
 #[unsafe(no_mangle)]
-pub unsafe fn pefileScannerMatchesCode(pefile: *mut PeFile, pat: *mut str, offset: usize, limit: usize) { unsafe {
-	pefileScannerMatches(pefile, pat, !0, 0, offset, limit)
-}}
+pub unsafe fn pefileScannerMatchesCode(pefile: *mut PeFile, pat: *mut str, offset: usize, limit: usize) {
+	unsafe { pefileScannerMatches(pefile, pat, !0, 0, offset, limit) }
+}

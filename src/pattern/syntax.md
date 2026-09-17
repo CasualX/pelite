@@ -53,7 +53,7 @@ Because adjacent quotes are an escape, separate adjacent quoted strings with whi
 | `skip(ptr)` | Move forward by the scanned image's pointer width |
 | `skip(-ptr)` | Move backward by the scanned image's pointer width |
 | `scan(12)` | Try the continuation at offsets 0 through 12 |
-| `scan()` | Try the continuation at every remaining readable offset |
+| `scan()` | Try the continuation at every remaining readable offset in the current section |
 | `@4` | Require the cursor to be aligned to `2^4` bytes |
 | `align(12)` | Require the cursor to be aligned to `2^12` bytes |
 
@@ -61,10 +61,12 @@ Numbers are decimal unless prefixed with `0x`. Movement operands are 32-bit valu
 larger values compile to a short chain of `Extend` atoms. `skip(0)` does nothing.
 `@n` takes one decimal exponent digit; `align(n)` accepts exponents through 31.
 
-Scans are non-greedy: `scan(12) AA` tries the nearest `AA` first. The bound is the
-maximum number of bytes to skip, so `scan(1)` tries offsets 0 and 1. `scan(0)` is
-a no-op, just like `skip(0)`. `scan()` searches the rest of the readable slice without
-a bound. Even an empty continuation requires a readable candidate.
+Scans are non-greedy: `scan(12) AA` tries the nearest `AA` first.
+The bound is the maximum number of bytes to skip, so `scan(1)` tries offsets 0 and 1.
+`scan(0)` is a no-op, just like `skip(0)`. `scan()` has no additional distance bound.
+All scans stop at the end of the current section's readable bytes;
+References can first move to another section and scan there.
+Even an empty continuation requires a readable candidate.
 
 Use a skip followed by a scan to express a bounded gap. This example searches for
 `FF` after skipping between 13 and 42 bytes:

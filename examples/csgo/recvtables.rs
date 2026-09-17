@@ -118,18 +118,18 @@ pub fn recvtables<'a>(client: PeFile<'a>) -> pelite::Result<Vec<Class<'a>>> {
 	// `save[3]`: Number of RecvProps
 	// `save[4]`: Name of the datatable
 	// `save[5]`: Start of constructor code
-	let pat1 = pat!("A1???? A801 0F85${'C705????*{'} C705????'???? C705???????? C705????*{'}} 83C801 'C705????00000000 A3");
-	let mut matches1 = client.scanner().matches_code(pat1);
-	while matches1.next(&mut save) {
+	const PAT1: &[pat::Atom] = pat!("A1???? A801 0F85${'C705????*{'} C705????'???? C705???????? C705????*{'}} 83C801 'C705????00000000 A3");
+	let mut matches1 = client.scanner().code().matches(PAT1);
+	while matches1.next(&mut save).is_some() {
 		if let Ok(class) = recvtable(client, &save) {
 			classes.push(class);
 		}
 	}
 
 	// Variation of the above for DT_CSPlayer and others
-	let pat2 = pat!("55 8BEC A1???? 83EC? A801 0F85${'C705????*{'} B801000000 C705????'???? C705???????? C705????*{'}} 83C801 'B9???? A3");
-	let mut matches2 = client.scanner().matches_code(pat2);
-	while matches2.next(&mut save) {
+	const PAT2: &[pat::Atom] = pat!("55 8BEC A1???? 83EC? A801 0F85${'C705????*{'} B801000000 C705????'???? C705???????? C705????*{'}} 83C801 'B9???? A3");
+	let mut matches2 = client.scanner().code().matches(PAT2);
+	while matches2.next(&mut save).is_some() {
 		if let Ok(class) = recvtable(client, &save) {
 			classes.push(class);
 		}

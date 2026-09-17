@@ -39,10 +39,9 @@ fn buttons<'a>(file: PeFile<'a>) -> Vec<Button<'a>> {
 	let mut btns = Vec::new();
 
 	// Match the ConCommand in .data section...
-	let section = file.section_headers().iter().find(|sect| &sect.Name == b".data\0\0\0").unwrap();
-	let scanner = file.scanner();
-	let mut matches = scanner.matches(pat!("@2 00000000 00000000 *{'\"+\"} *{} 00000000 *55 8BEC skip(8) scan(71) B9*{'}"), section.virtual_range());
-	while matches.next(&mut save) {
+	const PAT: &[pat::Atom] = pat!("@2 00000000 00000000 *{'\"+\"} *{} 00000000 *55 8BEC skip(8) scan(71) B9*{'}");
+	let mut matches = file.scanner().sections(|section| section.name() == Ok(".data")).matches(PAT);
+	while matches.next(&mut save).is_some() {
 		let name = file.derva_c_str(save[1]).unwrap().to_str().unwrap();
 		let kbutton = save[2];
 		btns.push(Button { name, kbutton });
