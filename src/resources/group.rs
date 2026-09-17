@@ -40,7 +40,6 @@ for (name, group) in resources.icons().filter_map(Result::ok) {
 
  */
 
-#[cfg(all(feature = "std", feature = "serde"))]
 use alloc::vec::Vec;
 use core::{fmt, mem, slice};
 
@@ -53,6 +52,11 @@ use crate::util::AlignTo;
 use super::{ResourceDirectory, ResourceFindError};
 
 use self::image::*;
+
+//----------------------------------------------------------------
+
+const FILE_DIRECTORY_HEADER_SIZE: usize = 6;
+const FILE_DIRECTORY_ENTRY_SIZE: usize = 16;
 
 //----------------------------------------------------------------
 
@@ -129,34 +133,60 @@ impl<'a> ResourceGroup<'a> {
 	pub fn image(&self, id: u16) -> Result<&'a [u8], ResourceFindError> {
 		self.resources.root()?.get_dir(self.ty().into())?.get_dir(id.into())?.first_data()?.bytes().map_err(ResourceFindError::Pe)
 	}
+	/// Reassembles the group as an icon (`.ico`) or cursor (`.cur`) file.
+	///
+	/// Cursor image resources store their hotspot in the first four bytes of the
+	/// image data. Those bytes are moved into the cursor directory entry in the
+	/// returned file.
+	pub fn to_vec(&self) -> Result<Vec<u8>, ResourceFindError> {
+		let entries = self.entries();
+		let directory_size = entries
+			.len()
+			.checked_mul(FILE_DIRECTORY_ENTRY_SIZE)
+			.and_then(|size| size.checked_add(FILE_DIRECTORY_HEADER_SIZE))
+			.ok_or(Error::Overflow)?;
+		let mut image_offset = u32::try_from(directory_size).map_err(|_| Error::Overflow)?;
+		let mut images = Vec::with_capacity(entries.len());
+
+		for entry in entries {
+			let resource = self.image(entry.nId)?;
+			let image = match self.ty() {
+				ResourceGroupType::Icon => resource,
+				ResourceGroupType::Cursor => resource.get(4..).ok_or(Error::Bounds)?,
+			};
+			image_offset = image_offset.checked_add(u32::try_from(image.len()).map_err(|_| Error::Overflow)?).ok_or(Error::Overflow)?;
+			images.push((resource, image));
+		}
+
+		let mut bytes = Vec::with_capacity(usize::try_from(image_offset).map_err(|_| Error::Overflow)?);
+		bytes.extend_from_slice(dataview::bytes(self.image).get(..FILE_DIRECTORY_HEADER_SIZE).ok_or(Error::Bounds)?);
+		let mut image_offset = directory_size as u32;
+		for (entry, &(resource, image)) in entries.iter().zip(&images) {
+			let entry_bytes = dataview::bytes(entry);
+			match self.ty() {
+				ResourceGroupType::Icon => bytes.extend_from_slice(&entry_bytes[..8]),
+				ResourceGroupType::Cursor => {
+					let width = u16::from_le_bytes([entry_bytes[0], entry_bytes[1]]);
+					let height = u16::from_le_bytes([entry_bytes[2], entry_bytes[3]]);
+					bytes.extend_from_slice(&[width as u8, height as u8, 0, 0]);
+					bytes.extend_from_slice(&resource[..4]);
+				},
+			}
+			let image_size = u32::try_from(image.len()).map_err(|_| Error::Overflow)?;
+			bytes.extend_from_slice(&image_size.to_le_bytes());
+			bytes.extend_from_slice(&image_offset.to_le_bytes());
+			image_offset += image_size;
+		}
+		for (_, image) in images {
+			bytes.extend_from_slice(image);
+		}
+		Ok(bytes)
+	}
 	/// Reassemble the file.
 	#[cfg(feature = "std")]
 	pub fn write(&self, dest: &mut dyn io::Write) -> io::Result<()> {
-		// Start by appending the header
-		dest.write(dataview::bytes(self.image))?;
-		// Write all the icon entries
-		let entries = self.entries();
-		let mut image_offset = (6 + entries.len() * 16) as u32;
-		for entry in entries {
-			// Fixup the dwImageOffset field of the icon entry
-			// NOTE! It is expected that the actual icon data size matches dwBytesInRes information!
-			let mut icon_entry = [0u32; 4];
-			dataview::bytes_mut(&mut icon_entry)[..14].copy_from_slice(dataview::bytes(entry));
-			icon_entry[3] = image_offset;
-			image_offset += entry.bytes_in_resource();
-			dest.write(dataview::bytes(&icon_entry))?;
-		}
-		// Append the bytes for every entry
-		for entry in entries {
-			// Find the Icon data and append it
-			// FIXME! What do if dwBytesInRes does not match the icon data size?
-			// Ignoring this check may lead to corrupt icon files
-			if let Ok(bytes) = self.image(entry.nId) {
-				// assert_eq!(entry.bytes_in_resource() as usize, bytes.len());
-				dest.write(bytes)?;
-			}
-		}
-		Ok(())
+		let bytes = self.to_vec().map_err(|err| io::Error::new(io::ErrorKind::InvalidData, err))?;
+		dest.write_all(&bytes)
 	}
 }
 
@@ -187,6 +217,33 @@ impl serde::Serialize for ResourceGroup<'_> {
 pub type GroupIcon<'a> = ResourceGroup<'a>;
 /// Group Cursor.
 pub type GroupCursor<'a> = ResourceGroup<'a>;
+
+//----------------------------------------------------------------
+
+#[cfg(test)]
+mod tests {
+	use super::{FILE_DIRECTORY_ENTRY_SIZE, FILE_DIRECTORY_HEADER_SIZE};
+	use crate::pe32::{Pe, PeFile};
+
+	#[test]
+	fn find_and_serialize_icon_by_name() {
+		#[repr(align(8))]
+		struct Aligned<T>(T);
+		let image = Aligned(*include_bytes!("../../demo/Demo.dll"));
+		let file = PeFile::from_bytes(&image.0).unwrap();
+		let resources = file.resources().unwrap();
+		let (name, group) = resources.icons().next().unwrap().unwrap();
+		let icon = resources.find_icon(name).unwrap().to_vec().unwrap();
+
+		assert_eq!(icon, group.to_vec().unwrap());
+		assert_eq!(&icon[..4], &[0, 0, 1, 0]);
+		assert_eq!(u16::from_le_bytes([icon[4], icon[5]]) as usize, group.entries().len());
+		assert_eq!(
+			u32::from_le_bytes(icon[18..22].try_into().unwrap()) as usize,
+			FILE_DIRECTORY_HEADER_SIZE + group.entries().len() * FILE_DIRECTORY_ENTRY_SIZE,
+		);
+	}
+}
 
 //----------------------------------------------------------------
 

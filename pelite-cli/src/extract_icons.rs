@@ -90,8 +90,7 @@ fn write_group(
 	let display_name = name.to_string();
 	let file_name = format!("{}.{}", safe_name(name), extension);
 	let path = destination.join(file_name);
-	let mut contents = Vec::new();
-	group.write(&mut contents)?;
+	let contents = group.to_vec()?;
 
 	if overwrite {
 		fs::write(&path, &contents)?;
