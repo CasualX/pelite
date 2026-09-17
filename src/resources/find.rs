@@ -106,6 +106,22 @@ impl<'a> ResourceDirectory<'a> {
 		let manifest = str::from_utf8(bytes)?;
 		Ok(manifest)
 	}
+	/// Finds an icon group by name.
+	pub fn find_icon(&self, name: ResourceName<'_>) -> Result<super::group::GroupIcon<'a>, ResourceFindError> {
+		self.find_group(ResourceName::GROUP_ICON, name, super::group::ResourceGroupType::Icon)
+	}
+	/// Finds a cursor group by name.
+	pub fn find_cursor(&self, name: ResourceName<'_>) -> Result<super::group::GroupCursor<'a>, ResourceFindError> {
+		self.find_group(ResourceName::GROUP_CURSOR, name, super::group::ResourceGroupType::Cursor)
+	}
+	fn find_group(&self, resource_type: ResourceName<'_>, name: ResourceName<'_>, expected_type: super::group::ResourceGroupType) -> Result<super::group::ResourceGroup<'a>, ResourceFindError> {
+		let bytes = self.find_resource(&[resource_type, name])?;
+		let group = super::group::ResourceGroup::new(*self, bytes)?;
+		if group.ty() != expected_type {
+			return Err(crate::Error::BadMagic.into());
+		}
+		Ok(group)
+	}
 	/// Gets the icons.
 	pub fn icons(&self) -> impl 'a + Iterator<Item = Result<(ResourceName<'a>, super::group::GroupIcon<'a>), ResourceFindError>> + Clone {
 		let resources = *self;
