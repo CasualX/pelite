@@ -64,8 +64,8 @@ pub fn classes<'a>(client: PeFile<'a>) -> Vec<Class<'a>> {
 	// mov     g_pClientClassHead, offset s_ClientClass
 	// retn
 	// ```
-	let mut matches = client.scanner().matches_code(pat!("@4 A1*{'} A3*{'} C705*{'}*{'???? ???? *{'}} C3"));
-	while matches.next(&mut save) {
+	let mut matches = client.scanner().code().matches(pat!("@4 A1*{'} A3*{'} C705*{'}*{'???? ???? *{'}} C3"));
+	while matches.next(&mut save).is_some() {
 		// Remove false positives
 		if save[1] != save[3] || save[2] != save[4] + 0x10 {
 			continue;

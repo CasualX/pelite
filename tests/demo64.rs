@@ -257,18 +257,18 @@ fn scanner() {
 	let file = PeFile::from_bytes(&file_map).unwrap();
 
 	let pat = pelite::pattern!("4C8B41'? 4C2BC2 ????????? 0FB60A 420FB60402 2BC8 75% 8B15${'} 85 C9");
-	assert!(file.scanner().finds_code(pat, &mut save));
+	assert!(file.scanner().code().find(pat, &mut save).is_some());
 	assert_eq!(save[0], 0x12F0);
 	assert_eq!(save[1], 0x12F3);
 	assert_eq!(save[2], 0x5140);
 
 	// Test the edge cases of quicksearch
-	// See scanner code for an unfortunate edge case...
+	// The range restricts starts; the rest of the pattern can extend beyond it.
 	let pat = pelite::pattern!("0F1002 488BC1 0F1101 F20F104A10 F20F114910 C3");
-	assert!(file.scanner().finds(pat, 0x148F..0x14A3, &mut save));
+	assert!(file.scanner().within(0x148F..0x14A3).find(pat, &mut save).is_some());
 	assert_eq!(save[0], 0x1490);
 
-	assert!(!file.scanner().finds(pat, 0x1490..0x149F, &mut save));
+	assert_eq!(file.scanner().within(0x1490..0x1491).find(pat, &mut save), Some(0x1490));
 }
 
 //----------------------------------------------------------------

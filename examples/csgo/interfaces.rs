@@ -91,8 +91,8 @@ pub fn interfaces<'a>(file: PeFile<'a>) -> Vec<Interface<'a>> {
 	// mov     eax, offset s_Interface
 	// retn
 	// ```
-	let mut matches = file.scanner().matches_code(pat!("A1*{'} A3???? C705*{'}*{*{B8*'} *'} C3"));
-	while matches.next(&mut save) {
+	let mut matches = file.scanner().code().matches(pat!("A1*{'} A3???? C705*{'}*{*{B8*'} *'} C3"));
+	while matches.next(&mut save).is_some() {
 		// Reject false positive matches for the signature
 		if save[1] != s_pInterfaceRegs || save[2] != s_pInterfaceRegs {
 			continue;

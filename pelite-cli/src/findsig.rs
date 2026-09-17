@@ -65,9 +65,9 @@ pub fn run(matches: &ArgMatches, format: OutputFormat) -> Result {
 		let parsed = pattern::parse(&source).map_err(|error| err(format!("pattern '{source}': {error}")))?;
 		let captures_len = pattern::captures_len(&parsed);
 		let mut save = vec![0; pattern::save_len(&parsed)];
-		let mut scanner = pe.scanner().matches(&parsed, pe.headers().image_range());
+		let mut scanner = pe.scanner().sections(|_| true).matches(&parsed);
 		let mut matches = Vec::new();
-		while scanner.next(&mut save) {
+		while scanner.next(&mut save).is_some() {
 			matches.push(save[..captures_len].to_vec());
 		}
 		results.push(PatternMatches { pattern: source, matches });

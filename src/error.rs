@@ -7,6 +7,7 @@ use core::{error, fmt, result, str};
 /// Errors while parsing the PE binary.
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Hash)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
+#[non_exhaustive]
 pub enum Error {
 	/// Null address.
 	Null,
@@ -54,10 +55,6 @@ pub enum Error {
 	///
 	/// Catch-all for string related errors such as lacking a nul terminator.
 	Encoding,
-	/// Aliasing error.
-	///
-	/// Request cannot be fulfilled because it would alias with an existing borrow.
-	Aliasing,
 }
 
 impl From<str::Utf8Error> for Error {
@@ -102,7 +99,6 @@ impl Error {
 			Error::Invalid => "invalid data",
 			Error::Overflow => "overflow error",
 			Error::Encoding => "encoding error",
-			Error::Aliasing => "aliasing error",
 		}
 	}
 }

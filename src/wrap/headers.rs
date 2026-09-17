@@ -26,20 +26,4 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::PeHeaders<Pe32>, pe6
 			Wrap::T64(headers) => headers.check_sum(),
 		}
 	}
-	/// Gets the code range from the optional header.
-	#[inline]
-	pub fn code_range(&self) -> ops::Range<u32> {
-		match self {
-			Wrap::T32(headers) => headers.code_range(),
-			Wrap::T64(headers) => headers.code_range(),
-		}
-	}
-	/// Gets the full image range excluding the PE headers.
-	#[inline]
-	pub fn image_range(&self) -> ops::Range<u32> {
-		match self {
-			Wrap::T32(headers) => headers.image_range(),
-			Wrap::T64(headers) => headers.image_range(),
-		}
-	}
 }

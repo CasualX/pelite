@@ -130,8 +130,8 @@ pub enum Atom {
 	/// Searches forward for a match of the following atoms, trying the nearest cursor first.
 	///
 	/// Consumes [`Extend`](Atom::Extend). The combined operand is the maximum distance to skip:
-	/// offsets `0..=limit`, restricted to the current readable slice. Zero is reserved
-	/// for searching the entire remaining slice. Each attempt starts with fresh modifiers;
+	/// offsets `0..=limit`, restricted to the current section's remaining readable bytes.
+	/// Zero searches the entire remainder of that section. Each attempt starts with fresh modifiers;
 	/// save-slot contents after a failed attempt are unspecified. Succeeds on the first successful continuation.
 	Scan(u8),
 	/// Follows a signed 1-byte relative reference.

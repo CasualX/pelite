@@ -39,9 +39,9 @@ pub fn cvars<'a>(file: PeFile<'a>) -> pelite::Result<Vec<ConVar<'a>>> {
 	// This method is far from perfect. The linked list is created at runtime through a bunch of variations.
 
 	// Variant: ConVar with description and without min/max values
-	let pat3 = pat!("CC 68*{'} 68'???? 68*{'} 68*{'} B9*{'} E8$");
-	let mut matches = file.scanner().matches_code(pat3);
-	while matches.next(&mut save) {
+	const PAT3: &[pat::Atom] = pat!("CC 68*{'} 68'???? 68*{'} 68*{'} B9*{'} E8$");
+	let mut matches = file.scanner().code().matches(PAT3);
+	while matches.next(&mut save).is_some() {
 		let min_value = None;
 		let max_value = None;
 		let desc = Some(file.derva_c_str(save[1]).unwrap().to_str().unwrap());
@@ -62,9 +62,9 @@ pub fn cvars<'a>(file: PeFile<'a>) -> pelite::Result<Vec<ConVar<'a>>> {
 	}
 
 	// Variant: ConVar with description and with min/max values
-	let pat4 = pat!("D905*{'} 51 D91C24 D905*{'} 6A01 51 D91C24 6A01 68*{'} 68'???? 68*{'} 68*{'} B9*{'} E8$");
-	let mut matches = file.scanner().matches_code(pat4);
-	while matches.next(&mut save) {
+	const PAT4: &[pat::Atom] = pat!("D905*{'} 51 D91C24 D905*{'} 6A01 51 D91C24 6A01 68*{'} 68'???? 68*{'} 68*{'} B9*{'} E8$");
+	let mut matches = file.scanner().code().matches(PAT4);
+	while matches.next(&mut save).is_some() {
 		let max_value = Some(file.derva_copy(save[1]).unwrap());
 		let min_value = Some(file.derva_copy(save[2]).unwrap());
 		let desc = Some(file.derva_c_str(save[3]).unwrap().to_str().unwrap());
