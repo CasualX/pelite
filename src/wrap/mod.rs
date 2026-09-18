@@ -21,7 +21,50 @@ impl<Iter32: Iterator, Iter64: Iterator> Iterator for Wrap<Iter32, Iter64> {
 			Wrap::T64(iter64) => iter64.next().map(Wrap::T64),
 		}
 	}
+	#[inline]
+	fn size_hint(&self) -> (usize, Option<usize>) {
+		match self {
+			Wrap::T32(iter32) => iter32.size_hint(),
+			Wrap::T64(iter64) => iter64.size_hint(),
+		}
+	}
+	#[inline]
+	fn count(self) -> usize {
+		match self {
+			Wrap::T32(iter32) => iter32.count(),
+			Wrap::T64(iter64) => iter64.count(),
+		}
+	}
+	#[inline]
+	fn nth(&mut self, n: usize) -> Option<Self::Item> {
+		match self {
+			Wrap::T32(iter32) => iter32.nth(n).map(Wrap::T32),
+			Wrap::T64(iter64) => iter64.nth(n).map(Wrap::T64),
+		}
+	}
 }
+
+impl<Iter32: DoubleEndedIterator, Iter64: DoubleEndedIterator> DoubleEndedIterator for Wrap<Iter32, Iter64> {
+	#[inline]
+	fn next_back(&mut self) -> Option<Self::Item> {
+		match self {
+			Wrap::T32(iter32) => iter32.next_back().map(Wrap::T32),
+			Wrap::T64(iter64) => iter64.next_back().map(Wrap::T64),
+		}
+	}
+}
+
+impl<Iter32: ExactSizeIterator, Iter64: ExactSizeIterator> ExactSizeIterator for Wrap<Iter32, Iter64> {
+	#[inline]
+	fn len(&self) -> usize {
+		match self {
+			Wrap::T32(iter32) => iter32.len(),
+			Wrap::T64(iter64) => iter64.len(),
+		}
+	}
+}
+
+impl<Iter32: core::iter::FusedIterator, Iter64: core::iter::FusedIterator> core::iter::FusedIterator for Wrap<Iter32, Iter64> {}
 
 impl<T32, T64> Wrap<Result<T32>, Result<T64>> {
 	/// Transposes a wrap of results in a result of a wrap.
@@ -58,7 +101,6 @@ impl<T> Wrap<T, T> {
 	}
 }
 
-pub(crate) mod debug;
 pub(crate) mod exports;
 mod file;
 mod headers;

@@ -245,10 +245,10 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 		}
 	}
 	#[inline]
-	pub fn debug(&self) -> Result<Wrap<pe32::DebugDirectory<'a, Pe32>, pe64::DebugDirectory<'a, Pe64>>> {
+	pub fn debug(&self) -> Result<crate::debug::DebugDirectory<'a>> {
 		match self {
-			Wrap::T32(pe32) => pe32.debug().map(Wrap::T32),
-			Wrap::T64(pe64) => pe64.debug().map(Wrap::T64),
+			Wrap::T32(pe32) => pe32.debug(),
+			Wrap::T64(pe64) => pe64.debug(),
 		}
 	}
 	#[inline]
