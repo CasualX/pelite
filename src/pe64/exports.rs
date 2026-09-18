@@ -68,6 +68,9 @@ pub struct ExportDirectory<'a, P> {
 impl<'a, P: Pe<'a>> ExportDirectory<'a, P> {
 	pub(crate) fn try_from(pe: P) -> Result<ExportDirectory<'a, P>> {
 		let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_EXPORT).ok_or(Error::Bounds)?;
+		if datadir.VirtualAddress == 0 {
+			return Err(Error::Null);
+		}
 		let image = pe.derva(datadir.VirtualAddress)?;
 		Ok(ExportDirectory { pe, datadir, image })
 	}
