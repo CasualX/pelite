@@ -191,8 +191,8 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 			let image_base = self.image_base();
 			let size_of_image = self.optional_header().SizeOfImage;
 
-			if rva < size_of_image {
-				Ok(image_base + rva as Va)
+			if rva <= size_of_image {
+				image_base.checked_add(rva as Va).ok_or(Error::Overflow)
 			}
 			else {
 				Err(Error::Bounds)
@@ -348,14 +348,16 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	///
 	/// The returned slice contains all `T` up to but not including the element for which the callable returned `true`.
 	fn derva_slice_f<T: Pod, F: FnMut(&'a T) -> bool>(self, rva: Rva, mut f: F) -> Result<&'a [T]> {
+		const { assert!(mem::size_of::<T>() > 0, "cannot scan an array of zero-sized elements") };
+		let element_size = mem::size_of::<T>();
 		let align = mem::align_of::<T>();
 		let bytes = self.slice(rva, 0, align)?;
 		let mut len = 0;
 		loop {
 			// Safety critical OOB check
 			// Overflows only if bytes.len() > USIZE_MAX - sizeof(T) which would be ridiculous
-			let offset = len * mem::size_of::<T>();
-			if offset + mem::size_of::<T>() > bytes.len() {
+			let offset = len * element_size;
+			if offset + element_size > bytes.len() {
 				return Err(Error::Bounds);
 			}
 			// Safe because len is checked above and T is Pod
@@ -433,14 +435,16 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	///
 	/// The returned slice contains all `T` up to but not including the element for which the callable returned `true`.
 	fn deref_slice_f<T: Pod, F: FnMut(&'a T) -> bool>(self, ptr: Ptr<[T]>, mut f: F) -> Result<&'a [T]> {
+		const { assert!(mem::size_of::<T>() > 0, "cannot scan an array of zero-sized elements") };
+		let element_size = mem::size_of::<T>();
 		let align = mem::align_of::<T>();
 		let bytes = self.read(ptr.into(), 0, align)?;
 		let mut len = 0;
 		loop {
 			// Safety critical OOB check
 			// Overflows only if bytes.len() > USIZE_MAX - sizeof(T) which would be ridiculous
-			let offset = len * mem::size_of::<T>();
-			if offset + mem::size_of::<T>() > bytes.len() {
+			let offset = len * element_size;
+			if offset + element_size > bytes.len() {
 				return Err(Error::Bounds);
 			}
 			// Safe because len is checked above and T is Pod
@@ -488,6 +492,16 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	/// Returns [`Err(Null)`][crate::Error::Null] if the image has no exports. Any other error indiciates some form of corruption.
 	fn exports(self) -> Result<super::ExportDirectory<'a, Self>> {
 		super::ExportDirectory::try_from(self)
+	}
+
+	/// Conveniently gets the address of an exported function.
+	///
+	/// This method does not support forwarded exports and returns [`Err(Null)`][crate::Error::Null] for them.
+	/// Calling it repeatedly is less efficient than caching an [`ExportBy`](super::ExportBy) instance.
+	#[inline(never)]
+	fn get_proc_address<T>(self, name: T) -> Result<Va> where Self: super::GetProcAddress<'a, T> {
+		let export = <Self as super::GetProcAddress<'a, T>>::get_export(self, name)?;
+		self.rva_to_va(export.symbol().ok_or(Error::Null)?)
 	}
 
 	/// Gets the Import Directory.
@@ -711,6 +725,9 @@ unsafe fn slice_section(image: &[u8], rva: Rva, min_size_of: usize, align_of: us
 	if rva == 0 {
 		Err(Error::Null)
 	}
+	else if start > image.len() {
+		Err(Error::Bounds)
+	}
 	else if !usize::wrapping_add(image.as_ptr() as usize, start).aligned_to(align_of) {
 		Err(Error::Misaligned)
 	}
@@ -789,7 +806,7 @@ unsafe fn read_file(image: &[u8], image_base: Va, va: Va, min_size_of: usize, al
 	if va == 0 {
 		return Err(Error::Null);
 	}
-	if va < image_base || va - image_base > size_of_image as Va {
+	if va < image_base || va - image_base >= size_of_image as Va {
 		return Err(Error::Bounds);
 	}
 
@@ -855,10 +872,12 @@ pub(crate) fn validate_headers(image: &[u8]) -> Result<u32> {
 		return Err(Error::PeMagic);
 	}
 
-	// Verify the data directory
+	// Verify that the standard data directories exposed by this parser are physically present.
+	// Pelite follows the standard table size here; malformed but loadable images may advertise
+	// a larger count without storing those extra entries.
 	let num_rva_sizes = cmp::min(nt.OptionalHeader.NumberOfRvaAndSizes as usize, IMAGE_NUMBEROF_DIRECTORY_ENTRIES);
-	let size_of_data_dir = num_rva_sizes * mem::size_of::<IMAGE_DATA_DIRECTORY>();
-	if nt_end + size_of_data_dir > image.len() {
+	let size_of_data_dir = mem::size_of::<IMAGE_DATA_DIRECTORY>().checked_mul(num_rva_sizes).ok_or(Error::Overflow)?;
+	if nt_end.checked_add(size_of_data_dir).ok_or(Error::Overflow)? > image.len() {
 		return Err(Error::Bounds);
 	}
 
@@ -873,6 +892,9 @@ pub(crate) fn validate_headers(image: &[u8]) -> Result<u32> {
 	let start_of_sections = dos.e_lfanew as usize
 		+ (mem::size_of::<IMAGE_NT_HEADERS>() - mem::size_of::<IMAGE_OPTIONAL_HEADER>())
 		+ nt.FileHeader.SizeOfOptionalHeader as usize;
+	if !image.as_ptr().wrapping_add(start_of_sections).aligned_to(mem::align_of::<IMAGE_SECTION_HEADER>()) {
+		return Err(Error::Misaligned);
+	}
 	// then the sum of these cannot reasonably overflow
 	if size_of_sections + start_of_sections > image.len() {
 		return Err(Error::Bounds);

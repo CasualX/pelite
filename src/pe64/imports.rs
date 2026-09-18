@@ -13,13 +13,16 @@ pub use crate::ImportSymbol;
 // This function will decode them to get the import.
 fn import_from_va<'a, P: Pe<'a>>(pe: P, &va: &'a Va) -> Result<ImportSymbol<'a>> {
 	if va & IMAGE_ORDINAL_FLAG == 0 {
-		// TODO! Validate that this really is an Rva in PE32+?
-		let rva = va as Rva;
+		let rva = Rva::try_from(va).map_err(|_| Error::Overflow)?;
 		let hint = pe.derva::<u16>(rva)?;
-		let name = pe.derva_c_str(rva + 2)?;
+		let name_rva = rva.checked_add(mem::size_of::<u16>() as Rva).ok_or(Error::Overflow)?;
+		let name = pe.derva_c_str(name_rva)?;
 		Ok(ImportSymbol::ByName { hint: *hint as usize, name })
 	}
 	else {
+		if va & !(IMAGE_ORDINAL_FLAG | u16::MAX as Va) != 0 {
+			return Err(Error::Invalid);
+		}
 		Ok(ImportSymbol::ByOrdinal { ord: va as Ordinal })
 	}
 }

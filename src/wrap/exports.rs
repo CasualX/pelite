@@ -252,12 +252,12 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::ExportBy<'a, Pe32>, 
 	/// Iterate over functions exported by name.
 	#[inline]
 	pub fn iter_names(&self) -> impl Clone + Iterator<Item = (Result<&'a CStr>, Result<ExportSymbol<'a>>)> {
-		(0..self.names().len() as u32).map(move |hint| (self.name_of_hint(hint as usize), self.hint(hint as usize)))
+		(0..self.names().len()).map(move |hint| (self.name_of_hint(hint), self.hint(hint)))
 	}
 	/// Iterate over functions exported by name, returning their name and index in the functions table.
 	#[inline]
 	pub fn iter_name_indices(&self) -> impl Clone + Iterator<Item = (Result<&'a CStr>, usize)> {
-		(0..self.names().len() as u32).map(move |hint| (self.name_of_hint(hint as usize), self.name_indices()[hint as usize] as usize))
+		(0..self.names().len()).map(move |hint| (self.name_of_hint(hint), self.name_indices()[hint] as usize))
 	}
 }
 

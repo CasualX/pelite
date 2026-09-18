@@ -19,7 +19,7 @@ pub use crate::ExportSymbol;
 ///
 /// ```
 /// # #![allow(unused_variables)]
-/// use pelite::pe64::{GetProcAddress, Pe, PeFile};
+/// use pelite::pe64::{Pe, PeFile};
 ///
 /// # #[allow(dead_code)]
 /// fn example(file: PeFile<'_>) -> pelite::Result<()> {
@@ -109,21 +109,12 @@ impl<'a, P: Pe<'a>> ExportDirectory<'a, P> {
 	///
 	/// This specifically validates whether the functions, names and name indices are valid.
 	pub fn by(&self) -> Result<ExportBy<'a, P>> {
-		let functions = match self.functions() {
-			Ok(functions) => functions,
-			Err(Error::Null) => &[],
-			Err(e) => return Err(e),
-		};
-		let names = match self.names() {
-			Ok(names) => names,
-			Err(Error::Null) => &[],
-			Err(e) => return Err(e),
-		};
-		let name_indices = match self.name_indices() {
-			Ok(name_indices) => name_indices,
-			Err(Error::Null) => &[],
-			Err(e) => return Err(e),
-		};
+		// A null table RVA is valid only when the corresponding table is empty.
+		// Keeping the declared lengths intact here is important:
+		// methods such as `iter_name_indices` rely on the two name tables having equal lengths.
+		let functions = if self.image.NumberOfFunctions == 0 { &[] } else { self.functions()? };
+		let names = if self.image.NumberOfNames == 0 { &[] } else { self.names()? };
+		let name_indices = if self.image.NumberOfNames == 0 { &[] } else { self.name_indices()? };
 		Ok(ExportBy {
 			exp: *self,
 			functions,
@@ -133,14 +124,21 @@ impl<'a, P: Pe<'a>> ExportDirectory<'a, P> {
 	}
 	fn is_forwarded(&self, rva: Rva) -> bool {
 		// An export is forward if its rva points within data directory bounds
-		rva >= self.datadir.VirtualAddress && rva < self.datadir.VirtualAddress + self.datadir.Size
+		rva.wrapping_sub(self.datadir.VirtualAddress) < self.datadir.Size
 	}
 	pub(crate) fn symbol_from_rva(&self, rva: &'a Rva) -> Result<ExportSymbol<'a>> {
 		if *rva == 0 {
 			Err(Error::Null)
 		}
 		else if self.is_forwarded(*rva) {
-			let fwd = self.pe.derva_c_str(*rva)?;
+			// Forwarder strings must be wholly contained in the export directory.
+			// Besides enforcing the PE format, bounding the scan prevents a corrupt
+			// entry from borrowing a terminator from unrelated section data.
+			let offset = rva.wrapping_sub(self.datadir.VirtualAddress) as usize;
+			let remaining = self.datadir.Size as usize - offset;
+			let bytes = self.pe.slice_bytes(*rva)?;
+			let bytes = &bytes[..cmp::min(bytes.len(), remaining)];
+			let fwd = CStr::from_bytes(bytes).ok_or(Error::Encoding)?;
 			Ok(ExportSymbol::Forward(fwd))
 		}
 		else {
@@ -315,6 +313,9 @@ impl<'a, P: Pe<'a>> ExportBy<'a, P> {
 	///
 	/// See [`iter_names`](#method.iter_names) to iterate over the exported names in linear time.
 	pub fn name_lookup(&self, index: usize) -> Result<ImportSymbol<'a>> {
+		if index >= self.functions.len() {
+			return Err(Error::Bounds);
+		}
 		// Lookup the name index, accidentally quadratic :)
 		match self.name_indices.iter().position(|&i| i as usize == index) {
 			Some(hint) => {
@@ -325,7 +326,8 @@ impl<'a, P: Pe<'a>> ExportBy<'a, P> {
 			},
 			None => {
 				// Name not found
-				let ord = (index as u32 + self.exp.image.Base) as Ordinal;
+				let ordinal = self.exp.image.Base.checked_add(index as u32).ok_or(Error::Overflow)?;
+				let ord = Ordinal::try_from(ordinal).map_err(|_| Error::Overflow)?;
 				Ok(ImportSymbol::ByOrdinal { ord })
 			},
 		}
@@ -340,11 +342,11 @@ impl<'a, P: Pe<'a>> ExportBy<'a, P> {
 	}
 	/// Iterate over functions exported by name.
 	pub fn iter_names(&self) -> impl Clone + Iterator<Item = (Result<&'a CStr>, Result<ExportSymbol<'a>>)> {
-		(0..self.names().len() as u32).map(move |hint| (self.name_of_hint(hint as usize), self.hint(hint as usize)))
+		(0..self.names().len()).map(move |hint| (self.name_of_hint(hint), self.hint(hint)))
 	}
 	/// Iterate over functions exported by name, returning their name and index in the functions table.
 	pub fn iter_name_indices(&self) -> impl Clone + Iterator<Item = (Result<&'a CStr>, usize)> {
-		(0..self.names().len() as u32).map(move |hint| (self.name_of_hint(hint as usize), self.name_indices[hint as usize] as usize))
+		(0..self.names().len()).map(move |hint| (self.name_of_hint(hint), self.name_indices[hint] as usize))
 	}
 }
 impl<'a, P: Pe<'a>> fmt::Debug for ExportBy<'a, P> {
@@ -368,15 +370,6 @@ pub trait GetProcAddress<'a, T>: Pe<'a> {
 	///
 	/// Note that calling this method many times is less efficient than caching a [`ExportBy`] instance, such is the trade-off for convenience.
 	fn get_export(self, name: T) -> Result<ExportSymbol<'a>>;
-	/// Convenient method to get the address of an exported function.
-	///
-	/// Note that this method does not support forwarded exports and will return `Err(Null)` instead.
-	///
-	/// Note that calling this method many times is less efficient than caching a [`ExportBy`] instance, such is the trade-off for convenience.
-	#[inline(never)]
-	fn get_proc_address(self, name: T) -> Result<Va> {
-		self.rva_to_va(self.get_export(name)?.symbol().ok_or(Error::Null)?)
-	}
 }
 impl<'a, P: Pe<'a>> GetProcAddress<'a, Ordinal> for P {
 	fn get_export(self, name: Ordinal) -> Result<ExportSymbol<'a>> {

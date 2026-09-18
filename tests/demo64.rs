@@ -79,6 +79,7 @@ fn exports() {
 	assert_eq!(exports_by.name_of_hint(11), Ok(s_export_name));
 
 	assert_eq!(exports_by.name_lookup(11), Ok(good_hint));
+	assert_eq!(exports_by.name_lookup(exports_by.functions().len()), Err(Error::Bounds));
 
 	assert_eq!(exports_by.iter().count(), 20);
 	assert_eq!(exports_by.iter_names().count(), 20);
@@ -89,6 +90,36 @@ fn exports() {
 
 	assert_eq!(file.get_proc_address(bad_hint), file.rva_to_va(0x1230));
 	assert_eq!(file.get_proc_address(good_hint), file.rva_to_va(0x1230));
+}
+
+#[test]
+fn exports_reject_null_nonempty_name_index_table() {
+	let mut image = std::fs::read(FILE_NAME).unwrap();
+	let export_offset = {
+		let file = PeFile::from_bytes(&image).unwrap();
+		let export_rva = file.data_directory()[pelite::image::IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress;
+		file.rva_to_file_offset(export_rva).unwrap()
+	};
+
+	// AddressOfNameOrdinals is the final field of IMAGE_EXPORT_DIRECTORY.
+	image[export_offset + 36..export_offset + 40].copy_from_slice(&0u32.to_le_bytes());
+	let file = PeFile::from_bytes(&image).unwrap();
+	assert!(matches!(file.exports().unwrap().by(), Err(Error::Null)));
+}
+
+#[test]
+fn rva_to_va_reports_address_overflow() {
+	let image = std::fs::read(FILE_NAME).unwrap();
+	let file = PeFile::from_bytes(&image).unwrap();
+	let view_image = file.to_view();
+	let view = PeView::from_bytes(&view_image).unwrap();
+	let end = view.image_base() + view.optional_header().SizeOfImage as Va;
+	assert_eq!(view.va_to_rva(end), Ok(view.optional_header().SizeOfImage));
+	assert_eq!(view.rva_to_va(view.optional_header().SizeOfImage), Ok(end));
+	assert_eq!(view.read_bytes(end), Ok(&[][..]));
+	assert_eq!(view.read(end, 1, 1), Err(Error::Bounds));
+	let overflow_view = view.set_base_address(u64::MAX);
+	assert_eq!(overflow_view.rva_to_va(1), Err(Error::Overflow));
 }
 
 //----------------------------------------------------------------
@@ -245,6 +276,11 @@ fn exception_x64() {
 	let exception = file.exception_x64().unwrap();
 
 	assert_eq!(exception.functions().len(), 38);
+	for (index, function) in exception.functions().enumerate() {
+		let image = function.image();
+		assert_eq!(exception.index_of(image.BeginAddress), Ok(index));
+		assert_ne!(exception.index_of(image.EndAddress), Ok(index));
+	}
 	assert!(matches!(file.exception_arm64(), Err(Error::Invalid)));
 }
 
