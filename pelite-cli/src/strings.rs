@@ -1,12 +1,8 @@
-use std::path::{Path, PathBuf};
-
-use clap::{Arg, ArgMatches, Command};
 use pelite::strings::Config;
-use serde::Serialize;
 
-use crate::{OutputFormat, Result, print_json};
+use super::*;
 
-#[derive(Serialize)]
+#[derive(serde::Serialize)]
 struct FoundString<'a> {
 	section: &'a str,
 	address: u32,
@@ -14,23 +10,23 @@ struct FoundString<'a> {
 	value: &'a str,
 }
 
-pub fn command() -> Command {
-	Command::new("strings")
+pub fn command() -> clap::Command {
+	clap::Command::new("strings")
 		.about("Find printable strings in PE sections")
-		.arg(Arg::new("file").value_name("FILE").value_parser(clap::value_parser!(PathBuf)).required(true))
-		.arg(Arg::new("min-length")
+		.arg(clap::Arg::new("file").value_name("FILE").value_parser(clap::value_parser!(PathBuf)).required(true))
+		.arg(clap::Arg::new("min-length")
 			.long("min-length")
 			.value_name("N")
 			.value_parser(clap::value_parser!(u8))
 			.default_value("6")
 			.help("Minimum unterminated string length"))
-		.arg(Arg::new("min-length-nul")
+		.arg(clap::Arg::new("min-length-nul")
 			.long("min-length-nul")
 			.value_name("N")
 			.value_parser(clap::value_parser!(u8))
 			.default_value("3")
 			.help("Minimum nul-terminated string length"))
-		.arg(Arg::new("strict-nul")
+		.arg(clap::Arg::new("strict-nul")
 			.long("strict-nul")
 			.value_name("BOOL")
 			.value_parser(clap::value_parser!(bool))
@@ -38,7 +34,7 @@ pub fn command() -> Command {
 			.help("Require strings to have a nul terminator"))
 }
 
-pub fn run(matches: &ArgMatches, format: OutputFormat) -> Result {
+pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let config = Config {
 		min_length: *matches.get_one("min-length").expect("defaulted by clap"),
 		min_length_nul: *matches.get_one("min-length-nul").expect("defaulted by clap"),

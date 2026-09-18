@@ -1,37 +1,29 @@
-use std::io::{self, BufRead, IsTerminal, Write};
-use std::path::PathBuf;
-
-use clap::{Arg, ArgMatches, Command};
 use pelite::pattern;
-use serde::Serialize;
 
-use crate::{OutputFormat, Result, err, print_json};
+use super::*;
 
-#[derive(Serialize)]
+#[derive(serde::Serialize)]
 struct PatternMatches {
 	pattern: String,
 	matches: Vec<Vec<u32>>,
 }
 
-pub fn command() -> Command {
-	Command::new("findsig")
+pub fn command() -> clap::Command {
+	clap::Command::new("findsig")
 		.about("Find byte patterns in a PE image")
-		.after_help(
-			"If no patterns are supplied, patterns are read one per line from standard input.\n\
-			 Pattern syntax: https://docs.rs/pelite/latest/pelite/pattern/fn.parse.html",
-		)
-		.arg(Arg::new("file")
+		.after_help("If no patterns are supplied, patterns are read one per line from standard input.\nPattern syntax: https://docs.rs/pelite/latest/pelite/pattern/fn.parse.html")
+		.arg(clap::Arg::new("file")
 			.value_name("FILE")
 			.value_parser(clap::value_parser!(PathBuf))
 			.required(true))
-		.arg(Arg::new("patterns")
+		.arg(clap::Arg::new("patterns")
 			.value_name("PATTERN")
 			.num_args(0..)
 			.action(clap::ArgAction::Append)
 			.help("Pattern to scan for"))
 }
 
-pub fn run(matches: &ArgMatches, format: OutputFormat) -> Result {
+pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let path = matches.get_one::<PathBuf>("file").expect("required by clap");
 	let mut patterns: Vec<String> = matches.get_many::<String>("patterns").map(|values| values.cloned().collect()).unwrap_or_default();
 	if patterns.is_empty() {
@@ -46,8 +38,7 @@ pub fn run(matches: &ArgMatches, format: OutputFormat) -> Result {
 				print!(">>> ");
 				io::stdout().flush()?;
 			}
-			let Some(line) = lines.next()
-			else {
+			let Some(line) = lines.next() else {
 				break;
 			};
 			let line = line?;

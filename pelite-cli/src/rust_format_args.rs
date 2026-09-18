@@ -1,14 +1,9 @@
-use std::collections::BTreeMap;
-use std::path::PathBuf;
-
-use clap::{Arg, ArgMatches, Command};
 use pelite::FileMap;
-use serde::Serialize;
 
-use crate::rust_msvc::{Placeholder, candidate_relative_xrefs, is_rust_location, open_x64, read_format_template};
-use crate::{OutputFormat, Result, print_json};
+use crate::rust_msvc::*;
+use super::*;
 
-#[derive(Serialize)]
+#[derive(serde::Serialize)]
 struct FormatArgsOutput {
 	template_rva: u32,
 	encoded_len: usize,
@@ -20,20 +15,20 @@ struct FormatArgsOutput {
 	code_rvas: Vec<u32>,
 }
 
-pub fn command() -> Command {
-	Command::new("rust-format-args")
+pub fn command() -> clap::Command {
+	clap::Command::new("rust-format-args")
 		.about("Find current-toolchain Rust format_args! templates in an x64 MSVC PE")
 		.after_help(
 			"Decodes the compact fmt::Arguments template emitted by the current Rust toolchain.\n\
 			 Literal-only format_args! values use the optimized &str representation and are not distinguishable reliably.",
 		)
-		.arg(Arg::new("file")
+		.arg(clap::Arg::new("file")
 			.value_name("FILE")
 			.value_parser(clap::value_parser!(PathBuf))
 			.required(true))
 }
 
-pub fn run(matches: &ArgMatches, format: OutputFormat) -> Result {
+pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let path = matches.get_one::<PathBuf>("file").expect("required by clap");
 	let map = FileMap::open(path)?;
 	let file = open_x64(map.as_ref())?;

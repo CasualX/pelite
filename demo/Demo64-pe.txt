@@ -1,348 +1,1317 @@
-----------------------------------------------------------------
-MZ Header
-  e_magic:    5A4D: MZ
-  e_cblp:     ··90
-  e_cp:       ···3
-  e_crlc:     ···0
-  e_cparhdr:  ···4
-  e_minalloc: ···0
-  e_maxalloc: FFFF
-  e_ss:       ···0
-  e_sp:       ··B8
-  e_csum:     ···0
-  e_ip:       ···0
-  e_cs:       ···0
-  e_lfarlc:   ··40
-  e_ovno:     ···0
-  e_oemid:    ···0
-  e_oeminfo:  ···0
-  e_lfanew:   ·····110
-----------------------------------------------------------------
-NT Headers
-  Signature:               ····4550: PE
-File Header
-  Machine:                 8664: AMD64
-  NumberOfSections:        7
-  TimeDateStamp:           1496673116
-  PointerToSymbolTable:    ·······0
-  NumberOfSymbols:         0
-  SizeOfOptionalHeader:    ··F0
-  Characteristics:         2022
-    ···2: EXECUTABLE_IMAGE
-    ··20: LARGE_ADDRESS_AWARE
-    2000: DLL
-Optional Header
-  Magic:                   ·20B: PE32+
-  LinkerVersion:           12.0
-  SizeOfCode:              ····1200
-  SizeOfInitializedData:   ····6200
-  SizeOfUninitializedData: ·······0
-  AddressOfEntryPoint:     ····1868
-  BaseOfCode:              ····1000
-  ImageBase:               ·······180000000
-  SectionAlignment:        ····1000
-  FileAlignment:           ·····200
-  OperatingSystemVersion:  6.0
-  ImageVersion:            0.0
-  SubsystemVersion:        6.0
-  Win32VersionValue:       ·······0
-  SizeOfImage:             ····E000
-  SizeOfHeaders:           ·····400
-  CheckSum:                ·······0
-  Subsystem:               ···2: Windows GUI
-  DllCharacteristics:      ·160
-    ··20: High Entropy VA
-    ··40: Dynamic Base
-    ·100: NX Compat
-  SizeOfStackReserve:      ··········100000
-  SizeOfStackCommit:       ············1000
-  SizeOfHeapReserve:       ··········100000
-  SizeOfHeapCommit:        ············1000
-  LoaderFlags:             ·······0
-  NumberOfRvaAndSizes:     ······10
-     0 [RVA:····3A30 Size:·····276] of Export Directory
-     1 [RVA:····3CA8 Size:······3C] of Import Directory
-     2 [RVA:····8000 Size:····41D0] of Resource Directory
-     3 [RVA:····6000 Size:·····1C8] of Exception Directory
-     5 [RVA:····D000 Size:······60] of BaseReloc Directory
-     6 [RVA:····3190 Size:······38] of Debug Directory
-     9 [RVA:····3370 Size:······28] of TLS Directory
-    10 [RVA:····3300 Size:······70] of Load Config Directory
-    12 [RVA:····3000 Size:·····148] of IAT Directory
-----------------------------------------------------------------
-Section Header
-  Name:                 .text···
-  VirtualSize:          ····11BB
-  VirtualAddress:       ····1000
-  SizeOfRawData:        ····1200
-  PointerToRawData:     ·····400
-  PointerToRelocations: ·······0
-  PointerToLinenumbers: ·······0
-  NumberOfRelocations:  ·······0
-  NumberOfLinenumbers:  ·······0
-  Characteristics:      60000020
-    ······20: CNT_CODE
-    20000000: MEM_EXECUTE
-    40000000: MEM_READ
-Section Header
-  Name:                 .rdata··
-  VirtualSize:          ····116C
-  VirtualAddress:       ····3000
-  SizeOfRawData:        ····1200
-  PointerToRawData:     ····1600
-  PointerToRelocations: ·······0
-  PointerToLinenumbers: ·······0
-  NumberOfRelocations:  ·······0
-  NumberOfLinenumbers:  ·······0
-  Characteristics:      40000040
-    ······40: CNT_INITIALIZED_DATA
-    40000000: MEM_READ
-Section Header
-  Name:                 .data···
-  VirtualSize:          ·····710
-  VirtualAddress:       ····5000
-  SizeOfRawData:        ·····200
-  PointerToRawData:     ····2800
-  PointerToRelocations: ·······0
-  PointerToLinenumbers: ·······0
-  NumberOfRelocations:  ·······0
-  NumberOfLinenumbers:  ·······0
-  Characteristics:      C0000040
-    ······40: CNT_INITIALIZED_DATA
-    40000000: MEM_READ
-    80000000: MEM_WRITE
-Section Header
-  Name:                 .pdata··
-  VirtualSize:          ·····1C8
-  VirtualAddress:       ····6000
-  SizeOfRawData:        ·····200
-  PointerToRawData:     ····2A00
-  PointerToRelocations: ·······0
-  PointerToLinenumbers: ·······0
-  NumberOfRelocations:  ·······0
-  NumberOfLinenumbers:  ·······0
-  Characteristics:      40000040
-    ······40: CNT_INITIALIZED_DATA
-    40000000: MEM_READ
-Section Header
-  Name:                 .tls····
-  VirtualSize:          ·······3
-  VirtualAddress:       ····7000
-  SizeOfRawData:        ·····200
-  PointerToRawData:     ····2C00
-  PointerToRelocations: ·······0
-  PointerToLinenumbers: ·······0
-  NumberOfRelocations:  ·······0
-  NumberOfLinenumbers:  ·······0
-  Characteristics:      C0000040
-    ······40: CNT_INITIALIZED_DATA
-    40000000: MEM_READ
-    80000000: MEM_WRITE
-Section Header
-  Name:                 .rsrc···
-  VirtualSize:          ····41D0
-  VirtualAddress:       ····8000
-  SizeOfRawData:        ····4200
-  PointerToRawData:     ····2E00
-  PointerToRelocations: ·······0
-  PointerToLinenumbers: ·······0
-  NumberOfRelocations:  ·······0
-  NumberOfLinenumbers:  ·······0
-  Characteristics:      40000040
-    ······40: CNT_INITIALIZED_DATA
-    40000000: MEM_READ
-Section Header
-  Name:                 .reloc··
-  VirtualSize:          ······60
-  VirtualAddress:       ····D000
-  SizeOfRawData:        ·····200
-  PointerToRawData:     ····7000
-  PointerToRelocations: ·······0
-  PointerToLinenumbers: ·······0
-  NumberOfRelocations:  ·······0
-  NumberOfLinenumbers:  ·······0
-  Characteristics:      42000040
-    ······40: CNT_INITIALIZED_DATA
-    40000000: MEM_READ
-----------------------------------------------------------------
-Exports for Demo.dll
-  TimeDateStamp:   1496673116
-  Version:         0.0
-  OrdinalBase:     1
-  # of functions:  20
-  # of names:      20
+PE image
+========
+format : PE32+
 
-  ord hint RVA      name
-    1 ···0 ····1260 ??0Passwds@@QEAA@PEBD@Z
-    2 ···1 ····12A0 ??1Passwds@@QEAA@XZ
-    3 ···2 ····1490 ??4Passwds@@QEAAAEAV0@AEBV0@@Z
-    4 ···3 ····1340 ?AddPass@Passwds@@QEAAXPEBD00@Z
-    5 ···4 ····5018 ?GLOBAL_A@@3VA@@A
-    6 ···5 ····5028 ?GLOBAL_B@@3VB@@A
-    7 ···6 ····5038 ?GLOBAL_C@@3VC@@A
-    8 ···7 ····13C0 ?GetPass@Passwds@@QEAAPEBDPEBD0@Z
-    9 ···8 ····12D0 ?Lock@Passwds@@QEAAXXZ
-   10 ···9 ····12F0 ?Unlock@Passwds@@QEAA_NPEBD@Z
-   11 ···A ····14B0 ?__autoclassinit2@Passwds@@QEAAX_K@Z
-   12 ···B ····1230 ?fnPasswdsBypass@@YAHXZ
-   13 ···C ····56D8 ?nPasswds@@3HA
-   14 ···D ····1090 CallA1
-   15 ···E ····10A0 CallA2
-   16 ···F ····1090 CallB1
-   17 ··10 ····10A0 CallB2
-   18 ··11 ····10A0 CallC1
-   19 ··12 ····10B0 CallC2
-   20 ··13 ····10C0 ThrowException
-----------------------------------------------------------------
-Imports from "KERNEL32.dll"
-  TimeDateStamp:   0
-  ForwarderChain:  ·······0
-  FirstThunk:      ····3000
-    532 GetCurrentThreadId
-    528 GetCurrentProcessId
-   1072 QueryPerformanceCounter
-    880 IsProcessorFeaturePresent
-    874 IsDebuggerPresent
-    255 DecodePointer
-    293 EncodePointer
-    733 GetSystemTimeAsFileTime
-Imports from "MSVCR120.dll"
-  TimeDateStamp:   0
-  ForwarderChain:  ·······0
-  FirstThunk:      ····3048
-   1137 _strdup
-   1706 malloc
-   1616 free
-    349 __CppXcptFilter
-    498 _amsg_exit
-    876 _malloc_crt
-    737 _initterm
-    738 _initterm_e
-    348 __C_specific_handler
-    413 __crt_debugger_hook
-     44 ??0exception@std@@QEAA@AEBV01@@Z
-    411 __crtTerminateProcess
-    382 __crtCapturePreviousContext
-    307 ?terminate@@YAXXZ
-    283 ?_type_info_dtor_internal_method@type_info@@QEAAXXZ
-    859 _lock
-   1223 _unlock
-    521 _calloc_crt
-    415 __dllonexit
-   1026 _onexit
-    379 __clean_type_info_names_internal
-   1742 printf
-     42 ??0exception@std@@QEAA@AEBQEBD@Z
-    106 ??1exception@std@@UEAA@XZ
-    114 ??3@YAXPEAX@Z
-    320 ?what@exception@std@@UEBAPEBDXZ
-    412 __crtUnhandledException
-    325 _CxxThrowException
-    354 __CxxFrameHandler3
-    364 __RTDynamicCast
-   1721 memset
-----------------------------------------------------------------
-Resources
-+-. L"IMPORTANT"
-| `-. 106
-|   `   2057
-+-. Icons
-| `-. 1
-|   `   2057
-+-. Strings
-| `-. 7
-|   `   2057
-+-. Accelerators
-| `-. 101
-|   `   2057
-+-. Group Icons
-| `-. 103
-|   `   2057
-+-. Version
-| `-. 1
-|   `   2057
-`-. Manifest
-  `-. 2
-    `   1033
-----------------------------------------------------------------
-Base Relocations
-  VirtualAddress: ····3000
-  SizeOfBlock:    ······40
-    A ····3160: DIR64
-    A ····3168: DIR64
-    A ····3180: DIR64
-    A ····31C8: DIR64
-    A ····31D0: DIR64
-    A ····31E0: DIR64
-    A ····31E8: DIR64
-    A ····3230: DIR64
-    A ····3238: DIR64
-    A ····3240: DIR64
-    A ····3248: DIR64
-    A ····3250: DIR64
-    A ····3258: DIR64
-    A ····3260: DIR64
-    A ····3268: DIR64
-    A ····3270: DIR64
-    A ····3278: DIR64
-    A ····3280: DIR64
-    A ····3288: DIR64
-    A ····3290: DIR64
-    A ····3298: DIR64
-    A ····32A0: DIR64
-    A ····3358: DIR64
-    A ····3370: DIR64
-    A ····3378: DIR64
-    A ····3380: DIR64
-    A ····3388: DIR64
-    0 ····3000: ABSOLUTE
-Base Relocations
-  VirtualAddress: ····5000
-  SizeOfBlock:    ······20
-    A ····5018: DIR64
-    A ····5028: DIR64
-    A ····5038: DIR64
-    A ····5048: DIR64
-    A ····5060: DIR64
-    A ····5080: DIR64
-    A ····5098: DIR64
-    A ····50C0: DIR64
-    A ····50E8: DIR64
-    A ····5110: DIR64
-    A ····5128: DIR64
-    0 ····5000: ABSOLUTE
-----------------------------------------------------------------
-TLS Directory
-  StartAddressOfRawData:  ·······180007000
-  EndAddressOfRawData:    ·······180007002
-  AddressOfIndex:         ·······180005140
-  AddressOfCallBacks:     ·······180003180
-  SizeOfZeroFill:         ·······0
-  Characteristics:        ··100000
-TLS Callbacks
-  ·······1800014C0
-----------------------------------------------------------------
-Debug Directory
-  Characteristics:  ·······0
-  TimeDateStamp:    1496673116
-  Version:          0.0
-  Type:             2: CodeView
-  SizeOfData:       ······4B
-  AddressOfRawData: ····3398
-  PointerToRawData: ····1998
-CodeView PDB 7.0
-  CvSignature:      53445352: RSDS
-  Signature:        B0E3D873-3136-6A44-B907-9C724C47A865
-  Age:              1
-  PdbFileName:      D:\Projects\pelite\proto\Demo\x64\Release\Demo.pdb
+debug:
+  [0]
+    type : IMAGE_DEBUG_TYPE_CODEVIEW
 
-Debug Directory
-  Characteristics:  ·······0
-  TimeDateStamp:    1496673116
-  Version:          0.0
-  Type:             12
-  SizeOfData:       ······14
-  AddressOfRawData: ····33E4
-  PointerToRawData: ····19E4
-Unknown
+    entry:
+      format        : RSDS
+      pdb_file_name : D:\Projects\pelite\proto\Demo\x64\Release\Demo.pdb
 
+      image:
+        Age         : 1
+        CvSignature : 1396986706 (0x53445352)
+        Signature   : {73d8e3b0-3631-446a-b907-9c724c47a865}
+
+    image:
+      AddressOfRawData : 13208 (0x3398)
+      Characteristics  : 0
+      PointerToRawData : 6552 (0x1998)
+      SizeOfData       : 75 (0x4b)
+      TimeDateStamp    : 1496673116 (0x59356b5c)
+      Type             : 2
+      Version          : 0.0
+
+  [1]
+    entry : null
+    type  : IMAGE_DEBUG_TYPE_VC_FEATURE
+
+    image:
+      AddressOfRawData : 13284 (0x33e4)
+      Characteristics  : 0
+      PointerToRawData : 6628 (0x19e4)
+      SizeOfData       : 20 (0x14)
+      TimeDateStamp    : 1496673116 (0x59356b5c)
+      Type             : 12 (0xc)
+      Version          : 0.0
+
+dos:
+  e_cblp     : 144 (0x90)
+  e_cp       : 3
+  e_cparhdr  : 4
+  e_crlc     : 0
+  e_cs       : 0
+  e_csum     : 0
+  e_ip       : 0
+  e_lfanew   : 272 (0x110)
+  e_lfarlc   : 64 (0x40)
+  e_magic    : 23117 (0x5a4d)
+  e_maxalloc : 65535 (0xffff)
+  e_minalloc : 0
+  e_oemid    : 0
+  e_oeminfo  : 0
+  e_ovno     : 0
+  e_res      : [0, 0, 0, 0]
+  e_res2     : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+  e_sp       : 184 (0xb8)
+  e_ss       : 0
+
+exceptions:
+  [0]
+    image:
+      BeginAddress : 4176 (0x1050)
+      EndAddress   : 4200 (0x1068)
+      UnwindData   : 14128 (0x3730)
+
+    unwind_info:
+      flags          : 0
+      frame_offset   : 0
+      frame_register : 0
+      size_of_prolog : 6
+      version        : 1
+
+      unwind_codes:
+        CodeOffset | UnwindOpInfo
+        -----------+-------------
+        6          | 50 (0x32)
+        2          | 48 (0x30)
+
+  [1]
+    image:
+      BeginAddress : 4208 (0x1070)
+      EndAddress   : 4231 (0x1087)
+      UnwindData   : 14128 (0x3730)
+
+    unwind_info:
+      flags          : 0
+      frame_offset   : 0
+      frame_register : 0
+      size_of_prolog : 6
+      version        : 1
+
+      unwind_codes:
+        CodeOffset | UnwindOpInfo
+        -----------+-------------
+        6          | 50 (0x32)
+        2          | 48 (0x30)
+
+  [2]
+    image:
+      BeginAddress : 4288 (0x10c0)
+      EndAddress   : 4516 (0x11a4)
+      UnwindData   : 14136 (0x3738)
+
+    unwind_info:
+      flags          : 3
+      frame_offset   : 0
+      frame_register : 0
+      size_of_prolog : 41 (0x29)
+      version        : 1
+
+      unwind_codes:
+        CodeOffset | UnwindOpInfo
+        -----------+-------------
+        23 (0x17)  | 52 (0x34)
+        23 (0x17)  | 0
+        11 (0xb)   | 1
+        20 (0x14)  | 0
+        4          | 112 (0x70)
+
+  [3]
+    image:
+      BeginAddress : 4528 (0x11b0)
+      EndAddress   : 4562 (0x11d2)
+      UnwindData   : 14128 (0x3730)
+
+    unwind_info:
+      flags          : 0
+      frame_offset   : 0
+      frame_register : 0
+      size_of_prolog : 6
+      version        : 1
+
+      unwind_codes:
+        CodeOffset | UnwindOpInfo
+        -----------+-------------
+        6          | 50 (0x32)
+        2          | 48 (0x30)
+
+  [4]
+    image:
+      BeginAddress : 4592 (0x11f0)
+      EndAddress   : 4641 (0x1221)
+      UnwindData   : 14368 (0x3820)
+
+    unwind_info:
+      flags          : 0
+      frame_offset   : 0
+      frame_register : 0
+      size_of_prolog : 10 (0xa)
+      version        : 1
+
+      unwind_codes:
+        CodeOffset | UnwindOpInfo
+        -----------+-------------
+        10 (0xa)   | 52 (0x34)
+        6          | 0
+        10 (0xa)   | 50 (0x32)
+        6          | 112 (0x70)
+
+  [5]
+    image:
+      BeginAddress : 4704 (0x1260)
+      EndAddress   : 4759 (0x1297)
+      UnwindData   : 14128 (0x3730)
+
+    unwind_info:
+      flags          : 0
+      frame_offset   : 0
+      frame_register : 0
+      size_of_prolog : 6
+      version        : 1
+
+      unwind_codes:
+        CodeOffset | UnwindOpInfo
+        -----------+-------------
+        6          | 50 (0x32)
+        2          | 48 (0x30)
+
+  [6]
+    image:
+      BeginAddress : 4768 (0x12a0)
+      EndAddress   : 4803 (0x12c3)
+      UnwindData   : 14128 (0x3730)
+
+    unwind_info:
+      flags          : 0
+      frame_offset   : 0
+      frame_register : 0
+      size_of_prolog : 6
+      version        : 1
+
+      unwind_codes:
+        CodeOffset | UnwindOpInfo
+        -----------+-------------
+        6          | 50 (0x32)
+        2          | 48 (0x30)
+
+  [7]
+    image:
+      BeginAddress : 4928 (0x1340)
+      EndAddress   : 5049 (0x13b9)
+      UnwindData   : 14380 (0x382c)
+
+    unwind_info:
+      flags          : 0
+      frame_offset   : 0
+      frame_register : 0
+      size_of_prolog : 21 (0x15)
+      version        : 1
+
+      unwind_codes:
+        CodeOffset | UnwindOpInfo
+        -----------+-------------
+        21 (0x15)  | 116 (0x74)
+        8          | 0
+        21 (0x15)  | 100 (0x64)
+        7          | 0
+        21 (0x15)  | 52 (0x34)
+        6          | 0
+        21 (0x15)  | 50 (0x32)
+        17 (0x11)  | 224 (0xe0)
+
+  [8]
+    image:
+      BeginAddress : 5056 (0x13c0)
+      EndAddress   : 5264 (0x1490)
+      UnwindData   : 14400 (0x3840)
+
+    unwind_info:
+      flags          : 0
+      frame_offset   : 0
+      frame_register : 0
+      size_of_prolog : 15 (0xf)
+      version        : 1
+
+      unwind_codes:
+        CodeOffset | UnwindOpInfo
+        -----------+-------------
+        15 (0xf)   | 116 (0x74)
+        3          | 0
+        10 (0xa)   | 100 (0x64)
+        2          | 0
+        5          | 52 (0x34)
+        1          | 0
+
+  [9]
+    image:
+      BeginAddress : 5312 (0x14c0)
+      EndAddress   : 5383 (0x1507)
+      UnwindData   : 14416 (0x3850)
+
+    unwind_info:
+      flags          : 0
+      frame_offset   : 0
+      frame_register : 0
+      size_of_prolog : 15 (0xf)
+      version        : 1
+
+      unwind_codes:
+        CodeOffset | UnwindOpInfo
+        -----------+-------------
+        15 (0xf)   | 100 (0x64)
+        9          | 0
+        15 (0xf)   | 52 (0x34)
+        8          | 0
+        15 (0xf)   | 82 (0x52)
+        11 (0xb)   | 112 (0x70)
+
+  [10]
+    image:
+      BeginAddress : 5408 (0x1520)
+      EndAddress   : 5439 (0x153f)
+      UnwindData   : 14432 (0x3860)
+
+    unwind_info:
+      flags          : 0
+      frame_offset   : 0
+      frame_register : 0
+      size_of_prolog : 0
+      unwind_codes   : []
+      version        : 1
+
+  [11]
+    image:
+      BeginAddress : 5452 (0x154c)
+      EndAddress   : 5558 (0x15b6)
+      UnwindData   : 14436 (0x3864)
+
+    unwind_info:
+      flags          : 0
+      frame_offset   : 0
+      frame_register : 0
+      size_of_prolog : 15 (0xf)
+      version        : 1
+
+      unwind_codes:
+        CodeOffset | UnwindOpInfo
+        -----------+-------------
+        15 (0xf)   | 100 (0x64)
+        7          | 0
+        15 (0xf)   | 52 (0x34)
+        6          | 0
+        15 (0xf)   | 50 (0x32)
+        11 (0xb)   | 112 (0x70)
+
+  [12]
+    image:
+      BeginAddress : 5564 (0x15bc)
+      EndAddress   : 5658 (0x161a)
+      UnwindData   : 14128 (0x3730)
+
+    unwind_info:
+      flags          : 0
+      frame_offset   : 0
+      frame_register : 0
+      size_of_prolog : 6
+      version        : 1
+
+      unwind_codes:
+        CodeOffset | UnwindOpInfo
+        -----------+-------------
+        6          | 50 (0x32)
+        2          | 48 (0x30)
+
+  [13]
+    image:
+      BeginAddress : 5660 (0x161c)
+      EndAddress   : 6247 (0x1867)
+      UnwindData   : 14452 (0x3874)
+
+    unwind_info:
+      flags          : 0
+      frame_offset   : 0
+      frame_register : 0
+      size_of_prolog : 29 (0x1d)
+      version        : 1
+
+      unwind_codes:
+        CodeOffset | UnwindOpInfo
+        -----------+-------------
+        29 (0x1d)  | 196 (0xc4)
+        11 (0xb)   | 0
+        29 (0x1d)  | 116 (0x74)
+        10 (0xa)   | 0
+        29 (0x1d)  | 84 (0x54)
+        9          | 0
+        29 (0x1d)  | 52 (0x34)
+        8          | 0
+        29 (0x1d)  | 50 (0x32)
+        25 (0x19)  | 240 (0xf0)
+        23 (0x17)  | 224 (0xe0)
+        21 (0x15)  | 208 (0xd0)
+
+  [14]
+    image:
+      BeginAddress : 6248 (0x1868)
+      EndAddress   : 6309 (0x18a5)
+      UnwindData   : 14436 (0x3864)
+
+    unwind_info:
+      flags          : 0
+      frame_offset   : 0
+      frame_register : 0
+      size_of_prolog : 15 (0xf)
+      version        : 1
+
+      unwind_codes:
+        CodeOffset | UnwindOpInfo
+        -----------+-------------
+        15 (0xf)   | 100 (0x64)
+        7          | 0
+        15 (0xf)   | 52 (0x34)
+        6          | 0
+        15 (0xf)   | 50 (0x32)
+        11 (0xb)   | 112 (0x70)
+
+  [15]
+    image:
+      BeginAddress : 6312 (0x18a8)
+      EndAddress   : 6622 (0x19de)
+      UnwindData   : 14480 (0x3890)
+
+    unwind_info:
+      flags          : 3
+      frame_offset   : 0
+      frame_register : 0
+      size_of_prolog : 21 (0x15)
+      version        : 1
+
+      unwind_codes:
+        CodeOffset | UnwindOpInfo
+        -----------+-------------
+        21 (0x15)  | 116 (0x74)
+        10 (0xa)   | 0
+        21 (0x15)  | 100 (0x64)
+        9          | 0
+        21 (0x15)  | 52 (0x34)
+        8          | 0
+        21 (0x15)  | 82 (0x52)
+        17 (0x11)  | 224 (0xe0)
+
+  [16]
+    image:
+      BeginAddress : 6624 (0x19e0)
+      EndAddress   : 6697 (0x1a29)
+      UnwindData   : 14128 (0x3730)
+
+    unwind_info:
+      flags          : 0
+      frame_offset   : 0
+      frame_register : 0
+      size_of_prolog : 6
+      version        : 1
+
+      unwind_codes:
+        CodeOffset | UnwindOpInfo
+        -----------+-------------
+        6          | 50 (0x32)
+        2          | 48 (0x30)
+
+  [17]
+    image:
+      BeginAddress : 6700 (0x1a2c)
+      EndAddress   : 6909 (0x1afd)
+      UnwindData   : 14540 (0x38cc)
+
+    unwind_info:
+      flags          : 0
+      frame_offset   : 0
+      frame_register : 0
+      size_of_prolog : 9
+      version        : 1
+
+      unwind_codes:
+        CodeOffset | UnwindOpInfo
+        -----------+-------------
+        9          | 98 (0x62)
+
+  [18]
+    image:
+      BeginAddress : 6912 (0x1b00)
+      EndAddress   : 7005 (0x1b5d)
+      UnwindData   : 14548 (0x38d4)
+
+    unwind_info:
+      flags          : 2
+      frame_offset   : 0
+      frame_register : 0
+      size_of_prolog : 24 (0x18)
+      version        : 1
+
+      unwind_codes:
+        CodeOffset | UnwindOpInfo
+        -----------+-------------
+        24 (0x18)  | 98 (0x62)
+        20 (0x14)  | 224 (0xe0)
+        18 (0x12)  | 112 (0x70)
+        17 (0x11)  | 96 (0x60)
+        16 (0x10)  | 48 (0x30)
+
+  [19]
+    image:
+      BeginAddress : 7008 (0x1b60)
+      EndAddress   : 7082 (0x1baa)
+      UnwindData   : 14588 (0x38fc)
+
+    unwind_info:
+      flags          : 1
+      frame_offset   : 0
+      frame_register : 0
+      size_of_prolog : 23 (0x17)
+      version        : 1
+
+      unwind_codes:
+        CodeOffset | UnwindOpInfo
+        -----------+-------------
+        23 (0x17)  | 52 (0x34)
+        13 (0xd)   | 0
+        23 (0x17)  | 114 (0x72)
+        19 (0x13)  | 224 (0xe0)
+        17 (0x11)  | 112 (0x70)
+        16 (0x10)  | 96 (0x60)
+
+  [20]
+    image:
+      BeginAddress : 7184 (0x1c10)
+      EndAddress   : 7261 (0x1c5d)
+      UnwindData   : 14636 (0x392c)
+
+    unwind_info:
+      flags          : 1
+      frame_offset   : 0
+      frame_register : 0
+      size_of_prolog : 10 (0xa)
+      version        : 1
+
+      unwind_codes:
+        CodeOffset | UnwindOpInfo
+        -----------+-------------
+        10 (0xa)   | 52 (0x34)
+        6          | 0
+        10 (0xa)   | 50 (0x32)
+        6          | 112 (0x70)
+
+  [21]
+    image:
+      BeginAddress : 7312 (0x1c90)
+      EndAddress   : 7390 (0x1cde)
+      UnwindData   : 14128 (0x3730)
+
+    unwind_info:
+      flags          : 0
+      frame_offset   : 0
+      frame_register : 0
+      size_of_prolog : 6
+      version        : 1
+
+      unwind_codes:
+        CodeOffset | UnwindOpInfo
+        -----------+-------------
+        6          | 50 (0x32)
+        2          | 48 (0x30)
+
+  [22]
+    image:
+      BeginAddress : 7392 (0x1ce0)
+      EndAddress   : 7568 (0x1d90)
+      UnwindData   : 14680 (0x3958)
+
+    unwind_info:
+      flags          : 2
+      frame_offset   : 0
+      frame_register : 0
+      size_of_prolog : 6
+      version        : 1
+
+      unwind_codes:
+        CodeOffset | UnwindOpInfo
+        -----------+-------------
+        6          | 50 (0x32)
+        2          | 48 (0x30)
+
+  [23]
+    image:
+      BeginAddress : 7568 (0x1d90)
+      EndAddress   : 7591 (0x1da7)
+      UnwindData   : 14672 (0x3950)
+
+    unwind_info:
+      flags          : 0
+      frame_offset   : 0
+      frame_register : 0
+      size_of_prolog : 4
+      version        : 1
+
+      unwind_codes:
+        CodeOffset | UnwindOpInfo
+        -----------+-------------
+        4          | 66 (0x42)
+
+  [24]
+    image:
+      BeginAddress : 7592 (0x1da8)
+      EndAddress   : 7764 (0x1e54)
+      UnwindData   : 14712 (0x3978)
+
+    unwind_info:
+      flags          : 0
+      frame_offset   : 0
+      frame_register : 0
+      size_of_prolog : 13 (0xd)
+      version        : 1
+
+      unwind_codes:
+        CodeOffset | UnwindOpInfo
+        -----------+-------------
+        13 (0xd)   | 52 (0x34)
+        9          | 0
+        13 (0xd)   | 50 (0x32)
+        6          | 80 (0x50)
+
+  [25]
+    image:
+      BeginAddress : 7764 (0x1e54)
+      EndAddress   : 7820 (0x1e8c)
+      UnwindData   : 14368 (0x3820)
+
+    unwind_info:
+      flags          : 0
+      frame_offset   : 0
+      frame_register : 0
+      size_of_prolog : 10 (0xa)
+      version        : 1
+
+      unwind_codes:
+        CodeOffset | UnwindOpInfo
+        -----------+-------------
+        10 (0xa)   | 52 (0x34)
+        6          | 0
+        10 (0xa)   | 50 (0x32)
+        6          | 112 (0x70)
+
+  [26]
+    image:
+      BeginAddress : 7820 (0x1e8c)
+      EndAddress   : 7876 (0x1ec4)
+      UnwindData   : 14368 (0x3820)
+
+    unwind_info:
+      flags          : 0
+      frame_offset   : 0
+      frame_register : 0
+      size_of_prolog : 10 (0xa)
+      version        : 1
+
+      unwind_codes:
+        CodeOffset | UnwindOpInfo
+        -----------+-------------
+        10 (0xa)   | 52 (0x34)
+        6          | 0
+        10 (0xa)   | 50 (0x32)
+        6          | 112 (0x70)
+
+  [27]
+    image:
+      BeginAddress : 7984 (0x1f30)
+      EndAddress   : 8083 (0x1f93)
+      UnwindData   : 14128 (0x3730)
+
+    unwind_info:
+      flags          : 0
+      frame_offset   : 0
+      frame_register : 0
+      size_of_prolog : 6
+      version        : 1
+
+      unwind_codes:
+        CodeOffset | UnwindOpInfo
+        -----------+-------------
+        6          | 50 (0x32)
+        2          | 48 (0x30)
+
+  [28]
+    image:
+      BeginAddress : 8084 (0x1f94)
+      EndAddress   : 8227 (0x2023)
+      UnwindData   : 14724 (0x3984)
+
+    unwind_info:
+      flags          : 0
+      frame_offset   : 0
+      frame_register : 0
+      size_of_prolog : 25 (0x19)
+      version        : 1
+
+      unwind_codes:
+        CodeOffset | UnwindOpInfo
+        -----------+-------------
+        25 (0x19)  | 116 (0x74)
+        9          | 0
+        25 (0x19)  | 100 (0x64)
+        8          | 0
+        25 (0x19)  | 84 (0x54)
+        7          | 0
+        25 (0x19)  | 52 (0x34)
+        6          | 0
+        25 (0x19)  | 50 (0x32)
+        21 (0x15)  | 224 (0xe0)
+
+  [29]
+    image:
+      BeginAddress : 8240 (0x2030)
+      EndAddress   : 8294 (0x2066)
+      UnwindData   : 14352 (0x3810)
+
+    unwind_info:
+      flags          : 3
+      frame_offset   : 0
+      frame_register : 0
+      size_of_prolog : 10 (0xa)
+      version        : 1
+
+      unwind_codes:
+        CodeOffset | UnwindOpInfo
+        -----------+-------------
+        10 (0xa)   | 82 (0x52)
+        6          | 80 (0x50)
+
+  [30]
+    image:
+      BeginAddress : 8294 (0x2066)
+      EndAddress   : 8348 (0x209c)
+      UnwindData   : 14352 (0x3810)
+
+    unwind_info:
+      flags          : 3
+      frame_offset   : 0
+      frame_register : 0
+      size_of_prolog : 10 (0xa)
+      version        : 1
+
+      unwind_codes:
+        CodeOffset | UnwindOpInfo
+        -----------+-------------
+        10 (0xa)   | 82 (0x52)
+        6          | 80 (0x50)
+
+  [31]
+    image:
+      BeginAddress : 8348 (0x209c)
+      EndAddress   : 8389 (0x20c5)
+      UnwindData   : 14352 (0x3810)
+
+    unwind_info:
+      flags          : 3
+      frame_offset   : 0
+      frame_register : 0
+      size_of_prolog : 10 (0xa)
+      version        : 1
+
+      unwind_codes:
+        CodeOffset | UnwindOpInfo
+        -----------+-------------
+        10 (0xa)   | 82 (0x52)
+        6          | 80 (0x50)
+
+  [32]
+    image:
+      BeginAddress : 8389 (0x20c5)
+      EndAddress   : 8426 (0x20ea)
+      UnwindData   : 14628 (0x3924)
+
+    unwind_info:
+      flags          : 0
+      frame_offset   : 0
+      frame_register : 0
+      size_of_prolog : 6
+      version        : 1
+
+      unwind_codes:
+        CodeOffset | UnwindOpInfo
+        -----------+-------------
+        6          | 50 (0x32)
+        2          | 80 (0x50)
+
+  [33]
+    image:
+      BeginAddress : 8426 (0x20ea)
+      EndAddress   : 8452 (0x2104)
+      UnwindData   : 14628 (0x3924)
+
+    unwind_info:
+      flags          : 0
+      frame_offset   : 0
+      frame_register : 0
+      size_of_prolog : 6
+      version        : 1
+
+      unwind_codes:
+        CodeOffset | UnwindOpInfo
+        -----------+-------------
+        6          | 50 (0x32)
+        2          | 80 (0x50)
+
+  [34]
+    image:
+      BeginAddress : 8452 (0x2104)
+      EndAddress   : 8496 (0x2130)
+      UnwindData   : 14628 (0x3924)
+
+    unwind_info:
+      flags          : 0
+      frame_offset   : 0
+      frame_register : 0
+      size_of_prolog : 6
+      version        : 1
+
+      unwind_codes:
+        CodeOffset | UnwindOpInfo
+        -----------+-------------
+        6          | 50 (0x32)
+        2          | 80 (0x50)
+
+  [35]
+    image:
+      BeginAddress : 8496 (0x2130)
+      EndAddress   : 8561 (0x2171)
+      UnwindData   : 14628 (0x3924)
+
+    unwind_info:
+      flags          : 0
+      frame_offset   : 0
+      frame_register : 0
+      size_of_prolog : 6
+      version        : 1
+
+      unwind_codes:
+        CodeOffset | UnwindOpInfo
+        -----------+-------------
+        6          | 50 (0x32)
+        2          | 80 (0x50)
+
+  [36]
+    image:
+      BeginAddress : 8576 (0x2180)
+      EndAddress   : 8608 (0x21a0)
+      UnwindData   : 14628 (0x3924)
+
+    unwind_info:
+      flags          : 0
+      frame_offset   : 0
+      frame_register : 0
+      size_of_prolog : 6
+      version        : 1
+
+      unwind_codes:
+        CodeOffset | UnwindOpInfo
+        -----------+-------------
+        6          | 50 (0x32)
+        2          | 80 (0x50)
+
+  [37]
+    image:
+      BeginAddress : 8608 (0x21a0)
+      EndAddress   : 8635 (0x21bb)
+      UnwindData   : 14628 (0x3924)
+
+    unwind_info:
+      flags          : 0
+      frame_offset   : 0
+      frame_register : 0
+      size_of_prolog : 6
+      version        : 1
+
+      unwind_codes:
+        CodeOffset | UnwindOpInfo
+        -----------+-------------
+        6          | 50 (0x32)
+        2          | 80 (0x50)
+
+exports:
+  dll_name     : Demo.dll
+  functions    : [4704 (0x1260), 4768 (0x12a0), 5264 (0x1490), 4928 (0x1340), 20504 (0x5018), 20520 (0x5028), 20536 (0x5038), 5056 (0x13c0), 4816 (0x12d0), 4848 (0x12f0), 5296 (0x14b0), 4656 (0x1230), 22232 (0x56d8), 4240 (0x1090), 4256 (0x10a0), 4240 (0x1090), 4256 (0x10a0), 4256 (0x10a0), 4272 (0x10b0), 4288 (0x10c0)]
+  name_indices : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 (0xa), 11 (0xb), 12 (0xc), 13 (0xd), 14 (0xe), 15 (0xf), 16 (0x10), 17 (0x11), 18 (0x12), 19 (0x13)]
+  name_rvas    : [15145 (0x3b29), 15169 (0x3b41), 15189 (0x3b55), 15220 (0x3b74), 15252 (0x3b94), 15270 (0x3ba6), 15288 (0x3bb8), 15306 (0x3bca), 15340 (0x3bec), 15363 (0x3c03), 15393 (0x3c21), 15430 (0x3c46), 15454 (0x3c5e), 15469 (0x3c6d), 15476 (0x3c74), 15483 (0x3c7b), 15490 (0x3c82), 15497 (0x3c89), 15504 (0x3c90), 15511 (0x3c97)]
+  ordinal_base : 1
+
+  image:
+    AddressOfFunctions    : 14936 (0x3a58)
+    AddressOfNameOrdinals : 15096 (0x3af8)
+    AddressOfNames        : 15016 (0x3aa8)
+    Base                  : 1
+    Characteristics       : 0
+    Name                  : 15136 (0x3b20)
+    NumberOfFunctions     : 20 (0x14)
+    NumberOfNames         : 20 (0x14)
+    TimeDateStamp         : 1496673116 (0x59356b5c)
+    Version               : 0.0
+
+  names:
+    ??0Passwds@@QEAA@PEBD@Z              : 0
+    ??1Passwds@@QEAA@XZ                  : 1
+    ??4Passwds@@QEAAAEAV0@AEBV0@@Z       : 2
+    ?AddPass@Passwds@@QEAAXPEBD00@Z      : 3
+    ?GLOBAL_A@@3VA@@A                    : 4
+    ?GLOBAL_B@@3VB@@A                    : 5
+    ?GLOBAL_C@@3VC@@A                    : 6
+    ?GetPass@Passwds@@QEAAPEBDPEBD0@Z    : 7
+    ?Lock@Passwds@@QEAAXXZ               : 8
+    ?Unlock@Passwds@@QEAA_NPEBD@Z        : 9
+    ?__autoclassinit2@Passwds@@QEAAX_K@Z : 10 (0xa)
+    ?fnPasswdsBypass@@YAHXZ              : 11 (0xb)
+    ?nPasswds@@3HA                       : 12 (0xc)
+    CallA1                               : 13 (0xd)
+    CallA2                               : 14 (0xe)
+    CallB1                               : 15 (0xf)
+    CallB2                               : 16 (0x10)
+    CallC1                               : 17 (0x11)
+    CallC2                               : 18 (0x12)
+    ThrowException                       : 19 (0x13)
+
+headers:
+  DataDirectory:
+    Size           | VirtualAddress
+    ---------------+---------------
+    630 (0x276)    | 14896 (0x3a30)
+    60 (0x3c)      | 15528 (0x3ca8)
+    16848 (0x41d0) | 32768 (0x8000)
+    456 (0x1c8)    | 24576 (0x6000)
+    0              | 0
+    96 (0x60)      | 53248 (0xd000)
+    56 (0x38)      | 12688 (0x3190)
+    0              | 0
+    0              | 0
+    40 (0x28)      | 13168 (0x3370)
+    112 (0x70)     | 13056 (0x3300)
+    0              | 0
+    328 (0x148)    | 12288 (0x3000)
+    0              | 0
+    0              | 0
+    0              | 0
+
+  DosHeader:
+    e_cblp     : 144 (0x90)
+    e_cp       : 3
+    e_cparhdr  : 4
+    e_crlc     : 0
+    e_cs       : 0
+    e_csum     : 0
+    e_ip       : 0
+    e_lfanew   : 272 (0x110)
+    e_lfarlc   : 64 (0x40)
+    e_magic    : 23117 (0x5a4d)
+    e_maxalloc : 65535 (0xffff)
+    e_minalloc : 0
+    e_oemid    : 0
+    e_oeminfo  : 0
+    e_ovno     : 0
+    e_res      : [0, 0, 0, 0]
+    e_res2     : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    e_sp       : 184 (0xb8)
+    e_ss       : 0
+
+  NtHeaders:
+    Signature : 17744 (0x4550)
+
+    FileHeader:
+      Characteristics      : 8226 (0x2022)
+      Machine              : 34404 (0x8664)
+      NumberOfSections     : 7
+      NumberOfSymbols      : 0
+      PointerToSymbolTable : 0
+      SizeOfOptionalHeader : 240 (0xf0)
+      TimeDateStamp        : 1496673116 (0x59356b5c)
+
+    OptionalHeader:
+      AddressOfEntryPoint     : 6248 (0x1868)
+      BaseOfCode              : 4096 (0x1000)
+      CheckSum                : 0
+      DllCharacteristics      : 352 (0x160)
+      FileAlignment           : 512 (0x200)
+      ImageBase               : 6442450944 (0x180000000)
+      ImageVersion            : 0.0
+      LinkerVersion           : 12.0
+      LoaderFlags             : 0
+      Magic                   : 523 (0x20b)
+      NumberOfRvaAndSizes     : 16 (0x10)
+      OperatingSystemVersion  : 6.0
+      SectionAlignment        : 4096 (0x1000)
+      SizeOfCode              : 4608 (0x1200)
+      SizeOfHeaders           : 1024 (0x400)
+      SizeOfHeapCommit        : 4096 (0x1000)
+      SizeOfHeapReserve       : 1048576 (0x100000)
+      SizeOfImage             : 57344 (0xe000)
+      SizeOfInitializedData   : 25088 (0x6200)
+      SizeOfStackCommit       : 4096 (0x1000)
+      SizeOfStackReserve      : 1048576 (0x100000)
+      SizeOfUninitializedData : 0
+      Subsystem               : 2
+      SubsystemVersion        : 6.0
+      Win32VersionValue       : 0
+
+  SectionHeaders:
+    Characteristics         | Name   | PointerToRawData | SizeOfRawData  | VirtualAddress | VirtualSize
+    ------------------------+--------+------------------+----------------+----------------+---------------
+    1610612768 (0x60000020) | .text  | 1024 (0x400)     | 4608 (0x1200)  | 4096 (0x1000)  | 4539 (0x11bb)
+    1073741888 (0x40000040) | .rdata | 5632 (0x1600)    | 4608 (0x1200)  | 12288 (0x3000) | 4460 (0x116c)
+    3221225536 (0xc0000040) | .data  | 10240 (0x2800)   | 512 (0x200)    | 20480 (0x5000) | 1808 (0x710)
+    1073741888 (0x40000040) | .pdata | 10752 (0x2a00)   | 512 (0x200)    | 24576 (0x6000) | 456 (0x1c8)
+    3221225536 (0xc0000040) | .tls   | 11264 (0x2c00)   | 512 (0x200)    | 28672 (0x7000) | 3
+    1073741888 (0x40000040) | .rsrc  | 11776 (0x2e00)   | 16896 (0x4200) | 32768 (0x8000) | 16848 (0x41d0)
+    1107296320 (0x42000040) | .reloc | 28672 (0x7000)   | 512 (0x200)    | 53248 (0xd000) | 96 (0x60)
+
+  details:
+    DataDirectory.Names               : [IMAGE_DIRECTORY_ENTRY_EXPORT, IMAGE_DIRECTORY_ENTRY_IMPORT, IMAGE_DIRECTORY_ENTRY_RESOURCE, IMAGE_DIRECTORY_ENTRY_EXCEPTION, IMAGE_DIRECTORY_ENTRY_SECURITY, IMAGE_DIRECTORY_ENTRY_BASERELOC, IMAGE_DIRECTORY_ENTRY_DEBUG, IMAGE_DIRECTORY_ENTRY_ARCHITECTURE, IMAGE_DIRECTORY_ENTRY_GLOBALPTR, IMAGE_DIRECTORY_ENTRY_TLS, IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG, IMAGE_DIRECTORY_ENTRY_BOUND_IMPORT, IMAGE_DIRECTORY_ENTRY_IAT, IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT, IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR, null]
+    DataDirectory.Sections            : [1, 1, 5, 3, null, 6, 1, null, null, 1, 1, null, 1, null, null, null]
+    DosHeader.e_magic                 : MZ
+    FileHeader.Characteristics        : [IMAGE_FILE_EXECUTABLE_IMAGE, IMAGE_FILE_LARGE_ADDRESS_AWARE, IMAGE_FILE_DLL]
+    FileHeader.Machine                : IMAGE_FILE_MACHINE_AMD64
+    NtHeaders.Signature               : PE
+    OptionalHeader.CheckSum           : 73203 (0x11df3)
+    OptionalHeader.DllCharacteristics : [IMAGE_DLLCHARACTERISTICS_HIGH_ENTROPY_VA, IMAGE_DLLCHARACTERISTICS_DYNAMIC_BASE, IMAGE_DLLCHARACTERISTICS_NX_COMPAT]
+    OptionalHeader.Magic              : IMAGE_NT_OPTIONAL_HDR64_MAGIC
+    OptionalHeader.Subsystem          : IMAGE_SUBSYSTEM_WINDOWS_GUI
+
+    SectionHeaders.Characteristics:
+      [0]
+        [IMAGE_SCN_CNT_CODE, IMAGE_SCN_MEM_EXECUTE, IMAGE_SCN_MEM_READ]
+
+      [1]
+        [IMAGE_SCN_CNT_INITIALIZED_DATA, IMAGE_SCN_MEM_READ]
+
+      [2]
+        [IMAGE_SCN_CNT_INITIALIZED_DATA, IMAGE_SCN_MEM_READ, IMAGE_SCN_MEM_WRITE]
+
+      [3]
+        [IMAGE_SCN_CNT_INITIALIZED_DATA, IMAGE_SCN_MEM_READ]
+
+      [4]
+        [IMAGE_SCN_CNT_INITIALIZED_DATA, IMAGE_SCN_MEM_READ, IMAGE_SCN_MEM_WRITE]
+
+      [5]
+        [IMAGE_SCN_CNT_INITIALIZED_DATA, IMAGE_SCN_MEM_READ]
+
+      [6]
+        [IMAGE_SCN_CNT_INITIALIZED_DATA, IMAGE_SCN_MEM_DISCARDABLE, IMAGE_SCN_MEM_READ]
+
+imports:
+  [0]
+    dll_name : KERNEL32.dll
+    iat      : [15920 (0x3e30), 16628 (0x40f4), 16602 (0x40da), 16574 (0x40be), 16554 (0x40aa), 16538 (0x409a), 16522 (0x408a), 16650 (0x410a)]
+
+    image:
+      FirstThunk         : 12288 (0x3000)
+      ForwarderChain     : 0
+      Name               : 15942 (0x3e46)
+      OriginalFirstThunk : 15592 (0x3ce8)
+      TimeDateStamp      : 0
+
+    int:
+      [0]
+        ByName:
+          hint : 532 (0x214)
+          name : GetCurrentThreadId
+
+      [1]
+        ByName:
+          hint : 528 (0x210)
+          name : GetCurrentProcessId
+
+      [2]
+        ByName:
+          hint : 1072 (0x430)
+          name : QueryPerformanceCounter
+
+      [3]
+        ByName:
+          hint : 880 (0x370)
+          name : IsProcessorFeaturePresent
+
+      [4]
+        ByName:
+          hint : 874 (0x36a)
+          name : IsDebuggerPresent
+
+      [5]
+        ByName:
+          hint : 255 (0xff)
+          name : DecodePointer
+
+      [6]
+        ByName:
+          hint : 293 (0x125)
+          name : EncodePointer
+
+      [7]
+        ByName:
+          hint : 733 (0x2dd)
+          name : GetSystemTimeAsFileTime
+
+  [1]
+    dll_name : MSVCR120.dll
+    iat      : [16116 (0x3ef4), 16126 (0x3efe), 16136 (0x3f08), 16158 (0x3f1e), 16176 (0x3f30), 16190 (0x3f3e), 16204 (0x3f4c), 16216 (0x3f58), 16230 (0x3f66), 16254 (0x3f7e), 16080 (0x3ed0), 16302 (0x3fae), 16326 (0x3fc6), 16356 (0x3fe4), 16376 (0x3ff8), 16430 (0x402e), 16438 (0x4036), 16448 (0x4040), 16462 (0x404e), 16476 (0x405c), 16486 (0x4066), 16070 (0x3ec6), 16034 (0x3ea2), 16006 (0x3e86), 15990 (0x3e76), 15956 (0x3e54), 16276 (0x3f94), 16676 (0x4124), 16698 (0x413a), 16720 (0x4150), 16738 (0x4162)]
+
+    image:
+      FirstThunk         : 12360 (0x3048)
+      ForwarderChain     : 0
+      Name               : 16144 (0x3f10)
+      OriginalFirstThunk : 15664 (0x3d30)
+      TimeDateStamp      : 0
+
+    int:
+      [0]
+        ByName:
+          hint : 1137 (0x471)
+          name : _strdup
+
+      [1]
+        ByName:
+          hint : 1706 (0x6aa)
+          name : malloc
+
+      [2]
+        ByName:
+          hint : 1616 (0x650)
+          name : free
+
+      [3]
+        ByName:
+          hint : 349 (0x15d)
+          name : __CppXcptFilter
+
+      [4]
+        ByName:
+          hint : 498 (0x1f2)
+          name : _amsg_exit
+
+      [5]
+        ByName:
+          hint : 876 (0x36c)
+          name : _malloc_crt
+
+      [6]
+        ByName:
+          hint : 737 (0x2e1)
+          name : _initterm
+
+      [7]
+        ByName:
+          hint : 738 (0x2e2)
+          name : _initterm_e
+
+      [8]
+        ByName:
+          hint : 348 (0x15c)
+          name : __C_specific_handler
+
+      [9]
+        ByName:
+          hint : 413 (0x19d)
+          name : __crt_debugger_hook
+
+      [10]
+        ByName:
+          hint : 44 (0x2c)
+          name : ??0exception@std@@QEAA@AEBV01@@Z
+
+      [11]
+        ByName:
+          hint : 411 (0x19b)
+          name : __crtTerminateProcess
+
+      [12]
+        ByName:
+          hint : 382 (0x17e)
+          name : __crtCapturePreviousContext
+
+      [13]
+        ByName:
+          hint : 307 (0x133)
+          name : ?terminate@@YAXXZ
+
+      [14]
+        ByName:
+          hint : 283 (0x11b)
+          name : ?_type_info_dtor_internal_method@type_info@@QEAAXXZ
+
+      [15]
+        ByName:
+          hint : 859 (0x35b)
+          name : _lock
+
+      [16]
+        ByName:
+          hint : 1223 (0x4c7)
+          name : _unlock
+
+      [17]
+        ByName:
+          hint : 521 (0x209)
+          name : _calloc_crt
+
+      [18]
+        ByName:
+          hint : 415 (0x19f)
+          name : __dllonexit
+
+      [19]
+        ByName:
+          hint : 1026 (0x402)
+          name : _onexit
+
+      [20]
+        ByName:
+          hint : 379 (0x17b)
+          name : __clean_type_info_names_internal
+
+      [21]
+        ByName:
+          hint : 1742 (0x6ce)
+          name : printf
+
+      [22]
+        ByName:
+          hint : 42 (0x2a)
+          name : ??0exception@std@@QEAA@AEBQEBD@Z
+
+      [23]
+        ByName:
+          hint : 106 (0x6a)
+          name : ??1exception@std@@UEAA@XZ
+
+      [24]
+        ByName:
+          hint : 114 (0x72)
+          name : ??3@YAXPEAX@Z
+
+      [25]
+        ByName:
+          hint : 320 (0x140)
+          name : ?what@exception@std@@UEBAPEBDXZ
+
+      [26]
+        ByName:
+          hint : 412 (0x19c)
+          name : __crtUnhandledException
+
+      [27]
+        ByName:
+          hint : 325 (0x145)
+          name : _CxxThrowException
+
+      [28]
+        ByName:
+          hint : 354 (0x162)
+          name : __CxxFrameHandler3
+
+      [29]
+        ByName:
+          hint : 364 (0x16c)
+          name : __RTDynamicCast
+
+      [30]
+        ByName:
+          hint : 1721 (0x6b9)
+          name : memset
+
+load_config:
+  se_handler_table : null
+  security_cookie  : 769630770 (0x2ddfa232)
+  size             : 112 (0x70)
+
+  image:
+    CHPEMetadataPointer                      : 0
+    CSDVersion                               : 0
+    CastGuardOsDeterminedFailureMode         : 0
+    CriticalSectionDefaultTimeout            : 0
+    DeCommitFreeBlockThreshold               : 0
+    DeCommitTotalFreeThreshold               : 0
+    DependentLoadFlags                       : 0
+    DynamicValueRelocTable                   : 0
+    DynamicValueRelocTableOffset             : 0
+    DynamicValueRelocTableSection            : 0
+    EditList                                 : 0
+    EnclaveConfigurationPointer              : 0
+    GlobalFlagsClear                         : 0
+    GlobalFlagsSet                           : 0
+    GuardAddressTakenIatEntryCount           : 0
+    GuardAddressTakenIatEntryTable           : 0
+    GuardCFCheckFunctionPointer              : 0
+    GuardCFDispatchFunctionPointer           : 0
+    GuardCFFunctionCount                     : 0
+    GuardCFFunctionTable                     : 0
+    GuardEHContinuationCount                 : 0
+    GuardEHContinuationTable                 : 0
+    GuardFlags                               : 0
+    GuardLongJumpTargetCount                 : 0
+    GuardLongJumpTargetTable                 : 0
+    GuardMemcpyFunctionPointer               : 0
+    GuardRFFailureRoutine                    : 0
+    GuardRFFailureRoutineFunctionPointer     : 0
+    GuardRFVerifyStackPointerFunctionPointer : 0
+    GuardXFGCheckFunctionPointer             : 0
+    GuardXFGDispatchFunctionPointer          : 0
+    GuardXFGTableDispatchFunctionPointer     : 0
+    HotPatchTableOffset                      : 0
+    LockPrefixTable                          : 0
+    MaximumAllocationSize                    : 0
+    ProcessAffinityMask                      : 0
+    ProcessHeapFlags                         : 0
+    Reserved2                                : 0
+    Reserved3                                : 0
+    SEHandlerCount                           : 0
+    SEHandlerTable                           : 0
+    SecurityCookie                           : 6442471424 (0x180005000)
+    Size                                     : 112 (0x70)
+    TimeDateStamp                            : 0
+    UmaFunctionPointers                      : 0
+    Version                                  : 0.0
+    VirtualMemoryThreshold                   : 0
+    VolatileMetadataPointer                  : 0
+
+    CodeIntegrity:
+      Catalog       : 0
+      CatalogOffset : 0
+      Flags         : 0
+      Reserved      : 0
+
+relocations:
+  rvas  : [12640 (0x3160), 12648 (0x3168), 12672 (0x3180), 12744 (0x31c8), 12752 (0x31d0), 12768 (0x31e0), 12776 (0x31e8), 12848 (0x3230), 12856 (0x3238), 12864 (0x3240), 12872 (0x3248), 12880 (0x3250), 12888 (0x3258), 12896 (0x3260), 12904 (0x3268), 12912 (0x3270), 12920 (0x3278), 12928 (0x3280), 12936 (0x3288), 12944 (0x3290), 12952 (0x3298), 12960 (0x32a0), 13144 (0x3358), 13168 (0x3370), 13176 (0x3378), 13184 (0x3380), 13192 (0x3388), 20504 (0x5018), 20520 (0x5028), 20536 (0x5038), 20552 (0x5048), 20576 (0x5060), 20608 (0x5080), 20632 (0x5098), 20672 (0x50c0), 20712 (0x50e8), 20752 (0x5110), 20776 (0x5128)]
+  types : [10 (0xa), 10 (0xa), 10 (0xa), 10 (0xa), 10 (0xa), 10 (0xa), 10 (0xa), 10 (0xa), 10 (0xa), 10 (0xa), 10 (0xa), 10 (0xa), 10 (0xa), 10 (0xa), 10 (0xa), 10 (0xa), 10 (0xa), 10 (0xa), 10 (0xa), 10 (0xa), 10 (0xa), 10 (0xa), 10 (0xa), 10 (0xa), 10 (0xa), 10 (0xa), 10 (0xa), 10 (0xa), 10 (0xa), 10 (0xa), 10 (0xa), 10 (0xa), 10 (0xa), 10 (0xa), 10 (0xa), 10 (0xa), 10 (0xa), 10 (0xa)]
+
+sections:
+  Characteristics         | Name   | PointerToRawData | SizeOfRawData  | VirtualAddress | VirtualSize
+  ------------------------+--------+------------------+----------------+----------------+---------------
+  1610612768 (0x60000020) | .text  | 1024 (0x400)     | 4608 (0x1200)  | 4096 (0x1000)  | 4539 (0x11bb)
+  1073741888 (0x40000040) | .rdata | 5632 (0x1600)    | 4608 (0x1200)  | 12288 (0x3000) | 4460 (0x116c)
+  3221225536 (0xc0000040) | .data  | 10240 (0x2800)   | 512 (0x200)    | 20480 (0x5000) | 1808 (0x710)
+  1073741888 (0x40000040) | .pdata | 10752 (0x2a00)   | 512 (0x200)    | 24576 (0x6000) | 456 (0x1c8)
+  3221225536 (0xc0000040) | .tls   | 11264 (0x2c00)   | 512 (0x200)    | 28672 (0x7000) | 3
+  1073741888 (0x40000040) | .rsrc  | 11776 (0x2e00)   | 16896 (0x4200) | 32768 (0x8000) | 16848 (0x41d0)
+  1107296320 (0x42000040) | .reloc | 28672 (0x7000)   | 512 (0x200)    | 53248 (0xd000) | 96 (0x60)
+
+tls:
+  callbacks : [6442456256 (0x1800014c0)]
+  raw_data  : AAA=
+  slot      : 0
+
+  image:
+    AddressOfCallBacks    : 6442463616 (0x180003180)
+    AddressOfIndex        : 6442471744 (0x180005140)
+    Characteristics       : 1048576 (0x100000)
+    EndAddressOfRawData   : 6442479618 (0x180007002)
+    SizeOfZeroFill        : 0
+    StartAddressOfRawData : 6442479616 (0x180007000)

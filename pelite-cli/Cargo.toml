@@ -6,6 +6,7 @@ license = "MIT"
 description = "Command-line tools for inspecting PE binaries with pelite"
 
 [dependencies]
+basenc = "1.0.0-alpha.2"
 clap = "4.6.7"
 iced-x86 = { version = "1.21.0", default-features = false, features = ["decoder", "intel", "std"] }
 md5 = "0.8.1"

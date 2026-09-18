@@ -1,15 +1,8 @@
-use std::collections::HashMap;
-use std::path::PathBuf;
-use std::sync::Arc;
-
-use clap::{Arg, ArgMatches, Command};
 use pelite::{image, Import, PeFile, Wrap};
-use serde::Serialize;
 
-use crate::rva_range::{RvaRange, parse as parse_rva_range};
-use crate::{OutputFormat, Result, err, print_json};
+use super::*;
 
-#[derive(Serialize)]
+#[derive(serde::Serialize)]
 struct DisassembledInstruction<'a> {
 	address: u64,
 	bytes: &'a [u8],
@@ -26,23 +19,23 @@ impl iced_x86::SymbolResolver for PeSymbolResolver {
 	}
 }
 
-pub fn command() -> Command {
-	Command::new("disasm")
+pub fn command() -> clap::Command {
+	clap::Command::new("disasm")
 		.about("Disassemble an RVA range using iced-x86")
 		.after_help("The range is half-open and its endpoints are hexadecimal RVAs (for example, 1000..1100 or 0x1000..0x1100).")
-		.arg(Arg::new("file")
+		.arg(clap::Arg::new("file")
 			.value_name("FILE")
 			.value_parser(clap::value_parser!(PathBuf))
 			.required(true))
-		.arg(Arg::new("range")
+		.arg(clap::Arg::new("range")
 			.value_name("START..END")
-			.value_parser(parse_rva_range)
+			.value_parser(rva_range::parse)
 			.required(true))
 }
 
-pub fn run(matches: &ArgMatches, format: OutputFormat) -> Result {
+pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let path = matches.get_one::<PathBuf>("file").expect("required by clap");
-	let range = *matches.get_one::<RvaRange>("range").expect("required by clap");
+	let range = *matches.get_one::<rva_range::RvaRange>("range").expect("required by clap");
 	let map = pelite::FileMap::open(path)?;
 	let pe = pelite::PeFile::from_bytes(&map)?;
 	let bitness = match pe.file_header().Machine {
@@ -80,7 +73,12 @@ pub fn run(matches: &ArgMatches, format: OutputFormat) -> Result {
 				}
 				let bytes = item.bytes.iter().map(|byte| format!("{byte:02x}")).collect::<Vec<_>>().join(" ");
 				let address_width = bitness as usize / 4 + 2;
-				println!("{:#0address_width$x}  {bytes:<44} {}", item.address, item.instruction);
+				let section_name = item.address.checked_sub(image_base)
+					.and_then(|rva| u32::try_from(rva).ok())
+					.and_then(|rva| pe.section_headers().by_rva(rva))
+					.and_then(|section| section.name().ok())
+					.unwrap_or("<no section>");
+				println!("{section_name}:{:#0address_width$x}  {bytes:<44} {}", item.address, item.instruction);
 			}
 			Ok(())
 		},
