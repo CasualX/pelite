@@ -1,7 +1,7 @@
 /*!
 Your adventure starts with a choice:
 
-Do you wish to inspect 64-bit PE binares? ⟶ [continue][crate::pe64]
+Do you wish to inspect 64-bit PE binaries? ⟶ [continue][crate::pe64]
 
 Do you wish to inspect 32-bit PE binaries? ⟶ [continue][crate::pe32]
 
@@ -9,7 +9,31 @@ The `pelite::pe` module is aliased to the target of the compiled crate.
 Use it if you want to work with modules in your own process.
 Evidently this is only available on Windows targets.
 
-Due to small but incompatible differences the two formats are not unified.
+## Format-agnostic API
+
+When the format is not known in advance, start with [`PeFile`] for a file on
+disk or [`PeView`] for an image mapped into memory. Their constructors detect
+the format and return a [`Wrap`] containing the 32-bit or 64-bit variant. Most
+operations can be used directly without matching on that variant:
+
+```rust
+# fn print_export_names(image: &[u8]) -> pelite::Result<()> {
+let file = pelite::PeFile::from_bytes(image)?;
+let exports = file.exports()?;
+
+for &name_rva in exports.names()? {
+	println!("{}", file.derva_c_str(name_rva)?);
+}
+# Ok(())
+# }
+```
+
+Some structures genuinely differ between the formats. Operations returning
+such structures preserve the distinction in another [`Wrap`], which can be
+matched as [`Wrap::T32`] or [`Wrap::T64`].
+
+When the format is known in advance, the [`pe32`] and [`pe64`] modules expose
+the complete format-specific APIs.
 */
 
 #![recursion_limit = "128"]
