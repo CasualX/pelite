@@ -99,6 +99,19 @@ fn exports() {
 }
 
 #[test]
+fn wrap_get_export() {
+	let file_map = FileMap::open(FILE_NAME).unwrap();
+	let file = pelite::PeFile::from_bytes(&file_map).unwrap();
+
+	assert_eq!(file.get_export("ThrowException"), Ok(pelite::Export::Symbol(&0x10C0)));
+	assert_eq!(file.get_export(0x14), Ok(pelite::Export::Symbol(&0x10C0)));
+
+	let name = CStr::from_bytes(b"?fnPasswdsBypass@@YAHXZ\0").unwrap();
+	let import = pelite::Import::ByName { hint: 11, name };
+	assert_eq!(file.get_export(import), Ok(pelite::Export::Symbol(&0x1230)));
+}
+
+#[test]
 fn exports_reject_null_nonempty_name_index_table() {
 	let mut image = std::fs::read(FILE_NAME).unwrap();
 	let export_offset = {
