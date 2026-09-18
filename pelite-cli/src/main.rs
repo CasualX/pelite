@@ -1,18 +1,18 @@
-use std::error::Error;
-use std::fmt;
-use std::process::ExitCode;
+use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
+use std::path::{Path, PathBuf};
+use std::sync::Arc;
+use std::{error, fmt, fs, process};
+use std::io::{self, BufRead, IsTerminal, Write};
 
-use clap::{Arg, ArgMatches, Command};
-
-mod dump;
 mod disasm;
-mod extract_icons;
 mod findsig;
 mod hexdump;
 mod imphash;
+mod inspect;
 mod markov;
 mod module_def;
 mod msrtti;
+mod resources;
 mod rust_format_args;
 mod rust_msvc;
 mod rust_panic_strings;
@@ -20,7 +20,7 @@ mod rva_range;
 mod strings;
 mod version_info;
 
-type Result<T = ()> = std::result::Result<T, Box<dyn Error>>;
+type Result<T = ()> = std::result::Result<T, Box<dyn error::Error>>;
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 enum OutputFormat {
@@ -30,7 +30,7 @@ enum OutputFormat {
 }
 
 impl OutputFormat {
-	fn from_matches(matches: &ArgMatches) -> Self {
+	fn from_matches(matches: &clap::ArgMatches) -> Self {
 		match matches.get_one::<String>("format").map(String::as_str) {
 			Some("json") => Self::Json,
 			Some("json-pretty") => Self::JsonPretty,
@@ -48,27 +48,27 @@ impl fmt::Display for CliError {
 	}
 }
 
-impl Error for CliError {}
+impl error::Error for CliError {}
 
-fn err(message: impl Into<String>) -> Box<dyn Error> {
+fn err(message: impl Into<String>) -> Box<dyn error::Error> {
 	Box::new(CliError(message.into()))
 }
 
-fn cli() -> Command {
-	Command::new("pelite-cli")
+fn cli() -> clap::Command {
+	clap::Command::new("pelite-cli")
 		.about("Inspect Windows PE binaries")
 		.arg_required_else_help(true)
 		.subcommand_required(true)
-		.arg(Arg::new("format")
+		.arg(clap::Arg::new("format")
 			.long("format")
 			.value_name("FORMAT")
 			.value_parser(["text", "json", "json-pretty"])
 			.default_value("text")
 			.global(true)
 			.help("Select the output format"))
-		.subcommand(dump::command())
+		.subcommand(inspect::command())
+		.subcommand(resources::command())
 		.subcommand(disasm::command())
-		.subcommand(extract_icons::command())
 		.subcommand(hexdump::command())
 		.subcommand(strings::command())
 		.subcommand(findsig::command())
@@ -96,9 +96,9 @@ fn run() -> Result {
 	let matches = cli().get_matches();
 	let format = OutputFormat::from_matches(&matches);
 	match matches.subcommand() {
-		Some(("dump", matches)) => dump::run(matches, format),
+		Some(("inspect", matches)) => inspect::run(matches, format),
+		Some(("resources", matches)) => resources::run(matches, format),
 		Some(("disasm", matches)) => disasm::run(matches, format),
-		Some(("extract-icons", matches)) => extract_icons::run(matches, format),
 		Some(("hexdump", matches)) => hexdump::run(matches, format),
 		Some(("strings", matches)) => strings::run(matches, format),
 		Some(("findsig", matches)) => findsig::run(matches, format),
@@ -113,12 +113,12 @@ fn run() -> Result {
 	}
 }
 
-fn main() -> ExitCode {
+fn main() -> process::ExitCode {
 	match run() {
-		Ok(()) => ExitCode::SUCCESS,
+		Ok(()) => process::ExitCode::SUCCESS,
 		Err(error) => {
 			eprintln!("pelite-cli: {error}");
-			ExitCode::FAILURE
+			process::ExitCode::FAILURE
 		},
 	}
 }

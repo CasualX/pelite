@@ -1,33 +1,28 @@
-use std::path::{Path, PathBuf};
+use super::*;
 
-use clap::{Arg, ArgAction, ArgMatches, Command};
-use serde::Serialize;
-
-use crate::{OutputFormat, Result, print_json};
-
-#[derive(Serialize)]
+#[derive(serde::Serialize)]
 struct ImportHash {
 	file: String,
 	hash: String,
 	imports: Vec<String>,
 }
 
-pub fn command() -> Command {
-	Command::new("imphash")
+pub fn command() -> clap::Command {
+	clap::Command::new("imphash")
 		.about("Calculate the conventional MD5 import hash")
 		.after_help("DLL names are lowercased and .dll, .sys, and .ocx suffixes are removed. Ordinal imports use the portable fallback name ord<NUMBER>.")
-		.arg(Arg::new("files")
+		.arg(clap::Arg::new("files")
 			.value_name("FILE")
 			.value_parser(clap::value_parser!(PathBuf))
 			.num_args(1..)
 			.required(true))
-		.arg(Arg::new("show-imports")
+		.arg(clap::Arg::new("show-imports")
 			.long("show-imports")
-			.action(ArgAction::SetTrue)
+			.action(clap::ArgAction::SetTrue)
 			.help("Show the normalized import sequence in text output"))
 }
 
-pub fn run(matches: &ArgMatches, format: OutputFormat) -> Result {
+pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let files = matches.get_many::<PathBuf>("files").expect("required by clap");
 	let show_imports = matches.get_flag("show-imports");
 	let mut hashes = Vec::new();

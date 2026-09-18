@@ -1,21 +1,17 @@
-use std::path::PathBuf;
+use pelite::image;
 
-use clap::{Arg, ArgMatches, Command};
-use pelite::image::IMAGE_SCN_MEM_EXECUTE;
-use serde::Serialize;
-
-use crate::{OutputFormat, Result, err, print_json};
+use super::*;
 
 type Buckets = Vec<[u64; 256]>;
 
-#[derive(Serialize)]
+#[derive(serde::Serialize)]
 struct Source {
 	file: String,
 	sections: usize,
 	bytes: usize,
 }
 
-#[derive(Serialize)]
+#[derive(serde::Serialize)]
 struct Generated {
 	seed: u64,
 	bytes: Vec<u8>,
@@ -25,27 +21,27 @@ struct Generated {
 	output: Option<String>,
 }
 
-pub fn command() -> Command {
-	Command::new("markov")
+pub fn command() -> clap::Command {
+	clap::Command::new("markov")
 		.visible_alias("markovbin")
 		.about("Generate bytes from executable PE sections using a Markov chain")
-		.arg(Arg::new("count")
+		.arg(clap::Arg::new("count")
 			.value_name("COUNT")
 			.value_parser(clap::value_parser!(usize))
 			.required(true)
 			.help("Number of bytes to generate"))
-		.arg(Arg::new("files")
+		.arg(clap::Arg::new("files")
 			.value_name("FILE")
 			.value_parser(clap::value_parser!(PathBuf))
 			.num_args(1..)
 			.required(true)
 			.help("PE files used to train the chain"))
-		.arg(Arg::new("seed")
+		.arg(clap::Arg::new("seed")
 			.long("seed")
 			.value_name("SEED")
 			.value_parser(clap::value_parser!(u64))
 			.help("Use a deterministic random seed"))
-		.arg(Arg::new("output")
+		.arg(clap::Arg::new("output")
 			.long("output")
 			.short('o')
 			.value_name("FILE")
@@ -53,7 +49,7 @@ pub fn command() -> Command {
 			.help("Also write the generated raw bytes to a file"))
 }
 
-pub fn run(matches: &ArgMatches, format: OutputFormat) -> Result {
+pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let count = *matches.get_one::<usize>("count").expect("required by clap");
 	let files = matches.get_many::<PathBuf>("files").expect("required by clap");
 	let seed = matches
@@ -72,7 +68,7 @@ pub fn run(matches: &ArgMatches, format: OutputFormat) -> Result {
 			bytes: 0,
 		};
 		for section in pe.section_headers() {
-			if section.Characteristics & IMAGE_SCN_MEM_EXECUTE == 0 {
+			if section.Characteristics & image::IMAGE_SCN_MEM_EXECUTE == 0 {
 				continue;
 			}
 			let bytes = pe.get_section_bytes(section)?;

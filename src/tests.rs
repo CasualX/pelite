@@ -63,7 +63,7 @@ fn serialize_pocs() {
 	fn check_load_config(config: impl serde::Serialize) {
 		let value = serde_json::to_value(config).unwrap();
 		let fields = value.as_object().unwrap();
-		assert_eq!(fields.len(), 3);
+		assert_eq!(fields.len(), 4);
 		assert!(fields.contains_key("security_cookie"));
 		assert!(fields.contains_key("se_handler_table"));
 		let image = fields["image"].as_object().unwrap();

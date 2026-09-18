@@ -1,28 +1,23 @@
-use std::path::PathBuf;
-
-use clap::{Arg, ArgMatches, Command};
 use pelite::FileMap;
-use pelite::pe32::image::{RTTIClassHierarchyDescriptor, RTTICompleteObjectLocator, Rva, TypeDescriptor, Va};
-use pelite::pe32::{Pe, PeFile, Ptr};
-use serde::Serialize;
+use pelite::pe32::{image, Pe, PeFile, Ptr, Rva, Va};
 
-use crate::{OutputFormat, Result, err, print_json};
+use super::*;
 
 struct RawVTable<'a> {
-	col: &'a RTTICompleteObjectLocator,
+	col: &'a image::RTTICompleteObjectLocator,
 	methods: usize,
 	rva: Rva,
 }
 
 struct RawType<'a> {
-	type_ptr: Ptr<TypeDescriptor>,
-	class_ptr: Ptr<RTTIClassHierarchyDescriptor>,
+	type_ptr: Ptr<image::TypeDescriptor>,
+	class_ptr: Ptr<image::RTTIClassHierarchyDescriptor>,
 	name: &'a str,
-	class: &'a RTTIClassHierarchyDescriptor,
+	class: &'a image::RTTIClassHierarchyDescriptor,
 	vtables: Vec<RawVTable<'a>>,
 }
 
-#[derive(Serialize)]
+#[derive(serde::Serialize)]
 struct TypeOutput {
 	name: String,
 	inheritance: &'static str,
@@ -30,14 +25,14 @@ struct TypeOutput {
 	hierarchy: Vec<BaseClassOutput>,
 }
 
-#[derive(Serialize)]
+#[derive(serde::Serialize)]
 struct VTableOutput {
 	rva: u32,
 	for_type: Option<String>,
 	methods: usize,
 }
 
-#[derive(Serialize)]
+#[derive(serde::Serialize)]
 struct BaseClassOutput {
 	depth: usize,
 	offset: Option<i32>,
@@ -45,17 +40,17 @@ struct BaseClassOutput {
 	name: String,
 }
 
-pub fn command() -> Command {
-	Command::new("msrtti")
+pub fn command() -> clap::Command {
+	clap::Command::new("msrtti")
 		.about("Dump Microsoft C++ RTTI, vtables, and class hierarchies")
 		.after_help("This analysis is specific to PE32 images.")
-		.arg(Arg::new("file")
+		.arg(clap::Arg::new("file")
 			.value_name("FILE")
 			.value_parser(clap::value_parser!(PathBuf))
 			.required(true))
 }
 
-pub fn run(matches: &ArgMatches, format: OutputFormat) -> Result {
+pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let path = matches.get_one::<PathBuf>("file").expect("required by clap");
 	let map = FileMap::open(path)?;
 	let file = PeFile::from_bytes(&map).map_err(|error| err(format!("input is not a PE32 image: {error}")))?;
@@ -137,7 +132,7 @@ fn add_vtable<'a>(file: PeFile<'a>, types: &mut Vec<RawType<'a>>, xref: usize, v
 	else {
 		return Err(pelite::Error::Bounds);
 	};
-	let col_ptr: Ptr<RTTICompleteObjectLocator> = Ptr::from(*file.derva::<Va>(locator_rva)?);
+	let col_ptr: Ptr<image::RTTICompleteObjectLocator> = Ptr::from(*file.derva::<Va>(locator_rva)?);
 	let col = file.deref(col_ptr)?;
 	let index = if let Some(index) = types.iter().position(|item| item.type_ptr == col.type_descriptor && item.class_ptr == col.class_descriptor) {
 		index

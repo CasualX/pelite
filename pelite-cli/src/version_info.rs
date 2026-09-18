@@ -1,13 +1,9 @@
-use std::path::PathBuf;
-
-use clap::{Arg, ArgAction, ArgMatches, Command};
 use pelite::resources::ResourceName;
 use pelite::resources::version_info::{VersionInfo, VersionInfoData};
-use serde::Serialize;
 
-use crate::{OutputFormat, Result, print_json};
+use super::*;
 
-#[derive(Serialize)]
+#[derive(serde::Serialize)]
 struct VersionOutput<'a> {
 	resource_id: u32,
 	#[serde(skip_serializing_if = "Option::is_none")]
@@ -17,33 +13,33 @@ struct VersionOutput<'a> {
 	source: Option<String>,
 }
 
-pub fn command() -> Command {
-	Command::new("version-info")
+pub fn command() -> clap::Command {
+	clap::Command::new("version-info")
 		.visible_alias("version_info")
 		.about("Inspect the version-information resource")
-		.arg(Arg::new("file")
+		.arg(clap::Arg::new("file")
 			.value_name("FILE")
 			.value_parser(clap::value_parser!(PathBuf))
 			.required(true))
-		.arg(Arg::new("id")
+		.arg(clap::Arg::new("id")
 			.long("id")
 			.value_name("ID")
 			.value_parser(clap::value_parser!(u32))
 			.default_value("1")
 			.help("Select the version resource identifier"))
-		.arg(Arg::new("resource-language")
+		.arg(clap::Arg::new("resource-language")
 			.long("resource-language")
 			.short('l')
 			.value_name("LANG")
 			.value_parser(parse_u16)
 			.help("Select a resource language ID, in decimal or 0x-prefixed hexadecimal"))
-		.arg(Arg::new("source")
+		.arg(clap::Arg::new("source")
 			.long("source")
-			.action(ArgAction::SetTrue)
+			.action(clap::ArgAction::SetTrue)
 			.help("Include reconstructed resource-script source"))
 }
 
-pub fn run(matches: &ArgMatches, format: OutputFormat) -> Result {
+pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let path = matches.get_one::<PathBuf>("file").expect("required by clap");
 	let resource_id = *matches.get_one::<u32>("id").expect("defaulted by clap");
 	let language = matches.get_one::<u16>("resource-language").copied();

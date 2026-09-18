@@ -1,10 +1,6 @@
-use std::path::PathBuf;
-
-use clap::{Arg, ArgMatches, Command};
 use pelite::Wrap;
 
-use crate::rva_range::{RvaRange, parse as parse_rva_range};
-use crate::{OutputFormat, Result, err, print_json};
+use super::*;
 
 const ROW_WIDTH: usize = 16;
 
@@ -14,23 +10,23 @@ struct HexdumpRow {
 	ascii: String,
 }
 
-pub fn command() -> Command {
-	Command::new("hexdump")
+pub fn command() -> clap::Command {
+	clap::Command::new("hexdump")
 		.about("Hexdump an RVA range")
 		.after_help("The range is half-open and its endpoints are hexadecimal RVAs (for example, 1000..1100 or 0x1000..0x1100).")
-		.arg(Arg::new("file")
+		.arg(clap::Arg::new("file")
 			.value_name("FILE")
 			.value_parser(clap::value_parser!(PathBuf))
 			.required(true))
-		.arg(Arg::new("range")
+		.arg(clap::Arg::new("range")
 			.value_name("START..END")
-			.value_parser(parse_rva_range)
+			.value_parser(rva_range::parse)
 			.required(true))
 }
 
-pub fn run(matches: &ArgMatches, format: OutputFormat) -> Result {
+pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let path = matches.get_one::<PathBuf>("file").expect("required by clap");
-	let range = *matches.get_one::<RvaRange>("range").expect("required by clap");
+	let range = *matches.get_one::<rva_range::RvaRange>("range").expect("required by clap");
 	let map = pelite::FileMap::open(path)?;
 	let pe = pelite::PeFile::from_bytes(&map)?;
 	let (image_base, address_width) = match pe.optional_header() {

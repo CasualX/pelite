@@ -1,26 +1,21 @@
-use std::path::PathBuf;
+use super::*;
 
-use clap::{Arg, ArgMatches, Command};
-use serde::Serialize;
-
-use crate::{OutputFormat, Result, print_json};
-
-#[derive(Serialize)]
+#[derive(serde::Serialize)]
 struct ModuleDefinition {
 	library: String,
 	exports: Vec<String>,
 }
 
-pub fn command() -> Command {
-	Command::new("module-def")
+pub fn command() -> clap::Command {
+	clap::Command::new("module-def")
 		.about("Generate a module-definition file from exports")
-		.arg(Arg::new("dll")
+		.arg(clap::Arg::new("dll")
 			.value_name("DLL")
 			.value_parser(clap::value_parser!(PathBuf))
 			.required(true))
 }
 
-pub fn run(matches: &ArgMatches, format: OutputFormat) -> Result {
+pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let path = matches.get_one::<PathBuf>("dll").expect("required by clap");
 	let map = pelite::FileMap::open(path)?;
 	let pe = pelite::PeFile::from_bytes(&map)?;

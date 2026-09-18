@@ -1,9 +1,8 @@
 //! Helpers for recognizing data emitted by the current Rust x64 MSVC toolchain.
 
 use pelite::pe64::{image, Pe, PeFile, Rva};
-use serde::Serialize;
 
-use crate::{Result, err};
+use super::*;
 
 #[derive(Clone, Debug)]
 pub struct Xref {
@@ -17,7 +16,8 @@ pub struct Immediate {
 	pub value: u32,
 }
 
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug)]
+#[derive(serde::Serialize)]
 pub struct Placeholder {
 	pub argument: u16,
 	#[serde(skip_serializing_if = "Option::is_none")]

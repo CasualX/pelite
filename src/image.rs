@@ -470,9 +470,13 @@ pub struct IMAGE_SECTION_HEADER {
 	pub VirtualAddress: u32,
 	pub SizeOfRawData: u32,
 	pub PointerToRawData: u32,
+	#[cfg_attr(feature = "serde", serde(skip))]
 	pub PointerToRelocations: u32,
+	#[cfg_attr(feature = "serde", serde(skip))]
 	pub PointerToLinenumbers: u32,
+	#[cfg_attr(feature = "serde", serde(skip))]
 	pub NumberOfRelocations: u16,
+	#[cfg_attr(feature = "serde", serde(skip))]
 	pub NumberOfLinenumbers: u16,
 	pub Characteristics: u32,
 }

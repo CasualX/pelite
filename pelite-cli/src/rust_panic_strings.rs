@@ -1,14 +1,8 @@
-use std::collections::{BTreeMap, BTreeSet};
-use std::path::PathBuf;
-
-use clap::{Arg, ArgMatches, Command};
 use pelite::FileMap;
-use pelite::pe64::image::IMAGE_SCN_MEM_EXECUTE;
-use pelite::pe64::{Pe, PeFile};
-use serde::Serialize;
+use pelite::pe64::{image, Pe, PeFile};
 
-use crate::rust_msvc::{Immediate, Xref, candidate_relative_xrefs, edx_immediates, open_x64, read_format_template, read_utf8, relative_call_xrefs};
-use crate::{OutputFormat, Result, print_json};
+use crate::rust_msvc::*;
+use super::*;
 
 #[derive(Clone)]
 struct RawLocation {
@@ -18,7 +12,7 @@ struct RawLocation {
 	column: u32,
 }
 
-#[derive(Serialize)]
+#[derive(serde::Serialize)]
 struct PanicOutput {
 	location_rva: u32,
 	file: String,
@@ -35,20 +29,20 @@ struct PanicReferences<'a> {
 	compact_argument_calls: &'a BTreeSet<u32>,
 }
 
-pub fn command() -> Command {
-	Command::new("rust-panic-strings")
+pub fn command() -> clap::Command {
+	clap::Command::new("rust-panic-strings")
 		.about("Find Rust panic messages and Location records in an x64 MSVC PE")
 		.after_help(
 			"Recognizes the current Rust toolchain's 64-bit core::panic::Location layout and recovers\n\
 			 directly referenced string or compact format templates near each code reference.",
 		)
-		.arg(Arg::new("file")
+		.arg(clap::Arg::new("file")
 			.value_name("FILE")
 			.value_parser(clap::value_parser!(PathBuf))
 			.required(true))
 }
 
-pub fn run(matches: &ArgMatches, format: OutputFormat) -> Result {
+pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let path = matches.get_one::<PathBuf>("file").expect("required by clap");
 	let map = FileMap::open(path)?;
 	let file = open_x64(map.as_ref())?;
@@ -129,7 +123,7 @@ pub fn run(matches: &ArgMatches, format: OutputFormat) -> Result {
 fn find_locations(file: PeFile<'_>) -> Vec<RawLocation> {
 	let mut output = Vec::new();
 	for section in file.section_headers() {
-		if section.Characteristics & IMAGE_SCN_MEM_EXECUTE != 0 {
+		if section.Characteristics & image::IMAGE_SCN_MEM_EXECUTE != 0 {
 			continue;
 		}
 		let Ok(bytes) = file.get_section_bytes(section) else {

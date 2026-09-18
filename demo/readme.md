@@ -16,16 +16,31 @@ cargo run -p pelite-cli -- msrtti "demo/Demo.dll" > demo/Demo-rtti.txt
 
 The result can be seen [here](Demo-rtti.txt).
 
-64-bit PE dump
---------------
+64-bit PE inspection
+--------------------
 
-Dumps the PE headers.
+Inspects every supported PE header and data directory.
 
 ```bat
-cargo run -p pelite-cli -- dump "demo/Demo64.dll" -dnsiertxg > demo/Demo64-pe.txt
+cargo run -p pelite-cli -- inspect "demo/Demo64.dll" all > demo/Demo64-pe.txt
 ```
 
 The result can be seen [here](Demo64-pe.txt).
+
+Resource filesystem
+-------------------
+
+Browse resources without embedding their payloads in the PE inspection output:
+
+```bat
+cargo run -p pelite-cli -- resources tree "demo/Demo.dll"
+cargo run -p pelite-cli -- resources fsck "demo/Demo.dll"
+cargo run -p pelite-cli -- resources cat "demo/Demo.dll" /#MANIFEST/#2/#1033 > manifest.xml
+cargo run -p pelite-cli -- resources icons list "demo/Demo.dll"
+cargo run -p pelite-cli -- resources icons extract "demo/Demo.dll" extracted-icons
+```
+
+Use `--format=json` with `tree`, `fsck`, `icons`, or `cursors` for structured results. With `cat`, text output is the exact resource payload while JSON wraps it in base64 with its size and code page.
 
 Generate PE Module-Definition file
 ----------------------------------
