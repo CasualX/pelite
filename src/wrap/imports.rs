@@ -79,6 +79,10 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::ImportAddressTable<'
 		}
 	}
 	/// Iterate over the IAT.
+	///
+	/// Bound or loader-resolved slots can contain virtual addresses rather than
+	/// import-name RVAs and consequently produce decoding errors. Use the import
+	/// descriptors' [`Self::int`](Wrap::int) tables for authoritative symbol names.
 	#[inline]
 	pub fn iter(&self) -> Wrap<impl Clone + Iterator<Item = (&'a u32, Result<Import<'a>>)>, impl Clone + Iterator<Item = (&'a u64, Result<Import<'a>>)>> {
 		match self {

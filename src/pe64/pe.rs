@@ -711,11 +711,18 @@ pub(crate) unsafe fn optional_header(image: &[u8]) -> &IMAGE_OPTIONAL_HEADER { u
 unsafe fn data_directory(image: &[u8]) -> &[IMAGE_DATA_DIRECTORY] { unsafe {
 	let opt = optional_header(image);
 	let len = cmp::min(opt.NumberOfRvaAndSizes as usize, IMAGE_NUMBEROF_DIRECTORY_ENTRIES);
-	slice::from_raw_parts(opt.DataDirectory.as_ptr(), len)
+	let offset = dos_header(image).e_lfanew as usize
+		+ mem::offset_of!(IMAGE_NT_HEADERS, OptionalHeader)
+		+ mem::offset_of!(IMAGE_OPTIONAL_HEADER, DataDirectory);
+	let data = image.as_ptr().add(offset).cast();
+	slice::from_raw_parts(data, len)
 }}
 unsafe fn section_headers(image: &[u8]) -> &super::PeSectionHeaders { unsafe {
 	let nt = nt_headers(image);
-	let data = (&nt.OptionalHeader as *const _ as *const u8).offset(nt.FileHeader.SizeOfOptionalHeader as isize) as *const IMAGE_SECTION_HEADER;
+	let offset = dos_header(image).e_lfanew as usize
+		+ mem::offset_of!(IMAGE_NT_HEADERS, OptionalHeader)
+		+ nt.FileHeader.SizeOfOptionalHeader as usize;
+	let data = image.as_ptr().add(offset).cast();
 	let raw = slice::from_raw_parts(data, nt.FileHeader.NumberOfSections as usize);
 	super::PeSectionHeaders::new(raw)
 }}

@@ -81,12 +81,12 @@ impl Error {
 	///
 	/// assert_eq!(with_default(Err(pelite::Error::Null)), Ok(0));
 	/// ```
-	pub fn is_null(self) -> bool {
-		self == Error::Null
+	pub const fn is_null(self) -> bool {
+		matches!(self, Error::Null)
 	}
 
 	/// Returns a simple string representation of the error.
-	pub fn to_str(self) -> &'static str {
+	pub const fn to_str(self) -> &'static str {
 		match self {
 			Error::Null => "null address reference",
 			Error::Bounds => "bounds check failed",

@@ -135,7 +135,9 @@ impl<'a, P: Pe<'a>> ImportAddressTable<'a, P> {
 	}
 	/// Iterate over the IAT.
 	///
-	/// When the imports aren't resolved yet the IAT is an alias for the import name table.
+	/// Bound or loader-resolved slots can contain virtual addresses rather than
+	/// import-name RVAs and consequently produce decoding errors. Use the import
+	/// descriptors' [`ImportDescriptor::int`] tables for authoritative symbol names.
 	pub fn iter(&self) -> iter::Map<slice::Iter<'a, Va>, impl Clone + FnMut(&'a Va) -> (&'a Va, Result<Import<'a>>)> {
 		let pe = self.pe;
 		self.image.iter().map(move |va| (va, import_from_va(pe, va)))

@@ -100,6 +100,7 @@ impl<'a> fmt::Debug for ResourceDirectory<'a> {
 pub struct ResourceDirectoryTable<'a> {
 	resources: ResourceDirectory<'a>,
 	image: &'a IMAGE_RESOURCE_DIRECTORY,
+	offset: u32,
 }
 impl<'a> ResourceDirectoryTable<'a> {
 	fn try_from(resources: ResourceDirectory<'a>, offset: u32) -> Result<ResourceDirectoryTable<'a>> {
@@ -112,7 +113,7 @@ impl<'a> ResourceDirectoryTable<'a> {
 		if entries_size > resources.section.len() - entries_offset {
 			return Err(Error::Bounds);
 		}
-		Ok(ResourceDirectoryTable { resources, image })
+		Ok(ResourceDirectoryTable { resources, image, offset })
 	}
 	/// Gets the resources.
 	pub fn resources(&self) -> ResourceDirectory<'a> {
@@ -122,44 +123,34 @@ impl<'a> ResourceDirectoryTable<'a> {
 	pub fn image(&self) -> &'a IMAGE_RESOURCE_DIRECTORY {
 		self.image
 	}
+	fn entry_images(&self) -> &'a [IMAGE_RESOURCE_DIRECTORY_ENTRY] {
+		let offset = self.offset + mem::size_of::<IMAGE_RESOURCE_DIRECTORY>() as u32;
+		let len = self.image.NumberOfNamedEntries as usize + self.image.NumberOfIdEntries as usize;
+		// `try_from` validated this exact range and its alignment.
+		self.resources.slice_len(offset, len).expect("validated resource directory entries")
+	}
 	/// Gets the directory entries.
 	pub fn entries(&self) -> ResourceDirectoryEntryIter<'a, impl Clone + FnMut(&'a IMAGE_RESOURCE_DIRECTORY_ENTRY) -> ResourceDirectoryEntry<'a> + use<'a>> {
-		// Validated by constructor
-		let slice = unsafe {
-			let p = (self.image as *const IMAGE_RESOURCE_DIRECTORY).offset(1) as *const IMAGE_RESOURCE_DIRECTORY_ENTRY;
-			let len = self.image.NumberOfNamedEntries as usize + self.image.NumberOfIdEntries as usize;
-			slice::from_raw_parts(p, len)
-		};
 		let resources = self.resources;
-		slice.iter().map(move |image| ResourceDirectoryEntry { resources, image })
+		self.entry_images().iter().map(move |image| ResourceDirectoryEntry { resources, image })
 	}
 	/// Gets the named entries in this directory.
 	///
 	/// Note that while it would be a violation of the format spec, there's no strict safety guarantee that these are only named entries.
 	pub fn named_entries(&self) -> ResourceDirectoryEntryIter<'a, impl Clone + FnMut(&'a IMAGE_RESOURCE_DIRECTORY_ENTRY) -> ResourceDirectoryEntry<'a> + use<'a>> {
-		// Validated by constructor
-		let slice = unsafe {
-			// Named entries come first in the array (see chapter "PE File Resources" in "Peering Inside the PE: A Tour of the Win32 Portable Executable File Format")
-			let p = (self.image as *const IMAGE_RESOURCE_DIRECTORY).offset(1) as *const IMAGE_RESOURCE_DIRECTORY_ENTRY;
-			let len = self.image.NumberOfNamedEntries as usize;
-			slice::from_raw_parts(p, len)
-		};
+		// Named entries come first in the array (see chapter "PE File Resources" in "Peering Inside the PE: A Tour of the Win32 Portable Executable File Format")
+		let images = &self.entry_images()[..self.image.NumberOfNamedEntries as usize];
 		let resources = self.resources;
-		slice.iter().map(move |image| ResourceDirectoryEntry { resources, image })
+		images.iter().map(move |image| ResourceDirectoryEntry { resources, image })
 	}
 	/// Gets the id entries in this directory.
 	///
 	/// Note that while it would be a violation of the format spec, there's no strict safety guarantee that these are only id entries.
 	pub fn id_entries(&self) -> ResourceDirectoryEntryIter<'a, impl Clone + FnMut(&'a IMAGE_RESOURCE_DIRECTORY_ENTRY) -> ResourceDirectoryEntry<'a> + use<'a>> {
-		// Validated by the constructor
-		let slice = unsafe {
-			// Id entries come last in the array
-			let p = ((self.image as *const IMAGE_RESOURCE_DIRECTORY).offset(1) as *const IMAGE_RESOURCE_DIRECTORY_ENTRY).offset(self.image.NumberOfNamedEntries as isize);
-			let len = self.image.NumberOfIdEntries as usize;
-			slice::from_raw_parts(p, len)
-		};
+		// Id entries come last in the array.
+		let images = &self.entry_images()[self.image.NumberOfNamedEntries as usize..];
 		let resources = self.resources;
-		slice.iter().map(move |image| ResourceDirectoryEntry { resources, image })
+		images.iter().map(move |image| ResourceDirectoryEntry { resources, image })
 	}
 	/// Filesystem consistency check.
 	///
