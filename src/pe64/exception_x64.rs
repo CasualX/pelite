@@ -61,10 +61,10 @@ impl<'a, P: Pe<'a>> X64ExceptionDirectory<'a, P> {
 	pub fn index_of(&self, pc: Rva) -> core::result::Result<usize, usize> {
 		self.image.binary_search_by(|rf| {
 			if pc < rf.BeginAddress {
-				cmp::Ordering::Less
-			}
-			else if pc > rf.EndAddress {
 				cmp::Ordering::Greater
+			}
+			else if pc >= rf.EndAddress {
+				cmp::Ordering::Less
 			}
 			else {
 				cmp::Ordering::Equal

@@ -110,7 +110,7 @@ impl<'a> PeView<'a> {
 		// Copy the section image data
 		for section in self.section_headers() {
 			let dest = vec.get_mut(section.PointerToRawData as usize..u32::wrapping_add(section.PointerToRawData, section.SizeOfRawData) as usize);
-			let src = image.get(section.VirtualAddress as usize..u32::wrapping_add(section.VirtualAddress, section.VirtualSize) as usize);
+			let src = image.get(section.VirtualAddress as usize..u32::wrapping_add(section.VirtualAddress, section.SizeOfRawData) as usize);
 			// Skip invalid sections...
 			if let (Some(dest), Some(src)) = (dest, src) {
 				dest.copy_from_slice(src);
