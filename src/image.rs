@@ -201,11 +201,11 @@ impl<T: fmt::Display> fmt::Display for IMAGE_VERSION<T> {
 /// containing structure packed (and consequently awkward to borrow from).
 #[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
 #[repr(transparent)]
-pub struct IMAGE_U32(pub [u8; 4]);
-impl IMAGE_U32 {
+pub struct U32(pub [u8; 4]);
+impl U32 {
 	#[inline]
-	pub const fn new(value: u32) -> IMAGE_U32 {
-		IMAGE_U32(value.to_ne_bytes())
+	pub const fn new(value: u32) -> U32 {
+		U32(value.to_ne_bytes())
 	}
 	#[inline]
 	pub const fn get(self) -> u32 {
@@ -216,25 +216,25 @@ impl IMAGE_U32 {
 		self.0 = value.to_ne_bytes();
 	}
 }
-impl From<u32> for IMAGE_U32 {
+impl From<u32> for U32 {
 	#[inline]
-	fn from(value: u32) -> IMAGE_U32 {
-		IMAGE_U32::new(value)
+	fn from(value: u32) -> U32 {
+		U32::new(value)
 	}
 }
-impl From<IMAGE_U32> for u32 {
+impl From<U32> for u32 {
 	#[inline]
-	fn from(value: IMAGE_U32) -> u32 {
+	fn from(value: U32) -> u32 {
 		value.get()
 	}
 }
-impl fmt::Debug for IMAGE_U32 {
+impl fmt::Debug for U32 {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		self.get().fmt(f)
 	}
 }
 #[cfg(feature = "serde")]
-impl serde::Serialize for IMAGE_U32 {
+impl serde::Serialize for U32 {
 	fn serialize<S: serde::Serializer>(&self, serializer: S) -> core::result::Result<S::Ok, S::Error> {
 		serializer.serialize_u32(self.get())
 	}
@@ -247,8 +247,8 @@ impl serde::Serialize for IMAGE_U32 {
 /// containing structure packed (and consequently awkward to borrow from).
 #[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
 #[repr(transparent)]
-pub struct IMAGE_U64(pub [u32; 2]);
-impl IMAGE_U64 {
+pub struct U64(pub [u32; 2]);
+impl U64 {
 	#[inline]
 	pub const fn new(value: u64) -> Self {
 		Self([value as u32, (value >> 32) as u32])
@@ -262,25 +262,25 @@ impl IMAGE_U64 {
 		*self = Self::new(value);
 	}
 }
-impl From<u64> for IMAGE_U64 {
+impl From<u64> for U64 {
 	#[inline]
 	fn from(value: u64) -> Self {
 		Self::new(value)
 	}
 }
-impl From<IMAGE_U64> for u64 {
+impl From<U64> for u64 {
 	#[inline]
-	fn from(value: IMAGE_U64) -> Self {
+	fn from(value: U64) -> Self {
 		value.get()
 	}
 }
-impl fmt::Debug for IMAGE_U64 {
+impl fmt::Debug for U64 {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		self.get().fmt(f)
 	}
 }
 #[cfg(feature = "serde")]
-impl serde::Serialize for IMAGE_U64 {
+impl serde::Serialize for U64 {
 	fn serialize<S: serde::Serializer>(&self, serializer: S) -> core::result::Result<S::Ok, S::Error> {
 		serializer.serialize_u64(self.get())
 	}
@@ -369,7 +369,7 @@ pub struct IMAGE_OPTIONAL_HEADER64 {
 	pub SizeOfUninitializedData: u32,
 	pub AddressOfEntryPoint: u32,
 	pub BaseOfCode: u32,
-	pub ImageBase: IMAGE_U64,
+	pub ImageBase: U64,
 	pub SectionAlignment: u32,
 	pub FileAlignment: u32,
 	pub OperatingSystemVersion: IMAGE_VERSION<u16>,
@@ -381,10 +381,10 @@ pub struct IMAGE_OPTIONAL_HEADER64 {
 	pub CheckSum: u32,
 	pub Subsystem: u16,
 	pub DllCharacteristics: u16,
-	pub SizeOfStackReserve: IMAGE_U64,
-	pub SizeOfStackCommit: IMAGE_U64,
-	pub SizeOfHeapReserve: IMAGE_U64,
-	pub SizeOfHeapCommit: IMAGE_U64,
+	pub SizeOfStackReserve: U64,
+	pub SizeOfStackCommit: U64,
+	pub SizeOfHeapReserve: U64,
+	pub SizeOfHeapCommit: U64,
 	pub LoaderFlags: u32,
 	pub NumberOfRvaAndSizes: u32,
 	#[cfg_attr(feature = "serde", serde(skip))]
@@ -504,11 +504,11 @@ pub struct IMAGE_EXPORT_DIRECTORY {
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct IMAGE_IMPORT_DESCRIPTOR {
-	pub OriginalFirstThunk: IMAGE_U32,
-	pub TimeDateStamp: IMAGE_U32,
-	pub ForwarderChain: IMAGE_U32,
-	pub Name: IMAGE_U32,
-	pub FirstThunk: IMAGE_U32,
+	pub OriginalFirstThunk: U32,
+	pub TimeDateStamp: U32,
+	pub ForwarderChain: U32,
+	pub Name: U32,
+	pub FirstThunk: U32,
 }
 impl IMAGE_IMPORT_DESCRIPTOR {
 	pub fn is_null(&self) -> bool {
@@ -741,49 +741,49 @@ pub struct IMAGE_LOAD_CONFIG_DIRECTORY64 {
 	pub GlobalFlagsClear: u32,
 	pub GlobalFlagsSet: u32,
 	pub CriticalSectionDefaultTimeout: u32,
-	pub DeCommitFreeBlockThreshold: IMAGE_U64,
-	pub DeCommitTotalFreeThreshold: IMAGE_U64,
-	pub LockPrefixTable: IMAGE_U64,
-	pub MaximumAllocationSize: IMAGE_U64,
-	pub VirtualMemoryThreshold: IMAGE_U64,
-	pub ProcessAffinityMask: IMAGE_U64,
+	pub DeCommitFreeBlockThreshold: U64,
+	pub DeCommitTotalFreeThreshold: U64,
+	pub LockPrefixTable: U64,
+	pub MaximumAllocationSize: U64,
+	pub VirtualMemoryThreshold: U64,
+	pub ProcessAffinityMask: U64,
 	pub ProcessHeapFlags: u32,
 	pub CSDVersion: u16,
 	pub DependentLoadFlags: u16,
-	pub EditList: IMAGE_U64,
-	pub SecurityCookie: IMAGE_U64,
-	pub SEHandlerTable: IMAGE_U64,
-	pub SEHandlerCount: IMAGE_U64,
-	pub GuardCFCheckFunctionPointer: IMAGE_U64,
-	pub GuardCFDispatchFunctionPointer: IMAGE_U64,
-	pub GuardCFFunctionTable: IMAGE_U64,
-	pub GuardCFFunctionCount: IMAGE_U64,
+	pub EditList: U64,
+	pub SecurityCookie: U64,
+	pub SEHandlerTable: U64,
+	pub SEHandlerCount: U64,
+	pub GuardCFCheckFunctionPointer: U64,
+	pub GuardCFDispatchFunctionPointer: U64,
+	pub GuardCFFunctionTable: U64,
+	pub GuardCFFunctionCount: U64,
 	pub GuardFlags: u32,
 	pub CodeIntegrity: IMAGE_LOAD_CONFIG_CODE_INTEGRITY,
-	pub GuardAddressTakenIatEntryTable: IMAGE_U64,
-	pub GuardAddressTakenIatEntryCount: IMAGE_U64,
-	pub GuardLongJumpTargetTable: IMAGE_U64,
-	pub GuardLongJumpTargetCount: IMAGE_U64,
-	pub DynamicValueRelocTable: IMAGE_U64,
-	pub CHPEMetadataPointer: IMAGE_U64,
-	pub GuardRFFailureRoutine: IMAGE_U64,
-	pub GuardRFFailureRoutineFunctionPointer: IMAGE_U64,
+	pub GuardAddressTakenIatEntryTable: U64,
+	pub GuardAddressTakenIatEntryCount: U64,
+	pub GuardLongJumpTargetTable: U64,
+	pub GuardLongJumpTargetCount: U64,
+	pub DynamicValueRelocTable: U64,
+	pub CHPEMetadataPointer: U64,
+	pub GuardRFFailureRoutine: U64,
+	pub GuardRFFailureRoutineFunctionPointer: U64,
 	pub DynamicValueRelocTableOffset: u32,
 	pub DynamicValueRelocTableSection: u16,
 	pub Reserved2: u16,
-	pub GuardRFVerifyStackPointerFunctionPointer: IMAGE_U64,
+	pub GuardRFVerifyStackPointerFunctionPointer: U64,
 	pub HotPatchTableOffset: u32,
 	pub Reserved3: u32,
-	pub EnclaveConfigurationPointer: IMAGE_U64,
-	pub VolatileMetadataPointer: IMAGE_U64,
-	pub GuardEHContinuationTable: IMAGE_U64,
-	pub GuardEHContinuationCount: IMAGE_U64,
-	pub GuardXFGCheckFunctionPointer: IMAGE_U64,
-	pub GuardXFGDispatchFunctionPointer: IMAGE_U64,
-	pub GuardXFGTableDispatchFunctionPointer: IMAGE_U64,
-	pub CastGuardOsDeterminedFailureMode: IMAGE_U64,
-	pub GuardMemcpyFunctionPointer: IMAGE_U64,
-	pub UmaFunctionPointers: IMAGE_U64,
+	pub EnclaveConfigurationPointer: U64,
+	pub VolatileMetadataPointer: U64,
+	pub GuardEHContinuationTable: U64,
+	pub GuardEHContinuationCount: U64,
+	pub GuardXFGCheckFunctionPointer: U64,
+	pub GuardXFGDispatchFunctionPointer: U64,
+	pub GuardXFGTableDispatchFunctionPointer: U64,
+	pub CastGuardOsDeterminedFailureMode: U64,
+	pub GuardMemcpyFunctionPointer: U64,
+	pub UmaFunctionPointers: U64,
 }
 
 macro_rules! impl_load_config_fields {
@@ -842,7 +842,7 @@ macro_rules! impl_load_config_fields {
 	};
 }
 impl_load_config_fields!(IMAGE_LOAD_CONFIG_DIRECTORY32, u32);
-impl_load_config_fields!(IMAGE_LOAD_CONFIG_DIRECTORY64, IMAGE_U64);
+impl_load_config_fields!(IMAGE_LOAD_CONFIG_DIRECTORY64, U64);
 
 //----------------------------------------------------------------
 // Control flow guard bits of the LoadConfig
@@ -888,7 +888,7 @@ pub struct IMAGE_DYNAMIC_RELOCATION32 {
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct IMAGE_DYNAMIC_RELOCATION64 {
-	pub Symbol: IMAGE_U64,
+	pub Symbol: U64,
 	pub BaseRelocSize: u32,
 }
 
@@ -957,36 +957,36 @@ pub struct IMAGE_GUARDCF32 {
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct IMAGE_GUARDCF64 {
-	pub GuardCFCheckFunctionPointer: IMAGE_U64,
-	pub GuardCFDispatchFunctionPointer: IMAGE_U64,
-	pub GuardCFFunctionTable: IMAGE_U64,
-	pub GuardCFFunctionCount: IMAGE_U64,
+	pub GuardCFCheckFunctionPointer: U64,
+	pub GuardCFDispatchFunctionPointer: U64,
+	pub GuardCFFunctionTable: U64,
+	pub GuardCFFunctionCount: U64,
 	pub GuardFlags: u32,
 	pub CodeIntegrity: IMAGE_LOAD_CONFIG_CODE_INTEGRITY,
-	pub GuardAddressTakenIatEntryTable: IMAGE_U64,
-	pub GuardAddressTakenIatEntryCount: IMAGE_U64,
-	pub GuardLongJumpTargetTable: IMAGE_U64,
-	pub GuardLongJumpTargetCount: IMAGE_U64,
-	pub DynamicValueRelocTable: IMAGE_U64,
-	pub CHPEMetadataPointer: IMAGE_U64,
-	pub GuardRFFailureRoutine: IMAGE_U64,
-	pub GuardRFFailureRoutineFunctionPointer: IMAGE_U64,
+	pub GuardAddressTakenIatEntryTable: U64,
+	pub GuardAddressTakenIatEntryCount: U64,
+	pub GuardLongJumpTargetTable: U64,
+	pub GuardLongJumpTargetCount: U64,
+	pub DynamicValueRelocTable: U64,
+	pub CHPEMetadataPointer: U64,
+	pub GuardRFFailureRoutine: U64,
+	pub GuardRFFailureRoutineFunctionPointer: U64,
 	pub DynamicValueRelocTableOffset: u32,
 	pub DynamicValueRelocTableSection: u16,
 	pub Reserved2: u16,
-	pub GuardRFVerifyStackPointerFunctionPointer: IMAGE_U64,
+	pub GuardRFVerifyStackPointerFunctionPointer: U64,
 	pub HotPatchTableOffset: u32,
 	pub Reserved3: u32,
-	pub EnclaveConfigurationPointer: IMAGE_U64,
-	pub VolatileMetadataPointer: IMAGE_U64,
-	pub GuardEHContinuationTable: IMAGE_U64,
-	pub GuardEHContinuationCount: IMAGE_U64,
-	pub GuardXFGCheckFunctionPointer: IMAGE_U64,
-	pub GuardXFGDispatchFunctionPointer: IMAGE_U64,
-	pub GuardXFGTableDispatchFunctionPointer: IMAGE_U64,
-	pub CastGuardOsDeterminedFailureMode: IMAGE_U64,
-	pub GuardMemcpyFunctionPointer: IMAGE_U64,
-	pub UmaFunctionPointers: IMAGE_U64,
+	pub EnclaveConfigurationPointer: U64,
+	pub VolatileMetadataPointer: U64,
+	pub GuardEHContinuationTable: U64,
+	pub GuardEHContinuationCount: U64,
+	pub GuardXFGCheckFunctionPointer: U64,
+	pub GuardXFGDispatchFunctionPointer: U64,
+	pub GuardXFGTableDispatchFunctionPointer: U64,
+	pub CastGuardOsDeterminedFailureMode: U64,
+	pub GuardMemcpyFunctionPointer: U64,
+	pub UmaFunctionPointers: U64,
 }
 
 //----------------------------------------------------------------
@@ -1251,8 +1251,8 @@ unsafe impl Pod for IMAGE_RESOURCE_DATA_ENTRY {}
 unsafe impl Pod for VS_VERSION {}
 unsafe impl Pod for VS_FIXEDFILEINFO {}
 unsafe impl Pod for IMAGE_BASE_RELOCATION {}
-unsafe impl Pod for IMAGE_U32 {}
-unsafe impl Pod for IMAGE_U64 {}
+unsafe impl Pod for U32 {}
+unsafe impl Pod for U64 {}
 unsafe impl Pod for IMAGE_LOAD_CONFIG_DIRECTORY32 {}
 unsafe impl Pod for IMAGE_LOAD_CONFIG_DIRECTORY64 {}
 unsafe impl Pod for IMAGE_LOAD_CONFIG_CODE_INTEGRITY {}
@@ -1300,10 +1300,10 @@ assert_sizeof!(16, IMAGE_RESOURCE_DIRECTORY);
 assert_sizeof!(8, IMAGE_RESOURCE_DIRECTORY_ENTRY);
 assert_sizeof!(16, IMAGE_RESOURCE_DATA_ENTRY);
 assert_sizeof!(8, IMAGE_BASE_RELOCATION);
-assert_sizeof!(4, IMAGE_U32);
-assert_alignof!(1, IMAGE_U32);
-assert_sizeof!(8, IMAGE_U64);
-assert_alignof!(4, IMAGE_U64);
+assert_sizeof!(4, U32);
+assert_alignof!(1, U32);
+assert_sizeof!(8, U64);
+assert_alignof!(4, U64);
 assert_sizeof!(196, IMAGE_LOAD_CONFIG_DIRECTORY32);
 assert_offsetof!(44, IMAGE_LOAD_CONFIG_DIRECTORY32, ProcessHeapFlags);
 assert_offsetof!(48, IMAGE_LOAD_CONFIG_DIRECTORY32, ProcessAffinityMask);
