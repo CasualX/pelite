@@ -588,8 +588,8 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	/// Returns the [`DebugDirectory`](super::DebugDirectory).
 	///
 	/// Returns [`Err(Null)`][crate::Error::Null] if the image has no debug info. Any other error indicates some form of corruption.
-	fn debug(self) -> Result<super::DebugDirectory<'a, Self>> {
-		super::DebugDirectory::try_from(self)
+	fn debug(self) -> Result<crate::debug::DebugDirectory<'a>> {
+		super::debug::try_from(self)
 	}
 
 	/// Gets the Resource Directory.
