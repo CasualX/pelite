@@ -75,5 +75,5 @@ pub use self::pe::PeLayout;
 pub(crate) use self::pe::get_section_bytes;
 pub use self::view::PeView;
 
-pub use self::exports::ExportSymbol;
-pub use self::imports::ImportSymbol;
+pub use self::exports::Export;
+pub use self::imports::Import;

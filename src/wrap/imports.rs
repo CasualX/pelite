@@ -3,7 +3,7 @@ use super::*;
 /// Imported symbol.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
-pub enum ImportSymbol<'a> {
+pub enum Import<'a> {
 	/// Imported by name.
 	///
 	/// The hint is an index in the export names table that may contain the desired symbol.
@@ -80,7 +80,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::ImportAddressTable<'
 	}
 	/// Iterate over the IAT.
 	#[inline]
-	pub fn iter(&self) -> Wrap<impl Clone + Iterator<Item = (&'a u32, Result<ImportSymbol<'a>>)>, impl Clone + Iterator<Item = (&'a u64, Result<ImportSymbol<'a>>)>> {
+	pub fn iter(&self) -> Wrap<impl Clone + Iterator<Item = (&'a u32, Result<Import<'a>>)>, impl Clone + Iterator<Item = (&'a u64, Result<Import<'a>>)>> {
 		match self {
 			Wrap::T32(iat) => Wrap::T32(iat.iter()),
 			Wrap::T64(iat) => Wrap::T64(iat.iter()),
@@ -124,7 +124,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::ImportDescriptor<'a,
 	}
 	/// Gets the import name table.
 	#[inline]
-	pub fn int(&self) -> Result<impl Clone + Iterator<Item = Result<ImportSymbol<'a>>>> {
+	pub fn int(&self) -> Result<impl Clone + Iterator<Item = Result<Import<'a>>>> {
 		match self {
 			Wrap::T32(desc) => Ok(Wrap::T32(desc.int()?).map(Wrap::into)),
 			Wrap::T64(desc) => Ok(Wrap::T64(desc.int()?).map(Wrap::into)),
