@@ -5,8 +5,10 @@ use std::process::ExitCode;
 use clap::{Arg, ArgMatches, Command};
 
 mod dump;
+mod disasm;
 mod extract_icons;
 mod findsig;
+mod hexdump;
 mod imphash;
 mod markov;
 mod module_def;
@@ -14,6 +16,7 @@ mod msrtti;
 mod rust_format_args;
 mod rust_msvc;
 mod rust_panic_strings;
+mod rva_range;
 mod strings;
 mod version_info;
 
@@ -64,7 +67,9 @@ fn cli() -> Command {
 			.global(true)
 			.help("Select the output format"))
 		.subcommand(dump::command())
+		.subcommand(disasm::command())
 		.subcommand(extract_icons::command())
+		.subcommand(hexdump::command())
 		.subcommand(strings::command())
 		.subcommand(findsig::command())
 		.subcommand(imphash::command())
@@ -92,7 +97,9 @@ fn run() -> Result {
 	let format = OutputFormat::from_matches(&matches);
 	match matches.subcommand() {
 		Some(("dump", matches)) => dump::run(matches, format),
+		Some(("disasm", matches)) => disasm::run(matches, format),
 		Some(("extract-icons", matches)) => extract_icons::run(matches, format),
+		Some(("hexdump", matches)) => hexdump::run(matches, format),
 		Some(("strings", matches)) => strings::run(matches, format),
 		Some(("findsig", matches)) => findsig::run(matches, format),
 		Some(("imphash", matches)) => imphash::run(matches, format),

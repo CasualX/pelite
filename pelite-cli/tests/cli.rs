@@ -31,6 +31,8 @@ fn every_command_supports_json() {
 	let path64 = pe64.to_str().unwrap();
 
 	assert!(json(&["strings", path, "--format=json"]).is_array());
+	assert!(json(&["disasm", path, "1000..1010", "--format=json"]).is_array());
+	assert!(json(&["hexdump", path, "1000..1010", "--format=json"]).is_array());
 	assert!(json(&["findsig", path, "55 8B EC", "--format=json"]).is_array());
 	assert!(json(&["imphash", path, "--format=json"]).is_array());
 	assert!(json(&["markov", "8", path, "--seed=1", "--format=json"])["bytes"].is_array());
@@ -46,6 +48,52 @@ fn imphash_is_stable_and_standard_length() {
 	let pe32 = demo("Demo.dll");
 	let value = json(&["imphash", pe32.to_str().unwrap(), "--format=json"]);
 	assert_eq!(value[0]["hash"], "7e330da5c7f05d0fd1f12eef6d7bd950");
+}
+
+#[test]
+fn disasm_resolves_pe_symbols() {
+	let pe32 = demo("Demo.dll");
+	let value = json(&["disasm", pe32.to_str().unwrap(), "1240..1260", "--format=json"]);
+	assert_eq!(value[0]["address"], 0x10001240_u64);
+	assert!(value[0].get("rva").is_none());
+	assert!(value.as_array().unwrap().iter().any(|instruction| instruction["instruction"] == "call dword ptr [MSVCR120.dll!_strdup]"));
+
+	let pe64 = demo("Demo64.dll");
+	let value = json(&["disasm", pe64.to_str().unwrap(), "13a0..13b8", "--format=json"]);
+	assert_eq!(value[0]["address"], 0x1800013a0_u64);
+	assert!(value.as_array().unwrap().iter().any(|instruction| instruction["instruction"] == "mov [?nPasswds@@3HA],eax"));
+}
+
+#[test]
+fn disasm_prints_export_labels() {
+	let pe32 = demo("Demo.dll");
+	let output = Command::new(env!("CARGO_BIN_EXE_pelite-cli"))
+		.args(["disasm", pe32.to_str().unwrap(), "1200..1230"])
+		.output()
+		.expect("run pelite-cli");
+	assert!(output.status.success(), "pelite-cli failed: {}", String::from_utf8_lossy(&output.stderr));
+	let stdout = String::from_utf8(output.stdout).unwrap();
+	assert!(stdout.contains("\n\n?fnPasswdsBypass@@YAHXZ:\n0x10001220"), "unexpected disassembly:\n{stdout}");
+}
+
+#[test]
+fn hexdump_aligns_partial_rows() {
+	let pe32 = demo("Demo.dll");
+	let output = Command::new(env!("CARGO_BIN_EXE_pelite-cli"))
+		.args(["hexdump", pe32.to_str().unwrap(), "1005..1013"])
+		.output()
+		.expect("run pelite-cli");
+	assert!(output.status.success(), "pelite-cli failed: {}", String::from_utf8_lossy(&output.stderr));
+	let stdout = String::from_utf8(output.stdout).unwrap();
+	let lines = stdout.lines().collect::<Vec<_>>();
+	assert_eq!(lines.len(), 2);
+	assert!(lines[0].starts_with("0x10001000"));
+	assert!(lines[0].ends_with("|     ...........|"));
+	assert!(lines[1].starts_with("0x10001010"));
+	assert!(lines[1].ends_with("|.A.             |"));
+
+	let value = json(&["hexdump", pe32.to_str().unwrap(), "1000..1005", "--format=json"]);
+	assert_eq!(value, serde_json::json!([0xb8, 1, 0, 0, 0]));
 }
 
 #[test]
