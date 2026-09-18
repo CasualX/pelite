@@ -25,6 +25,9 @@ const RICH_MARKER: u32 = 0x68636952; // "Rich"
 /// * <http://bytepointer.com/articles/the_microsoft_rich_header.htm>
 /// * <http://bytepointer.com/articles/rich_header_lifewire_vxmags_29A-8.009.htm>
 /// * <https://pdfs.semanticscholar.org/44ad/fa896e6598b1723507060126125a0cad39a1.pdf>
+/// * <https://d-nb.info/1211476278/34>
+/// * <https://github.com/lief-project/LIEF/blob/main/src/PE/Parser.cpp>
+/// * <https://gist.github.com/skochinsky/07c8e95e33d9429d81a75622b5d24c8b>
 #[derive(Copy, Clone)]
 pub struct RichStructure<'a> {
 	dos_stub: &'a [u32],
@@ -47,12 +50,17 @@ impl<'a> RichStructure<'a> {
 			}
 			end -= 1;
 		}
-		let end = end;
-
 		// Find the Rich marker and the xor key
-		if image[end - 2] != RICH_MARKER {
-			return Err(Error::BadMagic);
+		let end = if image[end - 2] == RICH_MARKER {
+			end
 		}
+		else if image[end - 1] == RICH_MARKER && image.get(end) == Some(&0) {
+			// A zero xor key was removed along with the trailing padding.
+			end + 1
+		}
+		else {
+			return Err(Error::BadMagic);
+		};
 		let x = image[end - 1];
 		let dx = DANS_MARKER ^ x;
 
@@ -88,16 +96,15 @@ impl<'a> RichStructure<'a> {
 	fn _checksum<I: Iterator<Item = RichRecord>>(dos_stub: &[u32], records: I) -> u32 {
 		let mut csum = mem::size_of_val(dos_stub) as u32;
 
-		let mut i = 0;
-		for dword in dos_stub {
+		for (dword_index, dword) in dos_stub.iter().enumerate() {
+			let i = (dword_index as u32).wrapping_mul(4);
 			// Zero the e_lfanew field
-			let bytes = if i == 0x3c { [0; 4] } else { unsafe { *(dword as *const _ as *const [u8; 4]) } };
+			let bytes = if i == 0x3c { [0; 4] } else { dword.to_ne_bytes() };
 			// Accumulate
-			csum = u32::wrapping_add(csum, (bytes[0] as u32).rotate_left(i + 0));
+			csum = u32::wrapping_add(csum, (bytes[0] as u32).rotate_left(i));
 			csum = u32::wrapping_add(csum, (bytes[1] as u32).rotate_left(i + 1));
 			csum = u32::wrapping_add(csum, (bytes[2] as u32).rotate_left(i + 2));
 			csum = u32::wrapping_add(csum, (bytes[3] as u32).rotate_left(i + 3));
-			i += 4;
 		}
 
 		for record in records {
@@ -119,16 +126,16 @@ impl<'a> RichStructure<'a> {
 	}
 	/// Encodes a new set of records.
 	///
-	/// If the destination does not have the right len, returns Err with the right len.
+	/// If the destination does not have the right length, returns `Err` with the right length.
 	/// Call encode again with destination of the returned len, destination is not modified.
 	///
 	/// Returns Ok with the len of the destination when encoding was successful.
 	pub fn encode(&self, records: &[RichRecord], dest: &mut [u32]) -> result::Result<usize, usize> {
 		let xor_key = Self::_checksum(self.dos_stub, records.iter().cloned());
 		let n = records.len();
-		let total_size = ((xor_key / 32) % 3 + n as u32) * 8 + 0x20;
-		let total_len = (total_size / 4) as usize;
-		if dest.len() < n * 2 + 6 {
+		let padding = ((xor_key / 32) % 3) as usize;
+		let total_len = (padding + n) * 2 + 8;
+		if dest.len() != total_len {
 			Err(total_len)
 		}
 		else {
@@ -147,8 +154,8 @@ impl<'a> RichStructure<'a> {
 			dest[n * 2 + 4] = RICH_MARKER;
 			dest[n * 2 + 5] = xor_key;
 			// Write the padding
-			for i in n * 2 + 6..dest.len() {
-				dest[i] = 0;
+			for dword in &mut dest[n * 2 + 6..] {
+				*dword = 0;
 			}
 			Ok(total_len)
 		}
@@ -223,10 +230,10 @@ impl From<u16> for RichObjectKind {
 	#[rustfmt::skip]
 	fn from(product: u16) -> RichObjectKind {
 		match product {
-			0x00ff          | 0x00c9 | 0x009a          | 0x007c | 0x005e | 0x0045          | 0x0006 => RichObjectKind::Resource,
+			0x00ff | 0x00db | 0x00c9 | 0x009a | 0x0094 | 0x007c | 0x005e | 0x0045          | 0x0006 => RichObjectKind::Resource,
 			0x0100 | 0x00dc | 0x00ca | 0x009b | 0x0092 | 0x007a | 0x005c | 0x003f                   => RichObjectKind::Export,
-			0x0101 | 0x00dd | 0x00cb | 0x009c | 0x0093 | 0x007b | 0x005d | 0x0019          | 0x0002 => RichObjectKind::Import,
-			0x0102 | 0x00de | 0x00cc | 0x009d | 0x0091 | 0x0078 | 0x005a | 0x003d          | 0x0004 => RichObjectKind::Link,
+			0x0101 | 0x00dd | 0x00cb | 0x009c | 0x0093 | 0x007b | 0x005d | 0x0019                   => RichObjectKind::Import,
+			0x0102 | 0x00de | 0x00cc | 0x009d | 0x0091 | 0x0078 | 0x005a | 0x003d | 0x0004 | 0x0002 => RichObjectKind::Link,
 			0x0103 | 0x00df | 0x00cd | 0x009e | 0x0095 | 0x007d | 0x000f | 0x0040                   => RichObjectKind::Assembly,
 			0x0104 | 0x00e0 | 0x00ce | 0x00aa | 0x0083 | 0x006d | 0x005f | 0x001c | 0x000a | 0x0015 => RichObjectKind::C,
 			0x0105 | 0x00e1 | 0x00cf | 0x00ab | 0x0084 | 0x006e | 0x0060 | 0x001d | 0x000b | 0x0016 => RichObjectKind::CPP,
@@ -265,9 +272,9 @@ impl<'a> Iterator for RichRecordIter<'a> {
 		self.size_hint().0
 	}
 	fn nth(&mut self, n: usize) -> Option<RichRecord> {
-		if self.iter.len() >= n * 2 + 2 {
-			let record = RichRecord::decode(self.key, &[self.iter[n * 2], self.iter[n * 2 + 1]]);
-			self.iter = &self.iter[n * 2 + 2..];
+		if let Some(offset) = n.checked_mul(2).filter(|&offset| self.iter.len().saturating_sub(offset) >= 2) {
+			let record = RichRecord::decode(self.key, &[self.iter[offset], self.iter[offset + 1]]);
+			self.iter = &self.iter[offset + 2..];
 			Some(record)
 		}
 		else {

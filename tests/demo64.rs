@@ -42,9 +42,15 @@ fn rich_structure() {
 
 	// Re-encode the records
 	let records: Vec<_> = rich_structure.records().collect();
-	let mut encoded = vec![0; rich_structure.image().len()];
-	rich_structure.encode(&records, &mut encoded).unwrap();
-	assert_eq!(rich_structure.image(), &*encoded);
+	let required_len = rich_structure.encode(&records, &mut []).unwrap_err();
+	let mut encoded = vec![0; required_len];
+	assert_eq!(rich_structure.encode(&records, &mut encoded), Ok(required_len));
+	assert_eq!(rich_structure.image(), &encoded[..rich_structure.image().len()]);
+	assert!(encoded[rich_structure.image().len()..].iter().all(|&dword| dword == 0));
+
+	let mut short = vec![u32::MAX; required_len - 1];
+	assert_eq!(rich_structure.encode(&records, &mut short), Err(required_len));
+	assert!(short.iter().all(|&dword| dword == u32::MAX));
 }
 
 //----------------------------------------------------------------
