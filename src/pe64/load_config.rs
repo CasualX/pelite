@@ -34,6 +34,9 @@ pub struct LoadConfigDirectory<'a, P> {
 impl<'a, P: Pe<'a>> LoadConfigDirectory<'a, P> {
 	pub(crate) fn try_from(pe: P) -> Result<LoadConfigDirectory<'a, P>> {
 		let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG).ok_or(Error::Bounds)?;
+		if datadir.VirtualAddress == 0 {
+			return Err(Error::Null);
+		}
 		let directory_size = datadir.Size as usize;
 		if directory_size < mem::size_of::<u32>() {
 			return Err(Error::Invalid);
