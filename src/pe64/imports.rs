@@ -75,6 +75,9 @@ pub struct ImportDirectory<'a, P> {
 impl<'a, P: Pe<'a>> ImportDirectory<'a, P> {
 	pub(crate) fn try_from(pe: P) -> Result<ImportDirectory<'a, P>> {
 		let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_IMPORT).ok_or(Error::Bounds)?;
+		if datadir.VirtualAddress == 0 {
+			return Err(Error::Null);
+		}
 		let image = pe.derva_slice_f(datadir.VirtualAddress, |image: &IMAGE_IMPORT_DESCRIPTOR| image.is_null())?;
 		Ok(ImportDirectory { pe, image })
 	}
@@ -118,6 +121,9 @@ pub struct ImportAddressTable<'a, P> {
 impl<'a, P: Pe<'a>> ImportAddressTable<'a, P> {
 	pub(crate) fn try_from(pe: P) -> Result<ImportAddressTable<'a, P>> {
 		let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_IAT).ok_or(Error::Bounds)?;
+		if datadir.VirtualAddress == 0 {
+			return Err(Error::Null);
+		}
 		let (len, rem) = (datadir.Size as usize / mem::size_of::<Va>(), datadir.Size as usize % mem::size_of::<Va>());
 		if rem != 0 {
 			return Err(Error::Invalid);

@@ -613,11 +613,11 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	/// 	Ok(resources.find_data("/Manifest/2/1033")?.bytes()?)
 	/// }
 	/// ```
-	fn resources(self) -> Result<crate::resources::ResourceDirectory<'a>>
-	where
-		Self: Copy,
-	{
+	fn resources(self) -> Result<crate::resources::ResourceDirectory<'a>> where Self: Copy {
 		let datadir = self.data_directory().get(IMAGE_DIRECTORY_ENTRY_RESOURCE).ok_or(Error::Bounds)?;
+		if datadir.VirtualAddress == 0 {
+			return Err(Error::Null);
+		}
 		let bytes = self.slice_bytes(datadir.VirtualAddress)?;
 		let size = cmp::min(datadir.Size as usize, bytes.len());
 		Ok(crate::resources::ResourceDirectory::new(&bytes[..size], datadir))

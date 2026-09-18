@@ -112,10 +112,8 @@ serde_impl! {
 			state.serialize_field("DataDirectory.Names", &SerdeIter(data_directory_names))?;
 
 			let data_directory_sects = self.pe.data_directory().iter().map(|dd| {
-				self.pe
-					.section_headers()
-					.iter()
-					.position(|&sect| dd.VirtualAddress >= sect.VirtualAddress && dd.VirtualAddress < sect.VirtualAddress + sect.VirtualSize)
+				self.pe.section_headers().iter()
+					.position(|&sect| dd.VirtualAddress >= sect.VirtualAddress && dd.VirtualAddress < sect.VirtualAddress.wrapping_add(sect.VirtualSize))
 			});
 			state.serialize_field("DataDirectory.Sections", &SerdeIter(data_directory_sects))?;
 

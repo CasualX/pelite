@@ -35,6 +35,12 @@ pub struct TlsDirectory<'a, P> {
 impl<'a, P: Pe<'a>> TlsDirectory<'a, P> {
 	pub(crate) fn try_from(pe: P) -> Result<TlsDirectory<'a, P>> {
 		let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_TLS).ok_or(Error::Bounds)?;
+		if datadir.VirtualAddress == 0 {
+			return Err(Error::Null);
+		}
+		if datadir.Size < mem::size_of::<IMAGE_TLS_DIRECTORY>() as u32 {
+			return Err(Error::Bounds);
+		}
 		let image = pe.derva(datadir.VirtualAddress)?;
 		Ok(TlsDirectory { pe, image })
 	}
@@ -51,8 +57,7 @@ impl<'a, P: Pe<'a>> TlsDirectory<'a, P> {
 		if self.image.StartAddressOfRawData > self.image.EndAddressOfRawData {
 			return Err(Error::Invalid);
 		}
-		// FIXME! truncation warning on 32bit...
-		let len = (self.image.EndAddressOfRawData - self.image.StartAddressOfRawData) as usize;
+		let len = usize::try_from(self.image.EndAddressOfRawData - self.image.StartAddressOfRawData).map_err(|_| Error::Overflow)?;
 		self.pe.deref_slice(self.image.StartAddressOfRawData.into(), len)
 	}
 	/// Gets the TLS slot location.

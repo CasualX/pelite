@@ -5,6 +5,9 @@ pub use crate::debug::*;
 
 pub(crate) fn try_from<'a, P: Pe<'a>>(pe: P) -> Result<DebugDirectory<'a>> {
 	let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_DEBUG).ok_or(Error::Bounds)?;
+	if datadir.VirtualAddress == 0 {
+		return Err(Error::Null);
+	}
 	let size = datadir.Size as usize;
 	if size % mem::size_of::<IMAGE_DEBUG_DIRECTORY>() != 0 {
 		return Err(Error::Invalid);
