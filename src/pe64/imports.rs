@@ -3,7 +3,7 @@ use super::*;
 //----------------------------------------------------------------
 
 #[doc(inline)]
-pub use crate::ImportSymbol;
+pub use crate::Import;
 
 //----------------------------------------------------------------
 
@@ -11,19 +11,19 @@ pub use crate::ImportSymbol;
 //
 // These aren't actually virtual addresses.
 // This function will decode them to get the import.
-fn import_from_va<'a, P: Pe<'a>>(pe: P, &va: &'a Va) -> Result<ImportSymbol<'a>> {
+fn import_from_va<'a, P: Pe<'a>>(pe: P, &va: &'a Va) -> Result<Import<'a>> {
 	if va & IMAGE_ORDINAL_FLAG == 0 {
 		let rva = Rva::try_from(va).map_err(|_| Error::Overflow)?;
 		let hint = pe.derva::<u16>(rva)?;
 		let name_rva = rva.checked_add(mem::size_of::<u16>() as Rva).ok_or(Error::Overflow)?;
 		let name = pe.derva_c_str(name_rva)?;
-		Ok(ImportSymbol::ByName { hint: *hint as usize, name })
+		Ok(Import::ByName { hint: *hint as usize, name })
 	}
 	else {
 		if va & !(IMAGE_ORDINAL_FLAG | u16::MAX as Va) != 0 {
 			return Err(Error::Invalid);
 		}
-		Ok(ImportSymbol::ByOrdinal { ord: va as Ordinal })
+		Ok(Import::ByOrdinal { ord: va as Ordinal })
 	}
 }
 
@@ -118,8 +118,11 @@ pub struct ImportAddressTable<'a, P> {
 impl<'a, P: Pe<'a>> ImportAddressTable<'a, P> {
 	pub(crate) fn try_from(pe: P) -> Result<ImportAddressTable<'a, P>> {
 		let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_IAT).ok_or(Error::Bounds)?;
-		// Ignore datadir.Size not being a multiple of sizeof(Va), not that big of a deal...
-		let image = pe.derva_slice(datadir.VirtualAddress, datadir.Size as usize / mem::size_of::<Va>())?;
+		let (len, rem) = (datadir.Size as usize / mem::size_of::<Va>(), datadir.Size as usize % mem::size_of::<Va>());
+		if rem != 0 {
+			return Err(Error::Invalid);
+		}
+		let image = pe.derva_slice(datadir.VirtualAddress, len)?;
 		Ok(ImportAddressTable { pe, image })
 	}
 	/// Gets the PE instance.
@@ -133,7 +136,7 @@ impl<'a, P: Pe<'a>> ImportAddressTable<'a, P> {
 	/// Iterate over the IAT.
 	///
 	/// When the imports aren't resolved yet the IAT is an alias for the import name table.
-	pub fn iter(&self) -> iter::Map<slice::Iter<'a, Va>, impl Clone + FnMut(&'a Va) -> (&'a Va, Result<ImportSymbol<'a>>)> {
+	pub fn iter(&self) -> iter::Map<slice::Iter<'a, Va>, impl Clone + FnMut(&'a Va) -> (&'a Va, Result<Import<'a>>)> {
 		let pe = self.pe;
 		self.image.iter().map(move |va| (va, import_from_va(pe, va)))
 	}
@@ -216,7 +219,7 @@ impl<'a, P: Pe<'a>> ImportDescriptor<'a, P> {
 		Ok(slice.iter())
 	}
 	/// Gets the import name table.
-	pub fn int(&self) -> Result<iter::Map<slice::Iter<'a, Va>, impl Clone + FnMut(&'a Va) -> Result<ImportSymbol<'a>>>> {
+	pub fn int(&self) -> Result<iter::Map<slice::Iter<'a, Va>, impl Clone + FnMut(&'a Va) -> Result<Import<'a>>>> {
 		let slice = self.pe.derva_slice_s(self.image.OriginalFirstThunk.get(), 0)?;
 		let pe = self.pe;
 		Ok(slice.iter().map(move |va| import_from_va(pe, va)))

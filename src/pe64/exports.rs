@@ -3,7 +3,7 @@ use super::*;
 //----------------------------------------------------------------
 
 #[doc(inline)]
-pub use crate::ExportSymbol;
+pub use crate::Export;
 
 //----------------------------------------------------------------
 
@@ -126,7 +126,7 @@ impl<'a, P: Pe<'a>> ExportDirectory<'a, P> {
 		// An export is forward if its rva points within data directory bounds
 		rva.wrapping_sub(self.datadir.VirtualAddress) < self.datadir.Size
 	}
-	pub(crate) fn symbol_from_rva(&self, rva: &'a Rva) -> Result<ExportSymbol<'a>> {
+	pub(crate) fn symbol_from_rva(&self, rva: &'a Rva) -> Result<Export<'a>> {
 		if *rva == 0 {
 			Err(Error::Null)
 		}
@@ -139,10 +139,10 @@ impl<'a, P: Pe<'a>> ExportDirectory<'a, P> {
 			let bytes = self.pe.slice_bytes(*rva)?;
 			let bytes = &bytes[..cmp::min(bytes.len(), remaining)];
 			let fwd = CStr::from_bytes(bytes).ok_or(Error::Encoding)?;
-			Ok(ExportSymbol::Forward(fwd))
+			Ok(Export::Forward(fwd))
 		}
 		else {
-			Ok(ExportSymbol::Symbol(rva))
+			Ok(Export::Symbol(rva))
 		}
 	}
 }
@@ -212,7 +212,7 @@ impl<'a, P: Pe<'a>> ExportBy<'a, P> {
 		Ok(true)
 	}
 	/// Looks up an export by its ordinal.
-	pub fn ordinal(&self, ordinal: Ordinal) -> Result<ExportSymbol<'a>> {
+	pub fn ordinal(&self, ordinal: Ordinal) -> Result<Export<'a>> {
 		let base = self.exp.image.Base;
 		if (ordinal as u32) < base {
 			Err(Error::Bounds)
@@ -228,10 +228,10 @@ impl<'a, P: Pe<'a>> ExportBy<'a, P> {
 	/// If the name table isn't sorted this will still be able to find exported functions by name.
 	///
 	/// Gracefully handles corrupted name entries by ignoring them.
-	pub fn name_linear<S: AsRef<[u8]> + ?Sized>(&self, name: &S) -> Result<ExportSymbol<'a>> {
+	pub fn name_linear<S: AsRef<[u8]> + ?Sized>(&self, name: &S) -> Result<Export<'a>> {
 		self.name_linear_(name.as_ref())
 	}
-	fn name_linear_(&self, name: &[u8]) -> Result<ExportSymbol<'a>> {
+	fn name_linear_(&self, name: &[u8]) -> Result<Export<'a>> {
 		for hint in 0..self.names.len() {
 			match self.name_of_hint(hint) {
 				Ok(name_it) if name_it == name => return self.hint(hint),
@@ -243,10 +243,10 @@ impl<'a, P: Pe<'a>> ExportBy<'a, P> {
 	/// Looks up an export by its name.
 	///
 	/// If the name table isn't sorted, certain exported functions may fail to be found.
-	pub fn name<S: AsRef<[u8]> + ?Sized>(&self, name: &S) -> Result<ExportSymbol<'a>> {
+	pub fn name<S: AsRef<[u8]> + ?Sized>(&self, name: &S) -> Result<Export<'a>> {
 		self.name_(name.as_ref())
 	}
-	fn name_(&self, name: &[u8]) -> Result<ExportSymbol<'a>> {
+	fn name_(&self, name: &[u8]) -> Result<Export<'a>> {
 		// Binary search for the name
 		let mut lower_bound = 0;
 		let mut upper_bound = self.names.len();
@@ -268,27 +268,27 @@ impl<'a, P: Pe<'a>> ExportBy<'a, P> {
 		Err(Error::Null)
 	}
 	/// Looks up an export by its import.
-	pub fn import(&self, import: ImportSymbol) -> Result<ExportSymbol<'a>> {
+	pub fn import(&self, import: Import) -> Result<Export<'a>> {
 		match import {
-			ImportSymbol::ByName { hint, name } => self.hint_name_(hint, name),
-			ImportSymbol::ByOrdinal { ord } => self.ordinal(ord),
+			Import::ByName { hint, name } => self.hint_name_(hint, name),
+			Import::ByOrdinal { ord } => self.ordinal(ord),
 		}
 	}
 	/// Looks up an export by its index.
-	pub fn index(&self, index: usize) -> Result<ExportSymbol<'a>> {
+	pub fn index(&self, index: usize) -> Result<Export<'a>> {
 		let rva = self.functions.get(index).ok_or(Error::Bounds)?;
 		self.exp.symbol_from_rva(rva)
 	}
 	/// Looks up an export by its hint.
-	pub fn hint(&self, hint: usize) -> Result<ExportSymbol<'a>> {
+	pub fn hint(&self, hint: usize) -> Result<Export<'a>> {
 		let &index = self.name_indices.get(hint).ok_or(Error::Bounds)?;
 		self.index(index as usize)
 	}
 	/// Looks up an export by its hint and falls back to the name if the hint is incorrect.
-	pub fn hint_name<S: AsRef<[u8]> + ?Sized>(&self, hint: usize, name: &S) -> Result<ExportSymbol<'a>> {
+	pub fn hint_name<S: AsRef<[u8]> + ?Sized>(&self, hint: usize, name: &S) -> Result<Export<'a>> {
 		self.hint_name_(hint, name.as_ref())
 	}
-	fn hint_name_(&self, hint: usize, name: &[u8]) -> Result<ExportSymbol<'a>> {
+	fn hint_name_(&self, hint: usize, name: &[u8]) -> Result<Export<'a>> {
 		// Try the hint first
 		if let Ok(export) = self.hint(hint) {
 			// Double check that this is the correct export
@@ -312,7 +312,7 @@ impl<'a, P: Pe<'a>> ExportBy<'a, P> {
 	/// if this is called in a loop over all the exported functions you are accidentally quadratic.
 	///
 	/// See [`iter_names`](#method.iter_names) to iterate over the exported names in linear time.
-	pub fn name_lookup(&self, index: usize) -> Result<ImportSymbol<'a>> {
+	pub fn name_lookup(&self, index: usize) -> Result<Import<'a>> {
 		if index >= self.functions.len() {
 			return Err(Error::Bounds);
 		}
@@ -322,13 +322,13 @@ impl<'a, P: Pe<'a>> ExportBy<'a, P> {
 				// Lookup the name
 				let name_rva = self.names[hint];
 				let name = self.exp.pe.derva_c_str(name_rva)?;
-				Ok(ImportSymbol::ByName { hint, name })
+				Ok(Import::ByName { hint, name })
 			},
 			None => {
 				// Name not found
 				let ordinal = self.exp.image.Base.checked_add(index as u32).ok_or(Error::Overflow)?;
 				let ord = Ordinal::try_from(ordinal).map_err(|_| Error::Overflow)?;
-				Ok(ImportSymbol::ByOrdinal { ord })
+				Ok(Import::ByOrdinal { ord })
 			},
 		}
 	}
@@ -337,11 +337,11 @@ impl<'a, P: Pe<'a>> ExportBy<'a, P> {
 	/// Not every exported function has a name, some are exported by ordinal.
 	/// Looking up the exported function's name with [`name_lookup`](#method.name_lookup) results in quadratic performance.
 	/// If the exported function's name is important consider building a cache or using [`iter_names`](#method.iter_names) instead.
-	pub fn iter(&self) -> impl Clone + Iterator<Item = Result<ExportSymbol<'a>>> {
+	pub fn iter(&self) -> impl Clone + Iterator<Item = Result<Export<'a>>> {
 		self.functions.iter().map(move |rva| self.symbol_from_rva(rva))
 	}
 	/// Iterate over functions exported by name.
-	pub fn iter_names(&self) -> impl Clone + Iterator<Item = (Result<&'a CStr>, Result<ExportSymbol<'a>>)> {
+	pub fn iter_names(&self) -> impl Clone + Iterator<Item = (Result<&'a CStr>, Result<Export<'a>>)> {
 		(0..self.names().len()).map(move |hint| (self.name_of_hint(hint), self.hint(hint)))
 	}
 	/// Iterate over functions exported by name, returning their name and index in the functions table.
@@ -369,20 +369,20 @@ pub trait GetProcAddress<'a, T>: Pe<'a> {
 	/// Convenient method to get an exported function.
 	///
 	/// Note that calling this method many times is less efficient than caching a [`ExportBy`] instance, such is the trade-off for convenience.
-	fn get_export(self, name: T) -> Result<ExportSymbol<'a>>;
+	fn get_export(self, name: T) -> Result<Export<'a>>;
 }
 impl<'a, P: Pe<'a>> GetProcAddress<'a, Ordinal> for P {
-	fn get_export(self, name: Ordinal) -> Result<ExportSymbol<'a>> {
+	fn get_export(self, name: Ordinal) -> Result<Export<'a>> {
 		self.exports()?.by()?.ordinal(name)
 	}
 }
-impl<'b, 'a, P: Pe<'a>> GetProcAddress<'a, ImportSymbol<'b>> for P {
-	fn get_export(self, name: ImportSymbol<'b>) -> Result<ExportSymbol<'a>> {
+impl<'b, 'a, P: Pe<'a>> GetProcAddress<'a, Import<'b>> for P {
+	fn get_export(self, name: Import<'b>) -> Result<Export<'a>> {
 		self.exports()?.by()?.import(name)
 	}
 }
 impl<'b, 'a, P: Pe<'a>, S: AsRef<[u8]> + ?Sized> GetProcAddress<'a, &'b S> for P {
-	fn get_export(self, name: &'b S) -> Result<ExportSymbol<'a>> {
+	fn get_export(self, name: &'b S) -> Result<Export<'a>> {
 		self.exports()?.by()?.name(name)
 	}
 }
@@ -469,10 +469,10 @@ pub(crate) fn test_exports<'a, P: Pe<'a>>(pe: P) -> Result<()> {
 
 			// Lookup the export by its name and hint
 			assert_eq!(export, by.hint_name(hint, name));
-			assert_eq!(export, by.import(ImportSymbol::ByName { hint, name }));
+			assert_eq!(export, by.import(Import::ByName { hint, name }));
 			if sorted && unique {
 				assert_eq!(export, by.hint_name(0, name));
-				assert_eq!(export, by.import(ImportSymbol::ByName { hint: 0, name }));
+				assert_eq!(export, by.import(Import::ByName { hint: 0, name }));
 			}
 		}
 	}

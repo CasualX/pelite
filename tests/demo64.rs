@@ -68,20 +68,20 @@ fn exports() {
 	assert_eq!(exports_by.names().len(), 20);
 	assert_eq!(exports_by.name_indices().len(), 20);
 
-	assert_eq!(exports_by.ordinal(9), Ok(ExportSymbol::Symbol(&0x12D0)));
+	assert_eq!(exports_by.ordinal(9), Ok(Export::Symbol(&0x12D0)));
 
 	let s_export_name = CStr::from_bytes(b"?fnPasswdsBypass@@YAHXZ\0").unwrap();
 
 	// Double check it can look up broken hints
-	let bad_hint = ImportSymbol::ByName { hint: 5, name: s_export_name };
-	let good_hint = ImportSymbol::ByName { hint: 11, name: s_export_name };
-	assert_eq!(exports_by.import(bad_hint), Ok(ExportSymbol::Symbol(&0x1230)));
-	assert_eq!(exports_by.import(good_hint), Ok(ExportSymbol::Symbol(&0x1230)));
+	let bad_hint = Import::ByName { hint: 5, name: s_export_name };
+	let good_hint = Import::ByName { hint: 11, name: s_export_name };
+	assert_eq!(exports_by.import(bad_hint), Ok(Export::Symbol(&0x1230)));
+	assert_eq!(exports_by.import(good_hint), Ok(Export::Symbol(&0x1230)));
 
-	assert_eq!(exports_by.hint_name(5, s_export_name), Ok(ExportSymbol::Symbol(&0x1230)));
-	assert_eq!(exports_by.hint_name(11, s_export_name), Ok(ExportSymbol::Symbol(&0x1230)));
+	assert_eq!(exports_by.hint_name(5, s_export_name), Ok(Export::Symbol(&0x1230)));
+	assert_eq!(exports_by.hint_name(11, s_export_name), Ok(Export::Symbol(&0x1230)));
 
-	assert_eq!(exports_by.hint(0), Ok(ExportSymbol::Symbol(&0x1260)));
+	assert_eq!(exports_by.hint(0), Ok(Export::Symbol(&0x1260)));
 	assert_eq!(exports_by.name_of_hint(11), Ok(s_export_name));
 
 	assert_eq!(exports_by.name_lookup(11), Ok(good_hint));
