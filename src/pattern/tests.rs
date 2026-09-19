@@ -58,10 +58,22 @@ fn lowering() {
 		Save(0), Byte(b'"')]);
 	assert_eq!(parse("80FF? ?? A0/F8 \"é\"00//comment\n@2align(12)").unwrap(), [
 		Save(0), Byte(0x80), Byte(0xff), Skip(3), Fuzzy(0xf8), Byte(0xa0), Byte(0xc3), Byte(0xa9), Byte(0), IsAlign(2), IsAlign(12)]);
-	assert_eq!(parse("skip(0)skip(-0)scan(0)skip(ptr)skip(-ptr)skip(255)skip(-256)skip(0xffff)skip(0x01020304)scan()scan(1)scan(255)scan(65534)").unwrap(), [
-		Save(0), Skip(0), Rewind(0), Skip(255), Extend(1), Rewind(0), Extend(255), Skip(255), Extend(1), Extend(2), Extend(3), Skip(4), Scan(0), Scan(1), Scan(255), Extend(255), Scan(254)]);
-	assert_eq!(parse("skip(4294967295)scan(0xffffffff)").unwrap(), [
-		Save(0), Extend(255), Extend(255), Extend(255), Skip(255), Extend(255), Extend(255), Extend(255), Scan(255)]);
+	assert_eq!(parse("skip(0)skip(-0)scan(0)skip(ptr)skip(-ptr)skip(255)skip(-256)skip(0xffff)skip(0x01020304)scan()scan(1)scan(255)scan(65534)AA").unwrap(), [
+		Save(0), Skip(0), Rewind(0), Skip(255), Extend(1), Rewind(0), Extend(255), Skip(255), Extend(1), Extend(2), Extend(3), Skip(4), Scan(0), Scan(1), Scan(255), Extend(255), Scan(254), Byte(0xaa)]);
+	assert_eq!(parse("skip(4294967295)scan(0xffffffff)AA").unwrap(), [
+		Save(0), Extend(255), Extend(255), Extend(255), Skip(255), Extend(255), Extend(255), Extend(255), Scan(255), Byte(0xaa)]);
+	assert_eq!(parse("[0][16][13-42][256][16383]AA").unwrap(), [
+		Save(0), Skip(16), Skip(13), Scan(28), Extend(1), Skip(0), Extend(63), Skip(255), Byte(0xaa)]);
+	assert_eq!(parse("[0-1][1-2][0-16383]AA").unwrap(), [
+		Save(0), Skip(1), Extend(63), Scan(254), Byte(0xaa)]);
+	assert_eq!(parse("AA[1-3] // trailing movement").unwrap(), [
+		Save(0), Byte(0xaa)]);
+	assert_eq!(parse("AA ? scan(0x200)").unwrap(), [
+		Save(0), Byte(0xaa)]);
+	assert_eq!(parse("u4 [1] AA").unwrap(), [
+		Save(0), ReadU32(1), Skip(1), Byte(0xaa)]);
+	assert_eq!(parse("z z [2] AA").unwrap(), [
+		Save(0), Zero(1), Zero(2), Skip(2), Byte(0xaa)]);
 	assert_eq!(parse("save[1]u4[2]zero[5]'check[1]save[7]AAcheck[0x7]BBseek[2]save[3]").unwrap(), [
 		Save(0), Save(1), ReadU32(2), Zero(5), Save(6), Check(1), Save(7), Byte(0xaa), Check(7), Byte(0xbb), Seek(2), Save(3)]);
 	assert_eq!(parse("i1[1]u1[2]i2[3]u2[4]i4[5]u4[6]=i1[1]=u1[2]=i2[3]=u2[4]=i4[5]=u4[6]").unwrap(), [
@@ -108,6 +120,9 @@ fn const_runtime_parity() {
 		"488D0D${\"hello\"00}",
 		"C705${skip(4)'}01000000",
 		"AA skip(4) scan(12) BB",
+		"AA [4] [12-24] BB",
+		"u4 [1-3] AA",
+		"z z [2] AA",
 		"(6Ai1[1]|68i4[1])=i4[1]",
 		"u4(AA|BB)",
 		"(AA|BBCC)DD",
@@ -165,11 +180,18 @@ fn diagnostics() {
 		("skip (1)", Operand, 0),
 		("skip( 1)", Operand, 0),
 		("skip(- 1)", Operand, 0),
-		("[1-2]", UnknownChar, 0),
+		("[]", Operand, 0),
+		("[-2]", Operand, 0),
+		("[1-]", Operand, 0),
+		("[1-1]", Operand, 0),
+		("[2-1]", Operand, 0),
+		("[16384]", Operand, 0),
+		("[0x10]", Operand, 0),
+		("u4[1-3]", SlotOperand, 0),
+		("z[3]", SlotOperand, 0),
 		("u8[1]", ReadOperand, 0),
 		("=save[1]", ReadOperand, 0),
 		("=", ReadOperand, 0),
-		("u4 [1]", UnknownChar, 3),
 		("= u4[1]", ReadOperand, 0),
 		("=i1[']", SlotOperand, 0),
 		("u4[']", SlotOperand, 0),

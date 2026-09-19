@@ -9,7 +9,7 @@
 //! Compiled patterns are checked for uninitialized slot reads and values clobbered
 //! by failed retries. Caller-initialized slots are not assumed. Undecided shorthands
 //! are rejected; exported-output coverage and value equivalence are not checked.
-//! No trailing instructions are discarded: even `scan()` checks readability.
+//! Trailing extensions, skips and scans are discarded.
 
 use super::*;
 
@@ -76,12 +76,13 @@ enum Token {
 struct Output<'a> {
 	atoms: &'a mut [Atom],
 	len: usize,
+	committed: usize,
 	locate: Option<usize>,
 	position: usize,
 }
 impl Output<'_> {
 	const fn write(&mut self, index: usize, atom: Atom) {
-		if !self.atoms.is_empty() {
+		if index < self.atoms.len() {
 			self.atoms[index] = atom;
 		}
 	}
@@ -93,8 +94,12 @@ impl Output<'_> {
 		}
 		let mut i = 0;
 		while i < atoms.len {
-			self.write(self.len, atoms.items[i]);
+			let atom = atoms.items[i];
+			self.write(self.len, atom);
 			self.len += 1;
+			if !matches!(atom, Atom::Extend(_) | Atom::Skip(_) | Atom::Scan(_)) {
+				self.committed = self.len;
+			}
 			i += 1;
 		}
 	}
@@ -273,6 +278,60 @@ impl<'a> Parser<'a> {
 		};
 		Ok(Atoms::extended(value, atom))
 	}
+	const fn legacy_gap(&mut self) -> Result<Atoms, PatternError> {
+		let lower = attempt!(self.legacy_gap_bound());
+		let upper = if self.take(b'-') {
+			let upper = attempt!(self.legacy_gap_bound());
+			if upper <= lower {
+				return Err(self.error(ErrorKind::Operand));
+			}
+			Some(upper)
+		}
+		else {
+			None
+		};
+		if !self.take(b']') {
+			return Err(self.error(ErrorKind::Operand));
+		}
+
+		let mut items = [Atom::Nop; 4];
+		let mut len = 0;
+		if lower != 0 {
+			if lower >= 256 {
+				items[len] = Atom::Extend((lower >> 8) as u8);
+				len += 1;
+			}
+			items[len] = Atom::Skip(lower as u8);
+			len += 1;
+		}
+		if let Some(upper) = upper {
+			let range = upper - lower - 1;
+			if range != 0 {
+				if range >= 256 {
+					items[len] = Atom::Extend((range >> 8) as u8);
+					len += 1;
+				}
+				items[len] = Atom::Scan(range as u8);
+				len += 1;
+			}
+		}
+		Ok(Atoms { items, len })
+	}
+	const fn legacy_gap_bound(&mut self) -> Result<u32, PatternError> {
+		let begin = self.pos;
+		let mut value = 0u32;
+		while let Some(byte @ b'0'..=b'9') = self.peek() {
+			value = value * 10 + (byte - b'0') as u32;
+			if value >= 16384 {
+				return Err(self.error(ErrorKind::Operand));
+			}
+			self.pos += 1;
+		}
+		if self.pos == begin {
+			return Err(self.error(ErrorKind::Operand));
+		}
+		Ok(value)
+	}
 	const fn alignment(&mut self) -> Result<Atom, PatternError> {
 		if !self.take(b'(') {
 			return Err(self.error(ErrorKind::AlignedOperand));
@@ -326,7 +385,10 @@ impl<'a> Parser<'a> {
 				Some(byte) => byte,
 				None => return Ok(Token::End),
 			};
-			let atoms = if self.keyword(b"skip") {
+			let atoms = if self.take(b'[') {
+				attempt!(self.legacy_gap())
+			}
+			else if self.keyword(b"skip") {
 				attempt!(self.movement(false))
 			}
 			else if self.keyword(b"scan") {
@@ -352,6 +414,12 @@ impl<'a> Parser<'a> {
 			}
 			else if self.keyword(b"zero") {
 				Atoms::one(Atom::Zero(attempt!(self.slot(true))))
+			}
+			else if self.take(b'z') {
+				if matches!(self.peek(), Some(b'[')) {
+					return Err(self.error(ErrorKind::SlotOperand));
+				}
+				Atoms::one(Atom::Zero(attempt!(self.automatic())))
 			}
 			else if self.keyword(b"rel32") {
 				self.trivia();
@@ -583,10 +651,10 @@ const fn hex(byte: u8) -> u8 {
 
 const fn compile_located(source: &str, atoms: &mut [Atom], locate: Option<usize>) -> Result<(usize, usize), PatternError> {
 	let mut parser = Parser::new(source);
-	let mut output = Output { atoms, len: 0, locate, position: 0 };
+	let mut output = Output { atoms, len: 0, committed: 0, locate, position: 0 };
 	output.emit(Atoms::one(Atom::Save(0)), 0);
 	match attempt!(parser.sequence(&mut output)) {
-		Token::End => Ok((output.len, output.position)),
+		Token::End => Ok((output.committed, output.position)),
 		Token::CloseReference => Err(parser.error(ErrorKind::StackError)),
 		_ => Err(parser.error(ErrorKind::SubPattern)),
 	}
