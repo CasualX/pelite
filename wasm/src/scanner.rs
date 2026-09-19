@@ -3,9 +3,11 @@ use pelite::pattern as pat;
 use crate::PeFile;
 use crate::wasm::*;
 
+const OPTS: pelite::pattern::ParseOptions = pelite::pattern::ParseOptions::DEFAULT;
+
 #[unsafe(no_mangle)]
 pub unsafe fn pefileScannerExec(pefile: *mut PeFile, rva: u32, pat: *mut str) { unsafe {
-	let pattern = match pat::parse(&Box::from_raw(pat)) {
+	let pattern = match pat::parse(&Box::from_raw(pat), OPTS) {
 		Ok(pattern) => pattern,
 		Err(err) => return set_error(err),
 	};
@@ -21,7 +23,7 @@ pub unsafe fn pefileScannerExec(pefile: *mut PeFile, rva: u32, pat: *mut str) { 
 }}
 #[unsafe(no_mangle)]
 pub unsafe fn pefileScannerFinds(pefile: *mut PeFile, pat: *mut str, start: u32, end: u32) { unsafe {
-	let pattern = match pat::parse(&Box::from_raw(pat)) {
+	let pattern = match pat::parse(&Box::from_raw(pat), OPTS) {
 		Ok(pattern) => pattern,
 		Err(err) => return set_error(err),
 	};
@@ -46,7 +48,7 @@ pub unsafe fn pefileScannerFindsCode(pefile: *mut PeFile, pat: *mut str) {
 }
 #[unsafe(no_mangle)]
 pub unsafe fn pefileScannerMatches(pefile: *mut PeFile, pat: *mut str, start: u32, end: u32, mut offset: usize, limit: usize) { unsafe {
-	let pattern = match pat::parse(&Box::from_raw(pat)) {
+	let pattern = match pat::parse(&Box::from_raw(pat), OPTS) {
 		Ok(pattern) => pattern,
 		Err(err) => return set_error(err),
 	};

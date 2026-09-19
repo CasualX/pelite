@@ -14,7 +14,7 @@ use pelite::pattern;
 
 const FUNCTION_PROLOGUE: &[pattern::Atom] = pattern!("55 8B EC");
 
-let with_wildcard = pattern::parse("48 8B ? 48 85 C0")?;
+let with_wildcard = pattern::parse("48 8B ? 48 85 C0", pattern::ParseOptions::default())?;
 # Ok::<(), pattern::PatternError>(())
 ```
 
@@ -155,7 +155,7 @@ Use [`save_len`] to size the array passed to the scanner:
 ```
 use pelite::pattern;
 
-let pattern = pattern::parse("E8 ${'} 48 85 C0")?;
+let pattern = pattern::parse("E8 ${'} 48 85 C0", pattern::ParseOptions::default())?;
 let mut save = vec![0; pattern::save_len(&pattern)];
 # Ok::<(), pattern::PatternError>(())
 ```
@@ -166,7 +166,7 @@ Use [`captures_len`](captures_len) to select the user-facing prefix when returni
 ```
 use pelite::pattern;
 
-let pattern = pattern::parse("E8 ${'} 48 85 C0")?;
+let pattern = pattern::parse("E8 ${'} 48 85 C0", pattern::ParseOptions::default())?;
 let save = vec![0; pattern::save_len(&pattern)];
 let captures = &save[..pattern::captures_len(&pattern)];
 # Ok::<(), pattern::PatternError>(())
@@ -232,11 +232,12 @@ For background on choosing stable signature bytes, see the
 The old `z` operation remains accepted and writes zero to the next automatic slot.
 Prefer an explicit `zero[n]` in new patterns.
 
-Older patterns may use decimal `[n]` and `[a-b]` forms to skip bytes. Because
+With [`ParseOptions::legacy_gap`](crate::pattern::ParseOptions::legacy_gap)
+enabled, older patterns may use decimal `[n]` and `[a-b]` forms to skip bytes. Because
 whitespace was optional, a gap attached to a typed read is ambiguous with the new
 slot syntax. The attached form follows the new meaning: `u4[1]` reads into slot 1.
 Insert a space to preserve the old meaning: `u4 [1]` performs an automatic read
 and then skips one byte, and `u4 [1-3]` performs an automatic read followed by a
-bounded gap. The old forms are otherwise accepted with bounds below 16384 and an
+bounded gap. The old forms are accepted with bounds below 16384 and an
 exclusive upper bound, so `[13-42]` is equivalent to `skip(13) scan(28)`. Prefer
 `skip` and `scan` in new patterns.

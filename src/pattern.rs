@@ -18,6 +18,25 @@ mod tests;
 
 //----------------------------------------------------------------
 
+/// Options controlling pattern parsing.
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[non_exhaustive]
+pub struct ParseOptions {
+	/// Accept legacy `[n]` and `[a-b]` gap syntax.
+	pub legacy_gap: bool,
+}
+impl ParseOptions {
+	#[doc(hidden)]
+	pub const DEFAULT: Self = Self { legacy_gap: false };
+}
+impl Default for ParseOptions {
+	fn default() -> Self {
+		Self::DEFAULT
+	}
+}
+
+//----------------------------------------------------------------
+
 /// Pattern syntax or validation error.
 ///
 /// Positions reported by parsers are byte offsets.
@@ -344,7 +363,11 @@ pub const fn save_len(pat: &[Atom]) -> usize {
 #[macro_export]
 macro_rules! pattern {
 	($pattern:expr) => {
-		&const { $crate::pattern::parse_const::<{ $crate::pattern::parse_len($pattern) }>($pattern) }
+		&const {
+			$crate::pattern::parse_const::<{
+				$crate::pattern::parse_len($pattern, $crate::pattern::ParseOptions::DEFAULT)
+			}>($pattern, $crate::pattern::ParseOptions::DEFAULT)
+		}
 	};
 }
 
@@ -355,10 +378,10 @@ fn signed_save_len() {
 	assert_eq!(captures_len(&[Save(0), Save(-1)]), 1);
 	assert_eq!(captures_len(&[Save(0), Seek(7), ReadU32(3), Zero(-2)]), 8);
 	assert_eq!(captures_len(&[Seek(127), Check(-128)]), 128);
-	let reference = parse("E8 ${'}").unwrap();
+	let reference = parse("E8 ${'}", ParseOptions::default()).unwrap();
 	assert_eq!(captures_len(&reference), 2);
 	assert_eq!(save_len(&reference), 3);
-	let internal_reference = parse("E8 ${}").unwrap();
+	let internal_reference = parse("E8 ${}", ParseOptions::default()).unwrap();
 	assert_eq!(captures_len(&internal_reference), 1);
 	assert_eq!(save_len(&internal_reference), 2);
 

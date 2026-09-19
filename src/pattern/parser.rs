@@ -130,6 +130,7 @@ const fn operand(atoms: &[Atom], pc: usize, low: u8) -> usize {
 
 struct Parser<'a> {
 	bytes: &'a [u8],
+	options: ParseOptions,
 	pos: usize,
 	start: usize,
 	string: Option<usize>,
@@ -140,9 +141,10 @@ struct Parser<'a> {
 	depth: usize,
 }
 impl<'a> Parser<'a> {
-	const fn new(source: &'a str) -> Self {
+	const fn new(source: &'a str, options: ParseOptions) -> Self {
 		Self {
 			bytes: source.as_bytes(),
+			options,
 			pos: 0,
 			start: 0,
 			string: None,
@@ -385,7 +387,7 @@ impl<'a> Parser<'a> {
 				Some(byte) => byte,
 				None => return Ok(Token::End),
 			};
-			let atoms = if self.take(b'[') {
+			let atoms = if self.options.legacy_gap && self.take(b'[') {
 				attempt!(self.legacy_gap())
 			}
 			else if self.keyword(b"skip") {
@@ -649,8 +651,8 @@ const fn hex(byte: u8) -> u8 {
 	}
 }
 
-const fn compile_located(source: &str, atoms: &mut [Atom], locate: Option<usize>) -> Result<(usize, usize), PatternError> {
-	let mut parser = Parser::new(source);
+const fn compile_located(source: &str, options: ParseOptions, atoms: &mut [Atom], locate: Option<usize>) -> Result<(usize, usize), PatternError> {
+	let mut parser = Parser::new(source, options);
 	let mut output = Output { atoms, len: 0, committed: 0, locate, position: 0 };
 	output.emit(Atoms::one(Atom::Save(0)), 0);
 	match attempt!(parser.sequence(&mut output)) {
@@ -660,36 +662,36 @@ const fn compile_located(source: &str, atoms: &mut [Atom], locate: Option<usize>
 	}
 }
 
-pub const fn compile(source: &str, atoms: &mut [Atom]) -> Result<usize, PatternError> {
-	Ok(attempt!(compile_located(source, atoms, None)).0)
+pub const fn compile(source: &str, options: ParseOptions, atoms: &mut [Atom]) -> Result<usize, PatternError> {
+	Ok(attempt!(compile_located(source, options, atoms, None)).0)
 }
 
-pub const fn validate(source: &str, atoms: &[Atom], states: &mut [analysis::State]) -> Result<(), PatternError> {
+pub const fn validate(source: &str, options: ParseOptions, atoms: &[Atom], states: &mut [analysis::State]) -> Result<(), PatternError> {
 	match analysis::analyze(atoms, states) {
 		Ok(()) => Ok(()),
 		Err(error) => {
 			// Replay emission only on error, avoiding a source-map allocation for
 			// every valid pattern. Counting reproduces the exact atom indices.
-			let (_, position) = attempt!(compile_located(source, &mut [], Some(error.position)));
+			let (_, position) = attempt!(compile_located(source, options, &mut [], Some(error.position)));
 			Err(PatternError { kind: error.kind, position })
 		},
 	}
 }
 
 /// Parse and validate a pattern, reporting syntax and scratch-flow errors at byte offsets.
-pub fn parse(source: &str) -> Result<Pattern, PatternError> {
-	let len = compile(source, &mut [])?;
+pub fn parse(source: &str, options: ParseOptions) -> Result<Pattern, PatternError> {
+	let len = compile(source, options, &mut [])?;
 	let mut atoms = alloc::vec![Atom::Nop; len];
-	compile(source, &mut atoms)?;
-	validate(source, &atoms, &mut alloc::vec![analysis::State::EMPTY; len])?;
+	compile(source, options, &mut atoms)?;
+	validate(source, options, &atoms, &mut alloc::vec![analysis::State::EMPTY; len])?;
 	Ok(atoms)
 }
 
 /// Return the exact compiled length.
 ///
 /// Panics on invalid syntax, including slot and nesting overflow.
-pub const fn parse_len(source: &str) -> usize {
-	match compile(source, &mut []) {
+pub const fn parse_len(source: &str, options: ParseOptions) -> usize {
+	match compile(source, options, &mut []) {
 		Ok(len) => len,
 		Err(error) => panic!("{}", error.kind.to_str()),
 	}
@@ -700,25 +702,27 @@ pub const fn parse_len(source: &str) -> usize {
 /// Panics on syntax or scratch-flow errors, or if `N` differs from [`parse_len`].
 ///
 /// ```
-/// use pelite::pattern::{Atom, parse_const, parse_len};
+/// use pelite::pattern::{Atom, ParseOptions, parse_const, parse_len};
 /// const SOURCE: &str = "A0/F8 skip(4) u4";
-/// const PATTERN: [Atom; parse_len(SOURCE)] = parse_const(SOURCE);
+/// const OPTIONS: ParseOptions = ParseOptions::DEFAULT;
+/// const PATTERN: [Atom; parse_len(SOURCE, OPTIONS)] = parse_const(SOURCE, OPTIONS);
 /// ```
 ///
 /// Scratch-flow errors also fail constant evaluation:
 ///
 /// ```compile_fail
-/// use pelite::pattern::{Atom, parse_const, parse_len};
+/// use pelite::pattern::{Atom, ParseOptions, parse_const, parse_len};
 /// const SOURCE: &str = "(AA u1[1] FF | BB) =u1[1]";
-/// const PATTERN: [Atom; parse_len(SOURCE)] = parse_const(SOURCE);
+/// const OPTIONS: ParseOptions = ParseOptions::DEFAULT;
+/// const PATTERN: [Atom; parse_len(SOURCE, OPTIONS)] = parse_const(SOURCE, OPTIONS);
 /// ```
-pub const fn parse_const<const N: usize>(source: &str) -> [Atom; N] {
-	if parse_len(source) != N {
+pub const fn parse_const<const N: usize>(source: &str, options: ParseOptions) -> [Atom; N] {
+	if parse_len(source, options) != N {
 		panic!("pattern output length mismatch");
 	}
 	let mut atoms = [Atom::Nop; N];
-	match compile(source, &mut atoms) {
-		Ok(_) => match validate(source, &atoms, &mut [analysis::State::EMPTY; N]) {
+	match compile(source, options, &mut atoms) {
+		Ok(_) => match validate(source, options, &atoms, &mut [analysis::State::EMPTY; N]) {
 			Ok(()) => atoms,
 			Err(error) => panic!("{}", error.kind.to_str()),
 		},

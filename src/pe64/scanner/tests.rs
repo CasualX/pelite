@@ -1,5 +1,7 @@
 use super::*;
 
+const OPTS: crate::pattern::ParseOptions = crate::pattern::ParseOptions::DEFAULT;
+
 #[cfg(test)]
 pub(crate) fn test_scanner<'a, P: Pe<'a>>(pe: P) -> crate::Result<()> {
 	use crate::pattern::Atom::*;
@@ -104,12 +106,12 @@ fn exec_tests_parse_docs() {
 
 	{
 		let bytes = [0x55, 0x89, 0xe5, 0x83, 0xff, 0xec];
-		let pat = parse("55 89 e5 83 ? ec").unwrap();
+		let pat = parse("55 89 e5 83 ? ec", OPTS).unwrap();
 		assert!(exec(&bytes, &pat, &mut []));
 	}
 	{
 		let bytes = [0xb9, 0x37, 0x13, 0x00, 0x00];
-		let pat = parse("b9 '37 13 00 00").unwrap();
+		let pat = parse("b9 '37 13 00 00", OPTS).unwrap();
 		let mut save = [0; 2];
 		assert!(exec(&bytes, &pat, &mut save));
 		assert_eq!(save[1], 1);
@@ -119,47 +121,47 @@ fn exec_tests_parse_docs() {
 		bytes[0] = 0xb8;
 		bytes[17] = 0x50;
 		bytes[41] = 0xff;
-		let pat = parse("b8 skip(16) 50 skip(13) scan(28) 'ff").unwrap();
+		let pat = parse("b8 skip(16) 50 skip(13) scan(28) 'ff", OPTS).unwrap();
 		let mut save = [0; 2];
 		assert!(exec(&bytes, &pat, &mut save));
 		assert_eq!(save[1], 41);
 	}
 	{
 		let bytes = [0x31, 0xc0, 0x74, (-3i8) as u8];
-		let pat = parse("31 c0 74 % 'c0").unwrap();
+		let pat = parse("31 c0 74 % 'c0", OPTS).unwrap();
 		let mut save = [0; 2];
 		assert!(exec(&bytes, &pat, &mut save));
 		assert_eq!(save[1], 1);
 	}
 	{
 		let bytes = [0xe8, 10, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0x31, 0xc0, 0xc3];
-		let pat = parse("e8 $ '31 c0 c3").unwrap();
+		let pat = parse("e8 $ '31 c0 c3", OPTS).unwrap();
 		let mut save = [0; 2];
 		assert!(exec(&bytes, &pat, &mut save));
 		assert_eq!(save[1], 15);
 	}
 	{
 		let bytes = [0x68, 10, 0, 0, 0, 1, 2, 3, 4, 5, 0x31, 0xc0, 0xc3];
-		let pat = parse("68 * '31 c0 c3").unwrap();
+		let pat = parse("68 * '31 c0 c3", OPTS).unwrap();
 		let mut save = [0; 2];
 		assert!(exec(&bytes, &pat, &mut save));
 		assert_eq!(save[1], 10);
 	}
 	{
 		let bytes = b"\xb8\x0a\x00\x00\x00\x01\x02\x03\x04\x05STRING\x00";
-		let pat = parse(r#"b8 * "STRING" 00"#).unwrap();
+		let pat = parse(r#"b8 * "STRING" 00"#, OPTS).unwrap();
 		assert!(exec(bytes, &pat, &mut []));
 	}
 	{
 		let bytes = [0xe8, 10, 0, 0, 0, 0x83, 0xf0, 0x5c, 0xc3, 5, 6, 7, 8, 9, 10];
-		let pat = parse("e8 ${'} 83 f0 5c c3").unwrap();
+		let pat = parse("e8 ${'} 83 f0 5c c3", OPTS).unwrap();
 		let mut save = vec![0; crate::pattern::save_len(&pat)];
 		assert!(exec(&bytes, &pat, &mut save));
 		assert_eq!(save[1], 15);
 	}
 	{
 		let bytes = [0xe8, 0xff, 0xa0, 0x78, 0x56, 0x34, 0x12];
-		let pat = parse("e8 i1 a0 u4").unwrap();
+		let pat = parse("e8 i1 a0 u4", OPTS).unwrap();
 		let mut save = [0; 3];
 		assert!(exec(&bytes, &pat, &mut save));
 		assert_eq!(save[1], (-1i8) as u32);
@@ -168,7 +170,7 @@ fn exec_tests_parse_docs() {
 	{
 		let bytes1 = [0x83, 0xc0, 0x2a, 0x6a, 0x00, 0xe8];
 		let bytes2 = [0x83, 0xc0, 0x2a, 0x68, 0x00, 0x00, 0x00, 0x10, 0xe8];
-		let pat = parse("83 c0 2a ( 6a ? | 68 ? ? ? ? ) e8").unwrap();
+		let pat = parse("83 c0 2a ( 6a ? | 68 ? ? ? ? ) e8", OPTS).unwrap();
 		assert!(exec(&bytes1, &pat, &mut []));
 		assert!(exec(&bytes2, &pat, &mut []));
 	}
@@ -292,7 +294,7 @@ fn exec_scan_across_returns() {
 	bytes[10] = 7;
 	bytes[11] = 9;
 	bytes[20] = 0xaa;
-	let mut pat = parse("%{scan(1)u1}%{aa}00").unwrap();
+	let mut pat = parse("%{scan(1)u1}%{aa}00", OPTS).unwrap();
 	*pat.last_mut().unwrap() = TestU8(1);
 	let mut save = vec![0; save_len(&pat)];
 	assert!(Exec { pe: &bytes[..], pat: &pat, cursor: 0, pc: 0 }.exec(&mut save));
@@ -362,7 +364,7 @@ fn exec_alternatives() {
 		("(scan(1)61|6263)64", b"bcd", true),
 	];
 	for &(source, pat, bytes, matched) in cases {
-		assert_eq!(parse(source).unwrap(), pat, "{source}");
+		assert_eq!(parse(source, OPTS).unwrap(), pat, "{source}");
 		let mut save = vec![0; save_len(pat)];
 		assert_eq!(Exec { pe: bytes, pat, cursor: 0, pc: 0 }.exec(&mut save), matched, "{source}");
 	}
@@ -386,7 +388,7 @@ fn exec_fork_across_returns() {
 	bytes[2] = b'c'; // Rejects the first alternative after both scopes return.
 	bytes[5..8].copy_from_slice(b"abc");
 	bytes[10] = 0xaa;
-	let mut pat = parse("%{(61|6162)u1}%{aa}00").unwrap();
+	let mut pat = parse("%{(61|6162)u1}%{aa}00", OPTS).unwrap();
 	*pat.last_mut().unwrap() = TestU8(1);
 	let mut save = vec![0; save_len(&pat)];
 	assert!(Exec { pe: &bytes[..], pat: &pat, cursor: 0, pc: 0 }.exec(&mut save));
@@ -417,9 +419,10 @@ fn exec_scan_preserves_failed_writes() {
 #[test]
 fn exec_pattern_language() {
 	use crate::pattern::{parse, parse_const, parse_len, save_len};
+	const OPTIONS: pat::ParseOptions = pat::ParseOptions { legacy_gap: true };
 	macro_rules! cases {
 		($(($source:expr, $bytes:expr, $matched:expr)),* $(,)?) => {
-			&[$(($source, &const { parse_const::<{ parse_len($source) }>($source) } as &[pat::Atom], &$bytes[..], $matched)),*]
+			&[$(($source, &const { parse_const::<{ parse_len($source, OPTIONS) }>($source, OPTIONS) } as &[pat::Atom], &$bytes[..], $matched)),*]
 		};
 	}
 	let cases: &[(&str, &[pat::Atom], &[u8], bool)] = cases![
@@ -453,14 +456,14 @@ fn exec_pattern_language() {
 		("61 save[1] 62 seek[1] check[1] 62 skip(-1)62", b"ab", true),
 	];
 	for &(source, pat, bytes, matched) in cases {
-		assert_eq!(parse(source).unwrap(), pat, "{source}");
+		assert_eq!(parse(source, OPTIONS).unwrap(), pat, "{source}");
 		let mut save = vec![0; save_len(pat)];
 		assert_eq!(Exec { pe: bytes, pat, cursor: 0, pc: 0 }.exec(&mut save), matched, "{source}");
 	}
 
 	// Both the extended fork and the extended goto must land on the continuation.
 	let source = alloc::format!("(61{}|62{})63", "?".repeat(300), "?".repeat(300));
-	let pat = parse(&source).unwrap();
+	let pat = parse(&source, OPTS).unwrap();
 	let mut bytes = [0; 302];
 	bytes[301] = b'c';
 	for byte in [b'a', b'b'] {
@@ -470,7 +473,7 @@ fn exec_pattern_language() {
 
 	// Retry a choice inside a reference body after two returns and a failed test.
 	let source = "%{(61|6162)u1[1]}%{AA}=u1[1]";
-	let pat = parse(source).unwrap();
+	let pat = parse(source, OPTS).unwrap();
 	let mut bytes = [4, 8, b'c', 0, 0, b'a', b'b', b'c', 0, 0, 0xaa];
 	let mut save = vec![0; save_len(&pat)];
 	assert!(Exec { pe: &bytes[..], pat: &pat, cursor: 0, pc: 0 }.exec(&mut save));
