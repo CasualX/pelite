@@ -66,7 +66,7 @@ The bound is the maximum number of bytes to skip, so `scan(1)` tries offsets 0 a
 `scan(0)` is a no-op, just like `skip(0)`. `scan()` has no additional distance bound.
 All scans stop at the end of the current section's readable bytes;
 References can first move to another section and scan there.
-Even an empty continuation requires a readable candidate.
+Trailing skips and scans are discarded because they have no continuation.
 
 Use a skip followed by a scan to express a bounded gap. This example searches for
 `FF` after skipping between 13 and 42 bytes:
@@ -226,3 +226,17 @@ u1[1] skip(4) =u1[1]
 
 For background on choosing stable signature bytes, see the
 [AlliedModders signature scanning guide](https://wiki.alliedmods.net/Signature_scanning).
+
+## Legacy compatibility
+
+The old `z` operation remains accepted and writes zero to the next automatic slot.
+Prefer an explicit `zero[n]` in new patterns.
+
+Older patterns may use decimal `[n]` and `[a-b]` forms to skip bytes. Because
+whitespace was optional, a gap attached to a typed read is ambiguous with the new
+slot syntax. The attached form follows the new meaning: `u4[1]` reads into slot 1.
+Insert a space to preserve the old meaning: `u4 [1]` performs an automatic read
+and then skips one byte, and `u4 [1-3]` performs an automatic read followed by a
+bounded gap. The old forms are otherwise accepted with bounds below 16384 and an
+exclusive upper bound, so `[13-42]` is equivalent to `skip(13) scan(28)`. Prefer
+`skip` and `scan` in new patterns.
