@@ -53,7 +53,8 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let file_name = path.file_name().and_then(|name| name.to_str()).unwrap_or("<input>");
 	let mut results = Vec::new();
 	for source in patterns {
-		let parsed = pattern::parse(&source).map_err(|error| err(format!("pattern '{source}': {error}")))?;
+		let opts = pattern::ParseOptions::default();
+		let parsed = pattern::parse(&source, opts).map_err(|error| err(format!("pattern '{source}': {error}")))?;
 		let captures_len = pattern::captures_len(&parsed);
 		let mut save = vec![0; pattern::save_len(&parsed)];
 		let mut scanner = pe.scanner().sections(|_| true).matches(&parsed);

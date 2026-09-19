@@ -1,6 +1,27 @@
 use super::*;
 use Atom::*;
 
+const LEGACY_OPTIONS: ParseOptions = ParseOptions { legacy_gap: true };
+
+fn parse(source: &str) -> Result<Pattern, PatternError> {
+	parser::parse(source, LEGACY_OPTIONS)
+}
+
+const fn parse_len(source: &str) -> usize {
+	parser::parse_len(source, LEGACY_OPTIONS)
+}
+
+const fn parse_const<const N: usize>(source: &str) -> [Atom; N] {
+	parser::parse_const(source, LEGACY_OPTIONS)
+}
+
+#[test]
+fn legacy_gap_option() {
+	assert!(!ParseOptions::default().legacy_gap);
+	assert_eq!(parser::parse("AA [2] BB", ParseOptions::default()).unwrap_err().kind, ErrorKind::UnknownChar);
+	assert_eq!(parser::parse("AA [2] BB", LEGACY_OPTIONS).unwrap(), [Save(0), Byte(0xaa), Skip(2), Byte(0xbb)]);
+}
+
 #[test]
 fn all_signed_slots_and_read_instructions() {
 	for value in 0..=255u8 {
@@ -215,12 +236,12 @@ fn diagnostics() {
 		("${(AA})", SubPattern, 5),
 	] {
 		let expected = Err(PatternError { kind, position });
-		assert_eq!(parser::compile(source, &mut []), expected, "{source}");
+		assert_eq!(parser::compile(source, LEGACY_OPTIONS, &mut []), expected, "{source}");
 		let error = parse(source).unwrap_err();
 		assert_eq!(error, expected.unwrap_err(), "{source}");
 		assert_eq!(error.position(), position, "{source}");
 		// The emitting pass must diagnose exactly the same error as sizing.
-		assert_eq!(parser::compile(source, &mut [Nop; 64]), expected, "{source}");
+		assert_eq!(parser::compile(source, LEGACY_OPTIONS, &mut [Nop; 64]), expected, "{source}");
 	}
 }
 
@@ -285,8 +306,8 @@ fn scratch_flow_errors() {
 		assert_eq!(parse(source).unwrap_err(), expected, "{source}");
 		let len = parse_len(source);
 		let mut atoms = alloc::vec![Nop; len];
-		parser::compile(source, &mut atoms).unwrap();
-		assert_eq!(parser::validate(source, &atoms, &mut alloc::vec![analysis::State::EMPTY; len]), Err(expected));
+		parser::compile(source, LEGACY_OPTIONS, &mut atoms).unwrap();
+		assert_eq!(parser::validate(source, LEGACY_OPTIONS, &atoms, &mut alloc::vec![analysis::State::EMPTY; len]), Err(expected));
 	}
 }
 
