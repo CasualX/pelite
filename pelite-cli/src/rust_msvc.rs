@@ -116,14 +116,14 @@ pub fn parse_format_template(bytes: &[u8]) -> Option<FormatTemplate> {
 			0 => break,
 			1..=0x7f => {
 				let len = tag as usize;
-				let piece = std::str::from_utf8(bytes.get(cursor..cursor.checked_add(len)?)?).ok()?;
+				let piece = str::from_utf8(bytes.get(cursor..cursor.checked_add(len)?)?).ok()?;
 				push_escaped_literal(&mut rendered, piece);
 				push_escaped_literal(&mut detailed, piece);
 				cursor += len;
 			},
 			0x80 => {
 				let len = read_u16(bytes, &mut cursor)? as usize;
-				let piece = std::str::from_utf8(bytes.get(cursor..cursor.checked_add(len)?)?).ok()?;
+				let piece = str::from_utf8(bytes.get(cursor..cursor.checked_add(len)?)?).ok()?;
 				push_escaped_literal(&mut rendered, piece);
 				push_escaped_literal(&mut detailed, piece);
 				cursor += len;
@@ -235,7 +235,7 @@ pub fn read_utf8(file: PeFile<'_>, rva: Rva, len: usize) -> Option<&str> {
 	if len == 0 || len > 64 * 1024 {
 		return None;
 	}
-	std::str::from_utf8(file.slice_bytes(rva).ok()?.get(..len)?).ok()
+	str::from_utf8(file.slice_bytes(rva).ok()?.get(..len)?).ok()
 }
 
 fn push_escaped_literal(output: &mut String, piece: &str) {

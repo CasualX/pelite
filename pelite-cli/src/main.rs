@@ -1,7 +1,7 @@
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
-use std::{error, fmt, fs, process};
+use std::{error, fmt, fs, num, process, result};
 use std::io::{self, BufRead, IsTerminal, Write};
 
 mod disasm;
@@ -16,11 +16,13 @@ mod resources;
 mod rust_format_args;
 mod rust_msvc;
 mod rust_panic_strings;
-mod rva_range;
 mod strings;
+mod value_parser;
 mod version_info;
 
-type Result<T = ()> = std::result::Result<T, Box<dyn error::Error>>;
+use value_parser::*;
+
+type Result<T = ()> = result::Result<T, Box<dyn error::Error>>;
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 enum OutputFormat {
@@ -82,7 +84,7 @@ fn cli() -> clap::Command {
 }
 
 fn print_json<T: serde::Serialize>(value: &T, pretty: bool) -> Result {
-	let stdout = std::io::stdout();
+	let stdout = io::stdout();
 	let writer = stdout.lock();
 	match pretty {
 		false => serde_json::to_writer(writer, value)?,

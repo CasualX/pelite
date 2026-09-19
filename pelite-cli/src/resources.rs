@@ -12,11 +12,18 @@ struct Inventory {
 	entries: Vec<InventoryEntry>,
 }
 
+#[derive(Copy, Clone, serde::Serialize)]
+#[serde(rename_all = "lowercase")]
+enum InventoryKind {
+	File,
+	Directory,
+}
+
 #[derive(serde::Serialize)]
 struct InventoryEntry {
 	path: String,
 	name: String,
-	kind: &'static str,
+	kind: InventoryKind,
 	depth: usize,
 	#[serde(skip_serializing_if = "Option::is_none")]
 	size: Option<usize>,
@@ -211,11 +218,7 @@ fn list_groups(resources: ResourceDirectory<'_>, kind: GroupKind, format: Output
 
 fn extract_groups(resources: ResourceDirectory<'_>, matches: &clap::ArgMatches, kind: GroupKind, format: OutputFormat) -> Result {
 	let destination = matches.get_one::<PathBuf>("destination").expect("required by clap");
-	let names = matches.get_many::<String>("names")
-		.into_iter()
-		.flatten()
-		.map(String::as_str)
-		.collect::<Vec<_>>();
+	let names = matches.get_many::<String>("names").into_iter().flatten().map(String::as_str).collect::<Vec<_>>();
 	let prepared = prepare_groups(resources, kind, &names)?;
 	let force = matches.get_flag("force");
 	let mut targets = HashSet::new();
@@ -343,7 +346,7 @@ fn tree(resources: ResourceDirectory<'_>, path: &Path, format: OutputFormat) -> 
 			writeln!(output, "{}", inventory.root)?;
 			for entry in &inventory.entries {
 				write!(output, "{}{}", "  ".repeat(entry.depth + 1), entry.name)?;
-				if entry.kind == "directory" {
+				if matches!(entry.kind, InventoryKind::Directory) {
 					writeln!(output, "/")?;
 				}
 				else {
@@ -412,13 +415,7 @@ fn inventory(resources: ResourceDirectory<'_>, path: &Path) -> Result<Inventory>
 	Ok(inventory)
 }
 
-fn walk(
-	directory: ResourceDirectoryTable<'_>,
-	parent: &str,
-	depth: usize,
-	active: &mut HashSet<usize>,
-	inventory: &mut Inventory,
-) -> Result {
+fn walk(directory: ResourceDirectoryTable<'_>, parent: &str, depth: usize, active: &mut HashSet<usize>, inventory: &mut Inventory) -> Result {
 	if depth >= 64 {
 		return Err(err("resource directory nesting exceeds 64 levels"));
 	}
@@ -436,7 +433,7 @@ fn walk(
 				inventory.entries.push(InventoryEntry {
 					path: path.clone(),
 					name,
-					kind: "directory",
+					kind: InventoryKind::Directory,
 					depth,
 					size: None,
 					code_page: None,
@@ -450,7 +447,7 @@ fn walk(
 				inventory.entries.push(InventoryEntry {
 					path,
 					name,
-					kind: "file",
+					kind: InventoryKind::File,
 					depth,
 					size: Some(bytes.len()),
 					code_page: Some(data.code_page()),

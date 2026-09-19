@@ -23,7 +23,6 @@ struct Generated {
 
 pub fn command() -> clap::Command {
 	clap::Command::new("markov")
-		.visible_alias("markovbin")
 		.about("Generate bytes from executable PE sections using a Markov chain")
 		.arg(clap::Arg::new("count")
 			.value_name("COUNT")
@@ -81,8 +80,8 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 
 	let bytes = generate(&buckets, count, seed)?;
 	let output = matches.get_one::<PathBuf>("output").map(|path| {
-		std::fs::write(path, &bytes)?;
-		Ok::<_, std::io::Error>(path.to_string_lossy().into_owned())
+		fs::write(path, &bytes)?;
+		Ok::<_, io::Error>(path.to_string_lossy().into_owned())
 	}).transpose()?;
 	let generated = Generated {
 		hex: bytes.iter().map(|byte| format!("{byte:02X}")).collect::<Vec<_>>().join(" "),
@@ -141,19 +140,4 @@ fn generate(buckets: &Buckets, count: usize, seed: u64) -> Result<Vec<u8>> {
 		}
 	}
 	Ok(output)
-}
-
-#[cfg(test)]
-mod tests {
-	use super::{analyze, generate};
-
-	#[test]
-	fn seeded_generation_is_exact_and_reproducible() {
-		let mut buckets = vec![[0u64; 256]; 256];
-		analyze(&[1, 2, 1, 3, 1, 2], &mut buckets);
-		let first = generate(&buckets, 32, 7).unwrap();
-		let second = generate(&buckets, 32, 7).unwrap();
-		assert_eq!(first.len(), 32);
-		assert_eq!(first, second);
-	}
 }

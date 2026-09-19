@@ -58,25 +58,25 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 		output.insert("sections", value(pe.section_headers())?);
 	}
 	if selected("imports") {
-		output.insert("imports", directory(pe.imports())?);
+		output.insert("imports", value_opt(pe.imports())?);
 	}
 	if selected("exports") {
-		output.insert("exports", directory(pe.exports())?);
+		output.insert("exports", value_opt(pe.exports())?);
 	}
 	if selected("relocations") {
-		output.insert("relocations", directory(pe.base_relocs())?);
+		output.insert("relocations", value_opt(pe.base_relocs())?);
 	}
 	if selected("load-config") {
-		output.insert("load_config", directory(pe.load_config())?);
+		output.insert("load_config", value_opt(pe.load_config())?);
 	}
 	if selected("tls") {
-		output.insert("tls", directory(pe.tls())?);
+		output.insert("tls", value_opt(pe.tls())?);
 	}
 	if selected("exceptions") {
 		output.insert("exceptions", exceptions(pe)?);
 	}
 	if selected("debug") {
-		output.insert("debug", directory(pe.debug())?);
+		output.insert("debug", value_opt(pe.debug())?);
 	}
 
 	match format {
@@ -90,7 +90,7 @@ fn value<T: serde::Serialize>(value: T) -> Result<serde_json::Value> {
 	Ok(serde_json::to_value(value)?)
 }
 
-fn directory<T: serde::Serialize>(result: pelite::Result<T>) -> Result<serde_json::Value> {
+fn value_opt<T: serde::Serialize>(result: pelite::Result<T>) -> Result<serde_json::Value> {
 	match result {
 		Ok(directory) => value(directory),
 		Err(error) if error.is_null() => Ok(serde_json::Value::Null),
@@ -104,8 +104,8 @@ fn exceptions(pe: PeFile<'_>) -> Result<serde_json::Value> {
 		Wrap::T64(file) => {
 			use pelite::pe64::Pe;
 			match file.file_header().Machine {
-				image::IMAGE_FILE_MACHINE_AMD64 => directory(file.exception_x64()),
-				image::IMAGE_FILE_MACHINE_ARM64 => directory(file.exception_arm64()),
+				image::IMAGE_FILE_MACHINE_AMD64 => value_opt(file.exception_x64()),
+				image::IMAGE_FILE_MACHINE_ARM64 => value_opt(file.exception_arm64()),
 				_ => Err(pelite::Error::Invalid.into()),
 			}
 		},

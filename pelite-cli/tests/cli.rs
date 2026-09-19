@@ -74,6 +74,8 @@ fn resources_are_browsable_and_binary_safe() {
 	assert_eq!(tree["files"], 7);
 	assert!(tree["entries"].as_array().unwrap().iter().any(|entry| entry["path"] == resource));
 	assert!(tree["entries"].as_array().unwrap().iter().all(|entry| entry.get("data").is_none()));
+	assert!(tree["entries"].as_array().unwrap().iter().any(|entry| entry["kind"] == "directory"));
+	assert!(tree["entries"].as_array().unwrap().iter().any(|entry| entry["kind"] == "file"));
 
 	let raw = Command::new(env!("CARGO_BIN_EXE_pelite-cli"))
 		.args(["resources", "cat", path, resource])
