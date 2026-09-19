@@ -112,12 +112,12 @@ fn print_text(output: &VersionOutput<'_>) -> Result {
 	Ok(())
 }
 
-fn parse_u16(value: &str) -> std::result::Result<u16, String> {
+fn parse_u16(value: &str) -> result::Result<u16, String> {
 	if let Some(value) = value.strip_prefix("0x").or_else(|| value.strip_prefix("0X")) {
 		u16::from_str_radix(value, 16).map_err(|error| error.to_string())
 	}
 	else {
-		value.parse().map_err(|error: std::num::ParseIntError| error.to_string())
+		value.parse().map_err(|error: num::ParseIntError| error.to_string())
 	}
 }
 

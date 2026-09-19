@@ -1,5 +1,3 @@
-use pelite::strings::Config;
-
 use super::*;
 
 #[derive(serde::Serialize)]
@@ -35,17 +33,17 @@ pub fn command() -> clap::Command {
 }
 
 pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
-	let config = Config {
+	let config = pelite::strings::Config {
 		min_length: *matches.get_one("min-length").expect("defaulted by clap"),
 		min_length_nul: *matches.get_one("min-length-nul").expect("defaulted by clap"),
 		strict_nul: *matches.get_one("strict-nul").expect("defaulted by clap"),
-		..Config::default()
+		..pelite::strings::Config::default()
 	};
 	let path = matches.get_one::<PathBuf>("file").expect("required by clap");
 	analyze(path, config, format)
 }
 
-fn analyze(path: &Path, config: Config, format: OutputFormat) -> Result {
+fn analyze(path: &Path, config: pelite::strings::Config, format: OutputFormat) -> Result {
 	let map = pelite::FileMap::open(path)?;
 	let pe = pelite::PeFile::from_bytes(&map)?;
 	let file_name = path.file_name().and_then(|name| name.to_str()).unwrap_or("<input>");
@@ -61,7 +59,7 @@ fn analyze(path: &Path, config: Config, format: OutputFormat) -> Result {
 				section: section_name,
 				address: item.address,
 				nul_terminated: item.has_nul,
-				value: std::str::from_utf8(item.string)?,
+				value: str::from_utf8(item.string)?,
 			});
 		}
 	}
@@ -70,7 +68,7 @@ fn analyze(path: &Path, config: Config, format: OutputFormat) -> Result {
 		OutputFormat::JsonPretty => print_json(&found, true),
 		OutputFormat::Text => {
 			for item in found {
-				println!("{file_name}!{}:{:#x} {} {:?}", item.section, item.address, if item.nul_terminated { "!" } else { "?" }, item.value);
+				println!("{file_name}!{}:{:#x} {:?} {}", item.section, item.address, item.value, if item.nul_terminated { "0" } else { "?" });
 			}
 			Ok(())
 		},

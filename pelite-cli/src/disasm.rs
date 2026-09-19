@@ -29,13 +29,13 @@ pub fn command() -> clap::Command {
 			.required(true))
 		.arg(clap::Arg::new("range")
 			.value_name("START..END")
-			.value_parser(rva_range::parse)
+			.value_parser(RvaRange::parse)
 			.required(true))
 }
 
 pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let path = matches.get_one::<PathBuf>("file").expect("required by clap");
-	let range = *matches.get_one::<rva_range::RvaRange>("range").expect("required by clap");
+	let range = *matches.get_one::<RvaRange>("range").expect("required by clap");
 	let map = pelite::FileMap::open(path)?;
 	let pe = pelite::PeFile::from_bytes(&map)?;
 	let bitness = match pe.file_header().Machine {

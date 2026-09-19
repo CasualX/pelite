@@ -63,16 +63,8 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 }
 
 fn analyze(file: PeFile<'_>) -> Result<Vec<TypeOutput>> {
-	let text = file
-		.section_headers()
-		.iter()
-		.find(|section| &section.Name == b".text\0\0\0")
-		.ok_or_else(|| err("no .text section found"))?;
-	let rdata = file
-		.section_headers()
-		.iter()
-		.find(|section| &section.Name == b".rdata\0\0")
-		.ok_or_else(|| err("no .rdata section found"))?;
+	let text = file.section_headers().by_name(".text").ok_or_else(|| err("no .text section found"))?;
+	let rdata = file.section_headers().by_name(".rdata").ok_or_else(|| err("no .rdata section found"))?;
 	let relocs = file.base_relocs().map_err(|_| err("no base relocations found"))?;
 
 	let mut vrefs = Vec::new();
@@ -80,12 +72,10 @@ fn analyze(file: PeFile<'_>) -> Result<Vec<TypeOutput>> {
 		if rva < rdata.VirtualAddress || rva >= rdata.VirtualAddress.saturating_add(rdata.VirtualSize) {
 			return;
 		}
-		let Ok(target_va) = file.derva_copy(rva)
-		else {
+		let Ok(target_va) = file.derva_copy(rva) else {
 			return;
 		};
-		let Ok(target_rva) = file.va_to_rva(target_va)
-		else {
+		let Ok(target_rva) = file.va_to_rva(target_va) else {
 			return;
 		};
 		if target_rva >= text.VirtualAddress && target_rva < text.VirtualAddress.saturating_add(text.VirtualSize) {
@@ -97,12 +87,10 @@ fn analyze(file: PeFile<'_>) -> Result<Vec<TypeOutput>> {
 
 	let mut xrefs = Vec::new();
 	relocs.for_each(|rva, _| {
-		let Ok(target_va) = file.derva_copy(rva)
-		else {
+		let Ok(target_va) = file.derva_copy(rva) else {
 			return;
 		};
-		let Ok(target_rva) = file.va_to_rva(target_va)
-		else {
+		let Ok(target_rva) = file.va_to_rva(target_va) else {
 			return;
 		};
 		if let Ok(index) = vrefs.binary_search(&target_rva) {
@@ -124,12 +112,10 @@ fn analyze(file: PeFile<'_>) -> Result<Vec<TypeOutput>> {
 }
 
 fn add_vtable<'a>(file: PeFile<'a>, types: &mut Vec<RawType<'a>>, xref: usize, vrefs: &[Rva]) -> pelite::Result<()> {
-	let Some(&vtable_rva) = vrefs.get(xref)
-	else {
+	let Some(&vtable_rva) = vrefs.get(xref) else {
 		return Err(pelite::Error::Bounds);
 	};
-	let Some(locator_rva) = vtable_rva.checked_sub(4)
-	else {
+	let Some(locator_rva) = vtable_rva.checked_sub(4) else {
 		return Err(pelite::Error::Bounds);
 	};
 	let col_ptr: Ptr<image::RTTICompleteObjectLocator> = Ptr::from(*file.derva::<Va>(locator_rva)?);

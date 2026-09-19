@@ -4,29 +4,53 @@ use super::*;
 
 const ROW_WIDTH: usize = 16;
 
-struct HexdumpRow {
+struct HexRow<'a> {
 	address: u64,
-	bytes: Vec<Option<u8>>,
-	ascii: String,
+	offset: usize,
+	bytes: &'a [u8],
+}
+
+struct HexRows<'a> {
+	address: u64,
+	offset: usize,
+	bytes: &'a [u8],
+}
+
+impl<'a> Iterator for HexRows<'a> {
+	type Item = HexRow<'a>;
+
+	fn next(&mut self) -> Option<Self::Item> {
+		if self.bytes.is_empty() {
+			return None;
+		}
+		let row_len = (ROW_WIDTH - self.offset).min(self.bytes.len());
+		let (bytes, remaining) = self.bytes.split_at(row_len);
+		let row = HexRow { address: self.address, offset: self.offset, bytes };
+		self.bytes = remaining;
+		if !self.bytes.is_empty() {
+			self.address += ROW_WIDTH as u64;
+			self.offset = 0;
+		}
+		Some(row)
+	}
 }
 
 pub fn command() -> clap::Command {
 	clap::Command::new("hexdump")
 		.about("Hexdump an RVA range")
-		.after_help("The range is half-open and its endpoints are hexadecimal RVAs (for example, 1000..1100 or 0x1000..0x1100).")
 		.arg(clap::Arg::new("file")
 			.value_name("FILE")
 			.value_parser(clap::value_parser!(PathBuf))
 			.required(true))
 		.arg(clap::Arg::new("range")
 			.value_name("START..END")
-			.value_parser(rva_range::parse)
+			.value_parser(RvaRange::parse)
 			.required(true))
 }
 
 pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let path = matches.get_one::<PathBuf>("file").expect("required by clap");
-	let range = *matches.get_one::<rva_range::RvaRange>("range").expect("required by clap");
+	let range = *matches.get_one::<RvaRange>("range").expect("required by clap");
 	let map = pelite::FileMap::open(path)?;
 	let pe = pelite::PeFile::from_bytes(&map)?;
 	let (image_base, address_width) = match pe.optional_header() {
@@ -42,44 +66,37 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 		OutputFormat::Json => print_json(&bytes, false),
 		OutputFormat::JsonPretty => print_json(&bytes, true),
 		OutputFormat::Text => {
+			let stdout = io::stdout();
+			let mut output = stdout.lock();
 			for row in build_rows(start_address, bytes)? {
-				print!("{:#0address_width$x}  ", row.address);
-				for (index, byte) in row.bytes.iter().enumerate() {
-					match byte {
-						Some(byte) => print!("{byte:02x} "),
-						None => print!("   "),
+				write!(output, "{:#0address_width$x}  ", row.address)?;
+				for column in 0..ROW_WIDTH {
+					match column.checked_sub(row.offset).and_then(|index| row.bytes.get(index)) {
+						Some(byte) => write!(output, "{byte:02x} ")?,
+						None => write!(output, "   ")?,
 					}
-					if index == 7 {
-						print!(" ");
+					if column == 7 {
+						write!(output, " ")?;
 					}
 				}
-				println!(" |{}|", row.ascii);
+				write!(output, " |")?;
+				for column in 0..ROW_WIDTH {
+					match column.checked_sub(row.offset).and_then(|index| row.bytes.get(index)) {
+						Some(byte) if byte.is_ascii_graphic() || *byte == b' ' => write!(output, "{}", char::from(*byte))?,
+						Some(_) => write!(output, ".")?,
+						None => write!(output, " ")?,
+					}
+				}
+				writeln!(output, "|")?;
 			}
 			Ok(())
 		},
 	}
 }
 
-fn build_rows(start_address: u64, bytes: &[u8]) -> Result<Vec<HexdumpRow>> {
-	let end_address = start_address.checked_add(bytes.len() as u64).ok_or_else(|| err("hexdump address range overflows"))?;
-	let mut address = start_address & !(ROW_WIDTH as u64 - 1);
-	let mut rows = Vec::new();
-	while address < end_address {
-		let mut row_bytes = vec![None; ROW_WIDTH];
-		let mut ascii = String::with_capacity(ROW_WIDTH);
-		for (column, slot) in row_bytes.iter_mut().enumerate() {
-			let byte_address = address + column as u64;
-			if byte_address >= start_address && byte_address < end_address {
-				let byte = bytes[(byte_address - start_address) as usize];
-				*slot = Some(byte);
-				ascii.push(if byte.is_ascii_graphic() || byte == b' ' { char::from(byte) } else { '.' });
-			}
-			else {
-				ascii.push(' ');
-			}
-		}
-		rows.push(HexdumpRow { address, bytes: row_bytes, ascii });
-		address = address.checked_add(ROW_WIDTH as u64).ok_or_else(|| err("hexdump row address overflows"))?;
-	}
-	Ok(rows)
+fn build_rows(start_address: u64, bytes: &[u8]) -> Result<HexRows<'_>> {
+	start_address.checked_add(bytes.len() as u64).ok_or_else(|| err("hexdump address range overflows"))?;
+	let address = start_address & !(ROW_WIDTH as u64 - 1);
+	let offset = (start_address - address) as usize;
+	Ok(HexRows { address, offset, bytes })
 }
