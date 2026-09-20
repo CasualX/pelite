@@ -55,6 +55,7 @@ pub use self::error::{Error, Result};
 #[cfg(feature = "mmap")]
 mod mmap;
 #[cfg(feature = "mmap")]
+#[allow(unused_imports)]
 pub use self::mmap::*;
 
 pub mod pe32;

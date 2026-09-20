@@ -1,0 +1,65 @@
+{
+	"intro": "Use the pefile variable in the editor. Methods return parsed data, bytes, strings, null, or an Error.",
+	"groups": [
+		{
+			"title": "Headers",
+			"open": true,
+			"methods": [
+				{ "signature": "headers()", "description": "All PE headers" },
+				{ "signature": "dosHeader()", "description": "DOS header" },
+				{ "signature": "ntHeaders()", "description": "NT headers" },
+				{ "signature": "fileHeader()", "description": "COFF file header" },
+				{ "signature": "optionalHeader()", "description": "Optional header" },
+				{ "signature": "sectionHeaders()", "description": "Section table" }
+			]
+		},
+		{
+			"title": "Directories",
+			"methods": [
+				{ "signature": "imports()", "description": "Parsed imports" },
+				{ "signature": "exports()", "description": "Parsed exports" },
+				{ "signature": "baseRelocations()", "description": "Base relocations" },
+				{ "signature": "loadConfig()", "description": "Load configuration" },
+				{ "signature": "tls()", "description": "TLS directory" },
+				{ "signature": "exceptionsX64()", "description": "x64 exception entries, or null for PE32" },
+				{ "signature": "debug()", "description": "Debug directory" },
+				{ "signature": "security()", "description": "Authenticode security directory" },
+				{ "signature": "richStructure()", "description": "Rich structure" }
+			]
+		},
+		{
+			"title": "Addresses and bytes",
+			"methods": [
+				{ "signature": "vaToRva(va)", "description": "Convert a virtual address to an RVA" },
+				{ "signature": "rvaToVa(rva)", "description": "Convert an RVA to a virtual address" },
+				{ "signature": "sliceBytes(rva, size?, align?)", "description": "View bytes at an RVA without copying" },
+				{ "signature": "sliceCString(rva, encoding?)", "description": "Read a string at an RVA" },
+				{ "signature": "readBytes(va, size?, align?)", "description": "View bytes at a virtual address without copying" },
+				{ "signature": "readCString(va, encoding?)", "description": "Read a string at a virtual address" },
+				{ "signature": "disasm(start, end?)", "description": "Disassemble an RVA range" }
+			]
+		},
+		{
+			"title": "Resources",
+			"methods": [
+				{ "signature": "resourcesTree()", "description": "Parsed resource tree" },
+				{ "signature": "resourcesGetResource(path)", "description": "Copy resource bytes from a slash-separated path" },
+				{ "signature": "resourcesManifest()", "description": "Manifest text" },
+				{ "signature": "resourcesVersionInfo()", "description": "Version information" },
+				{ "signature": "resourcesListIcons()", "description": "Available icon names" },
+				{ "signature": "resourcesGetIcon(name)", "description": "Return a complete ICO file" },
+				{ "signature": "resourcesListCursors()", "description": "Available cursor names" },
+				{ "signature": "resourcesGetCursor(name)", "description": "Return a complete CUR file" }
+			]
+		},
+		{
+			"title": "Pattern scanning",
+			"methods": [
+				{ "signature": "scannerExec(rva, pattern)", "description": "Match a pattern at one RVA" },
+				{ "signature": "scannerFind(pattern, section?)", "description": "Find the first match" },
+				{ "signature": "scannerMatches(pattern, section?, options?)", "description": "Find multiple matches" }
+			]
+		}
+	],
+	"footnote": "Files stay in this tab. Nothing is uploaded."
+}

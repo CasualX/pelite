@@ -252,10 +252,7 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	/// Slices the image at the specified rva returning a byte slice with no alignment or minimum size.
 	///
 	/// Shorthand to invoke [`slice(rva, 0, 1)`](#tymethod.slice).
-	fn slice_bytes(self, rva: Rva) -> Result<&'a [u8]>
-	where
-		Self: Sized,
-	{
+	fn slice_bytes(self, rva: Rva) -> Result<&'a [u8]> where Self: Sized {
 		self.slice(rva, 0, 1)
 	}
 
@@ -296,10 +293,7 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 	/// Reads the image at the specified va returning a byte slice with no alignment or minimum size.
 	///
 	/// Shorthand to invoke [`read(va, 0, 1)`](#tymethod.read).
-	fn read_bytes(self, va: Va) -> Result<&'a [u8]>
-	where
-		Self: Sized,
-	{
+	fn read_bytes(self, va: Va) -> Result<&'a [u8]> where Self: Sized {
 		self.read(va, 0, 1)
 	}
 

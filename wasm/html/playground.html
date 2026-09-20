@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="color-scheme" content="light dark">
+	<title>PeLite WASM Playground</title>
+	<link rel="stylesheet" href="./playground.css">
+	<script defer src="./playground.js"></script>
+	<script defer src="./alpine.min.js"></script>
+</head>
+<body>
+	<header class="site-header">
+		<div class="header-inner">
+			<div class="brand"><h1>PeLite Playground</h1></div>
+			<p class="header-note">Inspect EXE, DLL, SYS, and OCX files in your browser</p>
+		</div>
+	</header>
+	<main class="workspace">
+		<div class="main-column">
+			<section class="panel" aria-labelledby="file-heading">
+				<div class="panel-header">
+					<h2 class="panel-title" id="file-heading">1. Choose a PE file</h2>
+					<span class="status" id="status">No file selected</span>
+				</div>
+				<div class="source-options">
+					<div class="file-control">
+						<input id="fileInput" type="file" accept=".exe,.dll,.sys,.ocx" aria-label="Choose an EXE, DLL, SYS, or OCX file">
+					</div>
+					<div class="demo-control" aria-label="Bundled demo files">
+						<span class="demo-label">or try</span>
+						<button class="demo-button" type="button" data-demo="Demo.dll" aria-pressed="false">Demo.dll <small>32-bit</small></button>
+						<button class="demo-button" type="button" data-demo="Demo64.dll" aria-pressed="false">Demo64.dll <small>64-bit</small></button>
+					</div>
+				</div>
+			</section>
+			<section class="panel" aria-labelledby="editor-heading">
+				<div class="panel-header">
+					<h2 class="panel-title" id="editor-heading">2. Run JavaScript</h2>
+					<span class="status">Use <code>pefile</code> to inspect the selected file</span>
+				</div>
+				<textarea class="editor" id="codeInput" aria-label="JavaScript to run" spellcheck="false">// Return any value to print it below.
+pefile.headers()</textarea>
+				<div class="actions">
+					<span class="hint"><kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>Enter</kbd> to run</span>
+					<button class="run-button" id="runButton" type="button">Run</button>
+				</div>
+			</section>
+			<section class="panel" aria-labelledby="output-heading">
+				<div class="panel-header"><h2 class="panel-title" id="output-heading">Output</h2></div>
+				<pre class="output" id="output" aria-live="polite"></pre>
+			</section>
+		</div>
+		<aside class="panel docs" aria-labelledby="reference-heading" x-data="apiReference" x-init="load()">
+			<div class="panel-header"><h2 class="panel-title" id="reference-heading">API quick reference</h2></div>
+			<p class="docs-intro" x-text="intro || 'Loading API reference…'"></p>
+			<template x-for="group in groups" :key="group.title">
+				<details :open="group.open === true">
+					<summary x-text="group.title"></summary>
+					<ul class="method-list">
+						<template x-for="method in group.methods" :key="method.signature">
+							<li>
+								<span class="signature" x-text="method.signature"></span>
+								<span x-text="method.description"></span>
+							</li>
+						</template>
+					</ul>
+				</details>
+			</template>
+			<p class="docs-error" x-cloak x-show="error" x-text="error"></p>
+			<p class="docs-footnote" x-cloak x-show="footnote" x-text="footnote"></p>
+		</aside>
+	</main>
+</body>
+</html>
