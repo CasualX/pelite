@@ -25,6 +25,40 @@ fn inspect_detects_both_pe_formats() {
 }
 
 #[test]
+fn summary_gives_a_first_look_at_both_pe_formats() {
+	for (file, format, machine) in [("Demo.dll", "PE32", "i386"), ("Demo64.dll", "PE32+", "AMD64")] {
+		let path = demo(file);
+		let value = json(&["summary", path.to_str().unwrap(), "--format=json"]);
+		assert_eq!(value["image"]["format"], format);
+		assert_eq!(value["image"]["machine"], machine);
+		assert_eq!(value["image"]["entry_point_section"], ".text");
+		assert_eq!(value["image"]["certificate_table_present"], false);
+		assert_eq!(value["mitigations"]["aslr"], true);
+		assert_eq!(value["mitigations"]["dep"], true);
+		assert_eq!(value["hashes"]["sha256"].as_str().unwrap().len(), 64);
+		assert_eq!(value["hashes"]["md5"].as_str().unwrap().len(), 32);
+		assert_eq!(value["hashes"]["imphash"].as_str().unwrap().len(), 32);
+		assert!(value["sections"].as_array().unwrap().iter().any(|section| section["entry_point"] == true));
+		assert!(value["imports"]["functions"].as_u64().unwrap() > 0);
+		assert!(value["findings"].is_array());
+	}
+}
+
+#[test]
+fn summary_text_explains_its_limits() {
+	let pe32 = demo("Demo.dll");
+	let output = Command::new(env!("CARGO_BIN_EXE_pelite-cli"))
+		.args(["summary", pe32.to_str().unwrap()])
+		.output()
+		.expect("run pelite-cli");
+	assert!(output.status.success(), "pelite-cli failed: {}", String::from_utf8_lossy(&output.stderr));
+	let stdout = String::from_utf8(output.stdout).unwrap();
+	assert!(stdout.contains("Signals to review"));
+	assert!(stdout.contains("self-reported, not trusted"));
+	assert!(stdout.contains("not a malware verdict"));
+}
+
+#[test]
 fn inspect_sections_uses_a_text_table() {
 	let pe32 = demo("Demo.dll");
 	let path = pe32.to_str().unwrap();
@@ -102,6 +136,7 @@ fn every_command_supports_json() {
 	let path64 = pe64.to_str().unwrap();
 
 	assert!(json(&["inspect", path, "headers", "--format=json"])["headers"].is_object());
+	assert!(json(&["summary", path, "--format=json"])["sections"].is_array());
 	assert!(json(&["resources", "tree", path, "--format=json"])["entries"].is_array());
 	assert!(json(&["strings", path, "--format=json"]).is_array());
 	assert!(json(&["disasm", path, "1000..1010", "--format=json"]).is_array());
