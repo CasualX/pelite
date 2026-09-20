@@ -12,7 +12,6 @@ version = "0.10.0"
 features = ["serde", "basenc"]
 
 [dependencies]
+iced-x86 = { version = "1.21.0", default-features = false, features = ["decoder", "intel", "std"] }
 serde = "1.0"
 serde_json = "1.0"
-# wasm-bindgen = { version = "0.2", features = ["serde-serialize"] }
-# wee_alloc = "0.4"

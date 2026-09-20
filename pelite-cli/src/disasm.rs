@@ -45,15 +45,15 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	};
 	let len = usize::try_from(range.end - range.start)?;
 	let bytes = pe.slice(range.start, len, 1)?;
-	let bytes = &bytes[..len];
 	let image_base = image_base(pe);
-	let start_ip = image_base.checked_add(u64::from(range.start)).ok_or_else(|| err("image base plus start RVA overflows"))?;
+	let start_ip = image_base + range.start as u64;
+	let end_ip = image_base + range.end as u64;
 
 	let mut decoder = iced_x86::Decoder::with_ip(bitness, bytes, start_ip, iced_x86::DecoderOptions::NONE);
 	let symbols = Arc::new(build_symbols(pe, bitness, image_base));
 	let mut formatter = iced_x86::IntelFormatter::with_options(Some(Box::new(PeSymbolResolver { symbols: Arc::clone(&symbols) })), None);
 	let mut instructions = Vec::new();
-	while decoder.can_decode() {
+	while decoder.can_decode() && decoder.ip() < end_ip {
 		let instruction = decoder.decode();
 		let address = instruction.ip();
 		let offset = usize::try_from(address - start_ip)?;
