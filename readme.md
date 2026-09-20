@@ -32,6 +32,10 @@ extracting strings and icons, hashing imports, finding signatures, generating bi
 data and module-definition files, and dumping MSVC RTTI.
 Run `cargo run -p pelite-cli -- --help` or [try it on the demos](demo).
 
+For a compact first look at an unfamiliar binary, run
+`cargo run -p pelite-cli -- summary suspicious.exe`. Add `--format=json` for
+machine-readable output. The summary reports triage clues, not a malware verdict.
+
 Library
 -------
 

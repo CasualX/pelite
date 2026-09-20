@@ -17,6 +17,7 @@ mod rust_format_args;
 mod rust_msvc;
 mod rust_panic_strings;
 mod strings;
+mod summary;
 mod value_parser;
 mod version_info;
 
@@ -60,7 +61,7 @@ fn cli() -> clap::Command {
 	clap::Command::new("pelite-cli")
 		.about("Inspect Windows PE binaries")
 		.arg_required_else_help(true)
-		.subcommand_required(true)
+		.arg(summary::file_arg())
 		.arg(clap::Arg::new("format")
 			.long("format")
 			.value_name("FORMAT")
@@ -69,6 +70,7 @@ fn cli() -> clap::Command {
 			.global(true)
 			.help("Select the output format"))
 		.subcommand(inspect::command())
+		.subcommand(summary::command())
 		.subcommand(resources::command())
 		.subcommand(disasm::command())
 		.subcommand(hexdump::command())
@@ -99,6 +101,7 @@ fn run() -> Result {
 	let format = OutputFormat::from_matches(&matches);
 	match matches.subcommand() {
 		Some(("inspect", matches)) => inspect::run(matches, format),
+		Some(("summary", matches)) => summary::run(matches, format),
 		Some(("resources", matches)) => resources::run(matches, format),
 		Some(("disasm", matches)) => disasm::run(matches, format),
 		Some(("hexdump", matches)) => hexdump::run(matches, format),
@@ -111,7 +114,8 @@ fn run() -> Result {
 		Some(("rust-format-args", matches)) => rust_format_args::run(matches, format),
 		Some(("rust-panic-strings", matches)) => rust_panic_strings::run(matches, format),
 		Some(("version-info", matches)) => version_info::run(matches, format),
-		_ => unreachable!("clap requires a subcommand"),
+		None => summary::run(&matches, format),
+		_ => unreachable!("all subcommands are handled"),
 	}
 }
 
