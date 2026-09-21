@@ -201,13 +201,14 @@ fn summarize(path: &Path, bytes: &[u8], pe: PeFile<'_>) -> Result<Summary> {
 	let checksum_valid = checksum != 0 && checksum == pe.headers().check_sum();
 	let mut sha256 = Sha256::new();
 	sha256.update(bytes);
+	let sha256 = sha256.finalize();
 
 	Ok(Summary {
 		file: path.to_string_lossy().into_owned(),
 		file_size: bytes.len(),
 		hashes: Hashes {
 			md5: format!("{:x}", md5::compute(bytes)),
-			sha256: format!("{:x}", sha256.finalize()),
+			sha256: encode_lower_hex(sha256.as_ref()),
 			imphash,
 		},
 		image: Image {
@@ -239,6 +240,16 @@ fn summarize(path: &Path, bytes: &[u8], pe: PeFile<'_>) -> Result<Summary> {
 		pdb_path,
 		findings,
 	})
+}
+
+fn encode_lower_hex(bytes: &[u8]) -> String {
+	const DIGITS: &[u8; 16] = b"0123456789abcdef";
+	let mut output = String::with_capacity(bytes.len() * 2);
+	for &byte in bytes {
+		output.push(char::from(DIGITS[usize::from(byte >> 4)]));
+		output.push(char::from(DIGITS[usize::from(byte & 0x0f)]));
+	}
+	output
 }
 
 trait OptionalHeaderSize {

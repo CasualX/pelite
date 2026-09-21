@@ -33,8 +33,6 @@ jobs:
           targets: wasm32-unknown-unknown
 
       - name: Build WebAssembly
-        env:
-          RUSTFLAGS: -C link-arg=--allow-undefined
         run: ./wasm/build.sh
 
       - name: Assemble playground
