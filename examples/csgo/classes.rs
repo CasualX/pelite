@@ -54,7 +54,7 @@ pub struct Class<'a> {
 }
 
 pub fn classes<'a>(client: PeFile<'a>) -> Vec<Class<'a>> {
-	let mut save = [0; 8];
+	let mut save = [0; 16];
 	let mut list = Vec::new();
 
 	// The ClientClasses aren't fully constructed yet, find these constructors

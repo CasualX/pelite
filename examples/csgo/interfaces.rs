@@ -52,7 +52,7 @@ pub struct Interface<'a> {
 }
 
 pub fn interfaces<'a>(file: PeFile<'a>) -> Vec<Interface<'a>> {
-	let mut save = [0; 8];
+	let mut save = [0; 12];
 
 	// Grab the CreateInterface export
 	let exports = file.exports().unwrap().by().unwrap();

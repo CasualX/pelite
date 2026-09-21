@@ -71,7 +71,7 @@ pub struct ConVar<'a> {
 }
 
 pub fn convars<'a>(file: PeFile<'a>) -> Vec<ConVar<'a>> {
-	let mut save = [0; 12];
+	let mut save = [0; 16];
 	let mut cvars = Vec::new();
 
 	// Match static constructors which call [`ConVar::Create`](https://github.com/ValveSoftware/source-sdk-2013/blob/master/mp/src/public/tier1/convar.h#L383)
@@ -103,14 +103,14 @@ pub fn convars<'a>(file: PeFile<'a>) -> Vec<ConVar<'a>> {
 		else {
 			eprintln!("Convar false-positive {:#010x}", save[0]);
 		}
-		save = [0; 12];
+		save = Default::default();
 	}
 
 	// Sort the list by name for improved diff viewer experience
 	cvars.sort_unstable_by_key(|cvar| cvar.name);
 	return cvars;
 }
-fn convar<'a>(bin: PeFile<'a>, save: &[u32; 12]) -> pelite::Result<ConVar<'a>> {
+fn convar<'a>(bin: PeFile<'a>, save: &[u32; 16]) -> pelite::Result<ConVar<'a>> {
 	let has_max = save[2] != 0;
 	let max_float = f32::from_bits(save[1]);
 	let max_value = if has_max { Some(max_float) } else { None };
@@ -162,7 +162,7 @@ pub struct ConCommand<'a> {
 }
 
 pub fn concommands<'a>(bin: PeFile<'a>) -> Vec<ConCommand<'a>> {
-	let mut save = [0; 8];
+	let mut save = [0; 12];
 	let mut cmds = Vec::new();
 
 	// The ConCommand constructors are already evaluated by the compiler and the global data structures already filled in
@@ -175,14 +175,14 @@ pub fn concommands<'a>(bin: PeFile<'a>) -> Vec<ConCommand<'a>> {
 		if let Ok(cmd) = concommand(bin, &save) {
 			cmds.push(cmd);
 		}
-		save = [0; 8];
+		save = Default::default();
 	}
 
 	// Sort the list by name for improved diff viewer experience
 	cmds.sort_unstable_by_key(|cmd| cmd.name);
 	return cmds;
 }
-fn concommand<'a>(bin: PeFile<'a>, save: &[u32; 8]) -> pelite::Result<ConCommand<'a>> {
+fn concommand<'a>(bin: PeFile<'a>, save: &[u32; 12]) -> pelite::Result<ConCommand<'a>> {
 	let address = save[0];
 	let name = bin.derva_c_str(save[1])?.to_str()?;
 	let desc = if save[2] == 0 { None } else { Some(bin.derva_c_str(save[2])?.to_str()?) };

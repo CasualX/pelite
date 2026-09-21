@@ -11,7 +11,7 @@ use pelite::pattern as pat;
 use pelite::pe32::*;
 use pelite::{Pod, util::CStr};
 
-use lde;
+use iced_x86::{Code, Decoder, DecoderOptions, OpKind, Register};
 
 //----------------------------------------------------------------
 
@@ -108,7 +108,7 @@ pub struct Prop<'a> {
 }
 
 pub fn recvtables<'a>(client: PeFile<'a>) -> pelite::Result<Vec<Class<'a>>> {
-	let mut save = [0; 8];
+	let mut save = [0; 12];
 	let mut classes = Vec::new();
 
 	// This pattern is quite the sight, isn't it?
@@ -139,7 +139,7 @@ pub fn recvtables<'a>(client: PeFile<'a>) -> pelite::Result<Vec<Class<'a>>> {
 	Ok(classes)
 }
 
-fn recvtable<'a>(client: PeFile<'a>, save: &[Rva; 8]) -> pelite::Result<Class<'a>> {
+fn recvtable<'a>(client: PeFile<'a>, save: &[Rva; 12]) -> pelite::Result<Class<'a>> {
 	let props_rva = save[2];
 	let code: &[u8] = client.derva_slice(save[5], (save[1] - save[5]) as usize)?;
 	let &n_props: &i32 = client.derva(save[3])?;
@@ -151,11 +151,22 @@ fn recvtable<'a>(client: PeFile<'a>, save: &[Rva; 8]) -> pelite::Result<Class<'a
 	let props_ptr = recv_props.as_mut_ptr() as *mut u8;
 
 	// Run through the code virtually executing only the relevant instructions initializing the RecvTable
-	for (opcode, _) in lde::X86.iter(code, save[5]) {
+	let mut decoder = Decoder::with_ip(32, code, save[5].into(), DecoderOptions::NONE);
+	while decoder.can_decode() {
+		let instruction = decoder.decode();
+		if instruction.is_invalid() {
+			break;
+		}
+
 		// mov dword ptr addr, imm32
-		if opcode.starts_with(&[0xC7, 0x05]) {
-			let rva = client.va_to_rva(opcode.read::<Va>(2)).unwrap();
-			let imm = opcode.read::<u32>(6);
+		if instruction.code() == Code::Mov_rm32_imm32
+			&& instruction.op0_kind() == OpKind::Memory
+			&& instruction.memory_base() == Register::None
+			&& instruction.memory_index() == Register::None
+			&& instruction.memory_displ_size() == 4
+		{
+			let rva = client.va_to_rva(instruction.memory_displacement32()).unwrap();
+			let imm = instruction.immediate32();
 			if rva >= props_rva && rva - props_rva < props_size {
 				unsafe {
 					*(props_ptr.offset((rva - props_rva) as isize) as *mut u32) = imm;
@@ -163,9 +174,14 @@ fn recvtable<'a>(client: PeFile<'a>, save: &[Rva; 8]) -> pelite::Result<Class<'a
 			}
 		}
 		// mov byte ptr addr, imm8
-		if opcode.starts_with(&[0xC6, 0x05]) {
-			let rva = client.va_to_rva(opcode.read::<Va>(2)).unwrap();
-			let imm = opcode.read::<u8>(6);
+		else if instruction.code() == Code::Mov_rm8_imm8
+			&& instruction.op0_kind() == OpKind::Memory
+			&& instruction.memory_base() == Register::None
+			&& instruction.memory_index() == Register::None
+			&& instruction.memory_displ_size() == 4
+		{
+			let rva = client.va_to_rva(instruction.memory_displacement32()).unwrap();
+			let imm = instruction.immediate8();
 			if rva >= props_rva && rva - props_rva < props_size {
 				unsafe {
 					*(props_ptr.offset((rva - props_rva) as isize) as *mut u8) = imm;

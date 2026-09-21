@@ -30,7 +30,7 @@ pub struct ConVar<'a> {
 }
 
 pub fn cvars<'a>(file: PeFile<'a>) -> pelite::Result<Vec<ConVar<'a>>> {
-	let mut save = [0; 8];
+	let mut save = [0; 16];
 	let dll_name = file.exports()?.dll_name()?.to_str().unwrap();
 	let scanner = file.scanner();
 	let mut cvars = Vec::new();

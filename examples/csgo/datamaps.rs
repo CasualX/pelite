@@ -126,7 +126,7 @@ pub struct Field<'a> {
 }
 
 pub fn datamaps<'a>(client: PeFile<'a>) -> pelite::Result<Vec<Class<'a>>> {
-	let mut save = [0; 4];
+	let mut save = [0; 8];
 	let mut classes = Vec::new();
 	// The datamaps aren't fully constructed yet, find these constructors
 	// ```

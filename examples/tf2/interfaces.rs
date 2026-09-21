@@ -46,7 +46,7 @@ pub struct Interface<'a> {
 }
 
 pub fn interfaces<'a>(file: PeFile<'a>) -> pelite::Result<Vec<Interface<'a>>> {
-	let mut save = [0; 4];
+	let mut save = [0; 8];
 
 	let exports = file.exports()?.by()?;
 	let dll_name = exports.dll_name()?.to_str().unwrap();

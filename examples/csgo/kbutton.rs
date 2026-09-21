@@ -35,7 +35,7 @@ struct Button<'a> {
 }
 
 fn buttons<'a>(file: PeFile<'a>) -> Vec<Button<'a>> {
-	let mut save = [0; 4];
+	let mut save = [0; 8];
 	let mut btns = Vec::new();
 
 	// Match the ConCommand in .data section...
