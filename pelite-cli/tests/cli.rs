@@ -99,6 +99,19 @@ fn inspect_combines_requested_topics() {
 }
 
 #[test]
+fn inspect_exposes_rich_structure() {
+	let pe32 = demo("Demo.dll");
+	let path = pe32.to_str().unwrap();
+	let selected = json(&["inspect", path, "rich-structure", "--format=json"]);
+	assert!(selected["rich_structure"].is_object());
+	assert!(selected["rich_structure"]["records"].is_array());
+	assert!(selected.get("headers").is_none());
+
+	let all = json(&["inspect", path, "all", "--format=json"]);
+	assert!(all["rich_structure"].is_object());
+}
+
+#[test]
 fn resources_are_browsable_and_binary_safe() {
 	let pe32 = demo("Demo.dll");
 	let path = pe32.to_str().unwrap();
