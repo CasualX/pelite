@@ -2,9 +2,9 @@
 //!
 //! All entry points run the same const-capable compiler. User slots are `0..=127`
 //! (the nonnegative half of the VM's signed operands); automatic slots start at 1.
-//! Reference returns use distinct negative slots. There are at most 128 reference
-//! bodies and 128 simultaneously nested groups/bodies. Operands are 32-bit values
-//! encoded by up to three `Extend` prefixes and a final instruction byte.
+//! Reference returns use negative slots, reusing them for non-overlapping bodies.
+//! There are at most 128 simultaneously nested groups/bodies. Operands are 32-bit
+//! values encoded by up to three `Extend` prefixes and a final instruction byte.
 //!
 //! Compiled patterns are checked for uninitialized slot reads and values clobbered
 //! by failed retries. Caller-initialized slots are not assumed. Undecided shorthands
@@ -135,7 +135,8 @@ struct Parser<'a> {
 	start: usize,
 	string: Option<usize>,
 	next_save: usize,
-	next_return: usize,
+	live_returns: u128,
+	retry_generation: usize,
 	automatic_slots: u128,
 	explicit_slots: u128,
 	depth: usize,
@@ -149,7 +150,8 @@ impl<'a> Parser<'a> {
 			start: 0,
 			string: None,
 			next_save: 1,
-			next_return: 0,
+			live_returns: 0,
+			retry_generation: 0,
 			automatic_slots: 0,
 			explicit_slots: 0,
 			depth: 0,
@@ -233,6 +235,18 @@ impl<'a> Parser<'a> {
 		self.automatic_slots |= bit;
 		self.next_save += 1;
 		Ok(slot as i8)
+	}
+	const fn return_slot(&mut self) -> Result<i8, PatternError> {
+		let mut index = 0;
+		while index < 128 {
+			let bit = 1u128 << index;
+			if self.live_returns & bit == 0 {
+				self.live_returns |= bit;
+				return Ok(-((index + 1) as i16) as i8);
+			}
+			index += 1;
+		}
+		Err(self.error(ErrorKind::SaveOverflow))
 	}
 	const fn slot(&mut self, output: bool) -> Result<i8, PatternError> {
 		if !self.take(b'[') {
@@ -563,6 +577,13 @@ impl<'a> Parser<'a> {
 		loop {
 			match attempt!(self.next()) {
 				Token::Atoms(atoms) => {
+					let mut i = 0;
+					while i < atoms.len {
+						if matches!(atoms.items[i], Atom::Scan(_)) {
+							self.retry_generation += 1;
+						}
+						i += 1;
+					}
 					output.emit(atoms, self.start);
 				}
 				Token::Group => {
@@ -572,16 +593,19 @@ impl<'a> Parser<'a> {
 				}
 				Token::Reference(atom, width) => {
 					attempt!(self.enter());
-					if self.next_return == 128 {
-						return Err(self.error(ErrorKind::SaveOverflow));
-					}
-					self.next_return += 1;
-					let slot = -(self.next_return as i16) as i8;
+					let slot = attempt!(self.return_slot());
+					let retry_generation = self.retry_generation;
 					output.emit(Atoms::pair(Atom::Save(slot), atom), self.start);
 					if !matches!(attempt!(self.sequence(output)), Token::CloseReference) {
 						return Err(self.error(ErrorKind::StackError));
 					}
 					output.emit(Atoms::pair(Atom::Seek(slot), Atom::Skip(width)), self.start);
+					// A retry in the body can be reached after later code fails, so its
+					// return value remains live. Otherwise this slot is dead at the seek.
+					if self.retry_generation == retry_generation {
+						let index = (-(slot as i16) - 1) as usize;
+						self.live_returns &= !(1u128 << index);
+					}
 					self.depth -= 1;
 				}
 				delimiter => {
@@ -593,17 +617,21 @@ impl<'a> Parser<'a> {
 
 	const fn group(&mut self, output: &mut Output<'_>) -> Result<(), PatternError> {
 		let save = self.next_save;
-		let mut high_water = save;
+		let mut sp = save;
+		let entry_returns = self.live_returns;
+		let mut merged_returns = entry_returns;
 		let mut fork = output.len;
 		let mut last_goto = None;
 		output.emit(Atoms { items: [Atom::Nop; 4], len: 4 }, self.start);
 		loop {
 			let delimiter = attempt!(self.sequence(output));
-			if high_water < self.next_save {
-				high_water = self.next_save;
+			if sp < self.next_save {
+				sp = self.next_save;
 			}
+			merged_returns |= self.live_returns;
 			match delimiter {
 				Token::Alternative => {
+					self.retry_generation += 1;
 					let goto = output.len;
 					// Unpatched gotos form a backwards list inside the output.
 					let link = match last_goto {
@@ -618,6 +646,7 @@ impl<'a> Parser<'a> {
 					fork = output.len;
 					output.emit(Atoms { items: [Atom::Nop; 4], len: 4 }, self.start);
 					self.next_save = save;
+					self.live_returns = entry_returns;
 				}
 				Token::CloseGroup => {
 					break;
@@ -627,7 +656,8 @@ impl<'a> Parser<'a> {
 				}
 			}
 		}
-		self.next_save = high_water;
+		self.next_save = sp;
+		self.live_returns = merged_returns;
 		if !output.atoms.is_empty() {
 			while let Some(goto) = last_goto {
 				let link = match output.atoms[goto + 3] {

@@ -100,9 +100,9 @@ fn lowering() {
 	assert_eq!(parse("i1[1]u1[2]i2[3]u2[4]i4[5]u4[6]=i1[1]=u1[2]=i2[3]=u2[4]=i4[5]=u4[6]").unwrap(), [
 		Save(0), ReadI8(1), ReadU8(2), ReadI16(3), ReadU16(4), ReadU32(5), ReadU32(6), TestI8(1), TestU8(2), TestI16(3), TestU16(4), TestU32(5), TestU32(6)]);
 	assert_eq!(parse("$ % * ${%{'}AA} *{}BB").unwrap(), [
-		Save(0), Jump4, Jump1, Ptr, Save(-1), Jump4, Save(-2), Jump1, Save(1), Seek(-2), Skip(1), Byte(0xaa), Seek(-1), Skip(4), Save(-3), Ptr, Seek(-3), Skip(0), Byte(0xbb)]);
+		Save(0), Jump4, Jump1, Ptr, Save(-1), Jump4, Save(-2), Jump1, Save(1), Seek(-2), Skip(1), Byte(0xaa), Seek(-1), Skip(4), Save(-1), Ptr, Seek(-1), Skip(0), Byte(0xbb)]);
 	assert_eq!(parse("rel32 rel8 ptr rel32{rel8{save}AA} ptr{}BB").unwrap(), [
-		Save(0), Jump4, Jump1, Ptr, Save(-1), Jump4, Save(-2), Jump1, Save(1), Seek(-2), Skip(1), Byte(0xaa), Seek(-1), Skip(4), Save(-3), Ptr, Seek(-3), Skip(0), Byte(0xbb)]);
+		Save(0), Jump4, Jump1, Ptr, Save(-1), Jump4, Save(-2), Jump1, Save(1), Seek(-2), Skip(1), Byte(0xaa), Seek(-1), Skip(4), Save(-1), Ptr, Seek(-1), Skip(0), Byte(0xbb)]);
 	assert_eq!(parse("save save[3] save").unwrap(), [
 		Save(0), Save(1), Save(3), Save(4)]);
 	assert_eq!(parse("check[0] save zero[7] save").unwrap(), [
@@ -171,6 +171,22 @@ fn branch_allocation() {
 	assert_eq!(stores, [Save(0), Save(3), ReadU32(1), Save(1), Save(2), Zero(6), Save(7)]);
 	assert!(parse("(save[127]|save[127])check[0]").is_ok());
 	assert_eq!(parse("(save[127]|)'").unwrap_err().kind, ErrorKind::SaveOverflow);
+}
+
+#[test]
+fn reference_return_allocation() {
+	let siblings = parse("${}${}${}").unwrap();
+	let saves: Pattern = siblings.into_iter().filter(|atom| matches!(atom, Save(_))).collect();
+	assert_eq!(saves, [Save(0), Save(-1), Save(-1), Save(-1)]);
+
+	let nested = parse("${${${}}}").unwrap();
+	let saves: Pattern = nested.into_iter().filter(|atom| matches!(atom, Save(_))).collect();
+	assert_eq!(saves, [Save(0), Save(-1), Save(-2), Save(-3)]);
+
+	// A later failure can retry the first body, so its return remains live.
+	let retried = parse("${(AA|BB)}${}").unwrap();
+	let saves: Pattern = retried.into_iter().filter(|atom| matches!(atom, Save(_))).collect();
+	assert_eq!(saves, [Save(0), Save(-1), Save(-2)]);
 }
 
 #[test]
@@ -251,8 +267,13 @@ fn limits() {
 	assert_eq!(parse(&saves).unwrap().last(), Some(&Save(127)));
 	assert_eq!(parse(&(saves + "'")).unwrap_err().kind, ErrorKind::SaveOverflow);
 	let returns = "${}".repeat(128);
-	assert!(parse(&returns).unwrap().contains(&Save(-128)));
-	assert_eq!(parse(&(returns + "${}")).unwrap_err().kind, ErrorKind::SaveOverflow);
+	assert_eq!(parse(&returns).unwrap().iter().filter(|atom| **atom == Save(-1)).count(), 128);
+	assert!(parse(&(returns + "${}")).is_ok());
+	let nested_returns = alloc::format!("{}{}", "${".repeat(128), "}".repeat(128));
+	assert!(parse(&nested_returns).unwrap().contains(&Save(-128)));
+	let retried_returns = "${scan(1)}".repeat(128);
+	assert!(parse(&retried_returns).unwrap().contains(&Save(-128)));
+	assert_eq!(parse(&(retried_returns + "${}")).unwrap_err().kind, ErrorKind::SaveOverflow);
 	let nested = alloc::format!("{}{}", "(".repeat(128), ")".repeat(128));
 	assert_eq!(parse_len(&nested), parse(&nested).unwrap().len());
 	assert_eq!(parse(&alloc::format!("({nested})")).unwrap_err().kind, ErrorKind::NestingOverflow);
