@@ -2,9 +2,10 @@ use pelite::{PeFile, Wrap, image};
 
 use super::*;
 
-const KEYWORDS: [&str; 11] = [
+const KEYWORDS: [&str; 12] = [
 	"all",
 	"dos",
+	"rich-structure",
 	"headers",
 	"sections",
 	"imports",
@@ -50,6 +51,9 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	})?);
 	if selected("dos") {
 		output.insert("dos", value(pe.dos_header())?);
+	}
+	if selected("rich-structure") {
+		output.insert("rich_structure", value_opt(pe.rich_structure())?);
 	}
 	if selected("headers") {
 		output.insert("headers", value(pe.headers())?);
