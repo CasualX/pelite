@@ -607,17 +607,25 @@ fn prefix_can_cross_a_backing_section_boundary() {
 }
 
 #[test]
-fn raw_padding_and_virtual_zero_fill_have_explicit_extents() {
+fn file_and_mapped_scans_share_initialized_extents_and_zero_fill_reads() {
 	let mut bytes = fixture(&[(0x1000, 0x400, 0x200, EXECUTE), (0x3000, 0x100, 0x200, EXECUTE), (0x5000, 0, 0x200, EXECUTE)]);
+	bytes[0x5ff] = 0x7f; // Last initialized byte in the first section.
+	bytes[0x680] = 0xaa; // Initialized data inside the second section.
 	bytes[0x780] = 0xaa; // Raw padding in the second section.
 	bytes[0x800] = 0xaa; // Raw bytes with zero VirtualSize.
 	let pe = PeFile::from_bytes(&bytes).unwrap();
-	assert!(collect(pe.scanner().within(0x1300..0x1400), &[Byte(0)]).unwrap().is_empty());
-	assert_eq!(collect(pe.scanner().sections(|_| true), &[Byte(0xaa)]).unwrap(), [0x3180, 0x5000]);
+	assert!(collect(pe.scanner().sections(|_| true).within(0x1300..0x1301), &[Byte(0)]).unwrap().is_empty());
+	assert_eq!(collect(pe.scanner().sections(|_| true), &[Byte(0xaa)]).unwrap(), [0x3080]);
+	assert_eq!(pe.derva_copy::<u32>(0x11ff).unwrap(), 0x7f);
+	assert_eq!(pe.derva_copy::<u32>(0x3100).unwrap(), 0);
+	assert_eq!(pe.deref_copy(super::Ptr::<u32>::from(pe.image_base() + 0x11ff)).unwrap(), 0x7f);
 	let view_bytes = mapped(&bytes);
 	let view = PeView::from_bytes(&view_bytes).unwrap();
-	assert_eq!(collect(view.scanner().within(0x1300..0x1301), &[Byte(0)]).unwrap(), [0x1300]);
-	assert!(collect(view.scanner().sections(|_| true), &[Byte(0xaa)]).unwrap().is_empty());
+	assert!(collect(view.scanner().sections(|_| true).within(0x1300..0x1301), &[Byte(0)]).unwrap().is_empty());
+	assert_eq!(collect(view.scanner().sections(|_| true), &[Byte(0xaa)]).unwrap(), [0x3080]);
+	assert_eq!(view.derva_copy::<u32>(0x11ff).unwrap(), 0x7f);
+	assert_eq!(view.derva_copy::<u32>(0x3100).unwrap(), 0);
+	assert_eq!(view.deref_copy(super::Ptr::<u32>::from(view.image_base() + 0x11ff)).unwrap(), 0x7f);
 }
 
 #[test]

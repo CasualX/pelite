@@ -36,9 +36,9 @@ impl<'a> PeFile<'a> {
 	}
 	/// Converts the file to section alignment.
 	pub fn to_view(self) -> Vec<u8> {
-		let (sizeof_headers, sizeof_image, section_alignment) = {
+		let (sizeof_headers, sizeof_image) = {
 			let optional_header = self.optional_header();
-			(optional_header.SizeOfHeaders, optional_header.SizeOfImage, optional_header.SectionAlignment)
+			(optional_header.SizeOfHeaders, optional_header.SizeOfImage)
 		};
 
 		// Zero fill the underlying image
@@ -55,11 +55,10 @@ impl<'a> PeFile<'a> {
 
 		// Copy the section file data
 		for section in self.section_headers() {
-			if !section_alignment.is_power_of_two() {
+			let copy_size = cmp::min(section.VirtualSize, section.SizeOfRawData);
+			if copy_size == 0 || section.VirtualAddress == 0 || section.PointerToRawData == 0 {
 				continue;
 			}
-			let virtual_size = section.VirtualSize.align_to(section_alignment);
-			let copy_size = cmp::min(virtual_size, section.SizeOfRawData);
 			let dest = vec.get_mut(section.VirtualAddress as usize..u32::wrapping_add(section.VirtualAddress, copy_size) as usize);
 			let src = image.get(section.PointerToRawData as usize..u32::wrapping_add(section.PointerToRawData, copy_size) as usize);
 			// Skip sections whose declared ranges do not fit...

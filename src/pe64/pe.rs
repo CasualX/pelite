@@ -310,7 +310,17 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 		}
 	}
 	/// Reads an unaligned pod `T`.
+	///
+	/// File-layout reads synthesize the zero-filled bytes of the mapped image,
+	/// including reads that cross raw-data and virtual-size boundaries.
 	fn derva_copy<T: Copy + Pod>(self, rva: Rva) -> Result<T> {
+		if self.layout() == PeLayout::File {
+			let mut value = mem::MaybeUninit::<T>::uninit();
+			let bytes = unsafe { slice::from_raw_parts_mut(value.as_mut_ptr() as *mut u8, mem::size_of::<T>()) };
+			unsafe { copy_file(self.image(), rva, bytes)? };
+			// Pod values accept every initialized byte pattern.
+			return Ok(unsafe { value.assume_init() });
+		}
 		let bytes = self.slice(rva, mem::size_of::<T>(), 1)?;
 		// This is safe as per Pod bound and min_size_of
 		unsafe {
@@ -397,13 +407,12 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 		}
 	}
 	/// Dereferences the pointer to an unaligned pod `T`.
+	///
+	/// File-layout reads synthesize the zero-filled bytes of the mapped image,
+	/// including reads that cross raw-data and virtual-size boundaries.
 	fn deref_copy<T: Copy + Pod>(self, ptr: Ptr<T>) -> Result<T> {
-		let bytes = self.read(ptr.into(), mem::size_of::<T>(), 1)?;
-		// This is safe as per Pod bound and min_size_of
-		unsafe {
-			let p = bytes.as_ptr() as *const T;
-			Ok(ptr::read_unaligned(p))
-		}
+		let rva = self.va_to_rva(ptr.into())?;
+		self.derva_copy(rva)
 	}
 	/// Reads and byte-wise copies the content to the given destination.
 	///
@@ -760,6 +769,35 @@ unsafe fn read_section(image: &[u8], image_base: Va, va: Va, min_size_of: usize,
 			}
 		}
 	}
+}}
+
+unsafe fn copy_file(image: &[u8], rva: Rva, dest: &mut [u8]) -> Result<()> { unsafe {
+	if rva == 0 {
+		return Err(Error::Null);
+	}
+	let len = Rva::try_from(dest.len()).map_err(|_| Error::Overflow)?;
+	let end = rva.checked_add(len).ok_or(Error::Overflow)?;
+	let optional_header = optional_header(image);
+	if end > optional_header.SizeOfImage {
+		return Err(Error::Bounds);
+	}
+	let sections = section_headers(image);
+	for (i, byte) in dest.iter_mut().enumerate() {
+		let address = rva + i as Rva;
+		let mut source = None;
+		for section in sections.iter().rev() {
+			let offset = address.wrapping_sub(section.VirtualAddress);
+			let copy_size = cmp::min(section.VirtualSize, section.SizeOfRawData);
+			if offset < copy_size && section.VirtualAddress != 0 && section.PointerToRawData != 0 {
+				source = section.PointerToRawData.checked_add(offset).and_then(|offset| image.get(offset as usize)).copied();
+				if source.is_some() {
+					break;
+				}
+			}
+		}
+		*byte = source.or_else(|| (address < optional_header.SizeOfHeaders).then(|| image[address as usize])).unwrap_or(0);
+	}
+	Ok(())
 }}
 
 unsafe fn range_file(image: &[u8], rva: Rva, min_size_of: usize) -> Result<&[u8]> { unsafe {

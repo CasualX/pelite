@@ -94,12 +94,13 @@ impl<'a, P: Pe<'a>> Scanner<P> {
 
 /// Candidate locations for a PE pattern search.
 ///
-/// - Sections are visited in section-table order, with increasing RVAs within each section.
-/// - File searches use raw section bytes (including padding), without synthesizing zero-fill.
-/// - Mapped searches use the declared virtual section bytes.
-/// - Headers and gaps are not candidate locations.
-/// - Pattern reads and references retain access to the whole PE, even outside the selection or `within` range.
-/// - Invalid section extents and inaccessible section contents are skipped.
+/// Sections are visited in section-table order, with increasing RVAs within each
+/// section. Both file and mapped searches use the initialized portion of each
+/// section. Pattern reads can extend into zero-fill beyond those candidate starts.
+/// Headers and gaps are not candidate locations. Pattern reads and references
+/// retain access to the whole PE, even outside the selection or `within` range.
+///
+/// Invalid section extents and inaccessible section contents are skipped.
 #[derive(Clone)]
 pub struct ScanSections<'a, P, F = fn(&SectionHeader) -> bool> {
 	scanner: Scanner<P>,
@@ -210,18 +211,12 @@ impl<'a, 'pat, P: Pe<'a>, F: FnMut(&SectionHeader) -> bool> ScannerMatches<'a, '
 				if !(self.selection.filter)(section) {
 					continue;
 				}
-				let size = match pe.layout() {
-					PeLayout::File => section.SizeOfRawData,
-					PeLayout::Section => section.VirtualSize,
-				};
+				let size = cmp::min(section.VirtualSize, section.SizeOfRawData);
 				if size == 0 {
 					continue;
 				}
-				let Ok(bytes) = pe.get_section_bytes(section) else {
-					continue;
-				};
 				let cursor = cmp::max(section.VirtualAddress, self.selection.range.start);
-				let end = cmp::min(section.VirtualAddress.wrapping_add(bytes.len() as u32), self.selection.range.end);
+				let end = cmp::min(section.VirtualAddress.wrapping_add(size), self.selection.range.end);
 				if cursor >= end {
 					continue;
 				}
@@ -237,7 +232,7 @@ impl<'a, 'pat, P: Pe<'a>, F: FnMut(&SectionHeader) -> bool> ScannerMatches<'a, '
 			while self.cursor < self.end {
 				let cursor = self.cursor;
 				let offset = (cursor - section.VirtualAddress) as usize;
-				let available = &bytes[offset..];
+				let available = bytes.get(offset..).unwrap_or(&[]);
 				// TODO: Benchmark a memchr fast path for single-byte prefixes that avoids the jump table.
 				let (candidate, jump) = if prefix_len != 0 && available.len() >= prefix_len {
 					(available[..prefix_len] == *prefix, jumps[available[prefix_len - 1] as usize] as u32)
