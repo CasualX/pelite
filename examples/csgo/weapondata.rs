@@ -8,7 +8,7 @@ use pelite;
 use pelite::pattern as pat;
 use pelite::pe32::*;
 
-use lde;
+use iced_x86::{Code, Decoder, DecoderOptions, OpKind, Register};
 
 //----------------------------------------------------------------
 
@@ -77,11 +77,17 @@ fn analyse<'a>(client: PeFile<'a>, code_rva: Rva) -> pelite::Result<WeaponInfo<'
 	const GET_PAT: &[pat::Atom] = pat!("E8$ A1???? A801 75? 83C801 C705????*'");
 	let mut get_name = None;
 
-	for (opcode, va) in lde::X86.iter(code, code_va) {
+	let mut decoder = Decoder::with_ip(32, code, code_va.into(), DecoderOptions::NONE);
+	while decoder.can_decode() {
+		let instruction = decoder.decode();
+		if instruction.is_invalid() {
+			break;
+		}
+
 		// Find functions which call `CEconItemSchema__GetAttributeDefinition`
-		if opcode.starts_with(&[0xE8]) {
+		if instruction.code() == Code::Call_rel32_32 {
 			let mut get_m = [0; 4];
-			if client.scanner().exec(client.va_to_rva(va).unwrap(), GET_PAT, &mut get_m) {
+			if client.scanner().exec(client.va_to_rva(instruction.ip() as Va).unwrap(), GET_PAT, &mut get_m) {
 				let name = client.derva_c_str(get_m[1])?.to_str().unwrap();
 				if let Some(previous_name) = get_name {
 					eprintln!("missing offset \"{}\"", previous_name);
@@ -90,8 +96,14 @@ fn analyse<'a>(client: PeFile<'a>, code_rva: Rva) -> pelite::Result<WeaponInfo<'
 			}
 		}
 		// movss dword ptr [esi + dword offset], xmm0
-		else if opcode.starts_with(&[0xF3, 0x0F, 0x11, 0x86]) {
-			let offset = opcode.read(4);
+		else if instruction.code() == Code::Movss_xmmm32_xmm
+			&& instruction.op0_kind() == OpKind::Memory
+			&& instruction.memory_base() == Register::ESI
+			&& instruction.memory_index() == Register::None
+			&& instruction.memory_displ_size() == 4
+			&& instruction.op1_register() == Register::XMM0
+		{
+			let offset = instruction.memory_displacement32() as i32;
 			if let Some(name) = get_name {
 				members.push(Member(name, "Float", offset));
 				get_name = None;
@@ -101,9 +113,13 @@ fn analyse<'a>(client: PeFile<'a>, code_rva: Rva) -> pelite::Result<WeaponInfo<'
 			}
 		}
 		// mov dword ptr [esi + dword offset], reg
-		// where reg is eax, ecx or ebx
-		else if opcode.starts_with(&[0x89]) && opcode[1] & 0b11_000_111 == 0b10_000_110 {
-			let offset = opcode.read(2);
+		else if instruction.code() == Code::Mov_rm32_r32
+			&& instruction.op0_kind() == OpKind::Memory
+			&& instruction.memory_base() == Register::ESI
+			&& instruction.memory_index() == Register::None
+			&& instruction.memory_displ_size() == 4
+		{
+			let offset = instruction.memory_displacement32() as i32;
 			if let Some(name) = get_name {
 				members.push(Member(name, "Int", offset));
 				get_name = None;
@@ -113,8 +129,14 @@ fn analyse<'a>(client: PeFile<'a>, code_rva: Rva) -> pelite::Result<WeaponInfo<'
 			}
 		}
 		// mov byte ptr [esi + dword offset], al
-		else if opcode.starts_with(&[0x88, 0x86]) {
-			let offset = opcode.read(2);
+		else if instruction.code() == Code::Mov_rm8_r8
+			&& instruction.op0_kind() == OpKind::Memory
+			&& instruction.memory_base() == Register::ESI
+			&& instruction.memory_index() == Register::None
+			&& instruction.memory_displ_size() == 4
+			&& instruction.op1_register() == Register::AL
+		{
+			let offset = instruction.memory_displacement32() as i32;
 			if let Some(name) = get_name {
 				members.push(Member(name, "Bool", offset));
 				get_name = None;
@@ -124,8 +146,14 @@ fn analyse<'a>(client: PeFile<'a>, code_rva: Rva) -> pelite::Result<WeaponInfo<'
 			}
 		}
 		// mov dword ptr [esi + byte offset], eax
-		else if opcode.starts_with(&[0x89, 0x46]) {
-			let offset = opcode.read::<i8>(2);
+		else if instruction.code() == Code::Mov_rm32_r32
+			&& instruction.op0_kind() == OpKind::Memory
+			&& instruction.memory_base() == Register::ESI
+			&& instruction.memory_index() == Register::None
+			&& instruction.memory_displ_size() == 1
+			&& instruction.op1_register() == Register::EAX
+		{
+			let offset = instruction.memory_displacement32() as i8;
 			if let Some(name) = get_name {
 				members.push(Member(name, "Int", offset as i32));
 				get_name = None;
@@ -135,7 +163,7 @@ fn analyse<'a>(client: PeFile<'a>, code_rva: Rva) -> pelite::Result<WeaponInfo<'
 			}
 		}
 		// End of the function
-		else if opcode.as_ref() == &[0xC3] {
+		else if instruction.code() == Code::Retnd {
 			break;
 		}
 	}

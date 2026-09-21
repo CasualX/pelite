@@ -79,6 +79,8 @@ impl<'a, P: Pe<'a>> Scanner<P> {
 	/// Supply at least [`save_len(pat)`](pat::save_len) slots for the given pattern.
 	///
 	/// If this returns `false`, the contents of the save array are unspecified.
+	#[inline]
+	#[track_caller]
 	pub fn exec(&self, cursor: Rva, pat: &[pat::Atom], save: &mut [Rva]) -> bool {
 		assert!(
 			save.len() > 255 || save.len() >= pat::save_len(pat),
@@ -186,6 +188,8 @@ impl<'a, 'pat, P: Pe<'a>, F: FnMut(&SectionHeader) -> bool> ScannerMatches<'a, '
 	/// Supply at least `pattern::save_len(pattern)` slots. On `None`, the buffer
 	/// contents are unspecified. Invalid section byte extents are skipped, even if
 	/// the section was selected.
+	#[inline]
+	#[track_caller]
 	pub fn next(&mut self, save: &mut [Rva]) -> Option<Rva> {
 		assert!(
 			save.len() > 255 || save.len() >= pat::save_len(self.pat),

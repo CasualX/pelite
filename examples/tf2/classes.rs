@@ -40,7 +40,7 @@ pub struct Class<'a> {
 }
 
 pub fn classes<'a>(client: PeFile<'a>) -> pelite::Result<Vec<Class<'a>>> {
-	let mut save = [0; 8];
+	let mut save = [0; 12];
 	let mut list = Vec::new();
 
 	// The ClientClasses aren't fully constructed yet, find these constructors

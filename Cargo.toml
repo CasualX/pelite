@@ -47,6 +47,6 @@ libc = { version = "0.2.189", optional = true }
 windows-sys = { version = ">= 0.59.0, < 0.62", optional = true, features = ["Win32_Storage_FileSystem", "Win32_System_Memory", "Win32_Security"] }
 
 [dev-dependencies]
-lde = "0.3"
+iced-x86 = { version = "1.21.0", default-features = false, features = ["decoder", "std"] }
 format_xml = "0.3"
 serde_json = "1.0"

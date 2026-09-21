@@ -34,7 +34,7 @@ fn main() {
 	// Start by opening relevant tf2 binaries
 	let engine_dll          = open(tf2_path, "bin/engine.dll").unwrap();
 	let inputsystem_dll     = open(tf2_path, "bin/inputsystem.dll").unwrap();
-	let materialsystem_dll  = open(tf2_path, "bin/materialsystem.dll").unwrap();
+	let materialsystem_dll  = open(tf2_path, "bin/MaterialSystem.dll").unwrap();
 	let shaderapidx9_dll    = open(tf2_path, "bin/shaderapidx9.dll").unwrap();
 	let vgui2_dll           = open(tf2_path, "bin/vgui2.dll").unwrap();
 	let vguimatsurface_dll  = open(tf2_path, "bin/vguimatsurface.dll").unwrap();
