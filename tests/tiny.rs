@@ -48,8 +48,12 @@ fn tiny_c_1024() {
 	assert_eq!(sections[0].Characteristics, 0x60000020);
 
 	let view = file.to_view();
+	assert_eq!((view.as_ref() as &[u8]).as_ptr() as usize % 16, 0);
 	assert_eq!(&view[0x1000..0x1200], &file.image()[0x200..0x400]);
 	assert!(view[0x1200..].iter().all(|&byte| byte == 0));
+	let rebuilt = PeView::from_bytes(&view).unwrap().to_file();
+	assert_eq!((rebuilt.as_ref() as &[u8]).as_ptr() as usize % 16, 0);
+	assert_eq!(rebuilt.as_ref() as &[u8], &file.image()[..1024]);
 }
 
 /*

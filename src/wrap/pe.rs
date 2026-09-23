@@ -101,6 +101,18 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 
 	//----------------------------------------------------------------
 
+	pub fn offset_of<T: ?Sized>(self, symbol: &'a T) -> Option<usize> {
+		let image = self.image();
+		let base = image.as_ptr().addr();
+		let symbol = (symbol as *const T).addr();
+
+		if symbol < base || symbol > base + image.len() {
+			return None;
+		}
+
+		Some(symbol - base)
+	}
+
 	#[inline]
 	pub fn slice(&self, rva: u32, min_size: usize, align: usize) -> Result<&'a [u8]> {
 		match self {

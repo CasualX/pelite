@@ -35,32 +35,24 @@ impl<'a> PeFile<'a> {
 		Ok(PeFile { image })
 	}
 	/// Converts the file to section alignment.
-	pub fn to_view(self) -> Vec<u8> {
-		let (sizeof_headers, sizeof_image, section_alignment) = {
-			let optional_header = self.optional_header();
-			(optional_header.SizeOfHeaders, optional_header.SizeOfImage, optional_header.SectionAlignment)
-		};
+	pub fn to_view(self) -> crate::PeMemory {
+		let opt = self.optional_header();
 
 		// Zero fill the underlying image
-		let mut vec = vec![0u8; sizeof_image as usize];
+		let mut buf = crate::PeMemory::zeroed(opt.SizeOfImage as usize);
 
 		// Start by copying the headers
 		let image = self.image();
-		unsafe {
-			// Validated by constructor
-			let dest_headers = vec.get_unchecked_mut(..sizeof_headers as usize);
-			let src_headers = image.get_unchecked(..sizeof_headers as usize);
-			dest_headers.copy_from_slice(src_headers);
-		}
+		buf.view_mut().write(0, &image[..opt.SizeOfHeaders as usize]);
 
 		// Copy the section file data
 		for section in self.section_headers() {
-			if !section_alignment.is_power_of_two() {
+			if !opt.SectionAlignment.is_power_of_two() {
 				continue;
 			}
-			let virtual_size = section.VirtualSize.align_to(section_alignment);
+			let virtual_size = section.VirtualSize.align_to(opt.SectionAlignment);
 			let copy_size = cmp::min(virtual_size, section.SizeOfRawData);
-			let dest = vec.get_mut(section.VirtualAddress as usize..u32::wrapping_add(section.VirtualAddress, copy_size) as usize);
+			let dest = buf.get_mut(section.VirtualAddress as usize..u32::wrapping_add(section.VirtualAddress, copy_size) as usize);
 			let src = image.get(section.PointerToRawData as usize..u32::wrapping_add(section.PointerToRawData, copy_size) as usize);
 			// Skip sections whose declared ranges do not fit...
 			if let (Some(dest), Some(src)) = (dest, src) {
@@ -68,7 +60,7 @@ impl<'a> PeFile<'a> {
 			}
 		}
 
-		vec
+		buf
 	}
 }
 
