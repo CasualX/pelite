@@ -228,19 +228,26 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 
 	/// Returns the byte offset of `symbol` from the start of the image.
 	///
-	/// Returns `None` if its address is before the image or beyond its end.
-	/// An address at the end returns the image length. Only the starting
-	/// address is checked; the size of `symbol` is not considered.
-	fn offset_of<T: ?Sized>(self, symbol: &'a T) -> Option<usize> {
+	/// `symbol` must refer to data within `self.image()`.
+	/// Be careful not to pass a reference to a copy of that data, such as one stored in a temporary buffer.
+	///
+	/// # Panics
+	///
+	/// Panics if `symbol` does not refer to data within this image.
+	/// Rust's lifetime system cannot express this relationship, so this requirement is enforced at runtime.
+	#[inline]
+	#[track_caller]
+	fn offset_of<T: Pod + ?Sized>(self, symbol: &'a T) -> usize {
 		let image = self.image();
 		let base = image.as_ptr().addr();
 		let symbol = (symbol as *const T).addr();
 
-		if symbol < base || symbol > base + image.len() {
-			return None;
-		}
+		assert!(
+			symbol >= base && symbol <= base + image.len(),
+			"symbol does not refer to data within this image",
+		);
 
-		Some(symbol - base)
+		symbol - base
 	}
 
 	//----------------------------------------------------------------

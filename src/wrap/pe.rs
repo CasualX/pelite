@@ -101,16 +101,19 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 
 	//----------------------------------------------------------------
 
-	pub fn offset_of<T: ?Sized>(self, symbol: &'a T) -> Option<usize> {
+	#[inline]
+	#[track_caller]
+	pub fn offset_of<T: Pod + ?Sized>(self, symbol: &'a T) -> usize {
 		let image = self.image();
 		let base = image.as_ptr().addr();
 		let symbol = (symbol as *const T).addr();
 
-		if symbol < base || symbol > base + image.len() {
-			return None;
-		}
+		assert!(
+			symbol >= base && symbol <= base + image.len(),
+			"symbol does not refer to data within this image",
+		);
 
-		Some(symbol - base)
+		symbol - base
 	}
 
 	#[inline]

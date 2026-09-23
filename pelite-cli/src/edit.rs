@@ -1,5 +1,3 @@
-use pelite::{PeMemory, PeFile, image};
-
 use super::*;
 
 pub fn command() -> clap::Command {
@@ -19,7 +17,7 @@ pub fn command() -> clap::Command {
 
 pub fn run(matches: &clap::ArgMatches) -> Result {
 	let path = matches.get_one::<PathBuf>("file").expect("required by clap");
-	let mut bytes = PeMemory::open(path)?;
+	let mut bytes = pelite::PeMemory::open(path)?;
 
 	if matches.get_flag("image") {
 		convert_image(&mut bytes)?;
@@ -32,28 +30,47 @@ pub fn run(matches: &clap::ArgMatches) -> Result {
 	Ok(())
 }
 
-fn convert_image(bytes: &mut PeMemory) -> Result {
-	let pe = PeFile::from_bytes(&*bytes)?;
-	let mut sections = pe.section_headers().iter().map(|section| **section).collect::<Vec<_>>();
-	let sections = sections.as_mut_slice();
+fn align_to(value: u32, align: u32) -> u32 {
+	value.wrapping_add(align - 1) & (align - 1)
+}
 
-	for section in &mut *sections {
-		section.SizeOfRawData = section.VirtualSize;
+fn convert_image(bytes: &mut pelite::PeMemory) -> Result {
+	let pe = pelite::PeFile::from_bytes(&*bytes)?;
+	let pe_sections = pe.section_headers().as_slice();
+	let mut sections_mut = pe_sections.iter().map(|section| **section).collect::<Vec<_>>();
+	let sections_mut = sections_mut.as_mut_slice();
+
+	let file_alignment = match pe.optional_header() {
+		pelite::Wrap::T32(h) => h.FileAlignment,
+		pelite::Wrap::T64(h) => h.FileAlignment,
+	};
+	eprintln!("FileAlignment={file_alignment:#x}");
+	if !file_alignment.is_power_of_two() {
+		return Err(err("invalid file alignment"));
+	}
+
+	for (index, section) in sections_mut.iter_mut().enumerate() {
+		let raw_size = align_to(section.VirtualSize, file_alignment);
+		let end = section.VirtualAddress as usize + raw_size as usize;
+		if end > bytes.len() {
+			eprintln!("Invalid: Name={:?} VirtualAddress={:#x}, VirtualSize={:#x}", pe_sections[index].name(), section.VirtualAddress, section.VirtualSize)
+		}
+		section.SizeOfRawData = raw_size;
 		section.PointerToRawData = section.VirtualAddress;
 	}
 
-	let offset = pe.offset_of(sections).unwrap();
-	bytes.view_mut().write(offset, sections);
+	let offset = pe.offset_of(pe_sections);
+	bytes.view_mut().write(offset, sections_mut);
 	Ok(())
 }
 
-fn fix_baserelocs(bytes: &mut PeMemory) -> Result {
-	let pe = PeFile::from_bytes(&bytes)?;
+fn fix_baserelocs(bytes: &mut pelite::PeMemory) -> Result {
+	let pe = pelite::PeFile::from_bytes(&bytes)?;
 
 	let section = pe.section_headers().by_name(".reloc")
 		.ok_or_else(|| err("no .reloc section found"))?;
 
-	let directory = pe.data_directory().get(image::IMAGE_DIRECTORY_ENTRY_BASERELOC)
+	let directory = pe.data_directory().get(pelite::image::IMAGE_DIRECTORY_ENTRY_BASERELOC)
 		.ok_or_else(|| err("base relocation directory entry is missing"))?;
 
 	let size = if section.VirtualSize != 0 { section.VirtualSize } else { section.SizeOfRawData };
@@ -64,8 +81,7 @@ fn fix_baserelocs(bytes: &mut PeMemory) -> Result {
 	pe.get_section_bytes(section)
 		.map_err(|_| err(".reloc section data is outside the file"))?;
 
-	let offset = pe.offset_of(directory)
-		.ok_or_else(|| err("invalid offset"))?;
+	let offset = pe.offset_of(directory);
 	let reloc_dir = pelite::image::IMAGE_DATA_DIRECTORY {
 		VirtualAddress: section.VirtualAddress,
 		Size: size,
