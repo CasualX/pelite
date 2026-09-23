@@ -7,6 +7,18 @@ const FILE_NAME: &str = "demo/Demo64.dll";
 //----------------------------------------------------------------
 
 #[test]
+fn conversions_use_aligned_buffers() {
+	let file_map = FileMap::open(FILE_NAME).unwrap();
+	let file = PeFile::from_bytes(&file_map).unwrap();
+	let view = file.to_view();
+	assert_eq!((view.as_ref() as &[u8]).as_ptr() as usize % 16, 0);
+	let mapped = PeView::from_bytes(&view).unwrap();
+	let rebuilt = mapped.to_file();
+	assert_eq!((rebuilt.as_ref() as &[u8]).as_ptr() as usize % 16, 0);
+	PeFile::from_bytes(&rebuilt).unwrap();
+}
+
+#[test]
 fn slice_edges() {
 	let file_map = FileMap::open(FILE_NAME).unwrap();
 	let file = PeFile::from_bytes(&file_map).unwrap();

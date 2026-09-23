@@ -226,6 +226,23 @@ pub unsafe trait Pe<'a>: PeObject<'a> + Copy {
 		}
 	}
 
+	/// Returns the byte offset of `symbol` from the start of the image.
+	///
+	/// Returns `None` if its address is before the image or beyond its end.
+	/// An address at the end returns the image length. Only the starting
+	/// address is checked; the size of `symbol` is not considered.
+	fn offset_of<T: ?Sized>(self, symbol: &'a T) -> Option<usize> {
+		let image = self.image();
+		let base = image.as_ptr().addr();
+		let symbol = (symbol as *const T).addr();
+
+		if symbol < base || symbol > base + image.len() {
+			return None;
+		}
+
+		Some(symbol - base)
+	}
+
 	//----------------------------------------------------------------
 
 	/// Slices the image at the specified rva.

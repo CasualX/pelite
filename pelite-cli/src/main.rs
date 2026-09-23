@@ -5,6 +5,7 @@ use std::{error, fmt, fs, num, process, result};
 use std::io::{self, BufRead, IsTerminal, Write};
 
 mod disasm;
+mod edit;
 mod findsig;
 mod hexdump;
 mod imphash;
@@ -70,6 +71,7 @@ fn cli() -> clap::Command {
 			.global(true)
 			.help("Select the output format"))
 		.subcommand(inspect::command())
+		.subcommand(edit::command())
 		.subcommand(summary::command())
 		.subcommand(resources::command())
 		.subcommand(disasm::command())
@@ -101,6 +103,7 @@ fn run() -> Result {
 	let format = OutputFormat::from_matches(&matches);
 	match matches.subcommand() {
 		Some(("inspect", matches)) => inspect::run(matches, format),
+		Some(("edit", matches)) => edit::run(matches),
 		Some(("summary", matches)) => summary::run(matches, format),
 		Some(("resources", matches)) => resources::run(matches, format),
 		Some(("disasm", matches)) => disasm::run(matches, format),

@@ -115,7 +115,6 @@ fn image_base() {
 ```
 */
 
-use alloc::{vec, vec::Vec};
 use core::{cmp, fmt, iter, mem, ops, ptr, slice};
 
 use crate::pattern as pat;

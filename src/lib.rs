@@ -58,6 +58,9 @@ mod mmap;
 #[allow(unused_imports)]
 pub use self::mmap::*;
 
+mod buffer;
+pub use self::buffer::PeMemory;
+
 pub mod pe32;
 pub mod pe64;
 pub(crate) mod wrap;
