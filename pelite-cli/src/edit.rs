@@ -8,6 +8,17 @@ pub fn command() -> clap::Command {
 			.long("fix-baserelocs")
 			.action(clap::ArgAction::SetTrue)
 			.help("Set the base relocation directory to the .reloc section"))
+		.arg(clap::Arg::new("fix-imports")
+			.long("fix-imports")
+			.value_name("MAP")
+			.value_parser(clap::value_parser!(PathBuf))
+			.long_help("Rebuild imports using a tab-separated address map. Each line is either 0xBASE<TAB>DLL or 0xADDRESS<TAB>DLL<TAB>SYMBOL. Use #ORDINAL for ordinal imports; blank lines and lines starting with # are ignored."))
+		.arg(clap::Arg::new("dll-dir")
+			.long("dll-dir")
+			.value_name("DIR")
+			.action(clap::ArgAction::Append)
+			.value_parser(clap::value_parser!(PathBuf))
+			.help("Search this folder for DLL filenames in the map"))
 		.arg(clap::Arg::new("image")
 			.long("image")
 			.visible_alias("raw")
@@ -24,6 +35,11 @@ pub fn run(matches: &clap::ArgMatches) -> Result {
 	}
 	if matches.get_flag("fix-baserelocs") {
 		fix_baserelocs(&mut bytes)?;
+	}
+	if let Some(map) = matches.get_one::<PathBuf>("fix-imports") {
+		let dirs = matches.get_many::<PathBuf>("dll-dir")
+			.map(|items| items.cloned().collect::<Vec<_>>()).unwrap_or_default();
+		fix_imports(&mut bytes, map, &dirs)?;
 	}
 
 	fs::write(path, &bytes)?;
@@ -88,5 +104,29 @@ fn fix_baserelocs(bytes: &mut pelite::PeMemory) -> Result {
 	};
 
 	bytes.view_mut().write(offset, &reloc_dir);
+	Ok(())
+}
+
+fn fix_imports(bytes: &mut pelite::PeMemory, map_path: &Path, dirs: &[PathBuf]) -> Result {
+	let map = import_map::read(map_path, dirs)?;
+	let runs = pelite::import_rebuild::find_runs(bytes, &map)?;
+	if runs.is_empty() {
+		return Err(err("no null-terminated import pointer runs found"));
+	}
+
+	let pe = pelite::PeFile::from_bytes(&*bytes)?;
+	let width = match pe {
+		pelite::Wrap::T32(_) => 4,
+		pelite::Wrap::T64(_) => 8,
+	};
+
+	let directory = pe.data_directory().get(pelite::image::IMAGE_DIRECTORY_ENTRY_IMPORT)
+		.ok_or_else(|| err("import directory entry is missing"))?;
+
+	let old = if directory.VirtualAddress == 0 { &[][..] } else { pe.imports()?.image() };
+	let base = pelite::import_rebuild::section_rva(bytes)?;
+	let built = pelite::import_rebuild::build(base, width, old, &runs)?;
+	pelite::import_rebuild::install(bytes, built)?;
+	println!("rebuilt {} import run(s)", runs.len());
 	Ok(())
 }

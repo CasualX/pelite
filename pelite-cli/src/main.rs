@@ -9,6 +9,7 @@ mod edit;
 mod findsig;
 mod hexdump;
 mod imphash;
+mod import_map;
 mod inspect;
 mod markov;
 mod module_def;
