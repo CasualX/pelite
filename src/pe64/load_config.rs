@@ -17,7 +17,7 @@ use super::*;
 /// 	let version = load_config.version();
 ///
 /// 	// Read a field which is only present in newer directory revisions
-/// 	let guard_flags = load_config.get(image::IMAGE_LOAD_CONFIG_DIRECTORY::GUARD_FLAGS);
+/// 	let guard_flags = load_config.get(dataview::Field!(image::IMAGE_LOAD_CONFIG_DIRECTORY.GuardFlags));
 ///
 /// 	// Access security-related fields when present
 /// 	let security_cookie = load_config.security_cookie()?;
@@ -65,11 +65,11 @@ impl<'a, P: Pe<'a>> LoadConfigDirectory<'a, P> {
 	}
 	/// Returns the time and date stamp, or zero if the field is absent.
 	pub fn time_date_stamp(&self) -> u32 {
-		self.get(IMAGE_LOAD_CONFIG_DIRECTORY::TIME_DATE_STAMP).unwrap_or_default()
+		self.get(dataview::Field!(IMAGE_LOAD_CONFIG_DIRECTORY.TimeDateStamp)).unwrap_or_default()
 	}
 	/// Returns the load config version, or version `0.0` if the field is absent.
 	pub fn version(&self) -> IMAGE_VERSION<u16> {
-		self.get(IMAGE_LOAD_CONFIG_DIRECTORY::VERSION).unwrap_or(IMAGE_VERSION { Major: 0, Minor: 0 })
+		self.get(dataview::Field!(IMAGE_LOAD_CONFIG_DIRECTORY.Version)).unwrap_or(IMAGE_VERSION { Major: 0, Minor: 0 })
 	}
 	/// Copies the load config directory into the latest known image structure.
 	///
@@ -85,23 +85,21 @@ impl<'a, P: Pe<'a>> LoadConfigDirectory<'a, P> {
 	}
 	/// Copies a field from the load config directory if it is present in this revision of the structure.
 	#[inline]
-	pub fn get<T: Pod>(&self, field: Field<IMAGE_LOAD_CONFIG_DIRECTORY, T>) -> Option<T> {
-		let offset = field.offset();
-		let end = offset.checked_add(mem::size_of::<T>())?;
-		let bytes = self.image.get(offset..end)?;
+	pub fn get<T: Pod>(&self, field: dataview::Field<IMAGE_LOAD_CONFIG_DIRECTORY, T>) -> Option<T> {
+		let bytes = self.image.get(field.span())?;
 		// Safe because the bounds were checked above and `Pod` permits reading any initialized byte pattern as `T`.
 		// Copying also avoids imposing the field's natural alignment on the image.
 		Some(unsafe { ptr::read_unaligned(bytes.as_ptr().cast()) })
 	}
 	/// Gets the default security cookie for the image.
 	pub fn security_cookie(&self) -> Result<&'a u32> {
-		let security_cookie = self.get(IMAGE_LOAD_CONFIG_DIRECTORY::SECURITY_COOKIE).ok_or(Error::Bounds)?;
+		let security_cookie = self.get(dataview::Field!(IMAGE_LOAD_CONFIG_DIRECTORY.SecurityCookie)).ok_or(Error::Bounds)?;
 		self.pe.deref(Va::from(security_cookie).into())
 	}
 	/// Gets the structured exception handler table.
 	pub fn se_handler_table(&self) -> Result<&'a [Va]> {
-		let table = self.get(IMAGE_LOAD_CONFIG_DIRECTORY::SE_HANDLER_TABLE).ok_or(Error::Bounds)?;
-		let count = self.get(IMAGE_LOAD_CONFIG_DIRECTORY::SE_HANDLER_COUNT).ok_or(Error::Bounds)?;
+		let table = self.get(dataview::Field!(IMAGE_LOAD_CONFIG_DIRECTORY.SEHandlerTable)).ok_or(Error::Bounds)?;
+		let count = self.get(dataview::Field!(IMAGE_LOAD_CONFIG_DIRECTORY.SEHandlerCount)).ok_or(Error::Bounds)?;
 		self.pe.deref_slice(Va::from(table).into(), Va::from(count) as usize)
 	}
 }
@@ -111,7 +109,7 @@ impl<'a, P: Pe<'a>> fmt::Debug for LoadConfigDirectory<'a, P> {
 			.field("size", &self.size())
 			.field("time_date_stamp", &self.time_date_stamp())
 			.field("version", &self.version())
-			.field("guard_flags", &format_args!("{:x?}", self.get(IMAGE_LOAD_CONFIG_DIRECTORY::GUARD_FLAGS)))
+			.field("guard_flags", &format_args!("{:x?}", self.get(dataview::Field!(IMAGE_LOAD_CONFIG_DIRECTORY.GuardFlags))))
 			.field("security_cookie", &format_args!("{:x?}", self.security_cookie()))
 			.field("se_handler_table.len", &format_args!("{:?}", self.se_handler_table().map(|seh| seh.len())))
 			.finish()
@@ -139,7 +137,7 @@ pub(crate) fn test_load_config<'a, P: Pe<'a>>(pe: P) -> Result<()> {
 	let _size = load_config.size();
 	let _time_date_stamp = load_config.time_date_stamp();
 	let _version = load_config.version();
-	let _guard_flags = load_config.get(IMAGE_LOAD_CONFIG_DIRECTORY::GUARD_FLAGS);
+	let _guard_flags = load_config.get(dataview::Field!(IMAGE_LOAD_CONFIG_DIRECTORY.GuardFlags));
 	let _security_cookie = load_config.security_cookie();
 	let _se_handler_table = load_config.se_handler_table();
 	Ok(())
