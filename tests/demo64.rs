@@ -258,10 +258,10 @@ fn load_config() {
 	assert_eq!(image.UmaFunctionPointers.get(), 0);
 
 	use pelite::pe64::image::IMAGE_LOAD_CONFIG_DIRECTORY;
-	assert_eq!(load_config.get(IMAGE_LOAD_CONFIG_DIRECTORY::SIZE), Some(0x70));
-	assert_eq!(load_config.get(IMAGE_LOAD_CONFIG_DIRECTORY::SECURITY_COOKIE).map(|value| value.get()), Some(0x180005000));
-	assert_eq!(load_config.get(IMAGE_LOAD_CONFIG_DIRECTORY::GUARD_FLAGS), None);
-	assert_eq!(load_config.get(IMAGE_LOAD_CONFIG_DIRECTORY::HOT_PATCH_TABLE_OFFSET), None);
+	assert_eq!(load_config.get(dataview::Field!(IMAGE_LOAD_CONFIG_DIRECTORY.Size)), Some(0x70));
+	assert_eq!(load_config.get(dataview::Field!(IMAGE_LOAD_CONFIG_DIRECTORY.SecurityCookie)).map(|value| value.get()), Some(0x180005000));
+	assert_eq!(load_config.get(dataview::Field!(IMAGE_LOAD_CONFIG_DIRECTORY.GuardFlags)), None);
+	assert_eq!(load_config.get(dataview::Field!(IMAGE_LOAD_CONFIG_DIRECTORY.HotPatchTableOffset)), None);
 }
 
 //----------------------------------------------------------------
