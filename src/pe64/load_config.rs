@@ -1,5 +1,21 @@
 use super::*;
 
+impl<'a> PeFile<'a> {
+	#[doc = include_str!("../docs/load_config.md")]
+	#[inline]
+	pub fn load_config(self) -> Result<LoadConfigDirectory<'a, Self>> {
+		LoadConfigDirectory::try_from(self)
+	}
+}
+
+impl<'a> PeView<'a> {
+	#[doc = include_str!("../docs/load_config.md")]
+	#[inline]
+	pub fn load_config(self) -> Result<LoadConfigDirectory<'a, Self>> {
+		LoadConfigDirectory::try_from(self)
+	}
+}
+
 /// Load Config Directory.
 ///
 /// # Examples
@@ -31,7 +47,7 @@ pub struct LoadConfigDirectory<'a, P> {
 	pe: P,
 	image: &'a [u8],
 }
-impl<'a, P: Pe<'a>> LoadConfigDirectory<'a, P> {
+impl<'a, P: Copy + Pe<'a>> LoadConfigDirectory<'a, P> {
 	pub(crate) fn try_from(pe: P) -> Result<LoadConfigDirectory<'a, P>> {
 		let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG).ok_or(Error::Bounds)?;
 		if datadir.VirtualAddress == 0 {
@@ -54,7 +70,7 @@ impl<'a, P: Pe<'a>> LoadConfigDirectory<'a, P> {
 		let image = &pe.slice(datadir.VirtualAddress, image_size, mem::align_of::<u32>())?[..image_size];
 		Ok(LoadConfigDirectory { pe, image })
 	}
-	/// Gets the PE instance.
+	/// Returns the PE instance.
 	pub fn pe(&self) -> P {
 		self.pe
 	}
@@ -91,19 +107,32 @@ impl<'a, P: Pe<'a>> LoadConfigDirectory<'a, P> {
 		// Copying also avoids imposing the field's natural alignment on the image.
 		Some(unsafe { ptr::read_unaligned(bytes.as_ptr().cast()) })
 	}
-	/// Gets the default security cookie for the image.
+	/// Returns the default security cookie.
+	///
+	/// # Errors
+	///
+	/// * [`Bounds`][crate::Error::Bounds]: This directory revision does not contain the cookie field, or the cookie lies outside the image.
+	/// * [`Null`][crate::Error::Null]: The cookie address is zero.
+	/// * [`Misaligned`][crate::Error::Misaligned], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: The cookie cannot be read.
 	pub fn security_cookie(&self) -> Result<&'a u32> {
 		let security_cookie = self.get(dataview::Field!(IMAGE_LOAD_CONFIG_DIRECTORY.SecurityCookie)).ok_or(Error::Bounds)?;
 		self.pe.deref(Va::from(security_cookie).into())
 	}
-	/// Gets the structured exception handler table.
+	/// Returns the structured exception handler table.
+	///
+	/// # Errors
+	///
+	/// * [`Bounds`][crate::Error::Bounds]: This directory revision lacks the table fields, or the table lies outside the image.
+	/// * [`Null`][crate::Error::Null]: The table address is zero.
+	/// * [`Overflow`][crate::Error::Overflow]: The declared table length overflows.
+	/// * [`Misaligned`][crate::Error::Misaligned], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: The table cannot be read.
 	pub fn se_handler_table(&self) -> Result<&'a [Va]> {
 		let table = self.get(dataview::Field!(IMAGE_LOAD_CONFIG_DIRECTORY.SEHandlerTable)).ok_or(Error::Bounds)?;
 		let count = self.get(dataview::Field!(IMAGE_LOAD_CONFIG_DIRECTORY.SEHandlerCount)).ok_or(Error::Bounds)?;
 		self.pe.deref_slice(Va::from(table).into(), Va::from(count) as usize)
 	}
 }
-impl<'a, P: Pe<'a>> fmt::Debug for LoadConfigDirectory<'a, P> {
+impl<'a, P: Copy + Pe<'a>> fmt::Debug for LoadConfigDirectory<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		f.debug_struct("LoadConfigDirectory")
 			.field("size", &self.size())
@@ -117,7 +146,7 @@ impl<'a, P: Pe<'a>> fmt::Debug for LoadConfigDirectory<'a, P> {
 }
 
 serde_impl! {
-	impl<'a, P: Pe<'a>> Serialize for LoadConfigDirectory<'a, P> {
+	impl<'a, P: Copy + Pe<'a>> Serialize for LoadConfigDirectory<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			let mut state = serializer.serialize_struct("LoadConfigDirectory", 4)?;
 			state.serialize_field("image", &self.image_copy())?;
@@ -130,7 +159,7 @@ serde_impl! {
 }
 
 #[cfg(test)]
-pub(crate) fn test_load_config<'a, P: Pe<'a>>(pe: P) -> Result<()> {
+pub(crate) fn test_load_config<'a, P: Copy + Pe<'a>>(pe: P) -> Result<()> {
 	let load_config = pe.load_config()?;
 	let _ = format!("{:?}", load_config);
 	let _image = load_config.image_copy();

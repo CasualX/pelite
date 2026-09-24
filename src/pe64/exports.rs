@@ -1,5 +1,35 @@
 use super::*;
 
+impl<'a> PeFile<'a> {
+	#[doc = include_str!("../docs/exports.md")]
+	#[inline]
+	pub fn exports(self) -> Result<ExportDirectory<'a, Self>> {
+		ExportDirectory::try_from(self)
+	}
+
+	#[doc = include_str!("../docs/get_proc_address.md")]
+	#[inline(never)]
+	pub fn get_proc_address<T>(self, name: T) -> Result<Va> where Self: GetProcAddress<'a, T> {
+		let export = <Self as GetProcAddress<'a, T>>::get_export(self, name)?;
+		self.rva_to_va(export.symbol().ok_or(Error::Null)?)
+	}
+}
+
+impl<'a> PeView<'a> {
+	#[doc = include_str!("../docs/exports.md")]
+	#[inline]
+	pub fn exports(self) -> Result<ExportDirectory<'a, Self>> {
+		ExportDirectory::try_from(self)
+	}
+
+	#[doc = include_str!("../docs/get_proc_address.md")]
+	#[inline(never)]
+	pub fn get_proc_address<T>(self, name: T) -> Result<Va> where Self: GetProcAddress<'a, T> {
+		let export = <Self as GetProcAddress<'a, T>>::get_export(self, name)?;
+		self.rva_to_va(export.symbol().ok_or(Error::Null)?)
+	}
+}
+
 //----------------------------------------------------------------
 
 #[doc(inline)]
@@ -65,7 +95,7 @@ pub struct ExportDirectory<'a, P> {
 	datadir: &'a IMAGE_DATA_DIRECTORY,
 	image: &'a IMAGE_EXPORT_DIRECTORY,
 }
-impl<'a, P: Pe<'a>> ExportDirectory<'a, P> {
+impl<'a, P: Copy + Pe<'a>> ExportDirectory<'a, P> {
 	pub(crate) fn try_from(pe: P) -> Result<ExportDirectory<'a, P>> {
 		let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_EXPORT).ok_or(Error::Bounds)?;
 		if datadir.VirtualAddress == 0 {
@@ -74,7 +104,7 @@ impl<'a, P: Pe<'a>> ExportDirectory<'a, P> {
 		let image = pe.derva(datadir.VirtualAddress)?;
 		Ok(ExportDirectory { pe, datadir, image })
 	}
-	/// Gets the PE instance.
+	/// Returns the PE instance.
 	pub fn pe(&self) -> P {
 		self.pe
 	}
@@ -82,35 +112,65 @@ impl<'a, P: Pe<'a>> ExportDirectory<'a, P> {
 	pub fn image(&self) -> &'a IMAGE_EXPORT_DIRECTORY {
 		self.image
 	}
-	/// Gets the export directory's name for this library.
+	/// Returns the export directory's name for this library.
+	///
+	/// # Errors
+	///
+	/// * [`Null`][crate::Error::Null]: The name RVA is zero.
+	/// * [`Encoding`][crate::Error::Encoding]: The name has no null terminator.
+	/// * [`Bounds`][crate::Error::Bounds], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: The name cannot be read from the image.
 	pub fn dll_name(&self) -> Result<&'a CStr> {
 		self.pe.derva_c_str(self.image.Name)
 	}
-	/// Gets the ordinal base for the exported functions.
+	/// Returns the ordinal base for the exported functions.
 	pub fn ordinal_base(&self) -> Ordinal {
 		self.image.Base as Ordinal
 	}
-	/// Gets the export address table.
+	/// Returns the export address table.
+	///
+	/// # Errors
+	///
+	/// * [`Null`][crate::Error::Null]: The function table RVA is zero.
+	/// * [`Overflow`][crate::Error::Overflow]: The declared table length overflows.
+	/// * [`Bounds`][crate::Error::Bounds], [`Misaligned`][crate::Error::Misaligned], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: The function table cannot be read from the image.
 	pub fn functions(&self) -> Result<&'a [Rva]> {
 		self.pe.derva_slice(self.image.AddressOfFunctions, self.image.NumberOfFunctions as usize)
 	}
-	/// Gets the name address table.
+	/// Returns the name address table.
 	///
 	/// The values are RVAs to the exported function's name, to find its export look at the name index table with the same index.
 	///
 	/// The names are sorted allowing binary search lookup.
+	///
+	/// # Errors
+	///
+	/// * [`Null`][crate::Error::Null]: The name table RVA is zero.
+	/// * [`Overflow`][crate::Error::Overflow]: The declared table length overflows.
+	/// * [`Bounds`][crate::Error::Bounds], [`Misaligned`][crate::Error::Misaligned], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: The name table cannot be read from the image.
 	pub fn names(&self) -> Result<&'a [Rva]> {
 		self.pe.derva_slice(self.image.AddressOfNames, self.image.NumberOfNames as usize)
 	}
-	/// Gets the name index table.
+	/// Returns the name index table.
 	///
 	/// The values are indices (not ordinals!) into the export address table matching name with the same index in the name address table.
+	///
+	/// # Errors
+	///
+	/// * [`Null`][crate::Error::Null]: The name index table RVA is zero.
+	/// * [`Overflow`][crate::Error::Overflow]: The declared table length overflows.
+	/// * [`Bounds`][crate::Error::Bounds], [`Misaligned`][crate::Error::Misaligned], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: The name index table cannot be read from the image.
 	pub fn name_indices(&self) -> Result<&'a [u16]> {
 		self.pe.derva_slice(self.image.AddressOfNameOrdinals, self.image.NumberOfNames as usize)
 	}
-	/// Query the exports.
+	/// Returns validated export lookup tables.
 	///
 	/// This specifically validates whether the functions, names and name indices are valid.
+	///
+	/// # Errors
+	///
+	/// * [`Null`][crate::Error::Null]: A nonempty table has a zero RVA.
+	/// * [`Overflow`][crate::Error::Overflow]: A declared table length overflows.
+	/// * [`Bounds`][crate::Error::Bounds], [`Misaligned`][crate::Error::Misaligned], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: A declared export table cannot be read.
 	pub fn by(&self) -> Result<ExportBy<'a, P>> {
 		// A null table RVA is valid only when the corresponding table is empty.
 		// Keeping the declared lengths intact here is important:
@@ -149,7 +209,7 @@ impl<'a, P: Pe<'a>> ExportDirectory<'a, P> {
 		}
 	}
 }
-impl<'a, P: Pe<'a>> fmt::Debug for ExportDirectory<'a, P> {
+impl<'a, P: Copy + Pe<'a>> fmt::Debug for ExportDirectory<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		f.debug_struct("ExportDirectory")
 			.field("dll_name", &format_args!("{:?}", self.dll_name()))
@@ -172,18 +232,18 @@ pub struct ExportBy<'a, P> {
 	names: &'a [Rva],
 	name_indices: &'a [u16],
 }
-impl<'a, P: Pe<'a>> ops::Deref for ExportBy<'a, P> {
+impl<'a, P: Copy + Pe<'a>> ops::Deref for ExportBy<'a, P> {
 	type Target = ExportDirectory<'a, P>;
 	fn deref(&self) -> &ExportDirectory<'a, P> {
 		&self.exp
 	}
 }
-impl<'a, P: Pe<'a>> ExportBy<'a, P> {
-	/// Gets the export address table.
+impl<'a, P: Copy + Pe<'a>> ExportBy<'a, P> {
+	/// Returns the export address table.
 	pub fn functions(&self) -> &'a [Rva] {
 		self.functions
 	}
-	/// Gets the name address table.
+	/// Returns the name address table.
 	///
 	/// The values are RVAs to the exported function's name, to find its export look at the name index table with the same index.
 	///
@@ -191,18 +251,22 @@ impl<'a, P: Pe<'a>> ExportBy<'a, P> {
 	pub fn names(&self) -> &'a [Rva] {
 		self.names
 	}
-	/// Gets the name index table.
+	/// Returns the name index table.
 	///
 	/// The values are indices (not ordinals!) into the export address table matching name with the same index in the name address table.
 	pub fn name_indices(&self) -> &'a [u16] {
 		self.name_indices
 	}
-	/// Validates and checks if the name table is sorted.
+	/// Checks whether export names are sorted.
 	///
 	/// The PE specification says that the list of names should be sorted to allow binary search.
 	/// This function checks if the names table is actually sorted, if not then various name based lookup functions may fail to find certain exports.
 	///
 	/// Returns an error if a name entry cannot be read or is otherwise corrupt.
+	///
+	/// # Errors
+	///
+	/// * [`Null`][crate::Error::Null], [`Bounds`][crate::Error::Bounds], [`Encoding`][crate::Error::Encoding], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: An export name cannot be read.
 	pub fn check_sorted(&self) -> Result<bool> {
 		let mut last = CStr::empty();
 		for (name, _export) in self.iter_names() {
@@ -215,6 +279,12 @@ impl<'a, P: Pe<'a>> ExportBy<'a, P> {
 		Ok(true)
 	}
 	/// Looks up an export by its ordinal.
+	///
+	/// # Errors
+	///
+	/// * [`Bounds`][crate::Error::Bounds]: The ordinal is outside the export address table.
+	/// * [`Null`][crate::Error::Null]: The selected export slot is empty.
+	/// * [`Encoding`][crate::Error::Encoding], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: A forwarded export cannot be read.
 	pub fn ordinal(&self, ordinal: Ordinal) -> Result<Export<'a>> {
 		let base = self.exp.image.Base;
 		if (ordinal as u32) < base {
@@ -231,6 +301,12 @@ impl<'a, P: Pe<'a>> ExportBy<'a, P> {
 	/// If the name table isn't sorted this will still be able to find exported functions by name.
 	///
 	/// Gracefully handles corrupted name entries by ignoring them.
+	///
+	/// # Errors
+	///
+	/// * [`Null`][crate::Error::Null]: The name is absent or its export slot is empty.
+	/// * [`Bounds`][crate::Error::Bounds]: A matching name has an invalid table index.
+	/// * [`Encoding`][crate::Error::Encoding], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: A matching forwarded export cannot be read.
 	pub fn name_linear<S: AsRef<[u8]> + ?Sized>(&self, name: &S) -> Result<Export<'a>> {
 		self.name_linear_(name.as_ref())
 	}
@@ -246,6 +322,12 @@ impl<'a, P: Pe<'a>> ExportBy<'a, P> {
 	/// Looks up an export by its name.
 	///
 	/// If the name table isn't sorted, certain exported functions may fail to be found.
+	///
+	/// # Errors
+	///
+	/// * [`Null`][crate::Error::Null]: The name is absent or its export slot is empty.
+	/// * [`Bounds`][crate::Error::Bounds]: A matching name has an invalid table index.
+	/// * [`Encoding`][crate::Error::Encoding], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: An export name or forwarder cannot be read.
 	pub fn name<S: AsRef<[u8]> + ?Sized>(&self, name: &S) -> Result<Export<'a>> {
 		self.name_(name.as_ref())
 	}
@@ -271,6 +353,12 @@ impl<'a, P: Pe<'a>> ExportBy<'a, P> {
 		Err(Error::Null)
 	}
 	/// Looks up an export by its import.
+	///
+	/// # Errors
+	///
+	/// * [`Null`][crate::Error::Null]: The requested import is absent or its export slot is empty.
+	/// * [`Bounds`][crate::Error::Bounds]: The ordinal or a table index is invalid.
+	/// * [`Encoding`][crate::Error::Encoding], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: A name or forwarded export cannot be read.
 	pub fn import(&self, import: Import) -> Result<Export<'a>> {
 		match import {
 			Import::ByName { hint, name } => self.hint_name_(hint, name),
@@ -278,16 +366,34 @@ impl<'a, P: Pe<'a>> ExportBy<'a, P> {
 		}
 	}
 	/// Looks up an export by its index.
+	///
+	/// # Errors
+	///
+	/// * [`Bounds`][crate::Error::Bounds]: `index` is outside the export address table.
+	/// * [`Null`][crate::Error::Null]: The export slot is empty.
+	/// * [`Encoding`][crate::Error::Encoding], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: A forwarded export cannot be read.
 	pub fn index(&self, index: usize) -> Result<Export<'a>> {
 		let rva = self.functions.get(index).ok_or(Error::Bounds)?;
 		self.exp.symbol_from_rva(rva)
 	}
 	/// Looks up an export by its hint.
+	///
+	/// # Errors
+	///
+	/// * [`Bounds`][crate::Error::Bounds]: `hint` or its function index is outside its table.
+	/// * [`Null`][crate::Error::Null]: The export slot is empty.
+	/// * [`Encoding`][crate::Error::Encoding], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: A forwarded export cannot be read.
 	pub fn hint(&self, hint: usize) -> Result<Export<'a>> {
 		let &index = self.name_indices.get(hint).ok_or(Error::Bounds)?;
 		self.index(index as usize)
 	}
 	/// Looks up an export by its hint and falls back to the name if the hint is incorrect.
+	///
+	/// # Errors
+	///
+	/// * [`Null`][crate::Error::Null]: The name is absent or its export slot is empty.
+	/// * [`Bounds`][crate::Error::Bounds]: A matching name has an invalid table index.
+	/// * [`Encoding`][crate::Error::Encoding], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: An export name or forwarder cannot be read.
 	pub fn hint_name<S: AsRef<[u8]> + ?Sized>(&self, hint: usize, name: &S) -> Result<Export<'a>> {
 		self.hint_name_(hint, name.as_ref())
 	}
@@ -305,16 +411,28 @@ impl<'a, P: Pe<'a>> ExportBy<'a, P> {
 		self.name(name)
 	}
 	/// Looks up the name for a hint.
+	///
+	/// # Errors
+	///
+	/// * [`Bounds`][crate::Error::Bounds]: `hint` is outside the name table or its RVA is out of bounds.
+	/// * [`Null`][crate::Error::Null]: The name RVA is zero.
+	/// * [`Encoding`][crate::Error::Encoding], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: The name cannot be read.
 	pub fn name_of_hint(&self, hint: usize) -> Result<&'a CStr> {
 		let &name_rva = self.names.get(hint).ok_or(Error::Bounds)?;
 		self.exp.pe.derva_c_str(name_rva)
 	}
-	/// Given an index in the functions array, gets the named export.
+	/// Returns the import name or ordinal for an export index.
 	///
 	/// Note that this does a linear scan to find its name,
 	/// if this is called in a loop over all the exported functions you are accidentally quadratic.
 	///
-	/// See [`iter_names`](#method.iter_names) to iterate over the exported names in linear time.
+	/// See [`iter_names`][Self::iter_names] to iterate over the exported names in linear time.
+	///
+	/// # Errors
+	///
+	/// * [`Bounds`][crate::Error::Bounds]: `index` is outside the export address table.
+	/// * [`Overflow`][crate::Error::Overflow]: The computed ordinal does not fit.
+	/// * [`Null`][crate::Error::Null], [`Encoding`][crate::Error::Encoding], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: The export name cannot be read.
 	pub fn name_lookup(&self, index: usize) -> Result<Import<'a>> {
 		if index >= self.functions.len() {
 			return Err(Error::Bounds);
@@ -335,24 +453,24 @@ impl<'a, P: Pe<'a>> ExportBy<'a, P> {
 			},
 		}
 	}
-	/// Iterate over exported functions.
+	/// Returns an iterator over exported functions.
 	///
 	/// Not every exported function has a name, some are exported by ordinal.
-	/// Looking up the exported function's name with [`name_lookup`](#method.name_lookup) results in quadratic performance.
-	/// If the exported function's name is important consider building a cache or using [`iter_names`](#method.iter_names) instead.
+	/// Looking up the exported function's name with [`name_lookup`][Self::name_lookup] results in quadratic performance.
+	/// If the exported function's name is important consider building a cache or using [`iter_names`][Self::iter_names] instead.
 	pub fn iter(&self) -> impl Clone + Iterator<Item = Result<Export<'a>>> {
 		self.functions.iter().map(move |rva| self.symbol_from_rva(rva))
 	}
-	/// Iterate over functions exported by name.
+	/// Returns an iterator over functions exported by name.
 	pub fn iter_names(&self) -> impl Clone + Iterator<Item = (Result<&'a CStr>, Result<Export<'a>>)> {
 		(0..self.names().len()).map(move |hint| (self.name_of_hint(hint), self.hint(hint)))
 	}
-	/// Iterate over functions exported by name, returning their name and index in the functions table.
+	/// Returns named exports and their function table indices.
 	pub fn iter_name_indices(&self) -> impl Clone + Iterator<Item = (Result<&'a CStr>, usize)> {
 		(0..self.names().len()).map(move |hint| (self.name_of_hint(hint), self.name_indices[hint] as usize))
 	}
 }
-impl<'a, P: Pe<'a>> fmt::Debug for ExportBy<'a, P> {
+impl<'a, P: Copy + Pe<'a>> fmt::Debug for ExportBy<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		f.debug_struct("ExportBy")
 			.field("dll_name", &format_args!("{:?}", self.dll_name()))
@@ -367,24 +485,51 @@ impl<'a, P: Pe<'a>> fmt::Debug for ExportBy<'a, P> {
 
 //----------------------------------------------------------------
 
-/// Convenient way to get an exported address.
+/// Looks up exported symbols.
 pub trait GetProcAddress<'a, T>: Pe<'a> {
-	/// Convenient method to get an exported function.
+	/// Returns an export by name, ordinal, or import.
 	///
-	/// Note that calling this method many times is less efficient than caching a [`ExportBy`] instance, such is the trade-off for convenience.
+	/// Cache an [`ExportBy`] instance for repeated lookups.
+	///
+	/// # Errors
+	///
+	/// * [`Null`][crate::Error::Null]: The requested export is absent or its slot is empty.
+	/// * [`Bounds`][crate::Error::Bounds]: An ordinal or export table index is invalid.
+	/// * Other errors indicate malformed export data that cannot be read.
 	fn get_export(self, name: T) -> Result<Export<'a>>;
 }
-impl<'a, P: Pe<'a>> GetProcAddress<'a, Ordinal> for P {
+impl<'a, P: Copy + Pe<'a>> GetProcAddress<'a, Ordinal> for P {
+	/// Returns an export by name, ordinal, or import.
+	///
+	/// # Errors
+	///
+	/// * [`Null`][crate::Error::Null]: The requested export is absent or its slot is empty.
+	/// * [`Bounds`][crate::Error::Bounds]: An ordinal or export table index is invalid.
+	/// * Other errors indicate malformed export data that cannot be read.
 	fn get_export(self, name: Ordinal) -> Result<Export<'a>> {
 		self.exports()?.by()?.ordinal(name)
 	}
 }
-impl<'b, 'a, P: Pe<'a>> GetProcAddress<'a, Import<'b>> for P {
+impl<'b, 'a, P: Copy + Pe<'a>> GetProcAddress<'a, Import<'b>> for P {
+	/// Returns an export by name, ordinal, or import.
+	///
+	/// # Errors
+	///
+	/// * [`Null`][crate::Error::Null]: The requested export is absent or its slot is empty.
+	/// * [`Bounds`][crate::Error::Bounds]: An ordinal or export table index is invalid.
+	/// * Other errors indicate malformed export data that cannot be read.
 	fn get_export(self, name: Import<'b>) -> Result<Export<'a>> {
 		self.exports()?.by()?.import(name)
 	}
 }
-impl<'b, 'a, P: Pe<'a>, S: AsRef<[u8]> + ?Sized> GetProcAddress<'a, &'b S> for P {
+impl<'b, 'a, P: Copy + Pe<'a>, S: AsRef<[u8]> + ?Sized> GetProcAddress<'a, &'b S> for P {
+	/// Returns an export by name, ordinal, or import.
+	///
+	/// # Errors
+	///
+	/// * [`Null`][crate::Error::Null]: The requested export is absent or its slot is empty.
+	/// * [`Bounds`][crate::Error::Bounds]: An ordinal or export table index is invalid.
+	/// * Other errors indicate malformed export data that cannot be read.
 	fn get_export(self, name: &'b S) -> Result<Export<'a>> {
 		self.exports()?.by()?.name(name)
 	}
@@ -407,12 +552,12 @@ impl<'b, 'a, P: Pe<'a>, S: AsRef<[u8]> + ?Sized> GetProcAddress<'a, &'b S> for P
 */
 
 serde_impl! {
-	impl<'a, P: Pe<'a>> Serialize for ExportDirectory<'a, P> {
+	impl<'a, P: Copy + Pe<'a>> Serialize for ExportDirectory<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			self.by().ok().serialize(serializer)
 		}
 	}
-	impl<'a, P: Pe<'a>> Serialize for ExportBy<'a, P> {
+	impl<'a, P: Copy + Pe<'a>> Serialize for ExportBy<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			let mut state = serializer.serialize_struct("ExportDirectory", 7)?;
 			state.serialize_field("image", self.image())?;
@@ -433,7 +578,7 @@ serde_impl! {
 //----------------------------------------------------------------
 
 #[cfg(test)]
-pub(crate) fn test_exports<'a, P: Pe<'a>>(pe: P) -> Result<()> {
+pub(crate) fn test_exports<'a, P: Copy + Pe<'a>>(pe: P) -> Result<()> {
 	let by = pe.exports()?.by()?;
 	let _ = format!("{:?}", by);
 

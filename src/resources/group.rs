@@ -12,7 +12,7 @@ References:
 The following example prints all group icon resource names which contain a PNG image.
 
 ```
-// Aqcuire the resources of a Portable Executable file
+// Acquire the resources of a Portable Executable file
 let resources: pelite::resources::ResourceDirectory;
 
 # fn example(resources: pelite::resources::ResourceDirectory<'_>) {
@@ -60,13 +60,16 @@ const FILE_DIRECTORY_ENTRY_SIZE: usize = 16;
 
 //----------------------------------------------------------------
 
-/// Icon or Cursor type.
+/// Icon or cursor resource type.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ResourceGroupType {
+	/// Icon image resource.
 	Icon,
+	/// Cursor image resource.
 	Cursor,
 }
 impl ResourceGroupType {
+	/// Returns the resource type ID for an icon or cursor image.
 	#[inline]
 	pub fn id(self) -> u16 {
 		match self {
@@ -81,16 +84,22 @@ impl<'a> From<ResourceGroupType> for super::ResourceName<'a> {
 	}
 }
 
-/// Group resources, Icons and Cursors.
+/// Group of icon or cursor images.
 #[derive(Copy, Clone)]
 pub struct ResourceGroup<'a> {
 	resources: ResourceDirectory<'a>,
 	image: &'a GRPICONDIR,
 }
 impl<'a> ResourceGroup<'a> {
-	/// Parses the resource group from the byte slice.
+	/// Parses an icon or cursor group resource.
 	///
-	/// The pixel data of the group resource is stored in separate data entries, requiring the resources to access.
+	/// Image data lives in separate resource entries and is accessed through the resources argument.
+	///
+	/// # Errors
+	///
+	/// * [Misaligned][Error::Misaligned]: The bytes are not aligned to a two-byte boundary.
+	/// * [Bounds][Error::Bounds]: The header or entries are truncated, or the group has trailing data.
+	/// * [BadMagic][Error::BadMagic]: The reserved field or group type is invalid.
 	pub fn new(resources: ResourceDirectory<'a>, bytes: &'a [u8]) -> Result<ResourceGroup<'a>, Error> {
 		if !bytes.as_ptr().aligned_to(2) {
 			return Err(Error::Misaligned);
@@ -108,11 +117,11 @@ impl<'a> ResourceGroup<'a> {
 		}
 		Ok(ResourceGroup { resources, image })
 	}
-	/// Gets the Group header.
+	/// Returns the group header.
 	pub fn header(&self) -> &'a GRPICONDIR {
 		self.image
 	}
-	/// Gets the Group entries.
+	/// Returns the group entries.
 	pub fn entries(&self) -> &'a [GRPICONDIRENTRY] {
 		let len = self.image.idCount as usize;
 		// Checked by try_from constructor
@@ -121,7 +130,7 @@ impl<'a> ResourceGroup<'a> {
 			slice::from_raw_parts(ptr, len)
 		}
 	}
-	/// Gets the Group resource type.
+	/// Returns the group resource type.
 	pub fn ty(&self) -> ResourceGroupType {
 		match self.image.idType {
 			1 => ResourceGroupType::Icon,
@@ -129,15 +138,27 @@ impl<'a> ResourceGroup<'a> {
 			_ => unreachable!(), // Checked by constructor
 		}
 	}
-	/// Gets the image data for the given icon id.
+	/// Returns image data for an icon or cursor ID.
+	///
+	/// # Errors
+	///
+	/// * [NotFound][ResourceFindError::NotFound]: A requested entry is absent.
+	/// * [UnexpectedDataEntry][ResourceFindError::UnexpectedDataEntry]: An expected directory contains data.
+	/// * [UnexpectedDirectory][ResourceFindError::UnexpectedDirectory]: An expected data entry is a directory.
+	/// * [Pe][ResourceFindError::Pe]: A resource directory, entry, or data range is malformed.
 	pub fn image(&self, id: u16) -> Result<&'a [u8], ResourceFindError> {
 		self.resources.root()?.get_dir(self.ty().into())?.get_dir(id.into())?.first_data()?.bytes().map_err(ResourceFindError::Pe)
 	}
-	/// Reassembles the group as an icon (`.ico`) or cursor (`.cur`) file.
+	/// Reassembles the group as an icon (.ico) or cursor (.cur) file.
 	///
-	/// Cursor image resources store their hotspot in the first four bytes of the
-	/// image data. Those bytes are moved into the cursor directory entry in the
-	/// returned file.
+	/// For cursors, the first four bytes of each image resource become the hotspot in the file directory entry.
+	///
+	/// # Errors
+	///
+	/// * [NotFound][ResourceFindError::NotFound]: A requested entry is absent.
+	/// * [UnexpectedDataEntry][ResourceFindError::UnexpectedDataEntry]: An expected directory contains data.
+	/// * [UnexpectedDirectory][ResourceFindError::UnexpectedDirectory]: An expected data entry is a directory.
+	/// * [Pe][ResourceFindError::Pe]: An image resource is malformed, an output size overflows, or a cursor image lacks hotspot bytes.
 	pub fn to_vec(&self) -> Result<Vec<u8>, ResourceFindError> {
 		let entries = self.entries();
 		let directory_size = entries
@@ -182,7 +203,12 @@ impl<'a> ResourceGroup<'a> {
 		}
 		Ok(bytes)
 	}
-	/// Reassemble the file.
+	/// Writes the group as an icon or cursor file.
+	///
+	/// # Errors
+	///
+	/// * [InvalidData][io::ErrorKind::InvalidData]: A referenced image is missing or malformed, or the file cannot be assembled.
+	/// * An I/O error is returned if writing to the destination fails.
 	#[cfg(feature = "std")]
 	pub fn write(&self, dest: &mut dyn io::Write) -> io::Result<()> {
 		let bytes = self.to_vec().map_err(|err| io::Error::new(io::ErrorKind::InvalidData, err))?;
@@ -223,7 +249,7 @@ pub type GroupCursor<'a> = ResourceGroup<'a>;
 #[cfg(test)]
 mod tests {
 	use super::{FILE_DIRECTORY_ENTRY_SIZE, FILE_DIRECTORY_HEADER_SIZE};
-	use crate::pe32::{Pe, PeFile};
+	use crate::pe32::PeFile;
 
 	#[test]
 	fn find_and_serialize_icon_by_name() {

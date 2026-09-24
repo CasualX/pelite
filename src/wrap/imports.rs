@@ -22,8 +22,8 @@ pub enum Import<'a> {
 }
 
 /// Import directory.
-impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::ImportDirectory<'a, Pe32>, pe64::ImportDirectory<'a, Pe64>> {
-	/// Gets the PE instance.
+impl<'a, Pe32: Copy + pe32::Pe<'a>, Pe64: Copy + pe64::Pe<'a>> Wrap<pe32::ImportDirectory<'a, Pe32>, pe64::ImportDirectory<'a, Pe64>> {
+	/// Returns the PE instance.
 	#[inline]
 	pub fn pe(&self) -> Wrap<Pe32, Pe64> {
 		match self {
@@ -39,7 +39,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::ImportDirectory<'a, 
 			Wrap::T64(imports) => imports.image(),
 		}
 	}
-	/// Iterator over the import descriptors.
+	/// Returns an iterator over the import descriptors.
 	#[inline]
 	pub fn iter(&self) -> Wrap<pe32::ImportDescriptorIter<'a, Pe32>, pe64::ImportDescriptorIter<'a, Pe64>> {
 		match self {
@@ -48,7 +48,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::ImportDirectory<'a, 
 		}
 	}
 }
-impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> IntoIterator for Wrap<pe32::ImportDirectory<'a, Pe32>, pe64::ImportDirectory<'a, Pe64>> {
+impl<'a, Pe32: Copy + pe32::Pe<'a>, Pe64: Copy + pe64::Pe<'a>> IntoIterator for Wrap<pe32::ImportDirectory<'a, Pe32>, pe64::ImportDirectory<'a, Pe64>> {
 	type Item = Wrap<pe32::ImportDescriptor<'a, Pe32>, pe64::ImportDescriptor<'a, Pe64>>;
 	type IntoIter = Wrap<pe32::ImportDescriptorIter<'a, Pe32>, pe64::ImportDescriptorIter<'a, Pe64>>;
 	#[inline]
@@ -61,8 +61,8 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> IntoIterator for Wrap<pe32::Imp
 }
 
 /// Import Address Table.
-impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::ImportAddressTable<'a, Pe32>, pe64::ImportAddressTable<'a, Pe64>> {
-	/// Gets the PE instance.
+impl<'a, Pe32: Copy + pe32::Pe<'a>, Pe64: Copy + pe64::Pe<'a>> Wrap<pe32::ImportAddressTable<'a, Pe32>, pe64::ImportAddressTable<'a, Pe64>> {
+	/// Returns the PE instance.
 	#[inline]
 	pub fn pe(&self) -> Wrap<Pe32, Pe64> {
 		match self {
@@ -78,11 +78,11 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::ImportAddressTable<'
 			Wrap::T64(iat) => Wrap::T64(iat.image()),
 		}
 	}
-	/// Iterate over the IAT.
+	/// Returns an iterator over the IAT.
 	///
 	/// Bound or loader-resolved slots can contain virtual addresses rather than
 	/// import-name RVAs and consequently produce decoding errors. Use the import
-	/// descriptors' [`Self::int`](Wrap::int) tables for authoritative symbol names.
+	/// descriptors' [`Self::int`][Wrap::int] tables for authoritative symbol names.
 	#[inline]
 	pub fn iter(&self) -> Wrap<impl Clone + Iterator<Item = (&'a u32, Result<Import<'a>>)>, impl Clone + Iterator<Item = (&'a u64, Result<Import<'a>>)>> {
 		match self {
@@ -93,8 +93,8 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::ImportAddressTable<'
 }
 
 /// Import library descriptor.
-impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::ImportDescriptor<'a, Pe32>, pe64::ImportDescriptor<'a, Pe64>> {
-	/// Gets the PE instance.
+impl<'a, Pe32: Copy + pe32::Pe<'a>, Pe64: Copy + pe64::Pe<'a>> Wrap<pe32::ImportDescriptor<'a, Pe32>, pe64::ImportDescriptor<'a, Pe64>> {
+	/// Returns the PE instance.
 	#[inline]
 	pub fn pe(&self) -> Wrap<Pe32, Pe64> {
 		match self {
@@ -110,7 +110,13 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::ImportDescriptor<'a,
 			Wrap::T64(desc) => desc.image(),
 		}
 	}
-	/// Gets the name of the DLL imported from.
+	/// Returns the name of the DLL imported from.
+	///
+	/// # Errors
+	///
+	/// * [`Null`][crate::Error::Null]: The name RVA is zero.
+	/// * [`Encoding`][crate::Error::Encoding]: The name has no null terminator.
+	/// * [`Bounds`][crate::Error::Bounds], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: The name cannot be read from the image.
 	#[inline]
 	pub fn dll_name(&self) -> Result<&'a CStr> {
 		match self {
@@ -118,7 +124,13 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::ImportDescriptor<'a,
 			Wrap::T64(desc) => desc.dll_name(),
 		}
 	}
-	/// Gets the import address table.
+	/// Returns the import address table.
+	///
+	/// # Errors
+	///
+	/// * [`Null`][crate::Error::Null]: The import address table RVA is zero.
+	/// * [`Bounds`][crate::Error::Bounds]: The table lies outside the image or has no terminating entry.
+	/// * [`Misaligned`][crate::Error::Misaligned], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: The table cannot be read.
 	#[inline]
 	pub fn iat(&self) -> Result<Wrap<slice::Iter<'a, u32>, slice::Iter<'a, u64>>> {
 		match self {
@@ -126,7 +138,13 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::ImportDescriptor<'a,
 			Wrap::T64(desc) => Wrap::T64(desc.iat()).transpose(),
 		}
 	}
-	/// Gets the import name table.
+	/// Returns the import name table.
+	///
+	/// # Errors
+	///
+	/// * [`Null`][crate::Error::Null]: The import name table RVA is zero.
+	/// * [`Bounds`][crate::Error::Bounds]: The table lies outside the image or has no terminating entry.
+	/// * [`Misaligned`][crate::Error::Misaligned], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: The table cannot be read.
 	#[inline]
 	pub fn int(&self) -> Result<impl Clone + Iterator<Item = Result<Import<'a>>>> {
 		match self {

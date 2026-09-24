@@ -9,10 +9,7 @@ use crate::{Error, Result};
 
 /// Base Relocations Directory.
 ///
-/// The base relocations directory describes a list of addresses to pointer values within its module which need to be patched when the module is located at a different address than its preferred load address.
-/// When the module contains pointers to itself these pointers need to be fixed when the module is loaded at a different address than its preferred load address.
-///
-/// For a quick and easy overview of how the base relocations are laid out, see this helpful [stackoverflow answer](https://stackoverflow.com/a/22513813).
+/// Entries identify pointers to adjust by type and RVA. See this [relocation layout overview](https://stackoverflow.com/a/22513813) for an example.
 ///
 /// # Examples
 ///
@@ -45,9 +42,13 @@ impl<'a> BaseRelocationDirectory<'a> {
 		debug_assert!(relocs.as_ptr().aligned_to(4));
 		BaseRelocationDirectory { relocs }
 	}
-	/// Parse a base relocations directory.
+	/// Parses a base relocation directory.
 	///
-	/// Requires relocs argument pointer to have an alignment of 4 or an error is returned.
+	/// Relocation blocks are read as the directory is iterated.
+	///
+	/// # Errors
+	///
+	/// * [Misaligned][Error::Misaligned]: The input is not aligned to a four-byte boundary.
 	pub fn parse(relocs: &'a [u8]) -> Result<BaseRelocationDirectory<'a>> {
 		// $1
 		if !relocs.as_ptr().aligned_to(4) {
@@ -55,19 +56,21 @@ impl<'a> BaseRelocationDirectory<'a> {
 		}
 		Ok(BaseRelocationDirectory { relocs })
 	}
-	/// Returns the base relocations image.
+	/// Returns the raw base relocation directory bytes.
 	pub fn image(&self) -> &'a [u8] {
 		self.relocs
 	}
-	/// Iterates over the base relocation blocks.
+	/// Returns an iterator over relocation blocks.
+	///
+	/// Incomplete trailing data is ignored, and block sizes are clamped to the available bytes.
 	pub fn iter_blocks(&self) -> BaseRelocationBlockIter<'a> {
 		BaseRelocationBlockIter { data: self.relocs }
 	}
-	/// Iterates over the base relocations with internal iteration.
+	/// Calls the callback for each relocation except absolute padding entries.
 	pub fn for_each<F: FnMut(u32, u8)>(&self, mut f: F) {
 		self.fold((), |(), rva, ty| f(rva, ty))
 	}
-	/// Folds over the base relocations with internal iteration.
+	/// Folds over relocations, skipping absolute padding entries.
 	pub fn fold<T, F: FnMut(T, u32, u8) -> T>(&self, init: T, mut f: F) -> T {
 		let mut accum = init;
 		for block in self.iter_blocks() {
@@ -90,7 +93,7 @@ impl<'a> fmt::Debug for BaseRelocationDirectory<'a> {
 
 //----------------------------------------------------------------
 
-/// Iterator over the base relocation blocks.
+/// Iterator over base relocation blocks.
 #[derive(Clone)]
 pub struct BaseRelocationBlockIter<'a> {
 	data: &'a [u8],
@@ -137,27 +140,27 @@ impl<'a> iter::FusedIterator for BaseRelocationBlockIter<'a> {}
 
 //----------------------------------------------------------------
 
-/// Base Relocation Block.
+/// Block of relocations for one RVA range.
 #[derive(Copy, Clone)]
 pub struct BaseRelocationBlock<'a> {
 	image: &'a IMAGE_BASE_RELOCATION,
 	words: &'a [u16],
 }
 impl<'a> BaseRelocationBlock<'a> {
-	/// Returns the underlying base relocation block image.
+	/// Returns the raw block header.
 	pub fn image(&self) -> &'a IMAGE_BASE_RELOCATION {
 		self.image
 	}
-	/// Gets the types and offsets.
+	/// Returns the encoded type and offset words in this block.
 	pub fn words(&self) -> &'a [u16] {
 		self.words
 	}
-	/// Gets the final Rva of a type-offset word.
+	/// Returns the RVA represented by a type and offset word.
 	pub fn rva_of(&self, word: &u16) -> u32 {
 		let offset = (word & 0x0fff) as u32;
 		self.image.VirtualAddress.wrapping_add(offset)
 	}
-	/// Gets the type of a type-offset word.
+	/// Returns the relocation type encoded in a word.
 	pub fn type_of(&self, word: &u16) -> u8 {
 		(word >> 12) as u8
 	}
@@ -205,9 +208,13 @@ fn encode_type_offset(base: u32, rva: u32, ty: u8) -> u16 {
 }
 
 impl BaseRelocationDirectory<'_> {
-	/// Builds a new base relocation directory with given rvas and types.
+	/// Builds a base relocation directory from RVAs and types.
 	///
-	/// For optimal results, ensure the inputs are sorted by their rvas.
+	/// The arrays must have equal lengths. For predictable block order, provide RVAs in ascending order.
+	///
+	/// # Panics
+	///
+	/// Panics if the RVA and type arrays have different lengths.
 	pub fn build(mut rvas: &[u32], mut types: &[u8]) -> Vec<u8> {
 		assert_eq!(rvas.len(), types.len());
 

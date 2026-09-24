@@ -8,7 +8,7 @@ pub trait Scan<'a>: Copy {
 	fn slice(self, rva: Rva) -> Option<&'a [u8]>;
 }
 
-impl<'a, P: Pe<'a>> Scan<'a> for P {
+impl<'a, P: Copy + Pe<'a>> Scan<'a> for P {
 	fn read<T: Copy + Pod>(self, rva: Rva) -> Option<T> {
 		self.derva_copy(rva).ok()
 	}

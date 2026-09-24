@@ -5,9 +5,9 @@ describe what must match; the other operations move the cursor, follow reference
 capture values, or try alternatives. This makes patterns useful for locating code and
 data that move when a binary is rebuilt.
 
-Create a pattern at compile time with [`pattern!`](crate::pattern!) or at runtime with
-[`parse`]. Then pass it to a [PE32 scanner](crate::pe32::Pe::scanner) or a
-[PE32+ scanner](crate::pe64::Pe::scanner).
+Create a pattern at compile time with [`pattern!`][crate::pattern!] or at runtime with
+[`parse`]. Then pass it to a [PE32 scanner][crate::pe32::Pe::scanner] or a
+[PE32+ scanner][crate::pe64::Pe::scanner].
 
 ```
 use pelite::pattern;
@@ -161,7 +161,7 @@ let mut save = vec![0; pattern::save_len(&pattern)];
 ```
 
 Reference bodies reserve internal slots at the end of that array.
-Use [`captures_len`](captures_len) to select the user-facing prefix when returning or displaying results:
+Use [`captures_len`][captures_len] to select the user-facing prefix when returning or displaying results:
 
 ```
 use pelite::pattern;
@@ -232,7 +232,7 @@ For background on choosing stable signature bytes, see the
 The old `z` operation remains accepted and writes zero to the next automatic slot.
 Prefer an explicit `zero[n]` in new patterns.
 
-With [`ParseOptions::legacy_gap`](crate::pattern::ParseOptions::legacy_gap)
+With [`ParseOptions::legacy_gap`][crate::pattern::ParseOptions::legacy_gap]
 enabled, older patterns may use decimal `[n]` and `[a-b]` forms to skip bytes. Because
 whitespace was optional, a gap attached to a typed read is ambiguous with the new
 slot syntax. The attached form follows the new meaning: `u4[1]` reads into slot 1.

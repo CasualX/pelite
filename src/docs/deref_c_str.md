@@ -1,0 +1,7 @@
+Dereferences `ptr` as a null-terminated C string.
+
+# Errors
+
+* [`Null`][crate::Error::Null]: `ptr` is null.
+* [`Encoding`][crate::Error::Encoding]: No null terminator occurs in the available bytes.
+* [`Bounds`][crate::Error::Bounds], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: The string cannot be read from the image.

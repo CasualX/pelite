@@ -1,8 +1,8 @@
 use super::*;
 
 /// TLS Directory.
-impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::TlsDirectory<'a, Pe32>, pe64::TlsDirectory<'a, Pe64>> {
-	/// Gets the PE instance.
+impl<'a, Pe32: Copy + pe32::Pe<'a>, Pe64: Copy + pe64::Pe<'a>> Wrap<pe32::TlsDirectory<'a, Pe32>, pe64::TlsDirectory<'a, Pe64>> {
+	/// Returns the PE instance.
 	#[inline]
 	pub fn pe(&self) -> Wrap<Pe32, Pe64> {
 		match self {
@@ -18,7 +18,13 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::TlsDirectory<'a, Pe3
 			Wrap::T64(tls) => Wrap::T64(tls.image()),
 		}
 	}
-	/// Gets the raw TLS initialization data.
+	/// Returns the initialized TLS data.
+	///
+	/// # Errors
+	///
+	/// * [`Invalid`][crate::Error::Invalid]: The data's end address precedes its start address.
+	/// * [`Overflow`][crate::Error::Overflow]: The declared data length cannot fit in `usize`.
+	/// * [`Null`][crate::Error::Null], [`Bounds`][crate::Error::Bounds], [`Misaligned`][crate::Error::Misaligned], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: The data cannot be read from the image.
 	#[inline]
 	pub fn raw_data(&self) -> Result<&'a [u8]> {
 		match self {
@@ -26,7 +32,12 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::TlsDirectory<'a, Pe3
 			Wrap::T64(tls) => tls.raw_data(),
 		}
 	}
-	/// Gets the TLS slot location.
+	/// Returns the TLS slot location.
+	///
+	/// # Errors
+	///
+	/// * [`Null`][crate::Error::Null]: The slot address is zero.
+	/// * [`Bounds`][crate::Error::Bounds], [`Misaligned`][crate::Error::Misaligned], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: The slot cannot be read from the image.
 	#[inline]
 	pub fn slot(&self) -> Result<&'a u32> {
 		match self {
@@ -34,7 +45,13 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::TlsDirectory<'a, Pe3
 			Wrap::T64(tls) => tls.slot(),
 		}
 	}
-	/// Gets the TLS initialization callbacks.
+	/// Returns the TLS callback addresses.
+	///
+	/// # Errors
+	///
+	/// * [`Null`][crate::Error::Null]: The callback pointer is null.
+	/// * [`Bounds`][crate::Error::Bounds]: The callbacks have no terminating zero or lie outside the image.
+	/// * [`Misaligned`][crate::Error::Misaligned], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: The callback array cannot be read.
 	#[inline]
 	pub fn callbacks(&self) -> Result<Wrap<&'a [u32], &'a [u64]>> {
 		match self {

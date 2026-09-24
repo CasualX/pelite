@@ -1,9 +1,25 @@
 use super::*;
 
+impl<'a> PeFile<'a> {
+	#[doc = include_str!("../docs/base_relocs.md")]
+	#[inline]
+	pub fn base_relocs(self) -> Result<crate::base_relocs::BaseRelocationDirectory<'a>> {
+		try_from(self)
+	}
+}
+
+impl<'a> PeView<'a> {
+	#[doc = include_str!("../docs/base_relocs.md")]
+	#[inline]
+	pub fn base_relocs(self) -> Result<crate::base_relocs::BaseRelocationDirectory<'a>> {
+		try_from(self)
+	}
+}
+
 #[doc(inline)]
 pub use crate::base_relocs::*;
 
-pub(crate) fn try_from<'a, P: Pe<'a>>(pe: P) -> Result<BaseRelocationDirectory<'a>> {
+pub(crate) fn try_from<'a, P: Copy + Pe<'a>>(pe: P) -> Result<BaseRelocationDirectory<'a>> {
 	let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_BASERELOC).ok_or(Error::Bounds)?;
 	if datadir.VirtualAddress == 0 {
 		return Err(Error::Null);
@@ -14,7 +30,7 @@ pub(crate) fn try_from<'a, P: Pe<'a>>(pe: P) -> Result<BaseRelocationDirectory<'
 }
 
 #[cfg(test)]
-pub(crate) fn test_base_relocs<'a, P: Pe<'a>>(pe: P) -> Result<()> {
+pub(crate) fn test_base_relocs<'a, P: Copy + Pe<'a>>(pe: P) -> Result<()> {
 	let base_relocs = pe.base_relocs()?;
 	let _ = format!("{:?}", base_relocs);
 

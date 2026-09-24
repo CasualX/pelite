@@ -67,7 +67,7 @@ impl<Iter32: ExactSizeIterator, Iter64: ExactSizeIterator> ExactSizeIterator for
 impl<Iter32: core::iter::FusedIterator, Iter64: core::iter::FusedIterator> core::iter::FusedIterator for Wrap<Iter32, Iter64> {}
 
 impl<T32, T64> Wrap<Result<T32>, Result<T64>> {
-	/// Transposes a wrap of results in a result of a wrap.
+	/// Transposes a wrapped result into a result of a wrap.
 	#[inline]
 	pub fn transpose(self) -> Result<Wrap<T32, T64>> {
 		match self {
@@ -79,7 +79,7 @@ impl<T32, T64> Wrap<Result<T32>, Result<T64>> {
 	}
 }
 impl<T32, T64> Wrap<Option<T32>, Option<T64>> {
-	/// Transposes a wrap of options in an option of a wrap.
+	/// Transposes wrapped options into an option of a wrap.
 	#[inline]
 	pub fn transpose(self) -> Option<Wrap<T32, T64>> {
 		match self {
@@ -114,7 +114,6 @@ mod view;
 
 pub use self::file::PeFile;
 pub use self::pe::PeLayout;
-pub(crate) use self::pe::get_section_bytes;
 pub use self::view::PeView;
 
 pub use self::exports::Export;

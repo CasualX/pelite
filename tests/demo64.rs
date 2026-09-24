@@ -129,7 +129,7 @@ fn exports_reject_null_nonempty_name_index_table() {
 	let export_offset = {
 		let file = PeFile::from_bytes(&image).unwrap();
 		let export_rva = file.data_directory()[pelite::image::IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress;
-		file.rva_to_file_offset(export_rva).unwrap()
+		file.headers().rva_to_file_offset(export_rva).unwrap()
 	};
 
 	// AddressOfNameOrdinals is the final field of IMAGE_EXPORT_DIRECTORY.

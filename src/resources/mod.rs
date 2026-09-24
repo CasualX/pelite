@@ -21,29 +21,37 @@ pub mod version_info;
 
 //----------------------------------------------------------------
 
-/// Resources directory.
+/// Resource directory.
 #[derive(Copy, Clone)]
 pub struct ResourceDirectory<'a> {
 	section: &'a [u8],
 	dir: &'a IMAGE_DATA_DIRECTORY,
 }
 impl<'a> ResourceDirectory<'a> {
-	/// Parse the bytes as PE resources.
+	/// Wraps the PE resource section and its data directory.
 	///
-	/// No validation or integrity checking is done ahead of time.
+	/// The resource tree is checked as entries are accessed.
 	pub fn new(section: &'a [u8], dir: &'a IMAGE_DATA_DIRECTORY) -> ResourceDirectory<'a> {
 		// All offsets _except_ the data entry offsets are relative to the resource directory.
 		// Data entry offsets are relative virtual addresses from the PE image.
 		// Microsoft... Why would you do this?
 		ResourceDirectory { section, dir }
 	}
-	/// Gets the root directory.
+	/// Returns the root resource directory.
+	///
+	/// # Errors
+	///
+	/// * [Misaligned][Error::Misaligned]: The directory header is misaligned.
+	/// * [Bounds][Error::Bounds]: The header or entries extend past the resource section.
+	/// * [Overflow][Error::Overflow]: Computing the header range overflows.
 	pub fn root(&self) -> Result<ResourceDirectoryTable<'a>> {
 		ResourceDirectoryTable::try_from(*self, 0)
 	}
-	/// Filesystem consistency check.
+	/// Checks all resource directory references.
 	///
-	/// Simply walks the filesystem checking all references are valid.
+	/// # Errors
+	///
+	/// * [Misaligned][Error::Misaligned], [Bounds][Error::Bounds], or [Overflow][Error::Overflow]: A directory, name, entry, or data range is invalid.
 	pub fn fsck(&self) -> Result<()> {
 		self.root()?.fsck()
 	}
@@ -95,7 +103,7 @@ impl<'a> fmt::Debug for ResourceDirectory<'a> {
 
 //----------------------------------------------------------------
 
-/// A table in the resource directory tree.
+/// Table in the resource directory tree.
 #[derive(Copy, Clone)]
 pub struct ResourceDirectoryTable<'a> {
 	resources: ResourceDirectory<'a>,
@@ -115,11 +123,11 @@ impl<'a> ResourceDirectoryTable<'a> {
 		}
 		Ok(ResourceDirectoryTable { resources, image, offset })
 	}
-	/// Gets the resources.
+	/// Returns the enclosing resource directory.
 	pub fn resources(&self) -> ResourceDirectory<'a> {
 		self.resources
 	}
-	/// Gets the underlying resource directory image.
+	/// Returns the raw resource directory header.
 	pub fn image(&self) -> &'a IMAGE_RESOURCE_DIRECTORY {
 		self.image
 	}
@@ -129,32 +137,34 @@ impl<'a> ResourceDirectoryTable<'a> {
 		// `try_from` validated this exact range and its alignment.
 		self.resources.slice_len(offset, len).expect("validated resource directory entries")
 	}
-	/// Gets the directory entries.
+	/// Returns all entries in this directory.
 	pub fn entries(&self) -> ResourceDirectoryEntryIter<'a, impl Clone + FnMut(&'a IMAGE_RESOURCE_DIRECTORY_ENTRY) -> ResourceDirectoryEntry<'a> + use<'a>> {
 		let resources = self.resources;
 		self.entry_images().iter().map(move |image| ResourceDirectoryEntry { resources, image })
 	}
-	/// Gets the named entries in this directory.
+	/// Returns the entries marked as named.
 	///
-	/// Note that while it would be a violation of the format spec, there's no strict safety guarantee that these are only named entries.
+	/// Malformed resources may contain ID entries in this range.
 	pub fn named_entries(&self) -> ResourceDirectoryEntryIter<'a, impl Clone + FnMut(&'a IMAGE_RESOURCE_DIRECTORY_ENTRY) -> ResourceDirectoryEntry<'a> + use<'a>> {
 		// Named entries come first in the array (see chapter "PE File Resources" in "Peering Inside the PE: A Tour of the Win32 Portable Executable File Format")
 		let images = &self.entry_images()[..self.image.NumberOfNamedEntries as usize];
 		let resources = self.resources;
 		images.iter().map(move |image| ResourceDirectoryEntry { resources, image })
 	}
-	/// Gets the id entries in this directory.
+	/// Returns the entries marked as IDs.
 	///
-	/// Note that while it would be a violation of the format spec, there's no strict safety guarantee that these are only id entries.
+	/// Malformed resources may contain named entries in this range.
 	pub fn id_entries(&self) -> ResourceDirectoryEntryIter<'a, impl Clone + FnMut(&'a IMAGE_RESOURCE_DIRECTORY_ENTRY) -> ResourceDirectoryEntry<'a> + use<'a>> {
 		// Id entries come last in the array.
 		let images = &self.entry_images()[self.image.NumberOfNamedEntries as usize..];
 		let resources = self.resources;
 		images.iter().map(move |image| ResourceDirectoryEntry { resources, image })
 	}
-	/// Filesystem consistency check.
+	/// Checks all entries in this directory.
 	///
-	/// Simply walks the filesystem checking all references are valid.
+	/// # Errors
+	///
+	/// * [Misaligned][Error::Misaligned], [Bounds][Error::Bounds], or [Overflow][Error::Overflow]: An entry or descendant has an invalid reference.
 	pub fn fsck(&self) -> Result<()> {
 		self.entries().try_for_each(|e| e.fsck())
 	}
@@ -175,20 +185,19 @@ pub type ResourceDirectoryEntryIter<'a, F> = iter::Map<slice::Iter<'a, IMAGE_RES
 
 //----------------------------------------------------------------
 
-/// Represents a resource name.
+/// Resource ID or name.
 #[derive(Copy, Clone, Debug, Eq)]
 pub enum ResourceName<'a> {
-	/// Resource ID.
+	/// Numeric resource ID.
 	///
-	/// Technically allows `u32` ids, but some Windows APIs will be unable to use resources with an id which isn't `u16`.
+	/// Some Windows APIs only accept IDs that fit in `u16`.
 	Id(u32),
-	/// UTF-16 named resource.
+	/// Resource name encoded as UTF-16.
 	Wide(&'a [u16]),
-	/// UTF-8 named resource.
+	/// Resource name supplied as UTF-8 text.
 	///
-	/// This variant is used when accepting user input and will be interpreted liberally when compared against other names:
-	/// When prefixed with '#' the string is parsed as a u32 and compared to resource ids.
-	/// Otherwise compares against wide strings by doing an unicode aware case sensitive comparison.
+	/// Leading `#` allows comparison with numeric IDs or predefined type names.
+	/// Other names are compared with UTF-16 names using case-sensitive Unicode characters.
 	Str(&'a str),
 }
 /// Predefined resource name constants.
@@ -297,7 +306,7 @@ impl fmt::Display for ResourceName<'_> {
 
 //----------------------------------------------------------------
 
-/// Data or directory entry.
+/// Resource directory or data entry.
 #[derive(Copy, Clone, Debug)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize), serde(untagged))]
 pub enum ResourceEntry<'a> {
@@ -305,14 +314,14 @@ pub enum ResourceEntry<'a> {
 	Data(ResourceDataEntry<'a>),
 }
 impl<'a> ResourceEntry<'a> {
-	/// Returns some if the entry is a directory.
+	/// Returns the directory if this entry contains one.
 	pub fn dir(self) -> Option<ResourceDirectoryTable<'a>> {
 		match self {
 			ResourceEntry::Directory(dir) => Some(dir),
 			ResourceEntry::Data(_) => None,
 		}
 	}
-	/// Returns some if the entry is a data entry.
+	/// Returns the data entry if this entry contains one.
 	pub fn data(self) -> Option<ResourceDataEntry<'a>> {
 		match self {
 			ResourceEntry::Directory(_) => None,
@@ -323,24 +332,26 @@ impl<'a> ResourceEntry<'a> {
 
 //----------------------------------------------------------------
 
-/// Resource directory child entry.
-///
-/// Contains a name and a reference to the associated data or directory entry.
+/// Named entry in a resource directory.
 #[derive(Copy, Clone)]
 pub struct ResourceDirectoryEntry<'a> {
 	resources: ResourceDirectory<'a>,
 	image: &'a IMAGE_RESOURCE_DIRECTORY_ENTRY,
 }
 impl<'a> ResourceDirectoryEntry<'a> {
-	/// Gets the resources.
+	/// Returns the enclosing resource directory.
 	pub fn resources(&self) -> ResourceDirectory<'a> {
 		self.resources
 	}
-	/// Gets the underlying resource directory entry image.
+	/// Returns the raw resource directory entry.
 	pub fn image(&self) -> &'a IMAGE_RESOURCE_DIRECTORY_ENTRY {
 		self.image
 	}
-	/// Gets the name for this entry.
+	/// Returns this entry's name.
+	///
+	/// # Errors
+	///
+	/// * [Misaligned][Error::Misaligned], [Bounds][Error::Bounds], or [Overflow][Error::Overflow]: A UTF-16 name has an invalid offset or length.
 	pub fn name(&self) -> Result<ResourceName<'a>> {
 		if self.image.Name & 0x80000000 != 0 {
 			let offset = self.image.Name & !0x80000000;
@@ -352,11 +363,15 @@ impl<'a> ResourceDirectoryEntry<'a> {
 			Ok(ResourceName::Id(self.image.Name))
 		}
 	}
-	/// Returns if this entry is a directory.
+	/// Returns whether this entry refers to a directory.
 	pub fn is_dir(&self) -> bool {
 		self.image.Offset & 0x80000000 != 0
 	}
-	/// Returns the directory or data entry for this entry.
+	/// Returns the directory or data referenced by this entry.
+	///
+	/// # Errors
+	///
+	/// * [Misaligned][Error::Misaligned], [Bounds][Error::Bounds], or [Overflow][Error::Overflow]: The referenced header or entries are invalid.
 	pub fn entry(&self) -> Result<ResourceEntry<'a>> {
 		if self.is_dir() {
 			let offset = self.image.Offset & !0x80000000;
@@ -367,9 +382,11 @@ impl<'a> ResourceDirectoryEntry<'a> {
 			ResourceDataEntry::try_from(self.resources, offset).map(ResourceEntry::Data)
 		}
 	}
-	/// Filesystem consistency check.
+	/// Checks this entry and its descendants.
 	///
-	/// Simply walks the filesystem checking all references are valid.
+	/// # Errors
+	///
+	/// * [Misaligned][Error::Misaligned], [Bounds][Error::Bounds], or [Overflow][Error::Overflow]: The name, referenced entry, or a descendant is invalid.
 	pub fn fsck(&self) -> Result<()> {
 		self.name()?;
 		match self.entry()? {
@@ -389,7 +406,7 @@ impl<'a> fmt::Debug for ResourceDirectoryEntry<'a> {
 
 //----------------------------------------------------------------
 
-/// Data entry.
+/// Resource data entry.
 #[derive(Copy, Clone)]
 pub struct ResourceDataEntry<'a> {
 	resources: ResourceDirectory<'a>,
@@ -400,31 +417,39 @@ impl<'a> ResourceDataEntry<'a> {
 		let image = resources.slice(offset)?;
 		Ok(ResourceDataEntry { resources, image })
 	}
-	/// Gets the resources.
+	/// Returns the enclosing resource directory.
 	pub fn resources(&self) -> ResourceDirectory<'a> {
 		self.resources
 	}
-	/// Gets the underlying resource data entry image.
+	/// Returns the raw resource data entry.
 	pub fn image(&self) -> &'a IMAGE_RESOURCE_DATA_ENTRY {
 		self.image
 	}
-	/// Gets the actual data.
+	/// Returns the resource data bytes.
+	///
+	/// # Errors
+	///
+	/// * [Overflow][Error::Overflow]: The data address precedes the section or its range overflows.
+	/// * [Bounds][Error::Bounds]: The data extends past the resource section.
 	pub fn bytes(&self) -> Result<&'a [u8]> {
 		let start = u32::checked_sub(self.image.OffsetToData, self.resources.dir.VirtualAddress).ok_or(Error::Overflow)?;
 		let end = u32::checked_add(start, self.image.Size).ok_or(Error::Overflow)?;
 		self.resources.section.get(start as usize..end as usize).ok_or(Error::Bounds)
 	}
-	/// Gets the data size.
+	/// Returns the resource data size.
 	pub fn size(&self) -> usize {
 		self.image.Size as usize
 	}
-	/// Gets the code page.
+	/// Returns the resource code page.
 	pub fn code_page(&self) -> u32 {
 		self.image.CodePage
 	}
-	/// Filesystem consistency check.
+	/// Checks this data entry's byte range.
 	///
-	/// Simply walks the filesystem checking all references are valid.
+	/// # Errors
+	///
+	/// * [Overflow][Error::Overflow]: The data address or size produces an invalid range.
+	/// * [Bounds][Error::Bounds]: The data extends past the resource section.
 	pub fn fsck(&self) -> Result<()> {
 		self.bytes()?;
 		Ok(())

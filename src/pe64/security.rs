@@ -1,9 +1,25 @@
 use super::*;
 
+impl<'a> PeFile<'a> {
+	#[doc = include_str!("../docs/security.md")]
+	#[inline]
+	pub fn security(self) -> Result<crate::security::SecurityDirectory<'a>> {
+		try_from(self)
+	}
+}
+
+impl<'a> PeView<'a> {
+	#[doc = include_str!("../docs/security.md")]
+	#[inline]
+	pub fn security(self) -> Result<crate::security::SecurityDirectory<'a>> {
+		try_from(self)
+	}
+}
+
 #[doc(inline)]
 pub use crate::security::*;
 
-pub(crate) fn try_from<'a, P: Pe<'a>>(pe: P) -> Result<SecurityDirectory<'a>> {
+pub(crate) fn try_from<'a, P: Copy + Pe<'a>>(pe: P) -> Result<SecurityDirectory<'a>> {
 	let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_SECURITY).ok_or(Error::Bounds)?;
 	if datadir.VirtualAddress == 0 {
 		return Err(Error::Null);
@@ -27,7 +43,7 @@ pub(crate) fn try_from<'a, P: Pe<'a>>(pe: P) -> Result<SecurityDirectory<'a>> {
 }
 
 #[cfg(test)]
-pub(crate) fn test_security<'a, P: Pe<'a>>(pe: P) -> Result<()> {
+pub(crate) fn test_security<'a, P: Copy + Pe<'a>>(pe: P) -> Result<()> {
 	let security = pe.security()?;
 	let _ = format!("{:?}", security);
 	let _certificate_type = security.certificate_type();

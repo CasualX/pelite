@@ -24,7 +24,7 @@ unsafe extern "C" {
 	static __ImageBase: IMAGE_DOS_HEADER;
 }
 
-/// Gets the base address of the module this code is linked with.
+/// Returns the base address of the module this code is linked with.
 ///
 /// This uses a linker pseudovariable and is only available on windows targets.
 #[cfg(windows)]

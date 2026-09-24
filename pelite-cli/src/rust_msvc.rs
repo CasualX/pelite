@@ -1,6 +1,6 @@
 //! Helpers for recognizing data emitted by the current Rust x64 MSVC toolchain.
 
-use pelite::pe64::{image, Pe, PeFile, Rva};
+use pelite::pe64::{image, PeFile, Rva};
 
 use super::*;
 

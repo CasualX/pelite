@@ -116,31 +116,31 @@ impl ErrorKind {
 pub enum Atom {
 	/// Matches one byte under the cursor and advances by 1.
 	///
-	/// When immediately preceded by [`Fuzzy`](Atom::Fuzzy), compares `byte & mask == argument & mask`.
+	/// When immediately preceded by [`Fuzzy`][Atom::Fuzzy], compares `byte & mask == argument & mask`.
 	/// A successful byte match resets the mask to `0xff`.
 	Byte(u8),
 	/// Writes the current cursor to the given save slot without advancing it.
 	Save(i8),
 	/// Sets the cursor to the value in the given save slot, without reading image bytes.
 	Seek(i8),
-	/// Sets the bit mask for the immediately following [`Byte`](Atom::Byte).
+	/// Sets the bit mask for the immediately following [`Byte`][Atom::Byte].
 	///
 	/// Set bits must match; clear bits are ignored. The mask applies to that byte only.
 	/// Behavior is unspecified if the next instruction is not `Byte`.
 	Fuzzy(u8),
 	/// Advances the cursor by `argument + extension`, wrapping at 32 bits.
 	///
-	/// Consumes the pending [`Extend`](Atom::Extend) extension. A combined offset of zero
+	/// Consumes the pending [`Extend`][Atom::Extend] extension. A combined offset of zero
 	/// means the image's pointer width. Does not check whether skipped bytes are readable.
 	Skip(u8),
 	/// Rewinds the cursor by `argument + extension`, wrapping at 32 bits.
 	///
-	/// Consumes the pending [`Extend`](Atom::Extend) extension. A combined offset of zero
+	/// Consumes the pending [`Extend`][Atom::Extend] extension. A combined offset of zero
 	/// means the image's pointer width. Does not read or validate the destination.
 	Rewind(u8),
-	/// Sets the range extension for the next [`Skip`](Atom::Skip),
-	/// [`Rewind`](Atom::Rewind), [`Scan`](Atom::Scan), [`Fork`](Atom::Fork) or
-	/// [`Goto`](Atom::Goto) in the current interpreter frame.
+	/// Sets the range extension for the next [`Skip`][Atom::Skip],
+	/// [`Rewind`][Atom::Rewind], [`Scan`][Atom::Scan], [`Fork`][Atom::Fork] or
+	/// [`Goto`][Atom::Goto] in the current interpreter frame.
 	///
 	/// Appends `argument` as the next high byte of that instruction's operand, then is consumed.
 	/// Consecutive extensions accumulate, allowing up to three prefixes for a 32-bit operand.
@@ -148,7 +148,7 @@ pub enum Atom {
 	Extend(u8),
 	/// Searches forward for a match of the following atoms, trying the nearest cursor first.
 	///
-	/// Consumes [`Extend`](Atom::Extend). The combined operand is the maximum distance to skip:
+	/// Consumes [`Extend`][Atom::Extend]. The combined operand is the maximum distance to skip:
 	/// offsets `0..=limit`, restricted to the current section's remaining readable bytes.
 	/// Zero searches the entire remainder of that section. Each attempt starts with fresh modifiers;
 	/// save-slot contents after a failed attempt are unspecified. Succeeds on the first successful continuation.
@@ -172,7 +172,7 @@ pub enum Atom {
 	/// Follows a 4-byte relative reference based on the given save slot.
 	///
 	/// Reads an `i32` under the cursor and sets `cursor = save[slot] + displacement`, wrapping at 32 bits.
-	/// Unlike [`Jump4`](Atom::Jump4), does not add the displacement's width to the base.
+	/// Unlike [`Jump4`][Atom::Jump4], does not add the displacement's width to the base.
 	Pir(i8),
 	/// Fails unless the cursor equals the value in the given save slot.
 	///
@@ -220,16 +220,16 @@ pub enum Atom {
 	Zero(i8),
 	/// Records an alternative at `pc + 1 + argument + extension`, then continues with the next atom.
 	///
-	/// Consumes [`Extend`](Atom::Extend); the offset counts atoms, not bytes. On later failure,
+	/// Consumes [`Extend`][Atom::Extend]; the offset counts atoms, not bytes. On later failure,
 	/// retries the most recent alternative with its saved cursor.
 	/// The extension used by this fork is consumed before recording that state.
-	/// Alternatives remain available across [`Goto`](Atom::Goto) and [`Seek`](Atom::Seek).
+	/// Alternatives remain available across [`Goto`][Atom::Goto] and [`Seek`][Atom::Seek].
 	/// The first alternative succeeds only if the entire remaining pattern matches.
 	/// Save-slot contents after a failed alternative are unspecified; initialize slots before relying on their values.
 	Fork(u8),
 	/// Skips the next `argument + extension` atoms without moving the byte cursor.
 	///
-	/// Consumes [`Extend`](Atom::Extend); zero skips no atoms. Does not return from the current
+	/// Consumes [`Extend`][Atom::Extend]; zero skips no atoms. Does not return from the current
 	/// interpreter frame, modify scratch slots or commit an alternative.
 	Goto(u8),
 	/// Does nothing; used as a placeholder when compiling patterns.

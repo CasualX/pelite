@@ -13,7 +13,7 @@ use crate::{Error, Result};
 
 const STRINGS_PER_BLOCK: usize = 16;
 
-/// A parsed string-table resource block.
+/// Parsed string-table resource block.
 #[derive(Copy, Clone)]
 pub struct StringTable<'a> {
 	bytes: &'a [u8],
@@ -22,8 +22,13 @@ pub struct StringTable<'a> {
 impl<'a> StringTable<'a> {
 	/// Parses a string-table resource block.
 	///
-	/// The block must contain exactly 16 length-prefixed UTF-16LE strings and no
-	/// trailing data. Empty strings are valid entries.
+	/// The block must contain exactly 16 length-prefixed UTF-16LE strings. Empty strings are valid.
+	///
+	/// # Errors
+	///
+	/// * [Bounds][Error::Bounds]: A string length or its UTF-16 data is truncated.
+	/// * [Overflow][Error::Overflow]: A string's byte length overflows.
+	/// * [Invalid][Error::Invalid]: Data remains after the required 16 strings.
 	pub fn new(bytes: &'a [u8]) -> Result<StringTable<'a>> {
 		let mut remaining = bytes;
 		for _ in 0..STRINGS_PER_BLOCK {
@@ -46,7 +51,7 @@ impl<'a> StringTable<'a> {
 		self.iter().nth(index)
 	}
 
-	/// Iterates over all 16 strings in the block.
+	/// Returns an iterator over all 16 strings in the block.
 	pub fn iter(&self) -> StringTableIter<'a> {
 		StringTableIter { remaining: self.bytes, len: STRINGS_PER_BLOCK }
 	}
@@ -67,7 +72,7 @@ impl fmt::Debug for StringTable<'_> {
 	}
 }
 
-/// A UTF-16LE string borrowed from a string-table resource.
+/// UTF-16LE string borrowed from a string-table resource.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub struct StringTableString<'a> {
 	bytes: &'a [u8],
@@ -84,12 +89,16 @@ impl StringTableString<'_> {
 		self.bytes.is_empty()
 	}
 
-	/// Iterates over the UTF-16 code units.
+	/// Returns an iterator over the UTF-16 code units.
 	pub fn encode_utf16(&self) -> impl Clone + ExactSizeIterator<Item = u16> + use<'_> {
 		self.bytes.as_chunks::<2>().0.iter().map(|&word| u16::from_le_bytes(word))
 	}
 
-	/// Decodes the string, returning an error for an unpaired surrogate.
+	/// Decodes the string as UTF-16.
+	///
+	/// # Errors
+	///
+	/// * [DecodeUtf16Error][char::DecodeUtf16Error]: The string contains an unpaired surrogate.
 	pub fn to_string(&self) -> core::result::Result<String, char::DecodeUtf16Error> {
 		char::decode_utf16(self.encode_utf16()).collect()
 	}

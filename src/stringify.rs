@@ -20,14 +20,14 @@ macro_rules! enum1 {
 		#[derive(Copy, Clone)]
 		pub struct $Item(pub $ty);
 		impl $Item {
-			/// Gets the code identifier name for the value.
+			/// Returns the code identifier name for the value.
 			pub fn to_str(self) -> Option<&'static str> {
 				match self.0 {
 					$($name => Some(stringify!($name)),)*
 					_ => None,
 				}
 			}
-			/// Gets a longer description for the value.
+			/// Returns a longer description for the value.
 			pub fn description(self) -> Option<&'static str> {
 				match self.0 {
 					$($name => Some($desc),)*
@@ -59,14 +59,14 @@ macro_rules! flags {
 		$vis struct $Item(pub $ty);
 		#[allow(dead_code)]
 		impl $Item {
-			/// Gets the code identifier for a flag value given the bit index.
+			/// Returns the code identifier for a flag value given the bit index.
 			pub fn flag_str(index: u32) -> Option<&'static str> {
 				match index {
 					$($index => Some(stringify!($name)),)*
 					_ => None,
 				}
 			}
-			/// Gets the description for a flag value given the bit index.
+			/// Returns the description for a flag value given the bit index.
 			pub fn flag_desc(index: u32) -> Option<&'static str> {
 				match index {
 					$($index => Some($desc),)*
@@ -254,7 +254,7 @@ pub struct SectionChars(pub u32);
 impl SectionChars {
 	const ALIGN_MASK: u32 = 0x00f00000;
 
-	/// Gets the code identifier for a single-bit flag given its bit index.
+	/// Returns the code identifier for a single-bit flag given its bit index.
 	///
 	/// Indices 20 through 23 contain the encoded alignment field and therefore
 	/// are not individual flags. Use [`SectionChars::alignment`] for that field.
@@ -262,7 +262,7 @@ impl SectionChars {
 		SectionFlag::flag_str(index)
 	}
 
-	/// Gets the description for a single-bit flag given its bit index.
+	/// Returns the description for a single-bit flag given its bit index.
 	pub fn flag_desc(index: u32) -> Option<&'static str> {
 		SectionFlag::flag_desc(index)
 	}
@@ -272,7 +272,7 @@ impl SectionChars {
 		SectionFlag::parse_flag(s).or_else(|| s.parse::<SectionAlignment>().ok().map(|value| value.0))
 	}
 
-	/// Gets the encoded section alignment, if one is present and valid.
+	/// Returns the encoded section alignment, if one is present and valid.
 	pub fn alignment(self) -> Option<SectionAlignment> {
 		let alignment = SectionAlignment(self.0 & Self::ALIGN_MASK);
 		alignment.to_str().map(|_| alignment)

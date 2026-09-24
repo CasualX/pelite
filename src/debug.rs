@@ -32,11 +32,18 @@ impl<'a> DebugDirectory<'a> {
 	pub(crate) fn new(data: &'a [u8], layout: PeLayout, image: &'a [image::IMAGE_DEBUG_DIRECTORY]) -> Self {
 		Self { data, layout, image }
 	}
-	/// Returns the underlying debug directories image.
+	/// Returns the raw debug directory entries.
 	pub fn image(&self) -> &'a [image::IMAGE_DEBUG_DIRECTORY] {
 		self.image
 	}
-	/// Gets the CodeView PDB file name.
+	/// Returns the PDB path from the first CodeView entry, if present.
+	///
+	/// # Errors
+	///
+	/// * [Bounds][Error::Bounds]: The CodeView data is missing or too short.
+	/// * [Misaligned][Error::Misaligned]: The CodeView record is not four-byte aligned.
+	/// * [BadMagic][Error::BadMagic]: The CodeView signature is unsupported.
+	/// * [Encoding][Error::Encoding]: The PDB path lacks a NUL terminator.
 	pub fn pdb_file_name(&self) -> Result<Option<&'a CStr>> {
 		for dir in self.iter() {
 			if dir.image.Type == image::IMAGE_DEBUG_TYPE_CODEVIEW {
@@ -45,7 +52,7 @@ impl<'a> DebugDirectory<'a> {
 		}
 		Ok(None)
 	}
-	/// Iterator over the debug directories.
+	/// Returns an iterator over debug directory entries.
 	pub fn iter(&self) -> DebugDirectoryIter<'a> {
 		DebugDirectoryIter { data: self.data, layout: self.layout, iter: self.image.iter() }
 	}
@@ -73,7 +80,7 @@ pub struct DebugDirectoryIter<'a> {
 	iter: slice::Iter<'a, image::IMAGE_DEBUG_DIRECTORY>,
 }
 impl<'a> DebugDirectoryIter<'a> {
-	/// Returns the unconsumed debug directory entries.
+	/// Returns the unconsumed raw debug directory entries.
 	pub fn image(&self) -> &'a [image::IMAGE_DEBUG_DIRECTORY] {
 		self.iter.as_slice()
 	}
@@ -107,25 +114,32 @@ impl<'a> DoubleEndedIterator for DebugDirectoryIter<'a> {
 impl ExactSizeIterator for DebugDirectoryIter<'_> {}
 impl iter::FusedIterator for DebugDirectoryIter<'_> {}
 
-/// Debug directory entry.
+/// Entry in a debug directory.
 #[derive(Copy, Clone)]
 pub struct DebugDirectoryEntry<'a> {
 	data: Option<&'a [u8]>,
 	image: &'a image::IMAGE_DEBUG_DIRECTORY,
 }
 impl<'a> DebugDirectoryEntry<'a> {
-	/// Gets the underlying debug directory image.
+	/// Returns the raw debug directory entry.
 	pub fn image(&self) -> &'a image::IMAGE_DEBUG_DIRECTORY {
 		self.image
 	}
-	/// Gets the raw data of this debug directory entry.
+	/// Returns the raw entry data, if its range is available.
 	pub fn data(&self) -> Option<&'a [u8]> {
 		self.data
 	}
-	/// Interprets the directory entry.
+	/// Decodes this debug directory entry.
 	///
-	/// Returns `Ok(None)` when the debug type is not supported. An error means
-	/// that a supported entry is malformed or its data is unavailable.
+	/// Returns `Ok(None)` for unsupported debug types.
+	///
+	/// # Errors
+	///
+	/// * [Bounds][Error::Bounds]: Data is unavailable or a supported record is truncated.
+	/// * [Misaligned][Error::Misaligned]: A CodeView, miscellaneous, or PGO record is misaligned.
+	/// * [BadMagic][Error::BadMagic]: A CodeView signature is unsupported.
+	/// * [Encoding][Error::Encoding]: A required name lacks a NUL terminator.
+	/// * [Invalid][Error::Invalid]: A UTF-16 name or PGO record has an invalid byte length.
 	pub fn entry(&self) -> Result<Option<DebugData<'a>>> {
 		match self.image.Type {
 			image::IMAGE_DEBUG_TYPE_CODEVIEW => Ok(Some(DebugData::CodeView(code_view(self)?))),
@@ -254,21 +268,21 @@ pub enum DebugData<'a> {
 	Pgo(Pgo<'a>),
 }
 impl<'a> DebugData<'a> {
-	/// As a CodeView debug information entry.
+	/// Returns the CodeView entry, if this variant contains one.
 	pub fn as_code_view(self) -> Option<CodeView<'a>> {
 		match self {
 			DebugData::CodeView(cv) => Some(cv),
 			_ => None,
 		}
 	}
-	/// As a miscellaneous debug information entry.
+	/// Returns the miscellaneous entry, if this variant contains one.
 	pub fn as_misc(self) -> Option<DebugMisc<'a>> {
 		match self {
 			DebugData::Misc(misc) => Some(misc),
 			_ => None,
 		}
 	}
-	/// As a PGO information entry.
+	/// Returns the PGO entry, if this variant contains one.
 	pub fn as_pgo(self) -> Option<Pgo<'a>> {
 		match self {
 			DebugData::Pgo(pgo) => Some(pgo),
@@ -342,18 +356,18 @@ impl<'a> fmt::Debug for CodeView<'a> {
 
 //----------------------------------------------------------------
 
-/// Debug information.
+/// Miscellaneous debug information.
 #[derive(Copy, Clone)]
 pub struct DebugMisc<'a> {
 	pub(crate) image: &'a image::IMAGE_DEBUG_MISC,
 	pub(crate) name: DebugMiscName<'a>,
 }
 impl<'a> DebugMisc<'a> {
-	/// Gets the underlying information image.
+	/// Returns the raw miscellaneous debug header.
 	pub fn image(&self) -> &'a image::IMAGE_DEBUG_MISC {
 		self.image
 	}
-	/// Gets the name of the separate debug file.
+	/// Returns the separate debug file name.
 	pub fn name(&self) -> DebugMiscName<'a> {
 		self.name
 	}
@@ -369,7 +383,7 @@ impl<'a> fmt::Debug for DebugMisc<'a> {
 	}
 }
 
-/// Name stored in an [`IMAGE_DEBUG_MISC`](image::IMAGE_DEBUG_MISC) record.
+/// Name stored in an [`IMAGE_DEBUG_MISC`][image::IMAGE_DEBUG_MISC] record.
 #[derive(Copy, Clone, Debug)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize), serde(untagged))]
 pub enum DebugMiscName<'a> {
@@ -381,21 +395,23 @@ pub enum DebugMiscName<'a> {
 
 //----------------------------------------------------------------
 
-/// PGO information.
+/// Profile-guided optimization information.
 #[derive(Copy, Clone)]
 pub struct Pgo<'a> {
 	pub(crate) image: &'a [u32],
 }
 impl<'a> Pgo<'a> {
-	/// Gets the underlying image.
+	/// Returns the raw PGO record words.
 	pub fn image(&self) -> &'a [u32] {
 		self.image
 	}
-	/// Gets the PGO format signature.
+	/// Returns the PGO format signature.
 	pub fn signature(&self) -> PgoSignature {
 		PgoSignature::from(self.image.first().copied().unwrap_or_default())
 	}
-	/// Iterator over the PGO sections.
+	/// Returns an iterator over PGO sections.
+	///
+	/// The iterator yields [Bounds][Error::Bounds] for a truncated section and [Encoding][Error::Encoding] for a section name without a NUL terminator.
 	pub fn iter(&self) -> PgoIter<'a> {
 		let image = if self.image.len() >= 1 { &self.image[1..] } else { self.image };
 		PgoIter { image }
@@ -420,7 +436,7 @@ impl<'a> fmt::Debug for Pgo<'a> {
 /// Four-byte format signature at the start of a PGO debug record.
 ///
 /// The bytes use the conventional spelling displayed by Microsoft tools. The
-/// PE stores the signature as a little-endian integer, so [`PgoSignature::LTCG`]
+/// PE stores the signature as a little-endian integer, so [`PgoSignature::LTCG`][PgoSignature::LTCG]
 /// corresponds to the on-disk bytes `GCTL`.
 #[derive(Copy, Clone, Debug, Eq, Hash, PartialEq)]
 #[repr(transparent)]
@@ -439,15 +455,15 @@ impl PgoSignature {
 	/// Static profile-guided optimization data.
 	pub const SPGO: Self = Self(*b"SPGO");
 
-	/// Gets the conventionally ordered signature bytes.
+	/// Returns the signature bytes in conventional order.
 	pub fn as_bytes(&self) -> &[u8; 4] {
 		&self.0
 	}
-	/// Returns the conventionally ordered signature bytes.
+	/// Returns the signature bytes in conventional order.
 	pub fn into_bytes(self) -> [u8; 4] {
 		self.0
 	}
-	/// Gets the raw integer magic value stored in the record.
+	/// Returns the integer signature stored in the record.
 	pub fn raw(self) -> u32 {
 		u32::from_be_bytes(self.0)
 	}
