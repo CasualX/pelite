@@ -2,8 +2,12 @@
 name = "pelite-cli"
 version = "0.1.0"
 edition = "2024"
+rust-version = "1.85"
+
 license = "MIT"
+authors = ["Casper <CasualX@users.noreply.github.com>"]
 description = "Command-line tools for inspecting PE binaries with pelite"
+categories = ["command-line-utilities"]
 
 [dependencies]
 basenc = "1.0.0-alpha.2"

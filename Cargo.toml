@@ -1,17 +1,18 @@
 [package]
 name = "pelite"
 version = "0.10.0"
-authors = ["Casper <CasualX@users.noreply.github.com>"]
 edition = "2024"
-license = "MIT"
+rust-version = "1.85"
 
-description = "Lightweight, memory-safe, zero-allocation library for reading and navigating PE binaries."
+license = "MIT"
+authors = ["Casper <CasualX@users.noreply.github.com>"]
+description = "Parse and inspect PE32 and PE32+ Windows executables and DLLs, on disk or in memory."
 documentation = "https://docs.rs/pelite/"
 repository = "https://github.com/CasualX/pelite"
 readme = "readme.md"
-keywords = ["exe", "dll", "mui", "bin", "pe"]
-categories = ["parser-implementations", "command-line-utilities"]
-exclude = ["tests/pocs/blob"]
+keywords = ["pe", "portable-executable", "windows", "exe", "dll"]
+categories = ["parser-implementations"]
+exclude = ["tests/pocs/pocs.blob"]
 
 [workspace]
 members = [".", "./pelite-cli", "./wasm"]
