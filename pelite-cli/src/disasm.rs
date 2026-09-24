@@ -7,6 +7,40 @@ struct DisassembledInstruction<'a> {
 	address: u64,
 	bytes: &'a [u8],
 	instruction: String,
+	#[serde(skip)]
+	colored_instruction: Option<String>,
+}
+
+struct InstructionText {
+	plain: String,
+	colored: Option<String>,
+}
+
+impl iced_x86::FormatterOutput for InstructionText {
+	fn write(&mut self, text: &str, kind: iced_x86::FormatterTextKind) {
+		use iced_x86::FormatterTextKind as Kind;
+
+		self.plain.push_str(text);
+		let Some(colored) = &mut self.colored else {
+			return;
+		};
+		let color = match kind {
+			Kind::Mnemonic | Kind::Directive => "\x1b[1;32m",
+			Kind::Register => "\x1b[36m",
+			Kind::Number | Kind::SelectorValue | Kind::LabelAddress | Kind::FunctionAddress => "\x1b[33m",
+			Kind::Data | Kind::Label | Kind::Function => "\x1b[1;35m",
+			Kind::Prefix | Kind::Keyword | Kind::Decorator => "\x1b[35m",
+			Kind::Operator | Kind::Punctuation => "\x1b[90m",
+			_ => "",
+		};
+		if !color.is_empty() {
+			colored.push_str(color);
+		}
+		colored.push_str(text);
+		if !color.is_empty() {
+			colored.push_str("\x1b[0m");
+		}
+	}
 }
 
 struct PeSymbolResolver {
@@ -31,6 +65,10 @@ pub fn command() -> clap::Command {
 			.value_name("START..END")
 			.value_parser(RvaRange::parse)
 			.required(true))
+		.arg(clap::Arg::new("hex")
+			.long("hex")
+			.action(clap::ArgAction::SetTrue)
+			.help("Show instruction opcode bytes in text output"))
 }
 
 pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
@@ -52,33 +90,54 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let mut decoder = iced_x86::Decoder::with_ip(bitness, bytes, start_ip, iced_x86::DecoderOptions::NONE);
 	let symbols = Arc::new(build_symbols(pe, bitness, image_base));
 	let mut formatter = iced_x86::IntelFormatter::with_options(Some(Box::new(PeSymbolResolver { symbols: Arc::clone(&symbols) })), None);
+	let color = format == OutputFormat::Text && io::stdout().is_terminal();
 	let mut instructions = Vec::new();
 	while decoder.can_decode() && decoder.ip() < end_ip {
 		let instruction = decoder.decode();
 		let address = instruction.ip();
 		let offset = usize::try_from(address - start_ip)?;
 		let instruction_bytes = &bytes[offset..offset + instruction.len()];
-		let mut text = String::new();
+		let mut text = InstructionText { plain: String::new(), colored: color.then(String::new) };
 		iced_x86::Formatter::format(&mut formatter, &instruction, &mut text);
-		instructions.push(DisassembledInstruction { address, bytes: instruction_bytes, instruction: text });
+		instructions.push(DisassembledInstruction { address, bytes: instruction_bytes, instruction: text.plain, colored_instruction: text.colored });
 	}
 
 	match format {
 		OutputFormat::Json => print_json(&instructions, false),
 		OutputFormat::JsonPretty => print_json(&instructions, true),
 		OutputFormat::Text => {
+			let show_hex = matches.get_flag("hex");
 			for item in instructions {
 				if let Some(symbol) = symbols.get(&item.address) {
-					println!("\n{symbol}:");
+					if color {
+						println!("\n\x1b[1;35m{symbol}:\x1b[0m");
+					}
+					else {
+						println!("\n{symbol}:");
+					}
 				}
-				let bytes = item.bytes.iter().map(|byte| format!("{byte:02x}")).collect::<Vec<_>>().join(" ");
 				let address_width = bitness as usize / 4 + 2;
 				let section_name = item.address.checked_sub(image_base)
 					.and_then(|rva| u32::try_from(rva).ok())
 					.and_then(|rva| pe.section_headers().by_rva(rva))
 					.and_then(|section| section.name().ok())
 					.unwrap_or("<no section>");
-				println!("{section_name}:{:#0address_width$x}  {bytes:<44} {}", item.address, item.instruction);
+				if color {
+					print!("\x1b[90m{section_name}\x1b[0m:\x1b[36m{:#0address_width$x}\x1b[0m  ", item.address);
+				}
+				else {
+					print!("{section_name}:{:#0address_width$x}  ", item.address);
+				}
+				if show_hex {
+					let bytes = item.bytes.iter().map(|byte| format!("{byte:02x}")).collect::<Vec<_>>().join(" ");
+					if color {
+						print!("\x1b[90m{bytes:<44}\x1b[0m ");
+					}
+					else {
+						print!("{bytes:<44} ");
+					}
+				}
+				println!("{}", item.colored_instruction.as_deref().unwrap_or(&item.instruction));
 			}
 			Ok(())
 		},
