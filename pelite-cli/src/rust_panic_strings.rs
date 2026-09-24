@@ -1,5 +1,5 @@
 use pelite::FileMap;
-use pelite::pe64::{image, Pe, PeFile};
+use pelite::pe64::{image, PeFile};
 
 use crate::rust_msvc::*;
 use super::*;

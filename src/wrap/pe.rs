@@ -11,7 +11,7 @@ pub enum PeLayout {
 	Section,
 }
 
-pub(crate) fn get_section_bytes<'a>(image: &'a [u8], section_header: &image::IMAGE_SECTION_HEADER, layout: PeLayout) -> Result<&'a [u8]> {
+fn get_section_bytes<'a>(image: &'a [u8], section_header: &image::IMAGE_SECTION_HEADER, layout: PeLayout) -> Result<&'a [u8]> {
 	let (address, size) = match layout {
 		PeLayout::File => (section_header.PointerToRawData, section_header.SizeOfRawData),
 		PeLayout::Section => (section_header.VirtualAddress, section_header.VirtualSize),
@@ -24,7 +24,8 @@ pub(crate) fn get_section_bytes<'a>(image: &'a [u8], section_header: &image::IMA
 	image.get(start..end).ok_or(Error::Bounds)
 }
 
-impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
+impl<'a, Pe32: Copy + pe32::Pe<'a>, Pe64: Copy + pe64::Pe<'a>> Wrap<Pe32, Pe64> {
+	/// Returns the image as a byte slice.
 	#[inline]
 	pub fn image(&self) -> &'a [u8] {
 		match self {
@@ -32,6 +33,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 			Wrap::T64(pe64) => pe64.image(),
 		}
 	}
+	/// Returns whether the image uses file or mapped section layout.
 	#[inline]
 	pub fn layout(&self) -> PeLayout {
 		match self {
@@ -39,6 +41,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 			Wrap::T64(pe64) => pe64.layout(),
 		}
 	}
+	/// Returns a wrapper around references to the PE instance.
 	#[inline]
 	pub fn as_ref(&self) -> Wrap<&Pe32, &Pe64> {
 		match self {
@@ -49,6 +52,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 
 	//----------------------------------------------------------------
 
+	/// Returns the DOS header.
 	#[inline]
 	pub fn dos_header(&self) -> &'a image::IMAGE_DOS_HEADER {
 		match self {
@@ -56,6 +60,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 			Wrap::T64(pe64) => pe64.dos_header(),
 		}
 	}
+	/// Returns the DOS image up to the PE headers.
 	#[inline]
 	pub fn dos_image(&self) -> &'a [u8] {
 		match self {
@@ -63,6 +68,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 			Wrap::T64(pe64) => pe64.dos_image(),
 		}
 	}
+	/// Returns the NT headers.
 	#[inline]
 	pub fn nt_headers(&self) -> Wrap<&'a image::IMAGE_NT_HEADERS32, &'a image::IMAGE_NT_HEADERS64> {
 		match self {
@@ -70,6 +76,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 			Wrap::T64(pe64) => Wrap::T64(pe64.nt_headers()),
 		}
 	}
+	/// Returns the file header.
 	#[inline]
 	pub fn file_header(&self) -> &'a image::IMAGE_FILE_HEADER {
 		match self {
@@ -77,6 +84,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 			Wrap::T64(pe64) => pe64.file_header(),
 		}
 	}
+	/// Returns the optional header.
 	#[inline]
 	pub fn optional_header(&self) -> Wrap<&'a image::IMAGE_OPTIONAL_HEADER32, &'a image::IMAGE_OPTIONAL_HEADER64> {
 		match self {
@@ -84,6 +92,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 			Wrap::T64(pe64) => Wrap::T64(pe64.optional_header()),
 		}
 	}
+	/// Returns the data directories.
 	#[inline]
 	pub fn data_directory(&self) -> &'a [image::IMAGE_DATA_DIRECTORY] {
 		match self {
@@ -91,6 +100,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 			Wrap::T64(pe64) => pe64.data_directory(),
 		}
 	}
+	/// Returns the section headers.
 	#[inline]
 	pub fn section_headers(&self) -> &'a super::sections::PeSectionHeaders {
 		match self {
@@ -101,6 +111,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 
 	//----------------------------------------------------------------
 
+	#[doc = include_str!("../docs/offset_of.md")]
 	#[inline]
 	#[track_caller]
 	pub fn offset_of<T: Pod + ?Sized>(self, symbol: &'a T) -> usize {
@@ -116,6 +127,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 		symbol - base
 	}
 
+	#[doc = include_str!("../docs/slice.md")]
 	#[inline]
 	pub fn slice(&self, rva: u32, min_size: usize, align: usize) -> Result<&'a [u8]> {
 		match self {
@@ -123,6 +135,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 			Wrap::T64(pe64) => pe64.slice(rva, min_size, align),
 		}
 	}
+	#[doc = include_str!("../docs/slice_bytes.md")]
 	#[inline]
 	pub fn slice_bytes(&self, rva: u32) -> Result<&'a [u8]> {
 		match self {
@@ -130,6 +143,8 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 			Wrap::T64(pe64) => pe64.slice_bytes(rva),
 		}
 	}
+
+	#[doc = include_str!("../docs/get_section_bytes.md")]
 	#[inline]
 	pub fn get_section_bytes(&self, section_header: &image::IMAGE_SECTION_HEADER) -> Result<&'a [u8]> {
 		get_section_bytes(self.image(), section_header, self.layout())
@@ -137,6 +152,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 
 	//----------------------------------------------------------------
 
+	#[doc = include_str!("../docs/derva.md")]
 	#[inline]
 	pub fn derva<T: Pod>(&self, rva: u32) -> Result<&'a T> {
 		match self {
@@ -144,6 +160,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 			Wrap::T64(pe64) => pe64.derva(rva),
 		}
 	}
+	#[doc = include_str!("../docs/derva_copy.md")]
 	#[inline]
 	pub fn derva_copy<T: Copy + Pod>(&self, rva: u32) -> Result<T> {
 		match self {
@@ -151,6 +168,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 			Wrap::T64(pe64) => pe64.derva_copy(rva),
 		}
 	}
+	#[doc = include_str!("../docs/derva_into.md")]
 	#[inline]
 	pub fn derva_into<T: ?Sized + Pod>(&self, rva: u32, dest: &mut T) -> Result<()> {
 		match self {
@@ -158,6 +176,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 			Wrap::T64(pe64) => pe64.derva_into(rva, dest),
 		}
 	}
+	#[doc = include_str!("../docs/derva_slice.md")]
 	#[inline]
 	pub fn derva_slice<T: Pod>(&self, rva: u32, len: usize) -> Result<&'a [T]> {
 		match self {
@@ -165,6 +184,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 			Wrap::T64(pe64) => pe64.derva_slice(rva, len),
 		}
 	}
+	#[doc = include_str!("../docs/derva_slice_f.md")]
 	#[inline]
 	pub fn derva_slice_f<T: Pod, F: FnMut(&'a T) -> bool>(&self, rva: u32, f: F) -> Result<&'a [T]> {
 		match self {
@@ -172,6 +192,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 			Wrap::T64(pe64) => pe64.derva_slice_f(rva, f),
 		}
 	}
+	#[doc = include_str!("../docs/derva_slice_s.md")]
 	#[inline]
 	pub fn derva_slice_s<T: PartialEq + Pod>(&self, rva: u32, sentinel: T) -> Result<&'a [T]> {
 		match self {
@@ -179,6 +200,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 			Wrap::T64(pe64) => pe64.derva_slice_s(rva, sentinel),
 		}
 	}
+	#[doc = include_str!("../docs/derva_c_str.md")]
 	#[inline]
 	pub fn derva_c_str(&self, rva: u32) -> Result<&'a CStr> {
 		match self {
@@ -186,6 +208,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 			Wrap::T64(pe64) => pe64.derva_c_str(rva),
 		}
 	}
+	#[doc = include_str!("../docs/derva_string.md")]
 	#[inline]
 	pub fn derva_string<T: ?Sized + FromBytes>(&self, rva: u32) -> Result<&'a T> {
 		match self {
@@ -196,6 +219,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 
 	//----------------------------------------------------------------
 
+	/// Returns the headers.
 	#[inline]
 	pub fn headers(&self) -> Wrap<pe32::PeHeaders<Pe32>, pe64::PeHeaders<Pe64>> {
 		match self {
@@ -203,6 +227,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 			Wrap::T64(pe64) => Wrap::T64(pe64.headers()),
 		}
 	}
+	#[doc = include_str!("../docs/rich_structure.md")]
 	#[inline]
 	pub fn rich_structure(&self) -> Result<rich_structure::RichStructure<'a>> {
 		match self {
@@ -210,6 +235,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 			Wrap::T64(pe64) => pe64.rich_structure(),
 		}
 	}
+	#[doc = include_str!("../docs/exports.md")]
 	#[inline]
 	pub fn exports(&self) -> Result<Wrap<pe32::ExportDirectory<'a, Pe32>, pe64::ExportDirectory<'a, Pe64>>> {
 		match self {
@@ -217,6 +243,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 			Wrap::T64(pe64) => pe64.exports().map(Wrap::T64),
 		}
 	}
+	#[doc = include_str!("../docs/imports.md")]
 	#[inline]
 	pub fn imports(&self) -> Result<Wrap<pe32::ImportDirectory<'a, Pe32>, pe64::ImportDirectory<'a, Pe64>>> {
 		match self {
@@ -224,6 +251,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 			Wrap::T64(pe64) => pe64.imports().map(Wrap::T64),
 		}
 	}
+	#[doc = include_str!("../docs/iat.md")]
 	#[inline]
 	pub fn iat(&self) -> Result<Wrap<pe32::ImportAddressTable<'a, Pe32>, pe64::ImportAddressTable<'a, Pe64>>> {
 		match self {
@@ -231,6 +259,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 			Wrap::T64(pe64) => pe64.iat().map(Wrap::T64),
 		}
 	}
+	#[doc = include_str!("../docs/base_relocs.md")]
 	#[inline]
 	pub fn base_relocs(&self) -> Result<crate::base_relocs::BaseRelocationDirectory<'a>> {
 		match self {
@@ -238,6 +267,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 			Wrap::T64(pe64) => pe64.base_relocs(),
 		}
 	}
+	#[doc = include_str!("../docs/load_config.md")]
 	#[inline]
 	pub fn load_config(&self) -> Result<Wrap<pe32::LoadConfigDirectory<'a, Pe32>, pe64::LoadConfigDirectory<'a, Pe64>>> {
 		match self {
@@ -245,6 +275,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 			Wrap::T64(pe64) => pe64.load_config().map(Wrap::T64),
 		}
 	}
+	#[doc = include_str!("../docs/tls.md")]
 	#[inline]
 	pub fn tls(&self) -> Result<Wrap<pe32::TlsDirectory<'a, Pe32>, pe64::TlsDirectory<'a, Pe64>>> {
 		match self {
@@ -252,6 +283,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 			Wrap::T64(pe64) => pe64.tls().map(Wrap::T64),
 		}
 	}
+	#[doc = include_str!("../docs/security.md")]
 	#[inline]
 	pub fn security(&self) -> Result<crate::security::SecurityDirectory<'a>> {
 		match self {
@@ -259,6 +291,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 			Wrap::T64(pe64) => pe64.security(),
 		}
 	}
+	#[doc = include_str!("../docs/debug.md")]
 	#[inline]
 	pub fn debug(&self) -> Result<crate::debug::DebugDirectory<'a>> {
 		match self {
@@ -266,6 +299,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 			Wrap::T64(pe64) => pe64.debug(),
 		}
 	}
+	#[doc = include_str!("../docs/resources.md")]
 	#[inline]
 	pub fn resources(&self) -> Result<crate::resources::ResourceDirectory<'a>> {
 		match self {
@@ -273,6 +307,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
 			Wrap::T64(pe64) => pe64.resources(),
 		}
 	}
+	/// Returns Scanner access.
 	#[inline]
 	pub fn scanner(&self) -> Wrap<pe32::Scanner<Pe32>, pe64::Scanner<Pe64>> {
 		match self {

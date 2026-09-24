@@ -66,7 +66,7 @@ pub struct VersionLanguage {
 }
 unsafe impl Pod for VersionLanguage {}
 impl VersionLanguage {
-	/// Parse language hex strings.
+	/// Parses an eight-digit hexadecimal language and character-set pair.
 	pub fn parse(lang: &[u16]) -> core::result::Result<VersionLanguage, &[u16]> {
 		if lang.len() != 8 {
 			return Err(lang);
@@ -117,12 +117,19 @@ impl fmt::Display for VersionLanguage {
 
 //----------------------------------------------------------------
 
-/// Version Information.
+/// Version information resource.
 #[derive(Copy, Clone)]
 pub struct VersionInfo<'a> {
 	words: &'a [u16],
 }
 impl<'a> VersionInfo<'a> {
+	/// Interprets bytes as version information.
+	///
+	/// Nested entries are parsed when queried; malformed entries are skipped.
+	///
+	/// # Errors
+	///
+	/// * [Misaligned][Error::Misaligned]: The byte slice is not aligned to a four-byte boundary.
 	pub fn try_from(bytes: &'a [u8]) -> Result<VersionInfo<'a>> {
 		// Alignment of 4 bytes is assumed everywhere,
 		// unsafe code in this module relies on this
@@ -133,7 +140,7 @@ impl<'a> VersionInfo<'a> {
 		Ok(VersionInfo { words })
 	}
 
-	/// Gets the fixed file information if available.
+	/// Returns the fixed file information, if present.
 	///
 	/// Queries `\`.
 	pub fn fixed(self) -> Option<&'a VS_FIXEDFILEINFO> {
@@ -141,7 +148,7 @@ impl<'a> VersionInfo<'a> {
 		self.visit(&mut this);
 		this.0
 	}
-	/// Gets the available languages.
+	/// Returns the available language and character-set pairs.
 	///
 	/// Queries `\VarFileInfo\Translation`.
 	pub fn translation(self) -> &'a [VersionLanguage] {
@@ -149,7 +156,7 @@ impl<'a> VersionInfo<'a> {
 		self.visit(&mut this);
 		this.0
 	}
-	/// Gets a string value by name.
+	/// Returns a string value for the given language and key.
 	///
 	/// Queries `\StringFileInfo\{lang}\{key}`
 	pub fn value(self, lang: VersionLanguage, key: &str) -> Option<String> {
@@ -157,31 +164,30 @@ impl<'a> VersionInfo<'a> {
 		self.visit(&mut this);
 		this.value
 	}
-	/// Iterates over all the strings' keys and values of a given language.
+	/// Calls the callback for each string in the given language.
 	///
 	/// Queries `\StringFileInfo\{lang}\*`
 	pub fn strings<F: FnMut(&str, &str)>(self, lang: VersionLanguage, f: F) {
 		self.visit(&mut QueryStrings { lang, f });
 	}
-	/// Parse the version info into owned maps.
+	/// Collects the version information into owned maps.
 	pub fn file_info(self) -> VersionInfoData<'a> {
 		let mut file_info = VersionInfoData::default();
 		self.visit(&mut file_info);
 		file_info
 	}
-	/// Renders the version info back into its source code form.
+	/// Renders the version information as resource script text.
 	pub fn source_code(self) -> String {
 		let mut source_code = String::new();
 		self.visit(&mut source_code);
 		source_code
 	}
 
-	/// Parse the version information.
+	/// Visits the version information tree.
 	///
-	/// Because of the super convoluted format, the visitor pattern is used.
 	/// Implement the [`VersionInfoVisitor`] trait to get the desired information.
 	///
-	/// To keep the API simple all errors are ignored, any invalid or corrupted data is skipped.
+	/// Malformed entries are skipped.
 	pub fn visit(self, visit: &mut dyn VersionInfoVisitor<'a>) {
 		for version_info in Parser::new_bytes(self.words).filter_map(Result::ok) {
 			const VS_FIXEDFILEINFO_SIZEOF: usize = mem::size_of::<VS_FIXEDFILEINFO>();
@@ -256,18 +262,25 @@ impl fmt::Debug for VersionInfo<'_> {
 /// Visitor pattern to view the version information details.
 #[allow(unused_variables)]
 pub trait VersionInfoVisitor<'a> {
+	/// Visits the root version block; return false to skip its children.
 	fn version_info(&mut self, key: &'a [u16], fixed: Option<&'a VS_FIXEDFILEINFO>) -> bool {
 		true
 	}
+	/// Visits a file information block; return false to skip its children.
 	fn file_info(&mut self, key: &'a [u16]) -> bool {
 		true
 	}
+	/// Visits a language string table; return false to skip its strings.
 	fn string_table(&mut self, lang: &'a [u16]) -> bool {
 		true
 	}
+	/// Visits a string and its value.
 	fn string(&mut self, key: &'a [u16], value: &'a [u16]) {}
+	/// Visits a variable and its value.
 	fn var(&mut self, key: &'a [u16], value: &'a [u16]) {}
+	/// Reports entry into a nested block at the given depth.
 	fn enter_scope(&mut self, depth: usize) {}
+	/// Reports exit from a nested block at the given depth.
 	fn exit_scope(&mut self, depth: usize) {}
 }
 
@@ -395,8 +408,11 @@ FILESUBTYPE {}",
 #[derive(Clone, Debug, Default)]
 #[cfg_attr(all(feature = "std", feature = "serde"), derive(serde::Serialize))]
 pub struct VersionInfoData<'a> {
+	/// Fixed file information, if present.
 	pub fixed: Option<&'a VS_FIXEDFILEINFO>,
+	/// Strings grouped by language and character set.
 	pub strings: Map<VersionLanguage, Map<String, String>>,
+	/// Language and character-set pairs from the translation block.
 	pub langs: &'a [VersionLanguage],
 	#[cfg_attr(all(feature = "std", feature = "serde"), serde(skip))]
 	lang: VersionLanguage,

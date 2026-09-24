@@ -48,7 +48,7 @@ impl CStr {
 	pub unsafe fn from_bytes_unchecked(bytes: &[u8]) -> &CStr {
 		unsafe { mem::transmute(bytes) }
 	}
-	/// Gets the C string as a nul terminated byte slice.
+	/// Returns the C string as a nul terminated byte slice.
 	pub fn c_str(&self) -> &[u8] {
 		&self.bytes
 	}

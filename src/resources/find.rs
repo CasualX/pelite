@@ -11,28 +11,20 @@ use super::{ResourceDataEntry, ResourceDirectory, ResourceDirectoryTable, Resour
 
 //------------------------------------------------
 
-/// Find error.
+/// Error encountered while finding a resource.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ResourceFindError {
-	/// An error happened when reading the underlying resources.
-	///
-	/// This error indicates the resources are corrupt.
+	/// An underlying resource or text encoding error occurred.
 	Pe(crate::Error),
-	/// The resources work with UTF-16 path names.
-	///
-	/// For this to work the given path must be valid unicode for the path comparison to make sense.
-	///
-	/// This error means the given path contained non-unicode parts.
+	/// A path component is not valid UTF-8.
 	InvalidUtf8Path,
-	/// The requested data entry or directory doesn't exist.
+	/// The requested entry is absent.
 	NotFound,
-	/// Paths from the resources root must start with a `/` or `\`.
+	/// Paths from the resource root must start with a `/` or `\`.
 	MissingRoot,
-	/// Encountered a data entry when expecting a directory.
-	///
-	/// This error means the given path contained a directory name which is actually a data entry.
+	/// An entry expected to be a directory contains data.
 	UnexpectedDataEntry,
-	/// Encountered a directory when expecting a data entry.
+	/// An entry expected to contain data is a directory.
 	UnexpectedDirectory,
 }
 impl ResourceFindError {
@@ -81,36 +73,84 @@ impl error::Error for ResourceFindError {
 //------------------------------------------------
 
 impl<'a> ResourceDirectory<'a> {
-	/// Finds a resource by its type and name.
+	/// Returns the first language's data for a resource type and name.
+	///
+	/// # Errors
+	///
+	/// * [NotFound][ResourceFindError::NotFound]: A requested entry is absent.
+	/// * [UnexpectedDataEntry][ResourceFindError::UnexpectedDataEntry]: An expected directory contains data.
+	/// * [UnexpectedDirectory][ResourceFindError::UnexpectedDirectory]: An expected data entry is a directory.
+	/// * [Pe][ResourceFindError::Pe]: A resource directory, entry, or data range is malformed.
 	pub fn find_resource(&self, path: &[ResourceName<'_>; 2]) -> Result<&'a [u8], ResourceFindError> {
 		Ok(self.root()?.get_dir(path[0])?.get_dir(path[1])?.first_data()?.bytes()?)
 	}
-	/// Finds the language directory for a resource with given type and name.
+	/// Returns the language directory for a resource type and name.
+	///
+	/// # Errors
+	///
+	/// * [NotFound][ResourceFindError::NotFound]: A requested entry is absent.
+	/// * [UnexpectedDataEntry][ResourceFindError::UnexpectedDataEntry]: An expected directory contains data.
+	/// * [Pe][ResourceFindError::Pe]: A resource directory, entry, or data range is malformed.
 	pub fn find_resources(&self, path: &[ResourceName<'_>; 2]) -> Result<ResourceDirectoryTable<'a>, ResourceFindError> {
 		self.root()?.get_dir(path[0])?.get_dir(path[1])
 	}
-	/// Finds the resource with specified type, name and language.
+	/// Returns resource data for a type, name, and language.
+	///
+	/// # Errors
+	///
+	/// * [NotFound][ResourceFindError::NotFound]: A requested entry is absent.
+	/// * [UnexpectedDataEntry][ResourceFindError::UnexpectedDataEntry]: An expected directory contains data.
+	/// * [UnexpectedDirectory][ResourceFindError::UnexpectedDirectory]: An expected data entry is a directory.
+	/// * [Pe][ResourceFindError::Pe]: A resource directory, entry, or data range is malformed.
 	pub fn find_resource_ex(&self, path: &[ResourceName<'_>; 3]) -> Result<&'a [u8], ResourceFindError> {
 		Ok(self.root()?.get_dir(path[0])?.get_dir(path[1])?.get_data(path[2])?.bytes()?)
 	}
-	/// Gets the Version Information.
+	/// Returns the version information resource.
+	///
+	/// # Errors
+	///
+	/// * [NotFound][ResourceFindError::NotFound]: A requested entry is absent.
+	/// * [UnexpectedDataEntry][ResourceFindError::UnexpectedDataEntry]: An expected directory contains data.
+	/// * [UnexpectedDirectory][ResourceFindError::UnexpectedDirectory]: An expected data entry is a directory.
+	/// * [Pe][ResourceFindError::Pe]: The resource is malformed or misaligned.
 	pub fn version_info(&self) -> Result<super::version_info::VersionInfo<'a>, ResourceFindError> {
 		let bytes = self.find_resource(&[ResourceName::VERSION, ResourceName::Id(1)])?;
 		let version_info = super::version_info::VersionInfo::try_from(bytes)?;
 		Ok(version_info)
 	}
-	/// Gets the Application Manifest.
+	/// Returns the first application manifest as UTF-8 text.
+	///
+	/// # Errors
+	///
+	/// * [NotFound][ResourceFindError::NotFound]: A requested entry is absent.
+	/// * [UnexpectedDataEntry][ResourceFindError::UnexpectedDataEntry]: An expected directory contains data.
+	/// * [UnexpectedDirectory][ResourceFindError::UnexpectedDirectory]: An expected data entry is a directory.
+	/// * [Pe][ResourceFindError::Pe]: The resource is malformed or the manifest is not valid UTF-8.
 	pub fn manifest(&self) -> Result<&'a str, ResourceFindError> {
 		// Ok, new assumption: just take whatever we can find in the Manifest directory
 		let bytes = self.root()?.get_dir(ResourceName::MANIFEST)?.first_dir()?.first_data()?.bytes()?;
 		let manifest = str::from_utf8(bytes)?;
 		Ok(manifest)
 	}
-	/// Finds an icon group by name.
+	/// Returns an icon group by name.
+	///
+	/// # Errors
+	///
+	/// * [NotFound][ResourceFindError::NotFound]: A requested entry is absent.
+	/// * [UnexpectedDataEntry][ResourceFindError::UnexpectedDataEntry]: An expected directory contains data.
+	/// * [UnexpectedDirectory][ResourceFindError::UnexpectedDirectory]: An expected data entry is a directory.
+	/// * [Pe][ResourceFindError::Pe]: The resource or icon group is malformed.
 	pub fn find_icon(&self, name: ResourceName<'_>) -> Result<super::group::GroupIcon<'a>, ResourceFindError> {
 		self.find_group(ResourceName::GROUP_ICON, name, super::group::ResourceGroupType::Icon)
 	}
-	/// Finds a cursor group by name.
+	/// Returns a cursor group by name.
+	///
+	/// # Errors
+	///
+	/// * [NotFound][ResourceFindError::NotFound]: A requested entry is absent.
+	/// * [UnexpectedDataEntry][ResourceFindError::UnexpectedDataEntry]: An expected directory contains data.
+	/// * [UnexpectedDirectory][ResourceFindError::UnexpectedDirectory]: An expected data entry is a directory.
+	/// * [Pe][ResourceFindError::Pe]: The resource or cursor group is malformed.
 	pub fn find_cursor(&self, name: ResourceName<'_>) -> Result<super::group::GroupCursor<'a>, ResourceFindError> {
 		self.find_group(ResourceName::GROUP_CURSOR, name, super::group::ResourceGroupType::Cursor)
 	}
@@ -122,7 +162,9 @@ impl<'a> ResourceDirectory<'a> {
 		}
 		Ok(group)
 	}
-	/// Gets the icons.
+	/// Returns an iterator over icon groups.
+	///
+	/// Malformed groups appear as errors in the iterator. If the icon directory is absent or invalid, the iterator is empty.
 	pub fn icons(&self) -> impl 'a + Iterator<Item = Result<(ResourceName<'a>, super::group::GroupIcon<'a>), ResourceFindError>> + Clone {
 		let resources = *self;
 		let icons = self.root().map_err(ResourceFindError::Pe).and_then(|root| root.get_dir(ResourceName::GROUP_ICON));
@@ -137,7 +179,9 @@ impl<'a> ResourceDirectory<'a> {
 			})
 		})
 	}
-	/// Gets the cursors.
+	/// Returns an iterator over cursor groups.
+	///
+	/// Malformed groups appear as errors in the iterator. If the cursor directory is absent or invalid, the iterator is empty.
 	pub fn cursors(&self) -> impl 'a + Iterator<Item = Result<(ResourceName<'a>, super::group::GroupCursor<'a>), ResourceFindError>> + Clone {
 		let resources = *self;
 		let cursors = self.root().map_err(ResourceFindError::Pe).and_then(|root| root.get_dir(ResourceName::GROUP_CURSOR));
@@ -154,11 +198,22 @@ impl<'a> ResourceDirectory<'a> {
 	}
 }
 impl<'a> ResourceDirectoryTable<'a> {
-	/// Looks up the entry by name.
+	/// Returns an entry by name.
+	///
+	/// # Errors
+	///
+	/// * [NotFound][ResourceFindError::NotFound]: A requested entry is absent.
+	/// * [Pe][ResourceFindError::Pe]: A resource directory, entry, or data range is malformed.
 	pub fn get(&self, name: ResourceName<'_>) -> Result<ResourceEntry<'a>, ResourceFindError> {
 		self.entries().find(|de| de.name() == Ok(name)).ok_or(ResourceFindError::NotFound)?.entry().map_err(ResourceFindError::Pe)
 	}
-	/// Looks up the data entry by name.
+	/// Returns a data entry by name.
+	///
+	/// # Errors
+	///
+	/// * [NotFound][ResourceFindError::NotFound]: A requested entry is absent.
+	/// * [UnexpectedDirectory][ResourceFindError::UnexpectedDirectory]: An expected data entry is a directory.
+	/// * [Pe][ResourceFindError::Pe]: A resource directory, entry, or data range is malformed.
 	pub fn get_data(&self, name: ResourceName<'_>) -> Result<ResourceDataEntry<'a>, ResourceFindError> {
 		self.entries()
 			.find(|de| de.name() == Ok(name))
@@ -167,19 +222,42 @@ impl<'a> ResourceDirectoryTable<'a> {
 			.data()
 			.ok_or(ResourceFindError::UnexpectedDirectory)
 	}
-	/// Looks up the directory by name.
+	/// Returns a directory by name.
+	///
+	/// # Errors
+	///
+	/// * [NotFound][ResourceFindError::NotFound]: A requested entry is absent.
+	/// * [UnexpectedDataEntry][ResourceFindError::UnexpectedDataEntry]: An expected directory contains data.
+	/// * [Pe][ResourceFindError::Pe]: A resource directory, entry, or data range is malformed.
 	pub fn get_dir(&self, name: ResourceName<'_>) -> Result<ResourceDirectoryTable<'a>, ResourceFindError> {
 		self.entries().find(|de| de.name() == Ok(name)).ok_or(ResourceFindError::NotFound)?.entry()?.dir().ok_or(ResourceFindError::UnexpectedDataEntry)
 	}
-	/// Gets the first entry.
+	/// Returns the first entry.
+	///
+	/// # Errors
+	///
+	/// * [NotFound][ResourceFindError::NotFound]: A requested entry is absent.
+	/// * [Pe][ResourceFindError::Pe]: A resource directory, entry, or data range is malformed.
 	pub fn first(&self) -> Result<ResourceEntry<'a>, ResourceFindError> {
 		self.entries().next().ok_or(ResourceFindError::NotFound)?.entry().map_err(ResourceFindError::Pe)
 	}
-	/// Gets the first data entry.
+	/// Returns the first entry as data.
+	///
+	/// # Errors
+	///
+	/// * [NotFound][ResourceFindError::NotFound]: A requested entry is absent.
+	/// * [UnexpectedDirectory][ResourceFindError::UnexpectedDirectory]: An expected data entry is a directory.
+	/// * [Pe][ResourceFindError::Pe]: A resource directory, entry, or data range is malformed.
 	pub fn first_data(&self) -> Result<ResourceDataEntry<'a>, ResourceFindError> {
 		self.entries().next().ok_or(ResourceFindError::NotFound)?.entry()?.data().ok_or(ResourceFindError::UnexpectedDirectory)
 	}
-	/// Gets the first directory.
+	/// Returns the first entry as a directory.
+	///
+	/// # Errors
+	///
+	/// * [NotFound][ResourceFindError::NotFound]: A requested entry is absent.
+	/// * [UnexpectedDataEntry][ResourceFindError::UnexpectedDataEntry]: An expected directory contains data.
+	/// * [Pe][ResourceFindError::Pe]: A resource directory, entry, or data range is malformed.
 	pub fn first_dir(&self) -> Result<ResourceDirectoryTable<'a>, ResourceFindError> {
 		self.entries().next().ok_or(ResourceFindError::NotFound)?.entry()?.dir().ok_or(ResourceFindError::UnexpectedDataEntry)
 	}
@@ -189,15 +267,40 @@ impl<'a> ResourceDirectoryTable<'a> {
 
 #[cfg(feature = "std")]
 impl<'a> ResourceDirectory<'a> {
-	/// Finds a file or directory by its path.
+	/// Finds a resource entry by its absolute path.
+	///
+	/// # Errors
+	///
+	/// * [MissingRoot][ResourceFindError::MissingRoot]: The path does not start at the resource root.
+	/// * [InvalidUtf8Path][ResourceFindError::InvalidUtf8Path]: A path component is not valid UTF-8.
+	/// * [NotFound][ResourceFindError::NotFound]: A requested entry is absent.
+	/// * [UnexpectedDataEntry][ResourceFindError::UnexpectedDataEntry]: An expected directory contains data.
+	/// * [Pe][ResourceFindError::Pe]: A resource directory, entry, or data range is malformed.
 	pub fn find<P: AsRef<Path> + ?Sized>(&self, path: &P) -> Result<ResourceEntry<'a>, ResourceFindError> {
 		self.find_internal(path.as_ref())
 	}
-	/// Finds a file by its path.
+	/// Finds a data entry by its absolute path.
+	///
+	/// # Errors
+	///
+	/// * [MissingRoot][ResourceFindError::MissingRoot]: The path does not start at the resource root.
+	/// * [InvalidUtf8Path][ResourceFindError::InvalidUtf8Path]: A path component is not valid UTF-8.
+	/// * [NotFound][ResourceFindError::NotFound]: A requested entry is absent.
+	/// * [UnexpectedDataEntry][ResourceFindError::UnexpectedDataEntry]: An expected directory contains data.
+	/// * [UnexpectedDirectory][ResourceFindError::UnexpectedDirectory]: An expected data entry is a directory.
+	/// * [Pe][ResourceFindError::Pe]: A resource directory, entry, or data range is malformed.
 	pub fn find_data<P: AsRef<Path> + ?Sized>(&self, path: &P) -> Result<ResourceDataEntry<'a>, ResourceFindError> {
 		self.find(path).and_then(|e| e.data().ok_or(ResourceFindError::UnexpectedDirectory))
 	}
-	/// Finds a directory by its path.
+	/// Finds a directory by its absolute path.
+	///
+	/// # Errors
+	///
+	/// * [MissingRoot][ResourceFindError::MissingRoot]: The path does not start at the resource root.
+	/// * [InvalidUtf8Path][ResourceFindError::InvalidUtf8Path]: A path component is not valid UTF-8.
+	/// * [NotFound][ResourceFindError::NotFound]: A requested entry is absent.
+	/// * [UnexpectedDataEntry][ResourceFindError::UnexpectedDataEntry]: An expected directory contains data.
+	/// * [Pe][ResourceFindError::Pe]: A resource directory, entry, or data range is malformed.
 	pub fn find_dir<P: AsRef<Path> + ?Sized>(&self, path: &P) -> Result<ResourceDirectoryTable<'a>, ResourceFindError> {
 		self.find(path).and_then(|e| e.dir().ok_or(ResourceFindError::UnexpectedDataEntry))
 	}
@@ -221,15 +324,37 @@ impl<'a> ResourceDirectory<'a> {
 }
 #[cfg(feature = "std")]
 impl<'a> ResourceDirectoryTable<'a> {
-	/// Finds a file or directory by its path.
+	/// Finds an entry by its path relative to this directory.
+	///
+	/// # Errors
+	///
+	/// * [InvalidUtf8Path][ResourceFindError::InvalidUtf8Path]: A path component is not valid UTF-8.
+	/// * [NotFound][ResourceFindError::NotFound]: A requested entry is absent.
+	/// * [UnexpectedDataEntry][ResourceFindError::UnexpectedDataEntry]: An expected directory contains data.
+	/// * [Pe][ResourceFindError::Pe]: A resource directory, entry, or data range is malformed.
 	pub fn find<P: AsRef<Path> + ?Sized>(&self, path: &P) -> Result<ResourceEntry<'a>, ResourceFindError> {
 		self.find_internal(path.as_ref())
 	}
-	/// Finds a file by its path.
+	/// Finds a data entry by its path relative to this directory.
+	///
+	/// # Errors
+	///
+	/// * [InvalidUtf8Path][ResourceFindError::InvalidUtf8Path]: A path component is not valid UTF-8.
+	/// * [NotFound][ResourceFindError::NotFound]: A requested entry is absent.
+	/// * [UnexpectedDataEntry][ResourceFindError::UnexpectedDataEntry]: An expected directory contains data.
+	/// * [UnexpectedDirectory][ResourceFindError::UnexpectedDirectory]: An expected data entry is a directory.
+	/// * [Pe][ResourceFindError::Pe]: A resource directory, entry, or data range is malformed.
 	pub fn find_data<P: AsRef<Path> + ?Sized>(&self, path: &P) -> Result<ResourceDataEntry<'a>, ResourceFindError> {
 		self.find(path).and_then(|e| e.data().ok_or(ResourceFindError::UnexpectedDirectory))
 	}
-	/// Finds a directory by its path.
+	/// Finds a directory by its path relative to this directory.
+	///
+	/// # Errors
+	///
+	/// * [InvalidUtf8Path][ResourceFindError::InvalidUtf8Path]: A path component is not valid UTF-8.
+	/// * [NotFound][ResourceFindError::NotFound]: A requested entry is absent.
+	/// * [UnexpectedDataEntry][ResourceFindError::UnexpectedDataEntry]: An expected directory contains data.
+	/// * [Pe][ResourceFindError::Pe]: A resource directory, entry, or data range is malformed.
 	pub fn find_dir<P: AsRef<Path> + ?Sized>(&self, path: &P) -> Result<ResourceDirectoryTable<'a>, ResourceFindError> {
 		self.find(path).and_then(|e| e.dir().ok_or(ResourceFindError::UnexpectedDataEntry))
 	}

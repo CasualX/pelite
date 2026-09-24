@@ -1,5 +1,5 @@
 use pelite::FileMap;
-use pelite::pe32::{image, Pe, PeFile, Ptr, Rva, Va};
+use pelite::pe32::{image, PeFile, Ptr, Rva, Va};
 
 use super::*;
 

@@ -1,5 +1,19 @@
 use super::*;
 
+impl<'a> PeFile<'a> {
+	#[doc = include_str!("../docs/exception_x64.md")]
+	pub fn exception_x64(self) -> Result<X64ExceptionDirectory<'a, Self>> {
+		X64ExceptionDirectory::try_from(self)
+	}
+}
+
+impl<'a> PeView<'a> {
+	#[doc = include_str!("../docs/exception_x64.md")]
+	pub fn exception_x64(self) -> Result<X64ExceptionDirectory<'a, Self>> {
+		X64ExceptionDirectory::try_from(self)
+	}
+}
+
 //----------------------------------------------------------------
 
 /// x64 exception directory containing the image's runtime function table.
@@ -12,7 +26,7 @@ pub struct X64ExceptionDirectory<'a, P> {
 	pe: P,
 	image: &'a [RUNTIME_FUNCTION],
 }
-impl<'a, P: Pe<'a>> X64ExceptionDirectory<'a, P> {
+impl<'a, P: Copy + Pe<'a>> X64ExceptionDirectory<'a, P> {
 	/// Parses the X64 exception directory for the given PE.
 	pub(crate) fn try_from(pe: P) -> Result<X64ExceptionDirectory<'a, P>> {
 		let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_EXCEPTION).ok_or(Error::Bounds)?;
@@ -30,7 +44,7 @@ impl<'a, P: Pe<'a>> X64ExceptionDirectory<'a, P> {
 		let image = pe.derva_slice(datadir.VirtualAddress, len)?;
 		Ok(X64ExceptionDirectory { pe, image })
 	}
-	/// Gets the PE instance.
+	/// Returns the PE instance.
 	pub fn pe(&self) -> P {
 		self.pe
 	}
@@ -52,12 +66,16 @@ impl<'a, P: Pe<'a>> X64ExceptionDirectory<'a, P> {
 		}
 		self.image.windows(2).all(check_sorted)
 	}
-	/// Gets an iterator over the function records.
+	/// Returns an iterator over the function records.
 	pub fn functions(&self) -> iter::Map<slice::Iter<'a, RUNTIME_FUNCTION>, impl Clone + FnMut(&'a RUNTIME_FUNCTION) -> X64RuntimeFunction<'a, P>> {
 		let pe = self.pe;
 		self.image.iter().map(move |image| X64RuntimeFunction { pe, image })
 	}
-	/// Finds the index of the function for the given program counter.
+	/// Finds the index of the function containing `pc`.
+	///
+	/// # Errors
+	///
+	/// * Returns the insertion index when no function contains `pc`.
 	pub fn index_of(&self, pc: Rva) -> core::result::Result<usize, usize> {
 		self.image.binary_search_by(|rf| {
 			if pc < rf.BeginAddress {
@@ -83,7 +101,7 @@ impl<'a, P: Pe<'a>> X64ExceptionDirectory<'a, P> {
 			.ok()
 	}
 }
-impl<'a, P: Pe<'a>> fmt::Debug for X64ExceptionDirectory<'a, P> {
+impl<'a, P: Copy + Pe<'a>> fmt::Debug for X64ExceptionDirectory<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		f.debug_struct("X64ExceptionDirectory")
 			.field("functions", &crate::util::DebugList(self.functions()))
@@ -99,8 +117,8 @@ pub struct X64RuntimeFunction<'a, P> {
 	pe: P,
 	image: &'a RUNTIME_FUNCTION,
 }
-impl<'a, P: Pe<'a>> X64RuntimeFunction<'a, P> {
-	/// Gets the PE instance.
+impl<'a, P: Copy + Pe<'a>> X64RuntimeFunction<'a, P> {
+	/// Returns the PE instance.
 	pub fn pe(&self) -> P {
 		self.pe
 	}
@@ -108,7 +126,12 @@ impl<'a, P: Pe<'a>> X64RuntimeFunction<'a, P> {
 	pub fn image(&self) -> &'a RUNTIME_FUNCTION {
 		self.image
 	}
-	/// Gets the function bytes.
+	/// Returns the function bytes.
+	///
+	/// # Errors
+	///
+	/// * [`Overflow`][crate::Error::Overflow]: The function's end address is invalid.
+	/// * [`Null`][crate::Error::Null], [`Bounds`][crate::Error::Bounds], [`Misaligned`][crate::Error::Misaligned], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: The function bytes cannot be read.
 	pub fn bytes(&self) -> Result<&'a [u8]> {
 		let len = if self.image.BeginAddress > self.image.EndAddress {
 			return Err(Error::Overflow);
@@ -118,7 +141,13 @@ impl<'a, P: Pe<'a>> X64RuntimeFunction<'a, P> {
 		};
 		self.pe.derva_slice(self.image.BeginAddress, len)
 	}
-	/// Gets the unwind info.
+	/// Returns the function's unwind information.
+	///
+	/// # Errors
+	///
+	/// * [`Null`][crate::Error::Null]: The unwind RVA is zero.
+	/// * [`Bounds`][crate::Error::Bounds]: The unwind record or its operation codes extend past the image.
+	/// * [`Misaligned`][crate::Error::Misaligned], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: The unwind record cannot be read.
 	pub fn unwind_info(&self) -> Result<X64UnwindInfo<'a, P>> {
 		// Read as many bytes as we can for interpretation
 		let bytes = self.pe.slice(self.image.UnwindData, mem::size_of::<UNWIND_INFO>(), mem::align_of::<UNWIND_INFO>())?;
@@ -133,7 +162,7 @@ impl<'a, P: Pe<'a>> X64RuntimeFunction<'a, P> {
 	}
 }
 #[rustfmt::skip]
-impl<'a, P: Pe<'a>> fmt::Debug for X64RuntimeFunction<'a, P> {
+impl<'a, P: Copy + Pe<'a>> fmt::Debug for X64RuntimeFunction<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		let image = self.image();
 		f.debug_struct("X64RuntimeFunction")
@@ -154,8 +183,8 @@ pub struct X64UnwindInfo<'a, P> {
 	pe: P,
 	image: &'a UNWIND_INFO,
 }
-impl<'a, P: Pe<'a>> X64UnwindInfo<'a, P> {
-	/// Gets the PE instance.
+impl<'a, P: Copy + Pe<'a>> X64UnwindInfo<'a, P> {
+	/// Returns the PE instance.
 	pub fn pe(&self) -> P {
 		self.pe
 	}
@@ -189,7 +218,7 @@ impl<'a, P: Pe<'a>> X64UnwindInfo<'a, P> {
 		unsafe { slice::from_raw_parts(self.image.UnwindCode.as_ptr(), len) }
 	}
 }
-impl<'a, P: Pe<'a>> fmt::Debug for X64UnwindInfo<'a, P> {
+impl<'a, P: Copy + Pe<'a>> fmt::Debug for X64UnwindInfo<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		f.debug_struct("X64UnwindInfo")
 			.field("version", &self.version())
@@ -205,13 +234,13 @@ impl<'a, P: Pe<'a>> fmt::Debug for X64UnwindInfo<'a, P> {
 //----------------------------------------------------------------
 
 serde_impl! {
-	impl<'a, P: Pe<'a>> Serialize for X64ExceptionDirectory<'a, P> {
+	impl<'a, P: Copy + Pe<'a>> Serialize for X64ExceptionDirectory<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			serializer.collect_seq(self.functions())
 		}
 	}
 
-	impl<'a, P: Pe<'a>> Serialize for X64RuntimeFunction<'a, P> {
+	impl<'a, P: Copy + Pe<'a>> Serialize for X64RuntimeFunction<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			let mut state = serializer.serialize_struct("X64RuntimeFunction", 2)?;
 			state.serialize_field("image", self.image())?;
@@ -220,7 +249,7 @@ serde_impl! {
 		}
 	}
 
-	impl<'a, P: Pe<'a>> Serialize for X64UnwindInfo<'a, P> {
+	impl<'a, P: Copy + Pe<'a>> Serialize for X64UnwindInfo<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			let mut state = serializer.serialize_struct("X64UnwindInfo", 6)?;
 			state.serialize_field("version", &self.version())?;
@@ -237,7 +266,7 @@ serde_impl! {
 //----------------------------------------------------------------
 
 #[cfg(test)]
-pub(crate) fn test_exception_x64<'a, P: Pe<'a>>(pe: P) -> Result<()> {
+pub(crate) fn test_exception_x64<'a, P: Copy + Pe<'a>>(pe: P) -> Result<()> {
 	let exception = pe.exception_x64()?;
 	let _ = format!("{:?}", exception);
 

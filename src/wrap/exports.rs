@@ -32,8 +32,8 @@ impl<'a> Export<'a> {
 }
 
 /// Export directory.
-impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::ExportDirectory<'a, Pe32>, pe64::ExportDirectory<'a, Pe64>> {
-	/// Gets the PE instance.
+impl<'a, Pe32: Copy + pe32::Pe<'a>, Pe64: Copy + pe64::Pe<'a>> Wrap<pe32::ExportDirectory<'a, Pe32>, pe64::ExportDirectory<'a, Pe64>> {
+	/// Returns the PE instance.
 	#[inline]
 	pub fn pe(&self) -> Wrap<Pe32, Pe64> {
 		match self {
@@ -49,7 +49,13 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::ExportDirectory<'a, 
 			Wrap::T64(exports) => exports.image(),
 		}
 	}
-	/// Gets the export directory's name for this library.
+	/// Returns the export directory's name for this library.
+	///
+	/// # Errors
+	///
+	/// * [`Null`][crate::Error::Null]: The name RVA is zero.
+	/// * [`Encoding`][crate::Error::Encoding]: The name has no null terminator.
+	/// * [`Bounds`][crate::Error::Bounds], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: The name cannot be read from the image.
 	#[inline]
 	pub fn dll_name(&self) -> Result<&'a CStr> {
 		match self {
@@ -57,7 +63,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::ExportDirectory<'a, 
 			Wrap::T64(exports) => exports.dll_name(),
 		}
 	}
-	/// Gets the ordinal base for the exported functions.
+	/// Returns the ordinal base for the exported functions.
 	#[inline]
 	pub fn ordinal_base(&self) -> u16 {
 		match self {
@@ -65,7 +71,13 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::ExportDirectory<'a, 
 			Wrap::T64(exports) => exports.ordinal_base(),
 		}
 	}
-	/// Gets the export address table.
+	/// Returns the export address table.
+	///
+	/// # Errors
+	///
+	/// * [`Null`][crate::Error::Null]: The function table RVA is zero.
+	/// * [`Overflow`][crate::Error::Overflow]: The declared table length overflows.
+	/// * [`Bounds`][crate::Error::Bounds], [`Misaligned`][crate::Error::Misaligned], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: The function table cannot be read from the image.
 	#[inline]
 	pub fn functions(&self) -> Result<&'a [u32]> {
 		match self {
@@ -73,7 +85,13 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::ExportDirectory<'a, 
 			Wrap::T64(exports) => exports.functions(),
 		}
 	}
-	/// Gets the name address table.
+	/// Returns the name address table.
+	///
+	/// # Errors
+	///
+	/// * [`Null`][crate::Error::Null]: The name table RVA is zero.
+	/// * [`Overflow`][crate::Error::Overflow]: The declared table length overflows.
+	/// * [`Bounds`][crate::Error::Bounds], [`Misaligned`][crate::Error::Misaligned], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: The name table cannot be read from the image.
 	#[inline]
 	pub fn names(&self) -> Result<&'a [u32]> {
 		match self {
@@ -81,7 +99,13 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::ExportDirectory<'a, 
 			Wrap::T64(exports) => exports.names(),
 		}
 	}
-	/// Gets the name index table.
+	/// Returns the name index table.
+	///
+	/// # Errors
+	///
+	/// * [`Null`][crate::Error::Null]: The name index table RVA is zero.
+	/// * [`Overflow`][crate::Error::Overflow]: The declared table length overflows.
+	/// * [`Bounds`][crate::Error::Bounds], [`Misaligned`][crate::Error::Misaligned], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: The name index table cannot be read from the image.
 	#[inline]
 	pub fn name_indices(&self) -> Result<&'a [u16]> {
 		match self {
@@ -89,7 +113,13 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::ExportDirectory<'a, 
 			Wrap::T64(exports) => exports.name_indices(),
 		}
 	}
-	/// Query the exports.
+	/// Returns validated export lookup tables.
+	///
+	/// # Errors
+	///
+	/// * [`Null`][crate::Error::Null]: A nonempty table has a zero RVA.
+	/// * [`Overflow`][crate::Error::Overflow]: A declared table length overflows.
+	/// * [`Bounds`][crate::Error::Bounds], [`Misaligned`][crate::Error::Misaligned], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: A declared export table cannot be read.
 	#[inline]
 	pub fn by(&self) -> Result<Wrap<pe32::ExportBy<'a, Pe32>, pe64::ExportBy<'a, Pe64>>> {
 		match self {
@@ -100,8 +130,8 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::ExportDirectory<'a, 
 }
 
 /// Export directory symbol lookup.
-impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::ExportBy<'a, Pe32>, pe64::ExportBy<'a, Pe64>> {
-	/// Gets the PE instance.
+impl<'a, Pe32: Copy + pe32::Pe<'a>, Pe64: Copy + pe64::Pe<'a>> Wrap<pe32::ExportBy<'a, Pe32>, pe64::ExportBy<'a, Pe64>> {
+	/// Returns the PE instance.
 	#[inline]
 	pub fn pe(&self) -> Wrap<Pe32, Pe64> {
 		match self {
@@ -117,7 +147,13 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::ExportBy<'a, Pe32>, 
 			Wrap::T64(by) => by.image(),
 		}
 	}
-	/// Gets the export directory's name for this library.
+	/// Returns the export directory's name for this library.
+	///
+	/// # Errors
+	///
+	/// * [`Null`][crate::Error::Null]: The name RVA is zero.
+	/// * [`Encoding`][crate::Error::Encoding]: The name has no null terminator.
+	/// * [`Bounds`][crate::Error::Bounds], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: The name cannot be read from the image.
 	#[inline]
 	pub fn dll_name(&self) -> Result<&'a CStr> {
 		match self {
@@ -125,7 +161,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::ExportBy<'a, Pe32>, 
 			Wrap::T64(by) => by.dll_name(),
 		}
 	}
-	/// Gets the ordinal base for the exported functions.
+	/// Returns the ordinal base for the exported functions.
 	#[inline]
 	pub fn ordinal_base(&self) -> u16 {
 		match self {
@@ -133,7 +169,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::ExportBy<'a, Pe32>, 
 			Wrap::T64(by) => by.ordinal_base(),
 		}
 	}
-	/// Gets the export address table.
+	/// Returns the export address table.
 	#[inline]
 	pub fn functions(&self) -> &'a [u32] {
 		match self {
@@ -141,7 +177,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::ExportBy<'a, Pe32>, 
 			Wrap::T64(by) => by.functions(),
 		}
 	}
-	/// Gets the name address table.
+	/// Returns the name address table.
 	#[inline]
 	pub fn names(&self) -> &'a [u32] {
 		match self {
@@ -149,7 +185,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::ExportBy<'a, Pe32>, 
 			Wrap::T64(by) => by.names(),
 		}
 	}
-	/// Gets the name index table.
+	/// Returns the name index table.
 	#[inline]
 	pub fn name_indices(&self) -> &'a [u16] {
 		match self {
@@ -157,7 +193,11 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::ExportBy<'a, Pe32>, 
 			Wrap::T64(by) => by.name_indices(),
 		}
 	}
-	/// Validates and checks if the name table is sorted.
+	/// Checks whether export names are sorted.
+	///
+	/// # Errors
+	///
+	/// * [`Null`][crate::Error::Null], [`Bounds`][crate::Error::Bounds], [`Encoding`][crate::Error::Encoding], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: An export name cannot be read.
 	#[inline]
 	pub fn check_sorted(&self) -> Result<bool> {
 		match self {
@@ -166,6 +206,12 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::ExportBy<'a, Pe32>, 
 		}
 	}
 	/// Looks up an export by its ordinal.
+	///
+	/// # Errors
+	///
+	/// * [`Bounds`][crate::Error::Bounds]: The ordinal is outside the export address table.
+	/// * [`Null`][crate::Error::Null]: The selected export slot is empty.
+	/// * [`Encoding`][crate::Error::Encoding], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: A forwarded export cannot be read.
 	#[inline]
 	pub fn ordinal(&self, ordinal: u16) -> Result<Export<'a>> {
 		match self {
@@ -174,6 +220,12 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::ExportBy<'a, Pe32>, 
 		}
 	}
 	/// Looks up an export by its name.
+	///
+	/// # Errors
+	///
+	/// * [`Null`][crate::Error::Null]: The name is absent or its export slot is empty.
+	/// * [`Bounds`][crate::Error::Bounds]: A matching name has an invalid table index.
+	/// * [`Encoding`][crate::Error::Encoding], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: An export name or forwarder cannot be read.
 	#[inline]
 	pub fn name_linear<S: AsRef<[u8]> + ?Sized>(&self, name: &S) -> Result<Export<'a>> {
 		match self {
@@ -182,6 +234,12 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::ExportBy<'a, Pe32>, 
 		}
 	}
 	/// Looks up an export by its name.
+	///
+	/// # Errors
+	///
+	/// * [`Null`][crate::Error::Null]: The name is absent or its export slot is empty.
+	/// * [`Bounds`][crate::Error::Bounds]: A matching name has an invalid table index.
+	/// * [`Encoding`][crate::Error::Encoding], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: An export name or forwarder cannot be read.
 	#[inline]
 	pub fn name<S: AsRef<[u8]> + ?Sized>(&self, name: &S) -> Result<Export<'a>> {
 		match self {
@@ -190,6 +248,12 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::ExportBy<'a, Pe32>, 
 		}
 	}
 	/// Looks up an export by its import.
+	///
+	/// # Errors
+	///
+	/// * [`Null`][crate::Error::Null]: The requested import is absent or its export slot is empty.
+	/// * [`Bounds`][crate::Error::Bounds]: The ordinal or a table index is invalid.
+	/// * [`Encoding`][crate::Error::Encoding], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: A name or forwarded export cannot be read.
 	#[inline]
 	pub fn import(&self, import: Import) -> Result<Export<'a>> {
 		match self {
@@ -198,6 +262,12 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::ExportBy<'a, Pe32>, 
 		}
 	}
 	/// Looks up an export by its index.
+	///
+	/// # Errors
+	///
+	/// * [`Bounds`][crate::Error::Bounds]: `index` is outside the export address table.
+	/// * [`Null`][crate::Error::Null]: The export slot is empty.
+	/// * [`Encoding`][crate::Error::Encoding], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: A forwarded export cannot be read.
 	#[inline]
 	pub fn index(&self, index: usize) -> Result<Export<'a>> {
 		match self {
@@ -206,6 +276,12 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::ExportBy<'a, Pe32>, 
 		}
 	}
 	/// Looks up an export by its hint.
+	///
+	/// # Errors
+	///
+	/// * [`Bounds`][crate::Error::Bounds]: `hint` or its function index is outside its table.
+	/// * [`Null`][crate::Error::Null]: The export slot is empty.
+	/// * [`Encoding`][crate::Error::Encoding], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: A forwarded export cannot be read.
 	#[inline]
 	pub fn hint(&self, hint: usize) -> Result<Export<'a>> {
 		match self {
@@ -214,6 +290,12 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::ExportBy<'a, Pe32>, 
 		}
 	}
 	/// Looks up an export by its hint and falls back to the name if the hint is incorrect.
+	///
+	/// # Errors
+	///
+	/// * [`Null`][crate::Error::Null]: The name is absent or its export slot is empty.
+	/// * [`Bounds`][crate::Error::Bounds]: A matching name has an invalid table index.
+	/// * [`Encoding`][crate::Error::Encoding], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: An export name or forwarder cannot be read.
 	#[inline]
 	pub fn hint_name<S: AsRef<[u8]> + ?Sized>(&self, hint: usize, name: &S) -> Result<Export<'a>> {
 		match self {
@@ -222,6 +304,12 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::ExportBy<'a, Pe32>, 
 		}
 	}
 	/// Looks up the name for a hint.
+	///
+	/// # Errors
+	///
+	/// * [`Bounds`][crate::Error::Bounds]: `hint` is outside the name table or its RVA is out of bounds.
+	/// * [`Null`][crate::Error::Null]: The name RVA is zero.
+	/// * [`Encoding`][crate::Error::Encoding], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: The name cannot be read.
 	#[inline]
 	pub fn name_of_hint(&self, hint: usize) -> Result<&'a CStr> {
 		match self {
@@ -229,7 +317,13 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::ExportBy<'a, Pe32>, 
 			Wrap::T64(by) => by.name_of_hint(hint),
 		}
 	}
-	/// Given an index in the functions array, gets the named export.
+	/// Returns the import name or ordinal for an export index.
+	///
+	/// # Errors
+	///
+	/// * [`Bounds`][crate::Error::Bounds]: `index` is outside the export address table.
+	/// * [`Overflow`][crate::Error::Overflow]: The computed ordinal does not fit.
+	/// * [`Null`][crate::Error::Null], [`Encoding`][crate::Error::Encoding], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: The export name cannot be read.
 	#[inline]
 	pub fn name_lookup(&self, index: usize) -> Result<Import<'a>> {
 		match self {
@@ -244,17 +338,17 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::ExportBy<'a, Pe32>, 
 			Wrap::T64(by) => by.symbol_from_rva(rva),
 		}
 	}
-	/// Iterate over exported functions.
+	/// Returns an iterator over exported functions.
 	#[inline]
 	pub fn iter(&self) -> impl Clone + Iterator<Item = Result<Export<'a>>> {
 		self.functions().iter().map(move |rva| self.symbol_from_rva(rva))
 	}
-	/// Iterate over functions exported by name.
+	/// Returns an iterator over functions exported by name.
 	#[inline]
 	pub fn iter_names(&self) -> impl Clone + Iterator<Item = (Result<&'a CStr>, Result<Export<'a>>)> {
 		(0..self.names().len()).map(move |hint| (self.name_of_hint(hint), self.hint(hint)))
 	}
-	/// Iterate over functions exported by name, returning their name and index in the functions table.
+	/// Returns an iterator over functions exported by name, returning their name and index in the functions table.
 	#[inline]
 	pub fn iter_name_indices(&self) -> impl Clone + Iterator<Item = (Result<&'a CStr>, usize)> {
 		(0..self.names().len()).map(move |hint| (self.name_of_hint(hint), self.name_indices()[hint] as usize))
@@ -262,10 +356,16 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::ExportBy<'a, Pe32>, 
 }
 
 /// Convenient way to get an exported symbol.
-impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<Pe32, Pe64> {
-	/// Convenient method to get an exported function by name, ordinal, or import.
+impl<'a, Pe32: Copy + pe32::Pe<'a>, Pe64: Copy + pe64::Pe<'a>> Wrap<Pe32, Pe64> {
+	/// Returns an export by name, ordinal, or import.
 	///
 	/// The returned export contains an RVA or the name of a forwarded export.
+	///
+	/// # Errors
+	///
+	/// * [`Null`][crate::Error::Null]: The requested export is absent or its slot is empty.
+	/// * [`Bounds`][crate::Error::Bounds]: An ordinal or export table index is invalid.
+	/// * Other errors indicate malformed export data that cannot be read.
 	#[inline]
 	pub fn get_export<T>(&self, name: T) -> Result<Export<'a>>
 	where

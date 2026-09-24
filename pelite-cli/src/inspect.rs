@@ -106,7 +106,6 @@ fn exceptions(pe: PeFile<'_>) -> Result<serde_json::Value> {
 	match pe {
 		Wrap::T32(_) => Ok(serde_json::Value::Null),
 		Wrap::T64(file) => {
-			use pelite::pe64::Pe;
 			match file.file_header().Machine {
 				image::IMAGE_FILE_MACHINE_AMD64 => value_opt(file.exception_x64()),
 				image::IMAGE_FILE_MACHINE_ARM64 => value_opt(file.exception_arm64()),

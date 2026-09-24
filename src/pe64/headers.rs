@@ -1,5 +1,75 @@
 use super::*;
 
+impl<'a> PeFile<'a> {
+	/// Returns the DOS header.
+	pub fn dos_header(self) -> &'a IMAGE_DOS_HEADER {
+		unsafe { pe_impl::dos_header(self.image()) }
+	}
+	#[doc = include_str!("../docs/dos_image.md")]
+	pub fn dos_image(self) -> &'a [u8] {
+		unsafe { pe_impl::dos_image(self.image()) }
+	}
+	/// Returns the NT headers.
+	pub fn nt_headers(self) -> &'a IMAGE_NT_HEADERS {
+		unsafe { pe_impl::nt_headers(self.image()) }
+	}
+	/// Returns the file header.
+	pub fn file_header(self) -> &'a IMAGE_FILE_HEADER {
+		unsafe { pe_impl::file_header(self.image()) }
+	}
+	/// Returns the optional header.
+	pub fn optional_header(self) -> &'a IMAGE_OPTIONAL_HEADER {
+		unsafe { pe_impl::optional_header(self.image()) }
+	}
+	/// Returns the data directory.
+	pub fn data_directory(self) -> &'a [IMAGE_DATA_DIRECTORY] {
+		unsafe { pe_impl::data_directory(self.image()) }
+	}
+	/// Returns the section headers.
+	pub fn section_headers(self) -> &'a PeSectionHeaders {
+		unsafe { pe_impl::section_headers(self.image()) }
+	}
+	/// Returns the headers.
+	pub fn headers(self) -> PeHeaders<Self> {
+		PeHeaders { pe: self }
+	}
+}
+
+impl<'a> PeView<'a> {
+	/// Returns the DOS header.
+	pub fn dos_header(self) -> &'a IMAGE_DOS_HEADER {
+		unsafe { pe_impl::dos_header(self.image()) }
+	}
+	#[doc = include_str!("../docs/dos_image.md")]
+	pub fn dos_image(self) -> &'a [u8] {
+		unsafe { pe_impl::dos_image(self.image()) }
+	}
+	/// Returns the NT headers.
+	pub fn nt_headers(self) -> &'a IMAGE_NT_HEADERS {
+		unsafe { pe_impl::nt_headers(self.image()) }
+	}
+	/// Returns the file header.
+	pub fn file_header(self) -> &'a IMAGE_FILE_HEADER {
+		unsafe { pe_impl::file_header(self.image()) }
+	}
+	/// Returns the optional header.
+	pub fn optional_header(self) -> &'a IMAGE_OPTIONAL_HEADER {
+		unsafe { pe_impl::optional_header(self.image()) }
+	}
+	/// Returns the data directory.
+	pub fn data_directory(self) -> &'a [IMAGE_DATA_DIRECTORY] {
+		unsafe { pe_impl::data_directory(self.image()) }
+	}
+	/// Returns the section headers.
+	pub fn section_headers(self) -> &'a PeSectionHeaders {
+		unsafe { pe_impl::section_headers(self.image()) }
+	}
+	/// Returns the headers.
+	pub fn headers(self) -> PeHeaders<Self> {
+		PeHeaders { pe: self }
+	}
+}
+
 pub use crate::wrap::sections::*;
 
 /// Describes the PE headers.
@@ -8,15 +78,15 @@ pub struct PeHeaders<P> {
 	pe: P,
 }
 
-impl<'a, P: Pe<'a>> PeHeaders<P> {
+impl<'a, P: Copy + Pe<'a>> PeHeaders<P> {
 	pub(crate) fn new(pe: P) -> PeHeaders<P> {
 		PeHeaders { pe }
 	}
-	/// Gets the PE instance.
+	/// Returns the PE instance.
 	pub fn pe(&self) -> P {
 		self.pe
 	}
-	/// Gets the PE headers as a byte slice.
+	/// Returns the PE headers as a byte slice.
 	pub fn image(&self) -> &'a [u8] {
 		unsafe { self.pe.image().get_unchecked(..self.pe.optional_header().SizeOfHeaders as usize) }
 	}
@@ -50,6 +120,19 @@ impl<'a, P: Pe<'a>> PeHeaders<P> {
 	}
 }
 
+impl<'a, P: Copy + Pe<'a>> PeHeaders<P> {
+	#[doc = include_str!("../docs/rva_to_file_offset.md")]
+	#[inline]
+	pub fn rva_to_file_offset(self, rva: Rva) -> Result<usize> {
+		unsafe { pe_impl::rva_to_file_offset(self.image(), rva) }
+	}
+	#[doc = include_str!("../docs/file_offset_to_rva.md")]
+	#[inline]
+	pub fn file_offset_to_rva(self, file_offset: usize) -> Result<Rva> {
+		unsafe { pe_impl::file_offset_to_rva(self.image(), file_offset) }
+	}
+}
+
 /*
 	"headers": {
 		"DosHeader": { .. }
@@ -76,7 +159,7 @@ impl<'a, P: Pe<'a>> PeHeaders<P> {
 serde_impl! {
 	use crate::stringify;
 
-	impl<'a, P: Pe<'a>> Serialize for PeHeaders<P> {
+	impl<'a, P: Copy + Pe<'a>> Serialize for PeHeaders<P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			let mut state = serializer.serialize_struct("PeHeaders", 5)?;
 			state.serialize_field("DosHeader", self.pe.dos_header())?;
@@ -91,7 +174,7 @@ serde_impl! {
 	struct Details<P> {
 		pe: P,
 	}
-	impl<'a, P: Pe<'a>> Serialize for Details<P> {
+	impl<'a, P: Copy + Pe<'a>> Serialize for Details<P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			let mut state = serializer.serialize_struct("Details", 11)?;
 

@@ -9,6 +9,20 @@ const QS_BUF_LEN: usize = 16;
 
 //----------------------------------------------------------------
 
+impl<'a> PeFile<'a> {
+	/// Returns Scanner access.
+	pub fn scanner(self) -> Scanner<Self> {
+		Scanner::new(self)
+	}
+}
+
+impl<'a> PeView<'a> {
+	/// Returns Scanner access.
+	pub fn scanner(self) -> Scanner<Self> {
+		Scanner::new(self)
+	}
+}
+
 /// Pattern scanner.
 ///
 /// See the [`pattern`][mod@crate::pattern] module for more information about patterns.
@@ -44,7 +58,7 @@ const QS_BUF_LEN: usize = 16;
 pub struct Scanner<P> {
 	pe: P,
 }
-impl<'a, P: Pe<'a>> Scanner<P> {
+impl<'a, P: Copy + Pe<'a>> Scanner<P> {
 	pub(crate) fn new(pe: P) -> Scanner<P> {
 		Scanner { pe }
 	}
@@ -76,7 +90,7 @@ impl<'a, P: Pe<'a>> Scanner<P> {
 	///
 	/// The pattern may contain instructions to capture interesting addresses, these are stored in the save array.
 	/// Out-of-bounds save-slot reads return zero and stores are ignored.
-	/// Supply at least [`save_len(pat)`](pat::save_len) slots for the given pattern.
+	/// Supply at least [`save_len(pat)`][pat::save_len] slots for the given pattern.
 	///
 	/// If this returns `false`, the contents of the save array are unspecified.
 	#[inline]
@@ -110,7 +124,7 @@ pub struct ScanSections<'a, P, F = fn(&SectionHeader) -> bool> {
 	range: ops::Range<Rva>,
 }
 
-impl<'a, P: Pe<'a>, F: FnMut(&SectionHeader) -> bool> ScanSections<'a, P, F> {
+impl<'a, P: Copy + Pe<'a>, F: FnMut(&SectionHeader) -> bool> ScanSections<'a, P, F> {
 	/// Intersects the candidate starting addresses with this RVA range.
 	pub fn within(mut self, range: ops::Range<Rva>) -> Self {
 		self.range.start = cmp::max(self.range.start, range.start);
@@ -127,7 +141,7 @@ impl<'a, P: Pe<'a>, F: FnMut(&SectionHeader) -> bool> ScanSections<'a, P, F> {
 	/// Returns `None` if there are zero or multiple matches, or re-execution fails.
 	/// The contents of `save` are unspecified on failure.
 	///
-	/// Supply at least [`save_len(pat)`](pat::save_len) slots.
+	/// Supply at least [`save_len(pat)`][pat::save_len] slots.
 	pub fn find(self, pat: &[pat::Atom], save: &mut [Rva]) -> Option<Rva> {
 		let mut matches = self.matches(pat);
 		let first = matches.next(save)?;
@@ -138,7 +152,7 @@ impl<'a, P: Pe<'a>, F: FnMut(&SectionHeader) -> bool> ScanSections<'a, P, F> {
 	}
 }
 
-/// An iterator over section-oriented pattern matches.
+/// Iterator over section-oriented pattern matches.
 ///
 /// Created with [`ScanSections::matches`]. Match RVAs are returned independently of capture slots.
 #[derive(Clone)]
@@ -151,12 +165,12 @@ pub struct ScannerMatches<'a, 'pat, P, F = fn(&SectionHeader) -> bool> {
 	hits: u64,
 }
 
-impl<'a, 'pat, P: Pe<'a>, F: FnMut(&SectionHeader) -> bool> ScannerMatches<'a, 'pat, P, F> {
-	/// Gets the scanner instance.
+impl<'a, 'pat, P: Copy + Pe<'a>, F: FnMut(&SectionHeader) -> bool> ScannerMatches<'a, 'pat, P, F> {
+	/// Returns the scanner instance.
 	pub fn scanner(&self) -> Scanner<P> {
 		self.selection.scanner
 	}
-	/// Gets the pattern.
+	/// Returns the pattern.
 	pub fn pattern(&self) -> &'pat [pat::Atom] {
 		self.pat
 	}

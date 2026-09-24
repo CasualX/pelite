@@ -3,7 +3,7 @@ use super::*;
 const OPTS: crate::pattern::ParseOptions = crate::pattern::ParseOptions::DEFAULT;
 
 #[cfg(test)]
-pub(crate) fn test_scanner<'a, P: Pe<'a>>(pe: P) -> crate::Result<()> {
+pub(crate) fn test_scanner<'a, P: Copy + Pe<'a>>(pe: P) -> crate::Result<()> {
 	use crate::pattern::Atom::*;
 	let scanner = pe.scanner();
 	let mut save = [0; 4];
@@ -536,7 +536,7 @@ fn mapped(bytes: &[u8]) -> Vec<u8> {
 	result
 }
 
-fn collect<'a, P: Pe<'a>, F: FnMut(&SectionHeader) -> bool>(selection: ScanSections<'a, P, F>, pat: &[pat::Atom]) -> Result<Vec<Rva>> {
+fn collect<'a, P: Copy + Pe<'a>, F: FnMut(&SectionHeader) -> bool>(selection: ScanSections<'a, P, F>, pat: &[pat::Atom]) -> Result<Vec<Rva>> {
 	let mut matches = selection.matches(pat);
 	let mut save = vec![0; pat::save_len(pat)];
 	let mut rvas = Vec::new();
@@ -553,7 +553,7 @@ fn sections_are_independent_and_uniqueness_is_global() {
 	bytes[0x400] = 0xaa;
 	bytes[0x600] = 0xaa;
 	bytes[0x800] = 0xaa;
-	fn check<'a>(pe: impl Pe<'a>) {
+	fn check<'a>(pe: impl Copy + Pe<'a>) {
 		let scanner = pe.scanner();
 		assert_eq!(collect(scanner.code(), &[Byte(0xaa)]).unwrap(), [0x3000, 0x1000]);
 		assert_eq!(scanner.code().find(&[Byte(0xaa)], &mut []), None);
@@ -578,7 +578,7 @@ fn sections_are_independent_and_uniqueness_is_global() {
 fn prefix_optimization_respects_candidate_bounds_and_overlapping_matches() {
 	let mut bytes = fixture(&[(0x1000, 0x200, 0x200, EXECUTE)]);
 	bytes[0x400..0x40a].copy_from_slice(b"abcdababab");
-	fn check<'a>(pe: impl Pe<'a>) {
+	fn check<'a>(pe: impl Copy + Pe<'a>) {
 		let scanner = pe.scanner();
 		let fast = [Byte(b'a'), Byte(b'b'), Byte(b'c'), Byte(b'd')];
 		let slow = [Byte(b'a'), Fuzzy(0xff), Byte(b'b'), Byte(b'c'), Byte(b'd')];
@@ -627,7 +627,7 @@ fn references_escape_selection_but_scan_stays_in_current_section() {
 	put32(&mut bytes, 0x400, 0x3000 - 0x1004);
 	bytes[0x404..0x404 + mem::size_of::<Va>()].copy_from_slice(&(0x3000 as Va).to_le_bytes());
 	bytes[0x600] = 0xaa;
-	fn check<'a>(pe: impl Pe<'a>) {
+	fn check<'a>(pe: impl Copy + Pe<'a>) {
 		let scanner = pe.scanner();
 		let mut save = [0];
 		assert_eq!(scanner.section(&pe.section_headers().as_slice()[0]).within(0x1000..0x1001).find(&[Jump4, Save(0), Byte(0xaa)], &mut save), Some(0x1000));
@@ -717,7 +717,7 @@ fn optimized_search_agrees_with_direct_execution() {
 		bytes[0x400 + i] = ((i + 16) % 3) as u8;
 		bytes[0x600 + i] = (i % 3) as u8;
 	}
-	fn check<'a>(pe: impl Pe<'a>) {
+	fn check<'a>(pe: impl Copy + Pe<'a>) {
 		for len in [0, 1, 2, 3, 4, 5, 15, 16, 17, 18] {
 			let pat: Vec<_> = (0..len).map(|i| Byte((i % 3) as u8)).collect();
 			for start in 0x1000..0x1020 {

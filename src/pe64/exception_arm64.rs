@@ -1,5 +1,19 @@
 use super::*;
 
+impl<'a> PeFile<'a> {
+	#[doc = include_str!("../docs/exception_arm64.md")]
+	pub fn exception_arm64(self) -> Result<Arm64ExceptionDirectory<'a, Self>> {
+		Arm64ExceptionDirectory::try_from(self)
+	}
+}
+
+impl<'a> PeView<'a> {
+	#[doc = include_str!("../docs/exception_arm64.md")]
+	pub fn exception_arm64(self) -> Result<Arm64ExceptionDirectory<'a, Self>> {
+		Arm64ExceptionDirectory::try_from(self)
+	}
+}
+
 //----------------------------------------------------------------
 
 /// Exception directory for ARM64 images.
@@ -12,7 +26,7 @@ pub struct Arm64ExceptionDirectory<'a, P> {
 	pe: P,
 	image: &'a [IMAGE_ARM64_RUNTIME_FUNCTION_ENTRY],
 }
-impl<'a, P: Pe<'a>> Arm64ExceptionDirectory<'a, P> {
+impl<'a, P: Copy + Pe<'a>> Arm64ExceptionDirectory<'a, P> {
 	/// Parses the ARM64 exception directory for the given PE.
 	pub(crate) fn try_from(pe: P) -> Result<Arm64ExceptionDirectory<'a, P>> {
 		let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_EXCEPTION).ok_or(Error::Bounds)?;
@@ -30,7 +44,7 @@ impl<'a, P: Pe<'a>> Arm64ExceptionDirectory<'a, P> {
 		let image = pe.derva_slice(datadir.VirtualAddress, len)?;
 		Ok(Arm64ExceptionDirectory { pe, image })
 	}
-	/// Gets the PE instance.
+	/// Returns the PE instance.
 	pub fn pe(&self) -> P {
 		self.pe
 	}
@@ -42,13 +56,13 @@ impl<'a, P: Pe<'a>> Arm64ExceptionDirectory<'a, P> {
 	pub fn check_sorted(&self) -> bool {
 		self.image.windows(2).all(|window| window[0].BeginAddress <= window[1].BeginAddress)
 	}
-	/// Gets an iterator over the function records.
+	/// Returns an iterator over the function records.
 	pub fn functions(&self) -> iter::Map<slice::Iter<'a, IMAGE_ARM64_RUNTIME_FUNCTION_ENTRY>, impl Clone + FnMut(&'a IMAGE_ARM64_RUNTIME_FUNCTION_ENTRY) -> Arm64RuntimeFunction<'a, P>> {
 		let pe = self.pe;
 		self.image.iter().map(move |image| Arm64RuntimeFunction { pe, image })
 	}
 }
-impl<'a, P: Pe<'a>> fmt::Debug for Arm64ExceptionDirectory<'a, P> {
+impl<'a, P: Copy + Pe<'a>> fmt::Debug for Arm64ExceptionDirectory<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		f.debug_struct("Arm64ExceptionDirectory")
 			.field("functions", &crate::util::DebugList(self.functions()))
@@ -64,8 +78,8 @@ pub struct Arm64RuntimeFunction<'a, P> {
 	pe: P,
 	image: &'a IMAGE_ARM64_RUNTIME_FUNCTION_ENTRY,
 }
-impl<'a, P: Pe<'a>> Arm64RuntimeFunction<'a, P> {
-	/// Gets the PE instance.
+impl<'a, P: Copy + Pe<'a>> Arm64RuntimeFunction<'a, P> {
+	/// Returns the PE instance.
 	pub fn pe(&self) -> P {
 		self.pe
 	}
@@ -81,11 +95,21 @@ impl<'a, P: Pe<'a>> Arm64RuntimeFunction<'a, P> {
 	pub fn raw_unwind_data(&self) -> u32 {
 		self.image.UnwindData
 	}
-	/// Interprets the unwind data.
+	/// Decodes the ARM64 unwind data.
+	///
+	/// # Errors
+	///
+	/// * [`Invalid`][crate::Error::Invalid]: The unwind flag or packed fields are invalid.
 	pub fn unwind_data(&self) -> Result<Arm64UnwindData> {
 		Arm64UnwindData::decode(self.image.UnwindData)
 	}
-	/// Computes the optional end address of the function.
+	/// Returns the function's end address when it can be determined.
+	///
+	/// # Errors
+	///
+	/// * [`Invalid`][crate::Error::Invalid]: The unwind data is malformed.
+	/// * [`Overflow`][crate::Error::Overflow]: The function length overflows its begin address.
+	/// * [`Null`][crate::Error::Null], [`Bounds`][crate::Error::Bounds], or [`ZeroFill`][crate::Error::ZeroFill]: A referenced xdata record cannot be read.
 	pub fn end_address(&self) -> Result<Option<Rva>> {
 		let begin = self.image.BeginAddress;
 		match self.unwind_data()? {
@@ -103,7 +127,11 @@ impl<'a, P: Pe<'a>> Arm64RuntimeFunction<'a, P> {
 	}
 	/// Attempts to fetch the function bytes.
 	///
-	/// Only available when the function length can be determined from packed data.
+	/// # Errors
+	///
+	/// * [`Invalid`][crate::Error::Invalid]: A function length cannot be determined from its unwind data.
+	/// * [`Overflow`][crate::Error::Overflow]: The function's end address is invalid.
+	/// * [`Null`][crate::Error::Null], [`Bounds`][crate::Error::Bounds], or [`ZeroFill`][crate::Error::ZeroFill]: The function bytes or referenced xdata cannot be read.
 	pub fn bytes(&self) -> Result<&'a [u8]> {
 		let end = self.end_address()?.ok_or(Error::Invalid)?;
 		if self.image.BeginAddress > end {
@@ -118,7 +146,7 @@ impl<'a, P: Pe<'a>> Arm64RuntimeFunction<'a, P> {
 		decode_xdata_function_length(header)
 	}
 }
-impl<'a, P: Pe<'a>> fmt::Debug for Arm64RuntimeFunction<'a, P> {
+impl<'a, P: Copy + Pe<'a>> fmt::Debug for Arm64RuntimeFunction<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		let begin = self.begin_address();
 		let mut debug = f.debug_struct("Arm64RuntimeFunction");
@@ -280,13 +308,13 @@ impl Arm64PackedUnwindInfo {
 //----------------------------------------------------------------
 
 serde_impl! {
-	impl<'a, P: Pe<'a>> Serialize for Arm64ExceptionDirectory<'a, P> {
+	impl<'a, P: Copy + Pe<'a>> Serialize for Arm64ExceptionDirectory<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			serializer.collect_seq(self.functions())
 		}
 	}
 
-	impl<'a, P: Pe<'a>> Serialize for Arm64RuntimeFunction<'a, P> {
+	impl<'a, P: Copy + Pe<'a>> Serialize for Arm64RuntimeFunction<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			let mut state = serializer.serialize_struct("Arm64RuntimeFunction", 3)?;
 			state.serialize_field("image", self.image())?;

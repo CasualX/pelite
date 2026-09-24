@@ -5,10 +5,9 @@ use core::{fmt, mem};
 use crate::image::WIN_CERTIFICATE;
 use crate::util::AlignTo;
 
-/// Security Directory.
+/// Security directory.
 ///
-/// The security directory contains the digital signature if the module is signed.
-/// The security directory is only available on disk images and isn't mapped to memory.
+/// Certificates are stored in the file and are not mapped into the loaded image.
 ///
 /// # Examples
 ///
@@ -37,32 +36,20 @@ impl<'a> SecurityDirectory<'a> {
 		debug_assert!(image.len() >= 8);
 		SecurityDirectory { image }
 	}
-	/// Returns the underlying security directory image.
+	/// Returns the raw certificate header.
 	pub fn image(&self) -> &'a WIN_CERTIFICATE {
 		// Safety checked by new
 		unsafe { &*(self.image.as_ptr() as *const _) }
 	}
-	/// Gets the type of the certificate.
+	/// Returns the certificate type.
 	///
-	/// List of known certificate types:
-	///
-	/// * [X.509: `WIN_CERT_TYPE_X509`][crate::image::WIN_CERT_TYPE_X509]
-	/// * [PKCS SignedData: `WIN_CERT_TYPE_PKCS_SIGNED_DATA`][crate::image::WIN_CERT_TYPE_PKCS_SIGNED_DATA]
-	/// * [PKCS1_MODULE_SIGN: `WIN_CERT_TYPE_PKCS1_SIGN`][crate::image::WIN_CERT_TYPE_PKCS1_SIGN]
+	/// Known types include [X.509][crate::image::WIN_CERT_TYPE_X509], [PKCS SignedData][crate::image::WIN_CERT_TYPE_PKCS_SIGNED_DATA], and [PKCS1 module sign][crate::image::WIN_CERT_TYPE_PKCS1_SIGN].
 	pub fn certificate_type(&self) -> u16 {
 		self.image().wCertificateType
 	}
-	/// Gets the raw certificate data bytes.
+	/// Returns the raw certificate data bytes.
 	///
-	/// The interpretation of this data depends the type of the certificate.
-	/// No further introspection is provided.
-	///
-	/// External tools such as _OpenSSL_ can be used to further disect and analyze this data.
-	/// Eg. for `WIN_CERT_TYPE_PKCS_SIGNED_DATA` the following can be used to decode the bytes:
-	///
-	/// ```sh
-	/// openssl pkcs7 -inform DER -print_certs -text -in pe_certificate
-	/// ```
+	/// The format depends on the [certificate type][Self::certificate_type]. For PKCS SignedData, external tools can decode the DER data.
 	pub fn certificate_data(&self) -> &'a [u8] {
 		// Safety checked by new
 		unsafe { self.image.get_unchecked(8..) }

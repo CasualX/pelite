@@ -2,7 +2,7 @@ use super::*;
 use crate::wrap::sections::SectionHeader;
 
 /// Pattern scanner.
-impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::Scanner<Pe32>, pe64::Scanner<Pe64>> {
+impl<'a, Pe32: Copy + pe32::Pe<'a>, Pe64: Copy + pe64::Pe<'a>> Wrap<pe32::Scanner<Pe32>, pe64::Scanner<Pe64>> {
 	/// Selects candidate starting addresses within this RVA range across all sections.
 	#[inline]
 	pub fn within(self, range: ops::Range<u32>) -> Wrap<pe32::ScanSections<'a, Pe32>, pe64::ScanSections<'a, Pe64>> {
@@ -39,7 +39,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::Scanner<Pe32>, pe64:
 	///
 	/// The pattern may contain instructions to capture interesting addresses, these are stored in the save array.
 	/// Out-of-bounds save-slot reads return zero and stores are ignored.
-	/// Supply at least [`save_len(pat)`](pattern::save_len) slots for the given pattern.
+	/// Supply at least [`save_len(pat)`][pattern::save_len] slots for the given pattern.
 	///
 	/// If this returns `false`, the contents of the save array are unspecified.
 	#[inline]
@@ -51,7 +51,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::Scanner<Pe32>, pe64:
 	}
 }
 
-impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>, F: FnMut(&SectionHeader) -> bool> Wrap<pe32::ScanSections<'a, Pe32, F>, pe64::ScanSections<'a, Pe64, F>> {
+impl<'a, Pe32: Copy + pe32::Pe<'a>, Pe64: Copy + pe64::Pe<'a>, F: FnMut(&SectionHeader) -> bool> Wrap<pe32::ScanSections<'a, Pe32, F>, pe64::ScanSections<'a, Pe64, F>> {
 	/// Intersects the candidate starting addresses with this RVA range.
 	#[inline]
 	pub fn within(self, range: ops::Range<u32>) -> Self {
@@ -74,7 +74,7 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>, F: FnMut(&SectionHeader) -> boo
 	/// Returns `None` if there are zero or multiple matches, or re-execution fails.
 	/// The contents of `save` are unspecified on failure.
 	///
-	/// Supply at least [`save_len(pat)`](pattern::save_len) slots.
+	/// Supply at least [`save_len(pat)`][pattern::save_len] slots.
 	#[inline]
 	pub fn find(self, pat: &[pattern::Atom], save: &mut [u32]) -> Option<u32> {
 		match self {
@@ -84,8 +84,8 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>, F: FnMut(&SectionHeader) -> boo
 	}
 }
 
-impl<'a, 'pat, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>, F: FnMut(&SectionHeader) -> bool> Wrap<pe32::ScannerMatches<'a, 'pat, Pe32, F>, pe64::ScannerMatches<'a, 'pat, Pe64, F>> {
-	/// Gets the scanner instance.
+impl<'a, 'pat, Pe32: Copy + pe32::Pe<'a>, Pe64: Copy + pe64::Pe<'a>, F: FnMut(&SectionHeader) -> bool> Wrap<pe32::ScannerMatches<'a, 'pat, Pe32, F>, pe64::ScannerMatches<'a, 'pat, Pe64, F>> {
+	/// Returns the scanner instance.
 	#[inline]
 	pub fn scanner(&self) -> Wrap<pe32::Scanner<Pe32>, pe64::Scanner<Pe64>> {
 		match self {
@@ -93,7 +93,7 @@ impl<'a, 'pat, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>, F: FnMut(&SectionHeader) 
 			Wrap::T64(matches) => Wrap::T64(matches.scanner()),
 		}
 	}
-	/// Gets the pattern.
+	/// Returns the pattern.
 	#[inline]
 	pub fn pattern(&self) -> &'pat [pattern::Atom] {
 		match self {

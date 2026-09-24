@@ -13,7 +13,7 @@ impl SectionHeader {
 	pub fn name_bytes(&self) -> &[u8] {
 		crate::util::trimn(&self.0.Name)
 	}
-	/// Returns the name.
+	/// Returns the section name as UTF-8.
 	pub fn name(&self) -> core::result::Result<&str, &[u8]> {
 		crate::util::parsen(&self.0.Name)
 	}
@@ -77,7 +77,7 @@ impl PeSectionHeaders {
 	pub fn image(&self) -> &[image::IMAGE_SECTION_HEADER] {
 		&self.0
 	}
-	/// Gets the section headers as a slice of `SectionHeader`.
+	/// Returns the section headers as a slice of `SectionHeader`.
 	#[inline]
 	pub fn as_slice(&self) -> &[SectionHeader] {
 		unsafe { mem::transmute(self) }

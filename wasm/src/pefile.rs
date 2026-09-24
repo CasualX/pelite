@@ -107,14 +107,12 @@ pub unsafe fn va_to_rva(pefile: *mut PeFile, va: u64) -> u32 {
 
 	let result = match pefile {
 		pelite::Wrap::T32(pefile) => {
-			use pelite::pe32::Pe;
 			match u32::try_from(va) {
 				Ok(va) => pefile.va_to_rva(va),
 				Err(_) => Err(pelite::Error::Overflow),
 			}
 		},
 		pelite::Wrap::T64(pefile) => {
-			use pelite::pe64::Pe;
 			pefile.va_to_rva(va)
 		},
 	};
@@ -135,11 +133,9 @@ pub unsafe fn rva_to_va(pefile: *mut PeFile, rva: u32) -> u64 {
 
 	let result = match pefile {
 		pelite::Wrap::T32(pefile) => {
-			use pelite::pe32::Pe;
 			pefile.rva_to_va(rva).map(|va| va as u64)
 		},
 		pelite::Wrap::T64(pefile) => {
-			use pelite::pe64::Pe;
 			pefile.rva_to_va(rva)
 		},
 	};
@@ -188,7 +184,7 @@ pub unsafe fn disasm(pefile: *mut PeFile, start: u32, end: u32) {
 		Ok(bytes) => bytes,
 		Err(err) => return return_error(err),
 	};
-	let image_base = image_base(pefile);
+	let image_base = pefile.image_base();
 	let start_ip = image_base + start as u64;
 	let end_ip = image_base + end as u64;
 
@@ -215,13 +211,6 @@ pub unsafe fn disasm(pefile: *mut PeFile, start: u32, end: u32) {
 	}
 
 	return_json(instructions);
-}
-
-fn image_base(pefile: pelite::PeFile<'_>) -> u64 {
-	match pefile.optional_header() {
-		pelite::Wrap::T32(header) => u64::from(header.ImageBase),
-		pelite::Wrap::T64(header) => header.ImageBase.get(),
-	}
 }
 
 fn build_symbols(pefile: pelite::PeFile<'_>, bitness: u32, image_base: u64) -> HashMap<u64, String> {
@@ -334,12 +323,10 @@ pub unsafe fn slice_cstring(pefile: *mut PeFile, rva: u32, utf8: bool) {
 fn va_to_rva_impl(pefile: &pelite::PeFile, va: u64) -> pelite::Result<u32> {
 	match pefile {
 		pelite::Wrap::T32(pefile) => {
-			use pelite::pe32::Pe;
 			let va = u32::try_from(va).map_err(|_| pelite::Error::Overflow)?;
 			pefile.va_to_rva(va)
 		},
 		pelite::Wrap::T64(pefile) => {
-			use pelite::pe64::Pe;
 			pefile.va_to_rva(va)
 		},
 	}
@@ -465,7 +452,6 @@ pub unsafe fn exceptions_x64(pefile: *mut PeFile) {
 			return_null();
 		}
 		pelite::Wrap::T64(pefile) => {
-			use pelite::pe64::Pe;
 			return_pelite_result(pefile.exception_x64());
 		}
 	}

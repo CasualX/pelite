@@ -1,4 +1,4 @@
-use pelite::{image, Import, PeFile, Wrap};
+use pelite::{image, Import, PeFile};
 
 use super::*;
 
@@ -45,7 +45,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	};
 	let len = usize::try_from(range.end - range.start)?;
 	let bytes = pe.slice(range.start, len, 1)?;
-	let image_base = image_base(pe);
+	let image_base = pe.image_base();
 	let start_ip = image_base + range.start as u64;
 	let end_ip = image_base + range.end as u64;
 
@@ -82,13 +82,6 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 			}
 			Ok(())
 		},
-	}
-}
-
-fn image_base(pe: PeFile<'_>) -> u64 {
-	match pe.optional_header() {
-		Wrap::T32(header) => u64::from(header.ImageBase),
-		Wrap::T64(header) => header.ImageBase.get(),
 	}
 }
 

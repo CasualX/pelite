@@ -3,8 +3,8 @@ use crate::*;
 use super::Wrap;
 
 /// Load Config Directory.
-impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::LoadConfigDirectory<'a, Pe32>, pe64::LoadConfigDirectory<'a, Pe64>> {
-	/// Gets the PE instance.
+impl<'a, Pe32: Copy + pe32::Pe<'a>, Pe64: Copy + pe64::Pe<'a>> Wrap<pe32::LoadConfigDirectory<'a, Pe32>, pe64::LoadConfigDirectory<'a, Pe64>> {
+	/// Returns the PE instance.
 	#[inline]
 	pub fn pe(&self) -> Wrap<Pe32, Pe64> {
 		match self {
@@ -46,7 +46,13 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::LoadConfigDirectory<
 			Wrap::T64(load_config) => Wrap::T64(load_config.image_copy()),
 		}
 	}
-	/// Gets the default security cookie for the image.
+	/// Returns the default security cookie.
+	///
+	/// # Errors
+	///
+	/// * [`Bounds`][crate::Error::Bounds]: This directory revision does not contain the cookie field, or the cookie lies outside the image.
+	/// * [`Null`][crate::Error::Null]: The cookie address is zero.
+	/// * [`Misaligned`][crate::Error::Misaligned], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: The cookie cannot be read.
 	#[inline]
 	pub fn security_cookie(&self) -> Result<&'a u32> {
 		match self {
@@ -54,7 +60,14 @@ impl<'a, Pe32: pe32::Pe<'a>, Pe64: pe64::Pe<'a>> Wrap<pe32::LoadConfigDirectory<
 			Wrap::T64(load_config) => load_config.security_cookie(),
 		}
 	}
-	/// Gets the structured exception handler table.
+	/// Returns the structured exception handler table.
+	///
+	/// # Errors
+	///
+	/// * [`Bounds`][crate::Error::Bounds]: This directory revision lacks the table fields, or the table lies outside the image.
+	/// * [`Null`][crate::Error::Null]: The table address is zero.
+	/// * [`Overflow`][crate::Error::Overflow]: The declared table length overflows.
+	/// * [`Misaligned`][crate::Error::Misaligned], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: The table cannot be read.
 	#[inline]
 	pub fn se_handler_table(&self) -> Result<Wrap<&'a [u32], &'a [u64]>> {
 		match self {

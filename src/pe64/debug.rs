@@ -1,9 +1,25 @@
 use super::*;
 
+impl<'a> PeFile<'a> {
+	#[doc = include_str!("../docs/debug.md")]
+	#[inline]
+	pub fn debug(self) -> Result<crate::debug::DebugDirectory<'a>> {
+		try_from(self)
+	}
+}
+
+impl<'a> PeView<'a> {
+	#[doc = include_str!("../docs/debug.md")]
+	#[inline]
+	pub fn debug(self) -> Result<crate::debug::DebugDirectory<'a>> {
+		try_from(self)
+	}
+}
+
 #[doc(inline)]
 pub use crate::debug::*;
 
-pub(crate) fn try_from<'a, P: Pe<'a>>(pe: P) -> Result<DebugDirectory<'a>> {
+pub(crate) fn try_from<'a, P: Copy + Pe<'a>>(pe: P) -> Result<DebugDirectory<'a>> {
 	let datadir = pe.data_directory().get(IMAGE_DIRECTORY_ENTRY_DEBUG).ok_or(Error::Bounds)?;
 	if datadir.VirtualAddress == 0 {
 		return Err(Error::Null);
@@ -17,7 +33,7 @@ pub(crate) fn try_from<'a, P: Pe<'a>>(pe: P) -> Result<DebugDirectory<'a>> {
 }
 
 #[cfg(test)]
-pub(crate) fn test_debug<'a, P: Pe<'a>>(pe: P) -> Result<()> {
+pub(crate) fn test_debug<'a, P: Copy + Pe<'a>>(pe: P) -> Result<()> {
 	let debug = pe.debug()?;
 	for dir in debug {
 		let _data = dir.data();
