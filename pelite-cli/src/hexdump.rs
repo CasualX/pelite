@@ -67,12 +67,16 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 		OutputFormat::JsonPretty => print_json(&bytes, true),
 		OutputFormat::Text => {
 			let stdout = io::stdout();
+			let hex = HexPrinter::for_output(&stdout);
 			let mut output = stdout.lock();
 			for row in build_rows(start_address, bytes)? {
 				write!(output, "{:#0address_width$x}  ", row.address)?;
 				for column in 0..ROW_WIDTH {
 					match column.checked_sub(row.offset).and_then(|index| row.bytes.get(index)) {
-						Some(byte) => write!(output, "{byte:02x} ")?,
+						Some(byte) => {
+							hex.write_byte(&mut output, *byte)?;
+							write!(output, " ")?;
+						},
 						None => write!(output, "   ")?,
 					}
 					if column == 7 {
