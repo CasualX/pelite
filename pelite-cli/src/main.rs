@@ -4,6 +4,7 @@ use std::sync::Arc;
 use std::{error, fmt, fs, num, process, result};
 use std::io::{self, BufRead, IsTerminal, Write};
 
+mod addr;
 mod disasm;
 mod edit;
 mod findsig;
@@ -74,6 +75,7 @@ fn cli() -> clap::Command {
 		.subcommand(edit::command())
 		.subcommand(summary::command())
 		.subcommand(resources::command())
+		.subcommand(addr::command())
 		.subcommand(disasm::command())
 		.subcommand(hexdump::command())
 		.subcommand(strings::command())
@@ -106,6 +108,7 @@ fn run() -> Result {
 		Some(("edit", matches)) => edit::run(matches),
 		Some(("summary", matches)) => summary::run(matches, format),
 		Some(("resources", matches)) => resources::run(matches, format),
+		Some(("addr", matches)) => addr::run(matches, format),
 		Some(("disasm", matches)) => disasm::run(matches, format),
 		Some(("hexdump", matches)) => hexdump::run(matches, format),
 		Some(("strings", matches)) => strings::run(matches, format),
