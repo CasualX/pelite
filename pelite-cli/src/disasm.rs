@@ -2,6 +2,11 @@ use pelite::{image, Import, PeFile};
 
 use super::*;
 
+const MNEMONIC_COLOR: &str = "\x1b[1;97m";
+const ADDRESS_COLOR: &str = "\x1b[38;2;200;174;130m";
+const REGISTER_COLOR: &str = "\x1b[38;2;134;186;184m";
+const NUMBER_COLOR: &str = "\x1b[38;2;185;190;198m";
+
 #[derive(serde::Serialize)]
 struct DisassembledInstruction<'a> {
 	address: u64,
@@ -25,12 +30,10 @@ impl iced_x86::FormatterOutput for InstructionText {
 			return;
 		};
 		let color = match kind {
-			Kind::Mnemonic | Kind::Directive => "\x1b[1;32m",
-			Kind::Register => "\x1b[36m",
-			Kind::Number | Kind::SelectorValue | Kind::LabelAddress | Kind::FunctionAddress => "\x1b[33m",
-			Kind::Data | Kind::Label | Kind::Function => "\x1b[1;35m",
-			Kind::Prefix | Kind::Keyword | Kind::Decorator => "\x1b[35m",
-			Kind::Operator | Kind::Punctuation => "\x1b[90m",
+			Kind::Mnemonic | Kind::Directive | Kind::Prefix => MNEMONIC_COLOR,
+			Kind::Register => REGISTER_COLOR,
+			Kind::Number | Kind::SelectorValue => NUMBER_COLOR,
+			Kind::Data | Kind::Label | Kind::Function | Kind::LabelAddress | Kind::FunctionAddress => ADDRESS_COLOR,
 			_ => "",
 		};
 		if !color.is_empty() {
@@ -40,6 +43,17 @@ impl iced_x86::FormatterOutput for InstructionText {
 		if !color.is_empty() {
 			colored.push_str("\x1b[0m");
 		}
+	}
+
+	fn write_number(
+		&mut self, instruction: &iced_x86::Instruction, _operand: u32, instruction_operand: Option<u32>, text: &str, _value: u64,
+		_number_kind: iced_x86::NumberKind, kind: iced_x86::FormatterTextKind,
+	) {
+		let absolute_memory = instruction_operand.is_some_and(|operand| instruction.op_kind(operand) == iced_x86::OpKind::Memory)
+			&& (instruction.is_ip_rel_memory_operand()
+				|| (instruction.memory_base() == iced_x86::Register::None && instruction.memory_index() == iced_x86::Register::None));
+		let kind = if kind == iced_x86::FormatterTextKind::Number && absolute_memory { iced_x86::FormatterTextKind::LabelAddress } else { kind };
+		self.write(text, kind);
 	}
 }
 
@@ -107,13 +121,17 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 		OutputFormat::JsonPretty => print_json(&instructions, true),
 		OutputFormat::Text => {
 			let show_hex = matches.get_flag("hex");
+			let longest_instruction_bytes = instructions.iter().map(|item| item.bytes.len()).max().unwrap_or(0);
+			let stdout = io::stdout();
+			let hex = HexPrinter::new(false);
+			let mut output = stdout.lock();
 			for item in instructions {
 				if let Some(symbol) = symbols.get(&item.address) {
 					if color {
-						println!("\n\x1b[1;35m{symbol}:\x1b[0m");
+						writeln!(output, "\n\x1b[1m{ADDRESS_COLOR}{symbol}:\x1b[0m")?;
 					}
 					else {
-						println!("\n{symbol}:");
+						writeln!(output, "\n{symbol}:")?;
 					}
 				}
 				let address_width = bitness as usize / 4 + 2;
@@ -123,21 +141,22 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 					.and_then(|section| section.name().ok())
 					.unwrap_or("<no section>");
 				if color {
-					print!("\x1b[90m{section_name}\x1b[0m:\x1b[36m{:#0address_width$x}\x1b[0m  ", item.address);
+					write!(output, "\x1b[90m{section_name}\x1b[0m:{ADDRESS_COLOR}{:#0address_width$x}\x1b[0m  ", item.address)?;
 				}
 				else {
-					print!("{section_name}:{:#0address_width$x}  ", item.address);
+					write!(output, "{section_name}:{:#0address_width$x}  ", item.address)?;
 				}
 				if show_hex {
-					let bytes = item.bytes.iter().map(|byte| format!("{byte:02x}")).collect::<Vec<_>>().join(" ");
 					if color {
-						print!("\x1b[90m{bytes:<44}\x1b[0m ");
+						write!(output, "\x1b[90m")?;
 					}
-					else {
-						print!("{bytes:<44} ");
+					hex.write_bytes(&mut output, item.bytes, b"")?;
+					if color {
+						write!(output, "\x1b[0m")?;
 					}
+					write!(output, "{:width$} ", "", width = (longest_instruction_bytes - item.bytes.len()) * 2)?;
 				}
-				println!("{}", item.colored_instruction.as_deref().unwrap_or(&item.instruction));
+				writeln!(output, "{}", item.colored_instruction.as_deref().unwrap_or(&item.instruction))?;
 			}
 			Ok(())
 		},

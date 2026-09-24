@@ -8,6 +8,7 @@ mod addr;
 mod disasm;
 mod edit;
 mod findsig;
+mod hex_printer;
 mod hexdump;
 mod imphash;
 mod inspect;
@@ -24,6 +25,7 @@ mod value_parser;
 mod version_info;
 
 use value_parser::*;
+use hex_printer::*;
 
 type Result<T = ()> = result::Result<T, Box<dyn error::Error>>;
 

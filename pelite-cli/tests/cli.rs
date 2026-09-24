@@ -218,6 +218,28 @@ fn hexdump_aligns_partial_rows() {
 }
 
 #[test]
+fn disasm_hex_bytes_keep_text_columns_aligned() {
+	let pe32 = demo("Demo.dll");
+	let output = Command::new(env!("CARGO_BIN_EXE_pelite-cli"))
+		.args(["disasm", pe32.to_str().unwrap(), "1000..1008", "--hex"])
+		.output()
+		.expect("run pelite-cli");
+	assert!(output.status.success(), "pelite-cli failed: {}", String::from_utf8_lossy(&output.stderr));
+	let stdout = String::from_utf8(output.stdout).unwrap();
+	assert!(stdout.contains("b801000000 mov eax,1"));
+	assert!(stdout.contains("c20c00     ret 0Ch"));
+	assert!(!stdout.contains('\x1b'));
+
+	let output = Command::new(env!("CARGO_BIN_EXE_pelite-cli"))
+		.args(["disasm", pe32.to_str().unwrap(), "1005..1008", "--hex"])
+		.output()
+		.expect("run pelite-cli");
+	assert!(output.status.success(), "pelite-cli failed: {}", String::from_utf8_lossy(&output.stderr));
+	let stdout = String::from_utf8(output.stdout).unwrap();
+	assert!(stdout.contains("c20c00 ret 0Ch"));
+}
+
+#[test]
 fn icon_groups_can_be_listed_and_extracted() {
 	let pe32 = demo("Demo.dll");
 	let path = pe32.to_str().unwrap();
