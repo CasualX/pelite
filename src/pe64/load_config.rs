@@ -157,17 +157,3 @@ serde_impl! {
 		}
 	}
 }
-
-#[cfg(test)]
-pub(crate) fn test_load_config<'a, P: Copy + Pe<'a>>(pe: P) -> Result<()> {
-	let load_config = pe.load_config()?;
-	let _ = format!("{:?}", load_config);
-	let _image = load_config.image_copy();
-	let _size = load_config.size();
-	let _time_date_stamp = load_config.time_date_stamp();
-	let _version = load_config.version();
-	let _guard_flags = load_config.get(dataview::Field!(IMAGE_LOAD_CONFIG_DIRECTORY.GuardFlags));
-	let _security_cookie = load_config.security_cookie();
-	let _se_handler_table = load_config.se_handler_table();
-	Ok(())
-}

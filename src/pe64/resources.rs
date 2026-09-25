@@ -25,8 +25,3 @@ impl<'a> PeView<'a> {
 		Ok(crate::resources::ResourceDirectory::new(&bytes[..size], datadir))
 	}
 }
-
-#[cfg(test)]
-pub(crate) fn test_resources<'a, P: Copy + Pe<'a>>(pe: P) -> Result<()> {
-	pe.resources().and_then(crate::resources::test)
-}

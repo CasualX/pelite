@@ -264,34 +264,3 @@ serde_impl! {
 }
 
 //----------------------------------------------------------------
-
-#[cfg(test)]
-pub(crate) fn test_exception_x64<'a, P: Copy + Pe<'a>>(pe: P) -> Result<()> {
-	let exception = pe.exception_x64()?;
-	let _ = format!("{:?}", exception);
-
-	let sorted = exception.check_sorted();
-
-	for (index, function) in exception.functions().enumerate() {
-		let _ = format!("{:?}", function);
-		let _bytes = function.bytes();
-
-		if sorted {
-			for pc in function.image().BeginAddress..function.image().EndAddress {
-				assert_eq!(exception.index_of(pc), Ok(index));
-			}
-		}
-
-		if let Ok(unwind_info) = function.unwind_info() {
-			let _ = format!("{:?}", unwind_info);
-			let _version = unwind_info.version();
-			let _flags = unwind_info.flags();
-			let _size_of_prolog = unwind_info.size_of_prolog();
-			let _frame_register = unwind_info.frame_register();
-			let _frame_offset = unwind_info.frame_offset();
-			let _unwind_codes = unwind_info.unwind_codes();
-		}
-	}
-
-	Ok(())
-}
