@@ -27,14 +27,9 @@ Note that while the correct name is PE32+, the name PE64 is used as it is a vali
 Tools
 -----
 
-The workspace includes a unified CLI for inspecting binaries and version resources,
-extracting strings and icons, hashing imports, finding signatures, generating binary
-data and module-definition files, and dumping MSVC RTTI.
-Run `cargo run -p pelite-cli -- --help` or [try it on the demos](demo).
-
-For a compact first look at an unfamiliar binary, run
-`cargo run -p pelite-cli -- summary suspicious.exe`. Add `--format=json` for
-machine-readable output. The summary reports triage clues, not a malware verdict.
+The workspace includes [pelite-cli](pelite-cli/readme.md) for inspecting PE binaries
+from the command line. Its README covers the commands, getting started, and output
+formats; the [demos](demo/readme.md) have more examples.
 
 Library
 -------
