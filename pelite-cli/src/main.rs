@@ -24,6 +24,7 @@ mod strings;
 mod summary;
 mod value_parser;
 mod version_info;
+mod xref;
 
 use value_parser::*;
 use hex_printer::*;
@@ -91,6 +92,7 @@ fn cli() -> clap::Command {
 		.subcommand(rust_format_args::command())
 		.subcommand(rust_panic_strings::command())
 		.subcommand(version_info::command())
+		.subcommand(xref::command())
 }
 
 fn run() -> Result {
@@ -113,6 +115,7 @@ fn run() -> Result {
 		Some(("rust-format-args", matches)) => rust_format_args::run(matches, format),
 		Some(("rust-panic-strings", matches)) => rust_panic_strings::run(matches, format),
 		Some(("version-info", matches)) => version_info::run(matches, format),
+		Some(("xref", matches)) => xref::run(matches, format),
 		None => summary::run(&matches, format),
 		_ => unreachable!("all subcommands are handled"),
 	}
