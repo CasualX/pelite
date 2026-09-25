@@ -22,7 +22,7 @@ The result can be seen [here](Demo-rtti.txt).
 Inspects every supported PE header and data directory.
 
 ```bat
-cargo run -p pelite-cli -- inspect "demo/Demo64.dll" all > demo/Demo64-pe.txt
+cargo run -p pelite-cli -- inspect "demo/Demo64.dll" --all > demo/Demo64-pe.txt
 ```
 
 The result can be seen [here](Demo64-pe.txt).
