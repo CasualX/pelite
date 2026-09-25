@@ -124,6 +124,33 @@ fn wrap_get_export() {
 }
 
 #[test]
+fn wrapped_headers_convert_file_offsets_for_both_formats() {
+	for path in ["demo/Demo.dll", "demo/Demo64.dll"] {
+		let file_map = FileMap::open(path).unwrap();
+		let file = pelite::PeFile::from_bytes(&file_map).unwrap();
+		let headers = file.headers();
+		assert_eq!(headers.rva_to_file_offset(0x1000), Ok(0x400), "{path}");
+		assert_eq!(headers.file_offset_to_rva(0x400), Ok(0x1000), "{path}");
+	}
+}
+
+#[test]
+fn wrapped_images_convert_u64_virtual_addresses_for_both_formats() {
+	for path in ["demo/Demo.dll", "demo/Demo64.dll"] {
+		let file_map = FileMap::open(path).unwrap();
+		let file = pelite::PeFile::from_bytes(&file_map).unwrap();
+		let va = file.image_base() + 0x1000;
+		assert_eq!(file.rva_to_va(0x1000), Ok(va), "{path}");
+		assert_eq!(file.va_to_rva(va), Ok(0x1000), "{path}");
+		assert_eq!(file.va_to_rva(0), Err(Error::Null), "{path}");
+		assert_eq!(file.rva_to_va(0), Err(Error::Null), "{path}");
+	}
+	let file_map = FileMap::open("demo/Demo.dll").unwrap();
+	let file = pelite::PeFile::from_bytes(&file_map).unwrap();
+	assert_eq!(file.va_to_rva(u32::MAX as u64 + 1), Err(Error::Bounds));
+}
+
+#[test]
 fn exports_reject_null_nonempty_name_index_table() {
 	let mut image = std::fs::read(FILE_NAME).unwrap();
 	let export_offset = {

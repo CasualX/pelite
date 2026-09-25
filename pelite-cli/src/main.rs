@@ -15,6 +15,7 @@ mod inspect;
 mod markov;
 mod module_def;
 mod msrtti;
+mod printer;
 mod resources;
 mod rust_format_args;
 mod rust_msvc;
@@ -26,6 +27,7 @@ mod version_info;
 
 use value_parser::*;
 use hex_printer::*;
+use printer::print_json;
 
 type Result<T = ()> = result::Result<T, Box<dyn error::Error>>;
 
@@ -89,17 +91,6 @@ fn cli() -> clap::Command {
 		.subcommand(rust_format_args::command())
 		.subcommand(rust_panic_strings::command())
 		.subcommand(version_info::command())
-}
-
-fn print_json<T: serde::Serialize>(value: &T, pretty: bool) -> Result {
-	let stdout = io::stdout();
-	let writer = stdout.lock();
-	match pretty {
-		false => serde_json::to_writer(writer, value)?,
-		true => serde_json::to_writer_pretty(writer, value)?,
-	}
-	println!();
-	Ok(())
 }
 
 fn run() -> Result {

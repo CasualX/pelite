@@ -64,52 +64,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 		source: include_source.then(|| version.source_code()),
 	};
 
-	match format {
-		OutputFormat::Text => print_text(&output),
-		OutputFormat::Json => print_json(&output, false),
-		OutputFormat::JsonPretty => print_json(&output, true),
-	}
-}
-
-fn print_text(output: &VersionOutput<'_>) -> Result {
-	if let Some(fixed) = output.info.fixed {
-		println!(
-			"{:<20} {}.{}.{}.{}",
-			"FileVersion",
-			fixed.dwFileVersion.Major,
-			fixed.dwFileVersion.Minor,
-			fixed.dwFileVersion.Patch,
-			fixed.dwFileVersion.Build
-		);
-		println!(
-			"{:<20} {}.{}.{}.{}",
-			"ProductVersion",
-			fixed.dwProductVersion.Major,
-			fixed.dwProductVersion.Minor,
-			fixed.dwProductVersion.Patch,
-			fixed.dwProductVersion.Build
-		);
-		println!("{:<20} {:#x}", "FileFlagsMask", fixed.dwFileFlagsMask);
-		println!("{:<20} {:#x}", "FileFlags", fixed.dwFileFlags);
-		println!("{:<20} {}, {}", "FileOS", fixed.dwFileOS >> 16, fixed.dwFileOS & 0xffff);
-		println!("{:<20} {}", "FileType", fixed.dwFileType);
-		println!("{:<20} {}", "FileSubtype", fixed.dwFileSubtype);
-	}
-
-	let mut tables: Vec<_> = output.info.strings.iter().collect();
-	tables.sort_by_key(|(language, _)| **language);
-	for (language, strings) in tables {
-		println!("\n[{language}]");
-		let mut strings: Vec<_> = strings.iter().collect();
-		strings.sort_by_key(|(key, _)| key.as_str());
-		for (key, value) in strings {
-			println!("{key:<20} {value:?}");
-		}
-	}
-	if let Some(source) = &output.source {
-		println!("\n{source}");
-	}
-	Ok(())
+	printer::print("Version information", &output, format)
 }
 
 fn parse_u16(value: &str) -> result::Result<u16, String> {
