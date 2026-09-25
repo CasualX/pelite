@@ -367,12 +367,16 @@ fn scanner() {
 
 //----------------------------------------------------------------
 
-#[cfg(windows)]
+#[cfg(any(windows, unix))]
 #[test]
 fn imagemap() {
-	use pelite::ImageMap;
 	use pelite::pe64::PeView;
 
-	let image = ImageMap::open(FILE_NAME).unwrap();
+	let image = pelite::ImageMap::open(FILE_NAME).unwrap();
 	let _view = PeView::from_bytes(&image).unwrap();
+	#[cfg(unix)] {
+		let file_map = FileMap::open(FILE_NAME).unwrap();
+		let expected = PeFile::from_bytes(&file_map).unwrap().to_view();
+		assert_eq!(image.as_ref(), expected.as_ref());
+	}
 }

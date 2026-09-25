@@ -1,5 +1,5 @@
 use pelite::pe32::{PeFile, PeView, image};
-use pelite::{FileMap, Pod};
+use pelite::{FileMap, ImageMap, Pod};
 
 // For fun let's try loading tiny PE files.
 // The examples are sourced from:
@@ -385,4 +385,13 @@ fn tiny_webdav_133() {
 	let unc = imports.into_iter().next().unwrap();
 	assert_eq!(unc.dll_name().unwrap(), r"\\66.93.68.6\z");
 	assert_eq!(unc.iat().unwrap().len(), 1);
+}
+
+#[test]
+fn imagemap_pe32() {
+	let mapped = ImageMap::open("tests/tiny/tiny.c.1024").unwrap();
+	let file_map = FileMap::open("tests/tiny/tiny.c.1024").unwrap();
+	let expected = PeFile::from_bytes(&file_map).unwrap().to_view();
+	assert_eq!(mapped.as_ref(), expected.as_ref());
+	PeView::from_bytes(&mapped).unwrap();
 }

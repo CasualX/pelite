@@ -10,4 +10,4 @@ pub use self::windows::{FileMap, ImageMap};
 #[cfg(unix)]
 mod unix;
 #[cfg(unix)]
-pub use self::unix::FileMap;
+pub use self::unix::{FileMap, ImageMap};
