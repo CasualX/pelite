@@ -41,6 +41,24 @@ impl<'a, Pe32: Copy + pe32::Pe<'a>, Pe64: Copy + pe64::Pe<'a>> Wrap<Pe32, Pe64> 
 			Wrap::T64(pe64) => pe64.layout(),
 		}
 	}
+	/// Uses `u64` for virtual addresses in both PE formats.
+	#[doc = include_str!("../docs/rva_to_va.md")]
+	#[inline]
+	pub fn rva_to_va(&self, rva: u32) -> Result<u64> {
+		match self {
+			Wrap::T32(pe32) => pe32.rva_to_va(rva).map(u64::from),
+			Wrap::T64(pe64) => pe64.rva_to_va(rva),
+		}
+	}
+	/// Uses `u64` for virtual addresses in both PE formats.
+	#[doc = include_str!("../docs/va_to_rva.md")]
+	#[inline]
+	pub fn va_to_rva(&self, va: u64) -> Result<u32> {
+		match self {
+			Wrap::T32(pe32) => pe32.va_to_rva(u32::try_from(va).map_err(|_| Error::Bounds)?),
+			Wrap::T64(pe64) => pe64.va_to_rva(va),
+		}
+	}
 	/// Returns a wrapper around references to the PE instance.
 	#[inline]
 	pub fn as_ref(&self) -> Wrap<&Pe32, &Pe64> {

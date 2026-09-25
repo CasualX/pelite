@@ -55,6 +55,13 @@ enum GroupKind {
 }
 
 impl GroupKind {
+	fn title(self) -> &'static str {
+		match self {
+			Self::Icon => "Icon groups",
+			Self::Cursor => "Cursor groups",
+		}
+	}
+
 	fn plural(self) -> &'static str {
 		match self {
 			Self::Icon => "icons",
@@ -197,23 +204,7 @@ fn groups(matches: &clap::ArgMatches, kind: GroupKind, format: OutputFormat) -> 
 fn list_groups(resources: ResourceDirectory<'_>, kind: GroupKind, format: OutputFormat) -> Result {
 	let prepared = prepare_groups(resources, kind, &[])?;
 	let groups = prepared.iter().map(|group| &group.info).collect::<Vec<_>>();
-	match format {
-		OutputFormat::Text => {
-			if groups.is_empty() {
-				println!("No {} found.", kind.plural());
-				return Ok(());
-			}
-			let name_width = groups.iter().map(|group| group.name.chars().count()).fold(4, usize::max);
-			println!("{:<name_width$}  {:>6}  {:>10}", "NAME", "IMAGES", "BYTES");
-			println!("{}  {}  {}", "-".repeat(name_width), "-".repeat(6), "-".repeat(10));
-			for group in groups {
-				println!("{:<name_width$}  {:>6}  {:>10}", group.name, group.images, group.bytes);
-			}
-			Ok(())
-		},
-		OutputFormat::Json => print_json(&groups, false),
-		OutputFormat::JsonPretty => print_json(&groups, true),
-	}
+	printer::print(kind.title(), &groups, format)
 }
 
 fn extract_groups(resources: ResourceDirectory<'_>, matches: &clap::ArgMatches, kind: GroupKind, format: OutputFormat) -> Result {
