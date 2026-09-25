@@ -31,7 +31,7 @@ To install the binary from this checkout, run `cargo install --path pelite-cli`.
 | `resources cursors list` | List and validate cursor groups. |
 | `resources cursors extract` | Extract cursor groups as `.cur` files. |
 | `version-info` | Read the version-information resource. |
-| `strings` | Find printable strings in PE sections. |
+| `strings` | Find ASCII, UTF-8, and UTF-16LE strings in PE sections with a heuristic confidence score. |
 | `findsig` | Search the image for byte patterns. |
 | `addr` | Convert between an RVA, virtual address, and file offset. |
 | `xref` | Find absolute pointers and candidate relative code references to an RVA, VA, or file offset. |
