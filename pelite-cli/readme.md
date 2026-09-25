@@ -8,7 +8,7 @@ From the repository root, run the CLI with Cargo:
 
 ```console
 cargo run -p pelite-cli -- demo/Demo64.dll
-cargo run -p pelite-cli -- inspect demo/Demo64.dll imports exports
+cargo run -p pelite-cli -- inspect demo/Demo64.dll --imports --exports
 cargo run -p pelite-cli -- xref demo/Demo64.dll rva:0x1000
 cargo run -p pelite-cli -- --help
 ```
