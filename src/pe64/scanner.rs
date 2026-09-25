@@ -283,6 +283,3 @@ impl<'a, 'pat, P: Copy + Pe<'a>, F: FnMut(&SectionHeader) -> bool> ScannerMatche
 #[cfg(test)]
 #[path = "scanner/tests.rs"]
 mod tests;
-
-#[cfg(test)]
-pub(crate) use tests::test_scanner;

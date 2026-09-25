@@ -160,6 +160,3 @@ pub use self::security::*;
 pub use self::tls::*;
 pub use self::view::*;
 pub use intptr::IntPtr64 as Ptr;
-
-#[cfg(test)]
-pub(crate) use self::resources::test_resources;

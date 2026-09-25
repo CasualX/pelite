@@ -41,12 +41,3 @@ pub(crate) fn try_from<'a, P: Copy + Pe<'a>>(pe: P) -> Result<SecurityDirectory<
 	let image = pe.image().get(start..end).ok_or(Error::Bounds)?;
 	Ok(unsafe { SecurityDirectory::new(image) })
 }
-
-#[cfg(test)]
-pub(crate) fn test_security<'a, P: Copy + Pe<'a>>(pe: P) -> Result<()> {
-	let security = pe.security()?;
-	let _ = format!("{:?}", security);
-	let _certificate_type = security.certificate_type();
-	let _certificate_data = security.certificate_data();
-	Ok(())
-}

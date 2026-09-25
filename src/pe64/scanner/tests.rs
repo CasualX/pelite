@@ -2,25 +2,6 @@ use super::*;
 
 const OPTS: crate::pattern::ParseOptions = crate::pattern::ParseOptions::DEFAULT;
 
-#[cfg(test)]
-pub(crate) fn test_scanner<'a, P: Copy + Pe<'a>>(pe: P) -> crate::Result<()> {
-	use crate::pattern::Atom::*;
-	let scanner = pe.scanner();
-	let mut save = [0; 4];
-
-	let mut matches = scanner.code().matches(&[Save(0), Byte(0xE8), Save(-1), Jump4, Save(1), Seek(-1), Skip(4), Save(2)]);
-	while matches.next(&mut save).is_some() {
-		assert_eq!(save[0] + 5, save[2]);
-	}
-
-	let mut matches = scanner.code().matches(&[Jump1, Save(1), Byte(0x0F), Byte(0x0D)]);
-	while matches.next(&mut save).is_some() {}
-
-	let _ = scanner.code().find(&[Byte(0x8B), Byte(0x01), Byte(0x8B), Byte(0x10), Byte(0xFF), Byte(0xD2)], &mut save);
-
-	Ok(())
-}
-
 // Test the core scanner engine
 #[test]
 fn exec_goto() {

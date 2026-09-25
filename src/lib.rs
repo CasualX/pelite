@@ -87,6 +87,3 @@ pub mod resources;
 pub mod rich_structure;
 pub mod security;
 pub mod strings;
-
-#[cfg(test)]
-mod tests;

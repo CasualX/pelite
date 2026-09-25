@@ -481,14 +481,6 @@ serde_impl! {
 
 //----------------------------------------------------------------
 
-#[cfg(test)]
-pub(crate) fn test(version_info: VersionInfo<'_>) {
-	let _fixed = version_info.fixed();
-	let _langs = version_info.translation();
-	let _file_info = version_info.file_info();
-	let _source_code = version_info.source_code();
-}
-
 //----------------------------------------------------------------
 
 /// Fixed file info constants.

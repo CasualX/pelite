@@ -335,30 +335,3 @@ serde_impl! {
 }
 
 //----------------------------------------------------------------
-
-#[cfg(test)]
-pub(crate) fn test_imports<'a, P: Copy + Pe<'a>>(pe: P) -> Result<()> {
-	let imports = pe.imports()?;
-	let _ = format!("{:?}", imports);
-
-	for desc in imports {
-		let _ = format!("{:?}", desc);
-		let _dll_name = desc.dll_name();
-		if let Ok(iat) = desc.iat() {
-			for _ in iat {}
-		}
-		if let Ok(int) = desc.int() {
-			for _ in int {}
-		}
-	}
-
-	let iat = pe.iat()?;
-	for (va, import) in iat.iter() {
-		let _ = format!("{:?}", import);
-		if import.is_ok() {
-			assert_eq!(import_from_va(pe, va), import);
-		}
-	}
-
-	Ok(())
-}

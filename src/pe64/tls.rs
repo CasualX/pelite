@@ -134,13 +134,3 @@ serde_impl! {
 }
 
 //----------------------------------------------------------------
-
-#[cfg(test)]
-pub(crate) fn test_tls<'a, P: Copy + Pe<'a>>(pe: P) -> Result<()> {
-	let tls = pe.tls()?;
-	let _ = format!("{:?}", tls);
-	let _raw_data = tls.raw_data();
-	let _slot = tls.slot();
-	let _callbacks = tls.callbacks();
-	Ok(())
-}

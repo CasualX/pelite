@@ -1,10 +1,6 @@
-/*!
-These Proof of Concept PE files are borrowed from [corkami's pocs](https://github.com/corkami/pocs).
-
-Some antivirus flip when they see these binaries, so they're concatenated them in a single blob.
-
-This code is run as part of the library's unit tests, see `src/tests.rs`.
- */
+//! These Proof of Concept PE files are borrowed from [corkami's pocs](https://github.com/corkami/pocs).
+//!
+//! Some antivirus flip when they see these binaries, so they're concatenated them in a single blob.
 
 pub fn iter() -> impl Iterator<Item = (&'static str, &'static [u8])> {
 	BINS.iter().map(|bin| {

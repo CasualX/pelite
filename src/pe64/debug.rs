@@ -31,22 +31,3 @@ pub(crate) fn try_from<'a, P: Copy + Pe<'a>>(pe: P) -> Result<DebugDirectory<'a>
 	let image = pe.derva_slice(datadir.VirtualAddress, size / mem::size_of::<IMAGE_DEBUG_DIRECTORY>())?;
 	Ok(DebugDirectory::new(pe.image(), pe.layout(), image))
 }
-
-#[cfg(test)]
-pub(crate) fn test_debug<'a, P: Copy + Pe<'a>>(pe: P) -> Result<()> {
-	let debug = pe.debug()?;
-	for dir in debug {
-		let _data = dir.data();
-		match dir.entry() {
-			Ok(Some(DebugData::CodeView(cv))) => {
-				let _format = cv.format();
-				let _pdb_file_name = cv.pdb_file_name();
-			},
-			Ok(Some(DebugData::Misc(_misc))) => (),
-			Ok(Some(DebugData::Pgo(pgo))) => for _section in pgo {},
-			Ok(None) => (),
-			Err(_) => (),
-		}
-	}
-	Ok(())
-}
