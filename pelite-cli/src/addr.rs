@@ -4,7 +4,7 @@ use super::*;
 struct ConvertedAddress {
 	rva: u32,
 	va: u64,
-	fo: usize,
+	fo: Option<usize>,
 	section: Option<String>,
 }
 
@@ -32,8 +32,8 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 		Address::Va(va) => pe.va_to_rva(va)?,
 		Address::Fo(fo) => pe.headers().file_offset_to_rva(fo)?,
 	};
-	let fo = pe.headers().rva_to_file_offset(rva)?;
 	let va = pe.rva_to_va(rva)?;
+	let fo = pe.headers().rva_to_file_offset(rva).ok();
 	let section = pe.section_headers().by_rva(rva).and_then(|section| section.name().ok()).filter(|name| !name.is_empty()).map(str::to_owned);
 	let converted = ConvertedAddress { rva, va, fo, section };
 	printer::print("Address", &converted, format)
