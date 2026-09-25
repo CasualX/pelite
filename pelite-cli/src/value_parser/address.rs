@@ -11,6 +11,7 @@ impl Address {
 	pub fn parse(value: &str) -> result::Result<Self, String> {
 		let (kind, digits) = value.split_once(':').ok_or("expected rva:HEX, va:HEX, or fo:HEX")?;
 		let digits = digits.strip_prefix("0x").or_else(|| digits.strip_prefix("0X")).unwrap_or(digits);
+		let digits = digits.strip_suffix("h").unwrap_or(digits);
 		if digits.is_empty() {
 			return Err("missing hexadecimal address".to_owned());
 		}

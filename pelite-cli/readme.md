@@ -9,6 +9,7 @@ From the repository root, run the CLI with Cargo:
 ```console
 cargo run -p pelite-cli -- demo/Demo64.dll
 cargo run -p pelite-cli -- inspect demo/Demo64.dll imports exports
+cargo run -p pelite-cli -- xref demo/Demo64.dll rva:0x1000
 cargo run -p pelite-cli -- --help
 ```
 
@@ -33,6 +34,7 @@ To install the binary from this checkout, run `cargo install --path pelite-cli`.
 | `strings` | Find printable strings in PE sections. |
 | `findsig` | Search the image for byte patterns. |
 | `addr` | Convert between an RVA, virtual address, and file offset. |
+| `xref` | Find absolute pointers and candidate relative code references to an RVA, VA, or file offset. |
 | `hexdump` | Display bytes from an RVA range. |
 | `disasm` | Disassemble instructions from an RVA range. |
 | `imphash` | Calculate the conventional MD5 import hash. |

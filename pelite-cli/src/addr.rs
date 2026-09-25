@@ -11,7 +11,7 @@ struct ConvertedAddress {
 pub fn command() -> clap::Command {
 	clap::Command::new("addr")
 		.about("Convert a PE address between RVA, VA, and file offset")
-		.after_help("Addresses are hexadecimal, with or without a 0x prefix. Example: pelite-cli addr file.exe rva:1000")
+		.after_help("Addresses are hexadecimal. Example: pelite-cli addr file.exe rva:0x1000")
 		.arg(clap::Arg::new("file")
 			.value_name("FILE")
 			.value_parser(clap::value_parser!(PathBuf))
