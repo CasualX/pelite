@@ -2,68 +2,6 @@ use super::*;
 
 //----------------------------------------------------------------
 
-/// Section header.
-#[derive(Copy, Clone)]
-#[repr(transparent)]
-pub struct SectionHeader(image::IMAGE_SECTION_HEADER);
-
-impl SectionHeader {
-	/// Returns the name as a byte slice.
-	#[inline]
-	pub fn name_bytes(&self) -> &[u8] {
-		crate::util::trimn(&self.0.Name)
-	}
-	/// Returns the section name as UTF-8.
-	pub fn name(&self) -> core::result::Result<&str, &[u8]> {
-		crate::util::parsen(&self.0.Name)
-	}
-	/// Returns the virtual range.
-	#[inline]
-	pub fn virtual_range(&self) -> core::ops::Range<u32> {
-		let start = self.0.VirtualAddress;
-		let end = u32::wrapping_add(self.0.VirtualAddress, self.0.VirtualSize);
-		start..end
-	}
-	/// Returns the file range.
-	#[inline]
-	pub fn file_range(&self) -> core::ops::Range<u32> {
-		let start = self.0.PointerToRawData;
-		let end = u32::wrapping_add(self.0.PointerToRawData, self.0.SizeOfRawData);
-		start..end
-	}
-}
-
-unsafe impl Pod for SectionHeader {}
-
-impl ops::Deref for SectionHeader {
-	type Target = image::IMAGE_SECTION_HEADER;
-	#[inline]
-	fn deref(&self) -> &image::IMAGE_SECTION_HEADER {
-		&self.0
-	}
-}
-
-#[rustfmt::skip]
-impl fmt::Debug for SectionHeader {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		let name = self.name();
-		let name = match &name {
-			Ok(name) => name as &dyn fmt::Debug,
-			Err(name) => name as &dyn fmt::Debug,
-		};
-		f.debug_struct("SectionHeader")
-			.field("Name", name)
-			.field("VirtualAddress", &format_args!("{:#x}", self.0.VirtualAddress))
-			.field("VirtualSize", &format_args!("{:#x}", self.0.VirtualSize))
-			.field("PointerToRawData", &format_args!("{:#x}", self.0.PointerToRawData))
-			.field("SizeOfRawData", &format_args!("{:#x}", self.0.SizeOfRawData))
-			.field("Characteristics", &format_args!("{:#x}", self.0.Characteristics))
-			.finish()
-	}
-}
-
-//----------------------------------------------------------------
-
 /// Section headers.
 #[repr(transparent)]
 pub struct PeSectionHeaders([image::IMAGE_SECTION_HEADER]);
@@ -77,19 +15,14 @@ impl PeSectionHeaders {
 	pub fn image(&self) -> &[image::IMAGE_SECTION_HEADER] {
 		&self.0
 	}
-	/// Returns the section headers as a slice of `SectionHeader`.
+	/// Returns an iterator over the [`image::IMAGE_SECTION_HEADER`] elements.
 	#[inline]
-	pub fn as_slice(&self) -> &[SectionHeader] {
-		unsafe { mem::transmute(self) }
-	}
-	/// Returns an iterator over the `SectionHeader` elements.
-	#[inline]
-	pub fn iter(&self) -> slice::Iter<'_, SectionHeader> {
-		self.as_slice().iter()
+	pub fn iter(&self) -> slice::Iter<'_, image::IMAGE_SECTION_HEADER> {
+		self.image().iter()
 	}
 	/// Finds a section header by its name.
 	#[inline]
-	pub fn by_name<S: ?Sized + AsRef<[u8]>>(&self, name: &S) -> Option<&SectionHeader> {
+	pub fn by_name<S: ?Sized + AsRef<[u8]>>(&self, name: &S) -> Option<&image::IMAGE_SECTION_HEADER> {
 		// Names have a max length, if larger they will never match
 		let name = name.as_ref();
 		if name.len() > image::IMAGE_SIZEOF_SHORT_NAME {
@@ -101,7 +34,7 @@ impl PeSectionHeaders {
 			name_buf[i] = name[i];
 		}
 		for sect in self.iter() {
-			if sect.0.Name == name_buf {
+			if sect.Name == name_buf {
 				return Some(sect);
 			}
 		}
@@ -109,7 +42,7 @@ impl PeSectionHeaders {
 	}
 	/// Finds a section header by its RVA.
 	#[inline]
-	pub fn by_rva(&self, rva: u32) -> Option<&SectionHeader> {
+	pub fn by_rva(&self, rva: u32) -> Option<&image::IMAGE_SECTION_HEADER> {
 		for sect in self.iter() {
 			// FIXME! Should this round up the VirtualSize to the next virtual section alignment?
 			if rva >= sect.VirtualAddress && rva < u32::wrapping_add(sect.VirtualAddress, sect.VirtualSize) {
@@ -123,16 +56,16 @@ impl PeSectionHeaders {
 unsafe impl Pod for PeSectionHeaders {}
 
 impl<'a> IntoIterator for &'a PeSectionHeaders {
-	type Item = &'a SectionHeader;
-	type IntoIter = slice::Iter<'a, SectionHeader>;
+	type Item = &'a image::IMAGE_SECTION_HEADER;
+	type IntoIter = slice::Iter<'a, image::IMAGE_SECTION_HEADER>;
 	fn into_iter(self) -> Self::IntoIter {
-		self.as_slice().into_iter()
+		self.image().into_iter()
 	}
 }
 
 impl fmt::Debug for PeSectionHeaders {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		self.as_slice().fmt(f)
+		self.image().fmt(f)
 	}
 }
 
@@ -153,12 +86,6 @@ serde_impl! {
 	impl serde::Serialize for PeSectionHeaders {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			serializer.collect_seq(self.iter())
-		}
-	}
-
-	impl serde::Serialize for SectionHeader {
-		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-			self.0.serialize(serializer)
 		}
 	}
 }

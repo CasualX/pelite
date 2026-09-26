@@ -517,7 +517,7 @@ fn mapped(bytes: &[u8]) -> Vec<u8> {
 	result
 }
 
-fn collect<'a, P: Copy + Pe<'a>, F: FnMut(&SectionHeader) -> bool>(selection: ScanSections<'a, P, F>, pat: &[pat::Atom]) -> Result<Vec<Rva>> {
+fn collect<'a, P: Copy + Pe<'a>, F: FnMut(&IMAGE_SECTION_HEADER) -> bool>(selection: ScanSections<'a, P, F>, pat: &[pat::Atom]) -> Result<Vec<Rva>> {
 	let mut matches = selection.matches(pat);
 	let mut save = vec![0; pat::save_len(pat)];
 	let mut rvas = Vec::new();
@@ -538,7 +538,7 @@ fn sections_are_independent_and_uniqueness_is_global() {
 		let scanner = pe.scanner();
 		assert_eq!(collect(scanner.code(), &[Byte(0xaa)]).unwrap(), [0x3000, 0x1000]);
 		assert_eq!(scanner.code().find(&[Byte(0xaa)], &mut []), None);
-		assert_eq!(scanner.section(&pe.section_headers().as_slice()[1]).find(&[Byte(0xaa)], &mut []), Some(0x1000));
+		assert_eq!(scanner.section(&pe.section_headers().image()[1]).find(&[Byte(0xaa)], &mut []), Some(0x1000));
 		assert_eq!(scanner.within(0x1000..0x1200).find(&[Byte(0xaa)], &mut []), Some(0x1000));
 		assert_eq!(collect(scanner.sections(|s| s.Characteristics & CODE != 0), &[Byte(0xaa)]).unwrap(), [0x5000]);
 		assert_eq!(collect(scanner.sections(|_| true), &[Byte(0xaa)]).unwrap(), [0x3000, 0x1000, 0x5000]);
@@ -611,9 +611,9 @@ fn references_escape_selection_but_scan_stays_in_current_section() {
 	fn check<'a>(pe: impl Copy + Pe<'a>) {
 		let scanner = pe.scanner();
 		let mut save = [0];
-		assert_eq!(scanner.section(&pe.section_headers().as_slice()[0]).within(0x1000..0x1001).find(&[Jump4, Save(0), Byte(0xaa)], &mut save), Some(0x1000));
+		assert_eq!(scanner.section(&pe.section_headers().image()[0]).within(0x1000..0x1001).find(&[Jump4, Save(0), Byte(0xaa)], &mut save), Some(0x1000));
 		assert_eq!(save[0], 0x3000);
-		assert_eq!(scanner.section(&pe.section_headers().as_slice()[0]).within(0x1004..0x1005).find(&[Ptr, Byte(0xaa)], &mut []), Some(0x1004));
+		assert_eq!(scanner.section(&pe.section_headers().image()[0]).within(0x1004..0x1005).find(&[Ptr, Byte(0xaa)], &mut []), Some(0x1004));
 		assert!(!scanner.exec(0x1000, &[Scan(0), Byte(0xaa)], &mut []));
 		assert!(scanner.exec(0x1000, &[Jump4, Scan(0), Byte(0xaa)], &mut []));
 	}
@@ -633,7 +633,7 @@ fn malformed_sections_are_skipped() {
 	assert_eq!(matches.next(&mut []), None);
 	assert_eq!(matches.next(&mut []), None);
 	assert_eq!(scanner.sections(|_| true).find(&[Byte(0xaa)], &mut []), Some(0x1000));
-	assert_eq!(scanner.section(&pe.section_headers().as_slice()[0]).find(&[Byte(0xaa)], &mut []), Some(0x1000));
+	assert_eq!(scanner.section(&pe.section_headers().image()[0]).find(&[Byte(0xaa)], &mut []), Some(0x1000));
 	// The mapped source also skips a section extending beyond its supplied bytes.
 	let mut view = mapped(&fixture(&[(0x1000, 0x200, 0x200, EXECUTE), (0x3000, 0x200, 0x200, EXECUTE)]));
 	view.truncate(0x3000);
@@ -686,7 +686,7 @@ fn architecture_wrapper_exposes_the_same_selection() {
 	assert_eq!(scanner.code().find(&[Byte(0xaa)], &mut []), Some(0x1000));
 	assert_eq!(scanner.sections(|s| s.Characteristics & EXECUTE != 0).within(0x1000..0x1001)
 		.find(&[Byte(0xaa)], &mut []), Some(0x1000));
-	let mut matches = scanner.section(&pe.section_headers().as_slice()[0]).matches(&[Byte(0xaa)]);
+	let mut matches = scanner.section(&pe.section_headers().image()[0]).matches(&[Byte(0xaa)]);
 	assert_eq!(matches.next(&mut []), Some(0x1000));
 	assert_eq!(matches.next(&mut []), None);
 }

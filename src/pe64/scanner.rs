@@ -72,7 +72,7 @@ impl<'a, P: Copy + Pe<'a>> Scanner<P> {
 		self.sections(|section| section.Characteristics & (IMAGE_SCN_MEM_EXECUTE | IMAGE_SCN_MEM_WRITE) == IMAGE_SCN_MEM_EXECUTE)
 	}
 	/// Selects sections using a predicate, evaluated once per section during iteration.
-	pub fn sections<F: FnMut(&SectionHeader) -> bool>(self, filter: F) -> ScanSections<'a, P, F> {
+	pub fn sections<F: FnMut(&image::IMAGE_SECTION_HEADER) -> bool>(self, filter: F) -> ScanSections<'a, P, F> {
 		ScanSections {
 			scanner: self,
 			filter,
@@ -81,9 +81,9 @@ impl<'a, P: Copy + Pe<'a>> Scanner<P> {
 		}
 	}
 	/// Selects the section described by the given header.
-	pub fn section(self, section: &'a SectionHeader) -> ScanSections<'a, P> {
+	pub fn section(self, section: &'a image::IMAGE_SECTION_HEADER) -> ScanSections<'a, P> {
 		let mut selection: ScanSections<'a, P> = self.sections(|_| true);
-		selection.sections = slice::from_ref(&*section);
+		selection.sections = slice::from_ref(section);
 		selection
 	}
 	/// Pattern interpreter, returns if the pattern matches the binary image at the given rva.
@@ -117,14 +117,14 @@ impl<'a, P: Copy + Pe<'a>> Scanner<P> {
 /// - Pattern reads and references retain access to the whole PE, even outside the selection or `within` range.
 /// - Invalid section extents and inaccessible section contents are skipped.
 #[derive(Clone)]
-pub struct ScanSections<'a, P, F = fn(&SectionHeader) -> bool> {
+pub struct ScanSections<'a, P, F = fn(&image::IMAGE_SECTION_HEADER) -> bool> {
 	scanner: Scanner<P>,
 	filter: F,
 	sections: &'a [IMAGE_SECTION_HEADER],
 	range: ops::Range<Rva>,
 }
 
-impl<'a, P: Copy + Pe<'a>, F: FnMut(&SectionHeader) -> bool> ScanSections<'a, P, F> {
+impl<'a, P: Copy + Pe<'a>, F: FnMut(&image::IMAGE_SECTION_HEADER) -> bool> ScanSections<'a, P, F> {
 	/// Intersects the candidate starting addresses with this RVA range.
 	pub fn within(mut self, range: ops::Range<Rva>) -> Self {
 		self.range.start = cmp::max(self.range.start, range.start);
@@ -156,7 +156,7 @@ impl<'a, P: Copy + Pe<'a>, F: FnMut(&SectionHeader) -> bool> ScanSections<'a, P,
 ///
 /// Created with [`ScanSections::matches`]. Match RVAs are returned independently of capture slots.
 #[derive(Clone)]
-pub struct ScannerMatches<'a, 'pat, P, F = fn(&SectionHeader) -> bool> {
+pub struct ScannerMatches<'a, 'pat, P, F = fn(&image::IMAGE_SECTION_HEADER) -> bool> {
 	selection: ScanSections<'a, P, F>,
 	pat: &'pat [pat::Atom],
 	active: Option<&'a IMAGE_SECTION_HEADER>,
@@ -165,7 +165,7 @@ pub struct ScannerMatches<'a, 'pat, P, F = fn(&SectionHeader) -> bool> {
 	hits: u64,
 }
 
-impl<'a, 'pat, P: Copy + Pe<'a>, F: FnMut(&SectionHeader) -> bool> ScannerMatches<'a, 'pat, P, F> {
+impl<'a, 'pat, P: Copy + Pe<'a>, F: FnMut(&image::IMAGE_SECTION_HEADER) -> bool> ScannerMatches<'a, 'pat, P, F> {
 	/// Returns the scanner instance.
 	pub fn scanner(&self) -> Scanner<P> {
 		self.selection.scanner
@@ -223,7 +223,7 @@ impl<'a, 'pat, P: Copy + Pe<'a>, F: FnMut(&SectionHeader) -> bool> ScannerMatche
 		}
 		loop {
 			if self.active.is_none() {
-				let section = PeSectionHeaders::new(self.selection.sections).as_slice().first()?;
+				let section = self.selection.sections.first()?;
 				self.selection.sections = &self.selection.sections[1..];
 				if !(self.selection.filter)(section) {
 					continue;

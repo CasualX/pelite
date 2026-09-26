@@ -428,7 +428,7 @@ pub const IMAGE_SCN_MEM_EXECUTE: u32            = 0x20000000;
 pub const IMAGE_SCN_MEM_READ: u32               = 0x40000000;
 pub const IMAGE_SCN_MEM_WRITE: u32              = 0x80000000;
 
-#[derive(Copy, Clone, Debug)]
+#[derive(Copy, Clone)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[repr(C)]
 pub struct IMAGE_SECTION_HEADER {
@@ -447,6 +447,91 @@ pub struct IMAGE_SECTION_HEADER {
 	#[cfg_attr(feature = "serde", serde(skip))]
 	pub NumberOfLinenumbers: u16,
 	pub Characteristics: u32,
+}
+
+impl IMAGE_SECTION_HEADER {
+	/// Returns the name as a byte slice.
+	#[inline]
+	pub fn name_bytes(&self) -> &[u8] {
+		crate::util::trimn(&self.Name)
+	}
+	/// Returns the section name as UTF-8.
+	pub fn name(&self) -> core::result::Result<&str, &[u8]> {
+		crate::util::parsen(&self.Name)
+	}
+	/// Returns a formatter for the section name without allocating.
+	///
+	/// Valid UTF-8 names have trailing NUL bytes removed. Otherwise, all eight bytes
+	/// are written as `\xNN` using lowercase hex.
+	pub fn name_fmt(&self) -> impl fmt::Display {
+		fmt::from_fn(move |f| match self.name() {
+			Ok(name) => f.write_str(name),
+			Err(bytes) => {
+				for byte in bytes {
+					write!(f, "\\x{byte:02x}")?;
+				}
+				Ok(())
+			},
+		})
+	}
+	/// Returns the virtual range.
+	#[inline]
+	pub fn virtual_range(&self) -> core::ops::Range<u32> {
+		let start = self.VirtualAddress;
+		let end = u32::wrapping_add(self.VirtualAddress, self.VirtualSize);
+		start..end
+	}
+	/// Returns the file range.
+	#[inline]
+	pub fn file_range(&self) -> core::ops::Range<u32> {
+		let start = self.PointerToRawData;
+		let end = u32::wrapping_add(self.PointerToRawData, self.SizeOfRawData);
+		start..end
+	}
+}
+
+#[rustfmt::skip]
+impl fmt::Debug for IMAGE_SECTION_HEADER {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		let name = self.name();
+		let name = match &name {
+			Ok(name) => name as &dyn fmt::Debug,
+			Err(name) => name as &dyn fmt::Debug,
+		};
+		let mut f = f.debug_struct("IMAGE_SECTION_HEADER");
+		f.field("Name", name);
+		f.field("VirtualAddress", &format_args!("{:#x}", self.VirtualAddress));
+		f.field("VirtualSize", &format_args!("{:#x}", self.VirtualSize));
+		f.field("PointerToRawData", &format_args!("{:#x}", self.PointerToRawData));
+		f.field("SizeOfRawData", &format_args!("{:#x}", self.SizeOfRawData));
+		if self.PointerToRelocations != 0 || self.NumberOfRelocations != 0 {
+			f.field("PointerToRelocations", &format_args!("{:#x}", self.PointerToRelocations));
+			f.field("NumberOfRelocations", &self.NumberOfRelocations);
+		}
+		if self.PointerToLinenumbers != 0 || self.NumberOfLinenumbers != 0 {
+			f.field("PointerToLinenumbers", &format_args!("{:#x}", self.PointerToLinenumbers));
+			f.field("NumberOfLinenumbers", &self.NumberOfLinenumbers);
+		}
+		f.field("Characteristics", &format_args!("{:#x}", self.Characteristics));
+		f.finish()
+	}
+}
+
+#[test]
+fn formats_section_names() {
+	let cases = [
+		(*b".text\0\0\0", ".text"),
+		(*b"12345678", "12345678"),
+		([0; 8], ""),
+		(*b"\xc3\xa9\0\0\0\0\0\0", "é"),
+		(*b"a\xff\0tail!", "\\x61\\xff\\x00\\x74\\x61\\x69\\x6c\\x21"),
+		(*b"\xff\0\0\0\0\0\0\0", "\\xff\\x00\\x00\\x00\\x00\\x00\\x00\\x00"),
+	];
+	for (name, expected) in cases {
+		let mut section: IMAGE_SECTION_HEADER = dataview::zeroed();
+		section.Name = name;
+		assert_eq!(section.name_fmt().to_string(), expected);
+	}
 }
 
 //----------------------------------------------------------------
