@@ -66,7 +66,7 @@ impl fmt::Display for DataKind {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[serde(untagged)]
 enum Interpretation {
 	Single(DataKind),
 	Multiple(BTreeSet<DataKind>),
