@@ -63,7 +63,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	search_relative_displacements(pe, target_rva, &mut references);
 	references.sort_unstable_by_key(|item| (item.rva, item.file_offset, item.kind, item.trailing_bytes));
 	references.dedup_by(|a, b| (a.rva, a.file_offset, a.kind, a.trailing_bytes) == (b.rva, b.file_offset, b.kind, b.trailing_bytes));
-	printer::print("Cross references", &Xrefs { target_rva, target_va, references }, format)
+	print("Cross references", &Xrefs { target_rva, target_va, references }, format)
 }
 
 fn search32<'a>(pe: PeFile<'a>, target_va: u32, references: &mut Vec<Reference<'a>>) {

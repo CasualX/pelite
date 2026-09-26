@@ -64,7 +64,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 		source: include_source.then(|| version.source_code()),
 	};
 
-	printer::print("Version information", &output, format)
+	print("Version information", &output, format)
 }
 
 fn parse_u16(value: &str) -> result::Result<u16, String> {

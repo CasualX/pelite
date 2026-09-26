@@ -10,6 +10,10 @@ pub enum Address {
 impl Address {
 	pub fn parse(value: &str) -> result::Result<Self, String> {
 		let (kind, digits) = value.split_once(':').ok_or("expected rva:HEX, va:HEX, or fo:HEX")?;
+		Self::parse_parts(kind, digits)
+	}
+
+	pub(super) fn parse_parts(kind: &str, digits: &str) -> result::Result<Self, String> {
 		let digits = digits.strip_prefix("0x").or_else(|| digits.strip_prefix("0X")).unwrap_or(digits);
 		let digits = digits.strip_suffix("h").unwrap_or(digits);
 		if digits.is_empty() {

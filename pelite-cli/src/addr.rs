@@ -36,5 +36,5 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let fo = pe.headers().rva_to_file_offset(rva).ok();
 	let section = pe.section_headers().by_rva(rva).and_then(|section| section.name().ok()).filter(|name| !name.is_empty()).map(str::to_owned);
 	let converted = ConvertedAddress { rva, va, fo, section };
-	printer::print("Address", &converted, format)
+	print("Address", &converted, format)
 }

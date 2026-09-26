@@ -187,7 +187,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 		}
 	}
 
-	printer::print("PE image", &output, format)
+	print("PE image", &output, format)
 }
 
 fn value<T: serde::Serialize>(value: T) -> Result<serde_json::Value> {

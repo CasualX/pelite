@@ -3,6 +3,6 @@
 use super::*;
 
 mod address;
-mod rva_range;
+mod address_range;
 pub use address::Address;
-pub use rva_range::RvaRange;
+pub use address_range::AddressRange;

@@ -83,7 +83,7 @@ fn analyze(path: &Path, min_confidence: i32, format: OutputFormat) -> Result {
 			});
 		}
 	}
-	printer::print("Strings", &found, format)
+	print("Strings", &found, format)
 }
 
 fn section_score(flags: u32) -> i32 {

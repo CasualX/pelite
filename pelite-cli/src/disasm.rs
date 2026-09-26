@@ -69,15 +69,15 @@ impl iced_x86::SymbolResolver for PeSymbolResolver {
 
 pub fn command() -> clap::Command {
 	clap::Command::new("disasm")
-		.about("Disassemble an RVA range using iced-x86")
-		.after_help("The range is half-open and its endpoints are hexadecimal RVAs (for example, 1000..1100 or 0x1000..0x1100).")
+		.about("Disassemble an address range using iced-x86")
+		.after_help("Ranges are half-open and hexadecimal, with one rva:, va:, or fo: prefix applying to both endpoints (for example, rva:0x1000..0x1100).")
 		.arg(clap::Arg::new("file")
 			.value_name("FILE")
 			.value_parser(clap::value_parser!(PathBuf))
 			.required(true))
 		.arg(clap::Arg::new("range")
-			.value_name("START..END")
-			.value_parser(RvaRange::parse)
+			.value_name("KIND:START..END")
+			.value_parser(AddressRange::parse)
 			.required(true))
 		.arg(clap::Arg::new("hex")
 			.long("hex")
@@ -87,9 +87,10 @@ pub fn command() -> clap::Command {
 
 pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let path = matches.get_one::<PathBuf>("file").expect("required by clap");
-	let range = *matches.get_one::<RvaRange>("range").expect("required by clap");
+	let range = *matches.get_one::<AddressRange>("range").expect("required by clap");
 	let map = pelite::FileMap::open(path)?;
 	let pe = pelite::PeFile::from_bytes(&map)?;
+	let range = range.to_rva(pe)?;
 	let bitness = match pe.file_header().Machine {
 		image::IMAGE_FILE_MACHINE_I386 => 32,
 		image::IMAGE_FILE_MACHINE_AMD64 => 64,
