@@ -124,20 +124,20 @@ fn summarize(path: &Path, bytes: &[u8], pe: PeFile<'_>) -> Result<Summary> {
 	let subsystem = stringify::Subsystem(subsystem).description().map(str::to_owned).unwrap_or_else(|| format!("unknown ({subsystem:#x})"));
 
 	let entry_section = pe.section_headers().by_rva(entry_point);
-	let entry_point_section = entry_section.map(section_name);
+	let entry_point_section = entry_section.map(|section| section.name_fmt().to_string());
 	let mut findings = Vec::new();
 	if entry_point != 0 && entry_section.is_none() {
 		findings.push(Finding { level: "warning", message: "Entry point is outside the declared sections".to_owned() });
 	}
 	else if let Some(section) = entry_section
 		&& section.Characteristics & image::IMAGE_SCN_MEM_EXECUTE == 0 {
-		findings.push(Finding { level: "warning", message: format!("Entry point is in non-executable section {}", section_name(section)) });
+		findings.push(Finding { level: "warning", message: format!("Entry point is in non-executable section {}", section.name_fmt()) });
 	}
 
 	let mut sections = Vec::new();
 	let mut last_raw_end = pe.optional_header().into_size_of_headers() as usize;
 	for section in pe.section_headers() {
-		let name = section_name(section);
+		let name = section.name_fmt().to_string();
 		let raw_end = (section.PointerToRawData as usize).saturating_add(section.SizeOfRawData as usize);
 		last_raw_end = last_raw_end.max(raw_end.min(bytes.len()));
 		let section_bytes = pe.get_section_bytes(section).ok();
@@ -313,10 +313,6 @@ fn import_category(name: &str) -> Option<&'static str> {
 		_ => return None,
 	};
 	Some(category)
-}
-
-fn section_name(section: &pelite::pe32::SectionHeader) -> String {
-	section.name().map(str::to_owned).unwrap_or_else(|bytes| bytes.iter().map(|byte| format!("\\x{byte:02x}")).collect())
 }
 
 fn permissions(characteristics: u32) -> String {

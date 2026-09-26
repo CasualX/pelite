@@ -1,5 +1,7 @@
 use super::*;
 
+mod fix_section_names;
+
 pub fn command() -> clap::Command {
 	clap::Command::new("edit")
 		.about("Edit a PE file in place")
@@ -8,6 +10,10 @@ pub fn command() -> clap::Command {
 			.long("fix-baserelocs")
 			.action(clap::ArgAction::SetTrue)
 			.help("Set the base relocation directory to the .reloc section"))
+		.arg(clap::Arg::new("fix-section-names")
+			.long("fix-section-names")
+			.action(clap::ArgAction::SetTrue)
+			.help("Replace section names with unique names inferred from their contents and permissions"))
 		.arg(clap::Arg::new("image")
 			.long("image")
 			.visible_alias("raw")
@@ -26,6 +32,10 @@ pub fn run(matches: &clap::ArgMatches) -> Result {
 		fix_baserelocs(&mut bytes)?;
 	}
 
+	if matches.get_flag("fix-section-names") {
+		fix_section_names::run(&mut bytes)?;
+	}
+
 	fs::write(path, &bytes)?;
 	Ok(())
 }
@@ -36,8 +46,8 @@ fn align_to(value: u32, align: u32) -> u32 {
 
 fn convert_image(bytes: &mut pelite::PeMemory) -> Result {
 	let pe = pelite::PeFile::from_bytes(&*bytes)?;
-	let pe_sections = pe.section_headers().as_slice();
-	let mut sections_mut = pe_sections.iter().map(|section| **section).collect::<Vec<_>>();
+	let pe_sections = pe.section_headers().image();
+	let mut sections_mut = pe_sections.to_vec();
 	let sections_mut = sections_mut.as_mut_slice();
 
 	let file_alignment = match pe.optional_header() {

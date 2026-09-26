@@ -1,4 +1,4 @@
-use core::{fmt, mem, ops, slice, str};
+use core::{fmt, mem, ops, slice};
 
 use crate::Pod;
 use crate::util::{CStr, FromBytes};

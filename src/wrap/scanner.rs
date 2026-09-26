@@ -1,5 +1,4 @@
 use super::*;
-use crate::wrap::sections::SectionHeader;
 
 /// Pattern scanner.
 impl<'a, Pe32: Copy + pe32::Pe<'a>, Pe64: Copy + pe64::Pe<'a>> Wrap<pe32::Scanner<Pe32>, pe64::Scanner<Pe64>> {
@@ -21,7 +20,7 @@ impl<'a, Pe32: Copy + pe32::Pe<'a>, Pe64: Copy + pe64::Pe<'a>> Wrap<pe32::Scanne
 	}
 	/// Selects sections using a predicate, evaluated once per section during iteration.
 	#[inline]
-	pub fn sections<F: FnMut(&SectionHeader) -> bool>(self, filter: F) -> Wrap<pe32::ScanSections<'a, Pe32, F>, pe64::ScanSections<'a, Pe64, F>> {
+	pub fn sections<F: FnMut(&image::IMAGE_SECTION_HEADER) -> bool>(self, filter: F) -> Wrap<pe32::ScanSections<'a, Pe32, F>, pe64::ScanSections<'a, Pe64, F>> {
 		match self {
 			Wrap::T32(scanner) => Wrap::T32(scanner.sections(filter)),
 			Wrap::T64(scanner) => Wrap::T64(scanner.sections(filter)),
@@ -29,7 +28,7 @@ impl<'a, Pe32: Copy + pe32::Pe<'a>, Pe64: Copy + pe64::Pe<'a>> Wrap<pe32::Scanne
 	}
 	/// Selects the section described by the given header.
 	#[inline]
-	pub fn section(self, section: &'a SectionHeader) -> Wrap<pe32::ScanSections<'a, Pe32>, pe64::ScanSections<'a, Pe64>> {
+	pub fn section(self, section: &'a image::IMAGE_SECTION_HEADER) -> Wrap<pe32::ScanSections<'a, Pe32>, pe64::ScanSections<'a, Pe64>> {
 		match self {
 			Wrap::T32(scanner) => Wrap::T32(scanner.section(section)),
 			Wrap::T64(scanner) => Wrap::T64(scanner.section(section)),
@@ -51,7 +50,7 @@ impl<'a, Pe32: Copy + pe32::Pe<'a>, Pe64: Copy + pe64::Pe<'a>> Wrap<pe32::Scanne
 	}
 }
 
-impl<'a, Pe32: Copy + pe32::Pe<'a>, Pe64: Copy + pe64::Pe<'a>, F: FnMut(&SectionHeader) -> bool> Wrap<pe32::ScanSections<'a, Pe32, F>, pe64::ScanSections<'a, Pe64, F>> {
+impl<'a, Pe32: Copy + pe32::Pe<'a>, Pe64: Copy + pe64::Pe<'a>, F: FnMut(&image::IMAGE_SECTION_HEADER) -> bool> Wrap<pe32::ScanSections<'a, Pe32, F>, pe64::ScanSections<'a, Pe64, F>> {
 	/// Intersects the candidate starting addresses with this RVA range.
 	#[inline]
 	pub fn within(self, range: ops::Range<u32>) -> Self {
@@ -84,7 +83,7 @@ impl<'a, Pe32: Copy + pe32::Pe<'a>, Pe64: Copy + pe64::Pe<'a>, F: FnMut(&Section
 	}
 }
 
-impl<'a, 'pat, Pe32: Copy + pe32::Pe<'a>, Pe64: Copy + pe64::Pe<'a>, F: FnMut(&SectionHeader) -> bool> Wrap<pe32::ScannerMatches<'a, 'pat, Pe32, F>, pe64::ScannerMatches<'a, 'pat, Pe64, F>> {
+impl<'a, 'pat, Pe32: Copy + pe32::Pe<'a>, Pe64: Copy + pe64::Pe<'a>, F: FnMut(&image::IMAGE_SECTION_HEADER) -> bool> Wrap<pe32::ScannerMatches<'a, 'pat, Pe32, F>, pe64::ScannerMatches<'a, 'pat, Pe64, F>> {
 	/// Returns the scanner instance.
 	#[inline]
 	pub fn scanner(&self) -> Wrap<pe32::Scanner<Pe32>, pe64::Scanner<Pe64>> {
