@@ -204,7 +204,7 @@ fn groups(matches: &clap::ArgMatches, kind: GroupKind, format: OutputFormat) -> 
 fn list_groups(resources: ResourceDirectory<'_>, kind: GroupKind, format: OutputFormat) -> Result {
 	let prepared = prepare_groups(resources, kind, &[])?;
 	let groups = prepared.iter().map(|group| &group.info).collect::<Vec<_>>();
-	printer::print(kind.title(), &groups, format)
+	print(kind.title(), &groups, format)
 }
 
 fn extract_groups(resources: ResourceDirectory<'_>, matches: &clap::ArgMatches, kind: GroupKind, format: OutputFormat) -> Result {
