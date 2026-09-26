@@ -1,4 +1,3 @@
-use iced_x86::{Decoder, DecoderOptions, MemorySize, Mnemonic, OpKind, Register};
 use pelite::{image, Import, PeFile, Wrap};
 
 use super::*;
@@ -66,7 +65,7 @@ impl fmt::Display for DataKind {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
+#[serde(untagged)]
 enum Interpretation {
 	Single(DataKind),
 	Multiple(BTreeSet<DataKind>),
@@ -254,7 +253,7 @@ impl Analysis<'_> {
 
 	fn disassemble(&mut self, bitness: u32, bytes: &[u8], rva: u32) {
 		let Some(ip) = self.pe.image_base().checked_add(rva as u64) else { return };
-		let mut decoder = Decoder::with_ip(bitness, bytes, ip, DecoderOptions::NONE);
+		let mut decoder = iced_x86::Decoder::with_ip(bitness, bytes, ip, iced_x86::DecoderOptions::NONE);
 		while decoder.can_decode() {
 			let source = rva + decoder.position() as u32;
 			let instruction = decoder.decode();
@@ -262,6 +261,7 @@ impl Analysis<'_> {
 				continue;
 			}
 			for operand in instruction.op_kinds() {
+				use iced_x86::{Mnemonic, OpKind};
 				match operand {
 					OpKind::NearBranch16 | OpKind::NearBranch32 | OpKind::NearBranch64 => {
 						let kind = if instruction.mnemonic() == Mnemonic::Call { ReferenceKind::Call } else { ReferenceKind::Branch };
@@ -284,6 +284,7 @@ impl Analysis<'_> {
 
 /// Resolve only memory operands whose address does not depend on runtime state.
 fn static_memory_address(instruction: &iced_x86::Instruction) -> Option<u64> {
+	use iced_x86::Register;
 	if matches!(instruction.segment_prefix(), Register::FS | Register::GS) {
 		return None;
 	}
@@ -325,6 +326,7 @@ fn import_names(pe: PeFile<'_>, bitness: u32) -> HashMap<u32, String> {
 /// Inspect the first instruction at each discovered code address, without following
 /// jumps or changing symbol identity. The RVA suffix keeps duplicate stubs distinct.
 fn refine_labels(pe: PeFile<'_>, bitness: u32, size: u32, symbols: &mut BTreeMap<u32, Symbol>) {
+	use iced_x86::{Mnemonic, OpKind};
 	let imports = import_names(pe, bitness);
 	for symbol in symbols.values_mut() {
 		if !symbol.label.starts_with("code_") {
@@ -340,7 +342,7 @@ fn refine_labels(pe: PeFile<'_>, bitness: u32, size: u32, symbols: &mut BTreeMap
 			let extent = if section.VirtualSize == 0 { section.SizeOfRawData } else { section.VirtualSize };
 			len = len.min(extent.saturating_sub(rva - section.VirtualAddress) as usize);
 		}
-		let instruction = Decoder::with_ip(bitness, &bytes[..len], ip, DecoderOptions::NONE).decode();
+		let instruction = iced_x86::Decoder::with_ip(bitness, &bytes[..len], ip, iced_x86::DecoderOptions::NONE).decode();
 		if instruction.is_invalid() {
 			continue;
 		}
@@ -351,7 +353,7 @@ fn refine_labels(pe: PeFile<'_>, bitness: u32, size: u32, symbols: &mut BTreeMap
 			},
 			Mnemonic::Jmp => match instruction.op0_kind() {
 				OpKind::NearBranch16 | OpKind::NearBranch32 | OpKind::NearBranch64 => format!("thunk_{rva:08x}"),
-				OpKind::Memory if matches!(instruction.memory_size(), MemorySize::DwordOffset | MemorySize::QwordOffset) => {
+				OpKind::Memory if matches!(instruction.memory_size(), iced_x86::MemorySize::DwordOffset | iced_x86::MemorySize::QwordOffset) => {
 					let Some(va) = static_memory_address(&instruction) else { continue };
 					let name = va.checked_sub(pe.image_base()).and_then(|rva| u32::try_from(rva).ok())
 						.and_then(|rva| imports.get(&rva));
@@ -369,18 +371,19 @@ fn refine_labels(pe: PeFile<'_>, bitness: u32, size: u32, symbols: &mut BTreeMap
 	}
 }
 
-fn interpretation(size: MemorySize) -> Option<DataKind> {
+fn interpretation(size: iced_x86::MemorySize) -> Option<DataKind> {
+	use iced_x86::MemorySize::*;
 	Some(match size {
-		MemorySize::UInt8 => DataKind::U8,
-		MemorySize::UInt16 => DataKind::U16,
-		MemorySize::UInt32 => DataKind::U32,
-		MemorySize::UInt64 => DataKind::U64,
-		MemorySize::Int8 => DataKind::I8,
-		MemorySize::Int16 => DataKind::I16,
-		MemorySize::Int32 => DataKind::I32,
-		MemorySize::Int64 => DataKind::I64,
-		MemorySize::Float32 => DataKind::F32,
-		MemorySize::Float64 => DataKind::F64,
+		UInt8 => DataKind::U8,
+		UInt16 => DataKind::U16,
+		UInt32 => DataKind::U32,
+		UInt64 => DataKind::U64,
+		Int8 => DataKind::I8,
+		Int16 => DataKind::I16,
+		Int32 => DataKind::I32,
+		Int64 => DataKind::I64,
+		Float32 => DataKind::F32,
+		Float64 => DataKind::F64,
 		_ => return None,
 	})
 }
