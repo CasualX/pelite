@@ -22,6 +22,7 @@ mod rust_msvc;
 mod rust_panic_strings;
 mod strings;
 mod summary;
+mod symbols;
 mod value_parser;
 mod version_info;
 mod xref;
@@ -93,6 +94,7 @@ fn cli() -> clap::Command {
 		.subcommand(rust_panic_strings::command())
 		.subcommand(version_info::command())
 		.subcommand(xref::command())
+		.subcommand(symbols::command())
 }
 
 fn run() -> Result {
@@ -116,6 +118,7 @@ fn run() -> Result {
 		Some(("rust-panic-strings", matches)) => rust_panic_strings::run(matches, format),
 		Some(("version-info", matches)) => version_info::run(matches, format),
 		Some(("xref", matches)) => xref::run(matches, format),
+		Some(("symbols", matches)) => symbols::run(matches, format),
 		None => summary::run(&matches, format),
 		_ => unreachable!("all subcommands are handled"),
 	}

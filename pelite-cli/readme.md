@@ -35,6 +35,7 @@ To install the binary from this checkout, run `cargo install --path pelite-cli`.
 | `findsig` | Search the image for byte patterns. |
 | `addr` | Convert between an RVA, virtual address, and file offset. |
 | `xref` | Find absolute pointers and candidate relative code references. |
+| `symbols` | Discover candidate code and data symbols using disassembly and base relocations. |
 | `hexdump` | Display bytes from an address range. |
 | `disasm` | Disassemble instructions from an address range. |
 | `imphash` | Calculate the conventional MD5 import hash. |
