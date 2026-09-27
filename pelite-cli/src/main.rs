@@ -33,6 +33,12 @@ use value_parser::*;
 
 type Result<T = ()> = result::Result<T, Box<dyn error::Error>>;
 
+fn get_section_name_by_rva<'a>(pe: pelite::PeFile<'a>, rva: u32) -> &'a str {
+	pe.section_headers().by_rva(rva)
+		.and_then(|section| section.name().ok())
+		.unwrap_or("<invalid>")
+}
+
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 enum OutputFormat {
 	Text,

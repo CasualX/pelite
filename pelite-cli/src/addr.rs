@@ -1,11 +1,11 @@
 use super::*;
 
 #[derive(serde::Serialize)]
-struct ConvertedAddress {
+struct ConvertedAddress<'a> {
 	rva: u32,
 	va: u64,
 	fo: Option<usize>,
-	section: Option<String>,
+	section: &'a str,
 }
 
 pub fn command() -> clap::Command {
@@ -34,7 +34,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	};
 	let va = pe.rva_to_va(rva)?;
 	let fo = pe.headers().rva_to_file_offset(rva).ok();
-	let section = pe.section_headers().by_rva(rva).and_then(|section| section.name().ok()).filter(|name| !name.is_empty()).map(str::to_owned);
+	let section = get_section_name_by_rva(pe, rva);
 	let converted = ConvertedAddress { rva, va, fo, section };
 	print("Address", &converted, format)
 }

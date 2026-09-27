@@ -1,5 +1,11 @@
 use super::*;
 
+fn get_section_name_by_rva<'a>(pe: pelite::PeFile<'a>, rva: u32) -> &'a str {
+	pe.section_headers().by_rva(rva)
+		.and_then(|section| section.name().ok())
+		.unwrap_or("<invalid>")
+}
+
 pub struct PeFile {
 	image: Box<[u8]>,
 }
@@ -197,10 +203,7 @@ pub unsafe fn disasm(pefile: *mut PeFile, start: u32, end: u32) {
 		let address = instruction.ip();
 		let offset = (address - start_ip) as usize;
 		let instruction_bytes = &bytes[offset..offset + instruction.len()];
-		let section_name = u32::try_from(address - image_base).ok()
-			.and_then(|rva| pefile.section_headers().by_rva(rva))
-			.and_then(|section| section.name().ok())
-			.unwrap_or("<no section>");
+		let section_name = get_section_name_by_rva(pefile, (address - image_base) as u32);
 		let mut text = String::new();
 		iced_x86::Formatter::format(&mut formatter, &instruction, &mut text);
 		instructions.push(DisassembledInstruction {
