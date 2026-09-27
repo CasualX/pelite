@@ -149,6 +149,9 @@ impl<'a, P: Copy + Pe<'a>> X64RuntimeFunction<'a, P> {
 	/// * [`Bounds`][crate::Error::Bounds]: The unwind record or its operation codes extend past the image.
 	/// * [`Misaligned`][crate::Error::Misaligned], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: The unwind record cannot be read.
 	pub fn unwind_info(&self) -> Result<X64UnwindInfo<'a, P>> {
+		if self.image.UnwindData == 0 {
+			return Err(Error::Null);
+		}
 		// Read as many bytes as we can for interpretation
 		let bytes = self.pe.slice(self.image.UnwindData, mem::size_of::<UNWIND_INFO>(), mem::align_of::<UNWIND_INFO>())?;
 		let image = unsafe { &*(bytes.as_ptr() as *const UNWIND_INFO) };

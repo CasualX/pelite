@@ -161,6 +161,10 @@ mod view;
 
 mod msvc;
 
+#[cfg(test)]
+#[path = "../pe64/zerofill_tests.rs"]
+mod zerofill_tests;
+
 pub use self::base_relocs::*;
 pub use self::debug::*;
 pub use self::exports::*;

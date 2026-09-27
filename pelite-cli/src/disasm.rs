@@ -119,7 +119,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let end_ip = image_base + range.end as u64;
 
 	let mut decoder = iced_x86::Decoder::with_ip(bitness, bytes, decode_ip, iced_x86::DecoderOptions::NONE);
-	let symbols = Arc::new(build_symbols(pe, bitness, image_base));
+	let symbols = Arc::new(build_symbols(pe, image_base));
 	let mut formatter = iced_x86::IntelFormatter::with_options(Some(Box::new(PeSymbolResolver { symbols: Arc::clone(&symbols) })), None);
 	let options = iced_x86::Formatter::options_mut(&mut formatter);
 	options.set_hex_prefix("0x");
@@ -184,7 +184,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	}
 }
 
-fn build_symbols(pe: PeFile<'_>, bitness: u32, image_base: u64) -> HashMap<u64, String> {
+fn build_symbols(pe: PeFile<'_>, image_base: u64) -> HashMap<u64, String> {
 	let mut symbols = HashMap::new();
 
 	if let Ok(by) = pe.exports().and_then(|exports| exports.by()) {
@@ -208,7 +208,7 @@ fn build_symbols(pe: PeFile<'_>, bitness: u32, image_base: u64) -> HashMap<u64, 
 	}
 
 	if let Ok(imports) = pe.imports() {
-		let pointer_size = bitness / 8;
+		let pointer_size = pe.pointer_size();
 		for descriptor in imports {
 			let Some(dll) = descriptor.dll_name().ok().and_then(|name| name.to_str().ok()) else {
 				continue;

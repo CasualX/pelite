@@ -126,19 +126,25 @@ pub unsafe trait Pe<'a> {
 	}
 	#[doc = include_str!("../docs/derva_copy.md")]
 	fn derva_copy<T: Copy + Pod>(self, rva: Rva) -> Result<T> where Self: Copy {
-		let bytes = self.slice(rva, mem::size_of::<T>(), 1)?;
-		// This is safe as per Pod bound and min_size_of
-		unsafe {
-			let p = bytes.as_ptr() as *const T;
-			Ok(ptr::read_unaligned(p))
-		}
+		let mut value = dataview::zeroed();
+		self.derva_into(rva, &mut value)?;
+		Ok(value)
 	}
 	#[doc = include_str!("../docs/derva_into.md")]
 	fn derva_into<T: ?Sized + Pod>(self, rva: Rva, dest: &mut T) -> Result<()> where Self: Copy {
-		let len = mem::size_of_val(dest);
-		let bytes = self.slice(rva, len, 1)?;
-		dataview::bytes_mut(dest).copy_from_slice(&bytes[..len]);
-		Ok(())
+		match self.layout() {
+			PeLayout::File => {
+				unsafe { pe_impl::copy_file(self.image(), rva, dataview::bytes_mut(dest)) }
+			}
+			PeLayout::Section => {
+				let len = mem::size_of_val(dest);
+				let start = rva as usize;
+				let end = start.checked_add(len).ok_or(Error::Bounds)?;
+				let bytes = self.image().get(start..end).ok_or(Error::Bounds)?;
+				dataview::bytes_mut(dest).copy_from_slice(bytes);
+				Ok(())
+			}
+		}
 	}
 	#[doc = include_str!("../docs/derva_slice.md")]
 	fn derva_slice<T: Pod>(self, rva: Rva, len: usize) -> Result<&'a [T]> where Self: Copy {
@@ -203,19 +209,31 @@ pub unsafe trait Pe<'a> {
 	}
 	#[doc = include_str!("../docs/deref_copy.md")]
 	fn deref_copy<T: Copy + Pod>(self, ptr: Ptr<T>) -> Result<T> where Self: Copy {
-		let bytes = self.read(ptr.into(), mem::size_of::<T>(), 1)?;
-		// This is safe as per Pod bound and min_size_of
-		unsafe {
-			let p = bytes.as_ptr() as *const T;
-			Ok(ptr::read_unaligned(p))
-		}
+		let mut value = dataview::zeroed();
+		self.deref_into(ptr, &mut value)?;
+		Ok(value)
 	}
 	#[doc = include_str!("../docs/deref_into.md")]
 	fn deref_into<T: ?Sized + Pod>(self, ptr: Ptr<T>, dest: &mut T) -> Result<()> where Self: Copy {
-		let len = mem::size_of_val(dest);
-		let bytes = self.read(ptr.into(), len, 1)?;
-		dataview::bytes_mut(dest).copy_from_slice(&bytes[..len]);
-		Ok(())
+		match self.layout() {
+			PeLayout::File => {
+				let va: Va = ptr.into();
+				let base = self.image_base();
+				if va == 0 {
+					return Err(Error::Null);
+				}
+				if va < base || va - base >= self.optional_header().SizeOfImage as Va {
+					return Err(Error::Bounds);
+				}
+				unsafe { pe_impl::copy_file(self.image(), (va - base) as Rva, dataview::bytes_mut(dest)) }
+			}
+			PeLayout::Section => {
+				let len = mem::size_of_val(dest);
+				let bytes = self.read(ptr.into(), len, 1)?;
+				dataview::bytes_mut(dest).copy_from_slice(&bytes[..len]);
+				Ok(())
+			}
+		}
 	}
 	#[doc = include_str!("../docs/deref_slice.md")]
 	fn deref_slice<T: Pod>(self, ptr: Ptr<[T]>, len: usize) -> Result<&'a [T]> where Self: Copy {

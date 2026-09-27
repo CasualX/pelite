@@ -174,19 +174,11 @@ impl<'a> PeView<'a> {
 	}
 	#[doc = include_str!("../docs/derva_copy.md")]
 	pub fn derva_copy<T: Copy + Pod>(self, rva: Rva) -> Result<T> {
-		let bytes = self.slice(rva, mem::size_of::<T>(), 1)?;
-		// This is safe as per Pod bound and min_size_of
-		unsafe {
-			let p = bytes.as_ptr() as *const T;
-			Ok(ptr::read_unaligned(p))
-		}
+		Pe::derva_copy(self, rva)
 	}
 	#[doc = include_str!("../docs/derva_into.md")]
 	pub fn derva_into<T: ?Sized + Pod>(self, rva: Rva, dest: &mut T) -> Result<()> {
-		let len = mem::size_of_val(dest);
-		let bytes = self.slice(rva, len, 1)?;
-		dataview::bytes_mut(dest).copy_from_slice(&bytes[..len]);
-		Ok(())
+		Pe::derva_into(self, rva, dest)
 	}
 	#[doc = include_str!("../docs/derva_slice.md")]
 	pub fn derva_slice<T: Pod>(self, rva: Rva, len: usize) -> Result<&'a [T]> {

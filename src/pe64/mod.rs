@@ -143,6 +143,9 @@ mod security;
 mod tls;
 mod view;
 
+#[cfg(test)]
+mod zerofill_tests;
+
 pub use self::base_relocs::*;
 pub use self::debug::*;
 pub use self::exception_arm64::*;

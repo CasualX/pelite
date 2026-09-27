@@ -142,6 +142,9 @@ impl<'a, P: Copy + Pe<'a>> Arm64RuntimeFunction<'a, P> {
 	}
 
 	fn xdata_function_length(&self, address: Rva) -> Result<Option<Rva>> {
+		if address == 0 {
+			return Err(Error::Null);
+		}
 		let header = self.pe.derva_copy::<u32>(address)?;
 		decode_xdata_function_length(header)
 	}

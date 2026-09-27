@@ -40,6 +40,9 @@ pub use crate::Import;
 // These aren't actually virtual addresses.
 // This function will decode them to get the import.
 fn import_from_va<'a, P: Copy + Pe<'a>>(pe: P, &va: &'a Va) -> Result<Import<'a>> {
+	if va == 0 {
+		return Err(Error::Null);
+	}
 	if va & IMAGE_ORDINAL_FLAG == 0 {
 		let rva = Rva::try_from(va).map_err(|_| Error::Overflow)?;
 		let hint = pe.derva::<u16>(rva)?;
@@ -248,6 +251,9 @@ impl<'a, P: Copy + Pe<'a>> ImportDescriptor<'a, P> {
 	/// * [`Encoding`][crate::Error::Encoding]: The name has no null terminator.
 	/// * [`Bounds`][crate::Error::Bounds], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: The name cannot be read from the image.
 	pub fn dll_name(&self) -> Result<&'a CStr> {
+		if self.image.Name.get() == 0 {
+			return Err(Error::Null);
+		}
 		self.pe.derva_c_str(self.image.Name.get())
 	}
 	/// Returns the import address table.
@@ -263,6 +269,9 @@ impl<'a, P: Copy + Pe<'a>> ImportDescriptor<'a, P> {
 	/// * [`Bounds`][crate::Error::Bounds]: The table lies outside the image or has no terminating entry.
 	/// * [`Misaligned`][crate::Error::Misaligned], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: The table cannot be read.
 	pub fn iat(&self) -> Result<slice::Iter<'a, Va>> {
+		if self.image.FirstThunk.get() == 0 {
+			return Err(Error::Null);
+		}
 		let slice = self.pe.derva_slice_s(self.image.FirstThunk.get(), 0)?;
 		Ok(slice.iter())
 	}
@@ -274,6 +283,9 @@ impl<'a, P: Copy + Pe<'a>> ImportDescriptor<'a, P> {
 	/// * [`Bounds`][crate::Error::Bounds]: The table lies outside the image or has no terminating entry.
 	/// * [`Misaligned`][crate::Error::Misaligned], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: The table cannot be read.
 	pub fn int(&self) -> Result<iter::Map<slice::Iter<'a, Va>, impl Clone + FnMut(&'a Va) -> Result<Import<'a>>>> {
+		if self.image.OriginalFirstThunk.get() == 0 {
+			return Err(Error::Null);
+		}
 		let slice = self.pe.derva_slice_s(self.image.OriginalFirstThunk.get(), 0)?;
 		let pe = self.pe;
 		Ok(slice.iter().map(move |va| import_from_va(pe, va)))

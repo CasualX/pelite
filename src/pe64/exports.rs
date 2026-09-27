@@ -120,6 +120,9 @@ impl<'a, P: Copy + Pe<'a>> ExportDirectory<'a, P> {
 	/// * [`Encoding`][crate::Error::Encoding]: The name has no null terminator.
 	/// * [`Bounds`][crate::Error::Bounds], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: The name cannot be read from the image.
 	pub fn dll_name(&self) -> Result<&'a CStr> {
+		if self.image.Name == 0 {
+			return Err(Error::Null);
+		}
 		self.pe.derva_c_str(self.image.Name)
 	}
 	/// Returns the ordinal base for the exported functions.
@@ -134,6 +137,9 @@ impl<'a, P: Copy + Pe<'a>> ExportDirectory<'a, P> {
 	/// * [`Overflow`][crate::Error::Overflow]: The declared table length overflows.
 	/// * [`Bounds`][crate::Error::Bounds], [`Misaligned`][crate::Error::Misaligned], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: The function table cannot be read from the image.
 	pub fn functions(&self) -> Result<&'a [Rva]> {
+		if self.image.AddressOfFunctions == 0 {
+			return Err(Error::Null);
+		}
 		self.pe.derva_slice(self.image.AddressOfFunctions, self.image.NumberOfFunctions as usize)
 	}
 	/// Returns the name address table.
@@ -148,6 +154,9 @@ impl<'a, P: Copy + Pe<'a>> ExportDirectory<'a, P> {
 	/// * [`Overflow`][crate::Error::Overflow]: The declared table length overflows.
 	/// * [`Bounds`][crate::Error::Bounds], [`Misaligned`][crate::Error::Misaligned], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: The name table cannot be read from the image.
 	pub fn names(&self) -> Result<&'a [Rva]> {
+		if self.image.AddressOfNames == 0 {
+			return Err(Error::Null);
+		}
 		self.pe.derva_slice(self.image.AddressOfNames, self.image.NumberOfNames as usize)
 	}
 	/// Returns the name index table.
@@ -160,6 +169,9 @@ impl<'a, P: Copy + Pe<'a>> ExportDirectory<'a, P> {
 	/// * [`Overflow`][crate::Error::Overflow]: The declared table length overflows.
 	/// * [`Bounds`][crate::Error::Bounds], [`Misaligned`][crate::Error::Misaligned], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: The name index table cannot be read from the image.
 	pub fn name_indices(&self) -> Result<&'a [u16]> {
+		if self.image.AddressOfNameOrdinals == 0 {
+			return Err(Error::Null);
+		}
 		self.pe.derva_slice(self.image.AddressOfNameOrdinals, self.image.NumberOfNames as usize)
 	}
 	/// Returns validated export lookup tables.
@@ -337,8 +349,7 @@ impl<'a, P: Copy + Pe<'a>> ExportBy<'a, P> {
 		let mut upper_bound = self.names.len();
 		while lower_bound != upper_bound {
 			let i = lower_bound + (upper_bound - lower_bound) / 2;
-			let name_rva = self.names[i];
-			let name_it = self.exp.pe.derva_c_str(name_rva)?.as_ref();
+			let name_it = self.name_of_hint(i)?.as_ref();
 			use core::cmp::Ordering::*;
 			match name.cmp(name_it) {
 				Less => upper_bound = i,
@@ -419,6 +430,9 @@ impl<'a, P: Copy + Pe<'a>> ExportBy<'a, P> {
 	/// * [`Encoding`][crate::Error::Encoding], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: The name cannot be read.
 	pub fn name_of_hint(&self, hint: usize) -> Result<&'a CStr> {
 		let &name_rva = self.names.get(hint).ok_or(Error::Bounds)?;
+		if name_rva == 0 {
+			return Err(Error::Null);
+		}
 		self.exp.pe.derva_c_str(name_rva)
 	}
 	/// Returns the import name or ordinal for an export index.
@@ -441,8 +455,7 @@ impl<'a, P: Copy + Pe<'a>> ExportBy<'a, P> {
 		match self.name_indices.iter().position(|&i| i as usize == index) {
 			Some(hint) => {
 				// Lookup the name
-				let name_rva = self.names[hint];
-				let name = self.exp.pe.derva_c_str(name_rva)?;
+				let name = self.name_of_hint(hint)?;
 				Ok(Import::ByName { hint, name })
 			},
 			None => {
