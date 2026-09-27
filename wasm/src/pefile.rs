@@ -194,7 +194,7 @@ pub unsafe fn disasm(pefile: *mut PeFile, start: u32, end: u32) {
 	let start_ip = image_base + start as u64;
 	let end_ip = image_base + end as u64;
 
-	let symbols = Arc::new(build_symbols(pefile, bitness, image_base));
+	let symbols = Arc::new(build_symbols(pefile, image_base));
 	let mut decoder = iced_x86::Decoder::with_ip(bitness, bytes, start_ip, iced_x86::DecoderOptions::NONE);
 	let mut formatter = iced_x86::IntelFormatter::with_options(Some(Box::new(PeSymbolResolver { symbols })), None);
 	let mut instructions = Vec::new();
@@ -216,7 +216,7 @@ pub unsafe fn disasm(pefile: *mut PeFile, start: u32, end: u32) {
 	return_json(instructions);
 }
 
-fn build_symbols(pefile: pelite::PeFile<'_>, bitness: u32, image_base: u64) -> HashMap<u64, String> {
+fn build_symbols(pefile: pelite::PeFile<'_>, image_base: u64) -> HashMap<u64, String> {
 	let mut symbols = HashMap::new();
 
 	if let Ok(by) = pefile.exports().and_then(|exports| exports.by()) {
@@ -240,7 +240,7 @@ fn build_symbols(pefile: pelite::PeFile<'_>, bitness: u32, image_base: u64) -> H
 	}
 
 	if let Ok(imports) = pefile.imports() {
-		let pointer_size = bitness / 8;
+		let pointer_size = pefile.pointer_size();
 		for descriptor in imports {
 			let Some(dll) = descriptor.dll_name().ok().and_then(|name| name.to_str().ok()) else {
 				continue;

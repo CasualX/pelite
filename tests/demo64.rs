@@ -143,7 +143,7 @@ fn wrapped_images_convert_u64_virtual_addresses_for_both_formats() {
 		assert_eq!(file.rva_to_va(0x1000), Ok(va), "{path}");
 		assert_eq!(file.va_to_rva(va), Ok(0x1000), "{path}");
 		assert_eq!(file.va_to_rva(0), Err(Error::Null), "{path}");
-		assert_eq!(file.rva_to_va(0), Err(Error::Null), "{path}");
+		assert_eq!(file.rva_to_va(0), Ok(file.image_base()), "{path}");
 	}
 	let file_map = FileMap::open("demo/Demo.dll").unwrap();
 	let file = pelite::PeFile::from_bytes(&file_map).unwrap();

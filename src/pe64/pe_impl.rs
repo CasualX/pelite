@@ -36,10 +36,7 @@ pub(crate) unsafe fn section_headers(image: &[u8]) -> &super::PeSectionHeaders {
 
 pub(crate) unsafe fn slice_section(image: &[u8], rva: Rva, min_size_of: usize, align_of: usize) -> Result<&[u8]> {
 	let start = rva as usize;
-	if rva == 0 {
-		Err(Error::Null)
-	}
-	else if start > image.len() {
+	if start > image.len() {
 		Err(Error::Bounds)
 	}
 	else if !usize::wrapping_add(image.as_ptr() as usize, start).aligned_to(align_of) {
@@ -75,7 +72,48 @@ pub(crate) unsafe fn read_section(image: &[u8], image_base: Va, va: Va, min_size
 	}
 }}
 
+// Copy from headers or one section, synthesizing only its virtual zero-filled tail.
+// Image must have validated PE headers.
+pub(crate) unsafe fn copy_file(image: &[u8], rva: Rva, dest: &mut [u8]) -> Result<()> { unsafe {
+	let headers_size = optional_header(image).SizeOfHeaders;
+	if rva < headers_size {
+		let end = (rva as usize).checked_add(dest.len()).ok_or(Error::Bounds)?;
+		if end > headers_size as usize {
+			return Err(Error::Bounds);
+		}
+		dest.copy_from_slice(image.get(rva as usize..end).ok_or(Error::Bounds)?);
+		return Ok(());
+	}
+	for section in section_headers(image) {
+		let Some(end) = section.VirtualAddress.checked_add(cmp::max(section.VirtualSize, section.SizeOfRawData)) else {
+			continue;
+		};
+		if section.VirtualAddress <= rva && rva < end {
+			if dest.len() > (end - rva) as usize {
+				return Err(Error::Bounds);
+			}
+			let raw = if section.SizeOfRawData == 0 { &[][..] }
+			else {
+				let raw_end = section.PointerToRawData.checked_add(section.SizeOfRawData).ok_or(Error::Invalid)?;
+				image.get(section.PointerToRawData as usize..raw_end as usize).ok_or(Error::Invalid)?
+			};
+			let offset = (rva - section.VirtualAddress) as usize;
+			let prefix = raw.get(offset..).unwrap_or(&[]);
+			let len = cmp::min(prefix.len(), dest.len());
+			dest[..len].copy_from_slice(&prefix[..len]);
+			dest[len..].fill(0);
+			return Ok(());
+		}
+	}
+	Err(Error::Bounds)
+}}
+
 pub(crate) unsafe fn range_file(image: &[u8], rva: Rva, min_size_of: usize) -> Result<&[u8]> { unsafe {
+	let headers_size = optional_header(image).SizeOfHeaders;
+	if rva < headers_size {
+		let bytes = image.get(rva as usize..headers_size as usize).ok_or(Error::Bounds)?;
+		return if bytes.len() >= min_size_of { Ok(bytes) } else { Err(Error::Bounds) };
+	}
 	// This code has been carefully designed to avoid panicking on overflow
 	for it in section_headers(image) {
 		// Compare if rva is contained within the virtual address space of a section
@@ -101,10 +139,6 @@ pub(crate) unsafe fn range_file(image: &[u8], rva: Rva, min_size_of: usize) -> R
 }}
 #[inline(never)]
 pub(crate) unsafe fn slice_file(image: &[u8], rva: Rva, min_size_of: usize, align_of: usize) -> Result<&[u8]> { unsafe {
-	if rva == 0 {
-		return Err(Error::Null);
-	}
-
 	let bytes = range_file(image, rva, min_size_of)?;
 
 	if !(bytes.as_ptr() as usize).aligned_to(align_of) {
@@ -291,18 +325,12 @@ pub(crate) unsafe fn file_offset_to_rva(image: &[u8], file_offset: usize) -> Res
 }
 
 pub(crate) unsafe fn rva_to_va(image: &[u8], image_base: Va, rva: Rva) -> Result<Va> {
-	if rva == 0 {
-		Err(Error::Null)
+	let size_of_image = unsafe { optional_header(image) }.SizeOfImage;
+	if rva <= size_of_image {
+		image_base.checked_add(rva as Va).ok_or(Error::Overflow)
 	}
 	else {
-		let size_of_image = unsafe { optional_header(image) }.SizeOfImage;
-
-		if rva <= size_of_image {
-			image_base.checked_add(rva as Va).ok_or(Error::Overflow)
-		}
-		else {
-			Err(Error::Bounds)
-		}
+		Err(Error::Bounds)
 	}
 }
 
