@@ -88,7 +88,7 @@ pub fn command() -> clap::Command {
 			.value_name("BYTES")
 			.value_parser(clap::value_parser!(u32))
 			.default_value("0")
-			.help("Decode up to BYTES earlier (decimal) to help instruction alignment; only show instructions starting in the requested range"))
+			.help("Decode up to BYTES earlier (decimal); include any instruction overlapping the requested start. Correct alignment requires starting at an instruction boundary"))
 }
 
 pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
@@ -121,11 +121,15 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let mut decoder = iced_x86::Decoder::with_ip(bitness, bytes, decode_ip, iced_x86::DecoderOptions::NONE);
 	let symbols = Arc::new(build_symbols(pe, bitness, image_base));
 	let mut formatter = iced_x86::IntelFormatter::with_options(Some(Box::new(PeSymbolResolver { symbols: Arc::clone(&symbols) })), None);
+	let options = iced_x86::Formatter::options_mut(&mut formatter);
+	options.set_hex_prefix("0x");
+	options.set_hex_suffix("");
+	options.set_uppercase_hex(false);
 	let color = format == OutputFormat::Text && io::stdout().is_terminal();
 	let mut instructions = Vec::new();
 	while decoder.can_decode() && decoder.ip() < end_ip {
 		let instruction = decoder.decode();
-		if instruction.ip() < start_ip {
+		if instruction.next_ip() <= start_ip {
 			continue;
 		}
 		let address = u32::try_from(instruction.ip() - image_base)?;
