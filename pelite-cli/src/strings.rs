@@ -43,10 +43,39 @@ struct Candidate {
 	value: String,
 }
 
+enum Filter {
+	Literal(String),
+	Regex(regex_lite::Regex),
+}
+
+impl Filter {
+	fn is_match(&self, value: &str) -> bool {
+		match self {
+			Self::Literal(pattern) => value.contains(pattern),
+			Self::Regex(pattern) => pattern.is_match(value),
+		}
+	}
+}
+
 pub fn command() -> clap::Command {
 	clap::Command::new("strings")
 		.about("Find ASCII, UTF-8, and UTF-16LE strings in PE sections")
 		.arg(clap::Arg::new("file").value_name("FILE").value_parser(clap::value_parser!(PathBuf)).required(true))
+		.arg(clap::Arg::new("filter")
+			.long("filter")
+			.value_name("PATTERN")
+			.action(clap::ArgAction::Append)
+			.help("Include strings containing any filter (repeatable; literal unless --regex is set)"))
+		.arg(clap::Arg::new("regex")
+			.long("regex")
+			.short('E')
+			.action(clap::ArgAction::SetTrue)
+			.help("Interpret all --filter patterns as regex-lite regular expressions"))
+		.arg(clap::Arg::new("ignore-case")
+			.long("ignore-case")
+			.short('i')
+			.action(clap::ArgAction::SetTrue)
+			.help("Ignore ASCII letter case in all filters"))
 		.arg(clap::Arg::new("min-confidence")
 			.long("min-confidence")
 			.value_name("SCORE")
@@ -58,10 +87,24 @@ pub fn command() -> clap::Command {
 pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let min_confidence = *matches.get_one("min-confidence").expect("defaulted by clap");
 	let path = matches.get_one::<PathBuf>("file").expect("required by clap");
-	analyze(path, min_confidence, format)
+	let regex = matches.get_flag("regex");
+	let ignore_case = matches.get_flag("ignore-case");
+	let filters = matches.get_many::<String>("filter").into_iter().flatten()
+		.map(|pattern| {
+			if regex || ignore_case {
+				let expression = if regex { pattern.clone() } else { regex_lite::escape(pattern) };
+				regex_lite::RegexBuilder::new(&expression).case_insensitive(ignore_case).build().map(Filter::Regex)
+					.map_err(|error| err(format!("invalid --filter pattern {pattern:?}: {error}")))
+			}
+			else {
+				Ok(Filter::Literal(pattern.clone()))
+			}
+		})
+		.collect::<Result<Vec<_>>>()?;
+	analyze(path, min_confidence, &filters, format)
 }
 
-fn analyze(path: &Path, min_confidence: i32, format: OutputFormat) -> Result {
+fn analyze(path: &Path, min_confidence: i32, filters: &[Filter], format: OutputFormat) -> Result {
 	let map = pelite::FileMap::open(path)?;
 	let pe = pelite::PeFile::from_bytes(&map)?;
 	let mut found = Vec::new();
@@ -71,6 +114,9 @@ fn analyze(path: &Path, min_confidence: i32, format: OutputFormat) -> Result {
 		};
 		let section_name = section.name().unwrap_or("<invalid>");
 		for item in find_strings(bytes, min_confidence, section.Characteristics) {
+			if !filters.is_empty() && !filters.iter().any(|filter| filter.is_match(&item.value)) {
+				continue;
+			}
 			let Some(address) = u32::try_from(item.start).ok().and_then(|offset| section.VirtualAddress.checked_add(offset)) else {
 				continue;
 			};
