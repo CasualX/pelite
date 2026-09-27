@@ -9,7 +9,7 @@ const NUMBER_COLOR: &str = "\x1b[38;2;185;190;198m";
 
 #[derive(serde::Serialize)]
 struct DisassembledInstruction<'a> {
-	address: u64,
+	address: u32,
 	bytes: &'a [u8],
 	instruction: String,
 	#[serde(skip)]
@@ -83,6 +83,12 @@ pub fn command() -> clap::Command {
 			.long("hex")
 			.action(clap::ArgAction::SetTrue)
 			.help("Show instruction opcode bytes in text output"))
+		.arg(clap::Arg::new("lookback")
+			.long("lookback")
+			.value_name("BYTES")
+			.value_parser(clap::value_parser!(u32))
+			.default_value("0")
+			.help("Decode up to BYTES earlier (decimal) to help instruction alignment; only show instructions starting in the requested range"))
 }
 
 pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
@@ -98,19 +104,32 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	};
 	let len = usize::try_from(range.end - range.start)?;
 	let bytes = pe.slice(range.start, len, 1)?;
+	let lookback = *matches.get_one::<u32>("lookback").expect("defaulted by clap");
+	let (decode_start, bytes) = pe.section_headers().by_rva(range.start)
+		.filter(|_| lookback != 0)
+		.and_then(|section| {
+			let start = range.start.saturating_sub(lookback).max(section.VirtualAddress);
+			let len = usize::try_from(range.end - start).ok()?;
+			pe.slice(start, len, 1).ok().map(|bytes| (start, bytes))
+		})
+		.unwrap_or((range.start, bytes));
 	let image_base = pe.image_base();
 	let start_ip = image_base + range.start as u64;
+	let decode_ip = image_base + decode_start as u64;
 	let end_ip = image_base + range.end as u64;
 
-	let mut decoder = iced_x86::Decoder::with_ip(bitness, bytes, start_ip, iced_x86::DecoderOptions::NONE);
+	let mut decoder = iced_x86::Decoder::with_ip(bitness, bytes, decode_ip, iced_x86::DecoderOptions::NONE);
 	let symbols = Arc::new(build_symbols(pe, bitness, image_base));
 	let mut formatter = iced_x86::IntelFormatter::with_options(Some(Box::new(PeSymbolResolver { symbols: Arc::clone(&symbols) })), None);
 	let color = format == OutputFormat::Text && io::stdout().is_terminal();
 	let mut instructions = Vec::new();
 	while decoder.can_decode() && decoder.ip() < end_ip {
 		let instruction = decoder.decode();
-		let address = instruction.ip();
-		let offset = usize::try_from(address - start_ip)?;
+		if instruction.ip() < start_ip {
+			continue;
+		}
+		let address = u32::try_from(instruction.ip() - image_base)?;
+		let offset = usize::try_from(instruction.ip() - decode_ip)?;
 		let instruction_bytes = &bytes[offset..offset + instruction.len()];
 		let mut text = InstructionText { plain: String::new(), colored: color.then(String::new) };
 		iced_x86::Formatter::format(&mut formatter, &instruction, &mut text);
@@ -127,7 +146,8 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 			let hex = HexPrinter::new(false);
 			let mut output = stdout.lock();
 			for item in instructions {
-				if let Some(symbol) = symbols.get(&item.address) {
+				let address = image_base + u64::from(item.address);
+				if let Some(symbol) = symbols.get(&address) {
 					if color {
 						writeln!(output, "\n\x1b[1m{ADDRESS_COLOR}{symbol}:\x1b[0m")?;
 					}
@@ -136,16 +156,12 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 					}
 				}
 				let address_width = bitness as usize / 4 + 2;
-				let section_name = item.address.checked_sub(image_base)
-					.and_then(|rva| u32::try_from(rva).ok())
-					.and_then(|rva| pe.section_headers().by_rva(rva))
-					.and_then(|section| section.name().ok())
-					.unwrap_or("<no section>");
+				let section_name = get_section_name_by_rva(pe, item.address);
 				if color {
-					write!(output, "\x1b[90m{section_name}\x1b[0m:{ADDRESS_COLOR}{:#0address_width$x}\x1b[0m  ", item.address)?;
+					write!(output, "\x1b[90m{section_name}\x1b[0m:{ADDRESS_COLOR}{address:#0address_width$x}\x1b[0m  ")?;
 				}
 				else {
-					write!(output, "{section_name}:{:#0address_width$x}  ", item.address)?;
+					write!(output, "{section_name}:{address:#0address_width$x}  ")?;
 				}
 				if show_hex {
 					if color {

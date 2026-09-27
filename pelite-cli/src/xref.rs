@@ -17,7 +17,7 @@ enum ReferenceKind {
 struct Reference<'a> {
 	rva: u32,
 	file_offset: Option<usize>,
-	section: Option<&'a str>,
+	section: &'a str,
 	kind: ReferenceKind,
 	#[serde(skip_serializing_if = "is_zero")]
 	trailing_bytes: u8,
@@ -174,6 +174,6 @@ fn relative_matches<'a>(pe: PeFile<'a>, bytes: &[u8], section_rva: u32, target_r
 }
 
 fn reference<'a>(pe: PeFile<'a>, rva: u32, file_offset: Option<usize>, kind: ReferenceKind, trailing_bytes: u8) -> Reference<'a> {
-	let section = pe.section_headers().by_rva(rva).and_then(|section| section.name().ok());
+	let section = get_section_name_by_rva(pe, rva);
 	Reference { rva, file_offset, section, kind, trailing_bytes }
 }
