@@ -1,5 +1,5 @@
 use pelite::pe32::{PeFile, PeView, image};
-use pelite::{FileMap, ImageMap, Pod};
+use pelite::{FileMap, ImageMap, PeMemory, Pod};
 
 // For fun let's try loading tiny PE files.
 // The examples are sourced from:
@@ -12,6 +12,13 @@ fn assert_memcmp<T: std::fmt::Debug + Pod>(lhs: &T, rhs: &T) {
 	let lhs_bytes = dataview::bytes(lhs);
 	let rhs_bytes = dataview::bytes(rhs);
 	assert_eq!(lhs_bytes, rhs_bytes, "lhs: {:?} rhs: {:?}", lhs, rhs);
+}
+
+fn zero_padded_tiny_file(path: &str) -> PeMemory {
+	let bytes = std::fs::read(path).unwrap();
+	let mut padded = PeMemory::zeroed(4096);
+	padded[..bytes.len()].copy_from_slice(&bytes);
+	padded
 }
 
 /*
@@ -256,13 +263,13 @@ fn tiny_128() {
 }
 
 /*
-Abuse file mapping padding with zeroes to fill the virtual memory page
+These tiny files rely on zeroes beyond EOF; provide that padding explicitly.
 */
 
 #[test]
 fn tiny_97() {
-	let file_map = FileMap::open("tests/tiny/tiny.97").unwrap();
-	let file = PeFile::from_bytes(&file_map).unwrap();
+	let padded = zero_padded_tiny_file("tests/tiny/tiny.97");
+	let file = PeFile::from_bytes(&padded).unwrap();
 
 	let optional_header = image::IMAGE_OPTIONAL_HEADER {
 		Magic: image::IMAGE_NT_OPTIONAL_HDR_MAGIC,
@@ -363,8 +370,8 @@ Merge the imports even further with the PE headers
 
 #[test]
 fn tiny_import_133() {
-	let file_map = FileMap::open("tests/tiny/tiny.import.133").unwrap();
-	let file = PeFile::from_bytes(&file_map).unwrap();
+	let padded = zero_padded_tiny_file("tests/tiny/tiny.import.133");
+	let file = PeFile::from_bytes(&padded).unwrap();
 
 	let imports = file.imports().unwrap();
 	let kernel32 = imports.into_iter().next().unwrap();
@@ -378,8 +385,8 @@ Smallest PE file that downloads a file from the Internet and executes it
 
 #[test]
 fn tiny_webdav_133() {
-	let file_map = FileMap::open("tests/tiny/tiny.webdav.133").unwrap();
-	let file = PeFile::from_bytes(&file_map).unwrap();
+	let padded = zero_padded_tiny_file("tests/tiny/tiny.webdav.133");
+	let file = PeFile::from_bytes(&padded).unwrap();
 
 	let imports = file.imports().unwrap();
 	let unc = imports.into_iter().next().unwrap();
@@ -394,4 +401,13 @@ fn imagemap_pe32() {
 	let expected = PeFile::from_bytes(&file_map).unwrap().to_view();
 	assert_eq!(mapped.as_ref(), expected.as_ref());
 	PeView::from_bytes(&mapped).unwrap();
+}
+
+#[test]
+fn file_map_exact_bytes() {
+	for path in ["tests/tiny/tiny.97", "tests/tiny/tiny.c.1024"] {
+		let expected = std::fs::read(path).unwrap();
+		let mapped = FileMap::open(path).unwrap();
+		assert_eq!(mapped.as_ref(), expected, "{path}");
+	}
 }

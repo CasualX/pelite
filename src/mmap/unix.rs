@@ -4,8 +4,6 @@ use std::os::unix::io::AsRawFd;
 use std::path::Path;
 use std::{io, mem, ptr, slice};
 
-use crate::util::AlignTo;
-
 /// Memory mapped file.
 pub struct FileMap {
 	ptr: *mut libc::c_void,
@@ -19,21 +17,13 @@ impl FileMap {
 	fn _open(path: &Path) -> io::Result<FileMap> {
 		// Open the file and get its fd
 		let file = File::open(path)?;
-		let fd = file.as_raw_fd();
 
-		// Find its file size aligned to page boundary
-		let size = unsafe {
-			let mut stat = mem::MaybeUninit::uninit();
-			if libc::fstat(fd, stat.as_mut_ptr()) < 0 {
-				return Err(io::Error::last_os_error());
-			}
-			let stat = stat.assume_init();
-			// Round up to nearest multiple of page_size
-			let page_size = libc::sysconf(libc::_SC_PAGE_SIZE) as usize;
-			(stat.st_size as usize).align_to(page_size)
-		};
+		// Expose only the file's bytes; mmap handles page rounding internally.
+		let size = usize::try_from(file.metadata()?.len())
+			.map_err(|_| io::Error::new(io::ErrorKind::InvalidData, "file is too large to map"))?;
 
 		// Mmap the file
+		let fd = file.as_raw_fd();
 		unsafe {
 			let ptr = libc::mmap(ptr::null_mut(), size as libc::size_t, libc::PROT_READ, libc::MAP_PRIVATE, fd, 0);
 			if ptr == libc::MAP_FAILED { Err(io::Error::last_os_error()) } else { Ok(FileMap { ptr, size }) }
