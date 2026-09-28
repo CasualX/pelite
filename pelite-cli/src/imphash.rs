@@ -32,11 +32,12 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 
 	match format {
 		OutputFormat::Text => {
+			let mut output = io::stdout().lock();
 			for result in &hashes {
-				println!("{}  {}", result.hash, result.file);
+				writeln!(output, "{}  {}", result.hash, result.file)?;
 				if show_imports {
 					for import in &result.imports {
-						println!("  {import}");
+						writeln!(output, "  {import}")?;
 					}
 				}
 			}

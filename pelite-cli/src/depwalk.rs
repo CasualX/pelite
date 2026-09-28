@@ -113,17 +113,18 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 		OutputFormat::Json => print_json(&walker.report, false),
 		OutputFormat::JsonPretty => print_json(&walker.report, true),
 		OutputFormat::Text => {
+			let mut output = io::stdout().lock();
 			for (index, module) in walker.report.modules.iter().enumerate() {
 				match &module.path {
-					Some(path) => println!("[{index}] {} -> {}", module.name, path.display()),
-					None => println!("[{index}] {} -> <not found>", module.name),
+					Some(path) => writeln!(output, "[{index}] {} -> {}", module.name, path.display())?,
+					None => writeln!(output, "[{index}] {} -> <not found>", module.name)?,
 				}
-				for name in &module.imports { println!("    {name}"); }
+				for name in &module.imports { writeln!(output, "    {name}")?; }
 			}
 			for issue in &walker.report.issues {
-				println!("{}: {}: {}", issue.kind, issue.module, issue.detail);
+				writeln!(output, "{}: {}: {}", issue.kind, issue.module, issue.detail)?;
 			}
-			println!("{} modules, {} issues", walker.report.modules.len(), walker.report.issues.len());
+			writeln!(output, "{} modules, {} issues", walker.report.modules.len(), walker.report.issues.len())?;
 			Ok(())
 		},
 	}?;

@@ -203,6 +203,7 @@ fn render_type(file: PeFile<'_>, item: RawType<'_>) -> Result<TypeOutput> {
 }
 
 fn print_text(types: &[TypeOutput]) -> Result {
+	let mut output = io::stdout().lock();
 	for item in types {
 		let kind = match item.inheritance {
 			"single" => " (SI)",
@@ -210,32 +211,32 @@ fn print_text(types: &[TypeOutput]) -> Result {
 			"virtual" => " (VI)",
 			_ => " (MI VI)",
 		};
-		println!("class {}{}", item.name, kind);
+		writeln!(output, "class {}{}", item.name, kind)?;
 		let symbol_name = item.name.get(4..).unwrap_or(&item.name);
 		for vtable in &item.vtables {
-			println!(
+			writeln!(output,
 				"{:#010X}: ??_7{}6B@ {{for '{}'}} ({} methods)",
 				vtable.rva,
 				symbol_name,
 				vtable.for_type.as_deref().unwrap_or("?"),
 				vtable.methods
-			);
+			)?;
 		}
 		for (index, base) in item.hierarchy.iter().enumerate() {
 			match base.offset {
-				Some(offset) => print!("{offset:04X}: "),
-				None => print!("****: "),
+				Some(offset) => write!(output, "{offset:04X}: ")?,
+				None => write!(output, "****: ")?,
 			}
 			if base.depth > 0 {
 				for _ in 1..base.depth {
-					print!("|   ");
+					write!(output, "|   ")?;
 				}
 				let is_last = item.hierarchy.get(index + 1).is_none_or(|next| next.depth < base.depth);
-				print!("{}", if is_last { "!-- " } else { "+-- " });
+				write!(output, "{}", if is_last { "`-- " } else { "+-- " })?;
 			}
-			println!("{}", base.name);
+			writeln!(output, "{}", base.name)?;
 		}
-		println!();
+		writeln!(output)?;
 	}
 	Ok(())
 }

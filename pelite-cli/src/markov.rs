@@ -93,7 +93,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 
 	match format {
 		OutputFormat::Text => {
-			println!("{}", generated.hex);
+			writeln!(io::stdout().lock(), "{}", generated.hex)?;
 			Ok(())
 		},
 		OutputFormat::Json => print_json(&generated, false),
