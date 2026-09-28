@@ -430,13 +430,12 @@ unsafe impl<'s, 'a> Pe<'a> for &'s dyn Pe<'a> {
 pub(crate) fn serialize_pe<'a, P: Copy + Pe<'a>, S: serde::Serializer>(pe: P, serializer: S) -> core::result::Result<S::Ok, S::Error> {
 	use crate::util::serde_helper::*;
 
-	let fields = branch! { pe32 { 11 } pe64 { 12 } };
+	let fields = branch! { pe32 { 10 } pe64 { 11 } };
 	let mut state = serializer.serialize_struct(pe.serde_name(), fields)?;
 	state.serialize_field("headers", &pe.headers())?;
 	state.serialize_field("rich_structure", &pe.rich_structure().ok())?;
 	state.serialize_field("exports", &pe.exports().ok())?;
 	state.serialize_field("imports", &pe.imports().ok())?;
-	state.serialize_field("iat", &pe.iat().ok())?;
 	state.serialize_field("base_relocs", &pe.base_relocs().ok())?;
 	state.serialize_field("debug", &pe.debug().ok())?;
 	state.serialize_field("tls", &pe.tls().ok())?;

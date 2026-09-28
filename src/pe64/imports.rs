@@ -32,6 +32,8 @@ impl<'a> PeView<'a> {
 
 #[doc(inline)]
 pub use crate::Import;
+#[doc(inline)]
+pub use crate::ImportEntry;
 
 //----------------------------------------------------------------
 
@@ -81,12 +83,11 @@ fn import_from_va<'a, P: Copy + Pe<'a>>(pe: P, &va: &'a Va) -> Result<Import<'a>
 /// 		// Name of the DLL being imported from
 /// 		let dll_name = descriptor.dll_name()?;
 ///
-/// 		// Import Address Table and Import Name Table for this DLL
-/// 		let addresses = descriptor.iat()?;
-/// 		let names = descriptor.int()?;
-///
-/// 		// Pair each address-table slot with its imported symbol
-/// 		for (address, import) in Iterator::zip(addresses, names) {}
+/// 		// Each import has the RVA of its IAT slot and the symbol from the INT
+/// 		for entry in descriptor.imports()? {
+/// 			let address = entry.address;
+/// 			let import = entry.import?;
+/// 		}
 /// 	}
 ///
 /// 	// Alternatively, iterate over the combined Import Address Table
@@ -290,7 +291,24 @@ impl<'a, P: Copy + Pe<'a>> ImportDescriptor<'a, P> {
 		let pe = self.pe;
 		Ok(slice.iter().map(move |va| import_from_va(pe, va)))
 	}
+	/// Returns imported symbols and the RVAs of their IAT slots.
+	///
+	/// The symbols come from [`Self::int`]. Slot RVAs are calculated from
+	/// `FirstThunk` and the index; the IAT itself is not read.
+	pub fn imports(&self) -> Result<impl Clone + ExactSizeIterator + Iterator<Item = ImportEntry<'a>>> {
+		let first = self.image.FirstThunk.get();
+		if first == 0 {
+			return Err(Error::Null);
+		}
+		let int = self.int()?;
+		let stride = mem::size_of::<Va>() as Rva;
+		// if first >= self.pe.optional_header().SizeOfImage {
+		// 	return Err(Error::Insanity);
+		// }
+		Ok(int.enumerate().map(move |(index, import)| ImportEntry { address: first.wrapping_add(index as Rva * stride), import }))
+	}
 }
+
 #[rustfmt::skip]
 impl<'a, P: Copy + Pe<'a>> fmt::Debug for ImportDescriptor<'a, P> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -303,22 +321,6 @@ impl<'a, P: Copy + Pe<'a>> fmt::Debug for ImportDescriptor<'a, P> {
 }
 
 //----------------------------------------------------------------
-
-/*
-	imports: [
-		{
-			"dll_name": "KERNEL32.dll",
-			"int": [
-				{
-					"ByName": { .. }
-				},
-				{
-					"ByOrdinal": { .. }
-				}
-			]
-		}
-	]
-*/
 
 serde_impl! {
 	impl<'a, P: Copy + Pe<'a>> Serialize for ImportDirectory<'a, P> {
@@ -334,13 +336,11 @@ serde_impl! {
 	}
 	impl<'a, P: Copy + Pe<'a>> Serialize for ImportDescriptor<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-			let mut state = serializer.serialize_struct("ImportDescriptor", 4)?;
+			let mut state = serializer.serialize_struct("ImportDescriptor", 3)?;
 			state.serialize_field("image", self.image())?;
 			state.serialize_field("dll_name", &self.dll_name().ok())?;
-			let iat = self.iat().map(SerdeIter);
-			state.serialize_field("iat", &iat.ok())?;
-			let int = self.int().map(|int| SerdeIter(int.map(|import| import.ok())));
-			state.serialize_field("int", &int.ok())?;
+			let imports = self.imports().ok().map(SerdeIter);
+			state.serialize_field("imports", &imports)?;
 			state.end()
 		}
 	}
