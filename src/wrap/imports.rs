@@ -21,6 +21,26 @@ pub enum Import<'a> {
 	},
 }
 
+/// An imported symbol and the RVA of its IAT slot.
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub struct ImportEntry<'a> {
+	/// RVA of the IAT slot, not the value stored in that slot.
+	pub address: u32,
+	/// Symbol decoded from the import name table.
+	pub import: Result<Import<'a>>,
+}
+
+#[cfg(feature = "serde")]
+impl serde::Serialize for ImportEntry<'_> {
+	fn serialize<S: serde::Serializer>(&self, serializer: S) -> core::result::Result<S::Ok, S::Error> {
+		use serde::ser::SerializeStruct;
+		let mut state = serializer.serialize_struct("ImportEntry", 2)?;
+		state.serialize_field("address", &self.address)?;
+		state.serialize_field("import", &self.import.as_ref().ok())?;
+		state.end()
+	}
+}
+
 /// Import directory.
 impl<'a, Pe32: Copy + pe32::Pe<'a>, Pe64: Copy + pe64::Pe<'a>> Wrap<pe32::ImportDirectory<'a, Pe32>, pe64::ImportDirectory<'a, Pe64>> {
 	/// Returns the PE instance.
@@ -146,10 +166,18 @@ impl<'a, Pe32: Copy + pe32::Pe<'a>, Pe64: Copy + pe64::Pe<'a>> Wrap<pe32::Import
 	/// * [`Bounds`][crate::Error::Bounds]: The table lies outside the image or has no terminating entry.
 	/// * [`Misaligned`][crate::Error::Misaligned], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: The table cannot be read.
 	#[inline]
-	pub fn int(&self) -> Result<impl Clone + Iterator<Item = Result<Import<'a>>>> {
+	pub fn int(&self) -> Result<impl Clone + ExactSizeIterator + Iterator<Item = Result<Import<'a>>>> {
 		match self {
 			Wrap::T32(desc) => Ok(Wrap::T32(desc.int()?).map(Wrap::into)),
 			Wrap::T64(desc) => Ok(Wrap::T64(desc.int()?).map(Wrap::into)),
+		}
+	}
+	/// Returns imported symbols and the RVAs of their IAT slots.
+	#[inline]
+	pub fn imports(&self) -> Result<impl Clone + ExactSizeIterator + Iterator<Item = ImportEntry<'a>>> {
+		match self {
+			Wrap::T32(desc) => Ok(Wrap::T32(desc.imports()?).map(Wrap::into)),
+			Wrap::T64(desc) => Ok(Wrap::T64(desc.imports()?).map(Wrap::into)),
 		}
 	}
 }

@@ -128,4 +128,4 @@ pub use self::pe::PeLayout;
 pub use self::view::PeView;
 
 pub use self::exports::Export;
-pub use self::imports::Import;
+pub use self::imports::{Import, ImportEntry};

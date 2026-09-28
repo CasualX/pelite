@@ -323,6 +323,22 @@ fn tiny_import_209() {
 	assert_eq!(kernel32.int().unwrap().len(), 1);
 }
 
+#[cfg(feature = "serde")]
+#[test]
+fn serialize_pe32_import_slot_address() {
+	let file_map = FileMap::open("tests/tiny/tiny.import.209").unwrap();
+	let file = PeFile::from_bytes(&file_map).unwrap();
+	let descriptor = file.imports().unwrap().into_iter().next().unwrap();
+	let json = serde_json::to_value(file).unwrap();
+	assert!(json.get("iat").is_none());
+	let entry = &json["imports"][0]["imports"][0];
+	assert_eq!(entry["address"], descriptor.image().FirstThunk.get());
+	assert_eq!(entry["import"], serde_json::to_value(descriptor.int().unwrap().next().unwrap().unwrap()).unwrap());
+	let api_entry = descriptor.imports().unwrap().next().unwrap();
+	assert_eq!(api_entry.address, descriptor.image().FirstThunk.get());
+	assert_eq!(serde_json::to_value(api_entry.import.unwrap()).unwrap(), entry["import"]);
+}
+
 /*
 Import descriptors may appear at RVAs that are not naturally aligned.
 Regression test for https://github.com/CasualX/pelite/issues/246.
