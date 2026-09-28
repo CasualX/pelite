@@ -1,5 +1,5 @@
 use pelite::pe32::{PeFile, PeView, image};
-use pelite::{FileMap, ImageMap, PeMemory, Pod};
+use pelite::{FileMap, ImageMap, Pod};
 
 // For fun let's try loading tiny PE files.
 // The examples are sourced from:
@@ -14,12 +14,44 @@ fn assert_memcmp<T: std::fmt::Debug + Pod>(lhs: &T, rhs: &T) {
 	assert_eq!(lhs_bytes, rhs_bytes, "lhs: {:?} rhs: {:?}", lhs, rhs);
 }
 
-fn zero_padded_tiny_file(path: &str) -> PeMemory {
-	let bytes = std::fs::read(path).unwrap();
-	let mut padded = PeMemory::zeroed(4096);
-	padded[..bytes.len()].copy_from_slice(&bytes);
-	padded
+#[repr(align(16))]
+struct AlignedTiny<const N: usize>([u8; N]);
+
+impl<const N: usize> AsRef<[u8]> for AlignedTiny<N> {
+	fn as_ref(&self) -> &[u8] { &self.0 }
 }
+
+const fn pad_tiny<const N: usize>(source: &[u8]) -> [u8; N] {
+	assert!(source.len() <= N);
+	let mut bytes = [0; N];
+	let mut index = 0;
+	while index < source.len() {
+		bytes[index] = source[index];
+		index += 1;
+	}
+	bytes
+}
+
+// Keep the fixture's file size separate from the zero-filled bytes used by these parser tests.
+// A page of padding also covers the full header structs of the smallest overlapping-header PEs.
+macro_rules! embed_tiny {
+	($name:ident, $path:literal) => {
+		static $name: AlignedTiny<{ include_bytes!($path).len().div_ceil(256) * 256 }> =
+			AlignedTiny(pad_tiny(include_bytes!($path)));
+	};
+}
+
+embed_tiny!(TINY_C_1024, "tiny/tiny.c.1024");
+embed_tiny!(TINY_C_468, "tiny/tiny.c.468");
+embed_tiny!(TINY_356, "tiny/tiny.356");
+embed_tiny!(TINY_296, "tiny/tiny.296");
+embed_tiny!(TINY_168, "tiny/tiny.168");
+embed_tiny!(TINY_128, "tiny/tiny.128");
+embed_tiny!(TINY_97, "tiny/tiny.97");
+embed_tiny!(TINY_IMPORT_209, "tiny/tiny.import.209");
+embed_tiny!(TINY_IMPORT_161, "tiny/tiny.import.161");
+embed_tiny!(TINY_IMPORT_133, "tiny/tiny.import.133");
+embed_tiny!(TINY_WEBDAV_133, "tiny/tiny.webdav.133");
 
 /*
 Barebones C program without linking to the CRT
@@ -27,8 +59,7 @@ Barebones C program without linking to the CRT
 
 #[test]
 fn tiny_c_1024() {
-	let file_map = FileMap::open("tests/tiny/tiny.c.1024").unwrap();
-	let file = PeFile::from_bytes(&file_map).unwrap();
+	let file = PeFile::from_bytes(&TINY_C_1024).unwrap();
 
 	assert_eq!(file.dos_header().e_lfanew, 0xB0);
 
@@ -69,8 +100,7 @@ Barebones C program with no CRT and decrease alignment
 
 #[test]
 fn tiny_c_468() {
-	let file_map = FileMap::open("tests/tiny/tiny.c.468").unwrap();
-	let file = PeFile::from_bytes(&file_map).unwrap();
+	let file = PeFile::from_bytes(&TINY_C_468).unwrap();
 
 	assert_eq!(file.dos_header().e_lfanew, 0xB0);
 
@@ -103,8 +133,7 @@ Removing the DOS stub
 
 #[test]
 fn tiny_356() {
-	let file_map = FileMap::open("tests/tiny/tiny.356").unwrap();
-	let file = PeFile::from_bytes(&file_map).unwrap();
+	let file = PeFile::from_bytes(&TINY_356).unwrap();
 
 	assert_eq!(file.dos_header().e_lfanew, 0x40);
 
@@ -133,8 +162,7 @@ Collapsing the DOS header to overlap the NT headers
 
 #[test]
 fn tiny_296() {
-	let file_map = FileMap::open("tests/tiny/tiny.296").unwrap();
-	let file = PeFile::from_bytes(&file_map).unwrap();
+	let file = PeFile::from_bytes(&TINY_296).unwrap();
 
 	let dos_header = image::IMAGE_DOS_HEADER {
 		e_magic: image::IMAGE_DOS_SIGNATURE,
@@ -214,8 +242,7 @@ Removing the data directories
 
 #[test]
 fn tiny_168() {
-	let file_map = FileMap::open("tests/tiny/tiny.168").unwrap();
-	let file = PeFile::from_bytes(&file_map).unwrap();
+	let file = PeFile::from_bytes(&TINY_168).unwrap();
 
 	assert_eq!(file.optional_header().NumberOfRvaAndSizes, 0);
 }
@@ -226,8 +253,7 @@ Merge the PE header with the section headers
 
 #[test]
 fn tiny_128() {
-	let file_map = FileMap::open("tests/tiny/tiny.128").unwrap();
-	let file = PeFile::from_bytes(&file_map).unwrap();
+	let file = PeFile::from_bytes(&TINY_128).unwrap();
 
 	let optional_header = image::IMAGE_OPTIONAL_HEADER {
 		Magic: image::IMAGE_NT_OPTIONAL_HDR_MAGIC,
@@ -268,8 +294,7 @@ These tiny files rely on zeroes beyond EOF; provide that padding explicitly.
 
 #[test]
 fn tiny_97() {
-	let padded = zero_padded_tiny_file("tests/tiny/tiny.97");
-	let file = PeFile::from_bytes(&padded).unwrap();
+	let file = PeFile::from_bytes(&TINY_97).unwrap();
 
 	let optional_header = image::IMAGE_OPTIONAL_HEADER {
 		Magic: image::IMAGE_NT_OPTIONAL_HDR_MAGIC,
@@ -310,8 +335,7 @@ Smallest PE file with imports
 
 #[test]
 fn tiny_import_209() {
-	let file_map = FileMap::open("tests/tiny/tiny.import.209").unwrap();
-	let file = PeFile::from_bytes(&file_map).unwrap();
+	let file = PeFile::from_bytes(&TINY_IMPORT_209).unwrap();
 
 	let imports = file.imports().unwrap();
 	assert_eq!(imports.image().len(), 1);
@@ -346,8 +370,7 @@ Regression test for https://github.com/CasualX/pelite/issues/246.
 
 #[test]
 fn unaligned_import_descriptors() {
-	let file_map = FileMap::open("tests/tiny/tiny.import.209").unwrap();
-	let file = PeFile::from_bytes(&file_map).unwrap();
+	let file = PeFile::from_bytes(&TINY_IMPORT_209).unwrap();
 	let mut image = file.to_view();
 
 	// Relocate the descriptor and its null terminator to an odd RVA.
@@ -367,8 +390,7 @@ Merge the import directory inside the PE headers
 
 #[test]
 fn tiny_import_161() {
-	let file_map = FileMap::open("tests/tiny/tiny.import.161").unwrap();
-	let file = PeFile::from_bytes(&file_map).unwrap();
+	let file = PeFile::from_bytes(&TINY_IMPORT_161).unwrap();
 
 	let imports = file.imports().unwrap();
 	assert_eq!(imports.image().len(), 1);
@@ -386,8 +408,7 @@ Merge the imports even further with the PE headers
 
 #[test]
 fn tiny_import_133() {
-	let padded = zero_padded_tiny_file("tests/tiny/tiny.import.133");
-	let file = PeFile::from_bytes(&padded).unwrap();
+	let file = PeFile::from_bytes(&TINY_IMPORT_133).unwrap();
 
 	let imports = file.imports().unwrap();
 	let kernel32 = imports.into_iter().next().unwrap();
@@ -401,8 +422,7 @@ Smallest PE file that downloads a file from the Internet and executes it
 
 #[test]
 fn tiny_webdav_133() {
-	let padded = zero_padded_tiny_file("tests/tiny/tiny.webdav.133");
-	let file = PeFile::from_bytes(&padded).unwrap();
+	let file = PeFile::from_bytes(&TINY_WEBDAV_133).unwrap();
 
 	let imports = file.imports().unwrap();
 	let unc = imports.into_iter().next().unwrap();
