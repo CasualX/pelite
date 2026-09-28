@@ -18,9 +18,7 @@ mod module_def;
 mod msrtti;
 mod printer;
 mod resources;
-mod rust_format_args;
-mod rust_msvc;
-mod rust_panic_strings;
+mod rust;
 mod strings;
 mod summary;
 mod symbols;
@@ -98,8 +96,7 @@ fn cli() -> clap::Command {
 		.subcommand(markov::command())
 		.subcommand(module_def::command())
 		.subcommand(msrtti::command())
-		.subcommand(rust_format_args::command())
-		.subcommand(rust_panic_strings::command())
+		.subcommand(rust::command())
 		.subcommand(version_info::command())
 		.subcommand(xref::command())
 		.subcommand(symbols::command())
@@ -123,8 +120,7 @@ fn run() -> Result {
 		Some(("markov", matches)) => markov::run(matches, format),
 		Some(("module-def", matches)) => module_def::run(matches, format),
 		Some(("msrtti", matches)) => msrtti::run(matches, format),
-		Some(("rust-format-args", matches)) => rust_format_args::run(matches, format),
-		Some(("rust-panic-strings", matches)) => rust_panic_strings::run(matches, format),
+		Some(("rust", matches)) => rust::run(matches, format),
 		Some(("version-info", matches)) => version_info::run(matches, format),
 		Some(("xref", matches)) => xref::run(matches, format),
 		Some(("symbols", matches)) => symbols::run(matches, format),

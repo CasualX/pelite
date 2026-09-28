@@ -12,6 +12,7 @@ categories = ["command-line-utilities"]
 [dependencies]
 basenc = "1.0.0-alpha.2"
 clap = "4.6.7"
+dataview = { version = "1.1", default-features = false }
 iced-x86 = { version = "1.21.0", default-features = false, features = ["decoder", "intel", "std"] }
 md5 = "0.8.1"
 pelite = { path = "..", features = ["basenc", "serde", "mmap"] }

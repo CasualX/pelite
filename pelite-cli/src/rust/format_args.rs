@@ -1,7 +1,7 @@
 use pelite::FileMap;
 
-use crate::rust_msvc::*;
-use super::*;
+use super::msvc::*;
+use crate::*;
 
 #[derive(serde::Serialize)]
 struct FormatArgsOutput {
@@ -16,7 +16,8 @@ struct FormatArgsOutput {
 }
 
 pub fn command() -> clap::Command {
-	clap::Command::new("rust-format-args")
+	clap::Command::new("format-args")
+		.visible_alias("format_args")
 		.about("Find current-toolchain Rust format_args! templates in an x64 MSVC PE")
 		.after_help(
 			"Decodes the compact fmt::Arguments template emitted by the current Rust toolchain.\n\

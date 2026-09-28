@@ -1,8 +1,8 @@
 use pelite::FileMap;
 use pelite::pe64::{image, PeFile};
 
-use crate::rust_msvc::*;
-use super::*;
+use super::msvc::*;
+use crate::*;
 
 #[derive(Clone)]
 struct RawLocation {
@@ -30,7 +30,8 @@ struct PanicReferences<'a> {
 }
 
 pub fn command() -> clap::Command {
-	clap::Command::new("rust-panic-strings")
+	clap::Command::new("panic-strings")
+		.visible_alias("panic_strings")
 		.about("Find Rust panic messages and Location records in an x64 MSVC PE")
 		.after_help(
 			"Recognizes the current Rust toolchain's 64-bit core::panic::Location layout and recovers\n\
