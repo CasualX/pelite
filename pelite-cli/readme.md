@@ -43,8 +43,9 @@ To install the binary from this checkout, run `cargo install --path pelite-cli`.
 | `depwalk` | Walk imported modules and forwarded exports, check symbols, and report missing modules, malformed PE data, and dependency cycles. |
 | `module-def` | Generate a module-definition file from a DLL's exports. |
 | `msrtti` | Dump Microsoft C++ RTTI, vtables, and class hierarchies. |
-| `rust-format-args` | Find Rust `format_args!` templates in x64 MSVC binaries. |
-| `rust-panic-strings` | Find Rust panic messages and location records in x64 MSVC binaries. |
+| `rust format-args` | Find Rust `format_args!` templates in x64 MSVC binaries. |
+| `rust panic-strings` | Find Rust panic messages and location records in x64 MSVC binaries. |
+| `rust vtables` | Find candidate Rust trait vtables in PE32 and PE32+ binaries. |
 | `markov` | Generate bytes from executable PE sections using a Markov chain. |
 | `edit` | Edit a PE file in place, including repair or conversion. |
 

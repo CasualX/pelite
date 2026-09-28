@@ -2,7 +2,7 @@
 
 use pelite::pe64::{image, PeFile, Rva};
 
-use super::*;
+use crate::*;
 
 #[derive(Clone, Debug)]
 pub struct Xref {
