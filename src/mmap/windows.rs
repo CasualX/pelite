@@ -2,11 +2,11 @@ use std::ffi::OsStr;
 use std::os::windows::ffi::OsStrExt;
 use std::os::windows::io::{AsRawHandle, RawHandle};
 use std::path::Path;
-use std::{io, mem, ptr};
+use std::{io, ptr};
 
 use windows_sys::Win32::Foundation::{CloseHandle, GENERIC_READ, HANDLE, INVALID_HANDLE_VALUE};
-use windows_sys::Win32::Storage::FileSystem::{CreateFileW, FILE_ATTRIBUTE_NORMAL, FILE_SHARE_READ, OPEN_EXISTING};
-use windows_sys::Win32::System::Memory::{CreateFileMappingW, FILE_MAP_COPY, FILE_MAP_READ, MEMORY_MAPPED_VIEW_ADDRESS, MapViewOfFile, PAGE_READONLY, SEC_IMAGE, UnmapViewOfFile, VirtualQuery};
+use windows_sys::Win32::Storage::FileSystem::{CreateFileW, GetFileSizeEx, FILE_ATTRIBUTE_NORMAL, FILE_SHARE_READ, OPEN_EXISTING};
+use windows_sys::Win32::System::Memory::{CreateFileMappingW, FILE_MAP_COPY, FILE_MAP_READ, MEMORY_MAPPED_VIEW_ADDRESS, MapViewOfFile, PAGE_READONLY, SEC_IMAGE, UnmapViewOfFile};
 
 //----------------------------------------------------------------
 
@@ -98,6 +98,19 @@ impl FileMap {
 		if file == INVALID_HANDLE_VALUE {
 			return Err(io::Error::last_os_error());
 		};
+		let mut file_size = 0i64;
+		if GetFileSizeEx(file, &mut file_size) == 0 {
+			let err = io::Error::last_os_error();
+			CloseHandle(file);
+			return Err(err);
+		}
+		let size = match usize::try_from(file_size) {
+			Ok(size) => size,
+			Err(_) => {
+				CloseHandle(file);
+				return Err(io::Error::new(io::ErrorKind::InvalidData, "file is too large to map"));
+			},
+		};
 		// Create the memory file mapping
 		let map = CreateFileMappingW(file, ptr::null(), PAGE_READONLY, 0, 0, ptr::null());
 		CloseHandle(file);
@@ -111,12 +124,7 @@ impl FileMap {
 			CloseHandle(map);
 			return Err(err);
 		}
-		// Get the size of the file mapping, should never fail...
-		let mut mem_basic_info = mem::zeroed();
-		let vq_result = VirtualQuery(view.Value, &mut mem_basic_info, mem::size_of_val(&mem_basic_info));
-		debug_assert_eq!(vq_result, mem::size_of_val(&mem_basic_info));
-		// Now have enough information to construct the FileMap
-		let bytes = ptr::slice_from_raw_parts_mut(view.Value.cast(), mem_basic_info.RegionSize as usize);
+		let bytes = ptr::slice_from_raw_parts_mut(view.Value.cast(), size);
 		Ok(FileMap { handle: map, bytes })
 	}}
 }
