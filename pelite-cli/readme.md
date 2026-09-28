@@ -9,6 +9,7 @@ From the repository root, run the CLI with Cargo:
 ```console
 cargo run -p pelite-cli -- demo/Demo64.dll
 cargo run -p pelite-cli -- inspect demo/Demo64.dll --imports --exports
+cargo run -p pelite-cli -- depwalk demo/Demo64.dll -L /path/to/windows/dlls
 cargo run -p pelite-cli -- xref demo/Demo64.dll rva:0x1000
 cargo run -p pelite-cli -- --help
 ```
@@ -39,6 +40,7 @@ To install the binary from this checkout, run `cargo install --path pelite-cli`.
 | `hexdump` | Display bytes from an address range. |
 | `disasm` | Disassemble instructions from an address range. |
 | `imphash` | Calculate the conventional MD5 import hash. |
+| `depwalk` | Walk imported modules and forwarded exports, check symbols, and report missing modules, malformed PE data, and dependency cycles. |
 | `module-def` | Generate a module-definition file from a DLL's exports. |
 | `msrtti` | Dump Microsoft C++ RTTI, vtables, and class hierarchies. |
 | `rust-format-args` | Find Rust `format_args!` templates in x64 MSVC binaries. |
