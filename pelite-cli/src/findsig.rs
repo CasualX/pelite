@@ -68,19 +68,20 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 		OutputFormat::Json => print_json(&results, false),
 		OutputFormat::JsonPretty => print_json(&results, true),
 		OutputFormat::Text => {
+			let mut output = io::stdout().lock();
 			for result in results {
-				println!("Pattern {:?} matches:", result.pattern);
+				writeln!(output, "Pattern {:?} matches:", result.pattern)?;
 				for captures in result.matches {
 					if let Some((address, captures)) = captures.split_first() {
-						print!("  {file_name}!{address:#010x}");
+						write!(output, "  {file_name}!{address:#010x}")?;
 						if !captures.is_empty() {
-							print!("  [");
+							write!(output, "  [")?;
 							for (index, capture) in captures.iter().enumerate() {
-								print!("{}/{capture:#010x} ", index + 1);
+								write!(output, "{}/{capture:#010x} ", index + 1)?;
 							}
-							print!("]");
+							write!(output, "]")?;
 						}
-						println!();
+						writeln!(output)?;
 					}
 				}
 			}

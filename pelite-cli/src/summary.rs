@@ -351,52 +351,53 @@ fn format_timestamp(timestamp: u32) -> Option<String> {
 }
 
 fn print_text(summary: &Summary) -> Result {
-	println!("PE summary");
-	println!("==========");
-	println!("File       : {} ({} bytes)", summary.file, summary.file_size);
-	println!("SHA-256    : {}", summary.hashes.sha256);
-	println!("MD5        : {}", summary.hashes.md5);
-	println!("Import hash: {}", summary.hashes.imphash);
-	println!();
-	println!("Image");
-	println!("  Type       : {} {} {} ({})", summary.image.format, summary.image.machine, summary.image.kind, summary.image.subsystem);
-	println!("  Entry point: RVA {:#x} ({})", summary.image.entry_point_rva, summary.image.entry_point_section.as_deref().unwrap_or("no section"));
-	println!("  Image base : {:#x}", summary.image.image_base);
-	println!("  Image size : {} bytes", summary.image.image_size);
-	println!("  Timestamp  : {} (self-reported, not trusted)", summary.image.compile_time_utc.as_deref().unwrap_or("not set"));
-	println!("  Checksum   : {:#x} ({})", summary.image.checksum, if summary.image.checksum_valid { "valid" } else if summary.image.checksum == 0 { "not set" } else { "does not match" });
-	println!("  Certificate: {}", if summary.image.certificate_table_present { "present (not validated)" } else { "not present" });
-	println!("  TLS callbacks: {}", summary.image.tls_callbacks);
-	println!("  Overlay    : {} bytes at file offset {:#x}", summary.image.overlay_size, summary.image.overlay_offset);
-	println!();
-	println!("Mitigations");
-	println!("  ASLR: {:<3}  DEP/NX: {:<3}  CFG: {:<3}  High-entropy VA: {}", yes_no(summary.mitigations.aslr), yes_no(summary.mitigations.dep), yes_no(summary.mitigations.cfg), yes_no(summary.mitigations.high_entropy_va));
-	println!();
-	println!("Sections");
-	println!("  {:<9} {:>10} {:>10} {:>8} {:>7}  Entry", "Name", "RVA", "Raw size", "Entropy", "Perms");
+	let mut output = io::stdout().lock();
+	writeln!(output, "PE summary")?;
+	writeln!(output, "==========")?;
+	writeln!(output, "File       : {} ({} bytes)", summary.file, summary.file_size)?;
+	writeln!(output, "SHA-256    : {}", summary.hashes.sha256)?;
+	writeln!(output, "MD5        : {}", summary.hashes.md5)?;
+	writeln!(output, "Import hash: {}", summary.hashes.imphash)?;
+	writeln!(output)?;
+	writeln!(output, "Image")?;
+	writeln!(output, "  Type       : {} {} {} ({})", summary.image.format, summary.image.machine, summary.image.kind, summary.image.subsystem)?;
+	writeln!(output, "  Entry point: RVA {:#x} ({})", summary.image.entry_point_rva, summary.image.entry_point_section.as_deref().unwrap_or("no section"))?;
+	writeln!(output, "  Image base : {:#x}", summary.image.image_base)?;
+	writeln!(output, "  Image size : {} bytes", summary.image.image_size)?;
+	writeln!(output, "  Timestamp  : {} (self-reported, not trusted)", summary.image.compile_time_utc.as_deref().unwrap_or("not set"))?;
+	writeln!(output, "  Checksum   : {:#x} ({})", summary.image.checksum, if summary.image.checksum_valid { "valid" } else if summary.image.checksum == 0 { "not set" } else { "does not match" })?;
+	writeln!(output, "  Certificate: {}", if summary.image.certificate_table_present { "present (not validated)" } else { "not present" })?;
+	writeln!(output, "  TLS callbacks: {}", summary.image.tls_callbacks)?;
+	writeln!(output, "  Overlay    : {} bytes at file offset {:#x}", summary.image.overlay_size, summary.image.overlay_offset)?;
+	writeln!(output)?;
+	writeln!(output, "Mitigations")?;
+	writeln!(output, "  ASLR: {:<3}  DEP/NX: {:<3}  CFG: {:<3}  High-entropy VA: {}", yes_no(summary.mitigations.aslr), yes_no(summary.mitigations.dep), yes_no(summary.mitigations.cfg), yes_no(summary.mitigations.high_entropy_va))?;
+	writeln!(output)?;
+	writeln!(output, "Sections")?;
+	writeln!(output, "  {:<9} {:>10} {:>10} {:>8} {:>7}  Entry", "Name", "RVA", "Raw size", "Entropy", "Perms")?;
 	for section in &summary.sections {
-		println!("  {:<9} {:#010x} {:>10} {:>8} {:>7}  {}", section.name, section.virtual_address, section.raw_size, section.entropy.map(|value| format!("{value:.2}")).unwrap_or_else(|| "-".to_owned()), section.permissions, if section.entry_point { "<- entry point" } else { "" });
+		writeln!(output, "  {:<9} {:#010x} {:>10} {:>8} {:>7}  {}", section.name, section.virtual_address, section.raw_size, section.entropy.map(|value| format!("{value:.2}")).unwrap_or_else(|| "-".to_owned()), section.permissions, if section.entry_point { "<- entry point" } else { "" })?;
 	}
-	println!();
-	println!("Imports: {} functions from {} libraries", summary.imports.functions, summary.imports.libraries);
+	writeln!(output)?;
+	writeln!(output, "Imports: {} functions from {} libraries", summary.imports.functions, summary.imports.libraries)?;
 	if !summary.imports.by_library.is_empty() {
-		println!("  {}", summary.imports.by_library.iter().map(|library| format!("{} ({})", library.name, library.functions)).collect::<Vec<_>>().join(", "));
+		writeln!(output, "  {}", summary.imports.by_library.iter().map(|library| format!("{} ({})", library.name, library.functions)).collect::<Vec<_>>().join(", "))?;
 	}
 	if !summary.imports.notable.is_empty() {
-		println!("  Notable imports (review in context):");
+		writeln!(output, "  Notable imports (review in context):")?;
 		for (category, imports) in &summary.imports.notable {
-			println!("    {category}: {}", imports.join(", "));
+			writeln!(output, "    {category}: {}", imports.join(", "))?;
 		}
 	}
-	if let Some(pdb) = &summary.pdb_path { println!("\nPDB path: {pdb}"); }
-	println!("\nSignals to review");
+	if let Some(pdb) = &summary.pdb_path { writeln!(output, "\nPDB path: {pdb}")?; }
+	writeln!(output, "\nSignals to review")?;
 	if summary.findings.is_empty() {
-		println!("  None from these lightweight checks.");
+		writeln!(output, "  None from these lightweight checks.")?;
 	}
 	else {
-		for finding in &summary.findings { println!("  [{}] {}", finding.level, finding.message); }
+		for finding in &summary.findings { writeln!(output, "  [{}] {}", finding.level, finding.message)?; }
 	}
-	println!("\nThese are triage clues, not a malware verdict. Do not execute an untrusted sample on your host.");
+	writeln!(output, "\nThese are triage clues, not a malware verdict. Do not execute an untrusted sample on your host.")?;
 	Ok(())
 }
 

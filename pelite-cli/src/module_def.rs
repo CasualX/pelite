@@ -30,9 +30,10 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 		OutputFormat::Json => print_json(&definition, false),
 		OutputFormat::JsonPretty => print_json(&definition, true),
 		OutputFormat::Text => {
-			println!("LIBRARY {}\nEXPORTS", definition.library);
+			let mut output = io::stdout().lock();
+			writeln!(output, "LIBRARY {}\nEXPORTS", definition.library)?;
 			for name in &definition.exports {
-				println!("{name}");
+				writeln!(output, "{name}")?;
 			}
 			Ok(())
 		},

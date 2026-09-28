@@ -10,12 +10,12 @@ pub fn print<T: serde::Serialize>(title: &str, value: &T, format: OutputFormat) 
 
 pub fn print_json<T: serde::Serialize>(value: &T, pretty: bool) -> Result {
 	let stdout = io::stdout();
-	let writer = stdout.lock();
+	let mut writer = stdout.lock();
 	match pretty {
-		false => serde_json::to_writer(writer, value)?,
-		true => serde_json::to_writer_pretty(writer, value)?,
+		false => serde_json::to_writer(&mut writer, value)?,
+		true => serde_json::to_writer_pretty(&mut writer, value)?,
 	}
-	println!();
+	writeln!(writer)?;
 	Ok(())
 }
 

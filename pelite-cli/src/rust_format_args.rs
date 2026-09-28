@@ -58,10 +58,11 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 		OutputFormat::JsonPretty => print_json(&output, true),
 		OutputFormat::Text => {
 			let file_name = path.file_name().and_then(|name| name.to_str()).unwrap_or("<input>");
+			let mut writer = io::stdout().lock();
 			for item in output {
-				println!("{file_name}!{:#010x} {:?} (arguments={})", item.template_rva, item.display, item.argument_count);
+				writeln!(writer, "{file_name}!{:#010x} {:?} (arguments={})", item.template_rva, item.display, item.argument_count)?;
 				for code_rva in item.code_rvas {
-					println!("  used at {file_name}!{code_rva:#010x}");
+					writeln!(writer, "  used at {file_name}!{code_rva:#010x}")?;
 				}
 			}
 			Ok(())

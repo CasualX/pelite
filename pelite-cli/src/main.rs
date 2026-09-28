@@ -134,11 +134,24 @@ fn run() -> Result {
 }
 
 fn main() -> process::ExitCode {
-	match run() {
+	match run().and_then(|()| io::stdout().flush().map_err(Into::into)) {
 		Ok(()) => process::ExitCode::SUCCESS,
+		Err(error) if is_broken_pipe(error.as_ref()) => process::ExitCode::SUCCESS,
 		Err(error) => {
-			eprintln!("pelite-cli: {error}");
+			let _ = writeln!(io::stderr().lock(), "pelite-cli: {error}");
 			process::ExitCode::FAILURE
 		},
 	}
+}
+
+fn is_broken_pipe(error: &(dyn error::Error + 'static)) -> bool {
+	let mut current = Some(error);
+	while let Some(error) = current {
+		if error.downcast_ref::<io::Error>().is_some_and(|error| error.kind() == io::ErrorKind::BrokenPipe)
+			|| error.downcast_ref::<serde_json::Error>().is_some_and(|error| error.io_error_kind() == Some(io::ErrorKind::BrokenPipe)) {
+			return true;
+		}
+		current = error.source();
+	}
+	false
 }

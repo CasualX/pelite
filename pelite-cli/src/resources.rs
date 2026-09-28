@@ -245,8 +245,9 @@ fn extract_groups(resources: ResourceDirectory<'_>, matches: &clap::ArgMatches, 
 
 	match format {
 		OutputFormat::Text => {
+			let mut output = io::stdout().lock();
 			for group in &extracted {
-				println!("{}", group.path);
+				writeln!(output, "{}", group.path)?;
 			}
 			Ok(())
 		},
@@ -383,7 +384,7 @@ fn fsck(resources: ResourceDirectory<'_>, format: OutputFormat) -> Result {
 	};
 	match format {
 		OutputFormat::Text => {
-			println!("ok: {} directories, {} files, {} bytes", report.directories, report.files, report.bytes);
+			writeln!(io::stdout().lock(), "ok: {} directories, {} files, {} bytes", report.directories, report.files, report.bytes)?;
 			Ok(())
 		},
 		OutputFormat::Json => print_json(&report, false),

@@ -106,13 +106,14 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 		OutputFormat::JsonPretty => print_json(&output, true),
 		OutputFormat::Text => {
 			let image_name = path.file_name().and_then(|name| name.to_str()).unwrap_or("<input>");
+			let mut writer = io::stdout().lock();
 			for item in output {
-				println!("{image_name}!{:#010x} {}:{}:{}", item.location_rva, item.file, item.line, item.column);
+				writeln!(writer, "{image_name}!{:#010x} {}:{}:{}", item.location_rva, item.file, item.line, item.column)?;
 				for message in item.messages {
-					println!("  message: {message:?}");
+					writeln!(writer, "  message: {message:?}")?;
 				}
 				for code_rva in item.code_rvas {
-					println!("  referenced at {image_name}!{code_rva:#010x}");
+					writeln!(writer, "  referenced at {image_name}!{code_rva:#010x}")?;
 				}
 			}
 			Ok(())
