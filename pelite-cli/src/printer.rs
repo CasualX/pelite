@@ -43,28 +43,23 @@ fn render(output: &mut dyn Write, value: &serde_json::Value, indent: usize) -> i
 }
 
 fn render_object(output: &mut dyn Write, object: &serde_json::Map<String, serde_json::Value>, indent: usize) -> io::Result<()> {
-	let simple = object.iter().filter(|(_, value)| is_inline(value)).collect::<Vec<_>>();
-	let has_simple = !simple.is_empty();
-	if has_simple {
-		let width = simple.iter().map(|(key, _)| key.chars().count()).max().unwrap_or(0);
-		for (key, value) in simple {
-			writeln!(output, "{}{key:<width$} : {}", padding(indent), display(value))?;
-		}
-	}
-
-	let mut first = !has_simple;
-	for (key, value) in object.iter().filter(|(_, value)| !is_inline(value)) {
-		if !first {
+	let fields = object.iter().collect::<Vec<_>>();
+	let width = fields.iter().filter(|(_, value)| is_inline(value))
+		.map(|(key, _)| key.chars().count()).max().unwrap_or(0);
+	let mut previous_inline = true;
+	for (index, (key, value)) in fields.into_iter().enumerate() {
+		let inline = is_inline(value);
+		if index != 0 && (!inline || !previous_inline) {
 			writeln!(output)?;
 		}
-		writeln!(output, "{}{key}:", padding(indent))?;
-		if value.is_null() {
-			writeln!(output, "{}Not present.", padding(indent + 2))?;
+		if inline {
+			writeln!(output, "{}{key:<width$} : {}", padding(indent), display(value))?;
 		}
 		else {
+			writeln!(output, "{}{key}:", padding(indent))?;
 			render(output, value, indent + 2)?;
 		}
-		first = false;
+		previous_inline = inline;
 	}
 	Ok(())
 }
@@ -102,7 +97,7 @@ fn render_array(output: &mut dyn Write, array: &[serde_json::Value], indent: usi
 }
 
 fn table_columns(array: &[serde_json::Value]) -> Option<Vec<String>> {
-	let mut columns = BTreeSet::new();
+	let mut columns = Vec::new();
 	for value in array {
 		let serde_json::Value::Object(object) = value else {
 			return None;
@@ -110,9 +105,16 @@ fn table_columns(array: &[serde_json::Value]) -> Option<Vec<String>> {
 		if object.values().any(|value| !is_inline(value)) {
 			return None;
 		}
-		columns.extend(object.keys().cloned());
+		for key in object.keys() {
+			if !columns.contains(key) {
+				columns.push(key.clone());
+				if columns.len() > 12 {
+					return None;
+				}
+			}
+		}
 	}
-	(!columns.is_empty() && columns.len() <= 12).then(|| columns.into_iter().collect())
+	(!columns.is_empty()).then_some(columns)
 }
 
 fn render_table(output: &mut dyn Write, array: &[serde_json::Value], columns: &[String], indent: usize) -> io::Result<()> {
@@ -206,6 +208,38 @@ mod tests {
 	fn nested_object_arrays_remain_structured() {
 		let value = json!([{ "dll": "kernel32.dll", "image": { "FirstThunk": 4096 } }]);
 		assert!(table_columns(value.as_array().unwrap()).is_none());
+	}
+
+	#[test]
+	fn field_order_applies_to_nested_and_error_values() {
+		let value = json!({
+			"z": 1,
+			"failure": { "$error": "bounds", "$address": 2 },
+			"a": 3,
+		});
+		let mut output = Vec::new();
+		render(&mut output, &value, 0).unwrap();
+		assert_eq!(String::from_utf8(output).unwrap(), "z : 1\n\nfailure:\n  $error   : bounds\n  $address : 2\n\na : 3\n");
+	}
+
+	#[test]
+	fn table_columns_preserve_first_seen_order() {
+		let value = json!([{ "z": 1, "a": 2 }, { "a": 3, "m": 4 }]);
+		assert_eq!(table_columns(value.as_array().unwrap()).unwrap(), ["z", "a", "m"]);
+		let mut output = Vec::new();
+		render(&mut output, &value, 0).unwrap();
+		assert_eq!(String::from_utf8(output).unwrap(), "z | a | m\n--+---+--\n1 | 2 | \n  | 3 | 4\n");
+	}
+
+	#[test]
+	fn serialization_preserves_declared_field_order() {
+		#[derive(serde::Serialize)]
+		struct Fields { z: u32, a: u32 }
+		let value = serde_json::to_value(Fields { z: 1, a: 2 }).unwrap();
+		assert_eq!(serde_json::to_string(&value).unwrap(), r#"{"z":1,"a":2}"#);
+		let mut output = Vec::new();
+		render(&mut output, &value, 0).unwrap();
+		assert_eq!(String::from_utf8(output).unwrap(), "z : 1\na : 2\n");
 	}
 
 	#[test]
