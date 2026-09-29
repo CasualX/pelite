@@ -36,6 +36,7 @@ To install the binary from this checkout, run `cargo install --path pelite-cli`.
 | `findsig` | Search the image for byte patterns. |
 | `addr` | Convert between an RVA, virtual address, and file offset. |
 | `xref` | Find candidate pointers and relative references; confirm matches in surrounding code or data. |
+| [`read`](docs/read.md) | Read scalars, strings, typed pointers, arrays, structs, and unions at an address. |
 | `symbols` | Discover candidate code and data symbols using disassembly and base relocations. |
 | `hexdump` | Display bytes from an address range. |
 | `disasm` | Disassemble instructions from an address range. |
@@ -60,5 +61,3 @@ Text is the default. Use the global `--format=json` option for compact JSON or `
 cargo run -p pelite-cli -- summary demo/Demo64.dll --format=json-pretty
 cargo run -p pelite-cli -- resources tree demo/Demo.dll --format=json
 ```
-
-The format option also works before a subcommand. For `resources cat`, text output is the raw payload; JSON encodes the payload as base64 with its size and code page.
