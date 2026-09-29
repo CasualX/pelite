@@ -18,6 +18,7 @@ mod markov;
 mod module_def;
 mod msrtti;
 mod printer;
+mod read;
 mod resources;
 mod rust;
 mod strings;
@@ -88,6 +89,7 @@ fn cli() -> clap::Command {
 		.subcommand(summary::command())
 		.subcommand(resources::command())
 		.subcommand(addr::command())
+		.subcommand(read::command())
 		.subcommand(disasm::command())
 		.subcommand(disasm_raw::command())
 		.subcommand(depwalk::command())
@@ -113,6 +115,7 @@ fn run() -> Result {
 		Some(("summary", matches)) => summary::run(matches, format),
 		Some(("resources", matches)) => resources::run(matches, format),
 		Some(("addr", matches)) => addr::run(matches, format),
+		Some(("read", matches)) => read::run(matches, format),
 		Some(("disasm", matches)) => disasm::run(matches, format),
 		Some(("disasm-raw", matches)) => disasm_raw::run(matches, format),
 		Some(("depwalk", matches)) => depwalk::run(matches, format),

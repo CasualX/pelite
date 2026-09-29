@@ -15,7 +15,16 @@ pub enum Wrap<T32, T64> {
 impl<T32, T64> Wrap<T32, T64> {
 	/// Returns the pointer size in bytes: 4 for `T32` and 8 for `T64`.
 	#[inline]
-	pub const fn pointer_size(&self) -> u32 {
+	pub const fn bits(&self) -> Wrap<(), ()> {
+		match self {
+			Wrap::T32(_) => Wrap::T32(()),
+			Wrap::T64(_) => Wrap::T64(()),
+		}
+	}
+}
+
+impl Wrap<(), ()> {
+	pub const fn size(self) -> u32 {
 		match self {
 			Wrap::T32(_) => 4,
 			Wrap::T64(_) => 8,

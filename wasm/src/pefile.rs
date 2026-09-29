@@ -240,7 +240,7 @@ fn build_symbols(pefile: pelite::PeFile<'_>, image_base: u64) -> HashMap<u64, St
 	}
 
 	if let Ok(imports) = pefile.imports() {
-		let pointer_size = pefile.pointer_size();
+		let pointer_size = pefile.bits().size();
 		for descriptor in imports {
 			let Some(dll) = descriptor.dll_name().ok().and_then(|name| name.to_str().ok()) else {
 				continue;

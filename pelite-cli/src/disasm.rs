@@ -228,7 +228,7 @@ fn build_symbols(pe: PeFile<'_>, image_base: u64) -> HashMap<u64, String> {
 	}
 
 	if let Ok(imports) = pe.imports() {
-		let pointer_size = pe.pointer_size();
+		let pointer_size = pe.bits().size();
 		for descriptor in imports {
 			let Some(dll) = descriptor.dll_name().ok().and_then(|name| name.to_str().ok()) else {
 				continue;
