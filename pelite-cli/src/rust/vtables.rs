@@ -36,7 +36,7 @@ pub fn command() -> clap::Command {
 	let _example: &dyn VtableExample = std::hint::black_box(&VtableExampleType);
 	clap::Command::new("vtables")
 		.about("Find candidate Rust trait vtables in a PE image")
-		.after_help("Scans readable, non-writable data sections for a drop pointer, size, alignment, and one or more function pointers. Uses base relocations when present; otherwise scans aligned pointer-sized words. Results are heuristic and may include unrelated pointer tables. The vtable RVA points to the drop-pointer slot.")
+		.after_help(include_str!("../../docs/rust-vtables.md"))
 		.arg(clap::Arg::new("file")
 			.value_name("FILE")
 			.value_parser(clap::value_parser!(PathBuf))
