@@ -35,7 +35,7 @@ To install the binary from this checkout, run `cargo install --path pelite-cli`.
 | `strings` | Find ASCII, UTF-8, and UTF-16LE strings in PE sections with a heuristic confidence score. |
 | `findsig` | Search the image for byte patterns. |
 | `addr` | Convert between an RVA, virtual address, and file offset. |
-| `xref` | Find absolute pointers and candidate relative code references. |
+| `xref` | Find candidate pointers and relative references; confirm matches in surrounding code or data. |
 | `symbols` | Discover candidate code and data symbols using disassembly and base relocations. |
 | `hexdump` | Display bytes from an address range. |
 | `disasm` | Disassemble instructions from an address range. |

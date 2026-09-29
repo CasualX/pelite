@@ -32,8 +32,8 @@ struct Xrefs<'a> {
 
 pub fn command() -> clap::Command {
 	clap::Command::new("xref")
-		.about("Find absolute pointers and relative code references to an address")
-		.after_help("Addresses are hexadecimal RVAs, VAs, or file offsets (for example, rva:1000). Relative matches are candidates: four-byte displacements with 0, 1, or 4 trailing bytes are checked without decoding instructions.")
+		.about("Find candidate pointers and relative references to an address")
+		.after_help("Addresses are hexadecimal RVAs, VAs, or file offsets (for example, rva:1000). Matches are heuristic: raw pointers and relative displacements may occur by chance, and instructions are not decoded. Confirm candidates in the surrounding code or data.")
 		.arg(clap::Arg::new("file")
 			.value_name("FILE")
 			.value_parser(clap::value_parser!(PathBuf))
