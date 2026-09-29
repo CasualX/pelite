@@ -72,7 +72,7 @@ The result can be seen [here](Demo64.def) for x64 and [here](Demo.def) for x86.
 Find Signatures tool
 --------------------
 
-Finds matches of signatures in binaries using a [language designed specifically for executable code](https://docs.rs/pelite/*/pelite/pattern/fn.parse.html).
+Finds matches of signatures in binaries using a [language designed specifically for executable code](https://github.com/CasualX/pelite/blob/master/src/pattern/syntax.md).
 
 Play around in interactive mode:
 

@@ -57,9 +57,10 @@ impl AddressRange {
 #[test]
 fn parses_address_ranges() {
 	for (value, start, end) in [
-		("rva:1000..1100", Address::Rva(0x1000), Address::Rva(0x1100)),
+		("rva:1000..1100", Address::Rva(1000), Address::Rva(1100)),
 		("rva:0x1000..0X1100", Address::Rva(0x1000), Address::Rva(0x1100)),
-		("va:180001000h..180001100h", Address::Va(0x180001000), Address::Va(0x180001100)),
+		("rva:4096..0x1100", Address::Rva(4096), Address::Rva(0x1100)),
+		("va:6442455040..6442455296", Address::Va(0x180001000), Address::Va(0x180001100)),
 		("fo: 0x400 .. 0x500 ", Address::Fo(0x400), Address::Fo(0x500)),
 	] {
 		assert_eq!(AddressRange::parse(value), Ok(AddressRange { start, end }));
@@ -72,7 +73,8 @@ fn rejects_invalid_address_ranges() {
 		"1000..1100", "rva:1000", "rva:1000..1000", "va:2000..1000", "fo:400..400",
 		"rva:xyz..1000", "rva:..1000", "rva:1000..", "rva:1000..1100..1200",
 		"rva:1000..rva:1100", "rva:1000..va:1100", "offset:400..500",
-		"rva:1000..100000000", "va:0..10000000000000000",
+		"rva:1000h..1100", "rva:1000..1100h", "rva:ff..1100",
+		"rva:0..4294967296", "rva:0..0x100000000", "va:0..18446744073709551616",
 	] {
 		assert!(AddressRange::parse(value).is_err(), "accepted {value}");
 	}

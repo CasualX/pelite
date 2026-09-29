@@ -55,6 +55,7 @@ struct Walker {
 pub fn command() -> clap::Command {
 	clap::Command::new("depwalk")
 		.about("Walk PE imports and check that modules and exported symbols exist")
+		.after_help(include_str!("../docs/depwalk.md"))
 		.arg(clap::Arg::new("file")
 			.value_name("FILE")
 			.value_parser(clap::value_parser!(PathBuf))

@@ -15,8 +15,7 @@ enum ReferenceKind {
 
 #[derive(serde::Serialize)]
 struct Reference<'a> {
-	rva: u32,
-	file_offset: Option<usize>,
+	address: u32,
 	section: &'a str,
 	kind: ReferenceKind,
 	#[serde(skip_serializing_if = "is_zero")]
@@ -33,13 +32,13 @@ struct Xrefs<'a> {
 pub fn command() -> clap::Command {
 	clap::Command::new("xref")
 		.about("Find candidate pointers and relative references to an address")
-		.after_help("Addresses are hexadecimal RVAs, VAs, or file offsets (for example, rva:1000). Matches are heuristic: raw pointers and relative displacements may occur by chance, and instructions are not decoded. Confirm candidates in the surrounding code or data.")
+		.after_help(include_str!("../docs/xref.md"))
 		.arg(clap::Arg::new("file")
 			.value_name("FILE")
 			.value_parser(clap::value_parser!(PathBuf))
 			.required(true))
 		.arg(clap::Arg::new("address")
-			.value_name("rva:HEX|va:HEX|fo:HEX")
+			.value_name("ADDRESS")
 			.value_parser(Address::parse)
 			.required(true))
 }
@@ -61,8 +60,8 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 		Wrap::T64(_) => search64(pe, target_va, &mut references),
 	}
 	search_relative_displacements(pe, target_rva, &mut references);
-	references.sort_unstable_by_key(|item| (item.rva, item.file_offset, item.kind, item.trailing_bytes));
-	references.dedup_by(|a, b| (a.rva, a.file_offset, a.kind, a.trailing_bytes) == (b.rva, b.file_offset, b.kind, b.trailing_bytes));
+	references.sort_unstable_by_key(|item| (item.address, item.kind, item.trailing_bytes));
+	references.dedup_by(|a, b| (a.address, a.kind, a.trailing_bytes) == (b.address, b.kind, b.trailing_bytes));
 	print("Cross references", &Xrefs { target_rva, target_va, references }, format)
 }
 
@@ -91,8 +90,7 @@ fn search_relocations32<'a>(pe: PeFile<'a>, relocs: BaseRelocationDirectory<'_>,
 		}
 		if let Ok(candidate_va) = pe.derva_copy::<u32>(rva) {
 			if candidate_va == target_va {
-				let offset = pe.headers().rva_to_file_offset(rva).ok();
-				references.push(reference(pe, rva, offset, ReferenceKind::PointerRelocation, 0));
+				references.push(reference(pe, rva, ReferenceKind::PointerRelocation, 0));
 			}
 		}
 	});
@@ -105,8 +103,7 @@ fn search_relocations64<'a>(pe: PeFile<'a>, relocs: BaseRelocationDirectory<'_>,
 		}
 		if let Ok(candidate_va) = pe.derva_copy::<u64>(rva) {
 			if candidate_va == target_va {
-				let offset = pe.headers().rva_to_file_offset(rva).ok();
-				references.push(reference(pe, rva, offset, ReferenceKind::PointerRelocation, 0));
+				references.push(reference(pe, rva, ReferenceKind::PointerRelocation, 0));
 			}
 		}
 	});
@@ -117,7 +114,7 @@ fn search_pointers32<'a>(pe: PeFile<'a>, target_va: u32, references: &mut Vec<Re
 	for (offset, bytes) in pe.image().windows(4).enumerate() {
 		if bytes == needle {
 			if let Some(rva) = mapped_rva(pe, offset, 4) {
-				references.push(reference(pe, rva, Some(offset), ReferenceKind::PointerRawScan, 0));
+				references.push(reference(pe, rva, ReferenceKind::PointerRawScan, 0));
 			}
 		}
 	}
@@ -128,7 +125,7 @@ fn search_pointers64<'a>(pe: PeFile<'a>, target_va: u64, references: &mut Vec<Re
 	for (offset, bytes) in pe.image().windows(8).enumerate() {
 		if bytes == needle {
 			if let Some(rva) = mapped_rva(pe, offset, 8) {
-				references.push(reference(pe, rva, Some(offset), ReferenceKind::PointerRawScan, 0));
+				references.push(reference(pe, rva, ReferenceKind::PointerRawScan, 0));
 			}
 		}
 	}
@@ -167,13 +164,13 @@ fn relative_matches<'a>(pe: PeFile<'a>, bytes: &[u8], section_rva: u32, target_r
 			}
 			let end = field_rva as i64 + 4 + trailing as i64;
 			if end + displacement == target_rva as i64 {
-				references.push(reference(pe, field_rva, pe.headers().rva_to_file_offset(field_rva).ok(), ReferenceKind::RelativeDisp32, trailing));
+				references.push(reference(pe, field_rva, ReferenceKind::RelativeDisp32, trailing));
 			}
 		}
 	}
 }
 
-fn reference<'a>(pe: PeFile<'a>, rva: u32, file_offset: Option<usize>, kind: ReferenceKind, trailing_bytes: u8) -> Reference<'a> {
-	let section = get_section_name_by_rva(pe, rva);
-	Reference { rva, file_offset, section, kind, trailing_bytes }
+fn reference<'a>(pe: PeFile<'a>, address: u32, kind: ReferenceKind, trailing_bytes: u8) -> Reference<'a> {
+	let section = get_section_name_by_rva(pe, address);
+	Reference { address, section, kind, trailing_bytes }
 }

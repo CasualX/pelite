@@ -11,7 +11,7 @@ struct PatternMatches<'a> {
 pub fn command() -> clap::Command {
 	clap::Command::new("findsig")
 		.about("Find byte patterns in a PE image")
-		.after_help("If no pattern is supplied, patterns are read one per line from standard input.\nPattern syntax: https://docs.rs/pelite/latest/pelite/pattern/fn.parse.html")
+		.after_help(include_str!("../docs/findsig.md"))
 		.arg(clap::Arg::new("file")
 			.value_name("FILE")
 			.value_parser(clap::value_parser!(PathBuf))

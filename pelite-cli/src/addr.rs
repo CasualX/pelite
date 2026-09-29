@@ -11,13 +11,13 @@ struct ConvertedAddress<'a> {
 pub fn command() -> clap::Command {
 	clap::Command::new("addr")
 		.about("Convert a PE address between RVA, VA, and file offset")
-		.after_help("Addresses are hexadecimal. Example: pelite-cli addr file.exe rva:0x1000")
+		.after_help(include_str!("../docs/addr.md"))
 		.arg(clap::Arg::new("file")
 			.value_name("FILE")
 			.value_parser(clap::value_parser!(PathBuf))
 			.required(true))
 		.arg(clap::Arg::new("address")
-			.value_name("rva:HEX|va:HEX|fo:HEX")
+			.value_name("ADDRESS")
 			.value_parser(Address::parse)
 			.required(true))
 }
