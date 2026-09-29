@@ -5,15 +5,35 @@ use crate::*;
 const MAX_ALIGN: usize = 4096;
 const MAX_SIZE: usize = 1024 * 1024; // 1 MiB
 
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct VTableOutput {
 	address: u32,
 	size: usize,
 	align: usize,
 	functions: usize,
+	comments: Vec<String>,
+}
+
+#[allow(dead_code)]
+trait VtableExample {
+	fn name(&self) -> &'static str;
+	fn value(&self) -> u64;
+}
+
+struct VtableExampleType;
+
+impl VtableExample for VtableExampleType {
+	fn name(&self) -> &'static str {
+		"pelite-cli vtable example"
+	}
+
+	fn value(&self) -> u64 {
+		0x123456789abcdef
+	}
 }
 
 pub fn command() -> clap::Command {
+	let _example: &dyn VtableExample = std::hint::black_box(&VtableExampleType);
 	clap::Command::new("vtables")
 		.about("Find candidate Rust trait vtables in a PE image")
 		.after_help("Scans readable, non-writable data sections for a drop pointer, size, alignment, and one or more function pointers. Uses base relocations when present; otherwise scans aligned pointer-sized words. Results are heuristic and may include unrelated pointer tables. The vtable RVA points to the drop-pointer slot.")
@@ -36,6 +56,9 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 			let mut writer = io::stdout().lock();
 			for item in output {
 				writeln!(writer, "{name}!{:#010x} size={} align={} functions={}", item.address, item.size, item.align, item.functions)?;
+				for comment in item.comments {
+					writeln!(writer, "  // {comment}")?;
+				}
 			}
 			Ok(())
 		},
@@ -56,6 +79,31 @@ fn is_readonly_data(section: &image::IMAGE_SECTION_HEADER) -> bool {
 
 fn is_executable(section: &image::IMAGE_SECTION_HEADER) -> bool {
 	section.Characteristics & image::IMAGE_SCN_MEM_EXECUTE != 0
+}
+
+fn constant_return(code: &[u8], is_64: bool) -> Option<u64> {
+	let (offset, width) = match code.first()? {
+		0xb0 => (1, 1), // mov al, imm8
+		0x66 if code.get(1) == Some(&0xb8) => (2, 2), // mov ax, imm16
+		0xb8 => (1, 4), // mov eax, imm32
+		0x48 if is_64 && code.get(1) == Some(&0xb8) => (2, 8), // mov rax, imm64
+		_ => return None,
+	};
+	let immediate = code.get(offset..offset + width)?;
+	if code.get(offset + width) != Some(&0xc3) {
+		return None;
+	}
+	let mut value = [0; 8];
+	value[..width].copy_from_slice(immediate);
+	Some(u64::from_le_bytes(value))
+}
+
+fn valid_string(bytes: &[u8], length: usize) -> Option<&str> {
+	if length == 0 || length > 64 * 1024 {
+		return None;
+	}
+	let string = str::from_utf8(bytes.get(..length)?).ok()?;
+	string.chars().all(|ch| !ch.is_control()).then_some(string)
 }
 
 //----------------------------------------------------------------
@@ -153,6 +201,35 @@ fn parse_vtable_header32(file: pelite::pe32::PeFile<'_>, address: u32) -> Option
 	Some(header)
 }
 
+fn static_string32(code: &[u8]) -> Option<(u32, usize)> {
+	// mov eax, pointer; mov edx, length; ret (or the two moves reversed)
+	let code = code.get(..11)?;
+	if code[10] != 0xc3 {
+		return None;
+	}
+	let (pointer, length) = match (code[0], code[5]) {
+		(0xb8, 0xba) => (&code[1..5], &code[6..10]),
+		(0xba, 0xb8) => (&code[6..10], &code[1..5]),
+		_ => return None,
+	};
+	Some((u32::from_le_bytes(pointer.try_into().ok()?), u32::from_le_bytes(length.try_into().ok()?) as usize))
+}
+
+fn function_comment32(file: pelite::pe32::PeFile<'_>, slot: u32, index: usize) -> Option<String> {
+	let function_rva = file.va_to_rva(file.derva_copy::<u32>(slot).ok()?).ok()?;
+	let code = file.slice_bytes(function_rva).ok()?;
+	if let Some(value) = constant_return(code, false) {
+		return Some(format!("fn[{index}]: return {value:#x}"));
+	}
+	let (pointer, length) = static_string32(code)?;
+	let string_rva = file.va_to_rva(pointer).ok()?;
+	if !file.section_headers().by_rva(string_rva).is_some_and(is_readonly_data) {
+		return None;
+	}
+	let string = valid_string(file.slice_bytes(string_rva).ok()?, length)?;
+	Some(format!("fn[{index}]: return {string:?}"))
+}
+
 fn analyze32(file: pelite::pe32::PeFile<'_>) -> Vec<VTableOutput> {
 	let pointers = pointers32(file);
 
@@ -169,6 +246,7 @@ fn analyze32(file: pelite::pe32::PeFile<'_>) -> Vec<VTableOutput> {
 			size: header.size as usize,
 			align: header.align as usize,
 			functions: 1,
+			comments: function_comment32(file, pointers[index], 0).into_iter().collect(),
 		};
 		index += 1;
 		while index < pointers.len() && pointers[index - 1].wrapping_add(4) == pointers[index] {
@@ -177,6 +255,9 @@ fn analyze32(file: pelite::pe32::PeFile<'_>) -> Vec<VTableOutput> {
 				break;
 			}
 			table.functions += 1;
+			if let Some(comment) = function_comment32(file, pointers[index], table.functions - 1) {
+				table.comments.push(comment);
+			}
 			index += 1;
 		}
 		output.push(table);
@@ -279,6 +360,34 @@ fn parse_vtable_header64(file: pelite::pe64::PeFile<'_>, address: u32) -> Option
 	Some(header)
 }
 
+fn static_string64(code: &[u8], function_rva: u32) -> Option<(u32, usize)> {
+	// lea rax, [rip+disp32]; mov edx, length; ret
+	for (lea, mov) in [(0, 7), (5, 0)] {
+		if code.get(lea..lea + 3)? != [0x48, 0x8d, 0x05] || code.get(mov)? != &0xba || code.get(12)? != &0xc3 {
+			continue;
+		}
+		let displacement = i32::from_le_bytes(code.get(lea + 3..lea + 7)?.try_into().ok()?);
+		let target_rva = (function_rva as i64).checked_add(lea as i64 + 7)?.checked_add(displacement as i64)?;
+		let length = u32::from_le_bytes(code.get(mov + 1..mov + 5)?.try_into().ok()?) as usize;
+		return Some((target_rva.try_into().ok()?, length));
+	}
+	None
+}
+
+fn function_comment64(file: pelite::pe64::PeFile<'_>, slot: u32, index: usize) -> Option<String> {
+	let function_rva = file.va_to_rva(file.derva_copy::<u64>(slot).ok()?).ok()?;
+	let code = file.slice_bytes(function_rva).ok()?;
+	if let Some(value) = constant_return(code, true) {
+		return Some(format!("fn[{index}]: return {value:#x}"));
+	}
+	let (string_rva, length) = static_string64(code, function_rva)?;
+	if !file.section_headers().by_rva(string_rva).is_some_and(is_readonly_data) {
+		return None;
+	}
+	let string = valid_string(file.slice_bytes(string_rva).ok()?, length)?;
+	Some(format!("fn[{index}]: return {string:?}"))
+}
+
 fn analyze64(file: pelite::pe64::PeFile<'_>) -> Vec<VTableOutput> {
 	let pointers = pointers64(file);
 
@@ -295,6 +404,7 @@ fn analyze64(file: pelite::pe64::PeFile<'_>) -> Vec<VTableOutput> {
 			size: header.size as usize,
 			align: header.align as usize,
 			functions: 1,
+			comments: function_comment64(file, pointers[index], 0).into_iter().collect(),
 		};
 		index += 1;
 		while index < pointers.len() && pointers[index - 1].wrapping_add(8) == pointers[index] {
@@ -303,9 +413,43 @@ fn analyze64(file: pelite::pe64::PeFile<'_>) -> Vec<VTableOutput> {
 				break;
 			}
 			table.functions += 1;
+			if let Some(comment) = function_comment64(file, pointers[index], table.functions - 1) {
+				table.comments.push(comment);
+			}
 			index += 1;
 		}
 		output.push(table);
 	}
 	output
+}
+
+//----------------------------------------------------------------
+
+#[test]
+fn static_string32_moves() {
+	assert_eq!(static_string32(&[0xb8, 0x34, 0x12, 0, 0, 0xba, 3, 0, 0, 0, 0xc3]), Some((0x1234, 3)));
+	assert_eq!(static_string32(&[0xba, 3, 0, 0, 0, 0xb8, 0x34, 0x12, 0, 0, 0xc3]), Some((0x1234, 3)));
+}
+
+#[test]
+fn static_string64_lea() {
+	assert_eq!(static_string64(&[0x48, 0x8d, 0x05, 0x19, 0, 0, 0, 0xba, 3, 0, 0, 0, 0xc3], 0x1000), Some((0x1020, 3)));
+	assert_eq!(static_string64(&[0xba, 3, 0, 0, 0, 0x48, 0x8d, 0x05, 0x14, 0, 0, 0, 0xc3], 0x1000), Some((0x1020, 3)));
+}
+
+#[test]
+fn reject_invalid_strings() {
+	assert_eq!(valid_string(b"hello", 6), None);
+	assert_eq!(valid_string(b"\xff", 1), None);
+	assert_eq!(valid_string(b"a\nb", 3), None);
+}
+
+#[test]
+fn immediate_returns() {
+	assert_eq!(constant_return(&[0xb0, 0xab, 0xc3], false), Some(0xab));
+	assert_eq!(constant_return(&[0x66, 0xb8, 0x34, 0x12, 0xc3], false), Some(0x1234));
+	assert_eq!(constant_return(&[0xb8, 0x78, 0x56, 0x34, 0x12, 0xc3], true), Some(0x1234_5678));
+	assert_eq!(constant_return(&[0x48, 0xb8, 0xf0, 0xde, 0xbc, 0x9a, 0x78, 0x56, 0x34, 0x12, 0xc3], true), Some(0x1234_5678_9abc_def0));
+	assert_eq!(constant_return(&[0x48, 0xb8, 0, 0, 0, 0, 0, 0, 0, 0, 0xc3], false), None);
+	assert_eq!(constant_return(&[0xb8, 1, 0, 0, 0, 0x90, 0xc3], true), None);
 }
