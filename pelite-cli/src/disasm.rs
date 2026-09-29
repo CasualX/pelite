@@ -16,6 +16,13 @@ struct DisassembledInstruction<'a> {
 	colored_instruction: Option<String>,
 }
 
+pub(super) struct DecodedInstruction<'a> {
+	pub ip: u64,
+	pub bytes: &'a [u8],
+	pub instruction: String,
+	pub colored_instruction: Option<String>,
+}
+
 struct InstructionText {
 	plain: String,
 	colored: Option<String>,
@@ -118,26 +125,17 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let decode_ip = image_base + decode_start as u64;
 	let end_ip = image_base + range.end as u64;
 
-	let mut decoder = iced_x86::Decoder::with_ip(bitness, bytes, decode_ip, iced_x86::DecoderOptions::NONE);
-	let symbols = Arc::new(build_symbols(pe, image_base));
-	let mut formatter = iced_x86::IntelFormatter::with_options(Some(Box::new(PeSymbolResolver { symbols: Arc::clone(&symbols) })), None);
-	let options = iced_x86::Formatter::options_mut(&mut formatter);
-	options.set_hex_prefix("0x");
-	options.set_hex_suffix("");
-	options.set_uppercase_hex(false);
 	let color = format == OutputFormat::Text && io::stdout().is_terminal();
-	let mut instructions = Vec::new();
-	while decoder.can_decode() && decoder.ip() < end_ip {
-		let instruction = decoder.decode();
-		if instruction.next_ip() <= start_ip {
-			continue;
-		}
-		let address = u32::try_from(instruction.ip() - image_base)?;
-		let offset = usize::try_from(instruction.ip() - decode_ip)?;
-		let instruction_bytes = &bytes[offset..offset + instruction.len()];
-		let mut text = InstructionText { plain: String::new(), colored: color.then(String::new) };
-		iced_x86::Formatter::format(&mut formatter, &instruction, &mut text);
-		instructions.push(DisassembledInstruction { address, bytes: instruction_bytes, instruction: text.plain, colored_instruction: text.colored });
+	let symbols = Arc::new(build_symbols(pe, image_base));
+	let decoded = decode_bytes(bytes, bitness, decode_ip, start_ip, end_ip, color, Arc::clone(&symbols));
+	let mut instructions = Vec::with_capacity(decoded.len());
+	for item in decoded {
+		instructions.push(DisassembledInstruction {
+			address: u32::try_from(item.ip - image_base)?,
+			bytes: item.bytes,
+			instruction: item.instruction,
+			colored_instruction: item.colored_instruction,
+		});
 	}
 
 	match format {
@@ -182,6 +180,28 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 			Ok(())
 		},
 	}
+}
+
+pub(super) fn decode_bytes<'a>(bytes: &'a [u8], bitness: u32, decode_ip: u64, start_ip: u64, end_ip: u64, color: bool, symbols: Arc<HashMap<u64, String>>) -> Vec<DecodedInstruction<'a>> {
+	let mut decoder = iced_x86::Decoder::with_ip(bitness, bytes, decode_ip, iced_x86::DecoderOptions::NONE);
+	let mut formatter = iced_x86::IntelFormatter::with_options(Some(Box::new(PeSymbolResolver { symbols })), None);
+	let options = iced_x86::Formatter::options_mut(&mut formatter);
+	options.set_hex_prefix("0x");
+	options.set_hex_suffix("");
+	options.set_uppercase_hex(false);
+	let mut instructions = Vec::new();
+	while decoder.can_decode() && decoder.ip() < end_ip {
+		let instruction = decoder.decode();
+		if instruction.next_ip() <= start_ip {
+			continue;
+		}
+		let offset = (instruction.ip() - decode_ip) as usize;
+		let instruction_bytes = &bytes[offset..offset + instruction.len()];
+		let mut text = InstructionText { plain: String::new(), colored: color.then(String::new) };
+		iced_x86::Formatter::format(&mut formatter, &instruction, &mut text);
+		instructions.push(DecodedInstruction { ip: instruction.ip(), bytes: instruction_bytes, instruction: text.plain, colored_instruction: text.colored });
+	}
+	instructions
 }
 
 fn build_symbols(pe: PeFile<'_>, image_base: u64) -> HashMap<u64, String> {

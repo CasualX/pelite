@@ -39,6 +39,7 @@ To install the binary from this checkout, run `cargo install --path pelite-cli`.
 | `symbols` | Discover candidate code and data symbols using disassembly and base relocations. |
 | `hexdump` | Display bytes from an address range. |
 | `disasm` | Disassemble instructions from an address range. |
+| `disasm-raw` | Disassemble arbitrary x86 or x86_64 bytes from a file or standard input. |
 | `imphash` | Calculate the conventional MD5 import hash. |
 | `depwalk` | Walk imported modules and forwarded exports, check symbols, and report missing modules, malformed PE data, and dependency cycles. |
 | `module-def` | Generate a module-definition file from a DLL's exports. |
