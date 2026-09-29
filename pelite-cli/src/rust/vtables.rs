@@ -3,13 +3,13 @@ use pelite::{FileMap, PeFile, Wrap, base_relocs::BaseRelocationDirectory, image}
 use crate::*;
 
 const MAX_ALIGN: usize = 4096;
-const MAX_SIZE: usize = 1 << 31;
+const MAX_SIZE: usize = 1024 * 1024; // 1 MiB
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct VTableOutput {
 	address: u32,
-	size: u64,
-	align: u64,
+	size: usize,
+	align: usize,
 	functions: usize,
 }
 
@@ -35,7 +35,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 			let name = path.file_name().and_then(|name| name.to_str()).unwrap_or("<input>");
 			let mut writer = io::stdout().lock();
 			for item in output {
-				writeln!(writer, "{name}!{:#010x} size={} align={} fnptrs={}", item.address, item.size, item.align, item.functions)?;
+				writeln!(writer, "{name}!{:#010x} size={} align={} functions={}", item.address, item.size, item.align, item.functions)?;
 			}
 			Ok(())
 		},
@@ -166,8 +166,8 @@ fn analyze32(file: pelite::pe32::PeFile<'_>) -> Vec<VTableOutput> {
 		};
 		let mut table = VTableOutput {
 			address,
-			size: header.size as u64,
-			align: header.align as u64,
+			size: header.size as usize,
+			align: header.align as usize,
 			functions: 1,
 		};
 		index += 1;
@@ -292,8 +292,8 @@ fn analyze64(file: pelite::pe64::PeFile<'_>) -> Vec<VTableOutput> {
 		};
 		let mut table = VTableOutput {
 			address,
-			size: header.size,
-			align: header.align,
+			size: header.size as usize,
+			align: header.align as usize,
 			functions: 1,
 		};
 		index += 1;
