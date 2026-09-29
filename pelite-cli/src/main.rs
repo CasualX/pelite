@@ -6,6 +6,7 @@ use std::io::{self, BufRead, IsTerminal, Write};
 
 mod addr;
 mod disasm;
+mod disasm_raw;
 mod depwalk;
 mod edit;
 mod findsig;
@@ -88,6 +89,7 @@ fn cli() -> clap::Command {
 		.subcommand(resources::command())
 		.subcommand(addr::command())
 		.subcommand(disasm::command())
+		.subcommand(disasm_raw::command())
 		.subcommand(depwalk::command())
 		.subcommand(hexdump::command())
 		.subcommand(strings::command())
@@ -112,6 +114,7 @@ fn run() -> Result {
 		Some(("resources", matches)) => resources::run(matches, format),
 		Some(("addr", matches)) => addr::run(matches, format),
 		Some(("disasm", matches)) => disasm::run(matches, format),
+		Some(("disasm-raw", matches)) => disasm_raw::run(matches, format),
 		Some(("depwalk", matches)) => depwalk::run(matches, format),
 		Some(("hexdump", matches)) => hexdump::run(matches, format),
 		Some(("strings", matches)) => strings::run(matches, format),
