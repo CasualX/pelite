@@ -150,41 +150,20 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	output.insert("format", value(format_str)?);
 
 	for topic in selected.iter() {
-		match topic {
-			Topic::Dos => {
-				output.insert("dos", value(pe.dos_header())?);
-			}
-			Topic::RichStructure => {
-				output.insert("rich_structure", value_opt(pe.rich_structure())?);
-			}
-			Topic::Headers => {
-				output.insert("headers", value(pe.headers())?);
-			}
-			Topic::Sections => {
-				output.insert("sections", value(pe.section_headers())?);
-			}
-			Topic::Imports => {
-				output.insert("imports", value_opt(pe.imports())?);
-			}
-			Topic::Exports => {
-				output.insert("exports", value_opt(pe.exports())?);
-			}
-			Topic::Relocations => {
-				output.insert("relocations", value_opt(pe.base_relocs())?);
-			}
-			Topic::LoadConfig => {
-				output.insert("load_config", value_opt(pe.load_config())?);
-			}
-			Topic::Tls => {
-				output.insert("tls", value_opt(pe.tls())?);
-			}
-			Topic::Exceptions => {
-				output.insert("exceptions", exceptions(pe)?);
-			}
-			Topic::Debug => {
-				output.insert("debug", value_opt(pe.debug())?);
-			}
-		}
+		let (key, result) = match topic {
+			Topic::Dos => ("dos", value(pe.dos_header())),
+			Topic::RichStructure => ("rich_structure", value_opt(pe.rich_structure())),
+			Topic::Headers => ("headers", value(pe.headers())),
+			Topic::Sections => ("sections", value(pe.section_headers())),
+			Topic::Imports => ("imports", value_opt(pe.imports())),
+			Topic::Exports => ("exports", value_opt(pe.exports())),
+			Topic::Relocations => ("relocations", value_opt(pe.base_relocs())),
+			Topic::LoadConfig => ("load_config", value_opt(pe.load_config())),
+			Topic::Tls => ("tls", value_opt(pe.tls())),
+			Topic::Exceptions => ("exceptions", exceptions(pe)),
+			Topic::Debug => ("debug", value_opt(pe.debug())),
+		};
+		output.insert(key, result.unwrap_or_else(|error| serde_json::json!({ "$error": error.to_string() })));
 	}
 
 	print("PE image", &output, format)

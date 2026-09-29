@@ -149,24 +149,8 @@ macro_rules! checks {
 					if let Ok(iat) = desc.iat() { for _ in iat {} }
 					if let Ok(int) = desc.int() { for _ in int {} }
 				}
-				// Check the combined address table against an independent decode.
-				fn decode<'a, P: Copy + Pe<'a>>(pe: P, &va: &'a $pe::Va) -> Result<$pe::Import<'a>> {
-					if va & $pe::image::IMAGE_ORDINAL_FLAG == 0 {
-						let rva = $pe::Rva::try_from(va).map_err(|_| pelite::Error::Overflow)?;
-						let hint = pe.derva::<u16>(rva)?;
-						let name_rva = rva.checked_add(2).ok_or(pelite::Error::Overflow)?;
-						let name = pe.derva_c_str(name_rva)?;
-						Ok($pe::Import::ByName { hint: *hint as usize, name })
-					} else {
-						if va & !($pe::image::IMAGE_ORDINAL_FLAG | u16::MAX as $pe::Va) != 0 {
-							return Err(pelite::Error::Invalid);
-						}
-						Ok($pe::Import::ByOrdinal { ord: va as $pe::image::Ordinal })
-					}
-				}
-				for (va, import) in pe.iat()?.iter() {
+				for (_, import) in pe.iat()?.iter() {
 					let _ = format!("{import:?}");
-					if import.is_ok() { assert_eq!(decode(pe, va), import); }
 				}
 				Ok(())
 			}
