@@ -4,26 +4,10 @@ use super::*;
 
 type Buckets = Vec<[u64; 256]>;
 
-#[derive(serde::Serialize)]
-struct Source {
-	file: String,
-	sections: usize,
-	bytes: usize,
-}
-
-#[derive(serde::Serialize)]
-struct Generated {
-	seed: u64,
-	bytes: Vec<u8>,
-	hex: String,
-	sources: Vec<Source>,
-	#[serde(skip_serializing_if = "Option::is_none")]
-	output: Option<String>,
-}
-
 pub fn command() -> clap::Command {
 	clap::Command::new("markov")
 		.about("Generate bytes from executable PE sections using a Markov chain")
+		.after_help(include_str!("../docs/markov.md"))
 		.arg(clap::Arg::new("count")
 			.value_name("COUNT")
 			.value_parser(clap::value_parser!(usize))
@@ -56,48 +40,32 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 		.copied()
 		.unwrap_or_else(|| urandom::new().random());
 	let mut buckets = vec![[0u64; 256]; 256];
-	let mut sources = Vec::new();
 
 	for path in files {
 		let map = pelite::FileMap::open(path)?;
 		let pe = pelite::PeFile::from_bytes(&map)?;
-		let mut source = Source {
-			file: path.to_string_lossy().into_owned(),
-			sections: 0,
-			bytes: 0,
-		};
 		for section in pe.section_headers() {
 			if section.Characteristics & image::IMAGE_SCN_MEM_EXECUTE == 0 {
 				continue;
 			}
 			let bytes = pe.get_section_bytes(section)?;
 			analyze(bytes, &mut buckets);
-			source.sections += 1;
-			source.bytes += bytes.len();
 		}
-		sources.push(source);
 	}
 
 	let bytes = generate(&buckets, count, seed)?;
-	let output = matches.get_one::<PathBuf>("output").map(|path| {
+	if let Some(path) = matches.get_one::<PathBuf>("output") {
 		fs::write(path, &bytes)?;
-		Ok::<_, io::Error>(path.to_string_lossy().into_owned())
-	}).transpose()?;
-	let generated = Generated {
-		hex: bytes.iter().map(|byte| format!("{byte:02X}")).collect::<Vec<_>>().join(" "),
-		seed,
-		bytes,
-		sources,
-		output,
-	};
+	}
 
 	match format {
 		OutputFormat::Text => {
-			writeln!(io::stdout().lock(), "{}", generated.hex)?;
+			let hex = bytes.iter().map(|byte| format!("{byte:02X}")).collect::<Vec<_>>().join(" ");
+			writeln!(io::stdout().lock(), "{hex}")?;
 			Ok(())
 		},
-		OutputFormat::Json => print_json(&generated, false),
-		OutputFormat::JsonPretty => print_json(&generated, true),
+		OutputFormat::Json => print_json(&bytes, false),
+		OutputFormat::JsonPretty => print_json(&bytes, true),
 	}
 }
 

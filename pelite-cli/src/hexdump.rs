@@ -38,13 +38,13 @@ impl<'a> Iterator for HexRows<'a> {
 pub fn command() -> clap::Command {
 	clap::Command::new("hexdump")
 		.about("Hexdump an address range")
-		.after_help("Ranges are half-open and hexadecimal, with one rva:, va:, or fo: prefix applying to both endpoints (for example, rva:0x1000..0x1100).")
+		.after_help(include_str!("../docs/hexdump.md"))
 		.arg(clap::Arg::new("file")
 			.value_name("FILE")
 			.value_parser(clap::value_parser!(PathBuf))
 			.required(true))
 		.arg(clap::Arg::new("range")
-			.value_name("KIND:START..END")
+			.value_name("RANGE")
 			.value_parser(AddressRange::parse)
 			.required(true))
 }

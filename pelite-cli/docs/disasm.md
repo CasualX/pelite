@@ -1,0 +1,48 @@
+Disassemble instructions from a PE image
+
+Usage:
+
+    pelite-cli disasm FILE RANGE [--hex] [--lookback BYTES] [--format=text|json|json-pretty]
+
+RANGE is `kind:START..END` and accepts decimal or hex: `rva:4096..5000`,
+`va:0x180001000..0x180001004`, or `fo:512`; the end is excluded.
+One prefix applies to both endpoints. File offset ranges must map
+to contiguous PE image bytes.
+
+Disassembly starts at START and proceeds through the range in address order.
+Start at an instruction boundary: decoding from the middle of an instruction
+can produce misleading results. Branches are not followed, and embedded data
+may be decoded as instructions.
+
+Use `--hex` to show instruction bytes alongside text, for example to check
+alignment or recognize padding. It has no effect on JSON output.
+
+Use `--lookback BYTES` when START may fall inside an instruction. It decodes
+up to BYTES earlier (decimal) and includes an instruction overlapping START.
+The earlier position must itself be correctly aligned. Lookback stays within
+START's section; if the earlier bytes cannot be read, decoding starts at START.
+
+Use format `json` for compact machine-readable output or `json-pretty` for
+indented output. Each instruction has an RVA `address`, a `bytes` array,
+and an `instruction` string. Text is the default.
+
+See `disasm-raw` to decode raw bytes.
+
+Examples:
+
+    pelite-cli disasm sample.dll rva:0x1000..0x1100
+    pelite-cli disasm sample.dll fo:1024..1152 --hex
+    pelite-cli disasm sample.dll va:0x180001000..0x180001080 --lookback 16
+    pelite-cli disasm sample.dll rva:0x1000..0x1100 --format=json-pretty
+
+Example JSON output (one instruction shown):
+
+```json
+[
+  {
+    "address": 4096,
+    "bytes": [184, 1, 0, 0, 0],
+    "instruction": "mov eax,1"
+  }
+]
+```

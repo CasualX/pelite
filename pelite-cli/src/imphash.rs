@@ -10,7 +10,7 @@ struct ImportHash {
 pub fn command() -> clap::Command {
 	clap::Command::new("imphash")
 		.about("Calculate the conventional MD5 import hash")
-		.after_help("DLL names are lowercased and .dll, .sys, and .ocx suffixes are removed. Ordinal imports use the portable fallback name ord<NUMBER>.")
+		.after_help(include_str!("../docs/imphash.md"))
 		.arg(clap::Arg::new("files")
 			.value_name("FILE")
 			.value_parser(clap::value_parser!(PathBuf))

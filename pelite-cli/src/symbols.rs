@@ -125,7 +125,7 @@ struct Analysis<'a> {
 pub fn command() -> clap::Command {
 	clap::Command::new("symbols")
 		.about("Discover candidate symbols using disassembly and base relocations")
-		.after_help("Linearly decodes executable sections of i386/AMD64 images. Labels entry points, exports, branch targets, static memory references, address-like immediates, and relocated pointers. Results are heuristic: embedded data may decode as instructions, and register-based targets cannot be resolved. All addresses are RVAs.")
+		.after_help(include_str!("../docs/symbols.md"))
 		.arg(summary::file_arg().required(true))
 }
 

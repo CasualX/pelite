@@ -4,8 +4,15 @@ mod fix_section_names;
 
 pub fn command() -> clap::Command {
 	clap::Command::new("edit")
-		.about("Edit a PE file in place")
+		.about("Edit a PE file")
+		.after_help(include_str!("../docs/edit.md"))
 		.arg(summary::file_arg().required(true))
+		.arg(clap::Arg::new("output")
+			.long("output")
+			.short('o')
+			.value_name("OUTPUT")
+			.value_parser(clap::value_parser!(PathBuf))
+			.help("Write the edited file here instead of replacing the input"))
 		.arg(clap::Arg::new("fix-baserelocs")
 			.long("fix-baserelocs")
 			.action(clap::ArgAction::SetTrue)
@@ -36,7 +43,8 @@ pub fn run(matches: &clap::ArgMatches) -> Result {
 		fix_section_names::run(&mut bytes)?;
 	}
 
-	fs::write(path, &bytes)?;
+	let output = matches.get_one::<PathBuf>("output").unwrap_or(path);
+	fs::write(output, &bytes)?;
 	Ok(())
 }
 

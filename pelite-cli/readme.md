@@ -32,24 +32,24 @@ To install the binary from this checkout, run `cargo install --path pelite-cli`.
 | `resources cursors list` | List and validate cursor groups. |
 | `resources cursors extract` | Extract cursor groups as `.cur` files. |
 | `version-info` | Read the version-information resource. |
-| `strings` | Find ASCII, UTF-8, and UTF-16LE strings in PE sections with a heuristic confidence score. |
-| `findsig` | Search the image for byte patterns. |
-| `addr` | Convert between an RVA, virtual address, and file offset. |
-| `xref` | Find candidate pointers and relative references; confirm matches in surrounding code or data. |
+| [`strings`](docs/strings.md) | Find ASCII, UTF-8, and UTF-16LE strings in PE sections with a heuristic confidence score. |
+| [`findsig`](docs/findsig.md) | Search the image for byte patterns. |
+| [`addr`](docs/addr.md) | Convert between an RVA, virtual address, and file offset. |
+| [`xref`](docs/xref.md) | Find candidate pointers and relative references; confirm matches in surrounding code or data. |
 | [`read`](docs/read.md) | Read scalars, strings, typed pointers, arrays, structs, and unions at an address. |
-| `symbols` | Discover candidate code and data symbols using disassembly and base relocations. |
-| `hexdump` | Display bytes from an address range. |
-| `disasm` | Disassemble instructions from an address range. |
-| `disasm-raw` | Disassemble arbitrary x86 or x86_64 bytes from a file or standard input. |
-| `imphash` | Calculate the conventional MD5 import hash. |
-| `depwalk` | Walk imported modules and forwarded exports, check symbols, and report missing modules, malformed PE data, and dependency cycles. |
-| `module-def` | Generate a module-definition file from a DLL's exports. |
-| `msrtti` | Dump Microsoft C++ RTTI, vtables, and class hierarchies. |
+| [`symbols`](docs/symbols.md) | Discover candidate code and data symbols using disassembly and base relocations. |
+| [`hexdump`](docs/hexdump.md) | Display bytes from an address range. |
+| [`disasm`](docs/disasm.md) | Disassemble instructions from an address range. |
+| [`disasm-raw`](docs/disasm-raw.md) | Disassemble arbitrary x86 or x86_64 bytes from a file or standard input. |
+| [`imphash`](docs/imphash.md) | Calculate the conventional MD5 import hash. |
+| [`depwalk`](docs/depwalk.md) | Walk imported modules and forwarded exports, check symbols, and report missing modules, malformed PE data, and dependency cycles. |
+| [`module-def`](docs/module-def.md) | Generate a module-definition file from a DLL's exports. |
+| [`msrtti`](docs/msrtti.md) | Dump Microsoft C++ RTTI, vtables, and class hierarchies. |
 | `rust format-args` | Find Rust `format_args!` templates in x64 MSVC binaries. |
 | `rust panic-strings` | Find Rust panic messages and location records in x64 MSVC binaries. |
 | `rust vtables` | Find candidate Rust trait vtables in PE32 and PE32+ binaries. |
-| `markov` | Generate bytes from executable PE sections using a Markov chain. |
-| `edit` | Edit a PE file in place, including repair or conversion. |
+| [`markov`](docs/markov.md) | Generate bytes from executable PE sections using a Markov chain. |
+| [`edit`](docs/edit.md) | Edit a PE file in place or write a separate file, including repair or conversion. |
 
 Run `cargo run -p pelite-cli -- COMMAND --help` for arguments and options. The [demo examples](../demo/readme.md) show inspection, resource extraction, signature searches, and generated output files.
 
