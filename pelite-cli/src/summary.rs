@@ -61,6 +61,8 @@ struct Section {
 	virtual_size: u32,
 	raw_size: u32,
 	entropy: Option<f64>,
+	#[serde(skip_serializing)]
+	entropy_map: String,
 	permissions: String,
 	entry_point: bool,
 }
@@ -159,6 +161,7 @@ fn summarize(path: &Path, bytes: &[u8], pe: PeFile<'_>) -> Result<Summary> {
 			virtual_size: section.VirtualSize,
 			raw_size: section.SizeOfRawData,
 			entropy: entropy.map(|value| (value * 100.0).round() / 100.0),
+			entropy_map: section_bytes.map(entropy_map).unwrap_or_default(),
 			permissions: permissions(section.Characteristics),
 			entry_point: entry_section.is_some_and(|candidate| std::ptr::eq(candidate, section)),
 		});
@@ -333,6 +336,21 @@ fn shannon_entropy(bytes: &[u8]) -> f64 {
 	if entropy == 0.0 { 0.0 } else { entropy }
 }
 
+fn entropy_map(bytes: &[u8]) -> String {
+	const LEVELS: &[char] = &[' ', '░', '▒', '▓', '█'];
+	if bytes.is_empty() { return String::new(); }
+	let cells = (bytes.len() / 512).clamp(1, 16);
+	let mut map = String::with_capacity(cells * 3);
+	for index in 0..cells {
+		let start = index * bytes.len() / cells;
+		let end = (index + 1) * bytes.len() / cells;
+		let entropy = shannon_entropy(&bytes[start..end]);
+		let level = ((entropy / 8.0 * (LEVELS.len() - 1) as f64).round() as usize).min(LEVELS.len() - 1);
+		map.push(LEVELS[level]);
+	}
+	map
+}
+
 fn format_timestamp(timestamp: u32) -> Option<String> {
 	if timestamp == 0 { return None; }
 	let days = timestamp as i64 / 86_400;
@@ -374,9 +392,9 @@ fn print_text(summary: &Summary) -> Result {
 	writeln!(output, "  ASLR: {:<3}  DEP/NX: {:<3}  CFG: {:<3}  High-entropy VA: {}", yes_no(summary.mitigations.aslr), yes_no(summary.mitigations.dep), yes_no(summary.mitigations.cfg), yes_no(summary.mitigations.high_entropy_va))?;
 	writeln!(output)?;
 	writeln!(output, "Sections")?;
-	writeln!(output, "  {:<9} {:>10} {:>10} {:>8} {:>7}  Entry", "Name", "RVA", "Raw size", "Entropy", "Perms")?;
+	writeln!(output, "  {:<9} {:>10} {:>10} {:>8} {:>7}  {:<18}  Entry", "Name", "RVA", "Raw size", "Entropy", "Perms", "Entropy map")?;
 	for section in &summary.sections {
-		writeln!(output, "  {:<9} {:#010x} {:>10} {:>8} {:>7}  {}", section.name, section.virtual_address, section.raw_size, section.entropy.map(|value| format!("{value:.2}")).unwrap_or_else(|| "-".to_owned()), section.permissions, if section.entry_point { "<- entry point" } else { "" })?;
+		writeln!(output, "  {:<9} {:#010x} {:>10} {:>8} {:>7}  |{:<16}|  {}", section.name, section.virtual_address, section.raw_size, section.entropy.map(|value| format!("{value:.2}")).unwrap_or_else(|| "-".to_owned()), section.permissions, section.entropy_map, if section.entry_point { "<- entry point" } else { "" })?;
 	}
 	writeln!(output)?;
 	writeln!(output, "Imports: {} functions from {} libraries", summary.imports.functions, summary.imports.libraries)?;
