@@ -75,6 +75,7 @@ fn err(message: impl Into<String>) -> Box<dyn error::Error> {
 fn cli() -> clap::Command {
 	let command = clap::Command::new("pelite-cli")
 		.about("Inspect Windows PE binaries")
+		.override_usage("pelite-cli [COMMAND] <FILE> [ARGS] [OPTIONS]")
 		.arg_required_else_help(true)
 		.arg(summary::file_arg())
 		.arg(clap::Arg::new("format")
