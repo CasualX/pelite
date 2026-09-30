@@ -17,11 +17,20 @@ impl PointerWidth {
 	}
 }
 
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum ReadArrayLen {
+	Const(u32),
+	DynU8(u32),
+	DynU16(u32),
+	DynU32(u32),
+	DynU64(u32),
+}
+
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ReadArrayType {
 	pub ty: ReadType,
-	pub len: u32,
-	/// Layout computed when the array is parsed for the PE pointer width.
+	pub len: ReadArrayLen,
+	/// Fixed layout computed when parsed; size is zero for a dynamic array.
 	pub size: u32,
 	pub align: u32,
 }
@@ -33,7 +42,7 @@ pub enum ReadType {
 	F32, F64,
 
 	Va,
-	CStr, // Unsized type
+	CStr,
 
 	Array(Box<ReadArrayType>),
 	Ptr(Box<ReadType>),
@@ -47,6 +56,8 @@ pub struct ReadStructType {
 	/// Layout computed when the struct or union is parsed for the PE pointer width.
 	pub size: u32,
 	pub align: u32,
+	/// True if the last field is dynamic.
+	pub is_dst: bool,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -57,6 +68,15 @@ pub struct ReadStructFieldType {
 }
 
 impl ReadType {
+	pub fn is_dst(&self) -> bool {
+		match self {
+			Self::CStr => true,
+			Self::Array(array) => !matches!(array.len, ReadArrayLen::Const(_)),
+			Self::Struct(structure) => structure.is_dst,
+			_ => false,
+		}
+	}
+
 	/// Fixed size and alignment for the selected PE pointer width.
 	pub fn layout(&self, pointer_width: PointerWidth) -> Result<(u32, u32), &'static str> {
 		match self {
@@ -65,16 +85,19 @@ impl ReadType {
 			Self::U32 | Self::I32 | Self::F32 => Ok((4, 4)),
 			Self::U64 | Self::I64 | Self::F64 => Ok((8, 8)),
 			Self::Va | Self::Ptr(_) => Ok((pointer_width.bytes(), pointer_width.bytes())),
-			Self::CStr => Err("cstr is unsized; use *cstr in arrays and struct fields"),
-			Self::Array(array) => Ok((array.size, array.align)),
-			Self::Struct(structure) => Ok((structure.size, structure.align)),
+			Self::CStr => Err("cstr is unsized"),
+			Self::Array(array) => match array.len {
+				ReadArrayLen::Const(_) => Ok((array.size, array.align)),
+				_ => Err("dynamic array is unsized"),
+			},
+			Self::Struct(structure) => if self.is_dst() { Err("struct with a dynamic field is unsized") } else { Ok((structure.size, structure.align)) },
 		}
 	}
 }
 
 fn align_up(offset: u32, align: u32) -> Result<u32, &'static str> {
 	offset.checked_add(align - 1).map(|value| value & !(align - 1))
-		.ok_or_else(|| "type layout exceeds RVA range")
+		.ok_or_else(|| "type layout overflow")
 }
 
 impl ReadType {
@@ -86,7 +109,7 @@ impl ReadType {
 
 fn parse(input: &str, pointer_width: PointerWidth) -> Result<ReadType, String> {
 	let mut parser = Parser { input, pos: 0, pointer_width };
-	let ty = parser.ty(0)?;
+	let ty = parser.ty(0, &[])?;
 	parser.whitespace();
 	if parser.pos != input.len() {
 		return Err(parser.error("unexpected trailing input"));
@@ -150,22 +173,40 @@ impl<'a> Parser<'a> {
 			.map_err(|_| self.error("expected a decimal array length"))
 	}
 
-	fn ty(&mut self, depth: usize) -> Result<ReadType, String> {
+	fn ty(&mut self, depth: usize, fields: &[ReadStructFieldType]) -> Result<ReadType, String> {
 		if depth >= 64 {
 			return Err(self.error("type nesting is too deep"));
 		}
 
 		if self.eat(b'*') {
-			return Ok(ReadType::Ptr(Box::new(self.ty(depth + 1)?)));
+			return Ok(ReadType::Ptr(Box::new(self.ty(depth + 1, fields)?)));
 		}
 
 		if self.eat(b'[') {
-			let ty = self.ty(depth + 1)?;
+			let ty = self.ty(depth + 1, fields)?;
 			self.expect(b';')?;
-			let len = self.array_len()?;
+			self.whitespace();
+			let len = if self.input.as_bytes().get(self.pos).is_some_and(u8::is_ascii_digit) {
+				ReadArrayLen::Const(self.array_len()?)
+			}
+			else {
+				let name = self.identifier()?;
+				let field = fields.iter().find(|field| field.name == name)
+					.ok_or_else(|| self.error(format_args!("array length field '{name}' must be an earlier field")))?;
+				match field.ty {
+					ReadType::U8 => ReadArrayLen::DynU8(field.offset),
+					ReadType::U16 => ReadArrayLen::DynU16(field.offset),
+					ReadType::U32 => ReadArrayLen::DynU32(field.offset),
+					ReadType::U64 => ReadArrayLen::DynU64(field.offset),
+					_ => return Err(self.error(format_args!("array length field '{name}' must be u8, u16, u32, or u64"))),
+				}
+			};
 			self.expect(b']')?;
 			let (element_size, align) = ty.layout(self.pointer_width).map_err(|message| self.error(message))?;
-			let size = element_size.checked_mul(len).ok_or_else(|| self.error("array size exceeds RVA range"))?;
+			let size = match len {
+				ReadArrayLen::Const(len) => element_size.checked_mul(len).ok_or_else(|| self.error("array size overflow"))?,
+				_ => 0,
+			};
 			return Ok(ReadType::Array(Box::new(ReadArrayType { ty, len, size, align })));
 		}
 
@@ -204,16 +245,24 @@ impl<'a> Parser<'a> {
 		let mut offset = 0;
 		let mut size = 0;
 		let mut align = 1;
+		let mut is_dst = false;
 		while !self.eat(b'}') {
 			// Field name
 			let name = self.identifier()?.to_owned();
 			// Field type
 			self.expect(b':')?;
-			let ty = self.ty(depth)?;
+			let ty = self.ty(depth, &fields)?;
 			// Field properties
-			let (field_size, field_align) = ty.layout(self.pointer_width).map_err(|message| self.error(message))?;
+			let dynamic = ty.is_dst();
+			is_dst |= dynamic;
+			if dynamic && is_union {
+				return Err(self.error("dynamic field is not allowed in a union"));
+			}
+			let (field_size, field_align) = if dynamic {
+				(0, match &ty { ReadType::Array(array) => array.align, ReadType::CStr => 1, _ => unreachable!() })
+			} else { ty.layout(self.pointer_width).map_err(|message| self.error(message))? };
 			let field_offset = if is_union { 0 } else { align_up(offset, field_align).map_err(|message| self.error(message))? };
-			let field_end = field_offset.checked_add(field_size).ok_or_else(|| self.error("struct size exceeds RVA range"))?;
+			let field_end = field_offset.checked_add(field_size).ok_or_else(|| self.error("struct size overflow"))?;
 			// Field discard
 			if name != "_" {
 				// Enforce unique name
@@ -232,123 +281,19 @@ impl<'a> Parser<'a> {
 				self.expect(b'}')?;
 				break;
 			}
+			if dynamic {
+				if !self.eat(b'}') {
+					return Err(self.error("dynamic field must be the last struct field"));
+				}
+				break;
+			}
 		}
 
 		let size = align_up(size, align).map_err(|message| self.error(message))?;
 		let name = name.map(str::to_owned);
-		Ok(ReadType::Struct(Box::new(ReadStructType { name, fields, size, align })))
+		Ok(ReadType::Struct(Box::new(ReadStructType { name, fields, size, align, is_dst })))
 	}
 }
 
-#[test]
-fn parses_composite_types_and_whitespace() {
-	for pointer_width in [PointerWidth::Bits32, PointerWidth::Bits64] {
-		let width = pointer_width.bytes();
-		assert_eq!(parse(" cstr ", pointer_width).unwrap(), ReadType::CStr);
-		assert_eq!(parse("ptr", pointer_width).unwrap(), ReadType::Va);
-		assert_eq!(parse("* cstr", pointer_width).unwrap(), ReadType::Ptr(Box::new(ReadType::CStr)));
-		assert_eq!(parse(" * [ f32 ; 3 ] ", pointer_width).unwrap(), ReadType::Ptr(Box::new(
-			ReadType::Array(Box::new(ReadArrayType { ty: ReadType::F32, len: 3, size: 12, align: 4 }))
-		)));
-		let array = parse("[i32; 256]", pointer_width).unwrap();
-		let ReadType::Array(values) = &array else { panic!("expected an array") };
-		assert_eq!((values.size, values.align), (1024, 4));
-		assert_eq!(array.layout(pointer_width).unwrap(), (1024, 4));
-		assert_eq!(parse("[[u16; 3]; 2]", pointer_width).unwrap().layout(pointer_width).unwrap(), (12, 2));
-		assert_eq!(parse("[*cstr; 3]", pointer_width).unwrap().layout(pointer_width).unwrap(), (width * 3, width));
-		assert!(parse("**cstr", pointer_width).is_ok());
-		assert!(parse("struct {}", pointer_width).is_ok());
-		assert!(parse("[u32; 0]", pointer_width).is_ok());
-	}
-}
-
-#[test]
-fn lays_out_structs_with_target_alignment_and_trailing_padding() {
-	for (pointer_width, offsets, size) in [(PointerWidth::Bits32, [0, 4, 8], 12), (PointerWidth::Bits64, [0, 8, 16], 24)] {
-		let width = pointer_width.bytes();
-		let ty = parse("struct Entry { tag: u8, value: *f64, tail: u8, }", pointer_width).unwrap();
-		let ReadType::Struct(structure) = &ty else { panic!("expected a struct") };
-		assert_eq!(structure.name.as_deref(), Some("Entry"));
-		assert_eq!(structure.fields.iter().map(|field| field.offset).collect::<Vec<_>>(), offsets);
-		assert_eq!(structure.fields[1].name, "value");
-		assert_eq!((structure.size, structure.align), (size, width));
-		assert_eq!(ty.layout(pointer_width).unwrap(), (size, width));
-		let array = parse("[struct { tag: u8, value: *f64, tail: u8 }; 2]", pointer_width).unwrap();
-		assert_eq!(array.layout(pointer_width).unwrap(), (size * 2, width));
-		let nested = parse("struct { tag: u8, inner: struct { value: ptr, tail: u8 }, end: u8 }", pointer_width).unwrap();
-		let ReadType::Struct(structure) = &nested else { panic!("expected a struct") };
-		assert_eq!(structure.fields[1].offset, width);
-		assert_eq!(structure.fields[2].offset, width * 3);
-		assert_eq!(nested.layout(pointer_width).unwrap(), (width * 4, width));
-	}
-}
-
-#[test]
-fn unions_overlay_fields_and_use_largest_field_layout() {
-	for pointer_width in [PointerWidth::Bits32, PointerWidth::Bits64] {
-		let width = pointer_width.bytes();
-		let ty = parse("union Value { bytes: [u8; 3], word: u16, pointer: ptr, }", pointer_width).unwrap();
-		let ReadType::Struct(structure) = &ty else { panic!("union should read as a struct") };
-		assert_eq!(structure.name.as_deref(), Some("Value"));
-		assert_eq!(structure.fields.iter().map(|field| field.offset).collect::<Vec<_>>(), [0, 0, 0]);
-		assert_eq!((structure.size, structure.align), (width, width));
-		assert_eq!(ty.layout(pointer_width).unwrap(), (width, width));
-		let array = parse("[union { byte: u8, pointer: ptr }; 2]", pointer_width).unwrap();
-		assert_eq!(array.layout(pointer_width).unwrap(), (width * 2, width));
-		let nested = parse("struct { tag: u8, value: union { byte: u8, pointer: ptr }, tail: u8 }", pointer_width).unwrap();
-		let ReadType::Struct(structure) = &nested else { panic!("expected a struct") };
-		assert_eq!(structure.fields.iter().map(|field| field.offset).collect::<Vec<_>>(), [0, width, width * 2]);
-		assert_eq!(nested.layout(pointer_width).unwrap(), (width * 3, width));
-	}
-	let ty = parse("union { bytes: [u8; 3], word: u16 }", PointerWidth::Bits32).unwrap();
-	let ReadType::Struct(structure) = &ty else { panic!("expected a union") };
-	assert_eq!((structure.size, structure.align), (4, 2));
-	assert_eq!(ty.layout(PointerWidth::Bits32).unwrap(), (4, 2));
-	let ReadType::Struct(empty) = parse("union {}", PointerWidth::Bits32).unwrap() else { panic!("expected a union") };
-	assert_eq!((empty.size, empty.align), (0, 1));
-}
-
-#[test]
-fn discarded_fields_contribute_to_layout() {
-	for pointer_width in [PointerWidth::Bits32, PointerWidth::Bits64] {
-		let ty = parse("struct { _: u8, a: u16, _: [u8; 3], _: u8, b: u32 }", pointer_width).unwrap();
-		let ReadType::Struct(structure) = ty else { panic!("expected a struct") };
-		assert_eq!(structure.fields.iter().map(|field| (field.name.as_str(), field.offset)).collect::<Vec<_>>(), [("a", 2), ("b", 8)]);
-		assert_eq!((structure.size, structure.align), (12, 4));
-
-		let ty = parse("union { _: [u8; 8], value: u16, _: u32 }", pointer_width).unwrap();
-		let ReadType::Struct(structure) = ty else { panic!("expected a union") };
-		assert_eq!(structure.fields.iter().map(|field| (field.name.as_str(), field.offset)).collect::<Vec<_>>(), [("value", 0)]);
-		assert_eq!((structure.size, structure.align), (8, 4));
-	}
-}
-
-#[test]
-fn rejects_duplicate_named_fields_in_each_structure() {
-	for pointer_width in [PointerWidth::Bits32, PointerWidth::Bits64] {
-		for source in ["struct { x: u8, _: u8, x: u16 }", "union { x: u8, x: u16 }"] {
-			assert!(parse(source, pointer_width).unwrap_err().contains("duplicate field 'x'"));
-		}
-		assert!(parse("struct { x: u8, inner: struct { x: u16 } }", pointer_width).is_ok());
-		assert!(parse("struct { _: cstr }", pointer_width).is_err());
-	}
-}
-
-#[test]
-fn rejects_invalid_unsized_and_overflowing_types() {
-	for pointer_width in [PointerWidth::Bits32, PointerWidth::Bits64] {
-		let width = pointer_width.bytes();
-		for source in [
-			"", "U32", "u33", "i32 garbage", "u32[]", "*", "[i32]", "[i32; -1]",
-			"[i32; 0x10]", "[i32; 3", "[i32; 18446744073709551616]", "[u64; 536870912]",
-			"[cstr; 3]", "*[cstr; 3]", "*[CStr; 3]", "[cstr; 0]",
-			"struct { text: cstr }", "struct { x: u8, x: i32 }", "struct { x u8 }",
-			"struct { x: i32 y: i32 }", "struct { x: i32", "struct { , }", "struct { 1x: u8 }",
-			"struct { x: [u8; 4294967295], y: u8 }", "struct { x: u64, y: [u8; 4294967287] }",
-			"union { text: cstr }", "union { x: u8, x: u16 }", "union { x: u8",
-		] {
-			assert!(parse(source, pointer_width).is_err(), "accepted {source:?} for width {width}");
-		}
-	}
-	assert!(parse(&format!("{}u8", "*".repeat(100)), PointerWidth::Bits64).is_err());
-}
+#[cfg(test)]
+mod tests;

@@ -35,4 +35,4 @@ Example JSON output (four bytes shown):
 When to use:
 
 Inspect exact bytes and nearby ASCII to check a signature match or
-disassembly. For known data types, use `read`.
+disassembly. Prefer using `read`, it is far more powerful.
