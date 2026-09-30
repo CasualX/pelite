@@ -54,3 +54,8 @@ Example JSON output (one instruction shown):
   }
 ]
 ```
+
+When to use:
+
+Inspect instructions at a known PE address, such as an entry point or export.
+For raw bytes, use `disasm-raw`.

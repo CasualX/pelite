@@ -95,14 +95,7 @@ impl Iterator for TopicIter {
 pub fn command() -> clap::Command {
 	let mut command = clap::Command::new("inspect")
 		.about("Inspect selected PE headers and directories")
-		.after_help(
-			"With no flags, every supported structure is inspected. \
-			 --all also selects everything.\n\n\
-			 Examples:\n  \
-			 pelite-cli inspect program.exe --sections\n  \
-			 pelite-cli inspect program.exe --imports --exports\n  \
-			 pelite-cli inspect program.exe --all --format=json-pretty",
-		)
+		.after_help(include_str!("docs/inspect.md"))
 		.arg(clap::Arg::new("file")
 			.value_name("FILE")
 			.value_parser(clap::value_parser!(PathBuf))

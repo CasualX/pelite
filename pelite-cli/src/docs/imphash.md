@@ -34,3 +34,8 @@ Example JSON excerpt (first three imports shown):
   }
 ]
 ```
+
+When to use:
+
+Compare PE files by normalized import list; inspect imports to confirm a
+matching hash.

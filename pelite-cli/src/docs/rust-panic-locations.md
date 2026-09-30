@@ -26,3 +26,8 @@ Example JSON output (one location shown):
   { "address": 9088, "file": "src/main.rs", "line": 123, "column": 7 }
 ]
 ```
+
+When to use:
+
+Find Rust source paths and line numbers embedded in a PE binary; use `xref` to
+check references.

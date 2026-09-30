@@ -34,3 +34,8 @@ Example JSON excerpt:
   ]
 }
 ```
+
+When to use:
+
+Diagnose missing DLLs or imports, architecture mismatches, and dependency
+cycles that may prevent loading.

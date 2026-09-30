@@ -33,3 +33,8 @@ Example JSON output (one string shown):
   }
 ]
 ```
+
+When to use:
+
+Find embedded messages, paths, URLs, or other readable text without knowing
+their addresses. Filter large results.

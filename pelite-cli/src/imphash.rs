@@ -10,7 +10,7 @@ struct ImportHash {
 pub fn command() -> clap::Command {
 	clap::Command::new("imphash")
 		.about("Calculate the conventional MD5 import hash")
-		.after_help(include_str!("../docs/imphash.md"))
+		.after_help(include_str!("docs/imphash.md"))
 		.arg(clap::Arg::new("files")
 			.value_name("FILE")
 			.value_parser(clap::value_parser!(PathBuf))

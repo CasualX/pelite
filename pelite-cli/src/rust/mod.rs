@@ -8,7 +8,7 @@ mod vtables;
 pub fn command() -> clap::Command {
 	clap::Command::new("rust")
 		.about("Analyze Rust-specific patterns in PE binaries")
-		.after_help(include_str!("../../docs/rust.md"))
+		.after_help(include_str!("../docs/rust.md"))
 		.arg_required_else_help(true)
 		.subcommand(format_args::command())
 		.subcommand(fmt_template::command())

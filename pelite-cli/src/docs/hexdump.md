@@ -31,3 +31,8 @@ Example JSON output (four bytes shown):
 ```json
 [184, 1, 0, 0]
 ```
+
+When to use:
+
+Inspect exact bytes and nearby ASCII to check a signature match or
+disassembly. For known data types, use `read`.

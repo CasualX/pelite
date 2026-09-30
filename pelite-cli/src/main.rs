@@ -73,7 +73,7 @@ fn err(message: impl Into<String>) -> Box<dyn error::Error> {
 }
 
 fn cli() -> clap::Command {
-	clap::Command::new("pelite-cli")
+	let command = clap::Command::new("pelite-cli")
 		.about("Inspect Windows PE binaries")
 		.arg_required_else_help(true)
 		.arg(summary::file_arg())
@@ -103,7 +103,43 @@ fn cli() -> clap::Command {
 		.subcommand(rust::command())
 		.subcommand(version_info::command())
 		.subcommand(xref::command())
-		.subcommand(symbols::command())
+		.subcommand(symbols::command());
+
+	let guide = command.get_subcommands()
+		.map(|subcommand| guide_entry(subcommand.get_name(), &when_to_use(subcommand)))
+		.collect::<Vec<_>>()
+		.join("\n\n");
+	command.after_help(format!("When to use:\n\n{guide}"))
+}
+
+fn when_to_use(command: &clap::Command) -> String {
+	let help = command.get_after_help().expect("every subcommand has documentation").to_string();
+	let (_, section) = help.split_once("When to use:\n\n").expect("documentation has a When to use section");
+	let snippet = section.split("\n\n").next().expect("When to use section has text");
+	assert!(!snippet.trim().is_empty(), "When to use section has text");
+	snippet.split_whitespace().collect::<Vec<_>>().join(" ")
+}
+
+const TERMINAL_WIDTH: usize = 80;
+
+fn guide_entry(name: &str, snippet: &str) -> String {
+	let indent = "    ";
+	let mut entry = format!("  {name}:\n{indent}");
+	let mut line_width = indent.len();
+	for word in snippet.split_whitespace() {
+		if line_width > indent.len() && line_width + word.len() + 1 > TERMINAL_WIDTH {
+			entry.push('\n');
+			entry.push_str(indent);
+			line_width = indent.len();
+		}
+		else if line_width > indent.len() {
+			entry.push(' ');
+			line_width += 1;
+		}
+		entry.push_str(word);
+		line_width += word.len();
+	}
+	entry
 }
 
 fn run() -> Result {

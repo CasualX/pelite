@@ -60,7 +60,7 @@ impl Filter {
 pub fn command() -> clap::Command {
 	clap::Command::new("strings")
 		.about("Find ASCII, UTF-8, and UTF-16LE strings in PE sections")
-		.after_help(include_str!("../docs/strings.md"))
+		.after_help(include_str!("docs/strings.md"))
 		.arg(clap::Arg::new("file").value_name("FILE").value_parser(clap::value_parser!(PathBuf)).required(true))
 		.arg(clap::Arg::new("filter")
 			.long("filter")

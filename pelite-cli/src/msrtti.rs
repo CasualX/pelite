@@ -43,7 +43,7 @@ struct BaseClassOutput {
 pub fn command() -> clap::Command {
 	clap::Command::new("msrtti")
 		.about("Dump Microsoft C++ RTTI, vtables, and class hierarchies")
-		.after_help(include_str!("../docs/msrtti.md"))
+		.after_help(include_str!("docs/msrtti.md"))
 		.arg(clap::Arg::new("file")
 			.value_name("FILE")
 			.value_parser(clap::value_parser!(PathBuf))

@@ -90,7 +90,7 @@ struct Finding {
 pub fn command() -> clap::Command {
 	clap::Command::new("summary")
 		.about("Give a first-look summary of a possibly suspicious PE binary")
-		.after_help("Highlights facts and triage signals; it does not determine whether a file is malicious. The compile timestamp is self-reported, and signature presence is not signature validation.")
+		.after_help(include_str!("docs/summary.md"))
 		.arg(file_arg().required(true))
 }
 

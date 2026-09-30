@@ -62,3 +62,8 @@ Example JSON output for `struct { opcode: u8, immediate: [u8; 4] }`:
   "immediate": [1, 0, 0, 0]
 }
 ```
+
+When to use:
+
+Interpret data at a known PE address as a scalar, pointer, string, array,
+struct, or union. For unknown types, use `hexdump`.

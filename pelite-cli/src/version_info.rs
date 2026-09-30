@@ -17,6 +17,7 @@ pub fn command() -> clap::Command {
 	clap::Command::new("version-info")
 		.visible_alias("version_info")
 		.about("Inspect the version-information resource")
+		.after_help(include_str!("docs/version-info.md"))
 		.arg(clap::Arg::new("file")
 			.value_name("FILE")
 			.value_parser(clap::value_parser!(PathBuf))
