@@ -1,4 +1,5 @@
 use std::collections::HashSet;
+use std::fmt;
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum PointerWidth {
@@ -19,7 +20,7 @@ impl PointerWidth {
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ReadArrayType {
 	pub ty: ReadType,
-	pub len: usize,
+	pub len: u32,
 	/// Layout computed when the array is parsed for the PE pointer width.
 	pub size: u32,
 	pub align: u32,
@@ -71,9 +72,9 @@ impl ReadType {
 	}
 }
 
-fn align_up(offset: u32, align: u32) -> Result<u32, String> {
+fn align_up(offset: u32, align: u32) -> Result<u32, &'static str> {
 	offset.checked_add(align - 1).map(|value| value & !(align - 1))
-		.ok_or_else(|| "type layout exceeds RVA range".to_owned())
+		.ok_or_else(|| "type layout exceeds RVA range")
 }
 
 impl ReadType {
@@ -99,8 +100,8 @@ struct Parser<'a> {
 	pointer_width: PointerWidth,
 }
 
-impl Parser<'_> {
-	fn error(&self, message: &str) -> String {
+impl<'a> Parser<'a> {
+	fn error(&self, message: impl fmt::Display) -> String {
 		format!("{message} at byte {}", self.pos)
 	}
 
@@ -112,21 +113,21 @@ impl Parser<'_> {
 
 	fn eat(&mut self, token: u8) -> bool {
 		self.whitespace();
-		if self.input.as_bytes().get(self.pos) == Some(&token) {
-			self.pos += 1;
-			true
+		if self.input.as_bytes().get(self.pos) != Some(&token) {
+			return false;
 		}
-		else {
-			false
-		}
+		self.pos += 1;
+		true
 	}
 
 	fn expect(&mut self, token: u8) -> Result<(), String> {
-		if self.eat(token) { Ok(()) }
-		else { Err(self.error(&format!("expected '{}'", char::from(token)))) }
+		if !self.eat(token) {
+			return Err(self.error(format_args!("expected '{}'", char::from(token))));
+		}
+		Ok(())
 	}
 
-	fn identifier(&mut self) -> Result<String, String> {
+	fn identifier(&mut self) -> Result<&'a str, String> {
 		self.whitespace();
 		let start = self.pos;
 		if !self.input.as_bytes().get(self.pos).is_some_and(|byte| byte.is_ascii_alphabetic() || *byte == b'_') {
@@ -136,34 +137,40 @@ impl Parser<'_> {
 		while self.input.as_bytes().get(self.pos).is_some_and(|byte| byte.is_ascii_alphanumeric() || *byte == b'_') {
 			self.pos += 1;
 		}
-		Ok(self.input[start..self.pos].to_owned())
+		Ok(&self.input[start..self.pos])
+	}
+
+	fn array_len(&mut self) -> Result<u32, String> {
+		self.whitespace();
+		let start = self.pos;
+		while self.input.as_bytes().get(self.pos).is_some_and(u8::is_ascii_digit) {
+			self.pos += 1;
+		}
+		self.input[start..self.pos].parse::<u32>()
+			.map_err(|_| self.error("expected a decimal array length"))
 	}
 
 	fn ty(&mut self, depth: usize) -> Result<ReadType, String> {
 		if depth >= 64 {
 			return Err(self.error("type nesting is too deep"));
 		}
+
 		if self.eat(b'*') {
 			return Ok(ReadType::Ptr(Box::new(self.ty(depth + 1)?)));
 		}
+
 		if self.eat(b'[') {
 			let ty = self.ty(depth + 1)?;
 			self.expect(b';')?;
-			self.whitespace();
-			let start = self.pos;
-			while self.input.as_bytes().get(self.pos).is_some_and(u8::is_ascii_digit) {
-				self.pos += 1;
-			}
-			let len = self.input[start..self.pos].parse::<usize>()
-				.map_err(|_| self.error("expected a decimal array length fitting usize"))?;
+			let len = self.array_len()?;
 			self.expect(b']')?;
-			let (element_size, align) = ty.layout(self.pointer_width).map_err(|message| self.error(&message))?;
-			let count = u32::try_from(len).map_err(|_| self.error("array length exceeds RVA range"))?;
-			let size = element_size.checked_mul(count).ok_or_else(|| self.error("array size exceeds RVA range"))?;
+			let (element_size, align) = ty.layout(self.pointer_width).map_err(|message| self.error(message))?;
+			let size = element_size.checked_mul(len).ok_or_else(|| self.error("array size exceeds RVA range"))?;
 			return Ok(ReadType::Array(Box::new(ReadArrayType { ty, len, size, align })));
 		}
+
 		let name = self.identifier()?;
-		match name.as_str() {
+		match name {
 			"u8" => Ok(ReadType::U8),
 			"u16" => Ok(ReadType::U16),
 			"u32" => Ok(ReadType::U32),
@@ -178,47 +185,57 @@ impl Parser<'_> {
 			"cstr" => Ok(ReadType::CStr),
 			"struct" => self.structure(depth + 1, false),
 			"union" => self.structure(depth + 1, true),
-			_ => Err(self.error(&format!("unknown type '{name}'"))),
+			_ => Err(self.error(format_args!("unknown type '{name}'"))),
 		}
 	}
 
 	fn structure(&mut self, depth: usize, is_union: bool) -> Result<ReadType, String> {
+		// Optional struct name
 		let name = if self.eat(b'{') { None }
 		else {
 			let name = self.identifier()?;
 			self.expect(b'{')?;
 			Some(name)
 		};
+
+		// Parse fields
 		let mut fields: Vec<ReadStructFieldType> = Vec::new();
 		let mut field_names = HashSet::new();
 		let mut offset = 0;
 		let mut size = 0;
 		let mut align = 1;
 		while !self.eat(b'}') {
-			let name = self.identifier()?;
+			// Field name
+			let name = self.identifier()?.to_owned();
+			// Field type
 			self.expect(b':')?;
 			let ty = self.ty(depth)?;
-			let (field_size, field_align) = ty.layout(self.pointer_width).map_err(|message| self.error(&message))?;
-			let field_offset = if is_union { 0 }
-			else { align_up(offset, field_align).map_err(|message| self.error(&message))? };
+			// Field properties
+			let (field_size, field_align) = ty.layout(self.pointer_width).map_err(|message| self.error(message))?;
+			let field_offset = if is_union { 0 } else { align_up(offset, field_align).map_err(|message| self.error(message))? };
 			let field_end = field_offset.checked_add(field_size).ok_or_else(|| self.error("struct size exceeds RVA range"))?;
-			size = size.max(field_end);
-			align = align.max(field_align);
+			// Field discard
 			if name != "_" {
+				// Enforce unique name
 				if !field_names.insert(name.clone()) {
-					return Err(self.error(&format!("duplicate field '{name}'")));
+					return Err(self.error(format_args!("duplicate field '{name}'")));
 				}
 				fields.push(ReadStructFieldType { name, offset: field_offset, ty });
 			}
+			// Update struct properties
 			if !is_union {
 				offset = field_end;
 			}
+			size = size.max(field_end);
+			align = align.max(field_align);
 			if !self.eat(b',') {
 				self.expect(b'}')?;
 				break;
 			}
 		}
-		let size = align_up(size, align).map_err(|message| self.error(&message))?;
+
+		let size = align_up(size, align).map_err(|message| self.error(message))?;
+		let name = name.map(str::to_owned);
 		Ok(ReadType::Struct(Box::new(ReadStructType { name, fields, size, align })))
 	}
 }

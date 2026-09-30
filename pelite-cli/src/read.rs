@@ -141,7 +141,7 @@ fn try_read_value(pe: pelite::PeFile<'_>, rva: u32, ty: &ReadType, options: &Rea
 			let (stride, _) = array.ty.layout(pointer_width).map_err(err)?;
 			let mut values = Vec::new();
 			for index in 0..array.len {
-				let offset = u32::try_from(index).ok().and_then(|index| index.checked_mul(stride));
+				let offset = index.checked_mul(stride);
 				values.push(read_offset(pe, rva, offset, &array.ty, options));
 			}
 			return Ok(serde_json::Value::Array(values));
