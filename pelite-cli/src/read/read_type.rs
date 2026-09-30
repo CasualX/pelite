@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum PointerWidth {
 	Bits32,
@@ -188,14 +190,12 @@ impl Parser<'_> {
 			Some(name)
 		};
 		let mut fields: Vec<ReadStructFieldType> = Vec::new();
+		let mut field_names = HashSet::new();
 		let mut offset = 0;
 		let mut size = 0;
 		let mut align = 1;
 		while !self.eat(b'}') {
 			let name = self.identifier()?;
-			if fields.iter().any(|field| field.name == name) {
-				return Err(self.error(&format!("duplicate field '{name}'")));
-			}
 			self.expect(b':')?;
 			let ty = self.ty(depth)?;
 			let (field_size, field_align) = ty.layout(self.pointer_width).map_err(|message| self.error(&message))?;
@@ -204,7 +204,12 @@ impl Parser<'_> {
 			let field_end = field_offset.checked_add(field_size).ok_or_else(|| self.error("struct size exceeds RVA range"))?;
 			size = size.max(field_end);
 			align = align.max(field_align);
-			fields.push(ReadStructFieldType { name, offset: field_offset, ty });
+			if name != "_" {
+				if !field_names.insert(name.clone()) {
+					return Err(self.error(&format!("duplicate field '{name}'")));
+				}
+				fields.push(ReadStructFieldType { name, offset: field_offset, ty });
+			}
 			if !is_union {
 				offset = field_end;
 			}
@@ -284,6 +289,32 @@ fn unions_overlay_fields_and_use_largest_field_layout() {
 	assert_eq!(ty.layout(PointerWidth::Bits32).unwrap(), (4, 2));
 	let ReadType::Struct(empty) = parse("union {}", PointerWidth::Bits32).unwrap() else { panic!("expected a union") };
 	assert_eq!((empty.size, empty.align), (0, 1));
+}
+
+#[test]
+fn discarded_fields_contribute_to_layout() {
+	for pointer_width in [PointerWidth::Bits32, PointerWidth::Bits64] {
+		let ty = parse("struct { _: u8, a: u16, _: [u8; 3], _: u8, b: u32 }", pointer_width).unwrap();
+		let ReadType::Struct(structure) = ty else { panic!("expected a struct") };
+		assert_eq!(structure.fields.iter().map(|field| (field.name.as_str(), field.offset)).collect::<Vec<_>>(), [("a", 2), ("b", 8)]);
+		assert_eq!((structure.size, structure.align), (12, 4));
+
+		let ty = parse("union { _: [u8; 8], value: u16, _: u32 }", pointer_width).unwrap();
+		let ReadType::Struct(structure) = ty else { panic!("expected a union") };
+		assert_eq!(structure.fields.iter().map(|field| (field.name.as_str(), field.offset)).collect::<Vec<_>>(), [("value", 0)]);
+		assert_eq!((structure.size, structure.align), (8, 4));
+	}
+}
+
+#[test]
+fn rejects_duplicate_named_fields_in_each_structure() {
+	for pointer_width in [PointerWidth::Bits32, PointerWidth::Bits64] {
+		for source in ["struct { x: u8, _: u8, x: u16 }", "union { x: u8, x: u16 }"] {
+			assert!(parse(source, pointer_width).unwrap_err().contains("duplicate field 'x'"));
+		}
+		assert!(parse("struct { x: u8, inner: struct { x: u16 } }", pointer_width).is_ok());
+		assert!(parse("struct { _: cstr }", pointer_width).is_err());
+	}
 }
 
 #[test]
