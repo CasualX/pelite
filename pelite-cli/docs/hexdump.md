@@ -5,7 +5,10 @@ Usage:
     pelite-cli hexdump FILE RANGE [--format=text|json|json-pretty]
 
 RANGE is `kind:START..END` and accepts decimal or hex: `rva:4096..5000`,
-`va:0x180001000..0x180001004`, or `fo:512`; the end is excluded.
+`va:0x180001000..0x180001004`, or `fo:512..576`; the end is excluded.
+Prefix the second number with `+` to give a length instead, for example
+`rva:0x1000..+10` ends at `0x100a`.
+
 One prefix applies to both endpoints. File offset ranges must map
 to contiguous PE image bytes.
 

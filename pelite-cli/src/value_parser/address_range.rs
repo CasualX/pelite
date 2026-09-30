@@ -20,7 +20,23 @@ impl AddressRange {
 			return Err("expected exactly one '..' range separator".to_owned());
 		}
 		let start = Address::parse_parts(kind, start.trim()).map_err(|error| format!("invalid range start: {error}"))?;
-		let end = Address::parse_parts(kind, end.trim()).map_err(|error| format!("invalid range end: {error}"))?;
+		let end = end.trim();
+		let end = if let Some(offset) = end.strip_prefix('+') {
+			let offset = offset.trim();
+			if offset.starts_with('+') {
+				return Err("invalid range end: expected a single '+' prefix".to_owned());
+			}
+			let offset = Address::parse_parts(kind, offset).map_err(|error| format!("invalid range end: {error}"))?;
+			match (start, offset) {
+				(Address::Rva(start), Address::Rva(offset)) => start.checked_add(offset).map(Address::Rva),
+				(Address::Va(start), Address::Va(offset)) => start.checked_add(offset).map(Address::Va),
+				(Address::Fo(start), Address::Fo(offset)) => start.checked_add(offset).map(Address::Fo),
+				_ => unreachable!("range endpoints have the same address kind"),
+			}.ok_or_else(|| "range end overflows".to_owned())?
+		}
+		else {
+			Address::parse_parts(kind, end).map_err(|error| format!("invalid range end: {error}"))?
+		};
 		let ordered = match (start, end) {
 			(Address::Rva(start), Address::Rva(end)) => start < end,
 			(Address::Va(start), Address::Va(end)) => start < end,
@@ -60,8 +76,12 @@ fn parses_address_ranges() {
 		("rva:1000..1100", Address::Rva(1000), Address::Rva(1100)),
 		("rva:0x1000..0X1100", Address::Rva(0x1000), Address::Rva(0x1100)),
 		("rva:4096..0x1100", Address::Rva(4096), Address::Rva(0x1100)),
+		("rva:0x1000..+10", Address::Rva(0x1000), Address::Rva(0x100a)),
+		("rva:0x1000..+0x10", Address::Rva(0x1000), Address::Rva(0x1010)),
 		("va:6442455040..6442455296", Address::Va(0x180001000), Address::Va(0x180001100)),
+		("va:0x180001000..+0x20", Address::Va(0x180001000), Address::Va(0x180001020)),
 		("fo: 0x400 .. 0x500 ", Address::Fo(0x400), Address::Fo(0x500)),
+		("fo: 0x400 .. + 10 ", Address::Fo(0x400), Address::Fo(0x40a)),
 	] {
 		assert_eq!(AddressRange::parse(value), Ok(AddressRange { start, end }));
 	}
@@ -75,6 +95,8 @@ fn rejects_invalid_address_ranges() {
 		"rva:1000..rva:1100", "rva:1000..va:1100", "offset:400..500",
 		"rva:1000h..1100", "rva:1000..1100h", "rva:ff..1100",
 		"rva:0..4294967296", "rva:0..0x100000000", "va:0..18446744073709551616",
+		"rva:0x1000..+", "rva:0x1000..++10", "rva:0x1000..+0", "rva:0xfffffff0..+0x20",
+		"va:0xffffffffffffffff..+1", "fo:0xffffffffffffffff..+1",
 	] {
 		assert!(AddressRange::parse(value).is_err(), "accepted {value}");
 	}

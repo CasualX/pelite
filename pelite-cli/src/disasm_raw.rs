@@ -29,12 +29,12 @@ pub fn command() -> clap::Command {
 			.value_name("FILE")
 			.required(true)
 			.help("Raw binary file, or - for standard input"))
-		.arg(clap::Arg::new("machine")
-			.long("machine")
-			.value_name("MACHINE")
-			.value_parser(["x86", "x86_64"])
+		.arg(clap::Arg::new("arch")
+			.long("arch")
+			.value_name("ARCH")
+			.value_parser(Arch::parse)
 			.required(true)
-			.help("Instruction set and mode"))
+			.help("Instruction set and mode (x86 or x86_64)"))
 		.arg(clap::Arg::new("offset")
 			.long("offset")
 			.value_name("BYTES")
@@ -73,11 +73,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	else {
 		bytes = fs::read(path)?;
 	}
-	let bitness = match matches.get_one::<String>("machine").expect("required by clap").as_str() {
-		"x86" => 32,
-		"x86_64" => 64,
-		_ => unreachable!("validated by clap"),
-	};
+	let bitness = matches.get_one::<Arch>("arch").expect("required by clap").bitness();
 	let offset = usize::try_from(*matches.get_one::<u64>("offset").expect("defaulted by clap"))?;
 	if offset > bytes.len() {
 		return Err(err(format!("offset {offset:#x} exceeds input length {:#x}", bytes.len())));

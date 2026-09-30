@@ -2,7 +2,7 @@ Disassemble raw x86 bytes
 
 Usage:
 
-    pelite-cli disasm-raw FILE --machine x86|x86_64 [--offset BYTES] [--length BYTES] [--base ADDRESS] [--lookback BYTES] [--hex] [--format=text|json|json-pretty]
+    pelite-cli disasm-raw FILE --arch x86|x86_64 [--offset BYTES] [--length BYTES] [--base ADDRESS] [--lookback BYTES] [--hex] [--format=text|json|json-pretty]
 
 FILE is a binary file, or `-` for standard input. `--offset` starts at a file
 offset (default: 0); `--length` sets the selected byte count (default: through
@@ -20,8 +20,8 @@ Text is the default. JSON output contains each instruction's file `offset`,
 
 Examples:
 
-    pelite-cli disasm-raw code.bin --machine x86_64 --offset 0x100 --length 64 --base 0x180000000 --hex
-    printf '\xb8\x01\x00\x00\x00\xc3' | pelite-cli disasm-raw - --machine x86 --base 0x1000 --format=json
+    pelite-cli disasm-raw code.bin --arch x86_64 --offset 0x100 --length 64 --base 0x180000000 --hex
+    printf '\xb8\x01\x00\x00\x00\xc3' | pelite-cli disasm-raw - --arch x86 --base 0x1000 --format=json
 
 Example JSON output for the second command:
 
