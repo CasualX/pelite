@@ -2,14 +2,20 @@ Disassemble instructions from a PE image
 
 Usage:
 
-    pelite-cli disasm FILE RANGE [--hex] [--lookback BYTES] [--format=text|json|json-pretty]
+    pelite-cli disasm FILE RANGE [--arch x86|x86_64] [--hex] [--lookback BYTES] [--format=text|json|json-pretty]
 
 RANGE is `kind:START..END` and accepts decimal or hex: `rva:4096..5000`,
-`va:0x180001000..0x180001004`, or `fo:512`; the end is excluded.
+`va:0x180001000..0x180001004`, or `fo:512..576`; the end is excluded.
+Prefix the second number with `+` to give a length instead, for example
+`rva:0x1000..+10` ends at `0x100a`.
+
 One prefix applies to both endpoints. File offset ranges must map
 to contiguous PE image bytes.
 
 Disassembly starts at START and proceeds through the range in address order.
+The PE machine header selects x86 or x86_64 by default. Use `--arch` to override
+the decoding mode.
+
 Start at an instruction boundary: decoding from the middle of an instruction
 can produce misleading results. Branches are not followed, and embedded data
 may be decoded as instructions.
@@ -31,7 +37,9 @@ See `disasm-raw` to decode raw bytes.
 Examples:
 
     pelite-cli disasm sample.dll rva:0x1000..0x1100
+    pelite-cli disasm sample.dll rva:0x1000..+0x100
     pelite-cli disasm sample.dll fo:1024..1152 --hex
+    pelite-cli disasm sample.dll rva:0x1000..0x1100 --arch x86
     pelite-cli disasm sample.dll va:0x180001000..0x180001080 --lookback 16
     pelite-cli disasm sample.dll rva:0x1000..0x1100 --format=json-pretty
 

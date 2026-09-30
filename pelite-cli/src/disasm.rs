@@ -86,6 +86,11 @@ pub fn command() -> clap::Command {
 			.value_name("RANGE")
 			.value_parser(AddressRange::parse)
 			.required(true))
+		.arg(clap::Arg::new("arch")
+			.long("arch")
+			.value_name("ARCH")
+			.value_parser(Arch::parse)
+			.help("Override the PE machine header (x86 or x86_64)"))
 		.arg(clap::Arg::new("hex")
 			.long("hex")
 			.action(clap::ArgAction::SetTrue)
@@ -104,10 +109,15 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let map = pelite::FileMap::open(path)?;
 	let pe = pelite::PeFile::from_bytes(&map)?;
 	let range = range.to_rva(pe)?;
-	let bitness = match pe.file_header().Machine {
-		image::IMAGE_FILE_MACHINE_I386 => 32,
-		image::IMAGE_FILE_MACHINE_AMD64 => 64,
-		machine => return Err(err(format!("unsupported machine type {machine:#06x}; expected i386 or AMD64"))),
+	let bitness = if let Some(arch) = matches.get_one::<Arch>("arch") {
+		arch.bitness()
+	}
+	else {
+		match pe.file_header().Machine {
+			image::IMAGE_FILE_MACHINE_I386 => 32,
+			image::IMAGE_FILE_MACHINE_AMD64 => 64,
+			machine => return Err(err(format!("unsupported machine type {machine:#06x}; expected i386 or AMD64"))),
+		}
 	};
 	let len = usize::try_from(range.end - range.start)?;
 	let bytes = pe.slice(range.start, len, 1)?;
