@@ -24,3 +24,8 @@ EXPORTS
 ??0Passwds@@QEAA@PEBD@Z
 ??1Passwds@@QEAA@XZ
 ```
+
+When to use:
+
+Generate a `.def` file from named DLL exports, for example to create an import
+library.

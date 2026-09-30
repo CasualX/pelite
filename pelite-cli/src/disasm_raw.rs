@@ -24,7 +24,7 @@ fn parse_number(value: &str) -> std::result::Result<u64, String> {
 pub fn command() -> clap::Command {
 	clap::Command::new("disasm-raw")
 		.about("Disassemble raw x86 bytes without parsing a PE file")
-		.after_help(include_str!("../docs/disasm-raw.md"))
+		.after_help(include_str!("docs/disasm-raw.md"))
 		.arg(clap::Arg::new("file")
 			.value_name("FILE")
 			.required(true)

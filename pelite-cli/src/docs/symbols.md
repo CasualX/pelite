@@ -39,3 +39,8 @@ Example JSON output (one symbol shown):
   }
 ]
 ```
+
+When to use:
+
+Map likely code and data targets before investigating specific addresses. For
+references to one target, use `xref`.

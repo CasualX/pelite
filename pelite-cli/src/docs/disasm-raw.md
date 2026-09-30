@@ -31,3 +31,8 @@ Example JSON output for the second command:
   { "offset": 5, "ip": 4101, "bytes": [195], "instruction": "ret" }
 ]
 ```
+
+When to use:
+
+Disassemble raw x86 or x86_64 bytes from a payload, file, or stream. For
+mapped PE addresses, use `disasm`.

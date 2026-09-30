@@ -18,38 +18,7 @@ Passing a file directly runs `summary`. The summary covers image details, sectio
 
 To install the binary from this checkout, run `cargo install --path pelite-cli`.
 
-## Commands
-
-| Command | What it does |
-| --- | --- |
-| `summary` | Show a first-look report with image details, hashes, sections, imports, and signals to review. |
-| `inspect` | Inspect selected PE headers and directories, such as sections, imports, and exports. |
-| `resources tree` | List the resource tree. |
-| `resources cat` | Read a resource payload. |
-| `resources fsck` | Validate the resource tree. |
-| `resources icons list` | List and validate icon groups. |
-| `resources icons extract` | Extract icon groups as `.ico` files. |
-| `resources cursors list` | List and validate cursor groups. |
-| `resources cursors extract` | Extract cursor groups as `.cur` files. |
-| `version-info` | Read the version-information resource. |
-| [`strings`](docs/strings.md) | Find ASCII, UTF-8, and UTF-16LE strings in PE sections with a heuristic confidence score. |
-| [`findsig`](docs/findsig.md) | Search the image for byte patterns. |
-| [`addr`](docs/addr.md) | Convert between an RVA, virtual address, and file offset. |
-| [`xref`](docs/xref.md) | Find candidate pointers and relative references; confirm matches in surrounding code or data. |
-| [`read`](docs/read.md) | Read scalars, strings, typed pointers, arrays, structs, and unions at an address. |
-| [`symbols`](docs/symbols.md) | Discover candidate code and data symbols using disassembly and base relocations. |
-| [`hexdump`](docs/hexdump.md) | Display bytes from an address range. |
-| [`disasm`](docs/disasm.md) | Disassemble instructions from an address range. |
-| [`disasm-raw`](docs/disasm-raw.md) | Disassemble arbitrary x86 or x86_64 bytes from a file or standard input. |
-| [`imphash`](docs/imphash.md) | Calculate the conventional MD5 import hash. |
-| [`depwalk`](docs/depwalk.md) | Walk imported modules and forwarded exports, check symbols, and report missing modules, malformed PE data, and dependency cycles. |
-| [`module-def`](docs/module-def.md) | Generate a module-definition file from a DLL's exports. |
-| [`msrtti`](docs/msrtti.md) | Dump Microsoft C++ RTTI, vtables, and class hierarchies. |
-| [`rust`](docs/rust.md) | Analyze Rust formatting templates, panic locations, and trait vtables. |
-| [`markov`](docs/markov.md) | Generate bytes from executable PE sections using a Markov chain. |
-| [`edit`](docs/edit.md) | Edit a PE file in place or write a separate file, including repair or conversion. |
-
-Run `cargo run -p pelite-cli -- COMMAND --help` for arguments and options. The [demo examples](../demo/readme.md) show inspection, resource extraction, signature searches, and generated output files.
+Run `cargo run -p pelite-cli -- COMMAND --help` for arguments and examples. The [demo examples](../demo/readme.md) show inspection, resource extraction, signature searches, and generated output files.
 
 ## Output formats
 

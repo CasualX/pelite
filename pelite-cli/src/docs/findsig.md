@@ -1,4 +1,4 @@
-Find byte patterns in a PE image
+Find patterns in a PE image
 
 Usage:
 
@@ -25,3 +25,8 @@ Example JSON output:
   "matches": [[6448, 4097], [6476, 4097]]
 }
 ```
+
+When to use:
+
+Locate a known byte or instruction pattern across PE sections; optionally
+capture values from each match.

@@ -7,7 +7,7 @@ type Buckets = Vec<[u64; 256]>;
 pub fn command() -> clap::Command {
 	clap::Command::new("markov")
 		.about("Generate bytes from executable PE sections using a Markov chain")
-		.after_help(include_str!("../docs/markov.md"))
+		.after_help(include_str!("docs/markov.md"))
 		.arg(clap::Arg::new("count")
 			.value_name("COUNT")
 			.value_parser(clap::value_parser!(usize))

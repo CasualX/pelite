@@ -21,3 +21,8 @@ Example JSON output:
 ```json
 [207, 232, 31, 132, 0, 0, 255, 76]
 ```
+
+When to use:
+
+Generate synthetic bytes from executable PE sections for experiments or test
+data; the bytes may not be valid code.

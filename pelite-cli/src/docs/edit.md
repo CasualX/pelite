@@ -23,3 +23,8 @@ Examples:
     pelite-cli edit sample.dll --fix-section-names -o sample-edited.dll
     pelite-cli edit sample.dll --fix-section-names
     pelite-cli edit image.dll --image --fix-baserelocs
+
+When to use:
+
+Convert a PE memory image or repair its relocation directory or section names
+before analysis.

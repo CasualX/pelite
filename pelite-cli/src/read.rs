@@ -21,7 +21,7 @@ struct ReadOptions {
 pub fn command() -> clap::Command {
 	clap::Command::new("read")
 		.about("Read typed data at a PE address")
-		.after_help(include_str!("../docs/read.md"))
+		.after_help(include_str!("docs/read.md"))
 		.arg(clap::Arg::new("file")
 			.value_name("FILE")
 			.value_parser(clap::value_parser!(PathBuf))

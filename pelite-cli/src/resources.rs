@@ -110,6 +110,7 @@ struct PreparedGroup {
 pub fn command() -> clap::Command {
 	clap::Command::new("resources")
 		.about("Browse and validate the PE resource filesystem")
+		.after_help(include_str!("docs/resources.md"))
 		.subcommand_required(true)
 		.arg_required_else_help(true)
 		.subcommand(clap::Command::new("tree")
@@ -133,7 +134,6 @@ pub fn command() -> clap::Command {
 			.arg(file_arg()))
 		.subcommand(group_command(GroupKind::Icon))
 		.subcommand(group_command(GroupKind::Cursor))
-		.after_help("Resource paths look like /#MANIFEST/#1/#1033. In text mode, 'cat' writes raw bytes with no decoration, making it safe to pipe or redirect.")
 }
 
 pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {

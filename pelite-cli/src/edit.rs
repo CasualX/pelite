@@ -5,7 +5,7 @@ mod fix_section_names;
 pub fn command() -> clap::Command {
 	clap::Command::new("edit")
 		.about("Edit a PE file")
-		.after_help(include_str!("../docs/edit.md"))
+		.after_help(include_str!("docs/edit.md"))
 		.arg(summary::file_arg().required(true))
 		.arg(clap::Arg::new("output")
 			.long("output")

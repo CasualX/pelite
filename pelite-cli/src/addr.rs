@@ -11,7 +11,7 @@ struct ConvertedAddress<'a> {
 pub fn command() -> clap::Command {
 	clap::Command::new("addr")
 		.about("Convert a PE address between RVA, VA, and file offset")
-		.after_help(include_str!("../docs/addr.md"))
+		.after_help(include_str!("docs/addr.md"))
 		.arg(clap::Arg::new("file")
 			.value_name("FILE")
 			.value_parser(clap::value_parser!(PathBuf))

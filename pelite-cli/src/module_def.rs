@@ -9,7 +9,7 @@ struct ModuleDefinition {
 pub fn command() -> clap::Command {
 	clap::Command::new("module-def")
 		.about("Generate a module-definition file from exports")
-		.after_help(include_str!("../docs/module-def.md"))
+		.after_help(include_str!("docs/module-def.md"))
 		.arg(clap::Arg::new("dll")
 			.value_name("DLL")
 			.value_parser(clap::value_parser!(PathBuf))

@@ -32,3 +32,7 @@ Example JSON output (one template shown):
   }
 ]
 ```
+
+When to use:
+
+Find Rust formatting templates and the x64 code locations that reference them.

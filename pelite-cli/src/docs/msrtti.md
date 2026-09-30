@@ -30,3 +30,8 @@ Example JSON output (one type shown):
   }
 ]
 ```
+
+When to use:
+
+Investigate class names, inheritance, or virtual methods in a 32-bit Microsoft
+C++ binary with RTTI and base relocations.

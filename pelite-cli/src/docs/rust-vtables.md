@@ -26,3 +26,8 @@ Example JSON output (one vtable shown):
   { "address": 8192, "size": 16, "align": 8, "functions": 2, "comments": [] }
 ]
 ```
+
+When to use:
+
+Investigate candidate Rust trait vtables, including type size, alignment, and
+method pointers; use `xref` to check references.
