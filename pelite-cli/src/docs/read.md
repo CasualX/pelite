@@ -2,7 +2,7 @@ Read typed data from a PE image
 
 Usage:
 
-    pelite-cli read FILE ADDRESS TYPE [--max-string-bytes N] [--format=text|json|json-pretty]
+    pelite-cli read FILE ADDRESS TYPE [--max-string-bytes N] [--max-dynamic-array-length N] [--format=text|json|json-pretty]
 
 ADDRESS is `kind:number` and accepts decimal or hex: `rva:4096`, `va:0x180001000`, or `fo:1024`.
 
@@ -15,12 +15,21 @@ TYPE describes the bytes at ADDRESS:
     ptr                  VirtualAddress converted to its target RVA
     *T                   VirtualAddress, then read T at its target RVA
     [T; N]               N consecutive values of T (decimal N)
+    [T; field]           length read from an earlier unsigned struct field
     struct { a: T, ... } fields laid out with natural C alignment
     union { a: T, ... }  all fields read from the same address
 
 Field names must be unique within each struct or union. Use `_` for a field
 whose value should be discarded; it can appear more than once. Its type is
 parsed normally and still contributes to the size and alignment.
+
+An array length field must be `u8`, `u16`, `u32`, or `u64` in the same struct.
+
+A field-length array or bare `cstr` must be the final struct field, since its
+size depends on the data. Dynamic fields cannot be union fields. An unsized struct
+can be read directly or through a pointer, but cannot be embedded in an array or
+another struct. `--max-dynamic-array-length` limits field-length arrays;
+values above the limit produce a read error.
 
 Integers and floats are little-endian. `ptr` and `*T` use 4 bytes in PE32
 and 8 bytes in PE32+. A zero pointer produces JSON null; a nonzero pointer
@@ -37,7 +46,7 @@ unions are optional and do not change the output. Struct fields are aligned
 to their own alignment; the total size is padded to the largest alignment,
 which also sets the stride of an array of structs. Union size is the largest
 field size, rounded to its largest alignment. A bare `cstr` has no fixed size,
-so use `*cstr` for a string field or array element. Quote compound TYPEs in
+so use `*cstr` for a nonfinal string field or array element. Quote compound TYPEs in
 the shell, especially those containing spaces, semicolons, or `*`.
 
 Examples:
@@ -46,6 +55,7 @@ Examples:
     pelite-cli read sample.dll fo:1024 'struct { flags: u16, count: u32, name: *cstr }' --format=json-pretty
     pelite-cli read sample.dll rva:0x3000 '*[f32; 3]' --format=json
     pelite-cli read sample.dll va:0x180004000 '[union { raw: u32, target: ptr }; 4]'
+    pelite-cli read sample.dll rva:0x4000 'struct { count: u16, values: [u32; count] }' --max-dynamic-array-length 1024
 
 Results follow TYPE: scalars become JSON numbers, `cstr` becomes a string,
 arrays become arrays, and structs/unions become objects keyed by field name.
@@ -65,5 +75,5 @@ Example JSON output for `struct { opcode: u8, immediate: [u8; 4] }`:
 
 When to use:
 
-Interpret data at a known PE address as a scalar, pointer, string, array,
-struct, or union. For unknown types, use `hexdump`.
+Interpret structured data at a known PE address as a scalar, pointer, string, array,
+struct, or union.
