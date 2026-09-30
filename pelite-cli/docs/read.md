@@ -18,6 +18,10 @@ TYPE describes the bytes at ADDRESS:
     struct { a: T, ... } fields laid out with natural C alignment
     union { a: T, ... }  all fields read from the same address
 
+Field names must be unique within each struct or union. Use `_` for a field
+whose value should be discarded; it can appear more than once. Its type is
+parsed normally and still contributes to the size and alignment.
+
 Integers and floats are little-endian. `ptr` and `*T` use 4 bytes in PE32
 and 8 bytes in PE32+. A zero pointer produces JSON null; a nonzero pointer
 must convert to a valid RVA. `ptr` gives an RVA number, while `*T` reads the
