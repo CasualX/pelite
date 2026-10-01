@@ -46,7 +46,7 @@ pub fn command() -> clap::Command {
 		.arg(clap::Arg::new("max-dynamic-array-length")
 			.long("max-dynamic-array-length")
 			.value_name("MAX_DYNAMIC_ARRAY_LENGTH")
-			.value_parser(clap::value_parser!(u64))
+			.value_parser(clap::value_parser!(u32))
 			.default_value(DEFAULT_MAX_DYNAMIC_ARRAY_LENGTH)
 			.help("Maximum element count for a field-length array"))
 		.arg(clap::Arg::new("type")
