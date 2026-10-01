@@ -181,7 +181,7 @@ fn summarize(path: &Path, bytes: &[u8], pe: PeFile<'_>) -> Result<Summary> {
 		findings.push(Finding { level: "note", message: format!("{unexplained_overlay} bytes follow the last section outside the certificate table") });
 	}
 
-	let (imports, imphash) = summarize_imports(pe, &mut findings)?;
+	let (imports, imphash) = summarize_imports(pe, &mut findings);
 	if !imports.notable.is_empty() {
 		findings.push(Finding { level: "note", message: "Notable imports suggest capabilities worth reviewing; imports alone do not prove behavior".to_owned() });
 	}
@@ -265,19 +265,31 @@ impl OptionalHeaderSize for Wrap<&image::IMAGE_OPTIONAL_HEADER32, &image::IMAGE_
 	}
 }
 
-fn summarize_imports(pe: PeFile<'_>, findings: &mut Vec<Finding>) -> Result<(Imports, String)> {
+fn summarize_imports(pe: PeFile<'_>, findings: &mut Vec<Finding>) -> (Imports, String) {
 	let mut libraries = Vec::new();
 	let mut normalized = Vec::new();
 	let mut notable = BTreeMap::<&'static str, Vec<String>>::new();
+	let mut failed = false;
 	match pe.imports() {
 		Ok(directory) => for descriptor in directory {
-			let dll = descriptor.dll_name()?.to_str()?.to_owned();
+			let dll = match descriptor.dll_name().ok().and_then(|name| name.to_str().ok()) {
+				Some(name) => name.to_owned(),
+				None => { failed = true; continue; },
+			};
+			let imports = match descriptor.int() {
+				Ok(imports) => imports,
+				Err(_) => { failed = true; continue; },
+			};
 			let dll_hash = strip_library_extension(&dll.to_ascii_lowercase()).to_owned();
 			let mut count = 0;
-			for import in descriptor.int()? {
-				let symbol = match import? {
-					pelite::Import::ByName { name, .. } => name.to_str()?.to_owned(),
-					pelite::Import::ByOrdinal { ord } => format!("ord{ord}"),
+			for import in imports {
+				let symbol = match import {
+					Ok(pelite::Import::ByName { name, .. }) => match name.to_str() {
+						Ok(name) => name.to_owned(),
+						Err(_) => { failed = true; continue; },
+					},
+					Err(_) => { failed = true; continue; },
+					Ok(pelite::Import::ByOrdinal { ord }) => format!("ord{ord}"),
 				};
 				normalized.push(format!("{dll_hash}.{}", symbol.to_ascii_lowercase()));
 				if let Some(category) = import_category(&symbol) {
@@ -288,12 +300,15 @@ fn summarize_imports(pe: PeFile<'_>, findings: &mut Vec<Finding>) -> Result<(Imp
 			libraries.push(LibraryImports { name: dll, functions: count });
 		},
 		Err(error) if error.is_null() => (),
-		Err(_) => findings.push(Finding { level: "warning", message: "Import directory could not be parsed".to_owned() }),
+		Err(_) => failed = true,
+	}
+	if failed {
+		findings.push(Finding { level: "warning", message: "Some imports could not be parsed; import counts may be incomplete and the import hash is unavailable".to_owned() });
 	}
 	let input = normalized.join(",");
 	let functions = libraries.iter().map(|library| library.functions).sum();
-	let imphash = format!("{:x}", md5::compute(input.as_bytes()));
-	Ok((Imports { libraries: libraries.len(), functions, by_library: libraries, notable }, imphash))
+	let imphash = if failed { "unavailable".to_owned() } else { format!("{:x}", md5::compute(input.as_bytes())) };
+	(Imports { libraries: libraries.len(), functions, by_library: libraries, notable }, imphash)
 }
 
 fn strip_library_extension(name: &str) -> &str {

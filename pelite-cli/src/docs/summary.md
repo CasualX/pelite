@@ -10,6 +10,9 @@ hashes, image and section details, mitigations, imports, and findings that may
 merit closer inspection. Text is the default; use `json` or `json-pretty` for
 structured output.
 
+If import data is damaged, the report includes the imports it can read and
+marks the import hash unavailable.
+
 Findings are clues, not a malware verdict. The compile timestamp comes from
 the file itself, and certificate-table presence does not validate a signature.
 

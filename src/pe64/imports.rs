@@ -41,7 +41,7 @@ pub use crate::ImportEntry;
 //
 // These aren't actually virtual addresses.
 // This function will decode them to get the import.
-fn import_from_va<'a, P: Copy + Pe<'a>>(pe: P, &va: &'a Va) -> Result<Import<'a>> {
+fn import_from_va<'a, P: Copy + Pe<'a>>(pe: P, va: Va) -> Result<Import<'a>> {
 	if va == 0 {
 		return Err(Error::Null);
 	}
@@ -149,7 +149,7 @@ impl<'a, P: Copy + Pe<'a>> fmt::Debug for ImportDirectory<'a, P> {
 #[derive(Copy, Clone)]
 pub struct ImportAddressTable<'a, P> {
 	pe: P,
-	image: &'a [Va],
+	image: &'a [UnalignedVa],
 }
 impl<'a, P: Copy + Pe<'a>> ImportAddressTable<'a, P> {
 	pub(crate) fn try_from(pe: P) -> Result<ImportAddressTable<'a, P>> {
@@ -157,7 +157,7 @@ impl<'a, P: Copy + Pe<'a>> ImportAddressTable<'a, P> {
 		if datadir.VirtualAddress == 0 {
 			return Err(Error::Null);
 		}
-		let (len, rem) = (datadir.Size as usize / mem::size_of::<Va>(), datadir.Size as usize % mem::size_of::<Va>());
+		let (len, rem) = (datadir.Size as usize / mem::size_of::<UnalignedVa>(), datadir.Size as usize % mem::size_of::<UnalignedVa>());
 		if rem != 0 {
 			return Err(Error::Invalid);
 		}
@@ -169,7 +169,7 @@ impl<'a, P: Copy + Pe<'a>> ImportAddressTable<'a, P> {
 		self.pe
 	}
 	/// Returns the underlying iat array.
-	pub fn image(&self) -> &'a [Va] {
+	pub fn image(&self) -> &'a [UnalignedVa] {
 		self.image
 	}
 	/// Returns an iterator over the IAT.
@@ -177,9 +177,9 @@ impl<'a, P: Copy + Pe<'a>> ImportAddressTable<'a, P> {
 	/// Bound or loader-resolved slots can contain virtual addresses rather than
 	/// import-name RVAs and consequently produce decoding errors. Use the import
 	/// descriptors' [`ImportDescriptor::int`] tables for authoritative symbol names.
-	pub fn iter(&self) -> iter::Map<slice::Iter<'a, Va>, impl Clone + FnMut(&'a Va) -> (&'a Va, Result<Import<'a>>)> {
+	pub fn iter(&self) -> impl Clone + ExactSizeIterator + Iterator<Item = (&'a UnalignedVa, Result<Import<'a>>)> {
 		let pe = self.pe;
-		self.image.iter().map(move |va| (va, import_from_va(pe, va)))
+		self.image.iter().map(move |va| (va, import_from_va(pe, va.get())))
 	}
 }
 #[rustfmt::skip]
@@ -270,11 +270,11 @@ impl<'a, P: Copy + Pe<'a>> ImportDescriptor<'a, P> {
 	/// * [`Null`][crate::Error::Null]: The import address table RVA is zero.
 	/// * [`Bounds`][crate::Error::Bounds]: The table lies outside the image or has no terminating entry.
 	/// * [`Misaligned`][crate::Error::Misaligned], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: The table cannot be read.
-	pub fn iat(&self) -> Result<slice::Iter<'a, Va>> {
+	pub fn iat(&self) -> Result<slice::Iter<'a, UnalignedVa>> {
 		if self.image.FirstThunk.get() == 0 {
 			return Err(Error::Null);
 		}
-		let slice = self.pe.derva_slice_s(self.image.FirstThunk.get(), 0)?;
+		let slice = self.pe.derva_slice_s(self.image.FirstThunk.get(), UnalignedVa::from(0))?;
 		Ok(slice.iter())
 	}
 	/// Returns the import name table.
@@ -284,13 +284,13 @@ impl<'a, P: Copy + Pe<'a>> ImportDescriptor<'a, P> {
 	/// * [`Null`][crate::Error::Null]: The import name table RVA is zero.
 	/// * [`Bounds`][crate::Error::Bounds]: The table lies outside the image or has no terminating entry.
 	/// * [`Misaligned`][crate::Error::Misaligned], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: The table cannot be read.
-	pub fn int(&self) -> Result<iter::Map<slice::Iter<'a, Va>, impl Clone + FnMut(&'a Va) -> Result<Import<'a>>>> {
+	pub fn int(&self) -> Result<impl Clone + ExactSizeIterator + Iterator<Item = Result<Import<'a>>>> {
 		if self.image.OriginalFirstThunk.get() == 0 {
 			return Err(Error::Null);
 		}
-		let slice = self.pe.derva_slice_s(self.image.OriginalFirstThunk.get(), 0)?;
+		let slice: &[UnalignedVa] = self.pe.derva_slice_s(self.image.OriginalFirstThunk.get(), UnalignedVa::from(0))?;
 		let pe = self.pe;
-		Ok(slice.iter().map(move |va| import_from_va(pe, va)))
+		Ok(slice.iter().map(move |va| import_from_va(pe, va.get())))
 	}
 	/// Returns imported symbols and the RVAs of their IAT slots.
 	///

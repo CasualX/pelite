@@ -92,7 +92,7 @@ impl<'a, Pe32: Copy + pe32::Pe<'a>, Pe64: Copy + pe64::Pe<'a>> Wrap<pe32::Import
 	}
 	/// Returns the underlying iat array.
 	#[inline]
-	pub fn image(&self) -> Wrap<&'a [u32], &'a [u64]> {
+	pub fn image(&self) -> Wrap<&'a [pe32::image::UnalignedVa], &'a [pe64::image::UnalignedVa]> {
 		match self {
 			Wrap::T32(iat) => Wrap::T32(iat.image()),
 			Wrap::T64(iat) => Wrap::T64(iat.image()),
@@ -104,7 +104,7 @@ impl<'a, Pe32: Copy + pe32::Pe<'a>, Pe64: Copy + pe64::Pe<'a>> Wrap<pe32::Import
 	/// import-name RVAs and consequently produce decoding errors. Use the import
 	/// descriptors' [`Self::int`][Wrap::int] tables for authoritative symbol names.
 	#[inline]
-	pub fn iter(&self) -> Wrap<impl Clone + Iterator<Item = (&'a u32, Result<Import<'a>>)>, impl Clone + Iterator<Item = (&'a u64, Result<Import<'a>>)>> {
+	pub fn iter(&self) -> Wrap<impl Clone + Iterator<Item = (&'a pe32::image::UnalignedVa, Result<Import<'a>>)>, impl Clone + Iterator<Item = (&'a pe64::image::UnalignedVa, Result<Import<'a>>)>> {
 		match self {
 			Wrap::T32(iat) => Wrap::T32(iat.iter()),
 			Wrap::T64(iat) => Wrap::T64(iat.iter()),
@@ -152,7 +152,7 @@ impl<'a, Pe32: Copy + pe32::Pe<'a>, Pe64: Copy + pe64::Pe<'a>> Wrap<pe32::Import
 	/// * [`Bounds`][crate::Error::Bounds]: The table lies outside the image or has no terminating entry.
 	/// * [`Misaligned`][crate::Error::Misaligned], [`ZeroFill`][crate::Error::ZeroFill], or [`Invalid`][crate::Error::Invalid]: The table cannot be read.
 	#[inline]
-	pub fn iat(&self) -> Result<Wrap<slice::Iter<'a, u32>, slice::Iter<'a, u64>>> {
+	pub fn iat(&self) -> Result<Wrap<slice::Iter<'a, pe32::image::UnalignedVa>, slice::Iter<'a, pe64::image::UnalignedVa>>> {
 		match self {
 			Wrap::T32(desc) => Wrap::T32(desc.iat()).transpose(),
 			Wrap::T64(desc) => Wrap::T64(desc.iat()).transpose(),

@@ -27,6 +27,7 @@ pub type IMAGE_TLS_DIRECTORY = IMAGE_TLS_DIRECTORY32;
 pub type Rva = u32;
 /// Virtual address type, absolute address as known by the image. Not always the same as a pointer.
 pub type Va = u32;
+pub type UnalignedVa = U32;
 /// Invalid Rva value.
 pub const BADRVA: Rva = !0;
 /// Invalid Va value.
