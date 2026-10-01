@@ -117,10 +117,18 @@ fn cli() -> clap::Command {
 
 fn when_to_use(command: &clap::Command) -> String {
 	let help = command.get_after_help().expect("every subcommand has documentation").to_string();
-	let (_, section) = help.split_once("When to use:\n\n").expect("documentation has a When to use section");
-	let snippet = section.split("\n\n").next().expect("When to use section has text");
-	assert!(!snippet.trim().is_empty(), "When to use section has text");
-	snippet.split_whitespace().collect::<Vec<_>>().join(" ")
+	let (_, section) = help.split_once("When to use:").expect("documentation has a When to use section");
+	let mut snippet = String::new();
+	let words = section.trim_ascii_start().lines()
+		.take_while(|line| !line.trim_ascii().is_empty())
+		.flat_map(str::split_whitespace);
+	for word in words {
+		if !snippet.is_empty() {
+			snippet.push(' ');
+		}
+		snippet.push_str(word);
+	}
+	return snippet;
 }
 
 const TERMINAL_WIDTH: usize = 80;
