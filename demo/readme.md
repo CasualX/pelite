@@ -3,18 +3,17 @@ Demonstration
 
 Examples of tools that can be build using pelite.
 
-32-bit RTTI dump
-----------------
+RTTI dump
+---------
 
 Dumps the RunTime Type Information, each associated vtable and class hierarchy for every type found.
 
-Limited to PE32 (32bit binaries) only. Pull requests are welcome to support PE32+ and/or GNU ABI!
+Supports Microsoft C++ RTTI in PE32 (x86) and PE32+ (x64) binaries. Both scanners require `.text`, `.rdata`, and base relocations.
 
 ```bat
-cargo run -p pelite-cli -- msrtti "demo/Demo.dll" > demo/Demo-rtti.txt
+cargo run -p pelite-cli -- msvc rtti "demo/Demo.dll" > demo/Demo-rtti.txt
+cargo run -p pelite-cli -- msvc rtti "demo/Demo64.dll" > demo/Demo64-rtti.txt
 ```
-
-The result can be seen [here](Demo-rtti.txt).
 
 64-bit PE inspection
 --------------------
