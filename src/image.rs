@@ -167,7 +167,7 @@ impl<T: fmt::Display> fmt::Display for IMAGE_VERSION<T> {
 /// Some PE structures may not be naturally aligned. Representing their 32-bit
 /// members this way preserves the image layout without making the whole
 /// containing structure packed (and consequently awkward to borrow from).
-#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
+#[derive(Copy, Clone, Default, Eq, PartialEq, Ord, PartialOrd)]
 #[repr(transparent)]
 pub struct U32(pub [u8; 4]);
 impl U32 {
@@ -208,22 +208,22 @@ impl serde::Serialize for U32 {
 	}
 }
 
-/// A 64-bit image value stored with four-byte alignment.
+/// A 64-bit image value stored with byte alignment.
 ///
-/// Some PE structures are packed to four-byte boundaries. Representing their
-/// 64-bit members this way preserves the image layout without making the whole
+/// Some PE structures may not be naturally aligned. Representing their 64-bit
+/// members this way preserves the image layout without making the whole
 /// containing structure packed (and consequently awkward to borrow from).
-#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
+#[derive(Copy, Clone, Default, Eq, PartialEq, Ord, PartialOrd)]
 #[repr(transparent)]
-pub struct U64(pub [u32; 2]);
+pub struct U64(pub [u8; 8]);
 impl U64 {
 	#[inline]
 	pub const fn new(value: u64) -> Self {
-		Self([value as u32, (value >> 32) as u32])
+		Self(value.to_ne_bytes())
 	}
 	#[inline]
 	pub const fn get(self) -> u64 {
-		self.0[0] as u64 | (self.0[1] as u64) << 32
+		u64::from_ne_bytes(self.0)
 	}
 	#[inline]
 	pub fn set(&mut self, value: u64) {
@@ -1302,7 +1302,7 @@ assert_sizeof!(8, IMAGE_BASE_RELOCATION);
 assert_sizeof!(4, U32);
 assert_alignof!(1, U32);
 assert_sizeof!(8, U64);
-assert_alignof!(4, U64);
+assert_alignof!(1, U64);
 assert_sizeof!(196, IMAGE_LOAD_CONFIG_DIRECTORY32);
 assert_offsetof!(44, IMAGE_LOAD_CONFIG_DIRECTORY32, ProcessHeapFlags);
 assert_offsetof!(48, IMAGE_LOAD_CONFIG_DIRECTORY32, ProcessAffinityMask);
