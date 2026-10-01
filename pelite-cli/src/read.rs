@@ -1,10 +1,10 @@
 use super::*;
 
-mod read_type;
+pub mod read_type;
 use read_type::{PointerWidth, ReadArrayLen, ReadType};
 
-const DEFAULT_MAX_STRING_BYTES: &str = "256";
-const DEFAULT_MAX_DYNAMIC_ARRAY_LENGTH: &str = "1024";
+pub const DEFAULT_MAX_STRING_BYTES: &str = "256";
+pub const DEFAULT_MAX_DYNAMIC_ARRAY_LENGTH: &str = "1024";
 
 impl From<pelite::PeFile<'_>> for PointerWidth {
 	fn from(pe: pelite::PeFile<'_>) -> PointerWidth {
@@ -15,9 +15,9 @@ impl From<pelite::PeFile<'_>> for PointerWidth {
 	}
 }
 
-struct ReadOptions {
-	max_string_bytes: usize,
-	max_dynamic_array_length: u32,
+pub struct ReadOptions {
+	pub max_string_bytes: usize,
+	pub max_dynamic_array_length: u32,
 }
 
 struct StructContext {
@@ -45,7 +45,7 @@ pub fn command() -> clap::Command {
 			.help("Maximum bytes to inspect for a string"))
 		.arg(clap::Arg::new("max-dynamic-array-length")
 			.long("max-dynamic-array-length")
-			.value_name("LENGTH")
+			.value_name("MAX_DYNAMIC_ARRAY_LENGTH")
 			.value_parser(clap::value_parser!(u64))
 			.default_value(DEFAULT_MAX_DYNAMIC_ARRAY_LENGTH)
 			.help("Maximum element count for a field-length array"))
@@ -71,7 +71,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 		Address::Fo(fo) => pe.headers().file_offset_to_rva(fo),
 	};
 	let value = match rva {
-		Ok(rva) => read_value(pe, rva, &ty, &options, None),
+		Ok(rva) => read_at(pe, rva, &ty, &options),
 		Err(error) => error_value(None, error),
 	};
 	print("Read", &value, format)?;
@@ -81,7 +81,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	Ok(())
 }
 
-fn contains_read_errors(value: &serde_json::Value) -> bool {
+pub fn contains_read_errors(value: &serde_json::Value) -> bool {
 	match value {
 		// Type syntax cannot declare a field named "$error", so it is reserved.
 		serde_json::Value::Object(fields) => fields.contains_key("$error") || fields.values().any(contains_read_errors),
@@ -92,6 +92,10 @@ fn contains_read_errors(value: &serde_json::Value) -> bool {
 
 fn error_value(rva: Option<u32>, error: impl fmt::Display) -> serde_json::Value {
 	serde_json::json!({ "$error": error.to_string(), "$address": rva })
+}
+
+pub fn read_at(pe: pelite::PeFile<'_>, rva: u32, ty: &ReadType, options: &ReadOptions) -> serde_json::Value {
+	read_value(pe, rva, ty, options, None)
 }
 
 fn read_value(pe: pelite::PeFile<'_>, rva: u32, ty: &ReadType, options: &ReadOptions, context: Option<&StructContext>) -> serde_json::Value {

@@ -68,6 +68,16 @@ pub struct ReadStructFieldType {
 }
 
 impl ReadType {
+	/// Alignment of the starting address, including dynamically sized types.
+	pub fn alignment(&self, pointer_width: PointerWidth) -> u32 {
+		match self {
+			Self::CStr => 1,
+			Self::Array(array) => array.align,
+			Self::Struct(structure) => structure.align,
+			_ => self.layout(pointer_width).expect("fixed-size type").1,
+		}
+	}
+
 	pub fn is_dst(&self) -> bool {
 		match self {
 			Self::CStr => true,

@@ -20,6 +20,7 @@ mod msrtti;
 mod printer;
 mod read;
 mod resources;
+mod scan;
 mod rust;
 mod strings;
 mod summary;
@@ -91,6 +92,7 @@ fn cli() -> clap::Command {
 		.subcommand(resources::command())
 		.subcommand(addr::command())
 		.subcommand(read::command())
+		.subcommand(scan::command())
 		.subcommand(disasm::command())
 		.subcommand(disasm_raw::command())
 		.subcommand(depwalk::command())
@@ -153,6 +155,7 @@ fn run() -> Result {
 		Some(("resources", matches)) => resources::run(matches, format),
 		Some(("addr", matches)) => addr::run(matches, format),
 		Some(("read", matches)) => read::run(matches, format),
+		Some(("scan", matches)) => scan::run(matches, format),
 		Some(("disasm", matches)) => disasm::run(matches, format),
 		Some(("disasm-raw", matches)) => disasm_raw::run(matches, format),
 		Some(("depwalk", matches)) => depwalk::run(matches, format),
