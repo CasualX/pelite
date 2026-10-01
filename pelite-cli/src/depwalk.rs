@@ -138,6 +138,10 @@ fn read_machine(path: &Path) -> Option<u16> {
 	Some(PeFile::from_bytes(&map).ok()?.file_header().Machine)
 }
 
+fn is_api_set(name: &str) -> bool {
+	name.get(..4).is_some_and(|prefix| prefix.eq_ignore_ascii_case("api-") || prefix.eq_ignore_ascii_case("ext-"))
+}
+
 impl Walker {
 	fn issue(&mut self, kind: &'static str, module: usize, detail: impl Into<String>) {
 		self.report.issues.push(Issue { kind, module: self.report.modules[module].name.clone(), detail: detail.into() });
@@ -230,6 +234,7 @@ impl Walker {
 				Ok(name) => name,
 				Err(error) => { self.issue("pe_read_error", index, format!("import module name: {error}")); continue; },
 			};
+			if is_api_set(name) { continue; }
 			let target = self.discover(name);
 			if !self.report.modules[index].imports.iter().any(|item| item.eq_ignore_ascii_case(name)) {
 				self.report.modules[index].imports.push(name.to_owned());
@@ -281,6 +286,7 @@ impl Walker {
 				};
 				if let Some((dll, name)) = value.rsplit_once('.') {
 					let dll = if dll.contains('.') { dll.to_owned() } else { format!("{dll}.dll") };
+					if is_api_set(&dll) { return; }
 					let target = self.discover(&dll);
 					if !self.report.modules[to].imports.iter().any(|item| item.eq_ignore_ascii_case(&dll)) {
 						self.report.modules[to].imports.push(dll);

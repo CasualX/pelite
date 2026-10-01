@@ -7,6 +7,8 @@ Usage:
 The command follows imported modules and forwarded exports, checks that
 requested symbols exist, and reports missing modules, wrong architectures,
 invalid PE data, and dependency cycles.
+Windows API-set contracts (`api-` and `ext-` names) are skipped because they
+resolve through the operating system's API-set schema rather than a DLL file.
 
 It searches beside FILE, then in each `-L` (`--search-directory`) directory.
 On Windows it checks system directories next. It then checks the current
