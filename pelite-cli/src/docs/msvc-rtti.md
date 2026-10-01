@@ -1,12 +1,14 @@
-Dump Microsoft C++ RTTI from a PE32 image
+Dump Microsoft C++ RTTI from a PE32 or PE32+ image
 
 Usage:
 
-    pelite-cli msrtti FILE [--format=text|json|json-pretty]
+    pelite-cli msvc rtti FILE [--format=text|json|json-pretty]
 
 The command finds candidate vtables using base relocations, then reports
-their type descriptors and class hierarchies. It supports PE32 images with
-`.text`, `.rdata`, and base relocations; PE32+ is not supported.
+their type descriptors and class hierarchies. It selects the PE32 or PE32+
+scanner from the input image. Both scanners require `.text`, `.rdata`, and
+base relocations. The PE32+ scanner validates each locator's self RVA and
+resolves image-relative RTTI descriptor offsets.
 
 Text is the default. JSON output is an array of types. Each type has a raw
 RTTI `name`, an `inheritance` kind, `vtables` with RVAs and method counts,
@@ -15,8 +17,8 @@ null offset.
 
 Examples:
 
-    pelite-cli msrtti sample.dll
-    pelite-cli msrtti sample.dll --format=json-pretty
+    pelite-cli msvc rtti sample.dll
+    pelite-cli msvc rtti sample64.dll --format=json-pretty
 
 Example JSON output (one type shown):
 
@@ -33,5 +35,5 @@ Example JSON output (one type shown):
 
 When to use:
 
-Investigate class names, inheritance, or virtual methods in a 32-bit Microsoft
-C++ binary with RTTI and base relocations.
+Investigate class names, inheritance, or virtual methods in a Microsoft C++
+binary with RTTI and base relocations.

@@ -42,6 +42,8 @@ pub struct RTTICompleteObjectLocator {
 	pub type_descriptor: u32, //Ptr<TypeDescriptor>
 	/// Image-relative offset of the [`RTTIClassHierarchyDescriptor`].
 	pub class_descriptor: u32, //Ptr<RTTIClassHierarchyDescriptor>
+	/// Image-relative offset of this locator (version 1 format).
+	pub self_rva: u32,
 }
 
 /// Describes the inheritance hierarchy of an MSVC C++ class.
@@ -79,3 +81,5 @@ unsafe impl Pod for PMD {}
 unsafe impl Pod for RTTICompleteObjectLocator {}
 unsafe impl Pod for RTTIClassHierarchyDescriptor {}
 unsafe impl Pod for RTTIBaseClassDescriptor {}
+
+assert_sizeof!(24, RTTICompleteObjectLocator);

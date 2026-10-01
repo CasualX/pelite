@@ -1,4 +1,3 @@
-use pelite::FileMap;
 use pelite::pe32::{image, PeFile, Ptr, Rva, Va};
 
 use super::*;
@@ -17,52 +16,7 @@ struct RawType<'a> {
 	vtables: Vec<RawVTable<'a>>,
 }
 
-#[derive(serde::Serialize)]
-struct TypeOutput {
-	name: String,
-	inheritance: &'static str,
-	vtables: Vec<VTableOutput>,
-	hierarchy: Vec<BaseClassOutput>,
-}
-
-#[derive(serde::Serialize)]
-struct VTableOutput {
-	rva: u32,
-	for_type: Option<String>,
-	methods: usize,
-}
-
-#[derive(serde::Serialize)]
-struct BaseClassOutput {
-	depth: usize,
-	offset: Option<i32>,
-	virtual_base: bool,
-	name: String,
-}
-
-pub fn command() -> clap::Command {
-	clap::Command::new("msrtti")
-		.about("Dump Microsoft C++ RTTI, vtables, and class hierarchies")
-		.after_help(include_str!("docs/msrtti.md"))
-		.arg(clap::Arg::new("file")
-			.value_name("FILE")
-			.value_parser(clap::value_parser!(PathBuf))
-			.required(true))
-}
-
-pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
-	let path = matches.get_one::<PathBuf>("file").expect("required by clap");
-	let map = FileMap::open(path)?;
-	let file = PeFile::from_bytes(&map).map_err(|error| err(format!("input is not a PE32 image: {error}")))?;
-	let output = analyze(file)?;
-	match format {
-		OutputFormat::Json => print_json(&output, false),
-		OutputFormat::JsonPretty => print_json(&output, true),
-		OutputFormat::Text => print_text(&output),
-	}
-}
-
-fn analyze(file: PeFile<'_>) -> Result<Vec<TypeOutput>> {
+pub fn analyze(file: PeFile<'_>) -> Result<Vec<TypeOutput>> {
 	let text = file.section_headers().by_name(".text").ok_or_else(|| err("no .text section found"))?;
 	let rdata = file.section_headers().by_name(".rdata").ok_or_else(|| err("no .rdata section found"))?;
 	let relocs = file.base_relocs().map_err(|_| err("no base relocations found"))?;
@@ -144,13 +98,6 @@ fn add_vtable<'a>(file: PeFile<'a>, types: &mut Vec<RawType<'a>>, xref: usize, v
 }
 
 fn render_type(file: PeFile<'_>, item: RawType<'_>) -> Result<TypeOutput> {
-	let inheritance = match item.class.attributes & 3 {
-		0 => "single",
-		1 => "multiple",
-		2 => "virtual",
-		3 => "multiple virtual",
-		_ => unreachable!(),
-	};
 	let base_classes = file.deref_slice(item.class.base_class_array, item.class.num_base_classes as usize)?;
 	let mut vtables = Vec::new();
 	for vtable in item.vtables {
@@ -194,49 +141,11 @@ fn render_type(file: PeFile<'_>, item: RawType<'_>) -> Result<TypeOutput> {
 			}
 		}
 	}
+	let inheritance = inheritance_kind(item.class.attributes, hierarchy.iter().any(|base| base.virtual_base));
 	Ok(TypeOutput {
 		name: item.name.to_owned(),
 		inheritance,
 		vtables,
 		hierarchy,
 	})
-}
-
-fn print_text(types: &[TypeOutput]) -> Result {
-	let mut output = io::stdout().lock();
-	for item in types {
-		let kind = match item.inheritance {
-			"single" => " (SI)",
-			"multiple" => " (MI)",
-			"virtual" => " (VI)",
-			_ => " (MI VI)",
-		};
-		writeln!(output, "class {}{}", item.name, kind)?;
-		let symbol_name = item.name.get(4..).unwrap_or(&item.name);
-		for vtable in &item.vtables {
-			writeln!(output,
-				"{:#010X}: ??_7{}6B@ {{for '{}'}} ({} methods)",
-				vtable.rva,
-				symbol_name,
-				vtable.for_type.as_deref().unwrap_or("?"),
-				vtable.methods
-			)?;
-		}
-		for (index, base) in item.hierarchy.iter().enumerate() {
-			match base.offset {
-				Some(offset) => write!(output, "{offset:04X}: ")?,
-				None => write!(output, "****: ")?,
-			}
-			if base.depth > 0 {
-				for _ in 1..base.depth {
-					write!(output, "|   ")?;
-				}
-				let is_last = item.hierarchy.get(index + 1).is_none_or(|next| next.depth < base.depth);
-				write!(output, "{}", if is_last { "`-- " } else { "+-- " })?;
-			}
-			writeln!(output, "{}", base.name)?;
-		}
-		writeln!(output)?;
-	}
-	Ok(())
 }

@@ -28,3 +28,18 @@ Text is the default. Use the global `--format=json` option for compact JSON or `
 cargo run -p pelite-cli -- summary demo/Demo64.dll --format=json-pretty
 cargo run -p pelite-cli -- resources tree demo/Demo.dll --format=json
 ```
+
+## Tests
+
+Run the CLI tests from the repository root:
+
+```sh
+cargo test -p pelite-cli
+```
+
+Snapshot tests compare command output with checked-in expected text and show a
+colored line diff on mismatch. To update snapshots after an intentional change:
+
+```sh
+UPDATE_SNAPSHOTS=1 cargo test -p pelite-cli --test snapshot
+```

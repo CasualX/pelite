@@ -1,0 +1,167 @@
+class .?AV?$Template@H@fixture@@ (SI)
+0x00021304: ??_7?$Template@H@fixture@@6B@ {for '.?AV?$Template@H@fixture@@'} (2 methods)
+0000: .?AV?$Template@H@fixture@@
+0000: `-- .?AVRoot@fixture@@
+
+class .?AVDNameNode@@ (SI)
+0x000221DC: ??_7DNameNode@@6B@ {for '.?AVDNameNode@@'} (4 methods)
+0000: .?AVDNameNode@@
+
+class .?AVDNameStatusNode@@ (SI)
+0x0002222C: ??_7DNameStatusNode@@6B@ {for '.?AVDNameStatusNode@@'} (4 methods)
+0000: .?AVDNameStatusNode@@
+0000: `-- .?AVDNameNode@@
+
+class .?AVDiamond@fixture@@ (MI)
+0x0002122C: ??_7Diamond@fixture@@6B@ {for '.?AVDiamond@fixture@@'} (2 methods)
+0x00021238: ??_7Diamond@fixture@@6B@ {for '.?AVRight@fixture@@'} (2 methods)
+0000: .?AVDiamond@fixture@@
+0000: +-- .?AVLeft@fixture@@
+0000: |   `-- .?AVRoot@fixture@@
+0008: +-- .?AVRight@fixture@@
+0008: |   `-- .?AVRoot@fixture@@
+
+class .?AVImplementation@fixture@@ (MI)
+0x000212E0: ??_7Implementation@fixture@@6B@ {for '.?AVImplementation@fixture@@'} (2 methods)
+0x000212EC: ??_7Implementation@fixture@@6B@ {for '.?AVOther@fixture@@'} (2 methods)
+0000: .?AVImplementation@fixture@@
+0000: +-- .?AVInterface@fixture@@
+0004: `-- .?AVOther@fixture@@
+
+class .?AVInterface@fixture@@ (SI)
+0x000212D4: ??_7Interface@fixture@@6B@ {for '.?AVInterface@fixture@@'} (2 methods)
+0000: .?AVInterface@fixture@@
+
+class .?AVLeft@fixture@@ (SI)
+0x00021214: ??_7Left@fixture@@6B@ {for '.?AVLeft@fixture@@'} (2 methods)
+0000: .?AVLeft@fixture@@
+0000: `-- .?AVRoot@fixture@@
+
+class .?AVMixed@fixture@@ (MI VI)
+0x0002129C: ??_7Mixed@fixture@@6B@ {for '.?AVMixed@fixture@@'} (2 methods)
+0x000212A8: ??_7Mixed@fixture@@6B@ {for '?'} (2 methods)
+0000: .?AVMixed@fixture@@
+0000: +-- .?AVLeft@fixture@@
+0000: |   `-- .?AVRoot@fixture@@
+0008: +-- .?AVVirtualRight@fixture@@
+****: |   `-- .?AVRoot@fixture@@
+
+class .?AVMultilevel@fixture@@ (SI)
+0x000211E4: ??_7Multilevel@fixture@@6B@ {for '.?AVMultilevel@fixture@@'} (2 methods)
+0000: .?AVMultilevel@fixture@@
+0000: +-- .?AVSingle@fixture@@
+0000: |   `-- .?AVRoot@fixture@@
+
+class .?AVMultiple@fixture@@ (MI)
+0x000211FC: ??_7Multiple@fixture@@6B@ {for '.?AVMultiple@fixture@@'} (2 methods)
+0x00021208: ??_7Multiple@fixture@@6B@ {for '.?AVOther@fixture@@'} (2 methods)
+0000: .?AVMultiple@fixture@@
+0000: +-- .?AVRoot@fixture@@
+0008: `-- .?AVOther@fixture@@
+
+class .?AVOther@fixture@@ (SI)
+0x000211F0: ??_7Other@fixture@@6B@ {for '.?AVOther@fixture@@'} (2 methods)
+0000: .?AVOther@fixture@@
+
+class .?AVPrivate@fixture@@ (SI)
+0x000212BC: ??_7Private@fixture@@6B@ {for '.?AVPrivate@fixture@@'} (2 methods)
+0000: .?AVPrivate@fixture@@
+0000: `-- .?AVRoot@fixture@@
+
+class .?AVProtected@fixture@@ (SI)
+0x000212C8: ??_7Protected@fixture@@6B@ {for '.?AVProtected@fixture@@'} (2 methods)
+0000: .?AVProtected@fixture@@
+0000: `-- .?AVRoot@fixture@@
+
+class .?AVRight@fixture@@ (SI)
+0x00021220: ??_7Right@fixture@@6B@ {for '.?AVRight@fixture@@'} (2 methods)
+0000: .?AVRight@fixture@@
+0000: `-- .?AVRoot@fixture@@
+
+class .?AVRoot@fixture@@ (SI)
+0x000211CC: ??_7Root@fixture@@6B@ {for '.?AVRoot@fixture@@'} (2 methods)
+0000: .?AVRoot@fixture@@
+
+class .?AVSingle@fixture@@ (SI)
+0x000211D8: ??_7Single@fixture@@6B@ {for '.?AVSingle@fixture@@'} (2 methods)
+0000: .?AVSingle@fixture@@
+0000: `-- .?AVRoot@fixture@@
+
+class .?AVVirtualDiamond@fixture@@ (MI VI)
+0x00021280: ??_7VirtualDiamond@fixture@@6B@ {for '?'} (2 methods)
+0000: .?AVVirtualDiamond@fixture@@
+0000: +-- .?AVVirtualLeft@fixture@@
+****: |   `-- .?AVRoot@fixture@@
+0004: +-- .?AVVirtualRight@fixture@@
+****: |   `-- .?AVRoot@fixture@@
+
+class .?AVVirtualLeft@fixture@@ (VI)
+0x00021258: ??_7VirtualLeft@fixture@@6B@ {for '?'} (2 methods)
+0000: .?AVVirtualLeft@fixture@@
+****: `-- .?AVRoot@fixture@@
+
+class .?AVVirtualRight@fixture@@ (VI)
+0x0002126C: ??_7VirtualRight@fixture@@6B@ {for '?'} (2 methods)
+0000: .?AVVirtualRight@fixture@@
+****: `-- .?AVRoot@fixture@@
+
+class .?AVVirtualSingle@fixture@@ (VI)
+0x00021244: ??_7VirtualSingle@fixture@@6B@ {for '?'} (2 methods)
+0000: .?AVVirtualSingle@fixture@@
+****: `-- .?AVRoot@fixture@@
+
+class .?AVWithPlain@fixture@@ (MI)
+0x000212F8: ??_7WithPlain@fixture@@6B@ {for '.?AVWithPlain@fixture@@'} (2 methods)
+0000: .?AVWithPlain@fixture@@
+0008: +-- .?AVPlain@fixture@@
+0000: `-- .?AVRoot@fixture@@
+
+class .?AV__non_rtti_object@std@@ (SI)
+0x00021358: ??_7__non_rtti_object@std@@6B@ {for '.?AV__non_rtti_object@std@@'} (2 methods)
+0000: .?AV__non_rtti_object@std@@
+0000: +-- .?AVbad_typeid@std@@
+0000: |   `-- .?AVexception@std@@
+
+class .?AVbad_cast@std@@ (SI)
+0x00021340: ??_7bad_cast@std@@6B@ {for '.?AVbad_cast@std@@'} (2 methods)
+0000: .?AVbad_cast@std@@
+0000: `-- .?AVexception@std@@
+
+class .?AVbad_exception@std@@ (SI)
+0x0002238C: ??_7bad_exception@std@@6B@ {for '.?AVbad_exception@std@@'} (2 methods)
+0000: .?AVbad_exception@std@@
+0000: `-- .?AVexception@std@@
+
+class .?AVbad_typeid@std@@ (SI)
+0x0002134C: ??_7bad_typeid@std@@6B@ {for '.?AVbad_typeid@std@@'} (2 methods)
+0000: .?AVbad_typeid@std@@
+0000: `-- .?AVexception@std@@
+
+class .?AVcharNode@@ (SI)
+0x000221F0: ??_7charNode@@6B@ {for '.?AVcharNode@@'} (4 methods)
+0000: .?AVcharNode@@
+0000: `-- .?AVDNameNode@@
+
+class .?AVexception@std@@ (SI)
+0x00021320: ??_7exception@std@@6B@ {for '.?AVexception@std@@'} (2 methods)
+0000: .?AVexception@std@@
+
+class .?AVpDNameNode@@ (SI)
+0x00022218: ??_7pDNameNode@@6B@ {for '.?AVpDNameNode@@'} (4 methods)
+0000: .?AVpDNameNode@@
+0000: `-- .?AVDNameNode@@
+
+class .?AVpairNode@@ (SI)
+0x00022240: ??_7pairNode@@6B@ {for '.?AVpairNode@@'} (4 methods)
+0000: .?AVpairNode@@
+0000: `-- .?AVDNameNode@@
+
+class .?AVpcharNode@@ (SI)
+0x00022204: ??_7pcharNode@@6B@ {for '.?AVpcharNode@@'} (4 methods)
+0000: .?AVpcharNode@@
+0000: `-- .?AVDNameNode@@
+
+class .?AVtype_info@@ (SI)
+0x00021310: ??_7type_info@@6B@ {for '.?AVtype_info@@'} (1 methods)
+0000: .?AVtype_info@@
+

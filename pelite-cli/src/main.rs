@@ -16,7 +16,7 @@ mod imphash;
 mod inspect;
 mod markov;
 mod module_def;
-mod msrtti;
+mod msvc;
 mod printer;
 mod read;
 mod resources;
@@ -102,7 +102,7 @@ fn cli() -> clap::Command {
 		.subcommand(imphash::command())
 		.subcommand(markov::command())
 		.subcommand(module_def::command())
-		.subcommand(msrtti::command())
+		.subcommand(msvc::command())
 		.subcommand(rust::command())
 		.subcommand(version_info::command())
 		.subcommand(xref::command())
@@ -173,7 +173,7 @@ fn run() -> Result {
 		Some(("imphash", matches)) => imphash::run(matches, format),
 		Some(("markov", matches)) => markov::run(matches, format),
 		Some(("module-def", matches)) => module_def::run(matches, format),
-		Some(("msrtti", matches)) => msrtti::run(matches, format),
+		Some(("msvc", matches)) => msvc::run(matches, format),
 		Some(("rust", matches)) => rust::run(matches, format),
 		Some(("version-info", matches)) => version_info::run(matches, format),
 		Some(("xref", matches)) => xref::run(matches, format),
