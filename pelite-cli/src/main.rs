@@ -27,6 +27,7 @@ mod scan;
 mod rust;
 mod strings;
 mod summary;
+mod symbol;
 mod symbols;
 mod symtext;
 mod ty;
@@ -98,6 +99,7 @@ fn cli() -> clap::Command {
 		.subcommand(summary::command())
 		.subcommand(resources::command())
 		.subcommand(addr::command())
+		.subcommand(symbol::command())
 		.subcommand(read::command())
 		.subcommand(scan::command())
 		.subcommand(disasm::command())
@@ -170,6 +172,7 @@ fn run() -> Result {
 		Some(("summary", matches)) => summary::run(matches, format),
 		Some(("resources", matches)) => resources::run(matches, format),
 		Some(("addr", matches)) => addr::run(matches, format),
+		Some(("symbol", matches)) => symbol::run(matches, format),
 		Some(("read", matches)) => read::run(matches, format),
 		Some(("scan", matches)) => scan::run(matches, format),
 		Some(("disasm", matches)) => disasm::run(matches, format),

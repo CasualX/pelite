@@ -1,8 +1,30 @@
 use super::*;
 
+#[derive(Clone, Debug)]
 pub enum IndexedSymbol {
 	Named(String),
 	Generated { name: &'static str, rva: u32 },
+}
+
+impl From<symtext::Symbol> for IndexedSymbol {
+	fn from(symbol: symtext::Symbol) -> Self {
+		match symbol.name {
+			symtext::SymbolName::Named(name) => Self::Named(name),
+			_ => Self::from(&symbol),
+		}
+	}
+}
+
+impl From<&symtext::Symbol> for IndexedSymbol {
+	fn from(symbol: &symtext::Symbol) -> Self {
+		match &symbol.name {
+			symtext::SymbolName::Named(name) => Self::Named(name.clone()),
+			symtext::SymbolName::Code => Self::Generated { name: "code", rva: symbol.rva },
+			symtext::SymbolName::D => Self::Generated { name: "data", rva: symbol.rva },
+			symtext::SymbolName::Fn => Self::Generated { name: "fn", rva: symbol.rva },
+			symtext::SymbolName::Thunk => Self::Generated { name: "thunk", rva: symbol.rva },
+		}
+	}
 }
 
 impl fmt::Display for IndexedSymbol {
@@ -37,14 +59,7 @@ pub fn load(matches: &clap::ArgMatches, pointer_width: ty::PointerWidth, base: u
 pub fn index(symbols: &mut HashMap<u64, IndexedSymbol>, database: symtext::SymbolDatabase, base: u64) {
 	for symbol in database.entries {
 		if let Some(address) = base.checked_add(u64::from(symbol.rva)) {
-			let name = match symbol.name {
-				symtext::SymbolName::Named(name) => IndexedSymbol::Named(name),
-				symtext::SymbolName::Code => IndexedSymbol::Generated { name: "code", rva: symbol.rva },
-				symtext::SymbolName::D => IndexedSymbol::Generated { name: "data", rva: symbol.rva },
-				symtext::SymbolName::Fn => IndexedSymbol::Generated { name: "fn", rva: symbol.rva },
-				symtext::SymbolName::Thunk => IndexedSymbol::Generated { name: "thunk", rva: symbol.rva },
-			};
-			symbols.insert(address, name);
+			symbols.insert(address, IndexedSymbol::from(symbol));
 		}
 	}
 }
