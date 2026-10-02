@@ -10,6 +10,9 @@ hashes, image and section details, mitigations, imports, and findings that may
 merit closer inspection. Text is the default; use `json` or `json-pretty` for
 structured output.
 
+The image details indicate CLR (.NET) images when the COM Runtime Descriptor
+directory has a nonzero RVA and size. This does not validate CLR metadata.
+
 If import data is damaged, the report includes the imports it can read and
 marks the import hash unavailable.
 

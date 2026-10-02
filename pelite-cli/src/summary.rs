@@ -41,6 +41,7 @@ struct Image {
 	checksum: u32,
 	checksum_valid: bool,
 	certificate_table_present: bool,
+	clr: bool,
 	tls_callbacks: usize,
 	overlay_offset: usize,
 	overlay_size: usize,
@@ -172,6 +173,8 @@ fn summarize(path: &Path, bytes: &[u8], pe: PeFile<'_>) -> Result<Summary> {
 	let overlay_size = bytes.len().saturating_sub(overlay_offset);
 	let security = pe.data_directory().get(image::IMAGE_DIRECTORY_ENTRY_SECURITY);
 	let certificate_table_present = security.is_some_and(|entry| entry.VirtualAddress != 0 && entry.Size != 0);
+	let clr = pe.data_directory().get(image::IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR)
+		.is_some_and(|entry| entry.VirtualAddress != 0 && entry.Size != 0);
 	let certificate_overlap = security.map(|entry| {
 		let start = entry.VirtualAddress as usize;
 		let end = start.saturating_add(entry.Size as usize).min(bytes.len());
@@ -229,6 +232,7 @@ fn summarize(path: &Path, bytes: &[u8], pe: PeFile<'_>) -> Result<Summary> {
 			checksum,
 			checksum_valid,
 			certificate_table_present,
+			clr,
 			tls_callbacks,
 			overlay_offset,
 			overlay_size,
@@ -385,6 +389,7 @@ fn print_text(summary: &Summary) -> Result {
 	writeln!(output)?;
 	writeln!(output, "Image")?;
 	writeln!(output, "  Type       : {} {} {} ({})", summary.image.format, summary.image.machine, summary.image.kind, summary.image.subsystem)?;
+	writeln!(output, "  CLR (.NET) : {}", yes_no(summary.image.clr))?;
 	writeln!(output, "  Entry point: RVA {:#x} ({})", summary.image.entry_point_rva, summary.image.entry_point_section.as_deref().unwrap_or("no section"))?;
 	writeln!(output, "  Image base : {:#x}", summary.image.image_base)?;
 	writeln!(output, "  Image size : {} bytes", summary.image.image_size)?;
