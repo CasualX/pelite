@@ -2,7 +2,9 @@ Disassemble raw x86 bytes
 
 Usage:
 
-    pelite-cli disasm-raw FILE --arch x86|x86_64 [--offset BYTES] [--length BYTES] [--base ADDRESS] [--symbols SYMBOLS.txt]... [--layout none|indent|fo|va] [--lookback BYTES] [--hex] [--format=text|json|json-pretty|nul]
+    pelite-cli disasm-raw FILE --arch x86_16|x86_32|x86_64 [--offset BYTES] [--length BYTES] [--base ADDRESS] [--symbols SYMBOLS.txt]... [--layout none|indent|fo|va] [--lookback BYTES] [--hex] [--format=text|json|json-pretty|nul]
+
+`--arch` selects 16-, 32-, or 64-bit x86 decoding. `x86` is an alias for `x86_32`.
 
 FILE is a binary file, or `-` for standard input. `--offset` starts at a file
 offset (default: 0); `--length` sets the selected byte count (default: through
@@ -51,5 +53,5 @@ Example JSON output for the third command:
 
 When to use:
 
-Disassemble raw x86 or x86_64 bytes from a payload, file, or stream. For
+Disassemble raw 16-, 32-, or 64-bit x86 bytes from a payload, file, or stream. For
 mapped PE addresses, use `disasm`.
