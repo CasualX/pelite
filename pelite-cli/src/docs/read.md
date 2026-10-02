@@ -20,6 +20,7 @@ TYPE describes the bytes at ADDRESS:
 Dynamically sized types (DSTs) have no fixed size:
 
     cstr                 NUL-terminated C string at this address
+    utf16lez             NUL-terminated UTF-16LE string (Windows wchar_t)
     code                 Code with no declared layout
     unk                  Data with no declared layout
     [T; field]           length read from a named unsigned struct field
@@ -71,7 +72,7 @@ Examples:
     pelite-cli read sample.dll va:0x180004000 '[union { raw: u32, target: ptr }; 4]'
     pelite-cli read sample.dll rva:0x4000 'struct { count: u16, values: [u32; count] }' --max-dynamic-array-length 1024
 
-Results follow TYPE: scalars become JSON numbers, `cstr` becomes a string,
+Results follow TYPE: scalars become JSON numbers, `cstr` and `utf16lez` become strings,
 arrays become arrays, and structs/unions become objects keyed by field name.
 A failed read appears in place as an object with `$error` and `$address`
 (the attempted RVA, or null if conversion failed). Other fields
