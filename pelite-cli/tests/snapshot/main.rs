@@ -24,11 +24,11 @@ mod msvc {
 	fn rtti(arch: &str) {
 		let fixtures = Path::new(env!("CARGO_MANIFEST_DIR")).join("../fixtures/bin");
 		let output = Command::new(env!("CARGO_BIN_EXE_pelite-cli"))
-			.args(["msvc", "rtti"])
+			.args(["re", "msvc", "rtti"])
 			.arg(fixtures.join(format!("inheritance-{arch}.exe")))
 			.output()
 			.expect("failed to run pelite-cli");
-		assert!(output.status.success(), "pelite-cli msvc rtti ({arch}) failed: {}\n{}", output.status, String::from_utf8_lossy(&output.stderr));
+		assert!(output.status.success(), "pelite-cli re msvc rtti ({arch}) failed: {}\n{}", output.status, String::from_utf8_lossy(&output.stderr));
 		assert!(output.stderr.is_empty(), "unexpected stderr: {}", String::from_utf8_lossy(&output.stderr));
 		let text = String::from_utf8(output.stdout).expect("RTTI output is not UTF-8");
 		assert!(!text.is_empty(), "RTTI output is empty");

@@ -47,8 +47,8 @@ linker output, but compiler/SDK versions can change bytes.
 The Windows executables can be analyzed on any supported host:
 
 ```sh
-cargo run -p pelite-cli -- msvc rtti fixtures/bin/inheritance-x64.exe
-cargo run -p pelite-cli -- msvc rtti fixtures/bin/inheritance-x86.exe --format=json-pretty
+cargo run -p pelite-cli -- re msvc rtti fixtures/bin/inheritance-x64.exe
+cargo run -p pelite-cli -- re msvc rtti fixtures/bin/inheritance-x86.exe --format=json-pretty
 ```
 
 The `fixture` namespace distinguishes test classes from CRT RTTI. `Diamond`

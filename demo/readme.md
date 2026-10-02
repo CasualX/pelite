@@ -11,8 +11,8 @@ Dumps the RunTime Type Information, each associated vtable and class hierarchy f
 Supports Microsoft C++ RTTI in PE32 (x86) and PE32+ (x64) binaries. Both scanners require `.text`, `.rdata`, and base relocations.
 
 ```bat
-cargo run -p pelite-cli -- msvc rtti "demo/Demo.dll" > demo/Demo-rtti.txt
-cargo run -p pelite-cli -- msvc rtti "demo/Demo64.dll" > demo/Demo64-rtti.txt
+cargo run -p pelite-cli -- re msvc rtti "demo/Demo.dll" > demo/Demo-rtti.txt
+cargo run -p pelite-cli -- re msvc rtti "demo/Demo64.dll" > demo/Demo64-rtti.txt
 ```
 
 64-bit PE inspection
@@ -76,7 +76,7 @@ Finds matches of signatures in binaries using a [language designed specifically 
 Play around in interactive mode:
 
 ```bat
-cargo run -p pelite-cli -- findsig "demo\Demo64.dll"
+cargo run -p pelite-cli -- re findsig "demo\Demo64.dll"
 ```
 
 Try out the pattern `E8${B8'???? C3}` to find all `call` instructions to a function which load a constant into `eax` and returns.
@@ -85,7 +85,7 @@ In addition save the address of the constant so it can be extracted later.
 Find signatures by passing them as command line arguments:
 
 ```bat
-cargo run -p pelite-cli -- findsig "demo\Demo64.dll" "E8${B8'???? C3}"
+cargo run -p pelite-cli -- re findsig "demo\Demo64.dll" "E8${B8'???? C3}"
 ```
 
 The result is two matches for this pattern for this particular binary:
