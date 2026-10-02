@@ -21,8 +21,8 @@ captures, as in `findsig`) and `value` (the typed result, as in `read`).
 
 Examples:
 
-    pelite-cli scan sample.dll u32 '48 8B ? 48 85 C0' --format=json
-    pelite-cli scan sample.dll 'struct { opcode: u8, target: ptr }' 'E8 save ????' --section 0 --format=json-pretty
+    pelite-cli scan sample.dll '[u8; 7]' '48 8B ? 48 85 C0' --section .text --format=json
+    pelite-cli scan sample.dll '[u8; 5]' 'E8 save ????' --section .text --format=json-pretty
     pelite-cli scan sample.dll ptr --format=json
 
 Example JSON output (one result shown):
@@ -39,4 +39,6 @@ Example JSON output (one result shown):
 When to use:
 
 Find values by type across data sections, optionally narrowing the search with
-a byte pattern.
+a byte pattern. Use `findsig` when you need only match addresses or captures;
+use `read` to examine one result in detail. Successful reads establish that
+bytes fit TYPE, not that the inferred structure is correct.

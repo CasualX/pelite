@@ -18,15 +18,22 @@ the decoding mode.
 
 Use `--symbols SYMBOLS.txt` to label instruction addresses and operands from a
 `#symtext` database. Repeat the option to load multiple files in order; the
-last entry for an RVA wins. With no symbol files, addresses are shown without
-symbol labels. Generate a starting database with `autoanalysis -o symbols.txt`.
+last entry for an RVA wins, and `undef` removes an earlier label. Pass the
+generated baseline first and your analysis file last:
+
+    pelite-cli disasm sample.dll rva:0x1000..0x1100 --symbols auto.symbols.txt --symbols user.symbols.txt
+
+With no symbol files, addresses are shown without symbol labels. See
+`autoanalysis --help` to generate the baseline and `symbol --help` to query
+nearby symbols or record corrections. Symbol types do not control decoding:
+a data label does not prevent those bytes from being decoded as instructions.
 
 In text output, a symbol inside an instruction appears after it as a `;` comment
 with its byte offset, for example `; +0x2: data_1002`. The instruction stays intact.
 
 Text uses `--layout indent` by default, with four spaces before each
 instruction. Use `none` for no prefix (recommended) or `rva` and `va` for the
-section name and an hexadecimal address. JSON output always includes
+section name and a hexadecimal address. JSON output always includes
 the instruction RVA in its `address` field.
 
 Start at an instruction boundary: decoding from the middle of an instruction
@@ -50,7 +57,6 @@ See `disasm-raw` to decode raw bytes.
 Examples:
 
     pelite-cli disasm sample.dll rva:0x1000..0x1100
-    pelite-cli disasm sample.dll rva:0x1000..0x1100 --symbols auto.txt --symbols edits.txt
     pelite-cli disasm sample.dll rva:0x1000..0x1100 --layout rva
     pelite-cli disasm sample.dll rva:0x1000..+0x100
     pelite-cli disasm sample.dll fo:1024..1152 --hex

@@ -13,8 +13,11 @@ decimal or `0x`-prefixed hexadecimal numbers.
 Use `--symbols SYMBOLS.txt` to label instructions and referenced addresses.
 The RVA field in each `#symtext` entry is treated as a file offset; its
 instruction address is `base + offset`. Repeat `--symbols` to load files in
-order, with the last entry for an offset winning. Without symbol files, raw
-disassembly has no labels.
+order, with the last entry for an offset winning; `undef` removes an earlier
+label. See `symbol --help` for the entry syntax. Without symbol files, raw
+disassembly has no labels. PE symbol files from `autoanalysis` use RVAs, so
+convert their entries to offsets in the raw input before using them here;
+`--base` changes instruction addresses, not the meaning of the entry offsets.
 
 In text output, a symbol inside an instruction appears after it as a `;` comment
 with its byte offset. The instruction stays intact.
@@ -34,10 +37,10 @@ Text is the default. JSON output contains each instruction's file `offset`,
 Examples:
 
     pelite-cli disasm-raw code.bin --arch x86_64 --offset 0x100 --length 64 --base 0x180000000 --hex
-    pelite-cli disasm-raw code.bin --arch x86_64 --symbols auto.txt --symbols edits.txt --layout fo
+    pelite-cli disasm-raw code.bin --arch x86_64 --symbols raw.symbols.txt --layout fo
     printf '\xb8\x01\x00\x00\x00\xc3' | pelite-cli disasm-raw - --arch x86 --base 0x1000 --format=json
 
-Example JSON output for the second command:
+Example JSON output for the third command:
 
 ```json
 [
