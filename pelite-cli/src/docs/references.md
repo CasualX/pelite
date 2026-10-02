@@ -2,7 +2,7 @@ Discover candidate code and data symbols in a PE image
 
 Usage:
 
-    pelite-cli symbols FILE [--format=text|json|json-pretty]
+    pelite-cli references FILE [--format=text|json|json-pretty]
 
 The command scans executable sections of i386 and AMD64 images for direct
 branches, calls, static memory references, and address-like immediates. It
@@ -21,9 +21,9 @@ Text is the default. Use `json` for compact machine-readable output or
 The output can be large. Run the scan once, save the JSON, then query it with
 `jq` instead of rescanning for each address:
 
-    pelite-cli symbols sample.dll --format=json > symbols.json
-    jq '.[] | select(.rva == 4096)' symbols.json
-    jq '.[] | select(any(.references[]; .kind == "export")) | {rva, label}' symbols.json
+    pelite-cli references sample.dll --format=json > references.json
+    jq '.[] | select(.rva == 4096)' references.json
+    jq '.[] | select(any(.references[]; .kind == "export")) | {rva, label}' references.json
 
 Example JSON output (one symbol shown):
 
