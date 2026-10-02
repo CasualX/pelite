@@ -44,4 +44,4 @@ Example JSON output (one reference shown):
 When to use:
 
 Find candidate references to a known function or data address. For a map of
-likely targets, use `symbols`.
+likely targets, use `references`.

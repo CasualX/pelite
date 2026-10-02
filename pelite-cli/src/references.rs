@@ -123,9 +123,9 @@ struct Analysis<'a> {
 }
 
 pub fn command() -> clap::Command {
-	clap::Command::new("symbols")
+	clap::Command::new("references")
 		.about("Discover candidate symbols using disassembly and base relocations")
-		.after_help(include_str!("docs/symbols.md"))
+		.after_help(include_str!("docs/references.md"))
 		.arg(summary::file_arg().required(true))
 }
 

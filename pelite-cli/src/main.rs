@@ -20,12 +20,13 @@ mod module_def;
 mod msvc;
 mod printer;
 mod read;
+mod references;
 mod resources;
 mod scan;
 mod rust;
 mod strings;
 mod summary;
-mod symbols;
+mod ty;
 mod value_parser;
 mod version_info;
 mod xref;
@@ -108,7 +109,7 @@ fn cli() -> clap::Command {
 		.subcommand(rust::command())
 		.subcommand(version_info::command())
 		.subcommand(xref::command())
-		.subcommand(symbols::command());
+		.subcommand(references::command());
 
 	let guide = command.get_subcommands()
 		.map(|subcommand| guide_entry(subcommand.get_name(), &when_to_use(subcommand)))
@@ -180,7 +181,7 @@ fn run() -> Result {
 		Some(("rust", matches)) => rust::run(matches, format),
 		Some(("version-info", matches)) => version_info::run(matches, format),
 		Some(("xref", matches)) => xref::run(matches, format),
-		Some(("symbols", matches)) => symbols::run(matches, format),
+		Some(("references", matches)) => references::run(matches, format),
 		None => summary::run(&matches, format),
 		_ => unreachable!("all subcommands are handled"),
 	}

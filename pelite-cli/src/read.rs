@@ -1,19 +1,7 @@
 use super::*;
 
-pub mod read_type;
-use read_type::{PointerWidth, ReadArrayLen, ReadType};
-
 pub const DEFAULT_MAX_STRING_BYTES: &str = "256";
 pub const DEFAULT_MAX_DYNAMIC_ARRAY_LENGTH: &str = "1024";
-
-impl From<pelite::PeFile<'_>> for PointerWidth {
-	fn from(pe: pelite::PeFile<'_>) -> PointerWidth {
-		match pe {
-			pelite::Wrap::T32(_) => PointerWidth::Bits32,
-			pelite::Wrap::T64(_) => PointerWidth::Bits64,
-		}
-	}
-}
 
 pub struct ReadOptions {
 	pub max_string_bytes: usize,
@@ -64,7 +52,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	};
 	let map = pelite::FileMap::open(path)?;
 	let pe = pelite::PeFile::from_bytes(&map)?;
-	let ty = ReadType::parse(source, PointerWidth::from(pe)).map_err(err)?;
+	let ty = ty::Type::parse(source, ty::PointerWidth::from(pe)).map_err(err)?;
 	let rva = match address {
 		Address::Rva(rva) => Ok(rva),
 		Address::Va(va) => pe.va_to_rva(va),
@@ -94,30 +82,30 @@ fn error_value(rva: Option<u32>, error: impl fmt::Display) -> serde_json::Value 
 	serde_json::json!({ "$error": error.to_string(), "$address": rva })
 }
 
-pub fn read_at(pe: pelite::PeFile<'_>, rva: u32, ty: &ReadType, options: &ReadOptions) -> serde_json::Value {
+pub fn read_at(pe: pelite::PeFile<'_>, rva: u32, ty: &ty::Type, options: &ReadOptions) -> serde_json::Value {
 	read_value(pe, rva, ty, options, None)
 }
 
-fn read_value(pe: pelite::PeFile<'_>, rva: u32, ty: &ReadType, options: &ReadOptions, context: Option<&StructContext>) -> serde_json::Value {
+fn read_value(pe: pelite::PeFile<'_>, rva: u32, ty: &ty::Type, options: &ReadOptions, context: Option<&StructContext>) -> serde_json::Value {
 	try_read_value(pe, rva, ty, options, context).unwrap_or_else(|error| error_value(Some(rva), error))
 }
 
-fn try_read_value(pe: pelite::PeFile<'_>, rva: u32, ty: &ReadType, options: &ReadOptions, context: Option<&StructContext>) -> Result<serde_json::Value> {
+fn try_read_value(pe: pelite::PeFile<'_>, rva: u32, ty: &ty::Type, options: &ReadOptions, context: Option<&StructContext>) -> Result<serde_json::Value> {
 	macro_rules! read {
 		($ty:ty) => { pe.derva_copy::<$ty>(rva)? };
 	}
 	let value = match ty {
-		ReadType::U8 => serde_json::to_value(read!(u8)),
-		ReadType::U16 => serde_json::to_value(read!(u16)),
-		ReadType::U32 => serde_json::to_value(read!(u32)),
-		ReadType::U64 => serde_json::to_value(read!(u64)),
-		ReadType::I8 => serde_json::to_value(read!(i8)),
-		ReadType::I16 => serde_json::to_value(read!(i16)),
-		ReadType::I32 => serde_json::to_value(read!(i32)),
-		ReadType::I64 => serde_json::to_value(read!(i64)),
-		ReadType::F32 => serde_json::to_value(read!(f32)),
-		ReadType::F64 => serde_json::to_value(read!(f64)),
-		ReadType::Va | ReadType::Ptr(_) => {
+		ty::Type::U8 => serde_json::to_value(read!(u8)),
+		ty::Type::U16 => serde_json::to_value(read!(u16)),
+		ty::Type::U32 => serde_json::to_value(read!(u32)),
+		ty::Type::U64 => serde_json::to_value(read!(u64)),
+		ty::Type::I8 => serde_json::to_value(read!(i8)),
+		ty::Type::I16 => serde_json::to_value(read!(i16)),
+		ty::Type::I32 => serde_json::to_value(read!(i32)),
+		ty::Type::I64 => serde_json::to_value(read!(i64)),
+		ty::Type::F32 => serde_json::to_value(read!(f32)),
+		ty::Type::F64 => serde_json::to_value(read!(f64)),
+		ty::Type::Va | ty::Type::Ptr(_) => {
 			let va = match pe {
 				pelite::Wrap::T32(_) => u64::from(read!(u32)),
 				pelite::Wrap::T64(_) => read!(u64),
@@ -126,7 +114,7 @@ fn try_read_value(pe: pelite::PeFile<'_>, rva: u32, ty: &ReadType, options: &Rea
 				return Ok(serde_json::Value::Null);
 			}
 			let target = pe.va_to_rva(va)?;
-			if let ReadType::Ptr(ty) = ty {
+			if let ty::Type::Ptr(ty) = ty {
 				let value = read_value(pe, target, ty, options, context);
 				return Ok(value);
 			}
@@ -134,7 +122,7 @@ fn try_read_value(pe: pelite::PeFile<'_>, rva: u32, ty: &ReadType, options: &Rea
 				serde_json::to_value(target)
 			}
 		},
-		ReadType::CStr => {
+		ty::Type::CStr => {
 			let bytes = pe.slice_bytes(rva)?;
 			let len = bytes.len().min(options.max_string_bytes);
 			let string = pelite::util::CStr::from_bytes(&bytes[..len]).ok_or_else(|| {
@@ -147,20 +135,20 @@ fn try_read_value(pe: pelite::PeFile<'_>, rva: u32, ty: &ReadType, options: &Rea
 			})?;
 			serde_json::to_value(string)
 		},
-		ReadType::Array(array) => {
-			let pointer_width = PointerWidth::from(pe);
+		ty::Type::Array(array) => {
+			let pointer_width = ty::PointerWidth::from(pe);
 			let (stride, _) = array.ty.layout(pointer_width).map_err(err)?;
 			let len = match array.len {
-				ReadArrayLen::Const(len) => len,
-				ReadArrayLen::DynU8(offset) | ReadArrayLen::DynU16(offset) | ReadArrayLen::DynU32(offset) | ReadArrayLen::DynU64(offset) => {
+				ty::ArrayLen::Const(len) => len,
+				ty::ArrayLen::DynU8(offset) | ty::ArrayLen::DynU16(offset) | ty::ArrayLen::DynU32(offset) | ty::ArrayLen::DynU64(offset) => {
 					let context = context.ok_or_else(|| err("dynamic array requires a containing struct"))?;
 					let address = context.address.checked_add(offset).ok_or_else(|| err("array length address overflow"))?;
 					let len = match array.len {
-						ReadArrayLen::DynU8(_) => u64::from(pe.derva_copy::<u8>(address)?),
-						ReadArrayLen::DynU16(_) => u64::from(pe.derva_copy::<u16>(address)?),
-						ReadArrayLen::DynU32(_) => u64::from(pe.derva_copy::<u32>(address)?),
-						ReadArrayLen::DynU64(_) => pe.derva_copy::<u64>(address)?,
-						ReadArrayLen::Const(_) => unreachable!(),
+						ty::ArrayLen::DynU8(_) => u64::from(pe.derva_copy::<u8>(address)?),
+						ty::ArrayLen::DynU16(_) => u64::from(pe.derva_copy::<u16>(address)?),
+						ty::ArrayLen::DynU32(_) => u64::from(pe.derva_copy::<u32>(address)?),
+						ty::ArrayLen::DynU64(_) => pe.derva_copy::<u64>(address)?,
+						ty::ArrayLen::Const(_) => unreachable!(),
 					};
 					if len > options.max_dynamic_array_length as u64 {
 						return Err(err(format!("dynamic array length {len} exceeds maximum of {}", options.max_dynamic_array_length)));
@@ -179,7 +167,7 @@ fn try_read_value(pe: pelite::PeFile<'_>, rva: u32, ty: &ReadType, options: &Rea
 			}
 			return Ok(serde_json::Value::Array(values));
 		},
-		ReadType::Struct(structure) => {
+		ty::Type::Struct(structure) => {
 			let context = StructContext { address: rva };
 			let mut fields = serde_json::Map::new();
 			for field in &structure.fields {
