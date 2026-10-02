@@ -1,6 +1,8 @@
 use super::*;
 
 mod addr;
+mod address;
+mod arch;
 mod autoanalysis;
 mod demangle;
 mod disasm;
@@ -19,6 +21,28 @@ mod symbols;
 mod symtext;
 mod ty;
 mod xref;
+
+use address::{Address, AddressRange, RvaRange};
+
+use arch::Arch;
+
+impl Address {
+	fn to_rva(self, pe: pelite::PeFile<'_>) -> Result<u32> {
+		match self {
+			Address::Rva(rva) => Ok(rva),
+			Address::Va(va) => Ok(pe.va_to_rva(va)?),
+			Address::Fo(fo) => Ok(pe.headers().file_offset_to_rva(fo)?),
+		}
+	}
+}
+
+impl AddressRange {
+	fn to_rva(self, pe: pelite::PeFile<'_>) -> Result<RvaRange> {
+		let start = self.start.to_rva(pe)?;
+		let end = self.end.to_rva(pe)?;
+		Ok(RvaRange { start, end })
+	}
+}
 
 pub fn command() -> clap::Command {
 	let command = clap::Command::new("re")

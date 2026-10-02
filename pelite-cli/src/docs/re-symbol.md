@@ -9,10 +9,7 @@ FILE is the reference PE file used to convert addresses; the command does not
 discover symbols on its own. Results are sorted by RVA and include names and
 types. With no symbol files, the result is empty.
 
-RANGE is `kind:START..END` and accepts decimal or hex: `rva:4096..5000`,
-`va:0x180001000..0x180001004`, or `fo:512..576`; the end is excluded.
-Prefix the second number with `+` to give a length instead, for example
-`rva:0x1000..+10` ends at `0x100a`.
+See `pelite-cli re --help` for RANGE syntax.
 
 Use `--symbols` to load a `#symtext` symbol file, or repeat it to load several.
 Load `auto.symbols.txt` first and `user.symbols.txt` last so your analysis takes

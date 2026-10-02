@@ -27,11 +27,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let address = *matches.get_one::<Address>("address").expect("required by clap");
 	let map = pelite::FileMap::open(path)?;
 	let pe = pelite::PeFile::from_bytes(&map)?;
-	let rva = match address {
-		Address::Rva(rva) => rva,
-		Address::Va(va) => pe.va_to_rva(va)?,
-		Address::Fo(fo) => pe.headers().file_offset_to_rva(fo)?,
-	};
+	let rva = address.to_rva(pe)?;
 	let va = pe.rva_to_va(rva)?;
 	let fo = pe.headers().rva_to_file_offset(rva).ok();
 	let section = get_section_name_by_rva(pe, rva);

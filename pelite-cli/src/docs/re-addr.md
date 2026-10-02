@@ -4,7 +4,7 @@ Usage:
 
     pelite-cli re addr FILE ADDRESS [--format=text|json|json-pretty|nul]
 
-ADDRESS is `kind:number` and accepts decimal or hex: `rva:4096`, `va:0x180001000`, or `fo:1024`.
+See `pelite-cli re --help` for ADDRESS syntax.
 
 The command reports the matching RVA, VA, file offset (`fo`), and section.
 `fo` is null if the RVA has no corresponding file bytes. An address that

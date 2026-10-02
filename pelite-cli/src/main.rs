@@ -14,11 +14,9 @@ mod printer;
 mod re;
 mod resources;
 mod summary;
-mod value_parser;
 mod version_info;
 
 use printer::*;
-use value_parser::*;
 
 type Result<T = ()> = result::Result<T, Box<dyn error::Error>>;
 
