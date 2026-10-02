@@ -47,6 +47,12 @@ pub fn command() -> clap::Command {
 			.value_name("RANGE")
 			.value_parser(AddressRange::parse)
 			.required(true))
+		.arg(clap::Arg::new("output")
+			.short('o')
+			.long("output")
+			.value_name("FILE")
+			.value_parser(clap::value_parser!(PathBuf))
+			.help("Write raw bytes to a new file"))
 }
 
 pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
@@ -62,6 +68,11 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let len = usize::try_from(range.end - range.start)?;
 	let bytes = pe.slice(range.start, len, 1)?;
 	let bytes = &bytes[..len];
+	if let Some(output_path) = matches.get_one::<PathBuf>("output") {
+		let mut file = fs::OpenOptions::new().write(true).create_new(true).open(output_path)?;
+		file.write_all(bytes)?;
+		return Ok(());
+	}
 	let start_address = image_base.checked_add(u64::from(range.start)).ok_or_else(|| err("image base plus start RVA overflows"))?;
 
 	match format {
