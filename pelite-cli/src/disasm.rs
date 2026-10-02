@@ -45,7 +45,7 @@ pub fn command() -> clap::Command {
 			.long("arch")
 			.value_name("ARCH")
 			.value_parser(Arch::parse)
-			.help("Override the PE machine header (x86 or x86_64)"))
+			.help("Override the PE machine header (x86_16, x86_32 [alias x86], or x86_64)"))
 		.arg(clap::Arg::new("hex")
 			.long("hex")
 			.action(clap::ArgAction::SetTrue)
@@ -76,8 +76,8 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	}
 	else {
 		match pe.file_header().Machine {
-			image::IMAGE_FILE_MACHINE_I386 => 32,
-			image::IMAGE_FILE_MACHINE_AMD64 => 64,
+			image::IMAGE_FILE_MACHINE_I386 => Arch::X86_32.bitness(),
+			image::IMAGE_FILE_MACHINE_AMD64 => Arch::X86_64.bitness(),
 			machine => return Err(err(format!("unsupported machine type {machine:#06x}; expected i386 or AMD64"))),
 		}
 	};

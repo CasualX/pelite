@@ -52,7 +52,7 @@ pub fn command() -> clap::Command {
 			.value_name("ARCH")
 			.value_parser(Arch::parse)
 			.required(true)
-			.help("Instruction set and mode (x86 or x86_64)"))
+			.help("Instruction set and mode (x86_16, x86_32 [alias x86], or x86_64)"))
 		.arg(clap::Arg::new("offset")
 			.long("offset")
 			.value_name("BYTES")
@@ -119,7 +119,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let start_ip = base.checked_add(offset as u64).ok_or_else(|| err("base plus offset overflows"))?;
 	let end_ip = base.checked_add(end as u64).ok_or_else(|| err("base plus end offset overflows"))?;
 	let color = format == OutputFormat::Text && io::stdout().is_terminal();
-	let pointer_width = if bitness == 32 { ty::PointerWidth::Bits32 } else { ty::PointerWidth::Bits64 };
+	let pointer_width = if bitness == 64 { ty::PointerWidth::Bits64 } else { ty::PointerWidth::Bits32 };
 	let symbols = Arc::new(symbols::load(matches, pointer_width, base)?);
 	let decoded = iced::decode_bytes(&bytes[decode_start..end], bitness, decode_ip, start_ip, end_ip, color, Arc::clone(&symbols));
 	match format {
