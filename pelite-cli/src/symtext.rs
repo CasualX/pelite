@@ -17,13 +17,15 @@ pub struct Symbol {
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum SymbolName {
 	/// Data.
-	D,
-	/// Function.
-	Fn,
+	Data,
 	/// Code.
 	Code,
+	/// Function.
+	Fn,
 	/// Function thunk.
 	Thunk,
+	/// Remove an earlier symbol at the same RVA.
+	Undef,
 	/// Named symbol.
 	Named(String),
 }
@@ -31,10 +33,11 @@ pub enum SymbolName {
 impl fmt::Display for SymbolName {
 	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
 		match self {
-			SymbolName::D => f.write_str("D"),
-			SymbolName::Fn => f.write_str("Fn"),
+			SymbolName::Data => f.write_str("D"),
 			SymbolName::Code => f.write_str("C"),
-			SymbolName::Thunk => f.write_str("Thunk"),
+			SymbolName::Fn => f.write_str("fn"),
+			SymbolName::Thunk => f.write_str("thunk"),
+			SymbolName::Undef => f.write_str("undef"),
 			SymbolName::Named(name) => f.write_str(&serde_json::to_string(name).map_err(|_| fmt::Error)?),
 		}
 	}
@@ -103,14 +106,15 @@ fn parse_symbol(line: &str, pointer_width: ty::PointerWidth) -> result::Result<S
 		return Err("unexpected text after symbol name".to_owned());
 	}
 	let name = match name_token {
-		"Fn" => SymbolName::Fn,
 		"C" => SymbolName::Code,
-		"Thunk" => SymbolName::Thunk,
-		"D" => SymbolName::D,
+		"D" => SymbolName::Data,
+		"fn" => SymbolName::Fn,
+		"thunk" => SymbolName::Thunk,
+		"undef" => SymbolName::Undef,
 		name if name.starts_with('"') => SymbolName::Named(
 			serde_json::from_str(name).map_err(|error| format!("invalid quoted name: {error}"))?
 		),
-		_ => return Err("name must be D, Fn, C, Thunk, or a quoted string".to_owned()),
+		_ => return Err("name must be D, C, fn, thunk, undef, or a quoted string".to_owned()),
 	};
 	let ty = ty::Type::parse(&type_text, pointer_width).map_err(|error| format!("invalid type: {error}"))?;
 	Ok(Symbol::new(rva, ty, name))

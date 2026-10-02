@@ -14,6 +14,8 @@ Prefix the second number with `+` to give a length instead, for example
 
 Use --symbols to load a `#symtext` symbol file, or repeat it to load several.
 The symbols do not need to be sorted.
+Entries and files are applied in order. An entry such as `0x1000 unk undef`
+removes an earlier symbol at that RVA; a later entry can define it again.
 
 Examples:
 

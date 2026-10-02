@@ -41,7 +41,12 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 		let database = symtext::SymbolDatabase::parse(&source, ty::PointerWidth::from(pe))
 			.map_err(|error| err(format!("{}: {error}", path.display())))?;
 		for symbol in database.entries {
-			symbols.insert(symbol.rva, symbol);
+			if matches!(symbol.name, symtext::SymbolName::Undef) {
+				symbols.remove(&symbol.rva);
+			}
+			else {
+				symbols.insert(symbol.rva, symbol);
+			}
 		}
 	}
 	let selected = symbols.range(range.start..range.end).map(|(_, symbol)| {

@@ -143,7 +143,7 @@ fn symbol_database(symbols: &[Symbol]) -> symtext::SymbolDatabase {
 		};
 		let name = if symbol.label == "thunk" { symtext::SymbolName::Thunk }
 			else if symbol.label == "code" { symtext::SymbolName::Code }
-			else if symbol.label == "data" { symtext::SymbolName::D }
+			else if symbol.label == "data" { symtext::SymbolName::Data }
 			else { symtext::SymbolName::Named(symbol.label.clone()) };
 		symtext::Symbol::new(symbol.rva, ty, name)
 	}).collect();
@@ -398,31 +398,26 @@ fn interpretation(size: iced_x86::MemorySize) -> Option<DataKind> {
 	})
 }
 
-#[cfg(test)]
-mod tests {
-	use super::*;
-
-	#[test]
-	fn discovered_symbols_write_parseable_symtext() {
-		let symbols = vec![
-			Symbol { rva: 0x1000, label: "code".into(), interpretations: None },
-			Symbol { rva: 0x1100, label: "thunk".into(), interpretations: Some(Interpretation::Single(DataKind::Code)) },
-			Symbol { rva: 0x2000, label: "data".into(), interpretations: Some(Interpretation::Multiple(BTreeSet::from([DataKind::U32, DataKind::U64]))) },
-			Symbol { rva: 0x2100, label: "data".into(), interpretations: None },
-			Symbol { rva: 0x3000, label: "imp_Sleep".into(), interpretations: Some(Interpretation::Single(DataKind::Code)) },
-			Symbol { rva: 0x3100, label: "imp_Sleep".into(), interpretations: Some(Interpretation::Single(DataKind::Code)) },
-		];
-		let mut output = Vec::new();
-		symbol_database(&symbols).write(&mut output, "").unwrap();
-		let text = std::str::from_utf8(&output).unwrap();
-		let database = symtext::SymbolDatabase::parse(text, ty::PointerWidth::Bits64).unwrap();
-		assert_eq!(database.entries[0].ty, ty::Type::Code);
-		assert_eq!(database.entries[0].name, symtext::SymbolName::Code);
-		assert_eq!(database.entries[1].name, symtext::SymbolName::Thunk);
-		assert_eq!(database.entries[2].ty.to_string(), "union{u32,u64}");
-		assert_eq!(database.entries[2].name, symtext::SymbolName::D);
-		assert_eq!(database.entries[3].name, symtext::SymbolName::D);
-		assert_eq!(database.entries[4].name, database.entries[5].name);
-		assert_eq!(database.entries[4].name, symtext::SymbolName::Named("imp_Sleep".into()));
-	}
+#[test]
+fn discovered_symbols_write_parseable_symtext() {
+	let symbols = vec![
+		Symbol { rva: 0x1000, label: "code".into(), interpretations: None },
+		Symbol { rva: 0x1100, label: "thunk".into(), interpretations: Some(Interpretation::Single(DataKind::Code)) },
+		Symbol { rva: 0x2000, label: "data".into(), interpretations: Some(Interpretation::Multiple(BTreeSet::from([DataKind::U32, DataKind::U64]))) },
+		Symbol { rva: 0x2100, label: "data".into(), interpretations: None },
+		Symbol { rva: 0x3000, label: "imp_Sleep".into(), interpretations: Some(Interpretation::Single(DataKind::Code)) },
+		Symbol { rva: 0x3100, label: "imp_Sleep".into(), interpretations: Some(Interpretation::Single(DataKind::Code)) },
+	];
+	let mut output = Vec::new();
+	symbol_database(&symbols).write(&mut output, "").unwrap();
+	let text = std::str::from_utf8(&output).unwrap();
+	let database = symtext::SymbolDatabase::parse(text, ty::PointerWidth::Bits64).unwrap();
+	assert_eq!(database.entries[0].ty, ty::Type::Code);
+	assert_eq!(database.entries[0].name, symtext::SymbolName::Code);
+	assert_eq!(database.entries[1].name, symtext::SymbolName::Thunk);
+	assert_eq!(database.entries[2].ty.to_string(), "union{u32,u64}");
+	assert_eq!(database.entries[2].name, symtext::SymbolName::Data);
+	assert_eq!(database.entries[3].name, symtext::SymbolName::Data);
+	assert_eq!(database.entries[4].name, database.entries[5].name);
+	assert_eq!(database.entries[4].name, symtext::SymbolName::Named("imp_Sleep".into()));
 }
