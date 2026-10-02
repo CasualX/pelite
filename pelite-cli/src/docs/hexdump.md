@@ -2,7 +2,7 @@ Display bytes from a PE image
 
 Usage:
 
-    pelite-cli hexdump FILE RANGE [--format=text|json|json-pretty|nul]
+    pelite-cli hexdump FILE RANGE [-o OUTPUT] [--format=text|json|json-pretty|nul]
 
 RANGE is `kind:START..END` and accepts decimal or hex: `rva:4096..5000`,
 `va:0x180001000..0x180001004`, or `fo:512..576`; the end is excluded.
@@ -20,11 +20,16 @@ Use format `json` for a compact array of byte values or `json-pretty` for an
 indented array. JSON contains only the selected bytes, without addresses or
 ASCII text.
 
+Use `-o OUTPUT` (or `--output OUTPUT`) to write the selected raw bytes to a
+new file instead of printing them. The file must not already exist. This
+option takes precedence over `--format`.
+
 Examples:
 
     pelite-cli hexdump sample.dll rva:0x1000..0x1040
     pelite-cli hexdump sample.dll fo:1024..1088
     pelite-cli hexdump sample.dll va:0x180001000..0x180001040 --format=json
+    pelite-cli hexdump sample.dll rva:0x1000..0x1040 -o bytes.bin
 
 Example JSON output (four bytes shown):
 
@@ -36,3 +41,4 @@ When to use:
 
 Inspect exact bytes and nearby ASCII to check a signature match or
 disassembly. Use `read` when you know the type or want to follow pointers.
+Use `hexdump -o OUTPUT` to extract selected bytes to disk.
