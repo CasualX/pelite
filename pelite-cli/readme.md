@@ -10,9 +10,11 @@ From the repository root, run the CLI with Cargo:
 cargo run -p pelite-cli -- demo/Demo64.dll
 cargo run -p pelite-cli -- inspect demo/Demo64.dll --imports --exports
 cargo run -p pelite-cli -- depwalk demo/Demo64.dll -L /path/to/windows/dlls
-cargo run -p pelite-cli -- xref demo/Demo64.dll rva:0x1000
+cargo run -p pelite-cli -- re xref demo/Demo64.dll rva:0x1000
 cargo run -p pelite-cli -- --help
 ```
+
+Reverse engineering commands live under `re`. Run `cargo run -p pelite-cli -- re --help` to browse them.
 
 Passing a file directly runs `summary`. The summary covers image details, sections, imports, hashes, and useful signals for a first look.
 

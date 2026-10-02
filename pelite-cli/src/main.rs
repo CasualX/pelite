@@ -4,38 +4,19 @@ use std::sync::Arc;
 use std::{error, fmt, fs, num, process, result};
 use std::io::{self, BufRead, IsTerminal, Write};
 
-mod addr;
-mod autoanalysis;
-mod demangle;
-mod disasm;
-mod disasm_raw;
 mod depwalk;
 mod edit;
-mod findsig;
-mod hex;
-mod hexdump;
-mod iced;
 mod imphash;
 mod inspect;
 mod markov;
 mod module_def;
-mod msvc;
 mod printer;
-mod read;
+mod re;
 mod resources;
-mod scan;
-mod rust;
-mod strings;
 mod summary;
-mod symbol;
-mod symbols;
-mod symtext;
-mod ty;
 mod value_parser;
 mod version_info;
-mod xref;
 
-use hex::*;
 use printer::*;
 use value_parser::*;
 
@@ -84,7 +65,7 @@ fn err(message: impl Into<String>) -> Box<dyn error::Error> {
 fn cli() -> clap::Command {
 	let command = clap::Command::new("pelite-cli")
 		.about("Inspect Windows PE binaries")
-		.override_usage("pelite-cli [COMMAND] <FILE> [ARGS] [OPTIONS]")
+		.override_usage("pelite-cli [COMMAND] [SUBCOMMAND] <FILE> [ARGS] [OPTIONS]")
 		.arg_required_else_help(true)
 		.arg(summary::file_arg())
 		.arg(clap::Arg::new("format")
@@ -98,31 +79,27 @@ fn cli() -> clap::Command {
 		.subcommand(edit::command())
 		.subcommand(summary::command())
 		.subcommand(resources::command())
-		.subcommand(addr::command())
-		.subcommand(symbol::command())
-		.subcommand(read::command())
-		.subcommand(scan::command())
-		.subcommand(disasm::command())
-		.subcommand(disasm_raw::command())
 		.subcommand(depwalk::command())
-		.subcommand(demangle::command())
-		.subcommand(hexdump::command())
-		.subcommand(strings::command())
-		.subcommand(findsig::command())
 		.subcommand(imphash::command())
 		.subcommand(markov::command())
 		.subcommand(module_def::command())
-		.subcommand(msvc::command())
-		.subcommand(rust::command())
 		.subcommand(version_info::command())
-		.subcommand(xref::command())
-		.subcommand(autoanalysis::command());
+		.subcommand(re::command());
 
+	with_command_guide(command)
+}
+
+fn with_command_guide(command: clap::Command) -> clap::Command {
 	let guide = command.get_subcommands()
 		.map(|subcommand| guide_entry(subcommand.get_name(), &when_to_use(subcommand)))
 		.collect::<Vec<_>>()
 		.join("\n\n");
-	command.after_help(format!("When to use:\n\n{guide}"))
+	let guide = format!("When to use:\n\n{guide}");
+	let help = match command.get_after_help() {
+		Some(documentation) => format!("{}\n\n{guide}", documentation.to_string().trim_end()),
+		None => guide,
+	};
+	command.after_help(help)
 }
 
 fn when_to_use(command: &clap::Command) -> String {
@@ -171,25 +148,12 @@ fn run() -> Result {
 		Some(("edit", matches)) => edit::run(matches),
 		Some(("summary", matches)) => summary::run(matches, format),
 		Some(("resources", matches)) => resources::run(matches, format),
-		Some(("addr", matches)) => addr::run(matches, format),
-		Some(("symbol", matches)) => symbol::run(matches, format),
-		Some(("read", matches)) => read::run(matches, format),
-		Some(("scan", matches)) => scan::run(matches, format),
-		Some(("disasm", matches)) => disasm::run(matches, format),
-		Some(("disasm-raw", matches)) => disasm_raw::run(matches, format),
 		Some(("depwalk", matches)) => depwalk::run(matches, format),
-		Some(("demangle", matches)) => demangle::run(matches, format),
-		Some(("hexdump", matches)) => hexdump::run(matches, format),
-		Some(("strings", matches)) => strings::run(matches, format),
-		Some(("findsig", matches)) => findsig::run(matches, format),
 		Some(("imphash", matches)) => imphash::run(matches, format),
 		Some(("markov", matches)) => markov::run(matches, format),
 		Some(("module-def", matches)) => module_def::run(matches, format),
-		Some(("msvc", matches)) => msvc::run(matches, format),
-		Some(("rust", matches)) => rust::run(matches, format),
 		Some(("version-info", matches)) => version_info::run(matches, format),
-		Some(("xref", matches)) => xref::run(matches, format),
-		Some(("autoanalysis", matches)) => autoanalysis::run(matches, format),
+		Some(("re", matches)) => re::run(matches, format),
 		None => summary::run(&matches, format),
 		_ => unreachable!("all subcommands are handled"),
 	}
@@ -216,4 +180,55 @@ fn is_broken_pipe(error: &(dyn error::Error + 'static)) -> bool {
 		current = error.source();
 	}
 	false
+}
+
+#[cfg(test)]
+mod cli_tests {
+	use super::*;
+
+	#[test]
+	fn nested_commands_have_valid_help() {
+		cli().debug_assert();
+		let commands = [
+			vec!["addr"], vec!["symbol"], vec!["read"], vec!["scan"],
+			vec!["disasm"], vec!["disasm-raw"], vec!["hexdump"],
+			vec!["strings"], vec!["findsig"], vec!["xref"],
+			vec!["autoanalysis"], vec!["demangle"], vec!["msvc", "rtti"],
+			vec!["rust", "format-args"], vec!["rust", "fmt-template"],
+			vec!["rust", "panic-locations"], vec!["rust", "vtables"],
+		];
+		for command in commands {
+			let mut args = vec!["pelite-cli", "re"];
+			args.extend(&command);
+			args.push("--help");
+			let error = cli().try_get_matches_from(args).unwrap_err();
+			assert_eq!(error.kind(), clap::error::ErrorKind::DisplayHelp);
+			assert!(error.to_string().contains(&format!("pelite-cli re {}", command.join(" "))));
+		}
+	}
+
+	#[test]
+	fn global_format_reaches_nested_commands() {
+		for path in [
+			vec!["re", "strings", "sample.exe"],
+			vec!["re", "msvc", "rtti", "sample.exe"],
+			vec!["re", "rust", "panic-locations", "sample.exe"],
+		] {
+			for position in 0..=path.len() {
+				let mut args = path.clone();
+				args.insert(position, "--format=json");
+				args.insert(0, "pelite-cli");
+				let matches = cli().try_get_matches_from(args).unwrap();
+				let mut leaf = &matches;
+				while let Some((_, child)) = leaf.subcommand() {
+					leaf = child;
+				}
+				assert!(matches!(OutputFormat::from_matches(&matches), OutputFormat::Json));
+				assert!(matches!(OutputFormat::from_matches(leaf), OutputFormat::Json));
+			}
+		}
+		let matches = cli().try_get_matches_from(["pelite-cli", "sample.exe"]).unwrap();
+		assert!(matches.subcommand().is_none());
+		assert_eq!(matches.get_one::<PathBuf>("file"), Some(&PathBuf::from("sample.exe")));
+	}
 }
