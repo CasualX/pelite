@@ -1,15 +1,39 @@
 use super::*;
 
 #[test]
+fn undef_entries_round_trip_in_order() {
+	let source = r#"#symtext
+0x100 code fn
+0x100 unk undef
+0x100 code "undef"
+"#;
+	let database = SymbolDatabase::parse(source, ty::PointerWidth::Bits64).unwrap();
+	assert_eq!(database.entries[1].name, SymbolName::Undef);
+	assert_eq!(database.entries[2].name, SymbolName::Named("undef".to_owned()));
+	let mut output = Vec::new();
+	database.write(&mut output, "").unwrap();
+	assert_eq!(std::str::from_utf8(&output).unwrap(), source);
+}
+
+#[test]
 fn parses_and_writes_symbols() {
-	let source = "#symtext\n0x001536 code Fn\n0x001172 code Thunk\n0x001540 code \"imp_MSVCR120.dll!?what@exception@std@@UEBAPEBDXZ\"\n0x0041a0 unk D\n0x005160 u64 D\n0x0056d8 \"union { u32, u64 }\" \"a \\\"quoted\\\" name\"\n0x005700 code \"Fn\"\n0x005710 code C\n";
+	let source = r#"#symtext
+0x001536 code fn
+0x001172 code thunk
+0x001540 code "imp_MSVCR120.dll!?what@exception@std@@UEBAPEBDXZ"
+0x0041a0 unk D
+0x005160 u64 D
+0x0056d8 "union { u32, u64 }" "a \"quoted\" name"
+0x005700 code "fn"
+0x005710 code C
+"#;
 	for width in [ty::PointerWidth::Bits32, ty::PointerWidth::Bits64] {
 		let database = SymbolDatabase::parse(source, width).unwrap();
 		assert_eq!(database.entries.len(), 8);
 		assert_eq!(database.entries[0].ty, ty::Type::Code);
 		assert_eq!(database.entries[2].name, SymbolName::Named("imp_MSVCR120.dll!?what@exception@std@@UEBAPEBDXZ".to_owned()));
 		assert_eq!(database.entries[5].ty.to_string(), "union{u32,u64}");
-		assert_eq!(database.entries[6].name, SymbolName::Named("Fn".to_owned()));
+		assert_eq!(database.entries[6].name, SymbolName::Named("fn".to_owned()));
 		assert_eq!(database.entries[7].name, SymbolName::Code);
 		let mut output = Vec::new();
 		database.write(&mut output, "").unwrap();
@@ -32,7 +56,7 @@ fn named_symbol_uses_json_escapes() {
 
 #[test]
 fn skips_comments_and_empty_lines() {
-	let source = "#symtext\n\n# first symbol\n0x10 code Fn\n  # between symbols\n\t\n0x20 unk D\n# end\n";
+	let source = "#symtext\n\n# first symbol\n0x10 code fn\n  # between symbols\n\t\n0x20 unk D\n# end\n";
 	let database = SymbolDatabase::parse(source, ty::PointerWidth::Bits64).unwrap();
 	assert_eq!(database.entries.iter().map(|symbol| symbol.rva).collect::<Vec<_>>(), [0x10, 0x20]);
 	assert_eq!(SymbolDatabase::parse("#symtext\n\n # comment\n0x100 code", ty::PointerWidth::Bits64).unwrap_err(), "line 4: expected another field");

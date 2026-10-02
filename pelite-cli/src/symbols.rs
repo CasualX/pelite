@@ -7,22 +7,23 @@ pub enum IndexedSymbol {
 }
 
 impl From<symtext::Symbol> for IndexedSymbol {
-	fn from(symbol: symtext::Symbol) -> Self {
+	fn from(symbol: symtext::Symbol) -> IndexedSymbol {
 		match symbol.name {
-			symtext::SymbolName::Named(name) => Self::Named(name),
-			_ => Self::from(&symbol),
+			symtext::SymbolName::Named(name) => IndexedSymbol::Named(name),
+			_ => IndexedSymbol::from(&symbol),
 		}
 	}
 }
 
 impl From<&symtext::Symbol> for IndexedSymbol {
-	fn from(symbol: &symtext::Symbol) -> Self {
+	fn from(symbol: &symtext::Symbol) -> IndexedSymbol {
 		match &symbol.name {
-			symtext::SymbolName::Named(name) => Self::Named(name.clone()),
-			symtext::SymbolName::Code => Self::Generated { name: "code", rva: symbol.rva },
-			symtext::SymbolName::D => Self::Generated { name: "data", rva: symbol.rva },
-			symtext::SymbolName::Fn => Self::Generated { name: "fn", rva: symbol.rva },
-			symtext::SymbolName::Thunk => Self::Generated { name: "thunk", rva: symbol.rva },
+			symtext::SymbolName::Data => IndexedSymbol::Generated { name: "data", rva: symbol.rva },
+			symtext::SymbolName::Code => IndexedSymbol::Generated { name: "code", rva: symbol.rva },
+			symtext::SymbolName::Fn => IndexedSymbol::Generated { name: "fn", rva: symbol.rva },
+			symtext::SymbolName::Thunk => IndexedSymbol::Generated { name: "thunk", rva: symbol.rva },
+			symtext::SymbolName::Undef => IndexedSymbol::Generated { name: "undef", rva: symbol.rva },
+			symtext::SymbolName::Named(name) => IndexedSymbol::Named(name.clone()),
 		}
 	}
 }
@@ -30,8 +31,8 @@ impl From<&symtext::Symbol> for IndexedSymbol {
 impl fmt::Display for IndexedSymbol {
 	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
 		match self {
-			Self::Named(name) => f.write_str(name),
-			Self::Generated { name, rva } => write!(f, "{name}_{rva:x}"),
+			IndexedSymbol::Named(name) => f.write_str(name),
+			IndexedSymbol::Generated { name, rva } => write!(f, "{name}_{rva:x}"),
 		}
 	}
 }
@@ -59,15 +60,32 @@ pub fn load(matches: &clap::ArgMatches, pointer_width: ty::PointerWidth, base: u
 pub fn index(symbols: &mut HashMap<u64, IndexedSymbol>, database: symtext::SymbolDatabase, base: u64) {
 	for symbol in database.entries {
 		if let Some(address) = base.checked_add(u64::from(symbol.rva)) {
-			symbols.insert(address, IndexedSymbol::from(symbol));
+			if matches!(symbol.name, symtext::SymbolName::Undef) {
+				symbols.remove(&address);
+			}
+			else {
+				symbols.insert(address, IndexedSymbol::from(symbol));
+			}
 		}
 	}
 }
 
 #[test]
+fn undef_removes_symbols_and_later_entries_can_reintroduce_them() {
+	let width = ty::PointerWidth::Bits64;
+	let first = symtext::SymbolDatabase::parse("#symtext\n0x1000 code fn\n0x1010 u32 D\n", width).unwrap();
+	let second = symtext::SymbolDatabase::parse("#symtext\n0x1000 unk undef\n0x1010 unk undef\n0x1020 unk undef\n0x1030 code fn\n0x1030 unk undef\n0x1000 code \"new\"\n", width).unwrap();
+	let mut symbols = HashMap::new();
+	index(&mut symbols, first, 0x180000000);
+	index(&mut symbols, second, 0x180000000);
+	assert_eq!(symbols.len(), 1);
+	assert_eq!(symbols[&0x180001000].to_string(), "new");
+}
+
+#[test]
 fn later_symbol_entries_replace_earlier_names() {
 	let width = ty::PointerWidth::Bits64;
-	let first = symtext::SymbolDatabase::parse("#symtext\n0x1000 code C\n0x1010 code \"first\"\n0x1020 code Fn\n0x1030 code Thunk\n0x2000 u32 D\n", width).unwrap();
+	let first = symtext::SymbolDatabase::parse("#symtext\n0x1000 code C\n0x1010 code \"first\"\n0x1020 code fn\n0x1030 code thunk\n0x2000 u32 D\n", width).unwrap();
 	let second = symtext::SymbolDatabase::parse("#symtext\n0x1010 code \"last\"\n", width).unwrap();
 	let mut symbols = HashMap::new();
 	index(&mut symbols, first, 0x180000000);
