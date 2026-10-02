@@ -54,12 +54,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let map = pelite::FileMap::open(path)?;
 	let pe = pelite::PeFile::from_bytes(&map)?;
 	let ty = ty::Type::parse(source, ty::PointerWidth::from(pe)).map_err(err)?;
-	let rva = match address {
-		Address::Rva(rva) => Ok(rva),
-		Address::Va(va) => pe.va_to_rva(va),
-		Address::Fo(fo) => pe.headers().file_offset_to_rva(fo),
-	};
-	let value = match rva {
+	let value = match address.to_rva(pe) {
 		Ok(rva) => read_at(pe, rva, &ty, &options),
 		Err(error) => error_value(None, error),
 	};

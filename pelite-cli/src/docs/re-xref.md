@@ -4,7 +4,8 @@ Usage:
 
     pelite-cli re xref FILE ADDRESS [--format=text|json|json-pretty|nul]
 
-ADDRESS is `kind:number` and accepts decimal or hex: `rva:4096`, `va:0x180001000`, or `fo:1024`.
+See `pelite-cli re --help` for ADDRESS syntax.
+
 The command converts the target to an RVA before searching.
 
 The search checks base relocations for pointers to the target, or scans raw

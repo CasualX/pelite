@@ -4,13 +4,7 @@ Usage:
 
     pelite-cli re disasm FILE RANGE [--symbols SYMBOLS.txt]... [--layout none|indent|rva|va] [--arch x86_16|x86_32|x86_64] [--hex] [--lookback BYTES] [--format=text|json|json-pretty|nul]
 
-RANGE is `kind:START..END` and accepts decimal or hex: `rva:4096..5000`,
-`va:0x180001000..0x180001004`, or `fo:512..576`; the end is excluded.
-Prefix the second number with `+` to give a length instead, for example
-`rva:0x1000..+10` ends at `0x100a`.
-
-One prefix applies to both endpoints. File offset ranges must map
-to contiguous PE image bytes.
+See `pelite-cli re --help` for RANGE syntax.
 
 Disassembly starts at START and proceeds through the range in address order.
 The PE machine header selects x86_32 or x86_64 by default. Use `--arch` to override

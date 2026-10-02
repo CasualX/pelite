@@ -4,7 +4,7 @@ Usage:
 
     pelite-cli re read FILE ADDRESS TYPE [--max-string-bytes N] [--max-dynamic-array-length N] [--format=text|json|json-pretty|nul]
 
-ADDRESS is `kind:number` and accepts decimal or hex: `rva:4096`, `va:0x180001000`, or `fo:1024`.
+See `pelite-cli re --help` for ADDRESS syntax.
 
 TYPE describes the bytes at ADDRESS:
 
