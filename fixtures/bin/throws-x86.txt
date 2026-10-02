@@ -1,0 +1,46 @@
+0x00016708: throw int (attributes 0x0)
+  destructor: none, forward compatibility: none
+  metadata reference: 0x0000100B
+  catch int: size/offset 4, PMD (0, -1, 0), properties 0x1, copy none
+
+0x0001673C: throw fixture::PlainException (attributes 0x0)
+  destructor: none, forward compatibility: none
+  metadata reference: 0x0000102B
+  catch fixture::PlainException: size/offset 4, PMD (0, -1, 0), properties 0x0, copy none
+
+0x00016770: throw fixture::DerivedException (attributes 0x0)
+  destructor: none, forward compatibility: none
+  metadata reference: 0x0000105B
+  catch fixture::DerivedException: size/offset 12, PMD (0, -1, 0), properties 0x0, copy none
+  catch fixture::BaseException: size/offset 4, PMD (0, -1, 0), properties 0x0, copy none
+  catch fixture::OtherException: size/offset 4, PMD (4, -1, 0), properties 0x0, copy none
+
+0x000167E4: throw fixture::VirtualException (attributes 0x0)
+  destructor: none, forward compatibility: none
+  metadata reference: 0x0000108B
+  catch fixture::VirtualException: size/offset 12, PMD (0, -1, 0), properties 0x4, copy 0x00001550
+  catch fixture::BaseException: size/offset 4, PMD (0, 0, 4), properties 0x0, copy none
+
+0x00016838: throw fixture::OwnedException (attributes 0x0)
+  destructor: 0x000015D0, forward compatibility: none
+  metadata reference: 0x000010E0
+  catch fixture::OwnedException: size/offset 4, PMD (0, -1, 0), properties 0x0, copy 0x000014E0
+
+0x0001686C: throw fixture::PlainException * (attributes 0x0)
+  destructor: none, forward compatibility: none
+  metadata reference: 0x0000111A
+  catch fixture::PlainException *: size/offset 4, PMD (0, -1, 0), properties 0x1, copy none
+  catch void *: size/offset 4, PMD (0, -1, 0), properties 0x1, copy none
+
+0x000168C0: throw fixture::PlainException * (attributes 0x1)
+  destructor: none, forward compatibility: none
+  metadata reference: 0x0000113A
+  catch fixture::PlainException *: size/offset 4, PMD (0, -1, 0), properties 0x1, copy none
+  catch void *: size/offset 4, PMD (0, -1, 0), properties 0x1, copy none
+
+0x00016A14: throw std::bad_exception (attributes 0x0)
+  destructor: 0x0000366F, forward compatibility: none
+  metadata reference: 0x000032E1
+  catch std::bad_exception: size/offset 12, PMD (0, -1, 0), properties 0x0, copy 0x00003604
+  catch std::exception: size/offset 12, PMD (0, -1, 0), properties 0x0, copy 0x0000363D
+

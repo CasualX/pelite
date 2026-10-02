@@ -1,4 +1,4 @@
-Dump Microsoft C++ RTTI from a PE32 or PE32+ image
+Dump Microsoft C++ RTTI (runtime type information)
 
 Usage:
 

@@ -1,0 +1,10 @@
+{
+  "architecture": "x86",
+  "compiler_id": "MSVC",
+  "compiler_version": "19.44.35229.0",
+  "frontend": "MSVC",
+  "target_system": "Windows",
+  "configuration": "Release",
+  "source_sha256": "658df3b8c68b7f0e91a63fe836b64de994cbf86e60436d921839810f43e56daf",
+  "binary_sha256": "c8b3eb1e82d6d1fca77175ede3e00f207ae9cb05fd5bd98149402b6df2179b16"
+}
