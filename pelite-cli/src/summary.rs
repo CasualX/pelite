@@ -107,6 +107,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let output = summarize(path, map.as_ref(), pe)?;
 
 	match format {
+		OutputFormat::Nul => Ok(()),
 		OutputFormat::Text => print_text(&output),
 		OutputFormat::Json => print_json(&output, false),
 		OutputFormat::JsonPretty => print_json(&output, true),
@@ -211,7 +212,7 @@ fn summarize(path: &Path, bytes: &[u8], pe: PeFile<'_>) -> Result<Summary> {
 		file_size: bytes.len(),
 		hashes: Hashes {
 			md5: format!("{:x}", md5::compute(bytes)),
-			sha256: encode_lower_hex(sha256.as_ref()),
+			sha256: basenc::LowerHex.encode(sha256.as_ref()),
 			imphash,
 		},
 		image: Image {
@@ -243,16 +244,6 @@ fn summarize(path: &Path, bytes: &[u8], pe: PeFile<'_>) -> Result<Summary> {
 		pdb_path,
 		findings,
 	})
-}
-
-fn encode_lower_hex(bytes: &[u8]) -> String {
-	const DIGITS: &[u8; 16] = b"0123456789abcdef";
-	let mut output = String::with_capacity(bytes.len() * 2);
-	for &byte in bytes {
-		output.push(char::from(DIGITS[usize::from(byte >> 4)]));
-		output.push(char::from(DIGITS[usize::from(byte & 0x0f)]));
-	}
-	output
 }
 
 trait OptionalHeaderSize {

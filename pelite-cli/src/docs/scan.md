@@ -2,7 +2,7 @@ Find patterns and read typed data at their matches
 
 Usage:
 
-    pelite-cli scan FILE TYPE [PATTERN] [--section SECTION] [--max-string-bytes N] [--max-dynamic-array-length N] [--format=text|json|json-pretty]
+    pelite-cli scan FILE TYPE [PATTERN] [--section SECTION] [--max-string-bytes N] [--max-dynamic-array-length N] [--format=text|json|json-pretty|nul]
 
 PATTERN uses the syntax and section scanning described by `findsig --help`.
 By default, scan searches sections not marked executable. `--section` searches

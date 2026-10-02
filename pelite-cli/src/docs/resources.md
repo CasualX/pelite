@@ -2,11 +2,11 @@ Browse, validate, and extract PE resources
 
 Usage:
 
-    pelite-cli resources tree FILE [PATH] [--format=text|json|json-pretty]
-    pelite-cli resources cat FILE PATH [--format=text|json|json-pretty]
-    pelite-cli resources fsck FILE [--format=text|json|json-pretty]
-    pelite-cli resources KIND list FILE [--format=text|json|json-pretty]
-    pelite-cli resources KIND extract FILE DESTINATION [NAME]... [--force] [--format=text|json|json-pretty]
+    pelite-cli resources tree FILE [PATH] [--format=text|json|json-pretty|nul]
+    pelite-cli resources cat FILE PATH [--format=text|json|json-pretty|nul]
+    pelite-cli resources fsck FILE [--format=text|json|json-pretty|nul]
+    pelite-cli resources KIND list FILE [--format=text|json|json-pretty|nul]
+    pelite-cli resources KIND extract FILE DESTINATION [NAME]... [--force] [--format=text|json|json-pretty|nul]
 
 Resource paths are absolute, for example `/#MANIFEST/#1/#1033`. `tree` lists
 entries beneath PATH (default `/`) with sizes and code pages. `cat` writes the

@@ -31,6 +31,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	}
 
 	match format {
+		OutputFormat::Nul => Ok(()),
 		OutputFormat::Text => {
 			let mut output = io::stdout().lock();
 			for result in &hashes {

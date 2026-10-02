@@ -26,13 +26,10 @@ impl PointerWidth {
 	}
 }
 
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub enum ArrayLen {
-	Const(u32),
-	DynU8(u32),
-	DynU16(u32),
-	DynU32(u32),
-	DynU64(u32),
+	Fixed(u32),
+	Dyn(String),
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -52,6 +49,8 @@ pub enum Type {
 
 	Va,
 	CStr,
+	Code,
+	Unknown,
 
 	Array(Box<ArrayType>),
 	Ptr(Box<Type>),
@@ -62,6 +61,7 @@ pub enum Type {
 pub struct StructType {
 	pub name: Option<String>,
 	pub fields: Vec<Field>,
+	pub is_union: bool,
 	/// Layout computed when the struct or union is parsed for the PE pointer width.
 	pub size: u32,
 	pub align: u32,
@@ -71,16 +71,23 @@ pub struct StructType {
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Field {
-	pub name: String,
+	pub name: FieldName,
 	pub offset: u32,
 	pub ty: Type,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub enum FieldName {
+	Named(String),
+	Discarded,
+	Unnamed,
 }
 
 impl Type {
 	/// Alignment of the starting address, including dynamically sized types.
 	pub fn alignment(&self, pointer_width: PointerWidth) -> u32 {
 		match self {
-			Self::CStr => 1,
+			Self::CStr | Self::Code | Self::Unknown => 1,
 			Self::Array(array) => array.align,
 			Self::Struct(structure) => structure.align,
 			_ => self.layout(pointer_width).expect("fixed-size type").1,
@@ -89,8 +96,8 @@ impl Type {
 
 	pub fn is_dst(&self) -> bool {
 		match self {
-			Self::CStr => true,
-			Self::Array(array) => !matches!(array.len, ArrayLen::Const(_)),
+			Self::CStr | Self::Code | Self::Unknown => true,
+			Self::Array(array) => !matches!(&array.len, ArrayLen::Fixed(_)),
 			Self::Struct(structure) => structure.is_dst,
 			_ => false,
 		}
@@ -105,11 +112,62 @@ impl Type {
 			Self::U64 | Self::I64 | Self::F64 => Ok((8, 8)),
 			Self::Va | Self::Ptr(_) => Ok((pointer_width.bytes(), pointer_width.bytes())),
 			Self::CStr => Err("cstr is unsized"),
-			Self::Array(array) => match array.len {
-				ArrayLen::Const(_) => Ok((array.size, array.align)),
+			Self::Code => Err("code is unsized"),
+			Self::Unknown => Err("unk is unsized"),
+			Self::Array(array) => match &array.len {
+				ArrayLen::Fixed(_) => Ok((array.size, array.align)),
 				_ => Err("dynamic array is unsized"),
 			},
 			Self::Struct(structure) => if self.is_dst() { Err("struct with a dynamic field is unsized") } else { Ok((structure.size, structure.align)) },
+		}
+	}
+}
+
+impl fmt::Display for Type {
+	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+		match self {
+			Self::U8 => f.write_str("u8"),
+			Self::U16 => f.write_str("u16"),
+			Self::U32 => f.write_str("u32"),
+			Self::U64 => f.write_str("u64"),
+			Self::I8 => f.write_str("i8"),
+			Self::I16 => f.write_str("i16"),
+			Self::I32 => f.write_str("i32"),
+			Self::I64 => f.write_str("i64"),
+			Self::F32 => f.write_str("f32"),
+			Self::F64 => f.write_str("f64"),
+			Self::Va => f.write_str("ptr"),
+			Self::CStr => f.write_str("cstr"),
+			Self::Code => f.write_str("code"),
+			Self::Unknown => f.write_str("unk"),
+			Self::Ptr(ty) => write!(f, "*{ty}"),
+			Self::Array(array) => {
+				write!(f, "[{};", array.ty)?;
+				match &array.len {
+					ArrayLen::Fixed(len) => write!(f, "{len}")?,
+					ArrayLen::Dyn(name) => f.write_str(name)?,
+				}
+				f.write_str("]")
+			},
+			Self::Struct(structure) => {
+				f.write_str(if structure.is_union { "union" } else { "struct" })?;
+				if let Some(name) = &structure.name {
+					write!(f, " {name}")?;
+				}
+				f.write_str("{")?;
+				for (index, field) in structure.fields.iter().enumerate() {
+					if index != 0 {
+						f.write_str(",")?;
+					}
+					match &field.name {
+						FieldName::Named(name) => write!(f, "{name}:")?,
+						FieldName::Discarded => f.write_str("_:")?,
+						FieldName::Unnamed => {},
+					}
+					write!(f, "{}", field.ty)?;
+				}
+				f.write_str("}")
+			},
 		}
 	}
 }
@@ -128,7 +186,7 @@ impl Type {
 
 fn parse(input: &str, pointer_width: PointerWidth) -> Result<Type, String> {
 	let mut parser = Parser { input, pos: 0, pointer_width };
-	let ty = parser.ty(0, &[])?;
+	let ty = parser.ty(0)?;
 	parser.whitespace();
 	if parser.pos != input.len() {
 		return Err(parser.error("unexpected trailing input"));
@@ -192,39 +250,47 @@ impl<'a> Parser<'a> {
 			.map_err(|_| self.error("expected a decimal array length"))
 	}
 
-	fn ty(&mut self, depth: usize, fields: &[Field]) -> Result<Type, String> {
+	fn field_name(&mut self, is_union: bool) -> Result<FieldName, String> {
+		let start = self.pos;
+		if is_union {
+			if let Ok(name) = self.identifier() {
+				let name = name.to_owned();
+				if self.eat(b':') {
+					return Ok(if name == "_" { FieldName::Discarded } else { FieldName::Named(name) });
+				}
+			}
+			self.pos = start;
+			return Ok(FieldName::Unnamed);
+		}
+		let name = self.identifier()?.to_owned();
+		self.expect(b':')?;
+		Ok(if name == "_" { FieldName::Discarded } else { FieldName::Named(name) })
+	}
+
+	fn ty(&mut self, depth: usize) -> Result<Type, String> {
 		if depth >= 64 {
 			return Err(self.error("type nesting is too deep"));
 		}
 
 		if self.eat(b'*') {
-			return Ok(Type::Ptr(Box::new(self.ty(depth + 1, fields)?)));
+			return Ok(Type::Ptr(Box::new(self.ty(depth + 1)?)));
 		}
 
 		if self.eat(b'[') {
-			let ty = self.ty(depth + 1, fields)?;
+			let ty = self.ty(depth + 1)?;
 			self.expect(b';')?;
 			self.whitespace();
 			let len = if self.input.as_bytes().get(self.pos).is_some_and(u8::is_ascii_digit) {
-				ArrayLen::Const(self.array_len()?)
+				ArrayLen::Fixed(self.array_len()?)
 			}
 			else {
-				let name = self.identifier()?;
-				let field = fields.iter().find(|field| field.name == name)
-					.ok_or_else(|| self.error(format_args!("array length field '{name}' must be an earlier field")))?;
-				match field.ty {
-					Type::U8 => ArrayLen::DynU8(field.offset),
-					Type::U16 => ArrayLen::DynU16(field.offset),
-					Type::U32 => ArrayLen::DynU32(field.offset),
-					Type::U64 => ArrayLen::DynU64(field.offset),
-					_ => return Err(self.error(format_args!("array length field '{name}' must be u8, u16, u32, or u64"))),
-				}
+				ArrayLen::Dyn(self.identifier()?.to_owned())
 			};
 			self.expect(b']')?;
 			let (element_size, align) = ty.layout(self.pointer_width).map_err(|message| self.error(message))?;
-			let size = match len {
-				ArrayLen::Const(len) => element_size.checked_mul(len).ok_or_else(|| self.error("array size overflow"))?,
-				_ => 0,
+			let size = match &len {
+				ArrayLen::Fixed(len) => element_size.checked_mul(*len).ok_or_else(|| self.error("array size overflow"))?,
+				ArrayLen::Dyn(_) => 0,
 			};
 			return Ok(Type::Array(Box::new(ArrayType { ty, len, size, align })));
 		}
@@ -243,6 +309,8 @@ impl<'a> Parser<'a> {
 			"f64" => Ok(Type::F64),
 			"ptr" => Ok(Type::Va),
 			"cstr" => Ok(Type::CStr),
+			"code" => Ok(Type::Code),
+			"unk" => Ok(Type::Unknown),
 			"struct" => self.structure(depth + 1, false),
 			"union" => self.structure(depth + 1, true),
 			_ => Err(self.error(format_args!("unknown type '{name}'"))),
@@ -266,11 +334,8 @@ impl<'a> Parser<'a> {
 		let mut align = 1;
 		let mut is_dst = false;
 		while !self.eat(b'}') {
-			// Field name
-			let name = self.identifier()?.to_owned();
-			// Field type
-			self.expect(b':')?;
-			let ty = self.ty(depth, &fields)?;
+			let name = self.field_name(is_union)?;
+			let ty = self.ty(depth)?;
 			// Field properties
 			let dynamic = ty.is_dst();
 			is_dst |= dynamic;
@@ -278,18 +343,16 @@ impl<'a> Parser<'a> {
 				return Err(self.error("dynamic field is not allowed in a union"));
 			}
 			let (field_size, field_align) = if dynamic {
-				(0, match &ty { Type::Array(array) => array.align, Type::CStr => 1, _ => unreachable!() })
+				(0, ty.alignment(self.pointer_width))
 			} else { ty.layout(self.pointer_width).map_err(|message| self.error(message))? };
 			let field_offset = if is_union { 0 } else { align_up(offset, field_align).map_err(|message| self.error(message))? };
 			let field_end = field_offset.checked_add(field_size).ok_or_else(|| self.error("struct size overflow"))?;
-			// Field discard
-			if name != "_" {
-				// Enforce unique name
+			if let FieldName::Named(name) = &name {
 				if !field_names.insert(name.clone()) {
 					return Err(self.error(format_args!("duplicate field '{name}'")));
 				}
-				fields.push(Field { name, offset: field_offset, ty });
 			}
+			fields.push(Field { name, offset: field_offset, ty });
 			// Update struct properties
 			if !is_union {
 				offset = field_end;
@@ -310,7 +373,7 @@ impl<'a> Parser<'a> {
 
 		let size = align_up(size, align).map_err(|message| self.error(message))?;
 		let name = name.map(str::to_owned);
-		Ok(Type::Struct(Box::new(StructType { name, fields, size, align, is_dst })))
+		Ok(Type::Struct(Box::new(StructType { name, fields, is_union, size, align, is_dst })))
 	}
 }
 

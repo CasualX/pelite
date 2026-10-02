@@ -2,7 +2,7 @@ Find patterns in a PE image
 
 Usage:
 
-    pelite-cli findsig FILE [PATTERN] [--section SECTION] [--format=text|json|json-pretty]
+    pelite-cli findsig FILE [PATTERN] [--section SECTION] [--format=text|json|json-pretty|nul]
 
 PATTERN uses the [pelite pattern syntax](https://github.com/CasualX/pelite/blob/master/src/pattern/syntax.md).
 Quote it in the shell. With no PATTERN, enter one pattern per line on standard

@@ -2,7 +2,7 @@ Demangle compiler-generated symbol names
 
 Usage:
 
-    pelite-cli demangle SYMBOL... --abi msvc [--flags FLAGS] [--format=text|json|json-pretty]
+    pelite-cli demangle SYMBOL... --abi msvc [--flags FLAGS] [--format=text|json|json-pretty|nul]
 
 `--abi` is required and selects the symbol naming scheme. Currently only
 `msvc` is supported. No PE file is needed. Quote the symbol to prevent the

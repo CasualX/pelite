@@ -2,7 +2,7 @@ Read a PE version-information resource
 
 Usage:
 
-    pelite-cli version-info FILE [--id ID] [-l LANG] [--source] [--format=text|json|json-pretty]
+    pelite-cli version-info FILE [--id ID] [-l LANG] [--source] [--format=text|json|json-pretty|nul]
 
 `--id` selects the version resource identifier (default 1). Use
 `--resource-language` (`-l`) to select a language ID in decimal or

@@ -2,7 +2,7 @@ Convert a PE address between RVA, VA, and file offset
 
 Usage:
 
-    pelite-cli addr FILE ADDRESS [--format=text|json|json-pretty]
+    pelite-cli addr FILE ADDRESS [--format=text|json|json-pretty|nul]
 
 ADDRESS is `kind:number` and accepts decimal or hex: `rva:4096`, `va:0x180001000`, or `fo:1024`.
 

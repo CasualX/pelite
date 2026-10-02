@@ -49,6 +49,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let file = PeFile::from_bytes(&map)?;
 	let output = analyze(file);
 	match format {
+		OutputFormat::Nul => Ok(()),
 		OutputFormat::Json => print_json(&output, false),
 		OutputFormat::JsonPretty => print_json(&output, true),
 		OutputFormat::Text => {

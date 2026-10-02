@@ -2,7 +2,7 @@ Find candidate Rust panic locations in PE data
 
 Usage:
 
-    pelite-cli rust panic-locations FILE [--format=text|json|json-pretty]
+    pelite-cli rust panic-locations FILE [--format=text|json|json-pretty|nul]
 
 The command scans readable, non-writable sections for `core::panic::Location`
 records in PE32 and PE32+ images. A record contains a pointer and length for

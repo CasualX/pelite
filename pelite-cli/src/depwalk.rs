@@ -111,6 +111,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	walker.indices.insert(walker.report.modules[0].name.to_ascii_lowercase(), 0);
 	walker.walk();
 	match format {
+		OutputFormat::Nul => Ok(()),
 		OutputFormat::Json => print_json(&walker.report, false),
 		OutputFormat::JsonPretty => print_json(&walker.report, true),
 		OutputFormat::Text => {

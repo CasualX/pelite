@@ -2,7 +2,7 @@ Generate a module-definition file from a DLL
 
 Usage:
 
-    pelite-cli module-def DLL [--format=text|json|json-pretty]
+    pelite-cli module-def DLL [--format=text|json|json-pretty|nul]
 
 Text output writes `LIBRARY` using the name stored in the DLL's export
 directory, followed by `EXPORTS` and its named exports. The stored name may

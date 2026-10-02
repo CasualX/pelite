@@ -2,6 +2,7 @@ use super::*;
 
 pub fn print<T: serde::Serialize>(title: &str, value: &T, format: OutputFormat) -> Result {
 	match format {
+		OutputFormat::Nul => Ok(()),
 		OutputFormat::Text => print_text(title, &serde_json::to_value(value)?),
 		OutputFormat::Json => print_json(value, false),
 		OutputFormat::JsonPretty => print_json(value, true),

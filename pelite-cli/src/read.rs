@@ -8,9 +8,10 @@ pub struct ReadOptions {
 	pub max_dynamic_array_length: u32,
 }
 
-struct StructContext {
+struct StructContext<'a> {
 	/// Address of the struct containing the field being read.
 	address: u32,
+	fields: &'a [ty::Field],
 }
 
 pub fn command() -> clap::Command {
@@ -86,11 +87,11 @@ pub fn read_at(pe: pelite::PeFile<'_>, rva: u32, ty: &ty::Type, options: &ReadOp
 	read_value(pe, rva, ty, options, None)
 }
 
-fn read_value(pe: pelite::PeFile<'_>, rva: u32, ty: &ty::Type, options: &ReadOptions, context: Option<&StructContext>) -> serde_json::Value {
+fn read_value(pe: pelite::PeFile<'_>, rva: u32, ty: &ty::Type, options: &ReadOptions, context: Option<&StructContext<'_>>) -> serde_json::Value {
 	try_read_value(pe, rva, ty, options, context).unwrap_or_else(|error| error_value(Some(rva), error))
 }
 
-fn try_read_value(pe: pelite::PeFile<'_>, rva: u32, ty: &ty::Type, options: &ReadOptions, context: Option<&StructContext>) -> Result<serde_json::Value> {
+fn try_read_value(pe: pelite::PeFile<'_>, rva: u32, ty: &ty::Type, options: &ReadOptions, context: Option<&StructContext<'_>>) -> Result<serde_json::Value> {
 	macro_rules! read {
 		($ty:ty) => { pe.derva_copy::<$ty>(rva)? };
 	}
@@ -105,7 +106,7 @@ fn try_read_value(pe: pelite::PeFile<'_>, rva: u32, ty: &ty::Type, options: &Rea
 		ty::Type::I64 => serde_json::to_value(read!(i64)),
 		ty::Type::F32 => serde_json::to_value(read!(f32)),
 		ty::Type::F64 => serde_json::to_value(read!(f64)),
-		ty::Type::Va | ty::Type::Ptr(_) => {
+		ty::Type::Va | ty::Type::Code | ty::Type::Unknown | ty::Type::Ptr(_) => {
 			let va = match pe {
 				pelite::Wrap::T32(_) => u64::from(read!(u32)),
 				pelite::Wrap::T64(_) => read!(u64),
@@ -114,13 +115,10 @@ fn try_read_value(pe: pelite::PeFile<'_>, rva: u32, ty: &ty::Type, options: &Rea
 				return Ok(serde_json::Value::Null);
 			}
 			let target = pe.va_to_rva(va)?;
-			if let ty::Type::Ptr(ty) = ty {
-				let value = read_value(pe, target, ty, options, context);
-				return Ok(value);
+			if let ty::Type::Ptr(pointee) = ty && !matches!(pointee.as_ref(), ty::Type::Code | ty::Type::Unknown) {
+				return Ok(read_value(pe, target, pointee, options, context));
 			}
-			else {
-				serde_json::to_value(target)
-			}
+			serde_json::to_value(target)
 		},
 		ty::Type::CStr => {
 			let bytes = pe.slice_bytes(rva)?;
@@ -138,17 +136,19 @@ fn try_read_value(pe: pelite::PeFile<'_>, rva: u32, ty: &ty::Type, options: &Rea
 		ty::Type::Array(array) => {
 			let pointer_width = ty::PointerWidth::from(pe);
 			let (stride, _) = array.ty.layout(pointer_width).map_err(err)?;
-			let len = match array.len {
-				ty::ArrayLen::Const(len) => len,
-				ty::ArrayLen::DynU8(offset) | ty::ArrayLen::DynU16(offset) | ty::ArrayLen::DynU32(offset) | ty::ArrayLen::DynU64(offset) => {
+			let len = match &array.len {
+				ty::ArrayLen::Fixed(len) => *len,
+				ty::ArrayLen::Dyn(name) => {
 					let context = context.ok_or_else(|| err("dynamic array requires a containing struct"))?;
-					let address = context.address.checked_add(offset).ok_or_else(|| err("array length address overflow"))?;
-					let len = match array.len {
-						ty::ArrayLen::DynU8(_) => u64::from(pe.derva_copy::<u8>(address)?),
-						ty::ArrayLen::DynU16(_) => u64::from(pe.derva_copy::<u16>(address)?),
-						ty::ArrayLen::DynU32(_) => u64::from(pe.derva_copy::<u32>(address)?),
-						ty::ArrayLen::DynU64(_) => pe.derva_copy::<u64>(address)?,
-						ty::ArrayLen::Const(_) => unreachable!(),
+					let field = context.fields.iter().find(|field| matches!(&field.name, ty::FieldName::Named(field_name) if field_name == name))
+						.ok_or_else(|| err(format!("array length field '{name}' is not in the containing struct")))?;
+					let address = context.address.checked_add(field.offset).ok_or_else(|| err("array length address overflow"))?;
+					let len = match field.ty {
+						ty::Type::U8 => u64::from(pe.derva_copy::<u8>(address)?),
+						ty::Type::U16 => u64::from(pe.derva_copy::<u16>(address)?),
+						ty::Type::U32 => u64::from(pe.derva_copy::<u32>(address)?),
+						ty::Type::U64 => pe.derva_copy::<u64>(address)?,
+						_ => return Err(err(format!("array length field '{name}' must be u8, u16, u32, or u64"))),
 					};
 					if len > options.max_dynamic_array_length as u64 {
 						return Err(err(format!("dynamic array length {len} exceeds maximum of {}", options.max_dynamic_array_length)));
@@ -168,14 +168,19 @@ fn try_read_value(pe: pelite::PeFile<'_>, rva: u32, ty: &ty::Type, options: &Rea
 			return Ok(serde_json::Value::Array(values));
 		},
 		ty::Type::Struct(structure) => {
-			let context = StructContext { address: rva };
+			let context = StructContext { address: rva, fields: &structure.fields };
 			let mut fields = serde_json::Map::new();
-			for field in &structure.fields {
+			for (index, field) in structure.fields.iter().enumerate() {
+				let name = match &field.name {
+					ty::FieldName::Named(name) => name.clone(),
+					ty::FieldName::Discarded => continue,
+					ty::FieldName::Unnamed => index.to_string(),
+				};
 				let value = match rva.checked_add(field.offset) {
 					Some(address) => read_value(pe, address, &field.ty, options, Some(&context)),
 					None => error_value(None, "read address overflow"),
 				};
-				fields.insert(field.name.clone(), value);
+				fields.insert(name, value);
 			}
 			return Ok(serde_json::Value::Object(fields));
 		},

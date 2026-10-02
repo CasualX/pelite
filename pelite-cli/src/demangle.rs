@@ -49,6 +49,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	}
 
 	match format {
+		OutputFormat::Nul => {},
 		OutputFormat::Text => {
 			let mut output = io::stdout().lock();
 			for (_, demangled) in &results {

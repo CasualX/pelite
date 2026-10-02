@@ -2,7 +2,7 @@ Generate bytes from executable PE sections
 
 Usage:
 
-    pelite-cli markov FILE... COUNT [--seed SEED] [-o FILE] [--format=text|json|json-pretty]
+    pelite-cli markov FILE... COUNT [--seed SEED] [-o FILE] [--format=text|json|json-pretty|nul]
 
 The command learns adjacent-byte transitions from executable sections in the
 input PE files, then generates COUNT bytes. The result is synthetic byte data;

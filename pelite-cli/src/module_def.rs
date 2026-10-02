@@ -28,6 +28,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	}
 	let definition = ModuleDefinition { library, exports: names };
 	match format {
+		OutputFormat::Nul => Ok(()),
 		OutputFormat::Json => print_json(&definition, false),
 		OutputFormat::JsonPretty => print_json(&definition, true),
 		OutputFormat::Text => {

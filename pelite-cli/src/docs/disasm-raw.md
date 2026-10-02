@@ -2,13 +2,26 @@ Disassemble raw x86 bytes
 
 Usage:
 
-    pelite-cli disasm-raw FILE --arch x86|x86_64 [--offset BYTES] [--length BYTES] [--base ADDRESS] [--lookback BYTES] [--hex] [--format=text|json|json-pretty]
+    pelite-cli disasm-raw FILE --arch x86|x86_64 [--offset BYTES] [--length BYTES] [--base ADDRESS] [--symbols SYMBOLS.txt]... [--layout none|indent|fo|va] [--lookback BYTES] [--hex] [--format=text|json|json-pretty|nul]
 
 FILE is a binary file, or `-` for standard input. `--offset` starts at a file
 offset (default: 0); `--length` sets the selected byte count (default: through
 the end of the input). `--base` is the instruction address at file offset zero,
 so an instruction's `ip` is `base + offset`. Offset, length, and base accept
 decimal or `0x`-prefixed hexadecimal numbers.
+
+Use `--symbols SYMBOLS.txt` to label instructions and referenced addresses.
+The RVA field in each `#symtext` entry is treated as a file offset; its
+instruction address is `base + offset`. Repeat `--symbols` to load files in
+order, with the last entry for an offset winning. Without symbol files, raw
+disassembly has no labels.
+
+In text output, a symbol inside an instruction appears after it as a `;` comment
+with its byte offset. The instruction stays intact.
+
+Text uses `--layout indent` by default, with four spaces before each
+instruction. Use `none` for no prefix (recommended), `fo` for a file offset,
+or `va` for the instruction address.
 
 Start at an instruction boundary. `--lookback` decodes up to that many bytes
 before the offset and includes an instruction overlapping it; the earlier
@@ -21,6 +34,7 @@ Text is the default. JSON output contains each instruction's file `offset`,
 Examples:
 
     pelite-cli disasm-raw code.bin --arch x86_64 --offset 0x100 --length 64 --base 0x180000000 --hex
+    pelite-cli disasm-raw code.bin --arch x86_64 --symbols auto.txt --symbols edits.txt --layout fo
     printf '\xb8\x01\x00\x00\x00\xc3' | pelite-cli disasm-raw - --arch x86 --base 0x1000 --format=json
 
 Example JSON output for the second command:

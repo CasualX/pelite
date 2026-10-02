@@ -65,6 +65,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let start_address = image_base.checked_add(u64::from(range.start)).ok_or_else(|| err("image base plus start RVA overflows"))?;
 
 	match format {
+		OutputFormat::Nul => Ok(()),
 		OutputFormat::Json => print_json(&bytes, false),
 		OutputFormat::JsonPretty => print_json(&bytes, true),
 		OutputFormat::Text => {
