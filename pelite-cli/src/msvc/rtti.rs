@@ -87,21 +87,6 @@ struct BaseClassOutput {
 	name: String,
 }
 
-fn demangle_name(name: &str) -> String {
-	let flags = msvc_demangler::DemangleFlags::llvm() | msvc_demangler::DemangleFlags::NO_CLASS_TYPE;
-	if let Some(ty) = name.strip_prefix('.') {
-		// The demangler accepts RTTI descriptor symbols, but not the type
-		// names stored in descriptors. Wrap the encoded type in a symbol.
-		msvc_demangler::demangle(&format!("??_R0{ty}@8"), flags)
-			.ok()
-			.and_then(|name| name.strip_suffix("::`RTTI Type Descriptor'").map(str::to_owned))
-			.unwrap_or_else(|| name.to_owned())
-	}
-	else {
-		msvc_demangler::demangle(name, flags).unwrap_or_else(|_| name.to_owned())
-	}
-}
-
 #[test]
 fn test_demangle_name() {
 	assert_eq!(demangle_name(".?AVRoot@fixture@@"), "fixture::Root");
@@ -109,6 +94,9 @@ fn test_demangle_name() {
 	assert_eq!(demangle_name(".?ATValue@fixture@@"), "fixture::Value");
 	assert_eq!(demangle_name(".?AW4Color@fixture@@"), "fixture::Color");
 	assert_eq!(demangle_name(".?AV?$Template@H@fixture@@"), "fixture::Template<int>");
+	assert_eq!(demangle_name(".H"), "int");
+	assert_eq!(demangle_name(".PAX"), "void *");
+	assert_eq!(demangle_name(".PEAX"), "void *");
 	for name in ["?", "", ".?AV", "invalid", ".invalid"] {
 		assert_eq!(demangle_name(name), name);
 	}
