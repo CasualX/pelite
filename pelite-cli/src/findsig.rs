@@ -97,6 +97,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 
 fn print_matches(result: PatternMatches, file_name: &str, format: OutputFormat) -> Result {
 	match format {
+		OutputFormat::Nul => Ok(()),
 		OutputFormat::Json => print_json(&result, false),
 		OutputFormat::JsonPretty => print_json(&result, true),
 		OutputFormat::Text => {

@@ -2,7 +2,7 @@ Find Rust formatting templates referenced by x64 code
 
 Usage:
 
-    pelite-cli rust format-args FILE [--format=text|json|json-pretty]
+    pelite-cli rust format-args FILE [--format=text|json|json-pretty|nul]
 
 The command finds code references to compact `format_args!` templates in an
 x64 PE image, then decodes their text and placeholders. Each result has

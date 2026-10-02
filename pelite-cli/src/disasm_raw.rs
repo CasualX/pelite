@@ -2,14 +2,32 @@ use std::io::Read;
 
 use super::*;
 
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+enum AddressLayout {
+	None,
+	Indent,
+	FileOffset,
+	Va,
+}
+
+impl AddressLayout {
+	fn parse(value: &str) -> std::result::Result<Self, String> {
+		match value {
+			"none" => Ok(Self::None),
+			"indent" => Ok(Self::Indent),
+			"fo" => Ok(Self::FileOffset),
+			"va" => Ok(Self::Va),
+			_ => Err("expected none, indent, fo, or va".to_owned()),
+		}
+	}
+}
+
 #[derive(serde::Serialize)]
 struct RawInstruction<'a> {
 	offset: usize,
 	ip: u64,
 	bytes: &'a [u8],
 	instruction: String,
-	#[serde(skip)]
-	colored_instruction: Option<String>,
 }
 
 fn parse_number(value: &str) -> std::result::Result<u64, String> {
@@ -62,6 +80,13 @@ pub fn command() -> clap::Command {
 			.long("hex")
 			.action(clap::ArgAction::SetTrue)
 			.help("Show instruction opcode bytes in text output"))
+		.arg(clap::Arg::new("layout")
+			.long("layout")
+			.value_name("MODE")
+			.value_parser(AddressLayout::parse)
+			.default_value("indent")
+			.help("Choose plain, indented, file offset, or virtual address text layout"))
+		.arg(symbols::arg())
 }
 
 pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
@@ -94,44 +119,29 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let start_ip = base.checked_add(offset as u64).ok_or_else(|| err("base plus offset overflows"))?;
 	let end_ip = base.checked_add(end as u64).ok_or_else(|| err("base plus end offset overflows"))?;
 	let color = format == OutputFormat::Text && io::stdout().is_terminal();
-	let decoded = disasm::decode_bytes(&bytes[decode_start..end], bitness, decode_ip, start_ip, end_ip, color, Arc::new(HashMap::new()));
-	let instructions: Vec<_> = decoded.into_iter().map(|item| RawInstruction {
-		offset: decode_start + (item.ip - decode_ip) as usize,
-		ip: item.ip,
-		bytes: item.bytes,
-		instruction: item.instruction,
-		colored_instruction: item.colored_instruction,
-	}).collect();
-
+	let pointer_width = if bitness == 32 { ty::PointerWidth::Bits32 } else { ty::PointerWidth::Bits64 };
+	let symbols = Arc::new(symbols::load(matches, pointer_width, base)?);
+	let decoded = iced::decode_bytes(&bytes[decode_start..end], bitness, decode_ip, start_ip, end_ip, color, Arc::clone(&symbols));
 	match format {
-		OutputFormat::Json => print_json(&instructions, false),
-		OutputFormat::JsonPretty => print_json(&instructions, true),
+		OutputFormat::Nul => Ok(()),
+		OutputFormat::Json | OutputFormat::JsonPretty => {
+			let instructions: Vec<_> = decoded.into_iter().map(|item| RawInstruction {
+				offset: decode_start + (item.ip - decode_ip) as usize,
+				ip: item.ip,
+				bytes: item.bytes,
+				instruction: item.instruction,
+			}).collect();
+			print_json(&instructions, format == OutputFormat::JsonPretty)
+		},
 		OutputFormat::Text => {
-			let show_hex = matches.get_flag("hex");
-			let longest_instruction_bytes = instructions.iter().map(|item| item.bytes.len()).max().unwrap_or(0);
+			let layout = *matches.get_one::<AddressLayout>("layout").expect("defaulted by clap");
 			let stdout = io::stdout();
-			let mut output = stdout.lock();
-			let hex = HexPrinter::new(false);
-			let address_width = bitness as usize / 4 + 2;
-			for item in instructions {
-				if color {
-					write!(output, "\x1b[90mfo:{:#x}\x1b[0m  \x1b[38;2;200;174;130m{:#0address_width$x}\x1b[0m  ", item.offset, item.ip)?;
-				}
-				else {
-					write!(output, "fo:{:#x}  {:#0address_width$x}  ", item.offset, item.ip)?;
-				}
-				if show_hex {
-					if color {
-						write!(output, "\x1b[90m")?;
-					}
-					hex.write_bytes(&mut output, item.bytes, b"")?;
-					if color {
-						write!(output, "\x1b[0m")?;
-					}
-					write!(output, "{:width$} ", "", width = (longest_instruction_bytes - item.bytes.len()) * 2)?;
-				}
-				writeln!(output, "{}", item.colored_instruction.as_deref().unwrap_or(&item.instruction))?;
-			}
+			iced::print_text(&mut stdout.lock(), &decoded, &symbols, color, matches.get_flag("hex"), |ip| match layout {
+				AddressLayout::None => iced::TextPrefix::None,
+				AddressLayout::Indent => iced::TextPrefix::Indent,
+				AddressLayout::FileOffset => iced::TextPrefix::Address { label: "fo", value: ip - base },
+				AddressLayout::Va => iced::TextPrefix::Address { label: "va", value: ip },
+			})?;
 			Ok(())
 		},
 	}

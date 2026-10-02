@@ -2,7 +2,7 @@ Find candidate Rust trait vtables in a PE image
 
 Usage:
 
-    pelite-cli rust vtables FILE [--format=text|json|json-pretty]
+    pelite-cli rust vtables FILE [--format=text|json|json-pretty|nul]
 
 The command scans readable, non-writable sections for a drop pointer,
 size, alignment, and consecutive function pointers. It uses base relocations

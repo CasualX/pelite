@@ -5,6 +5,7 @@ use std::{error, fmt, fs, num, process, result};
 use std::io::{self, BufRead, IsTerminal, Write};
 
 mod addr;
+mod autoanalysis;
 mod demangle;
 mod disasm;
 mod disasm_raw;
@@ -13,6 +14,7 @@ mod edit;
 mod findsig;
 mod hex;
 mod hexdump;
+mod iced;
 mod imphash;
 mod inspect;
 mod markov;
@@ -20,12 +22,13 @@ mod module_def;
 mod msvc;
 mod printer;
 mod read;
-mod references;
 mod resources;
 mod scan;
 mod rust;
 mod strings;
 mod summary;
+mod symbols;
+mod symtext;
 mod ty;
 mod value_parser;
 mod version_info;
@@ -48,6 +51,7 @@ enum OutputFormat {
 	Text,
 	Json,
 	JsonPretty,
+	Nul,
 }
 
 impl OutputFormat {
@@ -55,6 +59,7 @@ impl OutputFormat {
 		match matches.get_one::<String>("format").map(String::as_str) {
 			Some("json") => Self::Json,
 			Some("json-pretty") => Self::JsonPretty,
+			Some("nul") => Self::Nul,
 			_ => Self::Text,
 		}
 	}
@@ -84,7 +89,7 @@ fn cli() -> clap::Command {
 		.arg(clap::Arg::new("format")
 			.long("format")
 			.value_name("FORMAT")
-			.value_parser(["text", "json", "json-pretty"])
+			.value_parser(["text", "json", "json-pretty", "nul"])
 			.default_value("text")
 			.global(true)
 			.help("Select the output format"))
@@ -109,7 +114,7 @@ fn cli() -> clap::Command {
 		.subcommand(rust::command())
 		.subcommand(version_info::command())
 		.subcommand(xref::command())
-		.subcommand(references::command());
+		.subcommand(autoanalysis::command());
 
 	let guide = command.get_subcommands()
 		.map(|subcommand| guide_entry(subcommand.get_name(), &when_to_use(subcommand)))
@@ -181,7 +186,7 @@ fn run() -> Result {
 		Some(("rust", matches)) => rust::run(matches, format),
 		Some(("version-info", matches)) => version_info::run(matches, format),
 		Some(("xref", matches)) => xref::run(matches, format),
-		Some(("references", matches)) => references::run(matches, format),
+		Some(("autoanalysis", matches)) => autoanalysis::run(matches, format),
 		None => summary::run(&matches, format),
 		_ => unreachable!("all subcommands are handled"),
 	}

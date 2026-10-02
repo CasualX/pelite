@@ -2,7 +2,7 @@ Check PE dependencies and imported symbols
 
 Usage:
 
-    pelite-cli depwalk FILE [-L DIR]... [--format=text|json|json-pretty]
+    pelite-cli depwalk FILE [-L DIR]... [--format=text|json|json-pretty|nul]
 
 The command follows imported modules and forwarded exports, checks that
 requested symbols exist, and reports missing modules, wrong architectures,

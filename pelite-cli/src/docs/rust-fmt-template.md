@@ -2,7 +2,7 @@ Find Rust formatting templates in read-only PE data
 
 Usage:
 
-    pelite-cli rust fmt-template FILE [--format=text|json|json-pretty]
+    pelite-cli rust fmt-template FILE [--format=text|json|json-pretty|nul]
 
 The command scans readable, non-writable, non-discardable sections for
 compact `format_args!` templates. It supports PE32 and PE32+ and does not

@@ -55,6 +55,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 		});
 	}
 	match format {
+		OutputFormat::Nul => Ok(()),
 		OutputFormat::Json => print_json(&output, false),
 		OutputFormat::JsonPretty => print_json(&output, true),
 		OutputFormat::Text => {

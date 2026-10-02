@@ -2,7 +2,7 @@ Find candidate references to a PE address
 
 Usage:
 
-    pelite-cli xref FILE ADDRESS [--format=text|json|json-pretty]
+    pelite-cli xref FILE ADDRESS [--format=text|json|json-pretty|nul]
 
 ADDRESS is `kind:number` and accepts decimal or hex: `rva:4096`, `va:0x180001000`, or `fo:1024`.
 The command converts the target to an RVA before searching.
@@ -43,5 +43,4 @@ Example JSON output (one reference shown):
 
 When to use:
 
-Find candidate references to a known function or data address. For a map of
-likely targets, use `references`.
+Find candidate references to a known function or data address.

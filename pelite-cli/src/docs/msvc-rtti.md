@@ -2,7 +2,7 @@ Dump Microsoft C++ RTTI from a PE32 or PE32+ image
 
 Usage:
 
-    pelite-cli msvc rtti FILE [--demangle] [--format=text|json|json-pretty]
+    pelite-cli msvc rtti FILE [--demangle] [--format=text|json|json-pretty|nul]
 
 The command finds candidate vtables using base relocations, then reports
 their type descriptors and class hierarchies. It selects the PE32 or PE32+

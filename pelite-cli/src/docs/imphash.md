@@ -2,7 +2,7 @@ Calculate the MD5 import hash of PE files
 
 Usage:
 
-    pelite-cli imphash FILE... [--show-imports] [--format=text|json|json-pretty]
+    pelite-cli imphash FILE... [--show-imports] [--format=text|json|json-pretty|nul]
 
 The hash is MD5 of the ordered import names joined by commas. Library and
 symbol names are lowercased; `.dll`, `.sys`, and `.ocx` are removed from

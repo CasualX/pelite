@@ -244,6 +244,7 @@ fn extract_groups(resources: ResourceDirectory<'_>, matches: &clap::ArgMatches, 
 	}
 
 	match format {
+		OutputFormat::Nul => Ok(()),
 		OutputFormat::Text => {
 			let mut output = io::stdout().lock();
 			for group in &extracted {
@@ -332,6 +333,7 @@ fn safe_file_stem(name: ResourceName<'_>) -> String {
 fn tree(resources: ResourceDirectory<'_>, path: &Path, format: OutputFormat) -> Result {
 	let inventory = inventory(resources, path)?;
 	match format {
+		OutputFormat::Nul => Ok(()),
 		OutputFormat::Text => {
 			let stdout = io::stdout();
 			let mut output = stdout.lock();
@@ -356,6 +358,7 @@ fn cat(resources: ResourceDirectory<'_>, path: &Path, format: OutputFormat) -> R
 	let data = resources.find_data(path)?;
 	let bytes = data.bytes()?;
 	match format {
+		OutputFormat::Nul => Ok(()),
 		OutputFormat::Text => {
 			io::stdout().lock().write_all(bytes)?;
 			Ok(())
@@ -383,6 +386,7 @@ fn fsck(resources: ResourceDirectory<'_>, format: OutputFormat) -> Result {
 		bytes: inventory.bytes,
 	};
 	match format {
+		OutputFormat::Nul => Ok(()),
 		OutputFormat::Text => {
 			writeln!(io::stdout().lock(), "ok: {} directories, {} files, {} bytes", report.directories, report.files, report.bytes)?;
 			Ok(())

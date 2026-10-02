@@ -2,7 +2,7 @@ Find strings in PE sections
 
 Usage:
 
-    pelite-cli strings FILE [--filter PATTERN]... [--regex] [--ignore-case] [--min-confidence SCORE] [--format=text|json|json-pretty]
+    pelite-cli strings FILE [--filter PATTERN]... [--regex] [--ignore-case] [--min-confidence SCORE] [--format=text|json|json-pretty|nul]
 
 The command finds ASCII, UTF-8, and UTF-16LE text. Each result includes its
 section, RVA `address`, encoding, confidence score, and value. Matches are

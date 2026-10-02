@@ -2,8 +2,8 @@ Summarize a PE file
 
 Usage:
 
-    pelite-cli summary FILE [--format=text|json|json-pretty]
-    pelite-cli FILE [--format=text|json|json-pretty]
+    pelite-cli summary FILE [--format=text|json|json-pretty|nul]
+    pelite-cli FILE [--format=text|json|json-pretty|nul]
 
 Passing FILE without a command also runs `summary`. The report covers file
 hashes, image and section details, mitigations, imports, and findings that may

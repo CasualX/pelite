@@ -59,6 +59,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	}
 
 	match format {
+		OutputFormat::Nul => Ok(()),
 		OutputFormat::Text => {
 			let hex = bytes.iter().map(|byte| format!("{byte:02X}")).collect::<Vec<_>>().join(" ");
 			writeln!(io::stdout().lock(), "{hex}")?;
