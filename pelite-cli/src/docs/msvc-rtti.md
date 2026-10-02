@@ -2,7 +2,7 @@ Dump Microsoft C++ RTTI from a PE32 or PE32+ image
 
 Usage:
 
-    pelite-cli msvc rtti FILE [--format=text|json|json-pretty]
+    pelite-cli msvc rtti FILE [--demangle] [--format=text|json|json-pretty]
 
 The command finds candidate vtables using base relocations, then reports
 their type descriptors and class hierarchies. It selects the PE32 or PE32+
@@ -15,10 +15,15 @@ RTTI `name`, an `inheritance` kind, `vtables` with RVAs and method counts,
 and a `hierarchy` with base-class depth and offsets. A virtual base has a
 null offset.
 
+Use `--demangle` to demangle C++ type names in text and JSON output, including
+vtable target types and base classes. Text vtable symbols are also demangled.
+Names that cannot be demangled are left unchanged.
+
 Examples:
 
     pelite-cli msvc rtti sample.dll
     pelite-cli msvc rtti sample64.dll --format=json-pretty
+    pelite-cli msvc rtti sample64.dll --demangle --format=json-pretty
 
 Example JSON output (one type shown):
 
