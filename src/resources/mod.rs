@@ -218,7 +218,7 @@ impl<'a> ResourceName<'a> {
 					false
 				}
 				// Followed by an integer resource id
-				else if string.as_bytes()[1] > b'0' && string.as_bytes()[1] <= b'9' {
+				else if string.as_bytes()[1].is_ascii_digit() {
 					match string[1..].parse::<u32>() {
 						Ok(string_id) if id == string_id => true,
 						_ => false,
