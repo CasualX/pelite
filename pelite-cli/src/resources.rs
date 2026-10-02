@@ -139,9 +139,9 @@ pub fn command() -> clap::Command {
 pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let (operation, matches) = matches.subcommand().expect("required by clap");
 	match operation {
-		"tree" => with_resources(matches, |resources| tree(resources, matches.get_one::<PathBuf>("path").expect("defaulted by clap"), format)),
-		"cat" => with_resources(matches, |resources| cat(resources, matches.get_one::<PathBuf>("path").expect("required by clap"), format)),
-		"fsck" => with_resources(matches, |resources| fsck(resources, format)),
+		"tree" => with_resources(matches, format, |resources| tree(resources, matches.get_one::<PathBuf>("path").expect("defaulted by clap"), format)),
+		"cat" => with_resources(matches, format, |resources| cat(resources, matches.get_one::<PathBuf>("path").expect("required by clap"), format)),
+		"fsck" => with_resources(matches, format, |resources| fsck(resources, format)),
 		"icons" => groups(matches, GroupKind::Icon, format),
 		"cursors" => groups(matches, GroupKind::Cursor, format),
 		_ => unreachable!("clap validates subcommands"),
@@ -185,16 +185,21 @@ fn group_command(kind: GroupKind) -> clap::Command {
 				.help("Overwrite existing files")))
 }
 
-fn with_resources<T>(matches: &clap::ArgMatches, run: impl FnOnce(ResourceDirectory<'_>) -> Result<T>) -> Result<T> {
+fn with_resources(matches: &clap::ArgMatches, format: OutputFormat, run: impl FnOnce(ResourceDirectory<'_>) -> Result) -> Result {
 	let file = matches.get_one::<PathBuf>("file").expect("required by clap");
 	let map = pelite::FileMap::open(file)?;
 	let pe = pelite::PeFile::from_bytes(&map)?;
-	run(pe.resources()?)
+	let resources = match pe.resources() {
+		Ok(resources) => resources,
+		Err(error) if error.is_null() => return print("Resources", &serde_json::Value::Null, format),
+		Err(error) => return Err(error.into()),
+	};
+	run(resources)
 }
 
 fn groups(matches: &clap::ArgMatches, kind: GroupKind, format: OutputFormat) -> Result {
 	let (operation, matches) = matches.subcommand().expect("required by clap");
-	with_resources(matches, |resources| match operation {
+	with_resources(matches, format, |resources| match operation {
 		"list" => list_groups(resources, kind, format),
 		"extract" => extract_groups(resources, matches, kind, format),
 		_ => unreachable!("clap validates subcommands"),

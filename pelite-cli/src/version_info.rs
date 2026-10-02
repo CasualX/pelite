@@ -48,7 +48,11 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 
 	let map = pelite::FileMap::open(path)?;
 	let pe = pelite::PeFile::from_bytes(&map)?;
-	let resources = pe.resources()?;
+	let resources = match pe.resources() {
+		Ok(resources) => resources,
+		Err(error) if error.is_null() => return print("Version information", &serde_json::Value::Null, format),
+		Err(error) => return Err(error.into()),
+	};
 	let bytes = match language {
 		Some(language) => resources.find_resource_ex(&[
 			ResourceName::VERSION,

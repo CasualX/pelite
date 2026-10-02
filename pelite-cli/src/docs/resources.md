@@ -13,6 +13,8 @@ entries beneath PATH (default `/`) with sizes and code pages. `cat` writes the
 selected resource's exact bytes in text mode, so it can be redirected to a
 file. In JSON modes, `cat` returns base64 data with its path, size, and code
 page. `fsck` checks the full tree and reports directory, file, and byte counts.
+If the PE has no resource directory, every resource command returns null.
+Extraction creates no destination in this case.
 
 KIND is `icons` or `cursors`. They work with reconstructed `.ico` and `.cur` files. `list`
 shows available groups. `extract` writes named groups (for example `MAIN` or

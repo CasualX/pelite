@@ -8,6 +8,8 @@ Usage:
 `--resource-language` (`-l`) to select a language ID in decimal or
 `0x`-prefixed hexadecimal. Without it, the command uses the first matching
 version resource. `--source` includes reconstructed resource-script source.
+If the PE has no resource directory, the result is null. Missing entries in
+an existing directory and malformed resources still cause errors.
 
 Text is the default. Use `json` or `json-pretty` for structured output.
 
