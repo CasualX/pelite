@@ -49,6 +49,7 @@ pub enum Type {
 
 	Va,
 	CStr,
+	Utf16LEZ,
 	Code,
 	Unknown,
 
@@ -88,6 +89,7 @@ impl Type {
 	pub fn alignment(&self, pointer_width: PointerWidth) -> u32 {
 		match self {
 			Self::CStr | Self::Code | Self::Unknown => 1,
+			Self::Utf16LEZ => 2,
 			Self::Array(array) => array.align,
 			Self::Struct(structure) => structure.align,
 			_ => self.layout(pointer_width).expect("fixed-size type").1,
@@ -96,7 +98,7 @@ impl Type {
 
 	pub fn is_dst(&self) -> bool {
 		match self {
-			Self::CStr | Self::Code | Self::Unknown => true,
+			Self::CStr | Self::Utf16LEZ | Self::Code | Self::Unknown => true,
 			Self::Array(array) => !matches!(&array.len, ArrayLen::Fixed(_)),
 			Self::Struct(structure) => structure.is_dst,
 			_ => false,
@@ -112,6 +114,7 @@ impl Type {
 			Self::U64 | Self::I64 | Self::F64 => Ok((8, 8)),
 			Self::Va | Self::Ptr(_) => Ok((pointer_width.bytes(), pointer_width.bytes())),
 			Self::CStr => Err("cstr is unsized"),
+			Self::Utf16LEZ => Err("utf16lez is unsized"),
 			Self::Code => Err("code is unsized"),
 			Self::Unknown => Err("unk is unsized"),
 			Self::Array(array) => match &array.len {
@@ -138,6 +141,7 @@ impl fmt::Display for Type {
 			Self::F64 => f.write_str("f64"),
 			Self::Va => f.write_str("ptr"),
 			Self::CStr => f.write_str("cstr"),
+			Self::Utf16LEZ => f.write_str("utf16lez"),
 			Self::Code => f.write_str("code"),
 			Self::Unknown => f.write_str("unk"),
 			Self::Ptr(ty) => write!(f, "*{ty}"),
@@ -309,6 +313,7 @@ impl<'a> Parser<'a> {
 			"f64" => Ok(Type::F64),
 			"ptr" => Ok(Type::Va),
 			"cstr" => Ok(Type::CStr),
+			"utf16lez" => Ok(Type::Utf16LEZ),
 			"code" => Ok(Type::Code),
 			"unk" => Ok(Type::Unknown),
 			"struct" => self.structure(depth + 1, false),

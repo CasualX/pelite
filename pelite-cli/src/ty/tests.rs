@@ -32,7 +32,7 @@ fn parses_composite_types_and_whitespace() {
 fn formatted_types_parse_back_to_the_same_type() {
 	for pointer_width in [PointerWidth::Bits32, PointerWidth::Bits64] {
 		for source in [
-			"u64", "ptr", "code", "unk", "**cstr", "[struct { a: u8, b: *f64 }; 3]",
+			"u64", "ptr", "code", "unk", "**cstr", "utf16lez", "*utf16lez", "[struct { a: u8, b: *f64 }; 3]",
 			"union Value { _: [u8; 8], first: u32, second: u64 }",
 			"struct { _: u8, count: u16, values: [u32; count] }",
 			"struct Outer { count: u8, values: *[u8; count], nested: union { x: u16, y: i16 } }",
@@ -222,6 +222,25 @@ fn unsized_types() {
 			let trailing = parse(&format!("struct {{ tag: u16, data: {source} }}"), pointer_width).unwrap();
 			assert!(trailing.is_dst());
 			assert!(parse(&format!("struct {{ data: {source}, tail: u8 }}"), pointer_width).is_err());
+		}
+	}
+}
+
+#[test]
+fn wide_strings_have_two_byte_alignment_and_no_fixed_size() {
+	for pointer_width in [PointerWidth::Bits32, PointerWidth::Bits64] {
+		let ty = parse("utf16lez", pointer_width).unwrap();
+		assert_eq!(ty, Type::Utf16LEZ);
+		assert!(ty.is_dst());
+		assert_eq!(ty.alignment(pointer_width), 2);
+		assert!(ty.layout(pointer_width).is_err());
+		let Type::Struct(structure) = parse("struct { tag: u8, text: utf16lez }", pointer_width).unwrap() else { panic!("expected struct") };
+		assert_eq!(structure.fields[1].offset, 2);
+		assert!(structure.is_dst);
+		let width = pointer_width.bytes();
+		assert_eq!(parse("[*utf16lez; 3]", pointer_width).unwrap().layout(pointer_width), Ok((width * 3, width)));
+		for source in ["[utf16lez; 1]", "union { text: utf16lez }", "struct { text: utf16lez, tail: u8 }"] {
+			assert!(parse(source, pointer_width).is_err(), "accepted {source}");
 		}
 	}
 }

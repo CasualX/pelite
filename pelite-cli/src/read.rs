@@ -133,6 +133,7 @@ fn try_read_value(pe: pelite::PeFile<'_>, rva: u32, ty: &ty::Type, options: &Rea
 			})?;
 			serde_json::to_value(string)
 		},
+		ty::Type::Utf16LEZ => serde_json::to_value(read_utf16lez(pe.slice_bytes(rva)?, options.max_string_bytes)?),
 		ty::Type::Array(array) => {
 			let pointer_width = ty::PointerWidth::from(pe);
 			let (stride, _) = array.ty.layout(pointer_width).map_err(err)?;
@@ -186,4 +187,21 @@ fn try_read_value(pe: pelite::PeFile<'_>, rva: u32, ty: &ty::Type, options: &Rea
 		},
 	};
 	Ok(value?)
+}
+
+fn read_utf16lez(bytes: &[u8], max_string_bytes: usize) -> Result<String> {
+	let len = bytes.len().min(max_string_bytes);
+	let mut words = Vec::new();
+	for pair in bytes[..len].chunks_exact(2) {
+		let word = u16::from_le_bytes([pair[0], pair[1]]);
+		if word == 0 {
+			return Ok(String::from_utf16_lossy(&words));
+		}
+		words.push(word);
+	}
+	Err(if bytes.len() > max_string_bytes {
+		err(format!("UTF-16LE string exceeds maximum of {max_string_bytes} bytes"))
+	} else {
+		err("unterminated UTF-16LE string")
+	})
 }
