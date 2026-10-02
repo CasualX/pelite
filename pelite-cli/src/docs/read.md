@@ -90,5 +90,6 @@ Example JSON output for `struct { opcode: u8, immediate: [u8; 4] }`:
 
 When to use:
 
-Interpret structured data at a known PE address as a scalar, pointer, string, array,
-struct, or union.
+Interpret structured data at a known PE address as a scalar, pointer, string,
+array, struct, or union. Use `symbol` to look up nearby names and type hints;
+`read` requires an explicit TYPE and does not load symbol files.

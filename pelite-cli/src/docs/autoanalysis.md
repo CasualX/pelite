@@ -15,15 +15,24 @@ or an array when hints disagree. All addresses are RVAs. Text is the default;
 JSON and indented JSON are available with `--format=json` and
 `--format=json-pretty`.
 
-Use `-o symbols.txt` to write a `#symtext` database. The output file must not
-already exist; remove an old database before regenerating it.
-is still printed. Use `--format=nul` to suppress terminal output while writing
-the database. Generic code and data symbols use the symtext names `C` and
-`D`; direct jump stubs use `Thunk`. Specialized labels are quoted names.
+Use `-o auto.symbols.txt` to write a `#symtext` database of automatically
+discovered candidates. Treat it as a generated baseline, which can be large;
+keep names, types, and corrections from your investigation in a separate
+`user.symbols.txt` instead of editing the generated file. These filenames are
+conventions, not defaults. The output file must not already exist; choose a
+new path or remove the old generated file before regenerating it.
+
+The analysis report is still printed when `-o` is used. Use `--format=nul` to
+write only the database. Generic code and data symbols use the symtext names
+`C` and `D`; direct jump stubs use `thunk`. Specialized labels are quoted names.
 Conflicting numeric type hints become a union; code wins over other hints.
 Named import labels omit the DLL name; ordinal import labels retain it.
 
-    pelite-cli autoanalysis sample.dll -o symbols.txt --format=nul
+    pelite-cli autoanalysis sample.dll -o auto.symbols.txt --format=nul
+
+Use `symbol` to query a small address range rather than reading the whole
+database. See `symbol --help` for the user-file format and override rules,
+and `disasm --help` for using both files to label code.
 
 When to use:
 
