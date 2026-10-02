@@ -5,6 +5,7 @@ use std::{error, fmt, fs, num, process, result};
 use std::io::{self, BufRead, IsTerminal, Write};
 
 mod addr;
+mod demangle;
 mod disasm;
 mod disasm_raw;
 mod depwalk;
@@ -96,6 +97,7 @@ fn cli() -> clap::Command {
 		.subcommand(disasm::command())
 		.subcommand(disasm_raw::command())
 		.subcommand(depwalk::command())
+		.subcommand(demangle::command())
 		.subcommand(hexdump::command())
 		.subcommand(strings::command())
 		.subcommand(findsig::command())
@@ -167,6 +169,7 @@ fn run() -> Result {
 		Some(("disasm", matches)) => disasm::run(matches, format),
 		Some(("disasm-raw", matches)) => disasm_raw::run(matches, format),
 		Some(("depwalk", matches)) => depwalk::run(matches, format),
+		Some(("demangle", matches)) => demangle::run(matches, format),
 		Some(("hexdump", matches)) => hexdump::run(matches, format),
 		Some(("strings", matches)) => strings::run(matches, format),
 		Some(("findsig", matches)) => findsig::run(matches, format),
