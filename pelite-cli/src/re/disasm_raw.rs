@@ -120,8 +120,10 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let end_ip = base.checked_add(end as u64).ok_or_else(|| err("base plus end offset overflows"))?;
 	let color = format == OutputFormat::Text && io::stdout().is_terminal();
 	let pointer_width = if bitness == 64 { ty::PointerWidth::Bits64 } else { ty::PointerWidth::Bits32 };
-	let symbols = Arc::new(symbols::load(matches, pointer_width, base)?);
-	let decoded = iced::decode_bytes(&bytes[decode_start..end], bitness, decode_ip, start_ip, end_ip, color, Arc::clone(&symbols));
+	let facts = symbols::load(matches, pointer_width, base, None)?;
+	let symbols = Arc::new(facts.symbols);
+	let mut decoded = iced::decode_bytes(&bytes[decode_start..end], bitness, decode_ip, start_ip, end_ip, color, Arc::clone(&symbols));
+	iced::append_comments(&mut decoded, &facts.comments);
 	match format {
 		OutputFormat::Nul => Ok(()),
 		OutputFormat::Json | OutputFormat::JsonPretty => {

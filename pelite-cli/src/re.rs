@@ -3,7 +3,7 @@ use super::*;
 mod addr;
 mod address;
 mod arch;
-mod autoanalysis;
+mod analysis;
 mod demangle;
 mod disasm;
 mod disasm_raw;
@@ -59,7 +59,7 @@ pub fn command() -> clap::Command {
 		.subcommand(strings::command())
 		.subcommand(findsig::command())
 		.subcommand(xref::command())
-		.subcommand(autoanalysis::command())
+		.subcommand(analysis::command())
 		.subcommand(demangle::command())
 		.subcommand(msvc::command())
 		.subcommand(rust::command());
@@ -79,7 +79,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 		Some(("strings", matches)) => strings::run(matches, format),
 		Some(("findsig", matches)) => findsig::run(matches, format),
 		Some(("xref", matches)) => xref::run(matches, format),
-		Some(("autoanalysis", matches)) => autoanalysis::run(matches, format),
+		Some(("analysis", matches)) => analysis::run(matches, format),
 		Some(("demangle", matches)) => demangle::run(matches, format),
 		Some(("msvc", matches)) => msvc::run(matches, format),
 		Some(("rust", matches)) => rust::run(matches, format),

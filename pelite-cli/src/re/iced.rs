@@ -23,6 +23,22 @@ pub enum TextPrefix<'a> {
 	Address { label: &'a str, value: u64 },
 }
 
+/// Append factmap comments at instruction starts to both plain and colored text.
+pub fn append_comments(instructions: &mut [DecodedInstruction<'_>], comments: &HashMap<u64, String>) {
+	for item in instructions {
+		let Some(comment) = comments.get(&item.ip).filter(|comment| !comment.is_empty()) else { continue };
+		// Keep multiline comments on one instruction line in text and JSON output.
+		let comment = comment.lines().collect::<Vec<_>>().join(" ; ");
+		item.instruction.push_str(" ; ");
+		item.instruction.push_str(&comment);
+		if let Some(colored) = &mut item.colored_instruction {
+			colored.push_str("\x1b[90m ; ");
+			colored.push_str(&comment);
+			colored.push_str("\x1b[0m");
+		}
+	}
+}
+
 pub fn print_text<'a, W: Write>(
 	output: &mut W, instructions: &[DecodedInstruction<'_>], symbols: &HashMap<u64, IndexedSymbol>,
 	color: bool, show_hex: bool, mut prefix: impl FnMut(u64) -> TextPrefix<'a>,
@@ -150,6 +166,24 @@ pub fn decode_bytes<'a>(bytes: &'a [u8], bitness: u32, decode_ip: u64, start_ip:
 		instructions.push(DecodedInstruction { ip: instruction.ip(), bytes: instruction_bytes, instruction: text.plain, colored_instruction: text.colored });
 	}
 	instructions
+}
+
+#[test]
+fn fact_comments_appear_in_plain_and_colored_instructions() {
+	let comments = HashMap::from([(0x1000, "__imp_Function".into()), (0x1002, "line one\nline two".into())]);
+	for color in [false, true] {
+		let mut decoded = decode_bytes(&[0xff, 0xd0, 0x90], 64, 0x1000, 0x1000, 0x1003, color, Arc::new(HashMap::new()));
+		append_comments(&mut decoded, &comments);
+		assert_eq!(decoded[0].instruction, "call rax ; __imp_Function");
+		assert_eq!(decoded[1].instruction, "nop ; line one ; line two");
+		if color {
+			assert!(decoded[0].colored_instruction.as_ref().unwrap().contains(" ; __imp_Function"));
+		}
+		let mut output = Vec::new();
+		print_text(&mut output, &decoded, &HashMap::new(), color, false, |_| TextPrefix::None).unwrap();
+		let output = String::from_utf8(output).unwrap();
+		assert!(output.contains(" ; __imp_Function"));
+	}
 }
 
 #[test]

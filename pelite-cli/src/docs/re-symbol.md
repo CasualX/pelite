@@ -2,11 +2,11 @@ Look up symbols in a PE address range
 
 Usage:
 
-    pelite-cli re symbol FILE RANGE [--facts FACTS.txt]... [--format=text|json|json-pretty|nul]
+    pelite-cli re symbol FILE RANGE [--facts FACTS.txt|auto]... [--format=text|json|json-pretty|nul]
 
 Look up nearby symbols within an address range in the given symbol files.
-FILE is the reference PE file used to convert addresses; the command does not
-discover symbols on its own. Results are sorted by RVA and include names and
+FILE is the reference PE file used to convert addresses and for automatic
+analysis when requested. Results are sorted by RVA and include names and
 types. With no symbol files, the result is empty.
 
 See `pelite-cli re --help` for RANGE syntax.
@@ -29,11 +29,9 @@ or one of `C`, `D`, `_`, `fn`, `thunk`, and `undef`. Generic names display as
 literal names rather than special markers.
 
 Comment facts use `CxRVA "COMMENT"`, with a JSON-quoted string. Reference facts
-use `RxRVA 0xTARGET`, with both RVAs in hexadecimal. Symbol lookup and
-disassembly currently use only symbol facts; comment and reference facts are
-accepted but do not appear in their output. Blank lines and full lines
-beginning with `#` after the header are allowed. Parse errors include the
-source filename and line number.
+use `RxRVA 0xTARGET`, with both RVAs in hexadecimal. Symbol lookup uses only symbol
+facts. Blank lines and full lines beginning with `#` after the header are allowed.
+Parse errors include the source filename and line number.
 
 ```text
 #factmap
@@ -42,7 +40,7 @@ Sx1000 code "parse_config"
 Sx2000 "struct { count: u32, values: *[u32; count] }" "config_table"
 Cx1000 "Reads the count before following the values pointer."
 Rx1000 0x2000
-# Discard a false candidate from autoanalysis.
+# Discard a false candidate from analysis.
 Sx2010 unk undef
 ```
 

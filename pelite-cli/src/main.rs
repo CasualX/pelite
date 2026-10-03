@@ -191,7 +191,7 @@ mod cli_tests {
 			vec!["addr"], vec!["symbol"], vec!["read"], vec!["scan"],
 			vec!["disasm"], vec!["disasm-raw"], vec!["hexdump"],
 			vec!["strings"], vec!["findsig"], vec!["xref"],
-			vec!["autoanalysis"], vec!["demangle"], vec!["msvc", "rtti"],
+			vec!["analysis"], vec!["demangle"], vec!["msvc", "rtti"],
 			vec!["rust", "format-args"], vec!["rust", "fmt-template"],
 			vec!["rust", "panic-locations"], vec!["rust", "vtables"],
 		];
