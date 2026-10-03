@@ -152,7 +152,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 			Topic::Headers => ("headers", value(pe.headers())),
 			Topic::Sections => ("sections", value(pe.section_headers())),
 			Topic::Imports => ("imports", value_opt(pe.imports())),
-			Topic::Exports => ("exports", value_opt(pe.exports())),
+			Topic::Exports => ("exports", exports(pe)),
 			Topic::Relocations => ("relocations", value_opt(pe.base_relocs())),
 			Topic::LoadConfig => ("load_config", value_opt(pe.load_config())),
 			Topic::Tls => ("tls", value_opt(pe.tls())),
@@ -173,6 +173,14 @@ fn value<T: serde::Serialize>(value: T) -> Result<serde_json::Value> {
 fn value_opt<T: serde::Serialize>(result: pelite::Result<T>) -> Result<serde_json::Value> {
 	match result {
 		Ok(directory) => value(directory),
+		Err(error) if error.is_null() => Ok(serde_json::Value::Null),
+		Err(error) => Err(error.into()),
+	}
+}
+
+fn exports(pe: PeFile<'_>) -> Result<serde_json::Value> {
+	match pe.exports() {
+		Ok(directory) => value(directory.by()?),
 		Err(error) if error.is_null() => Ok(serde_json::Value::Null),
 		Err(error) => Err(error.into()),
 	}
