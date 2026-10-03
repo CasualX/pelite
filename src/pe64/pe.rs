@@ -329,6 +329,12 @@ pub unsafe trait Pe<'a> {
 		LoadConfigDirectory::try_from(self)
 	}
 
+	#[doc = include_str!("../docs/clr.md")]
+	#[inline]
+	fn clr(self) -> Result<crate::clr::ClrDirectory<'a>> where Self: Copy {
+		clr::try_from(self)
+	}
+
 	#[doc = include_str!("../docs/tls.md")]
 	#[inline]
 	fn tls(self) -> Result<TlsDirectory<'a, Self>> where Self: Copy {
