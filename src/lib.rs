@@ -81,6 +81,7 @@ pub use self::pe32 as pe;
 pub use self::pe64 as pe;
 
 pub mod base_relocs;
+pub mod clr;
 pub mod debug;
 
 pub mod resources;

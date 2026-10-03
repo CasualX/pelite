@@ -2,7 +2,7 @@ Inspect PE headers and directories
 
 Usage:
 
-    pelite-cli inspect FILE [--all] [--dos] [--rich-structure] [--headers] [--sections] [--imports] [--exports] [--relocations] [--load-config] [--tls] [--exceptions] [--debug] [--format=text|json|json-pretty|nul]
+    pelite-cli inspect FILE [--all] [--dos] [--rich-structure] [--headers] [--sections] [--imports] [--exports] [--relocations] [--load-config] [--tls] [--exceptions] [--debug] [--clr] [--format=text|json|json-pretty|nul]
 
 With no topic flags, the command includes every supported structure. Select
 one or more flags to limit the output, or use `--all` to include everything.
@@ -21,4 +21,4 @@ Examples:
 When to use:
 
 Inspect exact PE headers or directories, including imports, exports,
-relocations, and TLS. For a quick first look, use `summary`.
+relocations, TLS, and CLR metadata. For a quick first look, use `summary`.

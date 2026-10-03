@@ -16,10 +16,11 @@ enum Topic {
 	Tls = 8,
 	Exceptions = 9,
 	Debug = 10,
+	Clr = 11,
 }
 
 impl Topic {
-	const ALL: [Topic; 11] = [
+	const ALL: [Topic; 12] = [
 		Topic::Dos,
 		Topic::RichStructure,
 		Topic::Headers,
@@ -31,6 +32,7 @@ impl Topic {
 		Topic::Tls,
 		Topic::Exceptions,
 		Topic::Debug,
+		Topic::Clr,
 	];
 
 	fn flag(self) -> &'static str {
@@ -46,6 +48,7 @@ impl Topic {
 			Topic::Tls => "tls",
 			Topic::Exceptions => "exceptions",
 			Topic::Debug => "debug",
+			Topic::Clr => "clr",
 		}
 	}
 }
@@ -155,6 +158,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 			Topic::Tls => ("tls", value_opt(pe.tls())),
 			Topic::Exceptions => ("exceptions", exceptions(pe)),
 			Topic::Debug => ("debug", value_opt(pe.debug())),
+			Topic::Clr => ("clr", clr(pe)),
 		};
 		output.insert(key, result.unwrap_or_else(|error| serde_json::json!({ "$error": error.to_string() })));
 	}
@@ -182,5 +186,18 @@ fn exceptions(pe: PeFile<'_>) -> Result<serde_json::Value> {
 			image::IMAGE_FILE_MACHINE_ARM64 => value_opt(file.exception_arm64()),
 			_ => Err(pelite::Error::Invalid.into()),
 		},
+	}
+}
+
+fn clr(pe: PeFile<'_>) -> Result<serde_json::Value> {
+	#[derive(serde::Serialize)]
+	struct ClrInspection<'a> {
+		header: &'a image::IMAGE_COR20_HEADER,
+		metadata: pelite::clr::MetadataRoot<'a>,
+	}
+	match pe.clr() {
+		Ok(clr) => value(ClrInspection { header: clr.image(), metadata: clr.metadata()? }),
+		Err(error) if error.is_null() => Ok(serde_json::Value::Null),
+		Err(error) => Err(error.into()),
 	}
 }

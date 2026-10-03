@@ -129,6 +129,95 @@ pub const IMAGE_NUMBEROF_DIRECTORY_ENTRIES: usize   = 16;
 
 //----------------------------------------------------------------
 
+/// Common Language Runtime header, shared by PE32 and PE32+ images.
+///
+/// Located by [`IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR`]. See
+/// [corhdr.h](https://github.com/dotnet/runtime/blob/main/src/coreclr/inc/corhdr.h).
+#[derive(Copy, Clone, Debug)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
+#[repr(C)]
+pub struct IMAGE_COR20_HEADER {
+	pub cb: u32,
+	pub MajorRuntimeVersion: u16,
+	pub MinorRuntimeVersion: u16,
+	pub MetaData: IMAGE_DATA_DIRECTORY,
+	pub Flags: u32,
+	/// Managed entry point token, or a native entry point RVA when
+	/// [`COMIMAGE_FLAGS_NATIVE_ENTRYPOINT`] is set.
+	pub EntryPointToken: u32,
+	pub Resources: IMAGE_DATA_DIRECTORY,
+	pub StrongNameSignature: IMAGE_DATA_DIRECTORY,
+	pub CodeManagerTable: IMAGE_DATA_DIRECTORY,
+	pub VTableFixups: IMAGE_DATA_DIRECTORY,
+	pub ExportAddressTableJumps: IMAGE_DATA_DIRECTORY,
+	pub ManagedNativeHeader: IMAGE_DATA_DIRECTORY,
+}
+
+pub const COMIMAGE_FLAGS_ILONLY: u32            = 0x00000001;
+pub const COMIMAGE_FLAGS_32BITREQUIRED: u32     = 0x00000002;
+pub const COMIMAGE_FLAGS_IL_LIBRARY: u32        = 0x00000004;
+pub const COMIMAGE_FLAGS_STRONGNAMESIGNED: u32  = 0x00000008;
+pub const COMIMAGE_FLAGS_NATIVE_ENTRYPOINT: u32 = 0x00000010;
+pub const COMIMAGE_FLAGS_TRACKDEBUGDATA: u32   = 0x00010000;
+pub const COMIMAGE_FLAGS_32BITPREFERRED: u32    = 0x00020000;
+
+/// Metadata root signature (`BSJB`), ECMA-335 II.24.2.1.
+pub const CLR_METADATA_SIGNATURE: u32 = 0x424A5342;
+
+/// Fixed prefix of a metadata root; followed by `VersionLength` version bytes.
+#[derive(Copy, Clone, Debug)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
+#[repr(C)]
+pub struct CLR_METADATA_ROOT {
+	pub Signature: u32,
+	pub MajorVersion: u16,
+	pub MinorVersion: u16,
+	pub Reserved: u32,
+	pub VersionLength: u32,
+}
+
+/// Metadata storage header, following the padded version string.
+#[derive(Copy, Clone, Debug)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
+#[repr(C)]
+pub struct CLR_METADATA_STORAGE_HEADER {
+	pub Flags: u16,
+	pub Streams: u16,
+}
+
+/// Fixed prefix of a stream header; followed by its padded, nul-terminated name.
+#[derive(Copy, Clone, Debug)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
+#[repr(C)]
+pub struct CLR_METADATA_STREAM_HEADER {
+	/// Byte offset relative to the metadata root, not a PE RVA.
+	pub Offset: u32,
+	pub Size: u32,
+}
+
+/// Fixed prefix of a metadata tables stream (`#~` or `#-`).
+///
+/// The stream is four-byte aligned; `U64` preserves borrowed access to masks
+/// which need not be eight-byte aligned.
+#[derive(Copy, Clone, Debug)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
+#[repr(C)]
+pub struct CLR_METADATA_TABLES_HEADER {
+	pub Reserved: u32,
+	pub MajorVersion: u8,
+	pub MinorVersion: u8,
+	pub HeapSizes: u8,
+	pub Reserved2: u8,
+	pub Valid: U64,
+	pub Sorted: U64,
+}
+
+pub const CLR_HEAP_LARGE_STRINGS: u8 = 0x01;
+pub const CLR_HEAP_LARGE_GUID: u8    = 0x02;
+pub const CLR_HEAP_LARGE_BLOB: u8    = 0x04;
+
+//----------------------------------------------------------------
+
 // Helper struct, makes serialization nicer
 #[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
 #[repr(C)]
@@ -1236,6 +1325,11 @@ pub struct IMAGE_DEBUG_VC_FEATURE {
 unsafe impl Pod for IMAGE_DOS_HEADER {}
 unsafe impl Pod for IMAGE_FILE_HEADER {}
 unsafe impl Pod for IMAGE_DATA_DIRECTORY {}
+unsafe impl Pod for IMAGE_COR20_HEADER {}
+unsafe impl Pod for CLR_METADATA_ROOT {}
+unsafe impl Pod for CLR_METADATA_STORAGE_HEADER {}
+unsafe impl Pod for CLR_METADATA_STREAM_HEADER {}
+unsafe impl Pod for CLR_METADATA_TABLES_HEADER {}
 unsafe impl<T: Pod> Pod for IMAGE_VERSION<T> {}
 unsafe impl Pod for IMAGE_OPTIONAL_HEADER32 {}
 unsafe impl Pod for IMAGE_OPTIONAL_HEADER64 {}
@@ -1282,6 +1376,19 @@ unsafe impl Pod for IMAGE_DEBUG_VC_FEATURE {}
 assert_sizeof!(64, IMAGE_DOS_HEADER);
 assert_sizeof!(20, IMAGE_FILE_HEADER);
 assert_sizeof!(8, IMAGE_DATA_DIRECTORY);
+assert_sizeof!(72, IMAGE_COR20_HEADER);
+assert_sizeof!(16, CLR_METADATA_ROOT);
+assert_sizeof!(4, CLR_METADATA_STORAGE_HEADER);
+assert_sizeof!(8, CLR_METADATA_STREAM_HEADER);
+assert_sizeof!(24, CLR_METADATA_TABLES_HEADER);
+assert_alignof!(4, CLR_METADATA_ROOT);
+assert_alignof!(4, CLR_METADATA_STREAM_HEADER);
+assert_alignof!(4, CLR_METADATA_TABLES_HEADER);
+assert_offsetof!(8, CLR_METADATA_TABLES_HEADER, Valid);
+assert_offsetof!(16, CLR_METADATA_TABLES_HEADER, Sorted);
+assert_alignof!(4, IMAGE_COR20_HEADER);
+assert_offsetof!(20, IMAGE_COR20_HEADER, EntryPointToken);
+assert_offsetof!(64, IMAGE_COR20_HEADER, ManagedNativeHeader);
 assert_sizeof!(96, IMAGE_OPTIONAL_HEADER32); // Unsized
 assert_sizeof!(112, IMAGE_OPTIONAL_HEADER64); // Unsized
 assert_alignof!(4, IMAGE_OPTIONAL_HEADER64);
