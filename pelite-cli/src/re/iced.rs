@@ -91,9 +91,34 @@ pub fn print_text<'a, W: Write>(
 	Ok(())
 }
 
-struct InstructionText {
-	plain: String,
-	colored: Option<String>,
+/// Intel syntax with shared number formatting, optional symbols, and color.
+pub struct Formatter {
+	inner: iced_x86::IntelFormatter,
+	color: bool,
+}
+
+impl Formatter {
+	pub fn new(color: bool, symbols: Option<Arc<HashMap<u64, IndexedSymbol>>>) -> Formatter {
+		let resolver = symbols.map(|symbols| Box::new(SymbolResolver { symbols }) as Box<dyn iced_x86::SymbolResolver>);
+		let mut inner = iced_x86::IntelFormatter::with_options(resolver, None);
+		let options = iced_x86::Formatter::options_mut(&mut inner);
+		options.set_hex_prefix("0x");
+		options.set_hex_suffix("");
+		options.set_uppercase_hex(false);
+		Formatter { inner, color }
+	}
+
+	pub fn format(&mut self, instruction: &iced_x86::Instruction) -> InstructionText {
+		let mut text = InstructionText { plain: String::new(), colored: self.color.then(String::new) };
+		iced_x86::Formatter::format(&mut self.inner, instruction, &mut text);
+		text
+	}
+}
+
+#[derive(Clone, Debug)]
+pub struct InstructionText {
+	pub plain: String,
+	pub colored: Option<String>,
 }
 
 impl iced_x86::FormatterOutput for InstructionText {
@@ -148,11 +173,7 @@ impl iced_x86::SymbolResolver for SymbolResolver {
 
 pub fn decode_bytes<'a>(bytes: &'a [u8], bitness: u32, decode_ip: u64, start_ip: u64, end_ip: u64, color: bool, symbols: Arc<HashMap<u64, IndexedSymbol>>) -> Vec<DecodedInstruction<'a>> {
 	let mut decoder = iced_x86::Decoder::with_ip(bitness, bytes, decode_ip, iced_x86::DecoderOptions::NONE);
-	let mut formatter = iced_x86::IntelFormatter::with_options(Some(Box::new(SymbolResolver { symbols })), None);
-	let options = iced_x86::Formatter::options_mut(&mut formatter);
-	options.set_hex_prefix("0x");
-	options.set_hex_suffix("");
-	options.set_uppercase_hex(false);
+	let mut formatter = Formatter::new(color, Some(symbols));
 	let mut instructions = Vec::new();
 	while decoder.can_decode() && decoder.ip() < end_ip {
 		let instruction = decoder.decode();
@@ -161,8 +182,7 @@ pub fn decode_bytes<'a>(bytes: &'a [u8], bitness: u32, decode_ip: u64, start_ip:
 		}
 		let offset = (instruction.ip() - decode_ip) as usize;
 		let instruction_bytes = &bytes[offset..offset + instruction.len()];
-		let mut text = InstructionText { plain: String::new(), colored: color.then(String::new) };
-		iced_x86::Formatter::format(&mut formatter, &instruction, &mut text);
+		let text = formatter.format(&instruction);
 		instructions.push(DecodedInstruction { ip: instruction.ip(), bytes: instruction_bytes, instruction: text.plain, colored_instruction: text.colored });
 	}
 	instructions

@@ -189,7 +189,7 @@ mod cli_tests {
 		cli().debug_assert();
 		let commands = [
 			vec!["addr"], vec!["symbol"], vec!["read"], vec!["scan"],
-			vec!["disasm"], vec!["disasm-raw"], vec!["hexdump"],
+			vec!["disasm"], vec!["disasm-raw"], vec!["trace"], vec!["hexdump"],
 			vec!["strings"], vec!["findsig"], vec!["xref"],
 			vec!["analysis"], vec!["demangle"], vec!["msvc", "rtti"],
 			vec!["rust", "format-args"], vec!["rust", "fmt-template"],
