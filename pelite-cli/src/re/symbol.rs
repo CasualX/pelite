@@ -17,7 +17,7 @@ struct Lookup {
 pub fn command() -> clap::Command {
 	clap::Command::new("symbol")
 		.about("Look up symbols in a PE address range")
-		.after_help(include_str!("../docs/re-symbol.md"))
+		.after_help(include_str!("docs/symbol.md"))
 		.arg(clap::Arg::new("file")
 			.value_name("FILE")
 			.value_parser(clap::value_parser!(PathBuf))

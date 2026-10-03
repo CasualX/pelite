@@ -3,7 +3,7 @@ use super::*;
 pub fn command() -> clap::Command {
 	clap::Command::new("demangle")
 		.about("Demangle compiler-generated symbol names")
-		.after_help(include_str!("../docs/re-demangle.md"))
+		.after_help(include_str!("docs/demangle.md"))
 		.arg(clap::Arg::new("symbol")
 			.value_name("SYMBOL")
 			.num_args(1..)

@@ -32,7 +32,7 @@ struct DisassembledInstruction<'a> {
 pub fn command() -> clap::Command {
 	clap::Command::new("disasm")
 		.about("Disassemble an address range using iced-x86")
-		.after_help(include_str!("../docs/re-disasm.md"))
+		.after_help(include_str!("docs/disasm.md"))
 		.arg(clap::Arg::new("file")
 			.value_name("FILE")
 			.value_parser(clap::value_parser!(PathBuf))

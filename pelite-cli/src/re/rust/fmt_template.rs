@@ -14,7 +14,7 @@ struct TemplateOutput {
 pub fn command() -> clap::Command {
 	clap::Command::new("fmt-template")
 		.about("Find Rust format_args! templates in read-only PE data")
-		.after_help(include_str!("../../docs/re-rust-fmt-template.md"))
+		.after_help(include_str!("docs/fmt-template.md"))
 		.arg(clap::Arg::new("file")
 			.value_name("FILE")
 			.value_parser(clap::value_parser!(PathBuf))

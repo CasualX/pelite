@@ -17,7 +17,7 @@ struct LocationOutput<'a> {
 pub fn command() -> clap::Command {
 	clap::Command::new("panic-locations")
 		.about("Find candidate Rust panic locations in a PE image")
-		.after_help(include_str!("../../docs/re-rust-panic-locations.md"))
+		.after_help(include_str!("docs/panic-locations.md"))
 		.arg(clap::Arg::new("file")
 			.value_name("FILE")
 			.value_parser(clap::value_parser!(PathBuf))

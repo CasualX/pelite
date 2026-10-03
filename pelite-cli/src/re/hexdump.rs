@@ -38,7 +38,7 @@ impl<'a> Iterator for HexRows<'a> {
 pub fn command() -> clap::Command {
 	clap::Command::new("hexdump")
 		.about("Hexdump an address range")
-		.after_help(include_str!("../docs/re-hexdump.md"))
+		.after_help(include_str!("docs/hexdump.md"))
 		.arg(clap::Arg::new("file")
 			.value_name("FILE")
 			.value_parser(clap::value_parser!(PathBuf))

@@ -33,5 +33,4 @@ Example JSON output:
 
 When to use:
 
-Convert between RVA, VA, and file offset when following an address across
-tools.
+Convert between RVA, VA, and file offset when following an address across tools.

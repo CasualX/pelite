@@ -73,7 +73,7 @@ impl<'a> Analysis<'a> {
 pub fn command() -> clap::Command {
 	clap::Command::new("analysis")
 		.about("Discover candidate symbols using disassembly and base relocations")
-		.after_help(include_str!("../docs/re-analysis.md"))
+		.after_help(include_str!("docs/analysis.md"))
 		.arg(summary::file_arg().required(true))
 		.arg(clap::Arg::new("output")
 			.short('o').long("output").value_name("FACTS.txt")
