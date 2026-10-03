@@ -32,7 +32,7 @@ struct Xrefs<'a> {
 pub fn command() -> clap::Command {
 	clap::Command::new("xref")
 		.about("Find candidate pointers and relative references to an address")
-		.after_help(include_str!("../docs/re-xref.md"))
+		.after_help(include_str!("docs/xref.md"))
 		.arg(clap::Arg::new("file")
 			.value_name("FILE")
 			.value_parser(clap::value_parser!(PathBuf))

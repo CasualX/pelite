@@ -21,7 +21,7 @@ pub fn command() -> clap::Command {
 	clap::Command::new("format-args")
 		.visible_alias("format_args")
 		.about("Find current-toolchain Rust format_args! templates in an x64 PE")
-		.after_help(include_str!("../../docs/re-rust-format-args.md"))
+		.after_help(include_str!("docs/format-args.md"))
 		.arg(clap::Arg::new("file")
 			.value_name("FILE")
 			.value_parser(clap::value_parser!(PathBuf))

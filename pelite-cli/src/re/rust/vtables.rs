@@ -36,7 +36,7 @@ pub fn command() -> clap::Command {
 	let _example: &dyn VtableExample = std::hint::black_box(&VtableExampleType);
 	clap::Command::new("vtables")
 		.about("Find candidate Rust trait vtables in a PE image")
-		.after_help(include_str!("../../docs/re-rust-vtables.md"))
+		.after_help(include_str!("docs/vtables.md"))
 		.arg(clap::Arg::new("file")
 			.value_name("FILE")
 			.value_parser(clap::value_parser!(PathBuf))

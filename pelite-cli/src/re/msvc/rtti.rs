@@ -8,7 +8,7 @@ mod rtti64;
 pub fn command() -> clap::Command {
 	clap::Command::new("rtti")
 		.about("Dump Microsoft C++ RTTI, vtables, and class hierarchies")
-		.after_help(include_str!("../../docs/re-msvc-rtti.md"))
+		.after_help(include_str!("docs/rtti.md"))
 		.arg(clap::Arg::new("demangle")
 			.long("demangle")
 			.help("Demangle C++ type names")

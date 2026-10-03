@@ -42,7 +42,7 @@ impl<'a> SectionFilter<'a> {
 pub fn command() -> clap::Command {
 	clap::Command::new("findsig")
 		.about("Find byte patterns in a PE image")
-		.after_help(include_str!("../docs/re-findsig.md"))
+		.after_help(include_str!("docs/findsig.md"))
 		.arg(clap::Arg::new("file")
 			.value_name("FILE")
 			.value_parser(clap::value_parser!(PathBuf))

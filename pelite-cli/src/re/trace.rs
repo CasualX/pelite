@@ -13,7 +13,7 @@ struct Trace {
 pub fn command() -> clap::Command {
 	clap::Command::new("trace")
 		.about("Count instructions and bytes up to the first control transfer")
-		.after_help(include_str!("../docs/re-trace.md"))
+		.after_help(include_str!("docs/trace.md"))
 		.arg(clap::Arg::new("file")
 			.value_name("FILE")
 			.value_parser(clap::value_parser!(PathBuf))

@@ -42,7 +42,7 @@ impl<'a> SectionFilter<'a> {
 pub fn command() -> clap::Command {
 	clap::Command::new("scan")
 		.about("Find patterns and read typed data at their matches")
-		.after_help(include_str!("../docs/re-scan.md"))
+		.after_help(include_str!("docs/scan.md"))
 		.arg(clap::Arg::new("file")
 			.value_name("FILE")
 			.value_parser(clap::value_parser!(PathBuf))
