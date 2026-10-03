@@ -10,6 +10,44 @@ impl PeSectionHeaders {
 	pub(crate) fn new(image: &[image::IMAGE_SECTION_HEADER]) -> &PeSectionHeaders {
 		unsafe { mem::transmute(image) }
 	}
+	/// Refetches section headers from either PE32 or PE32+.
+	///
+	/// # Safety
+	/// The image must contain validated PE headers.
+	pub(crate) unsafe fn from_image(bytes: &[u8]) -> &PeSectionHeaders { unsafe {
+		let dos = &*bytes.as_ptr().cast::<image::IMAGE_DOS_HEADER>();
+		let file_offset = dos.e_lfanew as usize + mem::size_of::<u32>();
+		let file = &*bytes.as_ptr().add(file_offset).cast::<image::IMAGE_FILE_HEADER>();
+		let section_offset = file_offset + mem::size_of::<image::IMAGE_FILE_HEADER>() + file.SizeOfOptionalHeader as usize;
+		let sections = slice::from_raw_parts(bytes.as_ptr().add(section_offset).cast(), file.NumberOfSections as usize);
+		Self::new(sections)
+	}}
+	// Resolve a file RVA without consulting architecture-specific PE headers.
+	pub(crate) fn range_file<'a>(&self, image: &'a [u8], rva: u32, min_size_of: usize) -> Result<&'a [u8]> {
+		// This code has been carefully designed to avoid panicking on overflow
+		for it in self {
+			// Compare if rva is contained within the virtual address space of a section
+			// If the calculating the section end address overflows the corrupt section will be skipped
+			#[allow(non_snake_case)]
+			let VirtualEnd = it.VirtualAddress.wrapping_add(core::cmp::max(it.VirtualSize, it.SizeOfRawData));
+			// $1
+			if it.VirtualAddress <= rva && rva < VirtualEnd {
+				// Isolate and range check the pointer and size of raw data
+				// If this fails immediately abort and return an error
+				let section_range = it.PointerToRawData as usize..it.PointerToRawData.wrapping_add(it.SizeOfRawData) as usize;
+				let section_bytes = image.get(section_range).ok_or(Error::Invalid)?;
+				// Calculate the offset in the section requested. cannot underflow, see $1
+				let section_offset = (rva - it.VirtualAddress) as usize;
+				return match section_bytes.get(section_offset..) {
+					Some(bytes) if bytes.len() >= min_size_of => Ok(bytes),
+					// Identify the reason the slice fails. cannot underflow, see $1
+					_ => Err(if min_size_of > (VirtualEnd - rva) as usize { Error::Bounds } else { Error::ZeroFill }),
+				};
+			}
+		}
+		Err(Error::Bounds)
+	}
+
 	/// Returns the underlying slice of section headers.
 	#[inline]
 	pub fn image(&self) -> &[image::IMAGE_SECTION_HEADER] {

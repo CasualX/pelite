@@ -293,6 +293,14 @@ impl<'a, Pe32: Copy + pe32::Pe<'a>, Pe64: Copy + pe64::Pe<'a>> Wrap<Pe32, Pe64> 
 			Wrap::T64(pe64) => pe64.load_config().map(Wrap::T64),
 		}
 	}
+	#[doc = include_str!("../docs/clr.md")]
+	#[inline]
+	pub fn clr(&self) -> Result<crate::clr::ClrDirectory<'a>> {
+		match self {
+			Wrap::T32(pe32) => pe32.clr(),
+			Wrap::T64(pe64) => pe64.clr(),
+		}
+	}
 	#[doc = include_str!("../docs/tls.md")]
 	#[inline]
 	pub fn tls(&self) -> Result<Wrap<pe32::TlsDirectory<'a, Pe32>, pe64::TlsDirectory<'a, Pe64>>> {

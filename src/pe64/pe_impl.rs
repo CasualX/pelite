@@ -25,13 +25,7 @@ pub(crate) unsafe fn data_directory(image: &[u8]) -> &[IMAGE_DATA_DIRECTORY] { u
 	slice::from_raw_parts(data, len)
 }}
 pub(crate) unsafe fn section_headers(image: &[u8]) -> &super::PeSectionHeaders { unsafe {
-	let nt = nt_headers(image);
-	let offset = dos_header(image).e_lfanew as usize
-		+ mem::offset_of!(IMAGE_NT_HEADERS, OptionalHeader)
-		+ nt.FileHeader.SizeOfOptionalHeader as usize;
-	let data = image.as_ptr().add(offset).cast();
-	let raw = slice::from_raw_parts(data, nt.FileHeader.NumberOfSections as usize);
-	super::PeSectionHeaders::new(raw)
+	super::PeSectionHeaders::from_image(image)
 }}
 
 pub(crate) unsafe fn slice_section(image: &[u8], rva: Rva, min_size_of: usize, align_of: usize) -> Result<&[u8]> {
@@ -114,28 +108,7 @@ pub(crate) unsafe fn range_file(image: &[u8], rva: Rva, min_size_of: usize) -> R
 		let bytes = image.get(rva as usize..headers_size as usize).ok_or(Error::Bounds)?;
 		return if bytes.len() >= min_size_of { Ok(bytes) } else { Err(Error::Bounds) };
 	}
-	// This code has been carefully designed to avoid panicking on overflow
-	for it in section_headers(image) {
-		// Compare if rva is contained within the virtual address space of a section
-		// If the calculating the section end address overflows the corrupt section will be skipped
-		#[allow(non_snake_case)]
-		let VirtualEnd = it.VirtualAddress.wrapping_add(cmp::max(it.VirtualSize, it.SizeOfRawData));
-		// $1
-		if it.VirtualAddress <= rva && rva < VirtualEnd {
-			// Isolate and range check the pointer and size of raw data
-			// If this fails immediately abort and return an error
-			let section_range = it.PointerToRawData as usize..it.PointerToRawData.wrapping_add(it.SizeOfRawData) as usize;
-			let section_bytes = image.get(section_range).ok_or(Error::Invalid)?;
-			// Calculate the offset in the section requested. cannot underflow, see $1
-			let section_offset = (rva - it.VirtualAddress) as usize;
-			return match section_bytes.get(section_offset..) {
-				Some(bytes) if bytes.len() >= min_size_of => Ok(bytes),
-				// Identify the reason the slice fails. cannot underflow, see $1
-				_ => Err(if min_size_of > (VirtualEnd - rva) as usize { Error::Bounds } else { Error::ZeroFill }),
-			};
-		}
-	}
-	Err(Error::Bounds)
+	section_headers(image).range_file(image, rva, min_size_of)
 }}
 #[inline(never)]
 pub(crate) unsafe fn slice_file(image: &[u8], rva: Rva, min_size_of: usize, align_of: usize) -> Result<&[u8]> { unsafe {

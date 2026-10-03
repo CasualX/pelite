@@ -132,6 +132,8 @@ pub mod image;
 
 #[path = "../pe64/base_relocs.rs"]
 mod base_relocs;
+#[path = "../pe64/clr.rs"]
+mod clr;
 #[path = "../pe64/debug.rs"]
 mod debug;
 #[path = "../pe64/exports.rs"]
@@ -166,6 +168,7 @@ mod msvc;
 mod zerofill_tests;
 
 pub use self::base_relocs::*;
+pub use self::clr::*;
 pub use self::debug::*;
 pub use self::exports::*;
 pub use self::file::*;
