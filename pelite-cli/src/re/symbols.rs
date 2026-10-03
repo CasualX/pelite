@@ -4,6 +4,7 @@ use super::*;
 pub enum IndexedSymbol {
 	Named(String),
 	Generated { name: &'static str, rva: u32 },
+	Weak(u32),
 }
 
 impl From<symtext::Symbol> for IndexedSymbol {
@@ -20,6 +21,7 @@ impl From<&symtext::Symbol> for IndexedSymbol {
 		match &symbol.name {
 			symtext::SymbolName::Data => IndexedSymbol::Generated { name: "data", rva: symbol.rva },
 			symtext::SymbolName::Code => IndexedSymbol::Generated { name: "code", rva: symbol.rva },
+			symtext::SymbolName::Weak => IndexedSymbol::Weak(symbol.rva),
 			symtext::SymbolName::Fn => IndexedSymbol::Generated { name: "fn", rva: symbol.rva },
 			symtext::SymbolName::Thunk => IndexedSymbol::Generated { name: "thunk", rva: symbol.rva },
 			symtext::SymbolName::Undef => IndexedSymbol::Generated { name: "undef", rva: symbol.rva },
@@ -33,6 +35,7 @@ impl fmt::Display for IndexedSymbol {
 		match self {
 			IndexedSymbol::Named(name) => f.write_str(name),
 			IndexedSymbol::Generated { name, rva } => write!(f, "{name}_{rva:x}"),
+			IndexedSymbol::Weak(rva) => write!(f, ".{rva:x}"),
 		}
 	}
 }
@@ -63,10 +66,33 @@ pub fn index(symbols: &mut HashMap<u64, IndexedSymbol>, database: symtext::Symbo
 			if matches!(symbol.name, symtext::SymbolName::Undef) {
 				symbols.remove(&address);
 			}
+			else if matches!(symbol.name, symtext::SymbolName::Weak) {
+				symbols.entry(address).or_insert_with(|| IndexedSymbol::from(symbol));
+			}
 			else {
 				symbols.insert(address, IndexedSymbol::from(symbol));
 			}
 		}
+	}
+}
+
+#[test]
+fn weak_entries_preserve_strong_symbols_and_can_be_replaced_or_removed() {
+	let width = ty::PointerWidth::Bits64;
+	let first = symtext::SymbolDatabase::parse("#symtext\n0x1000 code \"named\"\n0x1010 code fn\n0x1020 code _\n0x1030 code _\n0x1040 code _\n0x1050 code fn\n", width).unwrap();
+	let second = symtext::SymbolDatabase::parse("#symtext\n0x1000 code _\n0x1010 code _\n0x1020 code \"replacement\"\n0x1030 code C\n0x1040 unk undef\n0x1050 unk undef\n0x1050 code _\n0x1060 code _\n", width).unwrap();
+	let base = 0x180000000;
+	let mut symbols = HashMap::new();
+	index(&mut symbols, first, base);
+	index(&mut symbols, second, base);
+	assert_eq!(symbols.len(), 6);
+	assert_eq!(symbols[&(base + 0x1000)].to_string(), "named");
+	assert_eq!(symbols[&(base + 0x1010)].to_string(), "fn_1010");
+	assert_eq!(symbols[&(base + 0x1020)].to_string(), "replacement");
+	assert_eq!(symbols[&(base + 0x1030)].to_string(), "code_1030");
+	assert!(!symbols.contains_key(&(base + 0x1040)));
+	for rva in [0x1050, 0x1060] {
+		assert!(matches!(symbols[&(base + u64::from(rva))], IndexedSymbol::Weak(value) if value == rva));
 	}
 }
 

@@ -20,6 +20,11 @@ pub enum SymbolName {
 	Data,
 	/// Code.
 	Code,
+	/// Weak
+	///
+	/// Weak anchors mark an instruction start, but do not contribute labels or symbols.
+	/// They do not override a previously defined symbol.
+	Weak,
 	/// Function.
 	Fn,
 	/// Function thunk.
@@ -35,6 +40,7 @@ impl fmt::Display for SymbolName {
 		match self {
 			SymbolName::Data => f.write_str("D"),
 			SymbolName::Code => f.write_str("C"),
+			SymbolName::Weak => f.write_str("_"),
 			SymbolName::Fn => f.write_str("fn"),
 			SymbolName::Thunk => f.write_str("thunk"),
 			SymbolName::Undef => f.write_str("undef"),
@@ -106,8 +112,9 @@ fn parse_symbol(line: &str, pointer_width: ty::PointerWidth) -> result::Result<S
 		return Err("unexpected text after symbol name".to_owned());
 	}
 	let name = match name_token {
-		"C" => SymbolName::Code,
 		"D" => SymbolName::Data,
+		"C" => SymbolName::Code,
+		"_" => SymbolName::Weak,
 		"fn" => SymbolName::Fn,
 		"thunk" => SymbolName::Thunk,
 		"undef" => SymbolName::Undef,

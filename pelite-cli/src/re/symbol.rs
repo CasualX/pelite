@@ -44,6 +44,9 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 			if matches!(symbol.name, symtext::SymbolName::Undef) {
 				symbols.remove(&symbol.rva);
 			}
+			else if matches!(symbol.name, symtext::SymbolName::Weak) {
+				symbols.entry(symbol.rva).or_insert_with(|| symbol);
+			}
 			else {
 				symbols.insert(symbol.rva, symbol);
 			}

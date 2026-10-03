@@ -1,6 +1,20 @@
 use super::*;
 
 #[test]
+fn weak_symbols_round_trip_and_quoted_underscore_is_named() {
+	let source = "#symtext\n0x100 code _\n0x110 code \"_\"\n";
+	for width in [ty::PointerWidth::Bits32, ty::PointerWidth::Bits64] {
+		let database = SymbolDatabase::parse(source, width).unwrap();
+		assert_eq!(database.entries[0], Symbol::new(0x100, ty::Type::Code, SymbolName::Weak));
+		assert_eq!(database.entries[1].name, SymbolName::Named("_".into()));
+		let mut output = Vec::new();
+		database.write(&mut output, "").unwrap();
+		assert_eq!(std::str::from_utf8(&output).unwrap(), source);
+		assert_eq!(SymbolDatabase::parse(std::str::from_utf8(&output).unwrap(), width).unwrap(), database);
+	}
+}
+
+#[test]
 fn undef_entries_round_trip_in_order() {
 	let source = r#"#symtext
 0x100 code fn
