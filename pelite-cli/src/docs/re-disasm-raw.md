@@ -17,9 +17,11 @@ The RVA field in each `#factmap` symbol entry is treated as a file offset; its
 instruction address is `base + offset`. Repeat `--facts` to load files in
 order, with the last symbol for an offset winning; `undef` removes an earlier
 label. Weak `_` entries preserve existing symbols and do not create labels.
-Comment and reference facts are accepted but do not affect the output.
+Comment facts at instruction starts appear after the instruction as `;`
+comments in text and in the JSON `instruction` string. Later comments at the
+same offset override earlier ones. Reference facts do not affect the output.
 See `re symbol --help` for the entry syntax. Without symbol files, raw
-disassembly has no labels. PE symbol files from `re autoanalysis` use RVAs, so
+disassembly has no labels. PE symbol files from `re analysis` use RVAs, so
 convert their entries to offsets in the raw input before using them here;
 `--base` changes instruction addresses, not the meaning of the entry offsets.
 

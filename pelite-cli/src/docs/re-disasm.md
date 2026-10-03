@@ -2,7 +2,7 @@ Disassemble instructions from a PE image
 
 Usage:
 
-    pelite-cli re disasm FILE RANGE [--facts FACTS.txt]... [--layout none|indent|rva|va] [--arch x86_16|x86_32|x86_64] [--hex] [--lookback BYTES] [--format=text|json|json-pretty|nul]
+    pelite-cli re disasm FILE RANGE [--facts FACTS.txt|auto]... [--layout none|indent|rva|va] [--arch x86_16|x86_32|x86_64] [--hex] [--lookback BYTES] [--format=text|json|json-pretty|nul]
 
 See `pelite-cli re --help` for RANGE syntax.
 
@@ -11,16 +11,21 @@ The PE machine header selects x86_32 or x86_64 by default. Use `--arch` to overr
 the decoding mode with `x86_16`, `x86_32`, or `x86_64`. `x86` is an alias for `x86_32`.
 
 Use `--facts FACTS.txt` to label instruction addresses and operands from a
-`#factmap` database. Repeat the option to load multiple files in order; the
+`#factmap` database. Use `--facts auto` to run the full `re analysis` pipeline
+on the PE image and use its symbols and forward-fed comments in memory,
+without writing a file. Mix `auto` and file paths in the desired override order;
+`--facts auto --facts user.facts.txt` applies your corrections last. Use
+`./auto` to load a file literally named `auto`. Repeat the option to load multiple files in order; the
 last symbol for an RVA wins, and `undef` removes an earlier label. Weak `_`
-entries preserve existing symbols and do not create labels. Comment and
-reference facts are accepted but do not affect the output. Pass the generated
+entries preserve existing symbols and do not create labels. Comment facts at instruction starts appear after the instruction as `;`
+comments in text and in the JSON `instruction` string. Later comments at the
+same RVA override earlier ones. Reference facts do not affect the output. Pass the generated
 baseline first and your analysis file last:
 
     pelite-cli re disasm sample.dll rva:0x1000..0x1100 --facts auto.facts.txt --facts user.facts.txt
 
 With no symbol files, addresses are shown without symbol labels. See
-`re autoanalysis --help` to generate the baseline and `re symbol --help` to query
+`re analysis --help` to generate the baseline and `re symbol --help` to query
 nearby symbols or record corrections. Symbol types do not control decoding:
 a data label does not prevent those bytes from being decoded as instructions.
 

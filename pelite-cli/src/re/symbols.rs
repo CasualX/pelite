@@ -44,21 +44,51 @@ pub fn arg() -> clap::Arg {
 	clap::Arg::new("facts")
 		.long("facts")
 		.alias("symbols")
-		.value_name("FACTS.txt")
+		.value_name("FACTS.txt|auto")
 		.value_parser(clap::value_parser!(PathBuf))
 		.action(clap::ArgAction::Append)
-		.help("Load a factmap file; repeat to override earlier symbols at the same location")
+		.help("Load a factmap file or analyze the PE with auto; repeat to override earlier facts")
 }
 
-pub fn load(matches: &clap::ArgMatches, pointer_width: ty::PointerWidth, base: u64) -> Result<HashMap<u64, IndexedSymbol>> {
-	let mut symbols = HashMap::new();
+#[derive(Default)]
+pub struct IndexedFacts {
+	pub symbols: HashMap<u64, IndexedSymbol>,
+	pub comments: HashMap<u64, String>,
+}
+
+pub fn load(matches: &clap::ArgMatches, pointer_width: ty::PointerWidth, base: u64, pe: Option<pelite::PeFile<'_>>) -> Result<IndexedFacts> {
+	let mut indexed = IndexedFacts::default();
 	for path in matches.get_many::<PathBuf>("facts").into_iter().flatten() {
-		let source = fs::read_to_string(path).map_err(|error| err(format!("{}: {error}", path.display())))?;
-		let map = factmap::FactMap::parse(&source, pointer_width)
-			.map_err(|error| err(format!("{}: {error}", path.display())))?;
-		index(&mut symbols, map.facts, base);
+		let map = load_map(path, pointer_width, pe)?;
+		indexed.extend(map.facts, base);
 	}
-	Ok(symbols)
+	Ok(indexed)
+}
+
+/// Resolve one fact source, reserving the exact name `auto` for PE analysis.
+pub fn load_map(path: &Path, pointer_width: ty::PointerWidth, pe: Option<pelite::PeFile<'_>>) -> Result<factmap::FactMap> {
+	if path == Path::new("auto") {
+		let pe = pe.ok_or_else(|| err("--facts auto requires a PE image"))?;
+		return analysis::analyze(pe);
+	}
+	let source = fs::read_to_string(path).map_err(|error| err(format!("{}: {error}", path.display())))?;
+	factmap::FactMap::parse(&source, pointer_width)
+		.map_err(|error| err(format!("{}: {error}", path.display())))
+}
+
+impl IndexedFacts {
+	pub fn extend(&mut self, facts: impl IntoIterator<Item = factmap::Fact>, base: u64) {
+		let facts = facts.into_iter().filter_map(|fact| match fact {
+			factmap::Fact::Comment(comment) => {
+				if let Some(address) = base.checked_add(u64::from(comment.rva)) {
+					self.comments.insert(address, comment.comment);
+				}
+				None
+			},
+			fact => Some(fact),
+		});
+		index(&mut self.symbols, facts, base);
+	}
 }
 
 pub fn index(symbols: &mut HashMap<u64, IndexedSymbol>, facts: impl IntoIterator<Item = factmap::Fact>, base: u64) {
@@ -76,6 +106,20 @@ pub fn index(symbols: &mut HashMap<u64, IndexedSymbol>, facts: impl IntoIterator
 			}
 		}
 	}
+}
+
+#[test]
+fn comment_facts_are_indexed_and_later_comments_override() {
+	let width = ty::PointerWidth::Bits64;
+	let mut indexed = IndexedFacts::default();
+	let first = factmap::FactMap::parse("#factmap\nSx10 code fn\nCx10 \"generated\"\nCx20 \"other\"\n", width).unwrap();
+	let second = factmap::FactMap::parse("#factmap\nCx10 \"user override\"\n", width).unwrap();
+	indexed.extend(first.facts, 0x180000000);
+	indexed.extend(second.facts, 0x180000000);
+	assert_eq!(indexed.symbols.len(), 1);
+	assert_eq!(indexed.comments.len(), 2);
+	assert_eq!(indexed.comments[&0x180000010], "user override");
+	assert_eq!(indexed.comments[&0x180000020], "other");
 }
 
 #[test]
@@ -134,4 +178,11 @@ fn later_symbol_entries_replace_earlier_names() {
 	assert_eq!(symbols[&0x180002000].to_string(), "data_2000");
 	let decoded = iced::decode_bytes(&[0x8b, 0x05, 0xfa, 0x0f, 0, 0], 64, 0x180001000, 0x180001000, 0x180001006, false, Arc::new(symbols));
 	assert!(decoded[0].instruction.contains("data_2000"), "{}", decoded[0].instruction);
+}
+
+#[test]
+fn auto_facts_require_a_pe_image() {
+	let error = load_map(Path::new("auto"), ty::PointerWidth::Bits64, None).unwrap_err();
+	assert!(error.to_string().contains("--facts auto requires a PE image"));
+	assert_ne!(Path::new("./auto"), Path::new("auto"));
 }

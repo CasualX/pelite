@@ -98,8 +98,10 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let end_ip = image_base + range.end as u64;
 
 	let color = format == OutputFormat::Text && io::stdout().is_terminal();
-	let symbols = Arc::new(symbols::load(matches, ty::PointerWidth::from(pe), image_base)?);
-	let decoded = iced::decode_bytes(bytes, bitness, decode_ip, start_ip, end_ip, color, Arc::clone(&symbols));
+	let facts = symbols::load(matches, ty::PointerWidth::from(pe), image_base, Some(pe))?;
+	let symbols = Arc::new(facts.symbols);
+	let mut decoded = iced::decode_bytes(bytes, bitness, decode_ip, start_ip, end_ip, color, Arc::clone(&symbols));
+	iced::append_comments(&mut decoded, &facts.comments);
 	match format {
 		OutputFormat::Nul => Ok(()),
 		OutputFormat::Json | OutputFormat::JsonPretty => {

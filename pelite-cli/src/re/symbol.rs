@@ -37,9 +37,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let range = range.to_rva(pe)?;
 	let mut symbols = BTreeMap::new();
 	for path in matches.get_many::<PathBuf>("facts").into_iter().flatten() {
-		let source = fs::read_to_string(path).map_err(|error| err(format!("{}: {error}", path.display())))?;
-		let map = factmap::FactMap::parse(&source, ty::PointerWidth::from(pe))
-			.map_err(|error| err(format!("{}: {error}", path.display())))?;
+		let map = symbols::load_map(path, ty::PointerWidth::from(pe), Some(pe))?;
 		for fact in map.facts {
 			let factmap::Fact::Symbol(symbol) = fact else { continue };
 			if matches!(symbol.name, factmap::SymbolName::Undef) {
