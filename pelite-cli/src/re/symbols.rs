@@ -7,25 +7,25 @@ pub enum IndexedSymbol {
 	Weak(u32),
 }
 
-impl From<symtext::Symbol> for IndexedSymbol {
-	fn from(symbol: symtext::Symbol) -> IndexedSymbol {
+impl From<factmap::SymbolFact> for IndexedSymbol {
+	fn from(symbol: factmap::SymbolFact) -> IndexedSymbol {
 		match symbol.name {
-			symtext::SymbolName::Named(name) => IndexedSymbol::Named(name),
+			factmap::SymbolName::Named(name) => IndexedSymbol::Named(name),
 			_ => IndexedSymbol::from(&symbol),
 		}
 	}
 }
 
-impl From<&symtext::Symbol> for IndexedSymbol {
-	fn from(symbol: &symtext::Symbol) -> IndexedSymbol {
+impl From<&factmap::SymbolFact> for IndexedSymbol {
+	fn from(symbol: &factmap::SymbolFact) -> IndexedSymbol {
 		match &symbol.name {
-			symtext::SymbolName::Data => IndexedSymbol::Generated { name: "data", rva: symbol.rva },
-			symtext::SymbolName::Code => IndexedSymbol::Generated { name: "code", rva: symbol.rva },
-			symtext::SymbolName::Weak => IndexedSymbol::Weak(symbol.rva),
-			symtext::SymbolName::Fn => IndexedSymbol::Generated { name: "fn", rva: symbol.rva },
-			symtext::SymbolName::Thunk => IndexedSymbol::Generated { name: "thunk", rva: symbol.rva },
-			symtext::SymbolName::Undef => IndexedSymbol::Generated { name: "undef", rva: symbol.rva },
-			symtext::SymbolName::Named(name) => IndexedSymbol::Named(name.clone()),
+			factmap::SymbolName::Data => IndexedSymbol::Generated { name: "data", rva: symbol.rva },
+			factmap::SymbolName::Code => IndexedSymbol::Generated { name: "code", rva: symbol.rva },
+			factmap::SymbolName::Weak => IndexedSymbol::Weak(symbol.rva),
+			factmap::SymbolName::Fn => IndexedSymbol::Generated { name: "fn", rva: symbol.rva },
+			factmap::SymbolName::Thunk => IndexedSymbol::Generated { name: "thunk", rva: symbol.rva },
+			factmap::SymbolName::Undef => IndexedSymbol::Generated { name: "undef", rva: symbol.rva },
+			factmap::SymbolName::Named(name) => IndexedSymbol::Named(name.clone()),
 		}
 	}
 }
@@ -41,32 +41,34 @@ impl fmt::Display for IndexedSymbol {
 }
 
 pub fn arg() -> clap::Arg {
-	clap::Arg::new("symbols")
-		.long("symbols")
-		.value_name("SYMBOLS.txt")
+	clap::Arg::new("facts")
+		.long("facts")
+		.alias("symbols")
+		.value_name("FACTS.txt")
 		.value_parser(clap::value_parser!(PathBuf))
 		.action(clap::ArgAction::Append)
-		.help("Load a symtext file; repeat to override earlier symbols at the same location")
+		.help("Load a factmap file; repeat to override earlier symbols at the same location")
 }
 
 pub fn load(matches: &clap::ArgMatches, pointer_width: ty::PointerWidth, base: u64) -> Result<HashMap<u64, IndexedSymbol>> {
 	let mut symbols = HashMap::new();
-	for path in matches.get_many::<PathBuf>("symbols").into_iter().flatten() {
+	for path in matches.get_many::<PathBuf>("facts").into_iter().flatten() {
 		let source = fs::read_to_string(path).map_err(|error| err(format!("{}: {error}", path.display())))?;
-		let database = symtext::SymbolDatabase::parse(&source, pointer_width)
+		let map = factmap::FactMap::parse(&source, pointer_width)
 			.map_err(|error| err(format!("{}: {error}", path.display())))?;
-		index(&mut symbols, database, base);
+		index(&mut symbols, map.facts, base);
 	}
 	Ok(symbols)
 }
 
-pub fn index(symbols: &mut HashMap<u64, IndexedSymbol>, database: symtext::SymbolDatabase, base: u64) {
-	for symbol in database.entries {
+pub fn index(symbols: &mut HashMap<u64, IndexedSymbol>, facts: impl IntoIterator<Item = factmap::Fact>, base: u64) {
+	for fact in facts {
+		let factmap::Fact::Symbol(symbol) = fact else { continue };
 		if let Some(address) = base.checked_add(u64::from(symbol.rva)) {
-			if matches!(symbol.name, symtext::SymbolName::Undef) {
+			if matches!(symbol.name, factmap::SymbolName::Undef) {
 				symbols.remove(&address);
 			}
-			else if matches!(symbol.name, symtext::SymbolName::Weak) {
+			else if matches!(symbol.name, factmap::SymbolName::Weak) {
 				symbols.entry(address).or_insert_with(|| IndexedSymbol::from(symbol));
 			}
 			else {
@@ -77,14 +79,23 @@ pub fn index(symbols: &mut HashMap<u64, IndexedSymbol>, database: symtext::Symbo
 }
 
 #[test]
+fn indexing_ignores_non_symbol_facts() {
+	let map = factmap::FactMap::parse("#factmap\nSx10 code fn\nCx10 \"comment\"\nRx10 0x20\nCx20 \"another comment\"\n", ty::PointerWidth::Bits64).unwrap();
+	let mut symbols = HashMap::new();
+	index(&mut symbols, map.facts, 0x180000000);
+	assert_eq!(symbols.len(), 1);
+	assert_eq!(symbols[&0x180000010].to_string(), "fn_10");
+}
+
+#[test]
 fn weak_entries_preserve_strong_symbols_and_can_be_replaced_or_removed() {
 	let width = ty::PointerWidth::Bits64;
-	let first = symtext::SymbolDatabase::parse("#symtext\n0x1000 code \"named\"\n0x1010 code fn\n0x1020 code _\n0x1030 code _\n0x1040 code _\n0x1050 code fn\n", width).unwrap();
-	let second = symtext::SymbolDatabase::parse("#symtext\n0x1000 code _\n0x1010 code _\n0x1020 code \"replacement\"\n0x1030 code C\n0x1040 unk undef\n0x1050 unk undef\n0x1050 code _\n0x1060 code _\n", width).unwrap();
+	let first = factmap::FactMap::parse("#factmap\nSx1000 code \"named\"\nSx1010 code fn\nSx1020 code _\nSx1030 code _\nSx1040 code _\nSx1050 code fn\n", width).unwrap();
+	let second = factmap::FactMap::parse("#factmap\nSx1000 code _\nSx1010 code _\nSx1020 code \"replacement\"\nSx1030 code C\nSx1040 unk undef\nSx1050 unk undef\nSx1050 code _\nSx1060 code _\n", width).unwrap();
 	let base = 0x180000000;
 	let mut symbols = HashMap::new();
-	index(&mut symbols, first, base);
-	index(&mut symbols, second, base);
+	index(&mut symbols, first.facts, base);
+	index(&mut symbols, second.facts, base);
 	assert_eq!(symbols.len(), 6);
 	assert_eq!(symbols[&(base + 0x1000)].to_string(), "named");
 	assert_eq!(symbols[&(base + 0x1010)].to_string(), "fn_1010");
@@ -99,11 +110,11 @@ fn weak_entries_preserve_strong_symbols_and_can_be_replaced_or_removed() {
 #[test]
 fn undef_removes_symbols_and_later_entries_can_reintroduce_them() {
 	let width = ty::PointerWidth::Bits64;
-	let first = symtext::SymbolDatabase::parse("#symtext\n0x1000 code fn\n0x1010 u32 D\n", width).unwrap();
-	let second = symtext::SymbolDatabase::parse("#symtext\n0x1000 unk undef\n0x1010 unk undef\n0x1020 unk undef\n0x1030 code fn\n0x1030 unk undef\n0x1000 code \"new\"\n", width).unwrap();
+	let first = factmap::FactMap::parse("#factmap\nSx1000 code fn\nSx1010 u32 D\n", width).unwrap();
+	let second = factmap::FactMap::parse("#factmap\nSx1000 unk undef\nSx1010 unk undef\nSx1020 unk undef\nSx1030 code fn\nSx1030 unk undef\nSx1000 code \"new\"\n", width).unwrap();
 	let mut symbols = HashMap::new();
-	index(&mut symbols, first, 0x180000000);
-	index(&mut symbols, second, 0x180000000);
+	index(&mut symbols, first.facts, 0x180000000);
+	index(&mut symbols, second.facts, 0x180000000);
 	assert_eq!(symbols.len(), 1);
 	assert_eq!(symbols[&0x180001000].to_string(), "new");
 }
@@ -111,11 +122,11 @@ fn undef_removes_symbols_and_later_entries_can_reintroduce_them() {
 #[test]
 fn later_symbol_entries_replace_earlier_names() {
 	let width = ty::PointerWidth::Bits64;
-	let first = symtext::SymbolDatabase::parse("#symtext\n0x1000 code C\n0x1010 code \"first\"\n0x1020 code fn\n0x1030 code thunk\n0x2000 u32 D\n", width).unwrap();
-	let second = symtext::SymbolDatabase::parse("#symtext\n0x1010 code \"last\"\n", width).unwrap();
+	let first = factmap::FactMap::parse("#factmap\nSx1000 code C\nSx1010 code \"first\"\nSx1020 code fn\nSx1030 code thunk\nSx2000 u32 D\n", width).unwrap();
+	let second = factmap::FactMap::parse("#factmap\nSx1010 code \"last\"\n", width).unwrap();
 	let mut symbols = HashMap::new();
-	index(&mut symbols, first, 0x180000000);
-	index(&mut symbols, second, 0x180000000);
+	index(&mut symbols, first.facts, 0x180000000);
+	index(&mut symbols, second.facts, 0x180000000);
 	assert_eq!(symbols[&0x180001000].to_string(), "code_1000");
 	assert_eq!(symbols[&0x180001010].to_string(), "last");
 	assert_eq!(symbols[&0x180001020].to_string(), "fn_1020");

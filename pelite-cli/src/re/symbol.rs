@@ -36,15 +36,16 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let pe = pelite::PeFile::from_bytes(&map)?;
 	let range = range.to_rva(pe)?;
 	let mut symbols = BTreeMap::new();
-	for path in matches.get_many::<PathBuf>("symbols").into_iter().flatten() {
+	for path in matches.get_many::<PathBuf>("facts").into_iter().flatten() {
 		let source = fs::read_to_string(path).map_err(|error| err(format!("{}: {error}", path.display())))?;
-		let database = symtext::SymbolDatabase::parse(&source, ty::PointerWidth::from(pe))
+		let map = factmap::FactMap::parse(&source, ty::PointerWidth::from(pe))
 			.map_err(|error| err(format!("{}: {error}", path.display())))?;
-		for symbol in database.entries {
-			if matches!(symbol.name, symtext::SymbolName::Undef) {
+		for fact in map.facts {
+			let factmap::Fact::Symbol(symbol) = fact else { continue };
+			if matches!(symbol.name, factmap::SymbolName::Undef) {
 				symbols.remove(&symbol.rva);
 			}
-			else if matches!(symbol.name, symtext::SymbolName::Weak) {
+			else if matches!(symbol.name, factmap::SymbolName::Weak) {
 				symbols.entry(symbol.rva).or_insert_with(|| symbol);
 			}
 			else {
