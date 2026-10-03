@@ -93,9 +93,9 @@ pub fn command() -> clap::Command {
 		.after_help(include_str!("../docs/re-autoanalysis.md"))
 		.arg(summary::file_arg().required(true))
 		.arg(clap::Arg::new("output")
-			.short('o').long("output").value_name("SYMBOLS.txt")
+			.short('o').long("output").value_name("FACTS.txt")
 			.value_parser(clap::value_parser!(PathBuf))
-			.help("Write discovered symbols as a new symtext database"))
+			.help("Write discovered symbols as a new factmap database"))
 }
 
 pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
@@ -109,7 +109,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 		let filename = serde_json::to_string(&filename)?;
 		let hash = basenc::LowerHex.encode(Sha256::digest(map.as_ref()).as_ref());
 		let comment = format!("File: {filename}, SHA-256: {hash}");
-		symbol_database(&symbols).write(&mut file, &comment)?;
+		symbol_factmap(&symbols).write(&mut file, &comment)?;
 		file.flush()?;
 	}
 	match format {
@@ -128,8 +128,8 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	}
 }
 
-fn symbol_database(symbols: &[Symbol]) -> symtext::SymbolDatabase {
-	let entries = symbols.iter().map(|symbol| {
+fn symbol_factmap(symbols: &[Symbol]) -> factmap::FactMap {
+	let facts = symbols.iter().map(|symbol| {
 		let ty = match &symbol.interpretations {
 			Some(Interpretation::Single(kind)) => data_type(*kind),
 			Some(Interpretation::Multiple(kinds)) if kinds.contains(&DataKind::Code) => ty::Type::Code,
@@ -141,13 +141,13 @@ fn symbol_database(symbols: &[Symbol]) -> symtext::SymbolDatabase {
 			None if symbol.label == "data" => ty::Type::Unknown,
 			None => ty::Type::Code,
 		};
-		let name = if symbol.label == "thunk" { symtext::SymbolName::Thunk }
-			else if symbol.label == "code" { symtext::SymbolName::Code }
-			else if symbol.label == "data" { symtext::SymbolName::Data }
-			else { symtext::SymbolName::Named(symbol.label.clone()) };
-		symtext::Symbol::new(symbol.rva, ty, name)
+		let name = if symbol.label == "thunk" { factmap::SymbolName::Thunk }
+			else if symbol.label == "code" { factmap::SymbolName::Code }
+			else if symbol.label == "data" { factmap::SymbolName::Data }
+			else { factmap::SymbolName::Named(symbol.label.clone()) };
+		factmap::Fact::Symbol(factmap::SymbolFact::new(symbol.rva, ty, name))
 	}).collect();
-	symtext::SymbolDatabase { entries }
+	factmap::FactMap { facts }
 }
 
 fn data_type(kind: DataKind) -> ty::Type {
@@ -399,7 +399,7 @@ fn interpretation(size: iced_x86::MemorySize) -> Option<DataKind> {
 }
 
 #[test]
-fn discovered_symbols_write_parseable_symtext() {
+fn discovered_symbols_write_parseable_factmap() {
 	let symbols = vec![
 		Symbol { rva: 0x1000, label: "code".into(), interpretations: None },
 		Symbol { rva: 0x1100, label: "thunk".into(), interpretations: Some(Interpretation::Single(DataKind::Code)) },
@@ -409,15 +409,19 @@ fn discovered_symbols_write_parseable_symtext() {
 		Symbol { rva: 0x3100, label: "imp_Sleep".into(), interpretations: Some(Interpretation::Single(DataKind::Code)) },
 	];
 	let mut output = Vec::new();
-	symbol_database(&symbols).write(&mut output, "").unwrap();
+	symbol_factmap(&symbols).write(&mut output, "").unwrap();
 	let text = std::str::from_utf8(&output).unwrap();
-	let database = symtext::SymbolDatabase::parse(text, ty::PointerWidth::Bits64).unwrap();
-	assert_eq!(database.entries[0].ty, ty::Type::Code);
-	assert_eq!(database.entries[0].name, symtext::SymbolName::Code);
-	assert_eq!(database.entries[1].name, symtext::SymbolName::Thunk);
-	assert_eq!(database.entries[2].ty.to_string(), "union{u32,u64}");
-	assert_eq!(database.entries[2].name, symtext::SymbolName::Data);
-	assert_eq!(database.entries[3].name, symtext::SymbolName::Data);
-	assert_eq!(database.entries[4].name, database.entries[5].name);
-	assert_eq!(database.entries[4].name, symtext::SymbolName::Named("imp_Sleep".into()));
+	let map = factmap::FactMap::parse(text, ty::PointerWidth::Bits64).unwrap();
+	let entries = map.facts.iter().map(|fact| {
+		let factmap::Fact::Symbol(symbol) = fact else { panic!("expected a symbol fact") };
+		symbol
+	}).collect::<Vec<_>>();
+	assert_eq!(entries[0].ty, ty::Type::Code);
+	assert_eq!(entries[0].name, factmap::SymbolName::Code);
+	assert_eq!(entries[1].name, factmap::SymbolName::Thunk);
+	assert_eq!(entries[2].ty.to_string(), "union{u32,u64}");
+	assert_eq!(entries[2].name, factmap::SymbolName::Data);
+	assert_eq!(entries[3].name, factmap::SymbolName::Data);
+	assert_eq!(entries[4].name, entries[5].name);
+	assert_eq!(entries[4].name, factmap::SymbolName::Named("imp_Sleep".into()));
 }

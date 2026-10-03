@@ -7,6 +7,7 @@ mod autoanalysis;
 mod demangle;
 mod disasm;
 mod disasm_raw;
+mod factmap;
 mod findsig;
 mod hex;
 mod hexdump;
@@ -18,7 +19,6 @@ mod scan;
 mod strings;
 mod symbol;
 mod symbols;
-mod symtext;
 mod ty;
 mod xref;
 
