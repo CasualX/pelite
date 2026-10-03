@@ -45,6 +45,19 @@ impl AddressRange {
 	}
 }
 
+fn get_arch(matches: &clap::ArgMatches, pe: pelite::PeFile<'_>) -> Result<Arch> {
+	if let Some(arch) = matches.get_one::<Arch>("arch") {
+		Ok(*arch)
+	}
+	else {
+		match pe.file_header().Machine {
+			pelite::image::IMAGE_FILE_MACHINE_I386 => Ok(Arch::X86_32),
+			pelite::image::IMAGE_FILE_MACHINE_AMD64 => Ok(Arch::X86_64),
+			machine => return Err(err(format!("unsupported machine type {machine:#06x}; expected i386 or AMD64"))),
+		}
+	}
+}
+
 pub fn command() -> clap::Command {
 	let command = clap::Command::new("re")
 		.about("Reverse engineer code and data in binaries")

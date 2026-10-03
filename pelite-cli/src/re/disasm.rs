@@ -1,5 +1,3 @@
-use pelite::image;
-
 use super::*;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -30,7 +28,7 @@ struct DisassembledInstruction<'a> {
 }
 
 pub fn command() -> clap::Command {
-	clap::Command::new("disasm")
+	output_args(clap::Command::new("disasm")
 		.about("Disassemble an address range using iced-x86")
 		.after_help(include_str!("docs/disasm.md"))
 		.arg(clap::Arg::new("file")
@@ -46,6 +44,16 @@ pub fn command() -> clap::Command {
 			.value_name("ARCH")
 			.value_parser(Arch::parse)
 			.help("Override the PE machine header (x86_16, x86_32 [alias x86], or x86_64)"))
+		.arg(clap::Arg::new("lookback")
+			.long("lookback")
+			.value_name("BYTES")
+			.value_parser(clap::value_parser!(u32))
+			.default_value("0")
+			.help("Decode up to BYTES earlier (decimal); include any instruction overlapping the requested start. Correct alignment requires starting at an instruction boundary")))
+}
+
+pub fn output_args(command: clap::Command) -> clap::Command {
+	command
 		.arg(clap::Arg::new("hex")
 			.long("hex")
 			.action(clap::ArgAction::SetTrue)
@@ -56,12 +64,6 @@ pub fn command() -> clap::Command {
 			.value_parser(AddressLayout::parse)
 			.default_value("indent")
 			.help("Choose plain, indented, RVA, or VA text layout"))
-		.arg(clap::Arg::new("lookback")
-			.long("lookback")
-			.value_name("BYTES")
-			.value_parser(clap::value_parser!(u32))
-			.default_value("0")
-			.help("Decode up to BYTES earlier (decimal); include any instruction overlapping the requested start. Correct alignment requires starting at an instruction boundary"))
 		.arg(symbols::arg())
 }
 
@@ -71,19 +73,17 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let map = pelite::FileMap::open(path)?;
 	let pe = pelite::PeFile::from_bytes(&map)?;
 	let range = range.to_rva(pe)?;
-	let bitness = if let Some(arch) = matches.get_one::<Arch>("arch") {
-		arch.bitness()
-	}
-	else {
-		match pe.file_header().Machine {
-			image::IMAGE_FILE_MACHINE_I386 => Arch::X86_32.bitness(),
-			image::IMAGE_FILE_MACHINE_AMD64 => Arch::X86_64.bitness(),
-			machine => return Err(err(format!("unsupported machine type {machine:#06x}; expected i386 or AMD64"))),
-		}
-	};
+	let arch = get_arch(matches, pe)?;
+	let lookback = *matches.get_one::<u32>("lookback").expect("defaulted by clap");
+	disassemble(matches, format, pe, range, arch, lookback)
+}
+
+pub fn disassemble(
+	matches: &clap::ArgMatches, format: OutputFormat, pe: pelite::PeFile<'_>,
+	range: RvaRange, arch: Arch, lookback: u32,
+) -> Result {
 	let len = usize::try_from(range.end - range.start)?;
 	let bytes = pe.slice(range.start, len, 1)?;
-	let lookback = *matches.get_one::<u32>("lookback").expect("defaulted by clap");
 	let (decode_start, bytes) = pe.section_headers().by_rva(range.start)
 		.filter(|_| lookback != 0)
 		.and_then(|section| {
@@ -100,7 +100,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let color = format == OutputFormat::Text && io::stdout().is_terminal();
 	let facts = symbols::load(matches, ty::PointerWidth::from(pe), image_base, Some(pe))?;
 	let symbols = Arc::new(facts.symbols);
-	let mut decoded = iced::decode_bytes(bytes, bitness, decode_ip, start_ip, end_ip, color, Arc::clone(&symbols));
+	let mut decoded = iced::decode_bytes(bytes, arch.bitness(), decode_ip, start_ip, end_ip, color, Arc::clone(&symbols));
 	iced::append_comments(&mut decoded, &facts.comments);
 	match format {
 		OutputFormat::Nul => Ok(()),

@@ -1,5 +1,3 @@
-use pelite::image;
-
 use super::*;
 
 #[derive(Debug, serde::Serialize)]
@@ -11,7 +9,7 @@ struct Trace {
 }
 
 pub fn command() -> clap::Command {
-	clap::Command::new("trace")
+	disasm::output_args(clap::Command::new("trace")
 		.about("Count instructions and bytes up to the first control transfer")
 		.after_help(include_str!("docs/trace.md"))
 		.arg(clap::Arg::new("file")
@@ -27,6 +25,16 @@ pub fn command() -> clap::Command {
 			.value_name("ARCH")
 			.value_parser(Arch::parse)
 			.help("Override the PE machine header (x86_16, x86_32 [alias x86], or x86_64)"))
+		.arg(clap::Arg::new("disasm")
+			.long("disasm")
+			.action(clap::ArgAction::SetTrue)
+			.help("Disassemble the traced instructions instead of printing counts"))
+		.arg(clap::Arg::new("disasm-limit")
+			.long("disasm-limit")
+			.value_name("N")
+			.value_parser(clap::value_parser!(usize))
+			.default_value("256")
+			.help("With --disasm, stop after N instructions; 0 disables the limit")))
 }
 
 pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
@@ -35,25 +43,21 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let map = pelite::FileMap::open(path)?;
 	let pe = pelite::PeFile::from_bytes(&map)?;
 	let rva = address.to_rva(pe)?;
-	let bitness = if let Some(arch) = matches.get_one::<Arch>("arch") {
-		arch.bitness()
+	let arch = get_arch(matches, pe)?;
+
+	// Disassembly arguments
+	let disasm = matches.get_flag("disasm");
+	let disasm_limit = if !disasm { 0 }
+		else { *matches.get_one::<usize>("disasm-limit").expect("defaulted by clap") };
+
+	let trace = trace_bytes(pe.slice_bytes(rva)?, arch.bitness(), rva, pe.image_base(), disasm_limit)?;
+
+	if disasm {
+		let range = RvaRange { start: rva, end: rva + trace.bytes as u32 };
+		disasm::disassemble(matches, format, pe, range, arch, 0)
 	}
 	else {
-		match pe.file_header().Machine {
-			image::IMAGE_FILE_MACHINE_I386 => 32,
-			image::IMAGE_FILE_MACHINE_AMD64 => 64,
-			machine => return Err(err(format!("unsupported machine type {machine:#06x}; expected i386 or AMD64"))),
-		}
-	};
-	let trace = trace_bytes(pe.slice_bytes(rva)?, bitness, rva, pe.image_base())?;
-	match format {
-		OutputFormat::Nul => Ok(()),
-		OutputFormat::Json | OutputFormat::JsonPretty => print_json(&trace, format == OutputFormat::JsonPretty),
-		OutputFormat::Text => {
-			writeln!(io::stdout().lock(), "{} instructions, {} bytes; stopped at rva:{:#x}: {}",
-				trace.instructions, trace.bytes, trace.stop_address, trace.instruction)?;
-			Ok(())
-		},
+		print("Trace", &trace, format)
 	}
 }
 
@@ -61,7 +65,7 @@ fn is_control_flow(instr: &iced_x86::Instruction) -> bool {
 	instr.flow_control() != iced_x86::FlowControl::Next || instr.mnemonic() == iced_x86::Mnemonic::Hlt
 }
 
-fn trace_bytes(bytes: &[u8], bitness: u32, rva: u32, image_base: u64) -> Result<Trace> {
+fn trace_bytes(bytes: &[u8], bitness: u32, rva: u32, image_base: u64, disasm_limit: usize) -> Result<Trace> {
 	let ip = image_base + u64::from(rva);
 	let mut decoder = iced_x86::Decoder::with_ip(bitness, bytes, ip, iced_x86::DecoderOptions::NONE);
 	let mut count = 0;
@@ -73,7 +77,7 @@ fn trace_bytes(bytes: &[u8], bitness: u32, rva: u32, image_base: u64) -> Result<
 			return Err(err(format!("(bad): unable to decode instruction at rva:{address:#x} after {count} instructions, {offset} bytes")));
 		}
 		count += 1;
-		if is_control_flow(&instr) {
+		if is_control_flow(&instr) || (disasm_limit != 0 && count >= disasm_limit) {
 			let text = iced::Formatter::new(false, None).format(&instr).plain;
 			return Ok(Trace { instructions: count, bytes: decoder.position(), stop_address: u32::try_from(address)?, instruction: text });
 		}
@@ -105,7 +109,7 @@ fn stops_at_control_transfers_including_their_bytes() {
 		let mut bytes = vec![0x90, 0x48, 0x89, 0xe5];
 		bytes.extend_from_slice(ending);
 		bytes.push(0x90);
-		let trace = trace_bytes(&bytes, 64, 0x1000, 0x180000000).unwrap();
+		let trace = trace_bytes(&bytes, 64, 0x1000, 0x180000000, 0).unwrap();
 		assert_eq!(trace.instructions, 3, "{ending:02x?}");
 		assert_eq!(trace.bytes, 4 + ending.len(), "{ending:02x?}");
 		assert_eq!(trace.stop_address, 0x1004);
@@ -115,7 +119,7 @@ fn stops_at_control_transfers_including_their_bytes() {
 #[test]
 fn invalid_and_truncated_instructions_fail_with_successful_counts() {
 	for bytes in [&[0x90, 0x06][..], &[0x90, 0xe8, 0][..]] {
-		let error = trace_bytes(bytes, 64, 0x1000, 0x180000000).unwrap_err().to_string();
+		let error = trace_bytes(bytes, 64, 0x1000, 0x180000000, 0).unwrap_err().to_string();
 		assert!(error.contains("(bad)"));
 		assert!(error.contains("rva:0x1001"));
 		assert!(error.contains("after 1 instructions, 1 bytes"));
@@ -125,7 +129,33 @@ fn invalid_and_truncated_instructions_fail_with_successful_counts() {
 #[test]
 fn exhaustion_does_not_report_success() {
 	for bytes in [&[][..], &[0x90][..]] {
-		let error = trace_bytes(bytes, 64, 0x1000, 0x180000000).unwrap_err().to_string();
+		let error = trace_bytes(bytes, 64, 0x1000, 0x180000000, 0).unwrap_err().to_string();
 		assert!(error.contains("no control-transfer instruction before end of available data"));
 	}
+}
+
+#[test]
+fn instruction_limit_stops_on_complete_instructions() {
+	// The invalid instruction after the limit must not be decoded.
+	let bytes = [0x90, 0x48, 0x89, 0xe5, 0x06];
+	let trace = trace_bytes(&bytes, 64, 0x1000, 0x180000000, 2).unwrap();
+	assert_eq!(trace.instructions, 2);
+	assert_eq!(trace.bytes, 4);
+	assert_eq!(trace.stop_address, 0x1001);
+	assert_eq!(trace.instruction, "mov rbp,rsp");
+	assert!(trace_bytes(&bytes, 64, 0x1000, 0x180000000, 3).is_err());
+}
+
+#[test]
+fn zero_limit_traces_beyond_default_and_control_flow_stops_early() {
+	let mut bytes = vec![0x90; 300];
+	bytes.push(0xc3);
+	for (limit, count, instruction) in [(256, 256, "nop"), (0, 301, "ret"), (400, 301, "ret")] {
+		let trace = trace_bytes(&bytes, 64, 0x1000, 0x180000000, limit).unwrap();
+		assert_eq!(trace.instructions, count);
+		assert_eq!(trace.bytes, count);
+		assert_eq!(trace.stop_address, 0x1000 + count as u32 - 1);
+		assert_eq!(trace.instruction, instruction);
+	}
+	assert!(trace_bytes(&bytes[..300], 64, 0x1000, 0x180000000, 0).is_err());
 }
