@@ -30,7 +30,7 @@ pub fn print_text<'a, W: Write>(
 	let longest_instruction_bytes = instructions.iter().map(|item| item.bytes.len()).max().unwrap_or(0);
 	let hex = hex::HexPrinter::new(false);
 	for item in instructions {
-		if let Some(symbol) = symbols.get(&item.ip) {
+		if let Some(symbol) = symbols.get(&item.ip) && !matches!(symbol, IndexedSymbol::Weak(_)) {
 			if color {
 				writeln!(output, "\n\x1b[1m{ADDRESS_COLOR}{symbol}:\x1b[0m")?;
 			}
@@ -61,6 +61,7 @@ pub fn print_text<'a, W: Write>(
 		for offset in 1..item.bytes.len() {
 			let Some(address) = item.ip.checked_add(offset as u64) else { break };
 			let Some(symbol) = symbols.get(&address) else { continue };
+			if matches!(symbol, IndexedSymbol::Weak(_)) { continue };
 			if first_symbol {
 				write!(output, " ; +{offset:#x}: {symbol}")?;
 				first_symbol = false;
@@ -121,9 +122,10 @@ struct SymbolResolver {
 
 impl iced_x86::SymbolResolver for SymbolResolver {
 	fn symbol(&mut self, _instruction: &iced_x86::Instruction, _operand: u32, _instruction_operand: Option<u32>, address: u64, _address_size: u32) -> Option<iced_x86::SymbolResult<'_>> {
-		self.symbols.get(&address).map(|name| match name {
-			IndexedSymbol::Named(name) => iced_x86::SymbolResult::with_str(address, name),
-			IndexedSymbol::Generated { .. } => iced_x86::SymbolResult::with_string(address, name.to_string()),
+		self.symbols.get(&address).and_then(|name| match name {
+			IndexedSymbol::Named(name) => Some(iced_x86::SymbolResult::with_str(address, name)),
+			IndexedSymbol::Generated { .. } => Some(iced_x86::SymbolResult::with_string(address, name.to_string())),
+			IndexedSymbol::Weak(_) => None,
 		})
 	}
 }
@@ -148,6 +150,35 @@ pub fn decode_bytes<'a>(bytes: &'a [u8], bitness: u32, decode_ip: u64, start_ip:
 		instructions.push(DecodedInstruction { ip: instruction.ip(), bytes: instruction_bytes, instruction: text.plain, colored_instruction: text.colored });
 	}
 	instructions
+}
+
+#[test]
+fn weak_symbols_leave_disassembly_output_unchanged() {
+	let bytes = [0xeb, 0, 0x8b, 0x05, 0xf8, 0x0f, 0, 0, 0xc3];
+	let baseline = HashMap::from([(0x1008, IndexedSymbol::Named("end".into()))]);
+	let mut with_weak = baseline.clone();
+	for address in [0x1000, 0x1001, 0x1002, 0x2000] {
+		with_weak.insert(address, IndexedSymbol::Weak(address as u32));
+	}
+	for color in [false, true] {
+		let expected = decode_bytes(&bytes, 64, 0x1000, 0x1000, 0x1009, color, Arc::new(baseline.clone()));
+		let actual = decode_bytes(&bytes, 64, 0x1000, 0x1000, 0x1009, color, Arc::new(with_weak.clone()));
+		assert_eq!(actual.len(), 3);
+		for (actual, expected) in actual.iter().zip(&expected) {
+			assert_eq!(actual.ip, expected.ip);
+			assert_eq!(actual.bytes, expected.bytes);
+			assert_eq!(actual.instruction, expected.instruction);
+			assert_eq!(actual.colored_instruction, expected.colored_instruction);
+		}
+		for show_hex in [false, true] {
+			let mut expected_output = Vec::new();
+			let mut actual_output = Vec::new();
+			print_text(&mut expected_output, &expected, &baseline, color, show_hex, |_| TextPrefix::None).unwrap();
+			print_text(&mut actual_output, &actual, &with_weak, color, show_hex, |_| TextPrefix::None).unwrap();
+			assert_eq!(actual_output, expected_output);
+			assert!(String::from_utf8(actual_output).unwrap().contains("end:"));
+		}
+	}
 }
 
 #[test]
