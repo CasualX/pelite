@@ -19,6 +19,7 @@ mod scan;
 mod strings;
 mod symbol;
 mod symbols;
+mod trace;
 mod ty;
 mod xref;
 
@@ -54,6 +55,7 @@ pub fn command() -> clap::Command {
 		.subcommand(read::command())
 		.subcommand(scan::command())
 		.subcommand(disasm::command())
+		.subcommand(trace::command())
 		.subcommand(disasm_raw::command())
 		.subcommand(hexdump::command())
 		.subcommand(strings::command())
@@ -74,6 +76,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 		Some(("read", matches)) => read::run(matches, format),
 		Some(("scan", matches)) => scan::run(matches, format),
 		Some(("disasm", matches)) => disasm::run(matches, format),
+		Some(("trace", matches)) => trace::run(matches, format),
 		Some(("disasm-raw", matches)) => disasm_raw::run(matches, format),
 		Some(("hexdump", matches)) => hexdump::run(matches, format),
 		Some(("strings", matches)) => strings::run(matches, format),
