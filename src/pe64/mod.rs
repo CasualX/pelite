@@ -126,6 +126,7 @@ mod pe_impl;
 pub mod image;
 
 mod base_relocs;
+mod clr;
 mod debug;
 mod exception_arm64;
 mod exception_x64;
@@ -147,6 +148,7 @@ mod view;
 mod zerofill_tests;
 
 pub use self::base_relocs::*;
+pub use self::clr::*;
 pub use self::debug::*;
 pub use self::exception_arm64::*;
 pub use self::exception_x64::*;
