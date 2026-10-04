@@ -31,6 +31,14 @@ cargo run -p pelite-cli -- summary demo/Demo64.dll --format=json-pretty
 cargo run -p pelite-cli -- resources tree demo/Demo.dll --format=json
 ```
 
+## Invocation tracing
+
+Set `PELITE_CLI_TRACE_LOGFILE` to a log file path to append every invocation before
+argument parsing, including help requests and invalid commands. The file is created
+if needed. Each line contains a Unix timestamp in seconds with millisecond precision,
+followed by the executable and arguments. Arguments are quoted and escaped when
+needed to keep the entry on one line. Logging failures are silently ignored.
+
 ## Tests
 
 Run the CLI tests from the repository root:
