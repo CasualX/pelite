@@ -23,7 +23,7 @@ Examples:
 
     pelite-cli re scan sample.dll '[u8; 7]' '48 8B ? 48 85 C0' --section .text --format=json
     pelite-cli re scan sample.dll '[u8; 5]' 'E8 save ????' --section .text --format=json-pretty
-    pelite-cli re scan sample.dll ptr --format=json
+    pelite-cli re scan sample.dll '*unk' --format=json
 
 Example JSON output (one result shown):
 

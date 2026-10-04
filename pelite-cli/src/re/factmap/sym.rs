@@ -142,7 +142,12 @@ fn reject_invalid_symbol() {
 	] {
 		assert_eq!(SymbolFact::parse(line, width).unwrap_err(), error, "{line}");
 	}
-	assert!(matches!(SymbolFact::parse("Sx1 bad_type fn", width), Err(ParseLineError::InvalidType(_))));
+	let error = SymbolFact::parse("Sx1 bad_type fn", width).unwrap_err();
+	assert_eq!(error, ParseLineError::InvalidType(ty::ParseError {
+		offset: 8,
+		kind: ty::ParseErrorKind::UnknownType("bad_type".to_owned()),
+	}));
+	assert_eq!(error::Error::source(&error).unwrap().to_string(), "unknown type 'bad_type' at byte 8");
 	assert!(matches!(SymbolFact::parse(r#"Sx1 "bad\q" fn"#, width), Err(ParseLineError::InvalidQuotedType(_))));
 	assert!(matches!(SymbolFact::parse(r#"Sx1 code "bad\q""#, width), Err(ParseLineError::InvalidQuotedName(_))));
 }

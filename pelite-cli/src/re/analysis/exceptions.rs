@@ -8,7 +8,7 @@ impl Analysis<'_> {
 				Ok(exceptions) => {
 					for function in exceptions.image() {
 						let rva = function.BeginAddress;
-						self.add(rva, Some(ty::Type::Code));
+						self.add(rva, Some(ty::Type::Fn));
 						if let Some(symbol) = self.symbols.get_mut(&rva) {
 							symbol.name = factmap::SymbolName::Fn;
 						}
