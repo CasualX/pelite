@@ -42,7 +42,7 @@ pub enum ParseLineError {
 	InvalidComment(String),
 	InvalidQuotedType(String),
 	InvalidQuotedName(String),
-	InvalidType(String),
+	InvalidType(ty::ParseError),
 	InvalidSymbolName,
 	UnexpectedText(&'static str),
 }
@@ -67,7 +67,14 @@ impl fmt::Display for ParseLineError {
 	}
 }
 
-impl error::Error for ParseLineError {}
+impl error::Error for ParseLineError {
+	fn source(&self) -> Option<&(dyn error::Error + 'static)> {
+		match self {
+			Self::InvalidType(error) => Some(error),
+			_ => None,
+		}
+	}
+}
 
 fn parse_rva(input: &str) -> result::Result<u32, ParseLineError> {
 	let hex = input.strip_prefix('x').ok_or(ParseLineError::InvalidRva)?;

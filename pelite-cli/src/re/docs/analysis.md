@@ -8,14 +8,14 @@ The command scans executable sections of i386 and AMD64 images for direct
 branches, calls, static memory references, and address-like immediates. It
 also uses the entry point, TLS callbacks, exports, imports, base relocations, and
 x64 exception records. Function starts from x64 exception records are added
-or upgraded to `fn` symbols with type `code`.
+or upgraded to `fn` symbols with type `fn`.
 Passes run from weaker heuristics to stronger metadata: linear disassembly,
 relocations, label refinement, exports, strings, imports, x64 exception
 records, then entry points (TLS callbacks and the PE entry point). Later generic code hints preserve specific
 labels; exception records establish function symbols. The entry-point
 function is named `EntryPoint`; TLS callback functions are named
 `TlsCallback_0`, `TlsCallback_1`, and so on in callback-array order. These
-functions have type `code`; their names override generic exception labels.
+functions have type `fn`; their names override generic exception labels.
 
 Finally, an experimental forward feeder makes a second linear scan of
 executable sections. It tracks `mov` loads of static global dwords/qwords and
@@ -61,9 +61,12 @@ new path or remove the old generated file before regenerating it.
 The analysis report is still printed when `-o` is used. Use `--format=nul` to
 write only the database. Generic code and data symbols use the factmap names
 `C` and `D`; direct jump stubs use `thunk`. Specialized labels are quoted names.
-Conflicting numeric type hints become a union; code wins over other hints.
-Import address table slots use `__imp_NAME` with type `ptr`, overriding
-heuristic type hints. Import jump stubs use `imp_NAME`. Named import labels
+Conflicting numeric type hints become a union; code wins over data hints,
+and confirmed functions win over generic code hints. Linear branch scanning
+and label heuristics provide type `code`; function metadata provides type `fn`.
+Import address table slots use `__imp_NAME` with type `u32` in PE32 or `u64` in PE32+, overriding
+heuristic type hints. These values are read as raw integers because imported
+addresses may refer to another module. Import jump stubs use `imp_NAME`. Named import labels
 omit the DLL name; ordinal import labels retain it.
 
     pelite-cli re analysis sample.dll -o auto.facts.txt --format=nul

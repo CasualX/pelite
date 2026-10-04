@@ -47,7 +47,7 @@ impl<'a> Analysis<'a> {
 	pub fn into_symbols(mut self) -> Vec<factmap::SymbolFact> {
 		for symbol in self.symbols.values_mut() {
 			if symbol.name == factmap::SymbolName::Code && symbol.ty == ty::Type::Unknown {
-				symbol.upgrade_type(ty::Type::Code, ty::PointerWidth::from(self.pe))
+				symbol.upgrade_type(ty::Type::Code)
 					.expect("code hints always upgrade successfully");
 			}
 		}
@@ -163,11 +163,14 @@ impl Analysis<'_> {
 			if executable { factmap::SymbolName::Code } else { factmap::SymbolName::Data },
 		));
 		if let Some(interpretation) = interpretation {
-			if interpretation == ty::Type::Code && symbol.name == factmap::SymbolName::Data {
+			if interpretation == ty::Type::Fn && matches!(symbol.name, factmap::SymbolName::Data | factmap::SymbolName::Code) {
+				symbol.name = factmap::SymbolName::Fn;
+			}
+			else if interpretation == ty::Type::Code && symbol.name == factmap::SymbolName::Data {
 				symbol.name = factmap::SymbolName::Code;
 			}
-			symbol.upgrade_type(interpretation, ty::PointerWidth::from(self.pe))
-				.expect("analysis hints are code or fixed-size numeric types");
+			symbol.upgrade_type(interpretation)
+				.expect("analysis hints are code, functions, or fixed-size numeric types");
 		}
 	}
 
@@ -180,10 +183,18 @@ impl Analysis<'_> {
 
 impl factmap::SymbolFact {
 	/// Merge a type hint, preserving distinct fixed-size hints in a union.
-	/// Unknown hints add no evidence; code takes precedence because it is unsized.
+	/// Unknown hints add no evidence; functions take precedence over code, which
+	/// takes precedence over data hints. Both code and functions are unsized.
 	/// On a layout error, the previous type is unchanged.
-	fn upgrade_type(&mut self, hint: ty::Type, pointer_width: ty::PointerWidth) -> result::Result<(), &'static str> {
+	fn upgrade_type(&mut self, hint: ty::Type) -> result::Result<(), &'static str> {
 		if hint == ty::Type::Unknown || self.ty == hint {
+			return Ok(());
+		}
+		if self.ty == ty::Type::Fn {
+			return Ok(());
+		}
+		if hint == ty::Type::Fn {
+			self.ty = hint;
 			return Ok(());
 		}
 		if self.ty == ty::Type::Unknown || hint == ty::Type::Code {
@@ -198,8 +209,8 @@ impl factmap::SymbolFact {
 				return Ok(());
 			}
 		}
-		let (previous_size, previous_align) = self.ty.layout(pointer_width)?;
-		let (hint_size, hint_align) = hint.layout(pointer_width)?;
+		let (previous_size, previous_align) = self.ty.layout()?;
+		let (hint_size, hint_align) = hint.layout()?;
 		let align = previous_align.max(hint_align);
 		let size = previous_size.max(hint_size).checked_add(align - 1)
 			.ok_or("type layout overflow")? & !(align - 1);

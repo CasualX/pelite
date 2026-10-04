@@ -53,7 +53,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	};
 	let map = pelite::FileMap::open(path)?;
 	let pe = pelite::PeFile::from_bytes(&map)?;
-	let ty = ty::Type::parse(source, ty::PointerWidth::from(pe)).map_err(err)?;
+	let ty = ty::Type::parse(source, ty::PointerWidth::from(pe))?;
 	let value = match address.to_rva(pe) {
 		Ok(rva) => read_at(pe, rva, &ty, &options),
 		Err(error) => error_value(None, error),
@@ -101,16 +101,20 @@ fn try_read_value(pe: pelite::PeFile<'_>, rva: u32, ty: &ty::Type, options: &Rea
 		ty::Type::I64 => serde_json::to_value(read!(i64)),
 		ty::Type::F32 => serde_json::to_value(read!(f32)),
 		ty::Type::F64 => serde_json::to_value(read!(f64)),
-		ty::Type::Va | ty::Type::Code | ty::Type::Unknown | ty::Type::Ptr(_) => {
-			let va = match pe {
-				pelite::Wrap::T32(_) => u64::from(read!(u32)),
-				pelite::Wrap::T64(_) => read!(u64),
+		ty::Type::Code | ty::Type::Fn | ty::Type::Unknown | ty::Type::Ptr32(_) | ty::Type::Ptr64(_) => {
+			let va = match ty {
+				ty::Type::Ptr32(_) => u64::from(read!(u32)),
+				ty::Type::Ptr64(_) => read!(u64),
+				_ => match pe { // fallback...
+					pelite::Wrap::T32(_) => u64::from(read!(u32)),
+					pelite::Wrap::T64(_) => read!(u64),
+				},
 			};
 			if va == 0 {
 				return Ok(serde_json::Value::Null);
 			}
 			let target = pe.va_to_rva(va)?;
-			if let ty::Type::Ptr(pointee) = ty && !matches!(pointee.as_ref(), ty::Type::Code | ty::Type::Unknown) {
+			if let ty::Type::Ptr32(pointee) | ty::Type::Ptr64(pointee) = ty && !pointee.is_opaque() {
 				return Ok(read_value(pe, target, pointee, options, context));
 			}
 			serde_json::to_value(target)
@@ -130,8 +134,7 @@ fn try_read_value(pe: pelite::PeFile<'_>, rva: u32, ty: &ty::Type, options: &Rea
 		},
 		ty::Type::Utf16LEZ => serde_json::to_value(read_utf16lez(pe.slice_bytes(rva)?, options.max_string_bytes)?),
 		ty::Type::Array(array) => {
-			let pointer_width = ty::PointerWidth::from(pe);
-			let (stride, _) = array.ty.layout(pointer_width).map_err(err)?;
+			let (stride, _) = array.ty.layout().map_err(err)?;
 			let len = match &array.len {
 				ty::ArrayLen::Fixed(len) => *len,
 				ty::ArrayLen::Dyn(name) => {
@@ -196,7 +199,8 @@ fn read_utf16lez(bytes: &[u8], max_string_bytes: usize) -> Result<String> {
 	}
 	Err(if bytes.len() > max_string_bytes {
 		err(format!("UTF-16LE string exceeds maximum of {max_string_bytes} bytes"))
-	} else {
+	}
+	else {
 		err("unterminated UTF-16LE string")
 	})
 }

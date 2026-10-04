@@ -1,9 +1,82 @@
+//! Type DSL for describing data and code in a PE image.
+
 use std::collections::HashSet;
 use std::fmt;
 
+/// A type syntax or layout error at a byte offset in the input.
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct ParseError {
+	/// Zero-based byte offset where parsing stopped, possibly at the end of input.
+	pub offset: usize,
+	/// The reason parsing failed.
+	pub kind: ParseErrorKind,
+}
+
+/// Reasons a type cannot be parsed or laid out.
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub enum ParseErrorKind {
+	/// Text remains after a complete type.
+	UnexpectedTrailingInput,
+	/// A required punctuation character is missing.
+	ExpectedToken(char),
+	/// An identifier was expected at this position.
+	ExpectedIdentifier,
+	/// A decimal array length is missing or exceeds `u32`.
+	InvalidArrayLength,
+	/// Type nesting exceeds the parser's limit.
+	NestingTooDeep,
+	/// An identifier does not name a supported type.
+	UnknownType(String),
+	/// An unsized type was used where a fixed layout is required.
+	UnsizedType(&'static str),
+	/// Multiplying the element size by the array length exceeds `u32`.
+	ArraySizeOverflow,
+	/// A union field is unsized.
+	DynamicUnionField,
+	/// Rounding a size or offset up to its alignment exceeds `u32`.
+	TypeLayoutOverflow,
+	/// Adding a field's size to its offset exceeds `u32`.
+	StructSizeOverflow,
+	/// Two fields in the same struct or union have the same explicit name.
+	DuplicateField(String),
+	/// An unsized struct field is followed by another field.
+	DynamicFieldNotLast,
+}
+
+impl fmt::Display for ParseErrorKind {
+	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+		match self {
+			Self::UnexpectedTrailingInput => f.write_str("unexpected trailing input"),
+			Self::ExpectedToken(token) => write!(f, "expected '{token}'"),
+			Self::ExpectedIdentifier => f.write_str("expected an identifier"),
+			Self::InvalidArrayLength => f.write_str("expected a decimal array length"),
+			Self::NestingTooDeep => f.write_str("type nesting is too deep"),
+			Self::UnknownType(name) => write!(f, "unknown type '{name}'"),
+			Self::UnsizedType(message) => f.write_str(message),
+			Self::ArraySizeOverflow => f.write_str("array size overflow"),
+			Self::DynamicUnionField => f.write_str("dynamic field is not allowed in a union"),
+			Self::TypeLayoutOverflow => f.write_str("type layout overflow"),
+			Self::StructSizeOverflow => f.write_str("struct size overflow"),
+			Self::DuplicateField(name) => write!(f, "duplicate field '{name}'"),
+			Self::DynamicFieldNotLast => f.write_str("dynamic field must be the last struct field"),
+		}
+	}
+}
+
+impl fmt::Display for ParseError {
+	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+		write!(f, "{} at byte {}", self.kind, self.offset)
+	}
+}
+
+impl std::error::Error for ParseError {}
+
+/// Pointer width of the target PE image, independent of the host architecture.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum PointerWidth {
+	/// Four-byte pointers in PE32 images.
 	Bits32,
+	/// Eight-byte pointers in PE32+ images.
 	Bits64,
 }
 
@@ -17,6 +90,23 @@ impl From<pelite::PeFile<'_>> for PointerWidth {
 }
 
 impl PointerWidth {
+	/// An unsigned integer with the target pointer's size and alignment.
+	pub const fn unsigned(self) -> Type {
+		match self {
+			Self::Bits32 => Type::U32,
+			Self::Bits64 => Type::U64,
+		}
+	}
+
+	/// Construct a pointer whose size and alignment use this width.
+	pub fn pointer(self, pointee: Type) -> Type {
+		match self {
+			Self::Bits32 => Type::Ptr32(Box::new(pointee)),
+			Self::Bits64 => Type::Ptr64(Box::new(pointee)),
+		}
+	}
+
+	/// Size and natural alignment of a pointer, in bytes.
 	#[inline]
 	pub const fn bytes(self) -> u32 {
 		match self {
@@ -26,96 +116,146 @@ impl PointerWidth {
 	}
 }
 
+/// Number of elements in an array, written after the semicolon in `[T; len]`.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum ArrayLen {
+	/// A fixed decimal element count.
 	Fixed(u32),
+	/// A containing struct field whose unsigned integer value supplies the count.
+	/// The field is resolved at read time, rather than during parsing.
 	Dyn(String),
 }
 
+/// An array of fixed-size elements with layout cached for the target PE.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ArrayType {
+	/// Element type; must have a fixed layout.
 	pub ty: Type,
+	/// Fixed element count or name of the field providing it.
 	pub len: ArrayLen,
-	/// Fixed layout computed when parsed; size is zero for a dynamic array.
+	/// Total size in bytes, computed when parsed; zero for a dynamic array.
 	pub size: u32,
+	/// Alignment in bytes, inherited from the element type.
 	pub align: u32,
 }
 
+/// A parsed DSL type describing a value, pointee, or unsized region.
+///
+/// Integer and floating-point types describe little-endian values. Pointers
+/// store their width explicitly, even when their pointee is unsized.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum Type {
 	U8, U16, U32, U64,
 	I8, I16, I32, I64,
 	F32, F64,
 
-	Va,
+	/// `cstr`: an unsized NUL-terminated byte string with byte alignment.
 	CStr,
+	/// `utf16lez`: an unsized NUL-terminated UTF-16LE string with two-byte alignment.
 	Utf16LEZ,
+	/// `code`: unsized code without a declared layout or confirmed function identity.
 	Code,
+	/// `fn`: an unsized confirmed function; `*fn` denotes a function pointer.
+	Fn,
+	/// `unk`: unsized data without a declared layout; `*unk` denotes an opaque pointer.
 	Unknown,
 
+	/// `[T; len]`: fixed-size elements with a fixed or field-supplied count.
 	Array(Box<ArrayType>),
-	Ptr(Box<Type>),
+	/// `*T`: A four-byte virtual address pointing to a value or unsized region.
+	Ptr32(Box<Type>),
+	/// `*T`: An eight-byte virtual address pointing to a value or unsized region.
+	Ptr64(Box<Type>),
+	/// A `struct` or `union` with its fields and target layout.
 	Struct(Box<StructType>),
 }
 
+/// A struct or union with field offsets and layout computed during parsing.
+///
+/// Struct fields follow natural C alignment; union fields all start at offset
+/// zero. The total size is rounded up to the largest field alignment.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct StructType {
+	/// Optional descriptive name, with no effect on layout.
 	pub name: Option<String>,
+	/// Fields in declaration order, including discarded and unnamed fields.
 	pub fields: Vec<Field>,
+	/// Whether fields overlap as a union instead of following one another.
 	pub is_union: bool,
-	/// Layout computed when the struct or union is parsed for the PE pointer width.
+	/// Size in bytes, including trailing padding; for a DST, only its fixed prefix.
+	/// A DST's complete size is unavailable through `Type::layout`.
 	pub size: u32,
+	/// Largest field alignment, in bytes; one for an empty struct or union.
 	pub align: u32,
-	/// True if the last field is dynamic.
+	/// Whether the last struct field is unsized; always false for unions.
 	pub is_dst: bool,
 }
 
+/// A field and its position within a struct or union.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Field {
+	/// Name or output treatment of the field.
 	pub name: FieldName,
+	/// Byte offset from the start of the containing type; zero for union fields.
 	pub offset: u32,
+	/// Field type, which contributes to layout even when its value is discarded.
 	pub ty: Type,
 }
 
+/// How a field is named and represented when reading a composite value.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum FieldName {
+	/// An explicit name, unique within the containing struct or union.
 	Named(String),
+	/// `_`: contributes to layout but omits the value from read output.
 	Discarded,
+	/// A union field without a name, output under its zero-based field index.
 	Unnamed,
 }
 
 impl Type {
+	/// Whether this type has no readable contents: `code`, `fn`, or `unk`.
+	/// Pointers to these types return the target RVA without dereferencing it.
+	pub fn is_opaque(&self) -> bool {
+		matches!(self, Self::Code | Self::Fn | Self::Unknown)
+	}
+
 	/// Alignment of the starting address, including dynamically sized types.
-	pub fn alignment(&self, pointer_width: PointerWidth) -> u32 {
+	pub fn alignment(&self) -> u32 {
 		match self {
-			Self::CStr | Self::Code | Self::Unknown => 1,
+			Self::CStr | Self::Code | Self::Fn | Self::Unknown => 1,
 			Self::Utf16LEZ => 2,
 			Self::Array(array) => array.align,
 			Self::Struct(structure) => structure.align,
-			_ => self.layout(pointer_width).expect("fixed-size type").1,
+			_ => self.layout().expect("fixed-size type").1,
 		}
 	}
 
+	/// Whether this type has no fixed size. Pointers to unsized types are sized.
 	pub fn is_dst(&self) -> bool {
 		match self {
-			Self::CStr | Self::Utf16LEZ | Self::Code | Self::Unknown => true,
+			Self::CStr | Self::Utf16LEZ | Self::Code | Self::Fn | Self::Unknown => true,
 			Self::Array(array) => !matches!(&array.len, ArrayLen::Fixed(_)),
 			Self::Struct(structure) => structure.is_dst,
 			_ => false,
 		}
 	}
 
-	/// Fixed size and alignment for the selected PE pointer width.
-	pub fn layout(&self, pointer_width: PointerWidth) -> Result<(u32, u32), &'static str> {
+	/// Fixed size and alignment.
+	///
+	/// Returns `(size, alignment)` in bytes, or an error for an unsized type.
+	pub fn layout(&self) -> Result<(u32, u32), &'static str> {
 		match self {
 			Self::U8 | Self::I8 => Ok((1, 1)),
 			Self::U16 | Self::I16 => Ok((2, 2)),
 			Self::U32 | Self::I32 | Self::F32 => Ok((4, 4)),
 			Self::U64 | Self::I64 | Self::F64 => Ok((8, 8)),
-			Self::Va | Self::Ptr(_) => Ok((pointer_width.bytes(), pointer_width.bytes())),
+			Self::Ptr32(_) => Ok((4, 4)),
+			Self::Ptr64(_) => Ok((8, 8)),
 			Self::CStr => Err("cstr is unsized"),
 			Self::Utf16LEZ => Err("utf16lez is unsized"),
 			Self::Code => Err("code is unsized"),
+			Self::Fn => Err("fn is unsized"),
 			Self::Unknown => Err("unk is unsized"),
 			Self::Array(array) => match &array.len {
 				ArrayLen::Fixed(_) => Ok((array.size, array.align)),
@@ -139,12 +279,12 @@ impl fmt::Display for Type {
 			Self::I64 => f.write_str("i64"),
 			Self::F32 => f.write_str("f32"),
 			Self::F64 => f.write_str("f64"),
-			Self::Va => f.write_str("ptr"),
 			Self::CStr => f.write_str("cstr"),
 			Self::Utf16LEZ => f.write_str("utf16lez"),
 			Self::Code => f.write_str("code"),
+			Self::Fn => f.write_str("fn"),
 			Self::Unknown => f.write_str("unk"),
-			Self::Ptr(ty) => write!(f, "*{ty}"),
+			Self::Ptr32(ty) | Self::Ptr64(ty) => write!(f, "*{ty}"),
 			Self::Array(array) => {
 				write!(f, "[{};", array.ty)?;
 				match &array.len {
@@ -183,17 +323,21 @@ fn align_up(offset: u32, align: u32) -> Result<u32, &'static str> {
 
 impl Type {
 	/// Parse and lay out a type after the PE pointer width is known.
-	pub fn parse(input: &str, pointer_width: PointerWidth) -> Result<Type, String> {
+	///
+	/// Accepts whitespace between tokens and requires the entire input to be a
+	/// single type. Errors describe invalid syntax or layout and include a byte
+	/// position. Dynamic array field names are resolved later, when reading data.
+	pub fn parse(input: &str, pointer_width: PointerWidth) -> Result<Type, ParseError> {
 		parse(input, pointer_width)
 	}
 }
 
-fn parse(input: &str, pointer_width: PointerWidth) -> Result<Type, String> {
+fn parse(input: &str, pointer_width: PointerWidth) -> Result<Type, ParseError> {
 	let mut parser = Parser { input, pos: 0, pointer_width };
 	let ty = parser.ty(0)?;
 	parser.whitespace();
 	if parser.pos != input.len() {
-		return Err(parser.error("unexpected trailing input"));
+		return Err(parser.error(ParseErrorKind::UnexpectedTrailingInput));
 	}
 	Ok(ty)
 }
@@ -205,8 +349,8 @@ struct Parser<'a> {
 }
 
 impl<'a> Parser<'a> {
-	fn error(&self, message: impl fmt::Display) -> String {
-		format!("{message} at byte {}", self.pos)
+	fn error(&self, kind: ParseErrorKind) -> ParseError {
+		ParseError { offset: self.pos, kind }
 	}
 
 	fn whitespace(&mut self) {
@@ -224,18 +368,18 @@ impl<'a> Parser<'a> {
 		true
 	}
 
-	fn expect(&mut self, token: u8) -> Result<(), String> {
+	fn expect(&mut self, token: u8) -> Result<(), ParseError> {
 		if !self.eat(token) {
-			return Err(self.error(format_args!("expected '{}'", char::from(token))));
+			return Err(self.error(ParseErrorKind::ExpectedToken(char::from(token))));
 		}
 		Ok(())
 	}
 
-	fn identifier(&mut self) -> Result<&'a str, String> {
+	fn identifier(&mut self) -> Result<&'a str, ParseError> {
 		self.whitespace();
 		let start = self.pos;
 		if !self.input.as_bytes().get(self.pos).is_some_and(|byte| byte.is_ascii_alphabetic() || *byte == b'_') {
-			return Err(self.error("expected an identifier"));
+			return Err(self.error(ParseErrorKind::ExpectedIdentifier));
 		}
 		self.pos += 1;
 		while self.input.as_bytes().get(self.pos).is_some_and(|byte| byte.is_ascii_alphanumeric() || *byte == b'_') {
@@ -244,17 +388,17 @@ impl<'a> Parser<'a> {
 		Ok(&self.input[start..self.pos])
 	}
 
-	fn array_len(&mut self) -> Result<u32, String> {
+	fn array_len(&mut self) -> Result<u32, ParseError> {
 		self.whitespace();
 		let start = self.pos;
 		while self.input.as_bytes().get(self.pos).is_some_and(u8::is_ascii_digit) {
 			self.pos += 1;
 		}
 		self.input[start..self.pos].parse::<u32>()
-			.map_err(|_| self.error("expected a decimal array length"))
+			.map_err(|_| self.error(ParseErrorKind::InvalidArrayLength))
 	}
 
-	fn field_name(&mut self, is_union: bool) -> Result<FieldName, String> {
+	fn field_name(&mut self, is_union: bool) -> Result<FieldName, ParseError> {
 		let start = self.pos;
 		if is_union {
 			if let Ok(name) = self.identifier() {
@@ -271,13 +415,14 @@ impl<'a> Parser<'a> {
 		Ok(if name == "_" { FieldName::Discarded } else { FieldName::Named(name) })
 	}
 
-	fn ty(&mut self, depth: usize) -> Result<Type, String> {
+	fn ty(&mut self, depth: usize) -> Result<Type, ParseError> {
 		if depth >= 64 {
-			return Err(self.error("type nesting is too deep"));
+			return Err(self.error(ParseErrorKind::NestingTooDeep));
 		}
 
 		if self.eat(b'*') {
-			return Ok(Type::Ptr(Box::new(self.ty(depth + 1)?)));
+			let pointee = self.ty(depth + 1)?;
+			return Ok(self.pointer_width.pointer(pointee));
 		}
 
 		if self.eat(b'[') {
@@ -291,9 +436,9 @@ impl<'a> Parser<'a> {
 				ArrayLen::Dyn(self.identifier()?.to_owned())
 			};
 			self.expect(b']')?;
-			let (element_size, align) = ty.layout(self.pointer_width).map_err(|message| self.error(message))?;
+			let (element_size, align) = ty.layout().map_err(|message| self.error(ParseErrorKind::UnsizedType(message)))?;
 			let size = match &len {
-				ArrayLen::Fixed(len) => element_size.checked_mul(*len).ok_or_else(|| self.error("array size overflow"))?,
+				ArrayLen::Fixed(len) => element_size.checked_mul(*len).ok_or_else(|| self.error(ParseErrorKind::ArraySizeOverflow))?,
 				ArrayLen::Dyn(_) => 0,
 			};
 			return Ok(Type::Array(Box::new(ArrayType { ty, len, size, align })));
@@ -311,18 +456,18 @@ impl<'a> Parser<'a> {
 			"i64" => Ok(Type::I64),
 			"f32" => Ok(Type::F32),
 			"f64" => Ok(Type::F64),
-			"ptr" => Ok(Type::Va),
 			"cstr" => Ok(Type::CStr),
 			"utf16lez" => Ok(Type::Utf16LEZ),
 			"code" => Ok(Type::Code),
+			"fn" => Ok(Type::Fn),
 			"unk" => Ok(Type::Unknown),
 			"struct" => self.structure(depth + 1, false),
 			"union" => self.structure(depth + 1, true),
-			_ => Err(self.error(format_args!("unknown type '{name}'"))),
+			_ => Err(self.error(ParseErrorKind::UnknownType(name.to_owned()))),
 		}
 	}
 
-	fn structure(&mut self, depth: usize, is_union: bool) -> Result<Type, String> {
+	fn structure(&mut self, depth: usize, is_union: bool) -> Result<Type, ParseError> {
 		// Optional struct name
 		let name = if self.eat(b'{') { None }
 		else {
@@ -341,23 +486,37 @@ impl<'a> Parser<'a> {
 		while !self.eat(b'}') {
 			let name = self.field_name(is_union)?;
 			let ty = self.ty(depth)?;
+
 			// Field properties
 			let dynamic = ty.is_dst();
 			is_dst |= dynamic;
 			if dynamic && is_union {
-				return Err(self.error("dynamic field is not allowed in a union"));
+				return Err(self.error(ParseErrorKind::DynamicUnionField));
 			}
+
+			// Compute offset, size and alignment
 			let (field_size, field_align) = if dynamic {
-				(0, ty.alignment(self.pointer_width))
-			} else { ty.layout(self.pointer_width).map_err(|message| self.error(message))? };
-			let field_offset = if is_union { 0 } else { align_up(offset, field_align).map_err(|message| self.error(message))? };
-			let field_end = field_offset.checked_add(field_size).ok_or_else(|| self.error("struct size overflow"))?;
+				(0, ty.alignment())
+			}
+			else {
+				ty.layout().map_err(|message| self.error(ParseErrorKind::UnsizedType(message)))?
+			};
+			let field_offset = if is_union {
+				0
+			}
+			else {
+				align_up(offset, field_align).map_err(|_| self.error(ParseErrorKind::TypeLayoutOverflow))?
+			};
+			let field_end = field_offset.checked_add(field_size).ok_or_else(|| self.error(ParseErrorKind::StructSizeOverflow))?;
+
+			// Append the field
 			if let FieldName::Named(name) = &name {
 				if !field_names.insert(name.clone()) {
-					return Err(self.error(format_args!("duplicate field '{name}'")));
+					return Err(self.error(ParseErrorKind::DuplicateField(name.clone())));
 				}
 			}
 			fields.push(Field { name, offset: field_offset, ty });
+
 			// Update struct properties
 			if !is_union {
 				offset = field_end;
@@ -370,13 +529,13 @@ impl<'a> Parser<'a> {
 			}
 			if dynamic {
 				if !self.eat(b'}') {
-					return Err(self.error("dynamic field must be the last struct field"));
+					return Err(self.error(ParseErrorKind::DynamicFieldNotLast));
 				}
 				break;
 			}
 		}
 
-		let size = align_up(size, align).map_err(|message| self.error(message))?;
+		let size = align_up(size, align).map_err(|_| self.error(ParseErrorKind::TypeLayoutOverflow))?;
 		let name = name.map(str::to_owned);
 		Ok(Type::Struct(Box::new(StructType { name, fields, is_union, size, align, is_dst })))
 	}

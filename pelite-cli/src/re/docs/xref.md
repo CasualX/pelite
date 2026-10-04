@@ -22,7 +22,7 @@ Disassemble from that boundary with `re disasm` to verify the instruction and
 its target; symbol facts are hints, not guaranteed boundaries. A reference address
 can lie inside an instruction; starting disassembly exactly there can misdecode it.
 `--lookback` can include the containing instruction only if the earlier decode
-position is aligned. For data matches, use `re read` with `ptr` or a suitable type.
+position is aligned. For data matches, use `re read` with `*unk` or a suitable type.
 
 Use format `json` for compact machine-readable output or `json-pretty` for
 indented output. Duplicate locations appear once. Text is the default.

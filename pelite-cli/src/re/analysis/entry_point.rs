@@ -18,7 +18,7 @@ impl Analysis<'_> {
 			};
 			for (index, va) in callbacks.map(Wrap::into).enumerate() {
 				let Ok(rva) = self.pe.va_to_rva(va) else { continue };
-				self.add(rva, Some(ty::Type::Code));
+				self.add(rva, Some(ty::Type::Fn));
 				if let Some(symbol) = self.symbols.get_mut(&rva) {
 					symbol.name = factmap::SymbolName::Named(format!("TlsCallback_{index}"));
 				}
@@ -29,7 +29,7 @@ impl Analysis<'_> {
 			Wrap::T64(h) => h.AddressOfEntryPoint,
 		};
 		if entry != 0 {
-			self.add(entry, Some(ty::Type::Code));
+			self.add(entry, Some(ty::Type::Fn));
 			if let Some(symbol) = self.symbols.get_mut(&entry) {
 				symbol.name = factmap::SymbolName::Named("EntryPoint".into());
 			}
@@ -56,15 +56,15 @@ fn entry_point_and_tls_callbacks_keep_function_names() {
 		let mut analysis = Analysis::new(pe).unwrap();
 		analysis.scan_exceptions();
 		analysis.seed_entry_points();
-		// Later weak passes must not downgrade established names or code types.
+		// Later weak passes must not downgrade established names or function types.
 		analysis.scan_code();
 		analysis.refine_labels();
 		assert_eq!(analysis.symbols[&entry].name, factmap::SymbolName::Named("EntryPoint".into()));
-		assert_eq!(analysis.symbols[&entry].ty, ty::Type::Code);
+		assert_eq!(analysis.symbols[&entry].ty, ty::Type::Fn);
 		for (index, va) in callbacks.into_iter().enumerate() {
 			let rva = pe.va_to_rva(va).unwrap();
 			assert_eq!(analysis.symbols[&rva].name, factmap::SymbolName::Named(format!("TlsCallback_{index}")));
-			assert_eq!(analysis.symbols[&rva].ty, ty::Type::Code);
+			assert_eq!(analysis.symbols[&rva].ty, ty::Type::Fn);
 		}
 	}
 }

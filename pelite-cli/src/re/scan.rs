@@ -82,7 +82,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let pe = pelite::PeFile::from_bytes(&map)?;
 	let sections = SectionFilter::new(pe, matches.get_one::<String>("section").map(String::as_str))?;
 	let pointer_width = PointerWidth::from(pe);
-	let ty = Type::parse(source, pointer_width).map_err(err)?;
+	let ty = Type::parse(source, pointer_width)?;
 
 	let pattern = matches.get_one::<String>("pattern").map(String::as_str).unwrap_or("?");
 	let result = scan_pattern(pe, &ty, &options, pattern, &sections)?;
@@ -103,7 +103,7 @@ fn scan_pattern(pe: pelite::PeFile<'_>, ty: &Type, options: &read::ReadOptions, 
 }
 
 fn scan_matches(pe: pelite::PeFile<'_>, ty: &Type, options: &read::ReadOptions, matches: Vec<Vec<u32>>) -> Vec<ScanResult> {
-	let alignment = ty.alignment(PointerWidth::from(pe));
+	let alignment = ty.alignment();
 	matches.into_iter().filter_map(|captures| {
 		let &rva = captures.first()?;
 		if rva % alignment != 0 {

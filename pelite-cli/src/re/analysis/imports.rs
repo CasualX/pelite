@@ -2,12 +2,14 @@ use super::*;
 use pelite::Import;
 
 impl Analysis<'_> {
-	/// Label IAT slots as data pointers, replacing weaker type and name guesses.
+	/// Label IAT slots as pointer-sized integers, replacing weaker guesses.
+	/// Their values may refer to other modules rather than this PE image.
 	pub fn label_imports(&mut self) {
+		let width = ty::PointerWidth::from(self.pe);
 		for (rva, name) in import_names(self.pe, self.bitness) {
 			if self.mapped(rva) {
 				self.symbols.insert(rva, factmap::SymbolFact::new(
-					rva, ty::Type::Va, factmap::SymbolName::Named(format!("__imp_{name}")),
+					rva, width.unsigned(), factmap::SymbolName::Named(format!("__imp_{name}")),
 				));
 			}
 		}
@@ -41,4 +43,3 @@ pub(super) fn import_names(pe: PeFile<'_>, bitness: u32) -> HashMap<u32, String>
 	}
 	names
 }
-

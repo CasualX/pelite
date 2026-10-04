@@ -11,7 +11,6 @@ TYPE describes the bytes at ADDRESS:
     u8 u16 u32 u64       unsigned integers
     i8 i16 i32 i64       signed integers
     f32 f64              IEEE 754 floating-point numbers
-    ptr                  VirtualAddress converted to its target RVA
     *T                   VirtualAddress, then read T at its target RVA
     [T; N]               N consecutive values of T (decimal N)
     struct { a: T, ... } fields laid out with natural C alignment
@@ -22,14 +21,16 @@ Dynamically sized types (DSTs) have no fixed size:
     cstr                 NUL-terminated C string at this address
     utf16lez             NUL-terminated UTF-16LE string (Windows wchar_t)
     code                 Code with no declared layout
+    fn                   Confirmed function with no declared layout
     unk                  Data with no declared layout
     [T; field]           length read from a named unsigned struct field
     struct { ..., tail: DST }  struct ending in a DST field
 
 `cstr` reads through the first NUL, within the --max-string-bytes limit
 (default: 256); increase the limit for longer strings. The opaque DSTs
-`code` and `unk` read like `ptr` when used directly. Pointers to opaque DSTs
-give the target RVA without reading its contents.
+`code`, `fn`, and `unk` read like `*unk` when used directly. Pointers to
+opaque DSTs give the target RVA without reading its contents.
+`*fn` denotes a function pointer; `*code` denotes a pointer to general code.
 
 Field names must be unique within each struct or union. Use `_` for a field
 whose value should be discarded; it can appear more than once. Its type is
@@ -47,13 +48,13 @@ array elements. A DST struct can be read directly or through a pointer, but
 cannot be embedded in another struct. --max-dynamic-array-length limits
 field-length arrays; values above the limit produce a read error.
 
-Integers and floats are little-endian. `ptr` and `*T` use 4 bytes in PE32
+Integers and floats are little-endian. `*T` uses 4 bytes in PE32
 and 8 bytes in PE32+. A zero pointer produces JSON null; a nonzero pointer
-must convert to a valid RVA. `ptr` gives an RVA number, while `*T` reads the
+must convert to a valid RVA. `*unk` gives an RVA number, while `*T` reads the
 value at that RVA unless T is an opaque DST.
 
 To see both the target RVA and the dereferenced value of a pointer, read its
-slot as `union { p: ptr, v: T }`, where T is a typed pointer.
+slot as `union { p: *unk, v: *T }`.
 
 Types can be nested: `*[u32; 4]`, `[struct { id: u16, value: u32 }; 3]`,
 or `struct Header { count: u32, names: *[*cstr; 2] }`. Names on structs and
@@ -69,7 +70,7 @@ Examples:
     pelite-cli re read sample.dll rva:0x2000 u32
     pelite-cli re read sample.dll fo:1024 'struct { flags: u16, count: u32, name: *cstr }' --format=json-pretty
     pelite-cli re read sample.dll rva:0x3000 '*[f32; 3]' --format=json
-    pelite-cli re read sample.dll va:0x180004000 '[union { raw: u32, target: ptr }; 4]'
+    pelite-cli re read sample.dll va:0x180004000 '[union { raw: u32, target: *unk }; 4]'
     pelite-cli re read sample.dll rva:0x4000 'struct { count: u16, values: [u32; count] }' --max-dynamic-array-length 1024
 
 Results follow TYPE: scalars become JSON numbers, `cstr` and `utf16lez` become strings,

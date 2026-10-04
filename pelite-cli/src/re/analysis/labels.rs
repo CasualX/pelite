@@ -52,7 +52,7 @@ impl Analysis<'_> {
 			};
 			symbol.name = if label == "thunk" { factmap::SymbolName::Thunk }
 				else { factmap::SymbolName::Named(label) };
-			symbol.upgrade_type(ty::Type::Code, ty::PointerWidth::from(pe))
+			symbol.upgrade_type(ty::Type::Code)
 				.expect("code hints always upgrade successfully");
 		}
 	}
