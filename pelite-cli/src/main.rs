@@ -8,6 +8,7 @@ mod depwalk;
 mod edit;
 mod imphash;
 mod inspect;
+mod license;
 mod markov;
 mod module_def;
 mod printer;
@@ -75,6 +76,7 @@ fn cli() -> clap::Command {
 			.global(true)
 			.help("Select the output format"))
 		.subcommand(inspect::command())
+		.subcommand(license::command())
 		.subcommand(edit::command())
 		.subcommand(summary::command())
 		.subcommand(resources::command())
@@ -143,6 +145,7 @@ fn run() -> Result {
 	let matches = cli().get_matches();
 	let format = OutputFormat::from_matches(&matches);
 	match matches.subcommand() {
+		Some(("license", _)) => license::run(format),
 		Some(("inspect", matches)) => inspect::run(matches, format),
 		Some(("edit", matches)) => edit::run(matches),
 		Some(("summary", matches)) => summary::run(matches, format),

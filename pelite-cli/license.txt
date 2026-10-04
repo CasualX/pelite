@@ -1,0 +1,8 @@
+pelite-cli is licensed under the GNU General Public License, version 3 only
+(SPDX-License-Identifier: GPL-3.0-only).
+
+You may redistribute and modify it under those terms. It is provided without
+any warranty. See the full license for the terms and warranty disclaimer:
+https://www.gnu.org/licenses/gpl-3.0.html
+
+When redistributing pelite-cli, include a copy of the full GPL v3 license.

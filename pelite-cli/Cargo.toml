@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2024"
 rust-version = "1.93"
 
-license = "MIT"
+license = "GPL-3.0-only"
 authors = ["Casper <CasualX@users.noreply.github.com>"]
 description = "Command-line tools for inspecting PE binaries with pelite"
 categories = ["command-line-utilities"]

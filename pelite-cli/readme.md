@@ -53,3 +53,13 @@ colored line diff on mismatch. To update snapshots after an intentional change:
 ```sh
 UPDATE_SNAPSHOTS=1 cargo test -p pelite-cli --test snapshot
 ```
+
+License
+-------
+
+Licensed under [GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.html), see [license.txt](license.txt).
+
+### Contribution
+
+Unless you explicitly state otherwise, any contribution intentionally submitted
+for inclusion in the work by you, shall be licensed as above, without any additional terms or conditions.
