@@ -159,6 +159,7 @@ fn run() -> Result {
 }
 
 fn main() -> process::ExitCode {
+	trace_invocation();
 	match run().and_then(|()| io::stdout().flush().map_err(Into::into)) {
 		Ok(()) => process::ExitCode::SUCCESS,
 		Err(error) if is_broken_pipe(error.as_ref()) => process::ExitCode::SUCCESS,
@@ -167,6 +168,25 @@ fn main() -> process::ExitCode {
 			process::ExitCode::FAILURE
 		},
 	}
+}
+
+fn trace_invocation() {
+	let Some(path) = std::env::var_os("PELITE_CLI_TRACE_LOGFILE") else { return; };
+	let Ok(mut file) = fs::OpenOptions::new().create(true).append(true).open(path) else { return; };
+	let Ok(timestamp) = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH) else { return; };
+	let mut line = format!("[{}.{:03}]", timestamp.as_secs(), timestamp.subsec_millis());
+	for arg in std::env::args_os() {
+		let arg = arg.to_string_lossy();
+		line.push(' ');
+		if arg.is_empty() || arg.chars().any(|ch| ch.is_whitespace() || ch.is_control() || matches!(ch, '\"' | '\'' | '\\')) {
+			line.push_str(&format!("{arg:?}"));
+		}
+		else {
+			line.push_str(&arg);
+		}
+	}
+	line.push('\n');
+	let _ = file.write_all(line.as_bytes());
 }
 
 fn is_broken_pipe(error: &(dyn error::Error + 'static)) -> bool {
