@@ -25,7 +25,7 @@ pub fn command() -> clap::Command {
 		.arg(clap::Arg::new("rebase")
 			.long("rebase")
 			.value_name("N")
-			.value_parser(rebase::parse_base)
+			.value_parser(value_parser::parse_u64)
 			.help("Apply base relocations for N (decimal or 0x hex); update ImageBase"))
 		.arg(clap::Arg::new("image")
 			.long("image")

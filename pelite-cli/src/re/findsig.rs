@@ -19,7 +19,7 @@ impl<'a> SectionFilter<'a> {
 				if let Some(section) = pe.section_headers().by_name(value) {
 					Some(section)
 				}
-				else if let Ok(index) = value.parse::<usize>() && let Some(section) = pe.section_headers().image().get(index) {
+				else if let Ok(index) = value_parser::parse_usize(value) && let Some(section) = pe.section_headers().image().get(index) {
 					Some(section)
 				}
 				else {

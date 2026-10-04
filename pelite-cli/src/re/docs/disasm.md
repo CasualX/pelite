@@ -2,70 +2,65 @@ Disassemble instructions from a PE image
 
 Usage:
 
-    pelite-cli re disasm FILE RANGE [--facts FACTS.txt|auto]... [--layout none|indent|rva|va] [--arch x86_16|x86_32|x86_64] [--hex] [--lookback BYTES] [--format=text|json|json-pretty|nul]
+    pelite-cli re disasm FILE ADDRESS (BYTES | --trace [--trace-limit N]) [--facts FACTS.txt|auto]... [--layout none|indent|rva|va] [--arch x86_16|x86_32|x86_64] [--hex] [--lookback BYTES] [--format=text|json|json-pretty|nul]
 
-See `pelite-cli re --help` for RANGE syntax.
+See `pelite-cli re --help` for ADDRESS syntax (`rva:`, `va:`, or `fo:`).
 
-Disassembly starts at START and proceeds through the range in address order.
-The PE machine header selects x86_32 or x86_64 by default. Use `--arch` to override
-the decoding mode with `x86_16`, `x86_32`, or `x86_64`. `x86` is an alias for `x86_32`.
+Disassembly starts at ADDRESS and proceeds in address order.
 
-Use `--facts FACTS.txt` to label instruction addresses and operands from a
-`#factmap` database. Use `--facts auto` to run the full `re analysis` pipeline
-on the PE image and use its symbols and forward-fed comments in memory,
-without writing a file. Mix `auto` and file paths in the desired override order;
-`--facts auto --facts user.facts.txt` applies your corrections last. Use
-`./auto` to load a file literally named `auto`. Repeat the option to load multiple files in order; the
-last symbol for an RVA wins, and `undef` removes an earlier label. Weak `_`
-entries preserve existing symbols and do not create labels. Comment facts at instruction starts appear after the instruction as `;`
-comments in text and in the JSON `instruction` string. Later comments at the
-same RVA override earlier ones. Reference facts do not affect the output. Pass the generated
-baseline first and your analysis file last:
+Choose one of two modes:
 
-    pelite-cli re disasm sample.dll rva:0x1000..0x1100 --facts auto.facts.txt --facts user.facts.txt
+    pelite-cli re disasm FILE ADDRESS BYTES
+    pelite-cli re disasm FILE ADDRESS --trace
 
-With no symbol files, addresses are shown without symbol labels. See
-`re analysis --help` to generate the baseline and `re symbol --help` to query
-nearby symbols or record corrections. Symbol types do not control decoding:
-a data label does not prevent those bytes from being decoded as instructions.
+With positional BYTES, decode instructions starting within that byte window.
+BYTES accepts decimal or 0xhex. The end is excluded; zero bytes produces empty
+output. All requested bytes must be readable.
 
-In text output, a symbol inside an instruction appears after it as a `;` comment
-with its byte offset, for example `; +0x2: data_1002`. The instruction stays intact.
+With `--trace`, decode from ADDRESS through the first control transfer. Use it
+for unknown or obfuscated code boundaries: it follows straight-line execution
+to the next control-flow decision without guessing a byte count. Limit with
+`--trace-limit N`; use 0 to disable the limit. `--trace` cannot be combined
+with BYTES or `--lookback` and must start at a known instruction boundary.
 
-Text uses `--layout indent` by default, with four spaces before each
-instruction. Use `none` for no prefix (recommended) or `rva` and `va` for the
-section name and a hexadecimal address. JSON output always includes
-the instruction RVA in its `address` field.
+Start at an instruction boundary when possible. If ADDRESS falls inside an
+instruction, `--lookback BYTES` decodes up to BYTES earlier and includes the
+overlapping instruction, but does not guarantee correct alignment. Embedded
+data may decode misleadingly.
 
-Start at an instruction boundary: decoding from the middle of an instruction
-can produce misleading results. Branches are not followed, and embedded data
-may be decoded as instructions.
+The PE machine header selects `x86_32` or `x86_64` by default. Use `--arch` to
+override the decoding mode.
 
-Use `--hex` to show instruction bytes alongside text, for example to check
-alignment or recognize padding. It has no effect on JSON output.
+`--layout` controls text output and defaults to `indent`. Use `none` for no
+prefix, or `rva` or `va` to include the section name and address. Add `--hex`
+to show instruction bytes in text output. These options do not affect JSON.
 
-Use `--lookback BYTES` when START may fall inside an instruction. It decodes
-up to BYTES earlier (decimal) and includes an instruction overlapping START.
-The earlier position must itself be correctly aligned. Lookback stays within
-START's section; if the earlier bytes cannot be read, decoding starts at START.
+`--format` defaults to `text`. Use `json` or `json-pretty` for machine-readable
+output; both include the instruction RVA in `address`. Use `nul` to suppress
+successful output while still reporting errors.
 
-Use format `json` for compact machine-readable output or `json-pretty` for
-indented output. Each instruction has an RVA `address`, a `bytes` array,
-and an `instruction` string. Text is the default.
+Facts
+-----
 
-See `re disasm-raw` to decode raw bytes.
+Use `--facts FACTS.txt` to apply `#factmap` symbols and comments, or
+`--facts auto` to run `re analysis` in memory. Repeat in override order:
 
-Examples:
+    --facts auto --facts user.facts.txt
 
-    pelite-cli re disasm sample.dll rva:0x1000..0x1100
-    pelite-cli re disasm sample.dll rva:0x1000..0x1100 --layout rva
-    pelite-cli re disasm sample.dll rva:0x1000..+0x100
-    pelite-cli re disasm sample.dll fo:1024..1152 --hex
-    pelite-cli re disasm sample.dll rva:0x1000..0x1100 --arch x86
-    pelite-cli re disasm sample.dll va:0x180001000..0x180001080 --lookback 16
-    pelite-cli re disasm sample.dll rva:0x1000..0x1100 --format=json-pretty
+Comments at instruction starts are appended as `;` comments. Reference facts
+do not affect disassembly. Symbol types do not control decoding.
 
-Example JSON output (one instruction shown):
+Examples
+--------
+
+    pelite-cli re disasm sample.dll rva:0x1000 0x100
+    pelite-cli re disasm sample.dll rva:0x1000 0x100 --layout rva
+    pelite-cli re disasm sample.dll rva:0x1000 --trace --trace-limit 64
+    pelite-cli re disasm sample.dll fo:1024 128 --hex
+    pelite-cli re disasm sample.dll va:0x180002000 0x80 --lookback 16
+    pelite-cli re disasm sample.dll rva:0x1000 0x100 --format=json-pretty
+
+Example JSON output:
 
 ```json
 [
@@ -79,5 +74,6 @@ Example JSON output (one instruction shown):
 
 When to use:
 
-Inspect instructions at a known PE address, such as an entry point or export.
+Inspect instructions at a known PE address. Use `--trace` for unknown or
+obfuscated code boundaries when you want to stop at the next control transfer.
 For raw bytes, use `re disasm-raw`.

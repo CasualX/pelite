@@ -3,6 +3,8 @@
 use std::collections::HashSet;
 use std::fmt;
 
+use crate::value_parser;
+
 /// A type syntax or layout error at a byte offset in the input.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ParseError {
@@ -394,7 +396,7 @@ impl<'a> Parser<'a> {
 		while self.input.as_bytes().get(self.pos).is_some_and(u8::is_ascii_digit) {
 			self.pos += 1;
 		}
-		self.input[start..self.pos].parse::<u32>()
+		value_parser::parse_u32(&self.input[start..self.pos])
 			.map_err(|_| self.error(ParseErrorKind::InvalidArrayLength))
 	}
 

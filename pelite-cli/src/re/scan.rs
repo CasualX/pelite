@@ -19,7 +19,7 @@ impl<'a> SectionFilter<'a> {
 				if let Some(section) = pe.section_headers().by_name(value) {
 					Some(section)
 				}
-				else if let Ok(index) = value.parse::<usize>() && let Some(section) = pe.section_headers().image().get(index) {
+				else if let Ok(index) = value_parser::parse_usize(value) && let Some(section) = pe.section_headers().image().get(index) {
 					Some(section)
 				}
 				else {
@@ -60,13 +60,13 @@ pub fn command() -> clap::Command {
 		.arg(clap::Arg::new("max-string-bytes")
 			.long("max-string-bytes")
 			.value_name("MAX_STRING_BYTES")
-			.value_parser(clap::value_parser!(usize))
+			.value_parser(value_parser::parse_usize)
 			.default_value(read::DEFAULT_MAX_STRING_BYTES)
 			.help("Maximum bytes to inspect for a string"))
 		.arg(clap::Arg::new("max-dynamic-array-length")
 			.long("max-dynamic-array-length")
 			.value_name("MAX_DYNAMIC_ARRAY_LENGTH")
-			.value_parser(clap::value_parser!(u32))
+			.value_parser(value_parser::parse_u32)
 			.default_value(read::DEFAULT_MAX_DYNAMIC_ARRAY_LENGTH)
 			.help("Maximum element count for a field-length array"))
 }

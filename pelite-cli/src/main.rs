@@ -1,7 +1,7 @@
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
-use std::{error, fmt, fs, num, process, result};
+use std::{error, fmt, fs, process, result};
 use std::io::{self, BufRead, IsTerminal, Write};
 
 mod depwalk;
@@ -14,6 +14,7 @@ mod printer;
 mod re;
 mod resources;
 mod summary;
+mod value_parser;
 mod version_info;
 
 use printer::*;
@@ -189,7 +190,7 @@ mod cli_tests {
 		cli().debug_assert();
 		let commands = [
 			vec!["addr"], vec!["symbol"], vec!["read"], vec!["scan"],
-			vec!["disasm"], vec!["disasm-raw"], vec!["trace"], vec!["hexdump"],
+			vec!["disasm"], vec!["disasm-raw"], vec!["hexdump"],
 			vec!["strings"], vec!["findsig"], vec!["xref"],
 			vec!["analysis"], vec!["demangle"], vec!["msvc", "rtti"],
 			vec!["rust", "format-args"], vec!["rust", "fmt-template"],
