@@ -25,14 +25,14 @@ pub fn command() -> clap::Command {
 		.arg(clap::Arg::new("id")
 			.long("id")
 			.value_name("ID")
-			.value_parser(clap::value_parser!(u32))
+			.value_parser(value_parser::parse_u32)
 			.default_value("1")
 			.help("Select the version resource identifier"))
 		.arg(clap::Arg::new("resource-language")
 			.long("resource-language")
 			.short('l')
 			.value_name("LANG")
-			.value_parser(parse_u16)
+			.value_parser(value_parser::parse_u16)
 			.help("Select a resource language ID, in decimal or 0x-prefixed hexadecimal"))
 		.arg(clap::Arg::new("source")
 			.long("source")
@@ -70,25 +70,4 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	};
 
 	print("Version information", &output, format)
-}
-
-fn parse_u16(value: &str) -> result::Result<u16, String> {
-	if let Some(value) = value.strip_prefix("0x").or_else(|| value.strip_prefix("0X")) {
-		u16::from_str_radix(value, 16).map_err(|error| error.to_string())
-	}
-	else {
-		value.parse().map_err(|error: num::ParseIntError| error.to_string())
-	}
-}
-
-#[cfg(test)]
-mod tests {
-	use super::parse_u16;
-
-	#[test]
-	fn parses_resource_languages() {
-		assert_eq!(parse_u16("1033"), Ok(1033));
-		assert_eq!(parse_u16("0x0409"), Ok(0x0409));
-		assert!(parse_u16("0x10000").is_err());
-	}
 }

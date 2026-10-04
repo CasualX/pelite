@@ -1,14 +1,6 @@
 use super::*;
 use pelite::image;
 
-pub fn parse_base(value: &str) -> result::Result<u64, String> {
-	let (value, base) = match value.strip_prefix("0x") {
-		Some(value) => (value, 16),
-		None => (value, 10),
-	};
-	u64::from_str_radix(value, base).map_err(|error| error.to_string())
-}
-
 pub fn run(bytes: &mut pelite::PeMemory, base: u64) -> Result {
 	match pelite::PeFile::from_bytes(bytes)? {
 		pelite::Wrap::T32(_) => {
