@@ -1,6 +1,7 @@
 use super::*;
 
 mod fix_section_names;
+mod rebase;
 
 pub fn command() -> clap::Command {
 	clap::Command::new("edit")
@@ -21,6 +22,11 @@ pub fn command() -> clap::Command {
 			.long("fix-section-names")
 			.action(clap::ArgAction::SetTrue)
 			.help("Replace section names with unique names inferred from their contents and permissions"))
+		.arg(clap::Arg::new("rebase")
+			.long("rebase")
+			.value_name("N")
+			.value_parser(rebase::parse_base)
+			.help("Apply base relocations for N (decimal or 0x hex); update ImageBase"))
 		.arg(clap::Arg::new("image")
 			.long("image")
 			.visible_alias("raw")
@@ -37,6 +43,9 @@ pub fn run(matches: &clap::ArgMatches) -> Result {
 	}
 	if matches.get_flag("fix-baserelocs") {
 		fix_baserelocs(&mut bytes)?;
+	}
+	if let Some(&base) = matches.get_one::<u64>("rebase") {
+		rebase::run(&mut bytes, base)?;
 	}
 
 	if matches.get_flag("fix-section-names") {
