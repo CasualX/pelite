@@ -4,6 +4,8 @@ use super::*;
 pub enum SymbolName {
 	/// Data.
 	Data,
+	/// Read-only data.
+	RData,
 	/// Code.
 	Code,
 	/// Weak
@@ -25,6 +27,7 @@ impl fmt::Display for SymbolName {
 	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
 		match self {
 			SymbolName::Data => f.write_str("D"),
+			SymbolName::RData => f.write_str("R"),
 			SymbolName::Code => f.write_str("C"),
 			SymbolName::Weak => f.write_str("_"),
 			SymbolName::Fn => f.write_str("fn"),
@@ -67,6 +70,7 @@ impl SymbolFact {
 		}
 		let name = match name_token {
 			"D" => SymbolName::Data,
+			"R" => SymbolName::RData,
 			"C" => SymbolName::Code,
 			"_" => SymbolName::Weak,
 			"fn" => SymbolName::Fn,
@@ -100,12 +104,14 @@ impl fmt::Display for SymbolFact {
 fn parse_symbol_names() {
 	for (name, expected) in [
 		("D", SymbolName::Data),
+		("R", SymbolName::RData),
 		("C", SymbolName::Code),
 		("_", SymbolName::Weak),
 		("fn", SymbolName::Fn),
 		("thunk", SymbolName::Thunk),
 		("undef", SymbolName::Undef),
 		("\"fn\"", SymbolName::Named("fn".to_owned())),
+		("\"R\"", SymbolName::Named("R".to_owned())),
 	] {
 		let fact = SymbolFact::parse(&format!("Sx1234 code {name}"), ty::PointerWidth::Bits64).unwrap();
 		assert_eq!(fact, SymbolFact::new(0x1234, ty::Type::Code, expected));

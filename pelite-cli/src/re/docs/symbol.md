@@ -26,9 +26,10 @@ To record analysis, create `user.facts.txt` with `#factmap` on the first line,
 then one fact per line. Symbol facts use `SxRVA TYPE NAME`, with hexadecimal
 RVAs fitting in 32 bits. TYPE uses the syntax from `read --help`; quote a
 type containing spaces using JSON string syntax. NAME is a JSON-quoted string
-or one of `C`, `D`, `_`, `fn`, `thunk`, and `undef`. Generic names display as
-`code_1000`, `data_2000`, and so on. Quoted names such as `"fn"` or `"_"` are
-literal names rather than special markers.
+or one of `C`, `D`, `R`, `_`, `fn`, `thunk`, and `undef`. Generic names display as
+`code_1000`, `data_2000`, `rdata_3000`, and so on. `R` marks read-only data;
+for example, `Sx3000 unk R` defines `rdata_3000`. Quoted names such as `"fn"`
+or `"_"` are literal names rather than special markers.
 
 Comment facts use `CxRVA "COMMENT"`, with a JSON-quoted string. Reference facts
 use `RxRVA 0xTARGET`, with both RVAs in hexadecimal. Symbol lookup uses only symbol

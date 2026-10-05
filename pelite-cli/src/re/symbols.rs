@@ -20,6 +20,7 @@ impl From<&factmap::SymbolFact> for IndexedSymbol {
 	fn from(symbol: &factmap::SymbolFact) -> IndexedSymbol {
 		match &symbol.name {
 			factmap::SymbolName::Data => IndexedSymbol::Generated { name: "data", rva: symbol.rva },
+			factmap::SymbolName::RData => IndexedSymbol::Generated { name: "rdata", rva: symbol.rva },
 			factmap::SymbolName::Code => IndexedSymbol::Generated { name: "code", rva: symbol.rva },
 			factmap::SymbolName::Weak => IndexedSymbol::Weak(symbol.rva),
 			factmap::SymbolName::Fn => IndexedSymbol::Generated { name: "fn", rva: symbol.rva },
@@ -178,7 +179,7 @@ fn undef_removes_symbols_and_later_entries_can_reintroduce_them() {
 #[test]
 fn later_symbol_entries_replace_earlier_names() {
 	let width = ty::PointerWidth::Bits64;
-	let first = factmap::FactMap::parse("#factmap\nSx1000 code C\nSx1010 code \"first\"\nSx1020 code fn\nSx1030 code thunk\nSx2000 u32 D\n", width).unwrap();
+	let first = factmap::FactMap::parse("#factmap\nSx1000 code C\nSx1010 code \"first\"\nSx1020 code fn\nSx1030 code thunk\nSx2000 u32 D\nSx2010 u32 R\n", width).unwrap();
 	let second = factmap::FactMap::parse("#factmap\nSx1010 code \"last\"\n", width).unwrap();
 	let mut symbols = HashMap::new();
 	index(&mut symbols, first.facts, 0x180000000);
@@ -188,6 +189,7 @@ fn later_symbol_entries_replace_earlier_names() {
 	assert_eq!(symbols[&0x180001020].to_string(), "fn_1020");
 	assert_eq!(symbols[&0x180001030].to_string(), "thunk_1030");
 	assert_eq!(symbols[&0x180002000].to_string(), "data_2000");
+	assert_eq!(symbols[&0x180002010].to_string(), "rdata_2010");
 	let decoded = iced::decode_bytes(&[0x8b, 0x05, 0xfa, 0x0f, 0, 0], 64, 0x180001000, 0x180001000, 0x180001006, false, Arc::new(symbols));
 	assert!(decoded[0].instruction.contains("data_2000"), "{}", decoded[0].instruction);
 }

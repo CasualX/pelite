@@ -61,7 +61,7 @@ impl fmt::Display for ParseLineError {
 			ParseLineError::InvalidQuotedType(error) => write!(f, "invalid quoted type: {error}"),
 			ParseLineError::InvalidQuotedName(error) => write!(f, "invalid quoted name: {error}"),
 			ParseLineError::InvalidType(error) => write!(f, "invalid type: {error}"),
-			ParseLineError::InvalidSymbolName => f.write_str("name must be D, C, _, fn, thunk, undef, or a quoted string"),
+			ParseLineError::InvalidSymbolName => f.write_str("name must be D, R, C, _, fn, thunk, undef, or a quoted string"),
 			ParseLineError::UnexpectedText(field) => write!(f, "unexpected text after {field}"),
 		}
 	}
