@@ -30,4 +30,4 @@ Example JSON output (one vtable shown):
 When to use:
 
 Investigate candidate Rust trait vtables, including type size, alignment, and
-method pointers; use `re xref` to check references.
+method pointers; use `xref` to check references.

@@ -140,7 +140,7 @@ fn relocated_pointers32(file: pelite::pe32::PeFile<'_>, relocs: BaseRelocationDi
 			return;
 		}
 		// Read the pointer
-		let Ok(target_va) = file.derva_copy::<u32>(rva) else { return };
+		let Ok(target_va) = file.derva_copy::<u32>(rva, false) else { return };
 		let Ok(target_rva) = file.va_to_rva(target_va) else { return };
 		// Check the pointer goes from rdata section to text section
 		if !file.section_headers().by_rva(target_rva).is_some_and(is_executable) {
@@ -217,7 +217,7 @@ fn static_string32(code: &[u8]) -> Option<(u32, usize)> {
 }
 
 fn function_comment32(file: pelite::pe32::PeFile<'_>, slot: u32, index: usize) -> Option<String> {
-	let function_rva = file.va_to_rva(file.derva_copy::<u32>(slot).ok()?).ok()?;
+	let function_rva = file.va_to_rva(file.derva_copy::<u32>(slot, false).ok()?).ok()?;
 	let code = file.slice_bytes(function_rva).ok()?;
 	if let Some(value) = constant_return(code, false) {
 		return Some(format!("fn[{index}]: return {value:#x}"));
@@ -299,7 +299,7 @@ fn relocated_pointers64(file: pelite::pe64::PeFile<'_>, relocs: BaseRelocationDi
 			return;
 		}
 		// Read the pointer
-		let Ok(target_va) = file.derva_copy::<u64>(rva) else { return };
+		let Ok(target_va) = file.derva_copy::<u64>(rva, false) else { return };
 		let Ok(target_rva) = file.va_to_rva(target_va) else { return };
 		// Check the pointer goes from rdata section to text section
 		if !file.section_headers().by_rva(target_rva).is_some_and(is_executable) {
@@ -376,7 +376,7 @@ fn static_string64(code: &[u8], function_rva: u32) -> Option<(u32, usize)> {
 }
 
 fn function_comment64(file: pelite::pe64::PeFile<'_>, slot: u32, index: usize) -> Option<String> {
-	let function_rva = file.va_to_rva(file.derva_copy::<u64>(slot).ok()?).ok()?;
+	let function_rva = file.va_to_rva(file.derva_copy::<u64>(slot, false).ok()?).ok()?;
 	let code = file.slice_bytes(function_rva).ok()?;
 	if let Some(value) = constant_return(code, true) {
 		return Some(format!("fn[{index}]: return {value:#x}"));

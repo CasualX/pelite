@@ -45,7 +45,7 @@ pub fn cvars<'a>(file: PeFile<'a>) -> pelite::Result<Vec<ConVar<'a>>> {
 		let min_value = None;
 		let max_value = None;
 		let desc = Some(file.derva_c_str(save[1]).unwrap().to_str().unwrap());
-		let flags = file.derva_copy(save[2]).unwrap();
+		let flags = file.derva_copy(save[2], false).unwrap();
 		let default_string = file.derva_c_str(save[3]).unwrap().to_str().unwrap();
 		let name = file.derva_c_str(save[4]).unwrap().to_str().unwrap();
 		let offset = save[5];
@@ -65,10 +65,10 @@ pub fn cvars<'a>(file: PeFile<'a>) -> pelite::Result<Vec<ConVar<'a>>> {
 	const PAT4: &[pat::Atom] = pat!("D905*{'} 51 D91C24 D905*{'} 6A01 51 D91C24 6A01 68*{'} 68'???? 68*{'} 68*{'} B9*{'} E8$");
 	let mut matches = file.scanner().code().matches(PAT4);
 	while matches.next(&mut save).is_some() {
-		let max_value = Some(file.derva_copy(save[1]).unwrap());
-		let min_value = Some(file.derva_copy(save[2]).unwrap());
+		let max_value = Some(file.derva_copy(save[1], false).unwrap());
+		let min_value = Some(file.derva_copy(save[2], false).unwrap());
 		let desc = Some(file.derva_c_str(save[3]).unwrap().to_str().unwrap());
-		let flags = file.derva_copy(save[4]).unwrap();
+		let flags = file.derva_copy(save[4], false).unwrap();
 		let default_string = file.derva_c_str(save[5]).unwrap().to_str().unwrap();
 		let name = file.derva_c_str(save[6]).unwrap().to_str().unwrap();
 		let offset = save[7];

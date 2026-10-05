@@ -43,7 +43,7 @@ Facts
 -----
 
 Use `--facts FACTS.txt` to apply `#factmap` symbols and comments, or
-`--facts auto` to run `re analysis` in memory. Repeat in override order:
+`--facts auto` to run `analysis` in memory. Repeat in override order:
 
     --facts auto --facts user.facts.txt
 
@@ -76,4 +76,4 @@ When to use:
 
 Inspect instructions at a known PE address. Use `--trace` for unknown or
 obfuscated code boundaries when you want to stop at the next control transfer.
-For raw bytes, use `re disasm-raw`.
+For raw bytes, use `disasm-raw`.

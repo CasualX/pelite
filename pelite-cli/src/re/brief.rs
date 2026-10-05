@@ -8,10 +8,11 @@ enum Reference {
 }
 
 #[derive(Debug, Default, serde::Serialize)]
-struct References {
+struct Brief {
 	references: Vec<Reference>,
-	indirect_calls: usize,
+	indirect_branches: usize,
 	constants: Constants,
+	values: serde_json::Map<String, serde_json::Value>,
 }
 
 #[derive(Debug, Default, serde::Serialize)]
@@ -31,7 +32,7 @@ enum ConstantKind {
 #[derive(Default)]
 struct CollectionState {
 	references: Vec<u64>,
-	indirect_calls: usize,
+	indirect_branches: usize,
 	constants: Vec<(ConstantKind, i64)>,
 	seen_references: HashSet<u64>,
 	seen_constants: HashSet<(ConstantKind, i64)>,
@@ -46,13 +47,24 @@ impl CollectionState {
 		if self.seen_constants.insert((kind, value)) { self.constants.push((kind, value)); }
 	}
 
-	fn finalize(self, image_base: u64, symbols: &HashMap<u64, symbols::IndexedSymbol>) -> References {
+	fn finalize(self, pe: pelite::PeFile<'_>, facts: &symbols::IndexedFacts, options: &read::ReadOptions) -> Brief {
+		let image_base = pe.image_base();
+		let mut values = serde_json::Map::new();
 		let references = self.references.into_iter().map(|va| {
-			match symbols.get(&va).filter(|symbol| !matches!(symbol, symbols::IndexedSymbol::Weak(_))) {
-				Some(symbol) => Reference::Symbol(symbol.to_string()),
-				None => Reference::Rva((va as i64).wrapping_add((image_base as i64).wrapping_neg())),
+			match facts.symbols.get(&va).filter(|symbol| !matches!(symbol, symbols::IndexedSymbol::Weak(_))) {
+				Some(symbol) => {
+					let name = symbol.to_string();
+					if let Some(ty) = facts.types.get(&va).filter(|ty| !ty.is_opaque()) {
+						// Indexed fact addresses are the image base plus a valid u32 RVA.
+						let rva = va.wrapping_sub(image_base) as u32;
+						values.insert(name.clone(), read::read_at(pe, rva, ty, &options));
+					}
+					Reference::Symbol(name)
+				},
+				None => Reference::Rva((va as i64).wrapping_sub(image_base as i64)),
 			}
 		}).collect();
+
 		let mut constants = Constants::default();
 		for (kind, value) in self.constants {
 			match kind {
@@ -61,14 +73,16 @@ impl CollectionState {
 				ConstantKind::Displacement => constants.displacements.push(value),
 			}
 		}
-		References { references, indirect_calls: self.indirect_calls, constants }
+
+		let indirect_branches = self.indirect_branches;
+		Brief { references, indirect_branches, constants, values }
 	}
 }
 
 pub fn command() -> clap::Command {
-	clap::Command::new("refs")
+	clap::Command::new("brief")
 		.about("List address references and constants used by instructions in a byte range")
-		.after_help(include_str!("docs/refs.md"))
+		.after_help(include_str!("docs/brief.md"))
 		.arg(clap::Arg::new("file")
 			.value_name("FILE")
 			.value_parser(clap::value_parser!(PathBuf))
@@ -87,6 +101,10 @@ pub fn command() -> clap::Command {
 			.value_name("ARCH")
 			.value_parser(Arch::parse)
 			.help("Override the PE machine header (x86_16, x86_32 [alias x86], or x86_64)"))
+		.arg(clap::Arg::new("zerofill")
+			.long("zerofill")
+			.action(clap::ArgAction::SetTrue)
+			.help("Allow typed reads from zero-filled section data"))
 		.arg(symbols::arg())
 }
 
@@ -102,11 +120,23 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let arch = get_arch(matches, pe)?;
 	let bytes = pe.slice(rva, length, 1)?;
 	let facts = symbols::load(matches, ty::PointerWidth::from(pe), pe.image_base(), Some(pe))?;
-	let references = collect(bytes, length, arch, rva, pe.image_base(), &facts.symbols)?;
-	print("Instruction values", &references, format)
+
+	// Collect the brief data
+	let mut state = CollectionState::default();
+	collect(&mut state, bytes, length, arch, rva, pe.image_base())?;
+
+	// Process the brief data
+	let options = read::ReadOptions {
+		zerofill: matches.get_flag("zerofill"),
+		max_string_bytes: read::DEFAULT_MAX_STRING_BYTES.parse().unwrap(),
+		max_dynamic_array_length: read::DEFAULT_MAX_DYNAMIC_ARRAY_LENGTH.parse().unwrap(),
+	};
+	let brief = state.finalize(pe, &facts, &options);
+
+	print("Instruction values", &brief, format)
 }
 
-fn collect(bytes: &[u8], length: usize, arch: Arch, rva: u32, image_base: u64, symbols: &HashMap<u64, symbols::IndexedSymbol>) -> Result<References> {
+fn collect(state: &mut CollectionState, bytes: &[u8], length: usize, arch: Arch, rva: u32, image_base: u64) -> Result {
 	use iced_x86::{OpKind, Register};
 
 	let ip = image_base.wrapping_add(u64::from(rva));
@@ -120,8 +150,6 @@ fn collect(bytes: &[u8], length: usize, arch: Arch, rva: u32, image_base: u64, s
 		Arch::X86_64 => (Register::RBP, Register::RSP),
 	};
 
-	let mut state = CollectionState::default();
-
 	// Keep the remaining section bytes available to complete the final instruction.
 	while decoder.can_decode() && decoder.position() < length {
 		let offset = decoder.position();
@@ -132,7 +160,7 @@ fn collect(bytes: &[u8], length: usize, arch: Arch, rva: u32, image_base: u64, s
 
 		let constants = decoder.get_constant_offsets(&instruction);
 		if matches!(instruction.flow_control(), iced_x86::FlowControl::IndirectCall | iced_x86::FlowControl::IndirectBranch) {
-			state.indirect_calls += 1;
+			state.indirect_branches += 1;
 		}
 
 		// Detect if rbp is being used as stack base register
@@ -210,7 +238,7 @@ fn collect(bytes: &[u8], length: usize, arch: Arch, rva: u32, image_base: u64, s
 			}
 		}
 	}
-	Ok(state.finalize(image_base, symbols))
+	Ok(())
 }
 
 #[cfg(test)]

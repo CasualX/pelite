@@ -72,7 +72,7 @@ fn string_label(string: &str) -> String {
 			name.push(char::from(byte));
 			if name.len() > MAX_LEN {
 				name.truncate(MAX_LEN - 3);
-				name.push_str("...");
+				name.push_str("…");
 				return name;
 			}
 		}
@@ -97,5 +97,5 @@ fn pascal_case_string_labels() {
 	assert_eq!(string_label(&"a".repeat(62)).len(), 64);
 	let long = string_label(&"a".repeat(63));
 	assert_eq!(long.len(), 64);
-	assert!(long.ends_with("..."));
+	assert!(long.ends_with("…"));
 }

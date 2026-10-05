@@ -16,13 +16,13 @@ refer to a function or data item.
 Each reference's `address` is the RVA of the pointer or displacement field.
 Matches are candidates: raw bytes can match by chance, and the search does
 not decode instructions. For code matches, investigate nearby symbols with
-`re symbol --facts auto` or explicit factmap(s). Query a range
+`symbol --facts auto` or explicit factmap(s). Query a range
 beginning before the reference and look for a credible preceding code boundary.
-Disassemble from that boundary with `re disasm` to verify the instruction and
+Disassemble from that boundary with `disasm` to verify the instruction and
 its target; symbol facts are hints, not guaranteed boundaries. A reference address
 can lie inside an instruction; starting disassembly exactly there can misdecode it.
 `--lookback` can include the containing instruction only if the earlier decode
-position is aligned. For data matches, use `re read` with `*unk` or a suitable type.
+position is aligned. For data matches, use `read` with `*unk` or a suitable type.
 
 Use format `json` for compact machine-readable output or `json-pretty` for
 indented output. Duplicate locations appear once. Text is the default.

@@ -127,12 +127,12 @@ impl<'a> PeFile<'a> {
 		}
 	}
 	#[doc = include_str!("../docs/derva_copy.md")]
-	pub fn derva_copy<T: Copy + Pod>(self, rva: Rva) -> Result<T> {
-		Pe::derva_copy(self, rva)
+	pub fn derva_copy<T: Copy + Pod>(self, rva: Rva, zerofill: bool) -> Result<T> {
+		Pe::derva_copy(self, rva, zerofill)
 	}
 	#[doc = include_str!("../docs/derva_into.md")]
-	pub fn derva_into<T: ?Sized + Pod>(self, rva: Rva, dest: &mut T) -> Result<()> {
-		Pe::derva_into(self, rva, dest)
+	pub fn derva_into<T: ?Sized + Pod>(self, rva: Rva, dest: &mut T, zerofill: bool) -> Result<()> {
+		Pe::derva_into(self, rva, dest, zerofill)
 	}
 	#[doc = include_str!("../docs/derva_slice.md")]
 	pub fn derva_slice<T: Pod>(self, rva: Rva, len: usize) -> Result<&'a [T]> {
@@ -210,12 +210,12 @@ impl<'a> PeFile<'a> {
 		}
 	}
 	#[doc = include_str!("../docs/deref_copy.md")]
-	pub fn deref_copy<T: Copy + Pod>(self, ptr: Ptr<T>) -> Result<T> {
-		Pe::deref_copy(self, ptr)
+	pub fn deref_copy<T: Copy + Pod>(self, ptr: Ptr<T>, zerofill: bool) -> Result<T> {
+		Pe::deref_copy(self, ptr, zerofill)
 	}
 	#[doc = include_str!("../docs/deref_into.md")]
-	pub fn deref_into<T: ?Sized + Pod>(self, ptr: Ptr<T>, dest: &mut T) -> Result<()> {
-		Pe::deref_into(self, ptr, dest)
+	pub fn deref_into<T: ?Sized + Pod>(self, ptr: Ptr<T>, dest: &mut T, zerofill: bool) -> Result<()> {
+		Pe::deref_into(self, ptr, dest, zerofill)
 	}
 	#[doc = include_str!("../docs/deref_slice.md")]
 	pub fn deref_slice<T: Pod>(self, ptr: Ptr<[T]>, len: usize) -> Result<&'a [T]> {

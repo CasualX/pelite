@@ -125,16 +125,16 @@ pub unsafe trait Pe<'a> {
 		}
 	}
 	#[doc = include_str!("../docs/derva_copy.md")]
-	fn derva_copy<T: Copy + Pod>(self, rva: Rva) -> Result<T> where Self: Copy {
+	fn derva_copy<T: Copy + Pod>(self, rva: Rva, zerofill: bool) -> Result<T> where Self: Copy {
 		let mut value = dataview::zeroed();
-		self.derva_into(rva, &mut value)?;
+		self.derva_into(rva, &mut value, zerofill)?;
 		Ok(value)
 	}
 	#[doc = include_str!("../docs/derva_into.md")]
-	fn derva_into<T: ?Sized + Pod>(self, rva: Rva, dest: &mut T) -> Result<()> where Self: Copy {
+	fn derva_into<T: ?Sized + Pod>(self, rva: Rva, dest: &mut T, zerofill: bool) -> Result<()> where Self: Copy {
 		match self.layout() {
 			PeLayout::File => {
-				unsafe { pe_impl::copy_file(self.image(), rva, dataview::bytes_mut(dest)) }
+				unsafe { pe_impl::copy_file(self.image(), rva, dataview::bytes_mut(dest), zerofill) }
 			}
 			PeLayout::Section => {
 				let len = mem::size_of_val(dest);
@@ -208,13 +208,13 @@ pub unsafe trait Pe<'a> {
 		}
 	}
 	#[doc = include_str!("../docs/deref_copy.md")]
-	fn deref_copy<T: Copy + Pod>(self, ptr: Ptr<T>) -> Result<T> where Self: Copy {
+	fn deref_copy<T: Copy + Pod>(self, ptr: Ptr<T>, zerofill: bool) -> Result<T> where Self: Copy {
 		let mut value = dataview::zeroed();
-		self.deref_into(ptr, &mut value)?;
+		self.deref_into(ptr, &mut value, zerofill)?;
 		Ok(value)
 	}
 	#[doc = include_str!("../docs/deref_into.md")]
-	fn deref_into<T: ?Sized + Pod>(self, ptr: Ptr<T>, dest: &mut T) -> Result<()> where Self: Copy {
+	fn deref_into<T: ?Sized + Pod>(self, ptr: Ptr<T>, dest: &mut T, zerofill: bool) -> Result<()> where Self: Copy {
 		match self.layout() {
 			PeLayout::File => {
 				let va: Va = ptr.into();
@@ -225,7 +225,7 @@ pub unsafe trait Pe<'a> {
 				if va < base || va - base >= self.optional_header().SizeOfImage as Va {
 					return Err(Error::Bounds);
 				}
-				unsafe { pe_impl::copy_file(self.image(), (va - base) as Rva, dataview::bytes_mut(dest)) }
+				unsafe { pe_impl::copy_file(self.image(), (va - base) as Rva, dataview::bytes_mut(dest), zerofill) }
 			}
 			PeLayout::Section => {
 				let len = mem::size_of_val(dest);

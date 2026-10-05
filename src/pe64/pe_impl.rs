@@ -68,7 +68,7 @@ pub(crate) unsafe fn read_section(image: &[u8], image_base: Va, va: Va, min_size
 
 // Copy from headers or one section, synthesizing only its virtual zero-filled tail.
 // Image must have validated PE headers.
-pub(crate) unsafe fn copy_file(image: &[u8], rva: Rva, dest: &mut [u8]) -> Result<()> { unsafe {
+pub(crate) unsafe fn copy_file(image: &[u8], rva: Rva, dest: &mut [u8], zerofill: bool) -> Result<()> { unsafe {
 	let headers_size = optional_header(image).SizeOfHeaders;
 	if rva < headers_size {
 		let end = (rva as usize).checked_add(dest.len()).ok_or(Error::Bounds)?;
@@ -94,6 +94,9 @@ pub(crate) unsafe fn copy_file(image: &[u8], rva: Rva, dest: &mut [u8]) -> Resul
 			let offset = (rva - section.VirtualAddress) as usize;
 			let prefix = raw.get(offset..).unwrap_or(&[]);
 			let len = cmp::min(prefix.len(), dest.len());
+			if !zerofill && len < dest.len() {
+				return Err(Error::ZeroFill);
+			}
 			dest[..len].copy_from_slice(&prefix[..len]);
 			dest[len..].fill(0);
 			return Ok(());

@@ -48,7 +48,7 @@ fn import_from_va<'a, P: Copy + Pe<'a>>(pe: P, va: Va) -> Result<Import<'a>> {
 	if va & IMAGE_ORDINAL_FLAG == 0 {
 		let rva = Rva::try_from(va).map_err(|_| Error::Overflow)?;
 		// Import name records can be byte-aligned even though the hint is a WORD.
-		let hint = pe.derva_copy::<u16>(rva)?;
+		let hint = pe.derva_copy::<u16>(rva, false)?;
 		let name_rva = rva.checked_add(mem::size_of::<u16>() as Rva).ok_or(Error::Overflow)?;
 		let name = pe.derva_c_str(name_rva)?;
 		Ok(Import::ByName { hint: hint as usize, name })

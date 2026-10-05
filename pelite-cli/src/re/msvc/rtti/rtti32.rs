@@ -26,7 +26,7 @@ pub fn analyze(file: PeFile<'_>) -> Result<Vec<TypeOutput>> {
 		if rva < rdata.VirtualAddress || rva >= rdata.VirtualAddress.saturating_add(rdata.VirtualSize) {
 			return;
 		}
-		let Ok(target_va) = file.derva_copy(rva) else {
+		let Ok(target_va) = file.derva_copy(rva, false) else {
 			return;
 		};
 		let Ok(target_rva) = file.va_to_rva(target_va) else {
@@ -41,7 +41,7 @@ pub fn analyze(file: PeFile<'_>) -> Result<Vec<TypeOutput>> {
 
 	let mut xrefs = Vec::new();
 	relocs.for_each(|rva, _| {
-		let Ok(target_va) = file.derva_copy(rva) else {
+		let Ok(target_va) = file.derva_copy(rva, false) else {
 			return;
 		};
 		let Ok(target_rva) = file.va_to_rva(target_va) else {

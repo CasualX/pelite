@@ -71,15 +71,15 @@ omit the DLL name; ordinal import labels retain it.
 
     pelite-cli re analysis sample.dll -o auto.facts.txt --format=nul
 
-Use `re symbol` to query a small address range rather than reading the whole
-database. See `re symbol --help` for the user-file format and override rules,
-and `re disasm --help` for using both files to label code.
+Use `symbol` to query a small address range rather than reading the whole
+database. See `symbol --help` for the user-file format and override rules,
+and `disasm --help` for using both files to label code.
 
 When to use:
 
 Map likely code and data targets before investigating specific addresses. For
-references to one target, use `re xref`.
+references to one target, use `xref`.
 
 For live analysis without a database file, use `--facts auto` with
-`re disasm` or `re symbol`, optionally followed by `--facts user.facts.txt`
+`disasm` or `symbol`, optionally followed by `--facts user.facts.txt`
 to apply your corrections. This runs the same complete analysis pipeline.

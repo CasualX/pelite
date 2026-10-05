@@ -33,7 +33,7 @@ precompiled fixtures used by Rust tests, install into this project:
 ```sh
 cmake --install fixtures/build/msvc-x64 --config Release --prefix fixtures
 cmake --install fixtures/build/msvc-x86 --config Release --prefix fixtures
-cargo test -p pelite-cli msvc::rtti
+cargo test -p pelite-cli re msvc::rtti
 ```
 
 Each executable in `bin/` has a JSON manifest with its compiler, target,

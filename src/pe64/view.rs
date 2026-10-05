@@ -173,12 +173,12 @@ impl<'a> PeView<'a> {
 		}
 	}
 	#[doc = include_str!("../docs/derva_copy.md")]
-	pub fn derva_copy<T: Copy + Pod>(self, rva: Rva) -> Result<T> {
-		Pe::derva_copy(self, rva)
+	pub fn derva_copy<T: Copy + Pod>(self, rva: Rva, zerofill: bool) -> Result<T> {
+		Pe::derva_copy(self, rva, zerofill)
 	}
 	#[doc = include_str!("../docs/derva_into.md")]
-	pub fn derva_into<T: ?Sized + Pod>(self, rva: Rva, dest: &mut T) -> Result<()> {
-		Pe::derva_into(self, rva, dest)
+	pub fn derva_into<T: ?Sized + Pod>(self, rva: Rva, dest: &mut T, zerofill: bool) -> Result<()> {
+		Pe::derva_into(self, rva, dest, zerofill)
 	}
 	#[doc = include_str!("../docs/derva_slice.md")]
 	pub fn derva_slice<T: Pod>(self, rva: Rva, len: usize) -> Result<&'a [T]> {
@@ -256,7 +256,7 @@ impl<'a> PeView<'a> {
 		}
 	}
 	#[doc = include_str!("../docs/deref_copy.md")]
-	pub fn deref_copy<T: Copy + Pod>(self, ptr: Ptr<T>) -> Result<T> {
+	pub fn deref_copy<T: Copy + Pod>(self, ptr: Ptr<T>, _zerofill: bool) -> Result<T> {
 		let bytes = self.read(ptr.into(), mem::size_of::<T>(), 1)?;
 		// This is safe as per Pod bound and min_size_of
 		unsafe {
@@ -265,7 +265,7 @@ impl<'a> PeView<'a> {
 		}
 	}
 	#[doc = include_str!("../docs/deref_into.md")]
-	pub fn deref_into<T: ?Sized + Pod>(self, ptr: Ptr<T>, dest: &mut T) -> Result<()> {
+	pub fn deref_into<T: ?Sized + Pod>(self, ptr: Ptr<T>, dest: &mut T, _zerofill: bool) -> Result<()> {
 		let len = mem::size_of_val(dest);
 		let bytes = self.read(ptr.into(), len, 1)?;
 		dataview::bytes_mut(dest).copy_from_slice(&bytes[..len]);

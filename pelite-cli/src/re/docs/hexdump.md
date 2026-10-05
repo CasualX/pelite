@@ -34,5 +34,5 @@ Example JSON output (four bytes shown):
 When to use:
 
 Inspect exact bytes and nearby ASCII to check a signature match or
-disassembly. Use `re read` when you know the type or want to follow pointers.
-Use `re hexdump -o OUTPUT` to extract selected bytes to disk.
+disassembly. Use `read` when you know the type or want to follow pointers.
+Use `hexdump -o OUTPUT` to extract selected bytes to disk.
