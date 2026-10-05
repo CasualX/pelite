@@ -37,16 +37,21 @@ impl<'a> Iterator for HexRows<'a> {
 
 pub fn command() -> clap::Command {
 	clap::Command::new("hexdump")
-		.about("Hexdump an address range")
+		.about("Hexdump bytes at an address")
 		.after_help(include_str!("docs/hexdump.md"))
 		.arg(clap::Arg::new("file")
 			.value_name("FILE")
 			.value_parser(clap::value_parser!(PathBuf))
 			.required(true))
-		.arg(clap::Arg::new("range")
-			.value_name("RANGE")
-			.value_parser(AddressRange::parse)
+		.arg(clap::Arg::new("address")
+			.value_name("ADDRESS")
+			.value_parser(Address::parse)
 			.required(true))
+		.arg(clap::Arg::new("length")
+			.value_name("BYTES")
+			.value_parser(value_parser::parse_usize)
+			.required(true)
+			.help("Number of bytes to dump (decimal or 0xhex)"))
 		.arg(clap::Arg::new("output")
 			.short('o')
 			.long("output")
@@ -57,23 +62,25 @@ pub fn command() -> clap::Command {
 
 pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let path = matches.get_one::<PathBuf>("file").expect("required by clap");
-	let range = *matches.get_one::<AddressRange>("range").expect("required by clap");
+	let address = *matches.get_one::<Address>("address").expect("required by clap");
+	let len = *matches.get_one::<usize>("length").expect("required by clap");
 	let map = pelite::FileMap::open(path)?;
 	let pe = pelite::PeFile::from_bytes(&map)?;
-	let range = range.to_rva(pe)?;
+	let start = address.to_rva(pe)?;
+	u32::try_from(len).ok().and_then(|len| start.checked_add(len))
+		.ok_or_else(|| err("address plus length overflows RVA"))?;
 	let (image_base, address_width) = match pe.optional_header() {
 		Wrap::T32(header) => (u64::from(header.ImageBase), 10),
 		Wrap::T64(header) => (header.ImageBase.get(), 18),
 	};
-	let len = usize::try_from(range.end - range.start)?;
-	let bytes = pe.slice(range.start, len, 1)?;
+	let bytes = pe.slice(start, len, 1)?;
 	let bytes = &bytes[..len];
 	if let Some(output_path) = matches.get_one::<PathBuf>("output") {
 		let mut file = fs::OpenOptions::new().write(true).create_new(true).open(output_path)?;
 		file.write_all(bytes)?;
 		return Ok(());
 	}
-	let start_address = image_base.checked_add(u64::from(range.start)).ok_or_else(|| err("image base plus start RVA overflows"))?;
+	let start_address = image_base.checked_add(u64::from(start)).ok_or_else(|| err("image base plus start RVA overflows"))?;
 
 	match format {
 		OutputFormat::Nul => Ok(()),

@@ -5,9 +5,9 @@ Usage:
     pelite-cli version-info FILE [--id ID] [-l LANG] [--source] [--format=text|json|json-pretty|nul]
 
 `--id` selects the version resource identifier (default 1). Use
-`--resource-language` (`-l`) to select a language ID in decimal or
-`0x`-prefixed hexadecimal. Without it, the command uses the first matching
-version resource. `--source` includes reconstructed resource-script source.
+`--resource-language` (`-l`) to select a language ID in decimal or `0xhex`.
+Without it, the command uses the first matching version resource.
+`--source` includes reconstructed resource-script source.
 If the PE has no resource directory, the result is null. Missing entries in
 an existing directory and malformed resources still cause errors.
 

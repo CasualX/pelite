@@ -2,14 +2,16 @@ Look up symbols in a PE address range
 
 Usage:
 
-    pelite-cli re symbol FILE RANGE [--facts FACTS.txt|auto]... [--format=text|json|json-pretty|nul]
+    pelite-cli re symbol FILE ADDRESS BYTES [--facts FACTS.txt|auto]... [--format=text|json|json-pretty|nul]
 
 Look up nearby symbols within an address range in the given symbol files.
 FILE is the reference PE file used to convert addresses and for automatic
 analysis when requested. Results are sorted by RVA and include names and
 types. With no symbol files, the result is empty.
 
-See `pelite-cli re --help` for RANGE syntax.
+See `pelite-cli re --help` for ADDRESS syntax (`rva:`, `va:`, or `fo:`).
+BYTES is the size of the search range, in decimal or 0xhex.
+The range includes ADDRESS and excludes ADDRESS + BYTES.
 
 Use `--facts` to load a `#factmap` symbol file, or repeat it to load several.
 Load `auto.facts.txt` first and `user.facts.txt` last so your analysis takes
@@ -50,15 +52,15 @@ or type from automatic analysis is only a hint until you verify it.
 
 Examples:
 
-    pelite-cli re symbol sample.dll rva:0x1000..0x1100 --facts auto.facts.txt --facts user.facts.txt
-    pelite-cli re symbol sample.dll va:0x180001000..+0x100 --facts auto.facts.txt
+    pelite-cli re symbol sample.dll rva:0x1000 200 --facts auto.facts.txt --facts user.facts.txt
+    pelite-cli re symbol sample.dll va:0x180001000 0x100 --facts auto.facts.txt
 
 Example JSON output:
 
 ```json
 {
   "start_rva": 4096,
-  "end_rva": 4352,
+  "end_rva": 4296,
   "symbols": [
     {
       "rva": 4096,

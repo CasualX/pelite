@@ -22,19 +22,27 @@ pub fn command() -> clap::Command {
 			.value_name("FILE")
 			.value_parser(clap::value_parser!(PathBuf))
 			.required(true))
-		.arg(clap::Arg::new("range")
-			.value_name("RANGE")
-			.value_parser(AddressRange::parse)
+		.arg(clap::Arg::new("address")
+			.value_name("ADDRESS")
+			.value_parser(Address::parse)
 			.required(true))
+		.arg(clap::Arg::new("length")
+			.value_name("BYTES")
+			.value_parser(value_parser::parse_usize)
+			.required(true)
+			.help("Number of bytes to search (decimal or 0xhex)"))
 		.arg(symbols::arg())
 }
 
 pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let path = matches.get_one::<PathBuf>("file").expect("required by clap");
-	let range = *matches.get_one::<AddressRange>("range").expect("required by clap");
+	let address = *matches.get_one::<Address>("address").expect("required by clap");
+	let len = *matches.get_one::<usize>("length").expect("required by clap");
 	let map = pelite::FileMap::open(path)?;
 	let pe = pelite::PeFile::from_bytes(&map)?;
-	let range = range.to_rva(pe)?;
+	let start = address.to_rva(pe)?;
+	let end = u32::try_from(len).ok().and_then(|len| start.checked_add(len))
+		.ok_or_else(|| err("address plus length overflows RVA"))?;
 	let mut symbols = BTreeMap::new();
 	for path in matches.get_many::<PathBuf>("facts").into_iter().flatten() {
 		let map = symbols::load_map(path, ty::PointerWidth::from(pe), Some(pe))?;
@@ -51,12 +59,12 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 			}
 		}
 	}
-	let selected = symbols.range(range.start..range.end).map(|(_, symbol)| {
+	let selected = symbols.range(start..end).map(|(_, symbol)| {
 		Ok(ListedSymbol {
 			rva: symbol.rva,
 			name: symbols::IndexedSymbol::from(symbol).to_string(),
 			ty: symbol.ty.to_string(),
 		})
 	}).collect::<Result<Vec<_>>>()?;
-	print("Symbols", &Lookup { start_rva: range.start, end_rva: range.end, symbols: selected }, format)
+	print("Symbols", &Lookup { start_rva: start, end_rva: end, symbols: selected }, format)
 }

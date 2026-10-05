@@ -63,101 +63,6 @@ fn parses_address_arithmetic() {
 	}
 }
 
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub struct AddressRange {
-	pub start: Address,
-	pub end: Address,
-}
-
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub struct RvaRange {
-	pub start: u32,
-	pub end: u32,
-}
-
-impl AddressRange {
-	pub fn parse(value: &str) -> Result<Self, String> {
-		let (kind, range) = value.split_once(':').ok_or("expected rva:START..END, va:START..END, or fo:START..END")?;
-		let (start, end) = range.split_once("..").ok_or("expected a range in the form KIND:START..END")?;
-		if end.contains("..") {
-			return Err("expected exactly one '..' range separator".to_owned());
-		}
-		let start = Address::parse_parts(kind, start.trim()).map_err(|error| format!("invalid range start: {error}"))?;
-		let end = end.trim();
-		let end = if let Some(offset) = end.strip_prefix('+') {
-			let offset = offset.trim();
-			if offset.starts_with('+') {
-				return Err("invalid range end: expected a single '+' prefix".to_owned());
-			}
-			let offset = Address::parse_parts(kind, offset).map_err(|error| format!("invalid range end: {error}"))?;
-			match (start, offset) {
-				(Address::Rva(start), Address::Rva(offset)) => start.checked_add(offset).map(Address::Rva),
-				(Address::Va(start), Address::Va(offset)) => start.checked_add(offset).map(Address::Va),
-				(Address::Fo(start), Address::Fo(offset)) => start.checked_add(offset).map(Address::Fo),
-				_ => unreachable!("range endpoints have the same address kind"),
-			}.ok_or_else(|| "range end overflows".to_owned())?
-		}
-		else {
-			Address::parse_parts(kind, end).map_err(|error| format!("invalid range end: {error}"))?
-		};
-		let ordered = match (start, end) {
-			(Address::Rva(start), Address::Rva(end)) => start <= end,
-			(Address::Va(start), Address::Va(end)) => start <= end,
-			(Address::Fo(start), Address::Fo(end)) => start <= end,
-			_ => false,
-		};
-		if !ordered {
-			return Err("range start must be less than or equal to range end".to_owned());
-		}
-		Ok(Self { start, end })
-	}
-}
-
-#[test]
-fn parses_address_ranges() {
-	for (value, start, end) in [
-		("rva:1000..1100", Address::Rva(1000), Address::Rva(1100)),
-		("rva:0x1000..0x1100", Address::Rva(0x1000), Address::Rva(0x1100)),
-		("rva:4096..0x1100", Address::Rva(4096), Address::Rva(0x1100)),
-		("rva:0x1000..+10", Address::Rva(0x1000), Address::Rva(0x100a)),
-		("rva:0x1000..+0x10", Address::Rva(0x1000), Address::Rva(0x1010)),
-		("va:6442455040..6442455296", Address::Va(0x180001000), Address::Va(0x180001100)),
-		("va:0x180001000..+0x20", Address::Va(0x180001000), Address::Va(0x180001020)),
-		("fo: 0x400 .. 0x500 ", Address::Fo(0x400), Address::Fo(0x500)),
-		("fo: 0x400 .. + 10 ", Address::Fo(0x400), Address::Fo(0x40a)),
-		("rva:0x1000+0x100+32*8..0x1000+0x400-4*4", Address::Rva(0x1200), Address::Rva(0x13f0)),
-		("va:0x1000+0x20*8-4*4..+2*8+16-4", Address::Va(0x10f0), Address::Va(0x110c)),
-		("fo:2*3..+4*5", Address::Fo(6), Address::Fo(26)),
-		("rva:4294967296-1..+0", Address::Rva(u32::MAX), Address::Rva(u32::MAX)),
-		("rva:1000..1000", Address::Rva(1000), Address::Rva(1000)),
-		("va:0xffffffffffffffff..+0", Address::Va(u64::MAX), Address::Va(u64::MAX)),
-		("fo:0..0", Address::Fo(0), Address::Fo(0)),
-		("fo:400..400", Address::Fo(400), Address::Fo(400)),
-		("rva:0x1000..+0", Address::Rva(0x1000), Address::Rva(0x1000)),
-	] {
-		assert_eq!(AddressRange::parse(value), Ok(AddressRange { start, end }));
-	}
-}
-
-#[test]
-fn rejects_invalid_address_ranges() {
-	for value in [
-		"1000..1100", "rva:1000", "va:2000..1000",
-		"rva:xyz..1000", "rva:..1000", "rva:1000..", "rva:1000..1100..1200",
-		"rva:1000..rva:1100", "rva:1000..va:1100", "offset:400..500",
-		"rva:1000h..1100", "rva:1000..1100h", "rva:ff..1100",
-		"rva:0..4294967296", "rva:0..0x100000000", "va:0..18446744073709551616",
-		"rva:0x1000..+", "rva:0x1000..++10", "rva:0xfffffff0..+0x20",
-		"va:0xffffffffffffffff..+1", "fo:0xffffffffffffffff..+1",
-		"rva:+1..2", "rva:1+..2", "rva:1..2*", "rva:1..+-2", "rva:1..+1+-2",
-		"rva:1+2..1*2", "rva:0..+1-2", "va:0..+18446744073709551616-1",
-		"va:0..+18446744073709551615+1", "va:1..+18446744073709551615",
-		"rva:0X1000..0x1100", "rva:0x1000..0X1100", "rva:0x1000..+0X10",
-		"rva:0xffffffff+1..+0", "rva:0xfffffffe..+1*2",
-	] {
-		assert!(AddressRange::parse(value).is_err(), "accepted {value}");
-	}
-}
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 enum Operator {
 	Add,
@@ -210,7 +115,7 @@ fn literal(s: &mut &str) -> Result<u64, String> {
 		None => (number, 10),
 	};
 	if digits.is_empty() || !digits.bytes().all(|byte| if radix == 16 { byte.is_ascii_hexdigit() } else { byte.is_ascii_digit() }) {
-		return Err("expected a decimal or 0x-prefixed hexadecimal u64 literal".to_owned());
+		return Err("expected a decimal or 0xhex u64 literal".to_owned());
 	}
 	u64::from_str_radix(digits, radix).map_err(|_| "literal exceeds u64 range".to_owned())
 }

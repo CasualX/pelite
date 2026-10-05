@@ -44,7 +44,7 @@ pub fn command() -> clap::Command {
 			.value_parser(value_parser::parse_usize)
 			.required_unless_present("trace")
 			.conflicts_with("trace")
-			.help("Number of bytes to disassemble (decimal or 0x-prefixed hexadecimal)"))
+			.help("Number of bytes to disassemble (decimal or 0xhex)"))
 		.arg(clap::Arg::new("trace")
 			.long("trace")
 			.action(clap::ArgAction::SetTrue)
