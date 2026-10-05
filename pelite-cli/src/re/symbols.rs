@@ -53,6 +53,7 @@ pub fn arg() -> clap::Arg {
 #[derive(Default)]
 pub struct IndexedFacts {
 	pub symbols: HashMap<u64, IndexedSymbol>,
+	pub types: HashMap<u64, ty::Type>,
 	pub comments: HashMap<u64, String>,
 }
 
@@ -78,16 +79,27 @@ pub fn load_map(path: &Path, pointer_width: ty::PointerWidth, pe: Option<pelite:
 
 impl IndexedFacts {
 	pub fn extend(&mut self, facts: impl IntoIterator<Item = factmap::Fact>, base: u64) {
-		let facts = facts.into_iter().filter_map(|fact| match fact {
-			factmap::Fact::Comment(comment) => {
-				if let Some(address) = base.checked_add(u64::from(comment.rva)) {
-					self.comments.insert(address, comment.comment);
-				}
-				None
-			},
-			fact => Some(fact),
-		});
-		index(&mut self.symbols, facts, base);
+		for fact in facts {
+			match fact {
+				factmap::Fact::Comment(comment) => {
+					if let Some(address) = base.checked_add(u64::from(comment.rva)) {
+						self.comments.insert(address, comment.comment);
+					}
+				},
+				factmap::Fact::Symbol(symbol) => {
+					if let Some(address) = base.checked_add(u64::from(symbol.rva)) {
+						if matches!(symbol.name, factmap::SymbolName::Undef) {
+							self.types.remove(&address);
+						}
+						else if !matches!(symbol.name, factmap::SymbolName::Weak) || !self.symbols.contains_key(&address) {
+							self.types.insert(address, symbol.ty.clone());
+						}
+					}
+					index(&mut self.symbols, std::iter::once(factmap::Fact::Symbol(symbol)), base);
+				},
+				_ => {},
+			}
+		}
 	}
 }
 
@@ -185,4 +197,22 @@ fn auto_facts_require_a_pe_image() {
 	let error = load_map(Path::new("auto"), ty::PointerWidth::Bits64, None).unwrap_err();
 	assert!(error.to_string().contains("--facts auto requires a PE image"));
 	assert_ne!(Path::new("./auto"), Path::new("auto"));
+}
+
+#[test]
+fn indexed_types_follow_symbol_overrides_weak_anchors_and_removals() {
+	let mut indexed = IndexedFacts::default();
+	let width = ty::PointerWidth::Bits64;
+	for source in [
+		"#factmap\nSx10 u32 \"first\"\nSx20 u32 D\nSx30 code _\n",
+		"#factmap\nSx10 code _\nSx20 unk undef\nSx30 cstr \"last\"\n",
+	] {
+		indexed.extend(factmap::FactMap::parse(source, width).unwrap().facts, 0);
+	}
+	assert_eq!(indexed.types.len(), 2);
+	assert_eq!(indexed.types[&0x10], ty::Type::U32);
+	assert_eq!(indexed.types[&0x30], ty::Type::CStr);
+	assert_eq!(indexed.symbols[&0x10].to_string(), "first");
+	assert_eq!(indexed.symbols[&0x30].to_string(), "last");
+	assert!(!indexed.symbols.contains_key(&0x20));
 }

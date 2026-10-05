@@ -18,11 +18,11 @@ RVA replaces the earlier name and type. Entries do not need to be sorted.
 `Sx1000 unk undef` removes an earlier symbol at that RVA; a later entry can
 define it again. The weak name `_` fills an undefined RVA without replacing
 an existing symbol. Weak entries do not contribute labels in disassembly.
-These rules also apply to symbol labels in `re disasm` and `re disasm-raw`.
+These rules also apply to symbol labels in `disasm` and `disasm-raw`.
 
 To record analysis, create `user.facts.txt` with `#factmap` on the first line,
 then one fact per line. Symbol facts use `SxRVA TYPE NAME`, with hexadecimal
-RVAs fitting in 32 bits. TYPE uses the syntax from `re read --help`; quote a
+RVAs fitting in 32 bits. TYPE uses the syntax from `read --help`; quote a
 type containing spaces using JSON string syntax. NAME is a JSON-quoted string
 or one of `C`, `D`, `_`, `fn`, `thunk`, and `undef`. Generic names display as
 `code_1000`, `data_2000`, and so on. Quoted names such as `"fn"` or `"_"` are
@@ -72,6 +72,6 @@ Example JSON output:
 When to use:
 
 Inspect names and type hints near an address before choosing a disassembly
-range or a type for `re read`. Select a range beginning before the address of
+range or a type for `read`. Select a range beginning before the address of
 interest to include preceding symbols, and widen it if needed. This is a range
 query, not a nearest-symbol lookup or a function-boundary detector.

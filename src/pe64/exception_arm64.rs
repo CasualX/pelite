@@ -145,7 +145,7 @@ impl<'a, P: Copy + Pe<'a>> Arm64RuntimeFunction<'a, P> {
 		if address == 0 {
 			return Err(Error::Null);
 		}
-		let header = self.pe.derva_copy::<u32>(address)?;
+		let header = self.pe.derva_copy::<u32>(address, false)?;
 		decode_xdata_function_length(header)
 	}
 }

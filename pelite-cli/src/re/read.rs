@@ -4,6 +4,7 @@ pub const DEFAULT_MAX_STRING_BYTES: &str = "256";
 pub const DEFAULT_MAX_DYNAMIC_ARRAY_LENGTH: &str = "1024";
 
 pub struct ReadOptions {
+	pub zerofill: bool,
 	pub max_string_bytes: usize,
 	pub max_dynamic_array_length: u32,
 }
@@ -32,6 +33,10 @@ pub fn command() -> clap::Command {
 			.value_parser(value_parser::parse_usize)
 			.default_value(DEFAULT_MAX_STRING_BYTES)
 			.help("Maximum bytes to inspect for a string"))
+		.arg(clap::Arg::new("zerofill")
+			.long("zerofill")
+			.action(clap::ArgAction::SetTrue)
+			.help("Allow typed reads from zero-filled section data"))
 		.arg(clap::Arg::new("max-dynamic-array-length")
 			.long("max-dynamic-array-length")
 			.value_name("MAX_DYNAMIC_ARRAY_LENGTH")
@@ -48,6 +53,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let address = *matches.get_one::<Address>("address").expect("required by clap");
 	let source = matches.get_one::<String>("type").expect("required by clap");
 	let options = ReadOptions {
+		zerofill: matches.get_flag("zerofill"),
 		max_string_bytes: *matches.get_one::<usize>("max-string-bytes").expect("defaulted by clap"),
 		max_dynamic_array_length: *matches.get_one::<u32>("max-dynamic-array-length").expect("defaulted by clap"),
 	};
@@ -88,7 +94,7 @@ fn read_value(pe: pelite::PeFile<'_>, rva: u32, ty: &ty::Type, options: &ReadOpt
 
 fn try_read_value(pe: pelite::PeFile<'_>, rva: u32, ty: &ty::Type, options: &ReadOptions, context: Option<&StructContext<'_>>) -> Result<serde_json::Value> {
 	macro_rules! read {
-		($ty:ty) => { pe.derva_copy::<$ty>(rva)? };
+		($ty:ty) => { pe.derva_copy::<$ty>(rva, options.zerofill)? };
 	}
 	let value = match ty {
 		ty::Type::U8 => serde_json::to_value(read!(u8)),
@@ -143,10 +149,10 @@ fn try_read_value(pe: pelite::PeFile<'_>, rva: u32, ty: &ty::Type, options: &Rea
 						.ok_or_else(|| err(format!("array length field '{name}' is not in the containing struct")))?;
 					let address = context.address.checked_add(field.offset).ok_or_else(|| err("array length address overflow"))?;
 					let len = match field.ty {
-						ty::Type::U8 => u64::from(pe.derva_copy::<u8>(address)?),
-						ty::Type::U16 => u64::from(pe.derva_copy::<u16>(address)?),
-						ty::Type::U32 => u64::from(pe.derva_copy::<u32>(address)?),
-						ty::Type::U64 => pe.derva_copy::<u64>(address)?,
+						ty::Type::U8 => u64::from(pe.derva_copy::<u8>(address, options.zerofill)?),
+						ty::Type::U16 => u64::from(pe.derva_copy::<u16>(address, options.zerofill)?),
+						ty::Type::U32 => u64::from(pe.derva_copy::<u32>(address, options.zerofill)?),
+						ty::Type::U64 => pe.derva_copy::<u64>(address, options.zerofill)?,
 						_ => return Err(err(format!("array length field '{name}' must be u8, u16, u32, or u64"))),
 					};
 					if len > options.max_dynamic_array_length as u64 {

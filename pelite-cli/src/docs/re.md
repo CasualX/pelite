@@ -29,7 +29,7 @@ Examples:
 
     pelite-cli re disasm sample.dll rva:0x1000 0x100
     pelite-cli re disasm sample.dll rva:0x1000 --trace
-    pelite-cli re refs sample.dll rva:0x1000 0x100 --facts auto
+    pelite-cli re brief sample.dll rva:0x1000 0x100 --facts auto
     pelite-cli re xref sample.dll rva:0x1000
     pelite-cli re msvc rtti sample.dll
     pelite-cli re rust panic-locations sample.exe

@@ -14,7 +14,7 @@ mod hexdump;
 mod iced;
 mod msvc;
 mod read;
-mod refs;
+mod brief;
 mod rust;
 mod scan;
 mod strings;
@@ -68,7 +68,7 @@ pub fn command() -> clap::Command {
 		.subcommand(read::command())
 		.subcommand(scan::command())
 		.subcommand(disasm::command())
-		.subcommand(refs::command())
+		.subcommand(brief::command())
 		.subcommand(disasm_raw::command())
 		.subcommand(hexdump::command())
 		.subcommand(strings::command())
@@ -89,7 +89,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 		Some(("read", matches)) => read::run(matches, format),
 		Some(("scan", matches)) => scan::run(matches, format),
 		Some(("disasm", matches)) => disasm::run(matches, format),
-		Some(("refs", matches)) => refs::run(matches, format),
+		Some(("brief", matches)) => brief::run(matches, format),
 		Some(("disasm-raw", matches)) => disasm_raw::run(matches, format),
 		Some(("hexdump", matches)) => hexdump::run(matches, format),
 		Some(("strings", matches)) => strings::run(matches, format),

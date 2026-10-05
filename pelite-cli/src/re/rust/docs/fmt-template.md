@@ -35,5 +35,5 @@ Example JSON output (one template shown):
 
 When to use:
 
-Find candidate Rust formatting templates in PE data; use `re xref` to search for
+Find candidate Rust formatting templates in PE data; use `xref` to search for
 references.

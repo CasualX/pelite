@@ -29,5 +29,5 @@ Example JSON output (one location shown):
 
 When to use:
 
-Find Rust source paths and line numbers embedded in a PE binary; use `re xref` to
+Find Rust source paths and line numbers embedded in a PE binary; use `xref` to
 check references.

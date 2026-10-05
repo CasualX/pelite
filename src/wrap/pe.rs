@@ -180,18 +180,18 @@ impl<'a, Pe32: Copy + pe32::Pe<'a>, Pe64: Copy + pe64::Pe<'a>> Wrap<Pe32, Pe64> 
 	}
 	#[doc = include_str!("../docs/derva_copy.md")]
 	#[inline]
-	pub fn derva_copy<T: Copy + Pod>(&self, rva: u32) -> Result<T> {
+	pub fn derva_copy<T: Copy + Pod>(&self, rva: u32, zerofill: bool) -> Result<T> {
 		match self {
-			Wrap::T32(pe32) => pe32.derva_copy(rva),
-			Wrap::T64(pe64) => pe64.derva_copy(rva),
+			Wrap::T32(pe32) => pe32.derva_copy(rva, zerofill),
+			Wrap::T64(pe64) => pe64.derva_copy(rva, zerofill),
 		}
 	}
 	#[doc = include_str!("../docs/derva_into.md")]
 	#[inline]
-	pub fn derva_into<T: ?Sized + Pod>(&self, rva: u32, dest: &mut T) -> Result<()> {
+	pub fn derva_into<T: ?Sized + Pod>(&self, rva: u32, dest: &mut T, zerofill: bool) -> Result<()> {
 		match self {
-			Wrap::T32(pe32) => pe32.derva_into(rva, dest),
-			Wrap::T64(pe64) => pe64.derva_into(rva, dest),
+			Wrap::T32(pe32) => pe32.derva_into(rva, dest, zerofill),
+			Wrap::T64(pe64) => pe64.derva_into(rva, dest, zerofill),
 		}
 	}
 	#[doc = include_str!("../docs/derva_slice.md")]

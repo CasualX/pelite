@@ -45,21 +45,21 @@ fn copy_and_into_zero_fill_section_tail() {
 	let file = PeFile::from_bytes(dataview::bytes(&image)).unwrap();
 	let ptr = Ptr::<[u8; 8]>::from(BASE + RVA as Va);
 
-	assert_eq!(file.derva_copy::<[u8; 8]>(RVA), Ok([1, 2, 3, 4, 0, 0, 0, 0]));
-	assert_eq!(file.deref_copy(ptr), Ok([1, 2, 3, 4, 0, 0, 0, 0]));
-	assert_eq!(file.derva_copy::<u32>(RVA + 4), Ok(0));
+	assert_eq!(file.derva_copy::<[u8; 8]>(RVA, true), Ok([1, 2, 3, 4, 0, 0, 0, 0]));
+	assert_eq!(file.deref_copy(ptr, true), Ok([1, 2, 3, 4, 0, 0, 0, 0]));
+	assert_eq!(file.derva_copy::<u32>(RVA + 4, true), Ok(0));
 
 	let mut dest = [0xff; 8];
-	assert_eq!(file.derva_into(RVA, &mut dest), Ok(()));
+	assert_eq!(file.derva_into(RVA, &mut dest, true), Ok(()));
 	assert_eq!(dest, [1, 2, 3, 4, 0, 0, 0, 0]);
 	dest.fill(0xff);
-	assert_eq!(file.deref_into(ptr, &mut dest), Ok(()));
+	assert_eq!(file.deref_into(ptr, &mut dest, true), Ok(()));
 	assert_eq!(dest, [1, 2, 3, 4, 0, 0, 0, 0]);
 
 	let mapped = file.to_view();
 	let view = PeView::from_bytes(&mapped).unwrap();
-	assert_eq!(view.derva_copy::<[u8; 8]>(RVA), Ok(dest));
-	assert_eq!(view.deref_copy(ptr), Ok(dest));
+	assert_eq!(view.derva_copy::<[u8; 8]>(RVA, true), Ok(dest));
+	assert_eq!(view.deref_copy(ptr, true), Ok(dest));
 }
 
 #[test]
@@ -67,10 +67,10 @@ fn copy_stays_within_one_section() {
 	let image = image();
 	let file = PeFile::from_bytes(dataview::bytes(&image)).unwrap();
 	let mut dest = [0xff; 5];
-	assert_eq!(file.derva_into(RVA + 4, &mut dest), Err(Error::Bounds));
+	assert_eq!(file.derva_into(RVA + 4, &mut dest, true), Err(Error::Bounds));
 	assert_eq!(dest, [0xff; 5]);
-	assert_eq!(file.derva_copy::<[u8; 5]>(RVA + 4), Err(Error::Bounds));
-	assert_eq!(file.deref_copy::<u8>(Ptr::from(0)), Err(Error::Null));
+	assert_eq!(file.derva_copy::<[u8; 5]>(RVA + 4, true), Err(Error::Bounds));
+	assert_eq!(file.deref_copy::<u8>(Ptr::from(0), true), Err(Error::Null));
 }
 
 #[test]
@@ -88,16 +88,16 @@ fn image_base_is_readable() {
 	assert_eq!(file.derva_slice::<u8>(0, 2), Ok(&IMAGE_DOS_SIGNATURE.to_le_bytes()[..]));
 	assert_eq!(file.derva_slice_s::<u8>(0, 0), Ok(&IMAGE_DOS_SIGNATURE.to_le_bytes()[..]));
 	assert_eq!(file.deref(ptr), Ok(&IMAGE_DOS_SIGNATURE));
-	assert_eq!(file.derva_copy::<u16>(0), Ok(IMAGE_DOS_SIGNATURE));
-	assert_eq!(file.deref_copy(ptr), Ok(IMAGE_DOS_SIGNATURE));
+	assert_eq!(file.derva_copy::<u16>(0, true), Ok(IMAGE_DOS_SIGNATURE));
+	assert_eq!(file.deref_copy(ptr, true), Ok(IMAGE_DOS_SIGNATURE));
 	let mut dest = [0xff; 2];
-	assert_eq!(file.derva_into(0, &mut dest), Ok(()));
+	assert_eq!(file.derva_into(0, &mut dest, true), Ok(()));
 	assert_eq!(dest, IMAGE_DOS_SIGNATURE.to_le_bytes());
 	dest.fill(0xff);
-	assert_eq!(file.deref_into(Ptr::<[u8; 2]>::from(BASE), &mut dest), Ok(()));
+	assert_eq!(file.deref_into(Ptr::<[u8; 2]>::from(BASE), &mut dest, true), Ok(()));
 	assert_eq!(dest, IMAGE_DOS_SIGNATURE.to_le_bytes());
 	dest.fill(0xff);
-	assert_eq!(file.derva_into(0x1ff, &mut dest), Err(Error::Bounds));
+	assert_eq!(file.derva_into(0x1ff, &mut dest, true), Err(Error::Bounds));
 	assert_eq!(dest, [0xff; 2]);
 
 	let mapped = file.to_view();
@@ -106,13 +106,13 @@ fn image_base_is_readable() {
 	assert_eq!(view.va_to_rva(BASE), Ok(0));
 	assert_eq!(&view.slice(0, 2, 1).unwrap()[..2], &IMAGE_DOS_SIGNATURE.to_le_bytes());
 	assert_eq!(view.derva::<u16>(0), Ok(&IMAGE_DOS_SIGNATURE));
-	assert_eq!(view.derva_copy::<u16>(0), Ok(IMAGE_DOS_SIGNATURE));
-	assert_eq!(view.deref_copy(ptr), Ok(IMAGE_DOS_SIGNATURE));
+	assert_eq!(view.derva_copy::<u16>(0, true), Ok(IMAGE_DOS_SIGNATURE));
+	assert_eq!(view.deref_copy(ptr, true), Ok(IMAGE_DOS_SIGNATURE));
 	dest.fill(0xff);
-	assert_eq!(view.derva_into(0, &mut dest), Ok(()));
+	assert_eq!(view.derva_into(0, &mut dest, true), Ok(()));
 	assert_eq!(dest, IMAGE_DOS_SIGNATURE.to_le_bytes());
 	dest.fill(0xff);
-	assert_eq!(view.deref_into(Ptr::<[u8; 2]>::from(BASE), &mut dest), Ok(()));
+	assert_eq!(view.deref_into(Ptr::<[u8; 2]>::from(BASE), &mut dest, true), Ok(()));
 	assert_eq!(dest, IMAGE_DOS_SIGNATURE.to_le_bytes());
 }
 
@@ -124,12 +124,64 @@ fn copy_from_section_without_raw_data() {
 	let file = PeFile::from_bytes(dataview::bytes(&image)).unwrap();
 	let ptr = Ptr::<[u8; 8]>::from(BASE + RVA as Va);
 
-	assert_eq!(file.derva_copy::<[u8; 8]>(RVA), Ok([0; 8]));
-	assert_eq!(file.deref_copy(ptr), Ok([0; 8]));
+	assert_eq!(file.derva_copy::<[u8; 8]>(RVA, true), Ok([0; 8]));
+	assert_eq!(file.deref_copy(ptr, true), Ok([0; 8]));
 	let mut dest = [0xff; 8];
-	assert_eq!(file.derva_into(RVA, &mut dest), Ok(()));
+	assert_eq!(file.derva_into(RVA, &mut dest, true), Ok(()));
 	assert_eq!(dest, [0; 8]);
 	dest.fill(0xff);
-	assert_eq!(file.deref_into(ptr, &mut dest), Ok(()));
+	assert_eq!(file.deref_into(ptr, &mut dest, true), Ok(()));
 	assert_eq!(dest, [0; 8]);
+}
+
+#[test]
+fn copy_rejects_zero_fill_when_disabled() {
+	for raw_size in [4, 0] {
+		let mut image = image();
+		image.section.SizeOfRawData = raw_size;
+		let file = PeFile::from_bytes(dataview::bytes(&image)).unwrap();
+		for rva in [RVA, RVA + 4] {
+			let ptr = Ptr::<[u8]>::from(BASE + rva as Va);
+			let mut dest = [0xff; 8];
+			let dest = &mut dest[..(RVA + 8 - rva) as usize];
+			assert_eq!(file.derva_into(rva, dest, false), Err(Error::ZeroFill));
+			assert!(dest.iter().all(|&byte| byte == 0xff));
+			assert_eq!(file.deref_into(ptr, dest, false), Err(Error::ZeroFill));
+			assert!(dest.iter().all(|&byte| byte == 0xff));
+		}
+		assert_eq!(file.derva_copy::<[u8; 8]>(RVA, false), Err(Error::ZeroFill));
+		assert_eq!(file.deref_copy(Ptr::<[u8; 8]>::from(BASE + RVA as Va), false), Err(Error::ZeroFill));
+		assert_eq!(file.derva_copy::<u32>(RVA + 4, false), Err(Error::ZeroFill));
+		assert_eq!(file.deref_copy(Ptr::<u32>::from(BASE + RVA as Va + 4), false), Err(Error::ZeroFill));
+
+		let mapped = file.to_view();
+		let view = PeView::from_bytes(&mapped).unwrap();
+		let expected = if raw_size == 0 { [0; 8] } else { [1, 2, 3, 4, 0, 0, 0, 0] };
+		let ptr = Ptr::<[u8; 8]>::from(BASE + RVA as Va);
+		assert_eq!(view.derva_copy::<[u8; 8]>(RVA, false), Ok(expected));
+		assert_eq!(view.deref_copy(ptr, false), Ok(expected));
+		let mut dest = [0xff; 8];
+		assert_eq!(view.derva_into(RVA, &mut dest, false), Ok(()));
+		assert_eq!(dest, expected);
+		dest.fill(0xff);
+		assert_eq!(view.deref_into(ptr, &mut dest, false), Ok(()));
+		assert_eq!(dest, expected);
+	}
+}
+
+#[test]
+fn copy_without_zero_fill_reads_raw_data_and_headers() {
+	let image = image();
+	let file = PeFile::from_bytes(dataview::bytes(&image)).unwrap();
+	for (rva, expected) in [(0, IMAGE_DOS_SIGNATURE.to_le_bytes()), (RVA + 1, [2, 3])] {
+		let ptr = Ptr::<[u8; 2]>::from(BASE + rva as Va);
+		assert_eq!(file.derva_copy::<[u8; 2]>(rva, false), Ok(expected));
+		assert_eq!(file.deref_copy(ptr, false), Ok(expected));
+		let mut dest = [0xff; 2];
+		assert_eq!(file.derva_into(rva, &mut dest, false), Ok(()));
+		assert_eq!(dest, expected);
+		dest.fill(0xff);
+		assert_eq!(file.deref_into(ptr, &mut dest, false), Ok(()));
+		assert_eq!(dest, expected);
+	}
 }

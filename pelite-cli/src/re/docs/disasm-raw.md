@@ -55,11 +55,11 @@ Comments at instruction starts are appended as `;` comments. Reference facts
 do not affect disassembly. Symbol types do not control decoding.
 
 The RVA field in each `#factmap` entry is treated as a file offset; its
-instruction address is `base + offset`. PE symbol files from `re analysis`
+instruction address is `base + offset`. PE symbol files from `analysis`
 use RVAs, so convert their entries to offsets in the raw input before using
 them here; `--base` changes instruction addresses, not the meaning of the
 entry offsets. Without symbol files, raw disassembly has no labels.
-See `re symbol --help` for the entry syntax.
+See `symbol --help` for the entry syntax.
 
 Examples
 --------
@@ -95,4 +95,4 @@ When to use:
 
 Inspect instructions in raw 16-, 32-, or 64-bit x86 bytes from a payload, file,
 or stream. Use `--trace` for unknown or obfuscated code boundaries when you
-want to stop at the next control transfer. For mapped PE addresses, use `re disasm`.
+want to stop at the next control transfer. For mapped PE addresses, use `disasm`.

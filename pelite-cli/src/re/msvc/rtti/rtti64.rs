@@ -25,7 +25,7 @@ pub fn analyze(file: PeFile<'_>) -> Result<Vec<TypeOutput>> {
 		if !in_section(rdata, rva) {
 			return;
 		}
-		let Ok(target_va) = file.derva_copy::<u64>(rva) else {
+		let Ok(target_va) = file.derva_copy::<u64>(rva, false) else {
 			return;
 		};
 		let Ok(target_rva) = file.va_to_rva(target_va) else {

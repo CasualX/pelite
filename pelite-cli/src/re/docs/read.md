@@ -2,7 +2,7 @@ Read typed data from a PE image
 
 Usage:
 
-    pelite-cli re read FILE ADDRESS TYPE [--max-string-bytes N] [--max-dynamic-array-length N] [--format=text|json|json-pretty|nul]
+    pelite-cli re read FILE ADDRESS TYPE [--zerofill] [--max-string-bytes N] [--max-dynamic-array-length N] [--format=text|json|json-pretty|nul]
 
 See `pelite-cli re --help` for ADDRESS syntax.
 
@@ -35,7 +35,7 @@ opaque DSTs give the target RVA without reading its contents.
 Field names must be unique within each struct or union. Use `_` for a field
 whose value should be discarded; it can appear more than once. Its type is
 parsed normally and still contributes to the size and alignment.
-Union fields can also be unnamed, as in `union{u32,u64}`. `re read` includes
+Union fields can also be unnamed, as in `union{u32,u64}`. `read` includes
 these fields under their zero-based position keys (`"0"`, `"1"`, and so on).
 
 At read time, a dynamic array looks up its length field in the containing
@@ -52,6 +52,10 @@ Integers and floats are little-endian. `*T` uses 4 bytes in PE32
 and 8 bytes in PE32+. A zero pointer produces JSON null; a nonzero pointer
 must convert to a valid RVA. `*unk` gives an RVA number, while `*T` reads the
 value at that RVA unless T is an opaque DST.
+
+Use `--zerofill` to allow scalar and pointer reads, including dynamic array
+lengths, from a section's virtual zero-filled tail. String reads still require
+file-backed bytes.
 
 To see both the target RVA and the dereferenced value of a pointer, read its
 slot as `union { p: *unk, v: *T }`.
@@ -92,5 +96,5 @@ Example JSON output for `struct { opcode: u8, immediate: [u8; 4] }`:
 When to use:
 
 Interpret structured data at a known PE address as a scalar, pointer, string,
-array, struct, or union. Use `re symbol` to look up nearby names and type hints;
-`re read` requires an explicit TYPE and does not load symbol files.
+array, struct, or union. Use `symbol` to look up nearby names and type hints;
+`read` requires an explicit TYPE and does not load symbol files.

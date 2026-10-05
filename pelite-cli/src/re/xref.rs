@@ -88,7 +88,7 @@ fn search_relocations32<'a>(pe: PeFile<'a>, relocs: BaseRelocationDirectory<'_>,
 		if ty != image::IMAGE_REL_BASED_HIGHLOW {
 			return;
 		}
-		if let Ok(candidate_va) = pe.derva_copy::<u32>(rva) {
+		if let Ok(candidate_va) = pe.derva_copy::<u32>(rva, false) {
 			if candidate_va == target_va {
 				references.push(reference(pe, rva, ReferenceKind::PointerRelocation, 0));
 			}
@@ -101,7 +101,7 @@ fn search_relocations64<'a>(pe: PeFile<'a>, relocs: BaseRelocationDirectory<'_>,
 		if ty != image::IMAGE_REL_BASED_DIR64 {
 			return;
 		}
-		if let Ok(candidate_va) = pe.derva_copy::<u64>(rva) {
+		if let Ok(candidate_va) = pe.derva_copy::<u64>(rva, false) {
 			if candidate_va == target_va {
 				references.push(reference(pe, rva, ReferenceKind::PointerRelocation, 0));
 			}

@@ -57,6 +57,10 @@ pub fn command() -> clap::Command {
 			.long("section")
 			.value_name("SECTION")
 			.help("Scan one section by 0-based index or name"))
+		.arg(clap::Arg::new("zerofill")
+			.long("zerofill")
+			.action(clap::ArgAction::SetTrue)
+			.help("Allow typed reads from zero-filled section data"))
 		.arg(clap::Arg::new("max-string-bytes")
 			.long("max-string-bytes")
 			.value_name("MAX_STRING_BYTES")
@@ -75,6 +79,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let path = matches.get_one::<PathBuf>("file").expect("required by clap");
 	let source = matches.get_one::<String>("type").expect("required by clap");
 	let options = read::ReadOptions {
+		zerofill: matches.get_flag("zerofill"),
 		max_string_bytes: *matches.get_one::<usize>("max-string-bytes").expect("defaulted by clap"),
 		max_dynamic_array_length: *matches.get_one::<u32>("max-dynamic-array-length").expect("defaulted by clap"),
 	};

@@ -10,7 +10,8 @@ pub trait Scan<'a>: Copy {
 
 impl<'a, P: Copy + Pe<'a>> Scan<'a> for P {
 	fn read<T: Copy + Pod>(self, rva: Rva) -> Option<T> {
-		self.derva_copy(rva).ok()
+		// File patterns require stored bytes, including after following references.
+		self.derva_copy(rva, false).ok()
 	}
 	fn pointer(self, va: Va) -> Option<Rva> {
 		self.va_to_rva(va).ok()
