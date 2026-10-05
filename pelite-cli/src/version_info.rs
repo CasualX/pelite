@@ -33,7 +33,7 @@ pub fn command() -> clap::Command {
 			.short('l')
 			.value_name("LANG")
 			.value_parser(value_parser::parse_u16)
-			.help("Select a resource language ID, in decimal or 0x-prefixed hexadecimal"))
+			.help("Select a resource language ID, in decimal or 0xhex"))
 		.arg(clap::Arg::new("source")
 			.long("source")
 			.action(clap::ArgAction::SetTrue)

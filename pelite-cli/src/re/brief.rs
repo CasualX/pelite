@@ -95,7 +95,7 @@ pub fn command() -> clap::Command {
 			.value_name("BYTES")
 			.value_parser(value_parser::parse_usize)
 			.required(true)
-			.help("Number of bytes to decode (decimal or 0x-prefixed hexadecimal)"))
+			.help("Number of bytes to decode (decimal or 0xhex)"))
 		.arg(clap::Arg::new("arch")
 			.long("arch")
 			.value_name("ARCH")

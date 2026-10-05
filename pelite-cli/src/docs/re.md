@@ -8,18 +8,14 @@ ADDRESS is `kind:EXPR`, where `rva:` selects a relative virtual address,
 `va:0x180001000`, and `fo:1024`. The result must fit the address kind:
 32 bits for RVA, 64 bits for VA, and the platform's `usize` for file offsets.
 
-RANGE is `kind:START..END` or `kind:START..+LENGTH`. One address kind applies
-to both endpoints, and START, END, and LENGTH are expressions. Without `+`,
-END is independent of START; with `+`, the end is START plus LENGTH.
-For example, `rva:0x1000..+10` ends at `0x100a`. The end is excluded and must
-be greater than or equal to the start. Equal endpoints produce an empty range.
-Both endpoints must fit the address kind; adding a length must not overflow.
+Commands taking ADDRESS BYTES select a range starting at ADDRESS with the
+given byte count. BYTES accepts decimal or `0xhex`.
+The end is excluded; a byte count of zero produces an empty range.
+The start RVA plus the byte count must fit in 32 bits.
 
-Expressions accept decimal and `0x`-prefixed hexadecimal literals,
-and binary `+`, `-`, and `*`. Multiplication takes precedence; operations of
-the same precedence are evaluated left to right. For example,
-`rva:0x1000+0x20*8-4*4` evaluates to `rva:0x10f0`, and
-`rva:0x1000+0x20*8..+32*8-4` selects a range of 252 bytes.
+Expressions accept decimal and `0xhex` literals, and binary `+`, `-`, and `*`.
+Multiplication takes precedence; operations of the same precedence are evaluated
+left to right. For example, `rva:0x1000+0x20*8-4*4` evaluates to `rva:0x10f0`.
 Literals and intermediate results must fit in `u64`; overflow and underflow
 are errors, even if later operations would bring the result back into range.
 Parentheses, unary operators, and whitespace inside expressions are rejected.
@@ -32,6 +28,5 @@ Examples:
     pelite-cli re brief sample.dll rva:0x1000 0x100 --facts auto
     pelite-cli re xref sample.dll rva:0x1000
     pelite-cli re msvc rtti sample.dll
-    pelite-cli re rust panic-locations sample.exe
 
 Use `pelite-cli re COMMAND --help` for arguments and examples.
