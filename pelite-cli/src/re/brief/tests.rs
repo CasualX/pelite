@@ -117,7 +117,7 @@ fn unresolved_references_are_signed_rvas_even_across_address_wraparound() {
 		let symbols = HashMap::from([(base.wrapping_sub(1), symbols::IndexedSymbol::Weak(0))]);
 		let report = collect_report(&bytes, bytes.len(), Arch::X86_64, 0x1000, base, &symbols).unwrap();
 		assert_eq!(report.references, [Reference::Rva(-1)]);
-		assert_eq!(serde_json::to_value(report).unwrap(), serde_json::json!({"references": [-1], "values": {}, "indirect_branches": 0, "constants": {"immediates": [], "comparisons": [], "displacements": []}}));
+		assert_eq!(serde_json::to_value(report).unwrap(), serde_json::json!({"references": [-1], "values": {}, "instructions": {"encodings": ["Legacy"], "cpuid_features": [], "segment_overrides": [], "register_classes": ["GPR"], "privileged": false}, "control_flow": {"direct_jumps": 0, "conditional_branches": 0, "indirect_branches": 0, "internal_targets": 0, "external_branches": 0, "leaders": 1, "returns": 0, "return_pop": []}, "constants": {"immediates": [], "comparisons": [], "displacements": []}}));
 	}
 }
 
@@ -250,19 +250,19 @@ fn counts_indirect_branches_through_registers_and_memory() {
 	];
 	let symbols = HashMap::from([(0x100d, symbols::IndexedSymbol::Named("__imp_Test".into()))]);
 	let report = collect_report(&bytes, bytes.len(), Arch::X86_64, 0x1000, 0, &symbols).unwrap();
-	assert_eq!(report.indirect_branches, 7);
+	assert_eq!(report.control_flow.indirect_branches, 7);
 	assert_eq!(report.references[0], Reference::Symbol("__imp_Test".into()));
 	assert_eq!(report.constants.displacements, [8]);
 	// Count by instruction start, even when the final call crosses the boundary.
-	assert_eq!(collect_report(&bytes, 1, Arch::X86_64, 0x1000, 0, &symbols).unwrap().indirect_branches, 1);
-	assert_eq!(collect_report(&bytes, 3, Arch::X86_64, 0x1000, 0, &symbols).unwrap().indirect_branches, 2);
+	assert_eq!(collect_report(&bytes, 1, Arch::X86_64, 0x1000, 0, &symbols).unwrap().control_flow.indirect_branches, 1);
+	assert_eq!(collect_report(&bytes, 3, Arch::X86_64, 0x1000, 0, &symbols).unwrap().control_flow.indirect_branches, 2);
 }
 
 #[test]
 fn counts_stack_indirect_jump_without_reporting_its_displacement() {
 	let bytes = [0xff, 0x64, 0x24, 0xc0]; // jmp [rsp-0x40]
 	let report = collect_report(&bytes, bytes.len(), Arch::X86_64, 0x1000, 0, &HashMap::new()).unwrap();
-	assert_eq!(report.indirect_branches, 1);
+	assert_eq!(report.control_flow.indirect_branches, 1);
 	assert!(report.constants.displacements.is_empty());
 	assert!(report.references.is_empty());
 }
@@ -298,4 +298,233 @@ fn finalize_reads_typed_symbols_and_respects_zerofill() {
 			}
 		}
 	}
+}
+
+#[test]
+fn summarizes_control_flow_with_unique_targets_and_leaders() {
+	let bytes = [
+		0xeb, 0xfe, // 0: jmp entry
+		0x75, 0xfc, // 2: jne entry; fallthrough 4
+		0xe8, 8, 0, 0, 0, // 4: call 17 (excluded from targets and leaders)
+		0xeb, 0x7f, // 9: external jump
+		0x74, 0x7f, // 11: external conditional; fallthrough 13
+		0x75, 0, // 13: jne 15 (same target and fallthrough)
+		0xff, 0xe0, // 15: jmp rax
+		0xc3, // 17: ret; scanning continues
+		0xc2, 12, 0, // 18: ret 12
+	];
+	for arch in [Arch::X86_32, Arch::X86_64] {
+		let report = collect_report(&bytes, bytes.len(), arch, 0x1000, 0, &HashMap::new()).unwrap();
+		assert_eq!(serde_json::to_value(report.control_flow).unwrap(), serde_json::json!({
+			"direct_jumps": 5, "conditional_branches": 3, "indirect_branches": 1,
+			"internal_targets": 2, "external_branches": 2, "leaders": 4,
+			"returns": 2, "return_pop": [0, 12],
+		}));
+	}
+}
+
+#[test]
+fn counts_loop_and_counter_zero_branches_in_all_modes() {
+	let bytes = [
+		0xe0, 0xfe, // loopne 0
+		0xe1, 0xfc, // loope 0
+		0xe2, 0xfa, // loop 0
+		0xe3, 0xf8, // jcxz/jecxz/jrcxz 0; fallthrough at range end excluded
+	];
+	for arch in [Arch::X86_16, Arch::X86_32, Arch::X86_64] {
+		let report = collect_report(&bytes, bytes.len(), arch, 0x1000, 0, &HashMap::new()).unwrap();
+		assert_eq!(serde_json::to_value(report.control_flow).unwrap(), serde_json::json!({
+			"direct_jumps": 4, "conditional_branches": 4, "indirect_branches": 0,
+			"internal_targets": 1, "external_branches": 0, "leaders": 4,
+			"returns": 0, "return_pop": [],
+		}));
+	}
+}
+
+#[test]
+fn control_flow_respects_range_boundaries_and_address_wraparound() {
+	let bytes = [0x75, 0, 0xc3]; // jne offset 2; ret
+	for base in [0, 0x180000000, u64::MAX - 0x1000] {
+		for length in [1, 2, 3] {
+			let report = collect_report(&bytes, length, Arch::X86_64, 0x1000, base, &HashMap::new()).unwrap();
+			let internal = usize::from(length == 3);
+			assert_eq!(report.control_flow.direct_jumps, 1);
+			assert_eq!(report.control_flow.internal_targets, internal);
+			assert_eq!(report.control_flow.external_branches, 1 - internal);
+			assert_eq!(report.control_flow.leaders, 1 + internal);
+			assert_eq!(report.control_flow.returns, internal);
+		}
+	}
+	let report = collect_report(&bytes, 0, Arch::X86_64, 0x1000, 0, &HashMap::new()).unwrap();
+	assert_eq!(report.control_flow.leaders, 0);
+	assert_eq!(report.control_flow.direct_jumps, 0);
+}
+
+#[test]
+fn serializes_return_pop_values_as_sorted_unique_array_or_scalar() {
+	for arch in [Arch::X86_16, Arch::X86_32, Arch::X86_64] {
+		for (bytes, expected, returns) in [
+			(&[][..], serde_json::json!([]), 0),
+			(&[0xc3][..], serde_json::json!(0), 1),
+			(&[0xc3, 0xc3][..], serde_json::json!(0), 2),
+			(&[0xc3, 0xc2, 0, 0][..], serde_json::json!(0), 2),
+			(&[0xc3, 0xc2, 12, 0][..], serde_json::json!([0, 12]), 2),
+			(&[0xc2, 12, 0, 0xc2, 12, 0][..], serde_json::json!(12), 2),
+			(&[0xc2, 12, 0, 0xc2, 8, 0, 0xc2, 12, 0][..], serde_json::json!([8, 12]), 3),
+			(&[0xc2, 0, 0, 0xc2, 0xff, 0xff][..], serde_json::json!([0, 65535]), 2),
+		] {
+			let report = collect_report(bytes, bytes.len(), arch, 0x1000, 0, &HashMap::new()).unwrap();
+			assert_eq!(report.control_flow.returns, returns);
+			assert_eq!(serde_json::to_value(report.control_flow).unwrap()["return_pop"], expected);
+		}
+	}
+}
+
+#[test]
+fn counts_far_jumps_as_external_but_excludes_far_calls() {
+	let bytes = [
+		0xea, 0, 0x10, 0, 0, 0x23, 0, // jmp far 0x23:0x1000
+		0x9a, 0, 0x10, 0, 0, 0x23, 0, // call far 0x23:0x1000
+		0xcb, // retf
+	];
+	let report = collect_report(&bytes, bytes.len(), Arch::X86_32, 0x1000, 0, &HashMap::new()).unwrap();
+	assert_eq!(report.control_flow.direct_jumps, 1);
+	assert_eq!(report.control_flow.external_branches, 1);
+	assert_eq!(report.control_flow.internal_targets, 0);
+	assert_eq!(report.control_flow.leaders, 1);
+	assert_eq!(report.control_flow.returns, 1);
+}
+
+#[test]
+fn aggregates_architectural_metadata_in_sorted_unique_lists() {
+	let bytes = [
+		0xc5, 0xfd, 0xfe, 0xc1, // vpaddd ymm0,ymm0,ymm1: AVX2
+		0xc5, 0xf8, 0x58, 0xc1, // vaddps xmm0,xmm0,xmm1: AVX
+		0xc4, 0xe2, 0xfb, 0xf5, 0xc1, // pdep rax,rax,rcx: BMI2
+		0xc5, 0xfd, 0xfe, 0xc1, // repeat
+		0x65, 0x8b, 0x00, // mov eax,gs:[rax]
+		0x64, 0x8b, 0x00, // mov eax,fs:[rax]
+		0x64, 0x8b, 0x00, // repeat FS
+	];
+	let report = collect_report(&bytes, bytes.len(), Arch::X86_64, 0x1000, 0, &HashMap::new()).unwrap();
+	assert_eq!(serde_json::to_value(report.instructions).unwrap(), serde_json::json!({
+		"encodings": ["Legacy", "VEX"],
+		"cpuid_features": ["AVX", "AVX2", "BMI2"],
+		"segment_overrides": ["FS", "GS"],
+		"register_classes": ["GPR", "SEG", "XMM", "YMM", "ZMM"],
+		"privileged": false,
+	}));
+}
+
+#[test]
+fn records_implicit_registers_and_privileged_instructions() {
+	let bytes = [
+		0xc3, // ret: implicit stack register; scan continues
+		0xd8, 0xc1, // fadd st0,st1
+		0x0f, 0x6f, 0xc1, // movq mm0,mm1
+		0x0f, 0x20, 0xc0, // mov rax,cr0
+		0x0f, 0x21, 0xc0, // mov rax,dr0
+	];
+	let report = collect_report(&bytes, bytes.len(), Arch::X86_64, 0x1000, 0, &HashMap::new()).unwrap();
+	assert_eq!(report.instructions.register_classes, ["CR", "DR", "GPR", "MM", "ST"]);
+	assert!(report.instructions.privileged);
+	let report = collect_report(&bytes, 1, Arch::X86_64, 0x1000, 0, &HashMap::new()).unwrap();
+	assert_eq!(report.instructions.register_classes, ["GPR"]);
+	assert!(!report.instructions.privileged);
+}
+
+#[test]
+fn metadata_includes_crossing_instructions_but_excludes_later_starts() {
+	let bytes = [
+		0x62, 0xf1, 0xfe, 0x49, 0x6f, 0x00, // vmovdqu64 zmm0{k1},[rax]
+		0xf4, // hlt: privileged, outside range
+	];
+	let report = collect_report(&bytes, 1, Arch::X86_64, 0x1000, 0, &HashMap::new()).unwrap();
+	assert_eq!(serde_json::to_value(report.instructions).unwrap(), serde_json::json!({
+		"encodings": ["EVEX"], "cpuid_features": ["AVX512F"],
+		"segment_overrides": [], "register_classes": ["GPR", "K", "ZMM"],
+		"privileged": false,
+	}));
+	let report = collect_report(&bytes, 0, Arch::X86_64, 0x1000, 0, &HashMap::new()).unwrap();
+	assert_eq!(serde_json::to_value(report.instructions).unwrap(), serde_json::json!({
+		"encodings": [], "cpuid_features": [], "segment_overrides": [],
+		"register_classes": [], "privileged": false,
+	}));
+}
+
+#[test]
+fn distinguishes_explicit_segment_prefixes_from_default_segments() {
+	for arch in [Arch::X86_16, Arch::X86_32, Arch::X86_64] {
+		let bytes = [0x8b, 0x00]; // ordinary memory operand with no segment prefix
+		let report = collect_report(&bytes, bytes.len(), arch, 0x1000, 0, &HashMap::new()).unwrap();
+		assert!(report.instructions.segment_overrides.is_empty());
+		assert_eq!(report.instructions.register_classes.contains(&"SEG".into()), arch != Arch::X86_64);
+	}
+	let bytes = [0x2e, 0x90]; // explicit CS prefix, even though NOP uses no segment
+	let report = collect_report(&bytes, bytes.len(), Arch::X86_64, 0x1000, 0, &HashMap::new()).unwrap();
+	assert_eq!(report.instructions.segment_overrides, ["CS"]);
+	assert!(report.instructions.register_classes.is_empty());
+}
+
+#[test]
+fn collects_xop_and_tile_metadata_without_semantic_categories() {
+	let bytes = [
+		0x8f, 0xe8, 0x78, 0xc0, 0xc1, 1, // vprotb xmm0,xmm1,1
+		0xc4, 0xe2, 0x7b, 0x49, 0xc0, // tilezero tmm0
+	];
+	let report = collect_report(&bytes, bytes.len(), Arch::X86_64, 0x1000, 0, &HashMap::new()).unwrap();
+	assert_eq!(serde_json::to_value(report.instructions).unwrap(), serde_json::json!({
+		"encodings": ["VEX", "XOP"], "cpuid_features": ["AMX_TILE", "XOP"],
+		"segment_overrides": [], "register_classes": ["TMM", "XMM", "ZMM"],
+		"privileged": false,
+	}));
+}
+
+#[test]
+fn suppresses_baseline_cpuid_features_only_when_producing_the_report() {
+	use iced_x86::CpuidFeature as Feature;
+	let bytes = [
+		0x90, // nop: INTEL8086
+		0x66, 0xc8, 0, 0, 0, // enterw 0,0: INTEL186
+		0x66, 0x0f, 0x02, 0xc0, // lar ax,ax: INTEL286
+		0x8b, 0xc1, // mov eax,ecx: INTEL386
+		0x0f, 0xc8, // bswap eax: INTEL486
+		0x0f, 0x44, 0xc1, // cmove eax,ecx: CMOV
+		0x0f, 0xc7, 0x08, // cmpxchg8b [eax]: CX8
+		0x0f, 0x1f, 0, // nop [eax]: MULTIBYTENOP
+		0x66, 0x0f, 0xef, 0xc0, // pxor xmm0,xmm0: SSE2 retained
+		0x0f, 0xa2, // cpuid: retained
+		0x0f, 0x31, // rdtsc: TSC retained
+		0xf3, 0x90, // pause: retained
+	];
+	let mut state = CollectionState::default();
+	collect(&mut state, &bytes, bytes.len(), Arch::X86_32, 0x1000, 0).unwrap();
+	for feature in [Feature::INTEL8086, Feature::INTEL186, Feature::INTEL286, Feature::INTEL386,
+		Feature::INTEL486, Feature::CMOV, Feature::CX8, Feature::MULTIBYTENOP] {
+		assert!(state.instructions.cpuid_features.contains(&feature), "raw metadata missing {feature:?}");
+	}
+	assert_eq!(state.instructions.finalize().cpuid_features, ["CPUID", "PAUSE", "SSE2", "TSC"]);
+
+	let mut state = CollectionState::default();
+	let bytes = [0x48, 0x89, 0xd8]; // mov rax,rbx: X64
+	collect(&mut state, &bytes, bytes.len(), Arch::X86_64, 0x1000, 0).unwrap();
+	assert!(state.instructions.cpuid_features.contains(&Feature::X64));
+	assert!(state.instructions.finalize().cpuid_features.is_empty());
+}
+
+#[test]
+fn preserves_unusual_cpu_specific_and_fpu_features() {
+	use iced_x86::CpuidFeature as Feature;
+	let metadata = InstructionMetadata {
+		cpuid_features: HashSet::from([
+			Feature::INTEL8086, Feature::INTEL8086_ONLY, Feature::INTEL286_ONLY,
+			Feature::INTEL386_ONLY, Feature::INTEL386_A0_ONLY, Feature::INTEL486_A_ONLY,
+			Feature::FPU, Feature::FPU287, Feature::FPU387, Feature::FPU287XL_ONLY,
+		]),
+		..Default::default()
+	};
+	assert_eq!(metadata.finalize().cpuid_features, [
+		"FPU", "FPU287", "FPU287XL_ONLY", "FPU387", "INTEL286_ONLY", "INTEL386_A0_ONLY",
+		"INTEL386_ONLY", "INTEL486_A_ONLY", "INTEL8086_ONLY",
+	]);
 }
