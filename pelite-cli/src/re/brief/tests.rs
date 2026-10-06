@@ -35,7 +35,7 @@ fn image(image_base: u64) -> pelite::PeMemory {
 fn read_options(zerofill: bool) -> read::ReadOptions {
 	read::ReadOptions {
 		zerofill,
-		max_string_bytes: read::DEFAULT_MAX_STRING_BYTES.parse().unwrap(),
+		string_preview_length: read::DEFAULT_STRING_PREVIEW_LENGTH.parse().unwrap(),
 		max_dynamic_array_length: read::DEFAULT_MAX_DYNAMIC_ARRAY_LENGTH.parse().unwrap(),
 	}
 }

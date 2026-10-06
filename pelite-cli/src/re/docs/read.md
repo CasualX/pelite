@@ -2,7 +2,7 @@ Read typed data from a PE image
 
 Usage:
 
-    pelite-cli re read FILE ADDRESS TYPE [--zerofill] [--max-string-bytes N] [--max-dynamic-array-length N] [--format=text|json|json-pretty|nul]
+    pelite-cli re read FILE ADDRESS TYPE [--zerofill] [--string-preview-length N] [--max-dynamic-array-length N] [--format=text|json|json-pretty|nul]
 
 See `pelite-cli re --help` for ADDRESS syntax.
 
@@ -26,10 +26,12 @@ Dynamically sized types (DSTs) have no fixed size:
     [T; field]           length read from a named unsigned struct field
     struct { ..., tail: DST }  struct ending in a DST field
 
-`cstr` reads through the first NUL, within the --max-string-bytes limit
-(default: 256); increase the limit for longer strings. The opaque DSTs
-`code`, `fn`, and `unk` read like `*unk` when used directly. Pointers to
-opaque DSTs give the target RVA without reading its contents.
+--string-preview-length (default: 256) limits previews to bytes for `cstr` or
+`u16` code units for `utf16lez`, excluding the terminator. Truncated previews
+end with `…`.
+
+The opaque DSTs `code`, `fn`, and `unk` read like `*unk` when used directly.
+Pointers to opaque DSTs give the target RVA without reading its contents.
 `*fn` denotes a function pointer; `*code` denotes a pointer to general code.
 
 Field names must be unique within each struct or union. Use `_` for a field

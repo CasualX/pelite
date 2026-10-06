@@ -43,10 +43,8 @@ ASCII strings of at least three bytes: strings of six bytes or fewer must be ent
 alphanumeric; longer strings must be at least 50% alphanumeric. The terminator
 must lie within the section's backed, mapped bytes. Pointer-aligned candidates
 are skipped when their first pointer-sized value is a VA within the image.
-Matching symbols get type
-`cstr` and `szPascalCase` names, with spaces and punctuation removed. Names
-are capped at 64 characters, including a trailing `...` when truncated;
-labels may repeat. UTF-16 strings are not recognized by this pass.
+Matching symbols get type `cstr` and retain their address-based names
+(`rdata_<rva>` or `data_<rva>`). UTF-16 strings are not recognized by this pass.
 
 Reports contain symbol entries and comment entries (`rva`, `comment`).
 Symbol entries use the factmap fields: `rva`, `name`, and `ty`. Types are

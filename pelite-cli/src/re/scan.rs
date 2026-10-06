@@ -61,12 +61,12 @@ pub fn command() -> clap::Command {
 			.long("zerofill")
 			.action(clap::ArgAction::SetTrue)
 			.help("Allow typed reads from zero-filled section data"))
-		.arg(clap::Arg::new("max-string-bytes")
-			.long("max-string-bytes")
-			.value_name("MAX_STRING_BYTES")
+		.arg(clap::Arg::new("string-preview-length")
+			.long("string-preview-length")
+			.value_name("STRING_PREVIEW_LENGTH")
 			.value_parser(value_parser::parse_usize)
-			.default_value(read::DEFAULT_MAX_STRING_BYTES)
-			.help("Maximum bytes to inspect for a string"))
+			.default_value(read::DEFAULT_STRING_PREVIEW_LENGTH)
+			.help("Maximum string preview length (bytes for cstr, u16 units for utf16lez)"))
 		.arg(clap::Arg::new("max-dynamic-array-length")
 			.long("max-dynamic-array-length")
 			.value_name("MAX_DYNAMIC_ARRAY_LENGTH")
@@ -80,7 +80,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let source = matches.get_one::<String>("type").expect("required by clap");
 	let options = read::ReadOptions {
 		zerofill: matches.get_flag("zerofill"),
-		max_string_bytes: *matches.get_one::<usize>("max-string-bytes").expect("defaulted by clap"),
+		string_preview_length: *matches.get_one::<usize>("string-preview-length").expect("defaulted by clap"),
 		max_dynamic_array_length: *matches.get_one::<u32>("max-dynamic-array-length").expect("defaulted by clap"),
 	};
 	let map = pelite::FileMap::open(path)?;
