@@ -1,7 +1,7 @@
 use super::*;
 
 impl Analysis<'_> {
-	/// Mark x64 runtime function starts as functions, overriding weaker labels.
+	/// Mark x64 runtime function starts as functions, preserving specific labels.
 	pub fn scan_exceptions(&mut self) {
 		if let Wrap::T64(file) = self.pe {
 			match file.exception_x64() {
@@ -9,9 +9,6 @@ impl Analysis<'_> {
 					for function in exceptions.image() {
 						let rva = function.BeginAddress;
 						self.add(rva, Some(ty::Type::Fn));
-						if let Some(symbol) = self.symbols.get_mut(&rva) {
-							symbol.name = factmap::SymbolName::Fn;
-						}
 					}
 				},
 				Err(pelite::Error::Null) => {},

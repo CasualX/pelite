@@ -8,14 +8,20 @@ The command scans executable sections of i386 and AMD64 images for direct
 branches, calls, static memory references, and address-like immediates. It
 also uses the entry point, TLS callbacks, exports, imports, base relocations, and
 x64 exception records. Function starts from x64 exception records are added
-or upgraded to `fn` symbols with type `fn`.
+or upgraded to type `fn`, preserving specific names such as export names,
+import stubs, and thunk/return labels. Generic code/data names become `fn` names.
+Direct exports retain their names; executable targets receive type `code`
+unless stronger function metadata establishes type `fn`. Data exports are
+not assumed to be functions, and forwarded exports are skipped. Ordinal-only
+exports still seed their target addresses. When names share an RVA, the last
+name in the export name table is selected by the current analysis index.
 Passes run from weaker heuristics to stronger metadata: linear disassembly,
 relocations, label refinement, exports, strings, imports, x64 exception
-records, then entry points (TLS callbacks and the PE entry point). Later generic code hints preserve specific
-labels; exception records establish function symbols. The entry-point
-function is named `EntryPoint`; TLS callback functions are named
-`TlsCallback_0`, `TlsCallback_1`, and so on in callback-array order. These
-functions have type `fn`; their names override generic exception labels.
+records, then entry points (TLS callbacks and the PE entry point).
+Later generic code hints preserve specific labels; exception records establish
+function symbols. The entry-point function is named `EntryPoint`; TLS callback
+functions are named `TlsCallback_0`, `TlsCallback_1`, and so on in callback-array
+order. These functions have type `fn`; their names override generic exception labels.
 
 Finally, an experimental forward feeder makes a second linear scan of
 executable sections. It tracks `mov` loads of static global dwords/qwords and
@@ -60,7 +66,9 @@ new path or remove the old generated file before regenerating it.
 
 The analysis report is still printed when `-o` is used. Use `--format=nul` to
 write only the database. Generic code and data symbols use the factmap names
-`C` and `D`; direct jump stubs use `thunk`. Specialized labels are quoted names.
+`C`, `D`, and `R`; direct jump stubs use `thunk`. `R` generates `rdata_RVA`
+names for candidates in readable, non-writable, non-executable sections,
+regardless of section name. Writable data uses `D` (`data_RVA`). Specialized labels are quoted names.
 Conflicting numeric type hints become a union; code wins over data hints,
 and confirmed functions win over generic code hints. Linear branch scanning
 and label heuristics provide type `code`; function metadata provides type `fn`.

@@ -115,3 +115,85 @@ fn upgrade_type_union_layout() {
 	assert_eq!(symbol.ty.layout(), Ok((16, 8)));
 	assert_eq!(symbol.ty, ty::Type::parse("union{[u32;3],u64}", width).unwrap());
 }
+
+#[test]
+fn export_names_survive_the_complete_pipeline() {
+	for dll in ["Demo.dll", "Demo64.dll"] {
+		let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("../demo").join(dll);
+		let map = pelite::FileMap::open(&path).unwrap();
+		let pe = PeFile::from_bytes(&map).unwrap();
+		let exports = pe.exports().unwrap().by().unwrap();
+		let code = exports.name("ThrowException").unwrap().symbol().unwrap();
+		let (data_name, data) = exports.iter_names().find_map(|(name, export)| {
+			let name = name.ok()?.to_str().ok()?;
+			let rva = export.ok()?.symbol()?;
+			name.contains("GLOBAL_A").then_some((name, rva))
+		}).unwrap();
+		let facts = analyze(pe).unwrap();
+		let symbols = facts.facts.iter().filter_map(|fact| match fact {
+			factmap::Fact::Symbol(symbol) => Some((symbol.rva, symbol)),
+			_ => None,
+		}).collect::<HashMap<_, _>>();
+		assert_eq!(symbols[&code].name, factmap::SymbolName::Named("ThrowException".into()));
+		assert_eq!(symbols[&code].ty, if matches!(pe, Wrap::T64(_)) { ty::Type::Fn } else { ty::Type::Code });
+		assert_eq!(symbols[&data].name, factmap::SymbolName::Named(data_name.into()));
+		assert!(!matches!(symbols[&data].ty, ty::Type::Fn | ty::Type::Code));
+	}
+}
+
+#[test]
+fn forwarded_exports_are_skipped_and_ordinal_only_exports_are_seeded() {
+	for dll in ["Demo.dll", "Demo64.dll"] {
+		let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("../demo").join(dll);
+		let mut bytes = fs::read(path).unwrap();
+		let (count_offset, forward_offset, forward_rva, ordinal_rva) = {
+			let pe = PeFile::from_bytes(&bytes).unwrap();
+			let exports = pe.exports().unwrap().by().unwrap();
+			let header = pe.headers();
+			let directory_rva = pe.data_directory()[image::IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress;
+			let forward_offset = header.rva_to_file_offset(exports.image().AddressOfFunctions + 4).unwrap();
+			let ordinal_rva = exports.index(2).unwrap().symbol().unwrap();
+			(header.rva_to_file_offset(directory_rva + 24).unwrap(), forward_offset, exports.image().Name, ordinal_rva)
+		};
+		// Keep two names; the third direct export now has only an ordinal.
+		bytes[count_offset..count_offset + 4].copy_from_slice(&2u32.to_le_bytes());
+		// An RVA inside the export directory is interpreted as a forwarder string.
+		bytes[forward_offset..forward_offset + 4].copy_from_slice(&forward_rva.to_le_bytes());
+		let pe = PeFile::from_bytes(&bytes).unwrap();
+		assert!(pe.exports().unwrap().by().unwrap().hint(1).unwrap().forward().is_some());
+		let mut analysis = Analysis::new(pe).unwrap();
+		analysis.seed_exports();
+		assert!(!analysis.symbols.contains_key(&forward_rva));
+		assert_eq!(analysis.symbols[&ordinal_rva].name, factmap::SymbolName::Code);
+		assert_eq!(analysis.symbols[&ordinal_rva].ty, ty::Type::Code);
+	}
+}
+
+#[test]
+fn exception_function_hints_preserve_specific_labels() {
+	let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("../demo/Demo64.dll");
+	let map = pelite::FileMap::open(&path).unwrap();
+	let pe = PeFile::from_bytes(&map).unwrap();
+	let Wrap::T64(file) = pe else { unreachable!() };
+	let rva = file.exception_x64().unwrap().image()[0].BeginAddress;
+	for name in [
+		factmap::SymbolName::Code,
+		factmap::SymbolName::Data,
+		factmap::SymbolName::RData,
+		factmap::SymbolName::Thunk,
+		factmap::SymbolName::Named("exported_function".into()),
+		factmap::SymbolName::Named("imp_Sleep".into()),
+		factmap::SymbolName::Named("ret0".into()),
+	] {
+		let expected = if matches!(name, factmap::SymbolName::Code | factmap::SymbolName::Data | factmap::SymbolName::RData) {
+			factmap::SymbolName::Fn
+		} else {
+			name.clone()
+		};
+		let mut analysis = Analysis::new(pe).unwrap();
+		analysis.symbols.insert(rva, factmap::SymbolFact::new(rva, ty::Type::Unknown, name));
+		analysis.scan_exceptions();
+		assert_eq!(analysis.symbols[&rva].name, expected);
+		assert_eq!(analysis.symbols[&rva].ty, ty::Type::Fn);
+	}
+}

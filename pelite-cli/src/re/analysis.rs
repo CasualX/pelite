@@ -148,25 +148,40 @@ impl Analysis<'_> {
 		}))
 	}
 
+	fn executable(&self, rva: u32) -> bool {
+		self.pe.section_headers().iter().any(|section| {
+			section.Characteristics & image::IMAGE_SCN_MEM_EXECUTE != 0
+				&& rva.checked_sub(section.VirtualAddress)
+					.is_some_and(|offset| offset < section.VirtualSize.max(section.SizeOfRawData))
+		})
+	}
+
+	fn read_only_data(&self, rva: u32) -> bool {
+		self.pe.section_headers().iter().any(|section| {
+			section.Characteristics & (image::IMAGE_SCN_MEM_READ | image::IMAGE_SCN_MEM_WRITE | image::IMAGE_SCN_MEM_EXECUTE)
+				== image::IMAGE_SCN_MEM_READ
+				&& rva.checked_sub(section.VirtualAddress)
+					.is_some_and(|offset| offset < section.VirtualSize.max(section.SizeOfRawData))
+		})
+	}
+
 	fn add(&mut self, rva: u32, interpretation: Option<ty::Type>) {
 		if !self.mapped(rva) {
 			return;
 		}
-		let executable = self.pe.section_headers().iter().any(|section| {
-			section.Characteristics & image::IMAGE_SCN_MEM_EXECUTE != 0
-				&& rva.checked_sub(section.VirtualAddress)
-					.is_some_and(|offset| offset < section.VirtualSize.max(section.SizeOfRawData))
-		});
+		let name = if self.executable(rva) { factmap::SymbolName::Code }
+			else if self.read_only_data(rva) { factmap::SymbolName::RData }
+			else { factmap::SymbolName::Data };
 		let symbol = self.symbols.entry(rva).or_insert_with(|| factmap::SymbolFact::new(
 			rva,
 			ty::Type::Unknown,
-			if executable { factmap::SymbolName::Code } else { factmap::SymbolName::Data },
+			name,
 		));
 		if let Some(interpretation) = interpretation {
-			if interpretation == ty::Type::Fn && matches!(symbol.name, factmap::SymbolName::Data | factmap::SymbolName::Code) {
+			if interpretation == ty::Type::Fn && matches!(symbol.name, factmap::SymbolName::Data | factmap::SymbolName::RData | factmap::SymbolName::Code) {
 				symbol.name = factmap::SymbolName::Fn;
 			}
-			else if interpretation == ty::Type::Code && symbol.name == factmap::SymbolName::Data {
+			else if interpretation == ty::Type::Code && matches!(symbol.name, factmap::SymbolName::Data | factmap::SymbolName::RData) {
 				symbol.name = factmap::SymbolName::Code;
 			}
 			symbol.upgrade_type(interpretation)

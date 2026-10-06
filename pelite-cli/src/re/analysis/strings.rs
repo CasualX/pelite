@@ -13,7 +13,7 @@ impl Analysis<'_> {
 			let len = bytes.len().min(virtual_size as usize).min(self.size.saturating_sub(section.VirtualAddress) as usize);
 			let bytes = &bytes[..len];
 			for symbol in self.symbols.values_mut() {
-				if symbol.name != factmap::SymbolName::Data {
+				if !matches!(symbol.name, factmap::SymbolName::Data | factmap::SymbolName::RData) {
 					continue;
 				}
 				let Some(offset) = symbol.rva.checked_sub(section.VirtualAddress) else { continue };
