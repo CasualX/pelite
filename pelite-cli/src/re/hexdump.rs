@@ -68,7 +68,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let pe = pelite::PeFile::from_bytes(&map)?;
 	let start = address.to_rva(pe)?;
 	u32::try_from(len).ok().and_then(|len| start.checked_add(len))
-		.ok_or_else(|| err("address plus length overflows RVA"))?;
+		.ok_or_else(|| err("RVA plus length overflows"))?;
 	let (image_base, address_width) = match pe.optional_header() {
 		Wrap::T32(header) => (u64::from(header.ImageBase), 10),
 		Wrap::T64(header) => (header.ImageBase.get(), 18),

@@ -42,7 +42,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let pe = pelite::PeFile::from_bytes(&map)?;
 	let start = address.to_rva(pe)?;
 	let end = u32::try_from(len).ok().and_then(|len| start.checked_add(len))
-		.ok_or_else(|| err("address plus length overflows RVA"))?;
+		.ok_or_else(|| err("RVA plus length overflows"))?;
 	let mut symbols = BTreeMap::new();
 	for path in matches.get_many::<PathBuf>("facts").into_iter().flatten() {
 		let map = symbols::load_map(path, ty::PointerWidth::from(pe), Some(pe))?;

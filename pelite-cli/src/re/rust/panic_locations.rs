@@ -8,7 +8,7 @@ const MAX_COLUMN: u32 = 1_000_000;
 
 #[derive(serde::Serialize)]
 struct LocationOutput<'a> {
-	address: u32,
+	rva: u32,
 	file: &'a str,
 	line: u32,
 	column: u32,
@@ -37,7 +37,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 			let name = path.file_name().and_then(|name| name.to_str()).unwrap_or("<input>");
 			let mut writer = io::stdout().lock();
 			for item in output {
-				writeln!(writer, "{name}!{:#010x} {}:{}:{}", item.address, item.file, item.line, item.column)?;
+				writeln!(writer, "{name}!{:#010x} {}:{}:{}", item.rva, item.file, item.line, item.column)?;
 			}
 			Ok(())
 		},
@@ -71,12 +71,12 @@ fn valid_position(line: u32, column: u32) -> bool {
 	line >= 1 && line <= MAX_LINE && column >= 1 && column <= MAX_COLUMN
 }
 
-fn location(file: PeFile<'_>, address: u32, pointer: u64, length: u64, line: u32, column: u32) -> Option<LocationOutput<'_>> {
+fn location(file: PeFile<'_>, rva: u32, pointer: u64, length: u64, line: u32, column: u32) -> Option<LocationOutput<'_>> {
 	if !valid_position(line, column) {
 		return None;
 	}
 	Some(LocationOutput {
-		address,
+		rva,
 		file: source_path(file, pointer, length)?,
 		line,
 		column,
@@ -111,8 +111,8 @@ fn analyze32(file: pelite::pe32::PeFile<'_>) -> Vec<LocationOutput<'_>> {
 		let Ok(bytes) = file.get_section_bytes(section) else { continue };
 		let Some(words) = dataview::DataView::from(bytes).try_slice::<u32>(0, bytes.len() / 4) else { continue };
 		for (index, record) in words.windows(4).enumerate() {
-			let Some(address) = u32::try_from(index * 4).ok().and_then(|offset| section.VirtualAddress.checked_add(offset)) else { continue };
-			if let Some(candidate) = location(Wrap::T32(file), address, record[0] as u64, record[1] as u64, record[2], record[3]) {
+			let Some(rva) = u32::try_from(index * 4).ok().and_then(|offset| section.VirtualAddress.checked_add(offset)) else { continue };
+			if let Some(candidate) = location(Wrap::T32(file), rva, record[0] as u64, record[1] as u64, record[2], record[3]) {
 				output.push(candidate);
 			}
 		}
@@ -129,10 +129,10 @@ fn analyze64(file: pelite::pe64::PeFile<'_>) -> Vec<LocationOutput<'_>> {
 		let Ok(bytes) = file.get_section_bytes(section) else { continue };
 		let Some(words) = dataview::DataView::from(bytes).try_slice::<u64>(0, bytes.len() / 8) else { continue };
 		for (index, record) in words.windows(3).enumerate() {
-			let Some(address) = u32::try_from(index * 8).ok().and_then(|offset| section.VirtualAddress.checked_add(offset)) else { continue };
+			let Some(rva) = u32::try_from(index * 8).ok().and_then(|offset| section.VirtualAddress.checked_add(offset)) else { continue };
 			let line = record[2] as u32;
 			let column = (record[2] >> 32) as u32;
-			if let Some(candidate) = location(Wrap::T64(file), address, record[0], record[1], line, column) {
+			if let Some(candidate) = location(Wrap::T64(file), rva, record[0], record[1], line, column) {
 				output.push(candidate);
 			}
 		}

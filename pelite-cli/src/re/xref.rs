@@ -15,7 +15,7 @@ enum ReferenceKind {
 
 #[derive(serde::Serialize)]
 struct Reference<'a> {
-	address: u32,
+	rva: u32,
 	section: &'a str,
 	kind: ReferenceKind,
 	#[serde(skip_serializing_if = "is_zero")]
@@ -60,8 +60,8 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 		Wrap::T64(_) => search64(pe, target_va, &mut references),
 	}
 	search_relative_displacements(pe, target_rva, &mut references);
-	references.sort_unstable_by_key(|item| (item.address, item.kind, item.trailing_bytes));
-	references.dedup_by(|a, b| (a.address, a.kind, a.trailing_bytes) == (b.address, b.kind, b.trailing_bytes));
+	references.sort_unstable_by_key(|item| (item.rva, item.kind, item.trailing_bytes));
+	references.dedup_by(|a, b| (a.rva, a.kind, a.trailing_bytes) == (b.rva, b.kind, b.trailing_bytes));
 	print("Cross references", &Xrefs { target_rva, target_va, references }, format)
 }
 
@@ -170,7 +170,7 @@ fn relative_matches<'a>(pe: PeFile<'a>, bytes: &[u8], section_rva: u32, target_r
 	}
 }
 
-fn reference<'a>(pe: PeFile<'a>, address: u32, kind: ReferenceKind, trailing_bytes: u8) -> Reference<'a> {
-	let section = get_section_name_by_rva(pe, address);
-	Reference { address, section, kind, trailing_bytes }
+fn reference<'a>(pe: PeFile<'a>, rva: u32, kind: ReferenceKind, trailing_bytes: u8) -> Reference<'a> {
+	let section = get_section_name_by_rva(pe, rva);
+	Reference { rva, section, kind, trailing_bytes }
 }

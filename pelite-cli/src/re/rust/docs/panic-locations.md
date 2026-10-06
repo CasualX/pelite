@@ -10,9 +10,9 @@ a UTF-8 source path, followed by line and column numbers. The path must be
 in read-only data, contain `/`, and end in `.rs`; line and column must be
 positive and within reasonable bounds.
 
-Results are candidates and can include unrelated data. Each `address` is
+Results are candidates and can include unrelated data. Each `rva` is
 the RVA of a record. Text is the default; JSON output is an array with
-`address`, `file`, `line`, and `column` for each match.
+`rva`, `file`, `line`, and `column` for each match.
 
 Examples:
 
@@ -23,7 +23,7 @@ Example JSON output (one location shown):
 
 ```json
 [
-  { "address": 9088, "file": "src/main.rs", "line": 123, "column": 7 }
+  { "rva": 9088, "file": "src/main.rs", "line": 123, "column": 7 }
 ]
 ```
 

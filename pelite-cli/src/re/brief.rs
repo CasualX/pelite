@@ -90,7 +90,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let pe = pelite::PeFile::from_bytes(&map)?;
 	let rva = address.to_rva(pe)?;
 	u32::try_from(length).ok().and_then(|length| rva.checked_add(length))
-		.ok_or_else(|| err("address plus length overflows RVA"))?;
+		.ok_or_else(|| err("RVA plus length overflows"))?;
 	let arch = get_arch(matches, pe)?;
 	let bytes = pe.slice(rva, length, 1)?;
 	let facts = symbols::load(matches, ty::PointerWidth::from(pe), pe.image_base(), Some(pe))?;

@@ -294,7 +294,7 @@ fn finalize_reads_typed_symbols_and_respects_zerofill() {
 			}
 			else {
 				assert!(read::contains_read_errors(&report.values[name]));
-				assert_eq!(report.values[name]["$address"], serde_json::json!(0x2010));
+				assert_eq!(report.values[name]["$rva"], serde_json::json!(0x2010));
 			}
 		}
 	}

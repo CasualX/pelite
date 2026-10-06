@@ -7,7 +7,7 @@ const MAX_SIZE: usize = 1024 * 1024; // 1 MiB
 
 #[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct VTableOutput {
-	address: u32,
+	rva: u32,
 	size: usize,
 	align: usize,
 	functions: usize,
@@ -56,7 +56,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 			let name = path.file_name().and_then(|name| name.to_str()).unwrap_or("<input>");
 			let mut writer = io::stdout().lock();
 			for item in output {
-				writeln!(writer, "{name}!{:#010x} size={} align={} functions={}", item.address, item.size, item.align, item.functions)?;
+				writeln!(writer, "{name}!{:#010x} size={} align={} functions={}", item.rva, item.size, item.align, item.functions)?;
 				for comment in item.comments {
 					writeln!(writer, "  // {comment}")?;
 				}
@@ -181,8 +181,8 @@ fn scanned_pointers32(file: pelite::pe32::PeFile<'_>) -> Vec<u32> {
 	pointers
 }
 
-fn parse_vtable_header32(file: pelite::pe32::PeFile<'_>, address: u32) -> Option<&'_ VtableHeader32> {
-	let header = file.derva::<VtableHeader32>(address).ok()?;
+fn parse_vtable_header32(file: pelite::pe32::PeFile<'_>, rva: u32) -> Option<&'_ VtableHeader32> {
+	let header = file.derva::<VtableHeader32>(rva).ok()?;
 	// Validate align
 	let align = header.align;
 	if align == 0 || align > MAX_ALIGN as u32 || !align.is_power_of_two() {
@@ -237,13 +237,13 @@ fn analyze32(file: pelite::pe32::PeFile<'_>) -> Vec<VTableOutput> {
 	let mut output = Vec::new();
 	let mut index = 0;
 	while index < pointers.len() {
-		let address = pointers[index].wrapping_sub(12);
-		let Some(header) = parse_vtable_header32(file, address) else {
+		let rva = pointers[index].wrapping_sub(12);
+		let Some(header) = parse_vtable_header32(file, rva) else {
 			index += 1;
 			continue;
 		};
 		let mut table = VTableOutput {
-			address,
+			rva,
 			size: header.size as usize,
 			align: header.align as usize,
 			functions: 1,
@@ -340,8 +340,8 @@ fn scanned_pointers64(file: pelite::pe64::PeFile<'_>) -> Vec<u32> {
 	pointers
 }
 
-fn parse_vtable_header64(file: pelite::pe64::PeFile<'_>, address: u32) -> Option<&'_ VtableHeader64> {
-	let header = file.derva::<VtableHeader64>(address).ok()?;
+fn parse_vtable_header64(file: pelite::pe64::PeFile<'_>, rva: u32) -> Option<&'_ VtableHeader64> {
+	let header = file.derva::<VtableHeader64>(rva).ok()?;
 	// Validate align
 	let align = header.align;
 	if align == 0 || align > MAX_ALIGN as u64 || !align.is_power_of_two() {
@@ -395,13 +395,13 @@ fn analyze64(file: pelite::pe64::PeFile<'_>) -> Vec<VTableOutput> {
 	let mut output = Vec::new();
 	let mut index = 0;
 	while index < pointers.len() {
-		let address = pointers[index].wrapping_sub(24);
-		let Some(header) = parse_vtable_header64(file, address) else {
+		let rva = pointers[index].wrapping_sub(24);
+		let Some(header) = parse_vtable_header64(file, rva) else {
 			index += 1;
 			continue;
 		};
 		let mut table = VTableOutput {
-			address,
+			rva,
 			size: header.size as usize,
 			align: header.align as usize,
 			functions: 1,
