@@ -102,7 +102,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	// Process the brief data
 	let options = read::ReadOptions {
 		zerofill: matches.get_flag("zerofill"),
-		max_string_bytes: read::DEFAULT_MAX_STRING_BYTES.parse().unwrap(),
+		string_preview_length: read::DEFAULT_STRING_PREVIEW_LENGTH.parse().unwrap(),
 		max_dynamic_array_length: read::DEFAULT_MAX_DYNAMIC_ARRAY_LENGTH.parse().unwrap(),
 	};
 	let brief = state.finalize(pe, &facts, &options);

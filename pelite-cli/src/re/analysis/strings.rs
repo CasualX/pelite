@@ -21,9 +21,8 @@ impl Analysis<'_> {
 				if looks_like_va(self.pe, symbol.rva, bytes) {
 					continue;
 				}
-				let Some(string) = ascii_string(bytes) else { continue };
+				if ascii_string(bytes).is_none() { continue; }
 				symbol.ty = ty::Type::CStr;
-				symbol.name = factmap::SymbolName::Named(string_label(string));
 			}
 		}
 	}
@@ -63,23 +62,6 @@ fn ascii_string(bytes: &[u8]) -> Option<&str> {
 	None
 }
 
-fn string_label(string: &str) -> String {
-	const MAX_LEN: usize = 64;
-	let mut name = String::from("sz");
-	for word in string.split(|ch: char| !ch.is_ascii_alphanumeric()).filter(|word| !word.is_empty()) {
-		for (index, byte) in word.bytes().enumerate() {
-			let byte = if index == 0 { byte.to_ascii_uppercase() } else { byte.to_ascii_lowercase() };
-			name.push(char::from(byte));
-			if name.len() > MAX_LEN {
-				name.truncate(MAX_LEN - 3);
-				name.push_str("…");
-				return name;
-			}
-		}
-	}
-	name
-}
-
 #[test]
 fn strict_ascii_strings() {
 	for bytes in [b"abc\0".as_slice(), b"abc123\0", b"hello world!\0", b"a b c d\0", b"abcd!!!!\0"] {
@@ -89,13 +71,4 @@ fn strict_ascii_strings() {
 		assert!(ascii_string(bytes).is_none(), "{bytes:?}");
 	}
 	assert_eq!(ascii_string(b"hello world\0ignored"), Some("hello world"));
-}
-
-#[test]
-fn pascal_case_string_labels() {
-	assert_eq!(string_label("hello WORLD! error_code 42"), "szHelloWorldErrorCode42");
-	assert_eq!(string_label(&"a".repeat(62)).len(), 64);
-	let long = string_label(&"a".repeat(63));
-	assert_eq!(long.len(), 64);
-	assert!(long.ends_with("…"));
 }

@@ -1,11 +1,11 @@
 use super::*;
 
-pub const DEFAULT_MAX_STRING_BYTES: &str = "256";
+pub const DEFAULT_STRING_PREVIEW_LENGTH: &str = "256";
 pub const DEFAULT_MAX_DYNAMIC_ARRAY_LENGTH: &str = "1024";
 
 pub struct ReadOptions {
 	pub zerofill: bool,
-	pub max_string_bytes: usize,
+	pub string_preview_length: usize,
 	pub max_dynamic_array_length: u32,
 }
 
@@ -27,12 +27,12 @@ pub fn command() -> clap::Command {
 			.value_name("ADDRESS")
 			.value_parser(Address::parse)
 			.required(true))
-		.arg(clap::Arg::new("max-string-bytes")
-			.long("max-string-bytes")
-			.value_name("MAX_STRING_BYTES")
+		.arg(clap::Arg::new("string-preview-length")
+			.long("string-preview-length")
+			.value_name("STRING_PREVIEW_LENGTH")
 			.value_parser(value_parser::parse_usize)
-			.default_value(DEFAULT_MAX_STRING_BYTES)
-			.help("Maximum bytes to inspect for a string"))
+			.default_value(DEFAULT_STRING_PREVIEW_LENGTH)
+			.help("Maximum string preview length (bytes for cstr, u16 units for utf16lez)"))
 		.arg(clap::Arg::new("zerofill")
 			.long("zerofill")
 			.action(clap::ArgAction::SetTrue)
@@ -54,7 +54,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let source = matches.get_one::<String>("type").expect("required by clap");
 	let options = ReadOptions {
 		zerofill: matches.get_flag("zerofill"),
-		max_string_bytes: *matches.get_one::<usize>("max-string-bytes").expect("defaulted by clap"),
+		string_preview_length: *matches.get_one::<usize>("string-preview-length").expect("defaulted by clap"),
 		max_dynamic_array_length: *matches.get_one::<u32>("max-dynamic-array-length").expect("defaulted by clap"),
 	};
 	let map = pelite::FileMap::open(path)?;
@@ -125,20 +125,8 @@ fn try_read_value(pe: pelite::PeFile<'_>, rva: u32, ty: &ty::Type, options: &Rea
 			}
 			serde_json::to_value(target)
 		},
-		ty::Type::CStr => {
-			let bytes = pe.slice_bytes(rva)?;
-			let len = bytes.len().min(options.max_string_bytes);
-			let string = pelite::util::CStr::from_bytes(&bytes[..len]).ok_or_else(|| {
-				if bytes.len() > options.max_string_bytes {
-					err(format!("C string exceeds maximum of {} bytes", options.max_string_bytes))
-				}
-				else {
-					err("unterminated C string")
-				}
-			})?;
-			serde_json::to_value(string)
-		},
-		ty::Type::Utf16LEZ => serde_json::to_value(read_utf16lez(pe.slice_bytes(rva)?, options.max_string_bytes)?),
+		ty::Type::CStr => serde_json::to_value(read_cstr(pe.slice_bytes(rva)?, options.string_preview_length)?),
+		ty::Type::Utf16LEZ => serde_json::to_value(read_utf16lez(pe.slice_bytes(rva)?, options.string_preview_length)?),
 		ty::Type::Array(array) => {
 			let (stride, _) = array.ty.layout().map_err(err)?;
 			let len = match &array.len {
@@ -193,20 +181,72 @@ fn try_read_value(pe: pelite::PeFile<'_>, rva: u32, ty: &ty::Type, options: &Rea
 	Ok(value?)
 }
 
-fn read_utf16lez(bytes: &[u8], max_string_bytes: usize) -> Result<String> {
-	let len = bytes.len().min(max_string_bytes);
+fn read_cstr(bytes: &[u8], string_preview_length: usize) -> Result<String> {
+	let string = pelite::util::CStr::from_bytes(bytes).ok_or_else(|| err("unterminated C string"))?;
+	if string.len() <= string_preview_length {
+		return Ok(string.to_string());
+	}
+	let bytes = string.as_ref();
+	let len = bytes.len().min(string_preview_length);
+	// Match CStr's display of non-ASCII bytes.
+	let mut preview = String::new();
+	for &byte in &bytes[..len] {
+		if byte.is_ascii() {
+			preview.push(char::from(byte));
+		}
+		else {
+			use std::fmt::Write;
+			write!(preview, "\\x{byte:02X}")?;
+		}
+	}
+	preview.push('…');
+	Ok(preview)
+}
+
+fn read_utf16lez(bytes: &[u8], string_preview_length: usize) -> Result<String> {
 	let mut words = Vec::new();
-	for pair in bytes[..len].chunks_exact(2) {
+	for (index, pair) in bytes.chunks_exact(2).enumerate() {
 		let word = u16::from_le_bytes([pair[0], pair[1]]);
 		if word == 0 {
-			return Ok(String::from_utf16_lossy(&words));
+			let mut preview = String::from_utf16_lossy(&words);
+			if index > string_preview_length {
+				preview.push('…');
+			}
+			return Ok(preview);
 		}
-		words.push(word);
+		if index < string_preview_length {
+			words.push(word);
+		}
 	}
-	Err(if bytes.len() > max_string_bytes {
-		err(format!("UTF-16LE string exceeds maximum of {max_string_bytes} bytes"))
+	Err(err("unterminated UTF-16LE string"))
+}
+
+#[test]
+fn bounded_cstr_previews() {
+	assert_eq!(read_cstr(b"abc\0ignored", 4).unwrap(), "abc");
+	assert_eq!(read_cstr(b"abc\0", 3).unwrap(), "abc");
+	assert_eq!(read_cstr(b"abcdef\0", 3).unwrap(), "abc…");
+	assert_eq!(read_cstr(b"abc\0", 0).unwrap(), "…");
+	assert_eq!(read_cstr(b"\0", 0).unwrap(), "");
+	assert_eq!(read_cstr(b"a\xffb\0", 2).unwrap(), "a\\xFF…");
+	assert_eq!(read_cstr(b"a\xff\0", 3).unwrap(), "a\\xFF");
+	for bytes in [b"".as_slice(), b"abc", b"abcdef"] {
+		assert!(read_cstr(bytes, 3).unwrap_err().to_string().contains("unterminated C string"));
 	}
-	else {
-		err("unterminated UTF-16LE string")
-	})
+}
+
+#[test]
+fn bounded_utf16lez_previews() {
+	let bytes = [b'a', 0, b'b', 0, 0, 0];
+	assert_eq!(read_utf16lez(&bytes, 3).unwrap(), "ab");
+	assert_eq!(read_utf16lez(&bytes, 2).unwrap(), "ab");
+	assert_eq!(read_utf16lez(&bytes, 1).unwrap(), "a…");
+	assert_eq!(read_utf16lez(&bytes, 0).unwrap(), "…");
+	assert_eq!(read_utf16lez(&[0, 0], 0).unwrap(), "");
+	assert_eq!(read_utf16lez(&[0x3d, 0xd8, 0, 0xde, 0, 0], 2).unwrap(), "😀");
+	for bytes in [b"".as_slice(), &bytes[..4], &bytes[..3]] {
+		for limit in [0, 2, 6] {
+			assert!(read_utf16lez(bytes, limit).unwrap_err().to_string().contains("unterminated UTF-16LE string"));
+		}
+	}
 }

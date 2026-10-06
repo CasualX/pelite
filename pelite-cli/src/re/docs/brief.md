@@ -15,8 +15,8 @@ first appear in the disassembly:
   references: Calls, external branch targets, and static memory references.
               Fact names when available, otherwise signed integer RVAs.
   values: Typed reads of referenced symbols with non-opaque fact types, keyed
-          by symbol name. Uses the same reader as `read`, with fixed default
-          limits of 256 string bytes and 1024 elements per field-length array.
+          by symbol name. Uses the same reader as `read`, with fixed defaults.
+          String previews end with `…` when truncated.
   constants:
     immediates:    Literal values used by instructions.
     comparisons:   Values and masks used by CMP and TEST.
