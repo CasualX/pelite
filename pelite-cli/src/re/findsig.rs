@@ -104,8 +104,8 @@ fn print_matches(result: PatternMatches, file_name: &str, format: OutputFormat) 
 			let mut output = io::stdout().lock();
 			writeln!(output, "Pattern {:?} matches:", result.pattern)?;
 			for captures in result.matches {
-				if let Some((address, captures)) = captures.split_first() {
-					write!(output, "  {file_name}!{address:#010x}")?;
+				if let Some((rva, captures)) = captures.split_first() {
+					write!(output, "  {file_name}!{rva:#010x}")?;
 					if !captures.is_empty() {
 						write!(output, "  [")?;
 						for (index, capture) in captures.iter().enumerate() {

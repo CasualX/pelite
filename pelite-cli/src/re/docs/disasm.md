@@ -36,7 +36,7 @@ prefix, or `rva` or `va` to include the section name and address. Add `--hex`
 to show instruction bytes in text output. These options do not affect JSON.
 
 `--format` defaults to `text`. Use `json` or `json-pretty` for machine-readable
-output; both include the instruction RVA in `address`. Use `nul` to suppress
+output; both include the instruction RVA in `rva`. Use `nul` to suppress
 successful output while still reporting errors.
 
 Facts
@@ -65,7 +65,7 @@ Example JSON output:
 ```json
 [
   {
-    "address": 4096,
+    "rva": 4096,
     "bytes": [184, 1, 0, 0, 0],
     "instruction": "mov eax,1"
   }

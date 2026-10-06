@@ -22,7 +22,7 @@ impl AddressLayout {
 
 #[derive(serde::Serialize)]
 struct DisassembledInstruction<'a> {
-	address: u32,
+	rva: u32,
 	bytes: &'a [u8],
 	instruction: String,
 }
@@ -105,7 +105,7 @@ fn disassemble(
 	rva: u32, len: usize, arch: Arch, lookback: u32,
 ) -> Result {
 	let end = u32::try_from(len).ok().and_then(|len| rva.checked_add(len))
-		.ok_or_else(|| err("address plus length overflows RVA"))?;
+		.ok_or_else(|| err("RVA plus length overflows"))?;
 	let bytes = pe.slice(rva, len, 1)?;
 	let (decode_start, bytes) = pe.section_headers().by_rva(rva)
 		.filter(|_| lookback != 0 && len != 0)
@@ -131,7 +131,7 @@ fn disassemble(
 			let mut instructions = Vec::with_capacity(decoded.len());
 			for item in decoded {
 				instructions.push(DisassembledInstruction {
-					address: u32::try_from(item.ip - image_base)?,
+					rva: u32::try_from(item.ip - image_base)?,
 					bytes: item.bytes,
 					instruction: item.instruction,
 				});
@@ -165,10 +165,10 @@ fn trace_bytes(bytes: &[u8], bitness: u32, rva: u32, image_base: u64, trace_limi
 	let mut count = 0;
 	while decoder.can_decode() {
 		let offset = decoder.position();
-		let address = u64::from(rva) + offset as u64;
+		let instruction_rva = u64::from(rva) + offset as u64;
 		let instr = decoder.decode();
 		if instr.is_invalid() {
-			return Err(err(format!("(bad): unable to decode instruction at rva:{address:#x} after {count} instructions, {offset} bytes")));
+			return Err(err(format!("(bad): unable to decode instruction at rva:{instruction_rva:#x} after {count} instructions, {offset} bytes")));
 		}
 		count += 1;
 		if is_control_flow(&instr) || (trace_limit != 0 && count >= trace_limit) {

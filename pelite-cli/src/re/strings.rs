@@ -28,7 +28,7 @@ const MIN_LENGTH_NUL: usize = 3;
 #[derive(Debug, Eq, PartialEq, serde::Serialize)]
 struct FoundString<'a> {
 	section: &'a str,
-	address: u32,
+	rva: u32,
 	encoding: &'static str,
 	confidence: i32,
 	value: String,
@@ -118,12 +118,12 @@ fn analyze(path: &Path, min_confidence: i32, filters: &[Filter], format: OutputF
 			if !filters.is_empty() && !filters.iter().any(|filter| filter.is_match(&item.value)) {
 				continue;
 			}
-			let Some(address) = u32::try_from(item.start).ok().and_then(|offset| section.VirtualAddress.checked_add(offset)) else {
+			let Some(rva) = u32::try_from(item.start).ok().and_then(|offset| section.VirtualAddress.checked_add(offset)) else {
 				continue;
 			};
 			found.push(FoundString {
 				section: section_name,
-				address,
+				rva,
 				encoding: item.encoding.label(),
 				confidence: item.confidence,
 				value: item.value,

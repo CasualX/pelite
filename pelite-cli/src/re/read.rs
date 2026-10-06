@@ -10,8 +10,8 @@ pub struct ReadOptions {
 }
 
 struct StructContext<'a> {
-	/// Address of the struct containing the field being read.
-	address: u32,
+	/// RVA of the struct containing the field being read.
+	rva: u32,
 	fields: &'a [ty::Field],
 }
 
@@ -81,7 +81,7 @@ pub fn contains_read_errors(value: &serde_json::Value) -> bool {
 }
 
 fn error_value(rva: Option<u32>, error: impl fmt::Display) -> serde_json::Value {
-	serde_json::json!({ "$error": error.to_string(), "$address": rva })
+	serde_json::json!({ "$error": error.to_string(), "$rva": rva })
 }
 
 pub fn read_at(pe: pelite::PeFile<'_>, rva: u32, ty: &ty::Type, options: &ReadOptions) -> serde_json::Value {
@@ -135,12 +135,12 @@ fn try_read_value(pe: pelite::PeFile<'_>, rva: u32, ty: &ty::Type, options: &Rea
 					let context = context.ok_or_else(|| err("dynamic array requires a containing struct"))?;
 					let field = context.fields.iter().find(|field| matches!(&field.name, ty::FieldName::Named(field_name) if field_name == name))
 						.ok_or_else(|| err(format!("array length field '{name}' is not in the containing struct")))?;
-					let address = context.address.checked_add(field.offset).ok_or_else(|| err("array length address overflow"))?;
+					let length_rva = context.rva.checked_add(field.offset).ok_or_else(|| err("array length RVA overflow"))?;
 					let len = match field.ty {
-						ty::Type::U8 => u64::from(pe.derva_copy::<u8>(address, options.zerofill)?),
-						ty::Type::U16 => u64::from(pe.derva_copy::<u16>(address, options.zerofill)?),
-						ty::Type::U32 => u64::from(pe.derva_copy::<u32>(address, options.zerofill)?),
-						ty::Type::U64 => pe.derva_copy::<u64>(address, options.zerofill)?,
+						ty::Type::U8 => u64::from(pe.derva_copy::<u8>(length_rva, options.zerofill)?),
+						ty::Type::U16 => u64::from(pe.derva_copy::<u16>(length_rva, options.zerofill)?),
+						ty::Type::U32 => u64::from(pe.derva_copy::<u32>(length_rva, options.zerofill)?),
+						ty::Type::U64 => pe.derva_copy::<u64>(length_rva, options.zerofill)?,
 						_ => return Err(err(format!("array length field '{name}' must be u8, u16, u32, or u64"))),
 					};
 					if len > options.max_dynamic_array_length as u64 {
@@ -153,15 +153,15 @@ fn try_read_value(pe: pelite::PeFile<'_>, rva: u32, ty: &ty::Type, options: &Rea
 			let mut values = Vec::new();
 			for index in 0..len {
 				let value = match index.checked_mul(stride).and_then(|offset| rva.checked_add(offset)) {
-					Some(address) => read_value(pe, address, &array.ty, options, context),
-					None => error_value(None, "read address overflow"),
+					Some(element_rva) => read_value(pe, element_rva, &array.ty, options, context),
+					None => error_value(None, "read RVA overflow"),
 				};
 				values.push(value);
 			}
 			return Ok(serde_json::Value::Array(values));
 		},
 		ty::Type::Struct(structure) => {
-			let context = StructContext { address: rva, fields: &structure.fields };
+			let context = StructContext { rva, fields: &structure.fields };
 			let mut fields = serde_json::Map::new();
 			for (index, field) in structure.fields.iter().enumerate() {
 				let name = match &field.name {
@@ -170,8 +170,8 @@ fn try_read_value(pe: pelite::PeFile<'_>, rva: u32, ty: &ty::Type, options: &Rea
 					ty::FieldName::Unnamed => index.to_string(),
 				};
 				let value = match rva.checked_add(field.offset) {
-					Some(address) => read_value(pe, address, &field.ty, options, Some(&context)),
-					None => error_value(None, "read address overflow"),
+					Some(field_rva) => read_value(pe, field_rva, &field.ty, options, Some(&context)),
+					None => error_value(None, "read RVA overflow"),
 				};
 				fields.insert(name, value);
 			}

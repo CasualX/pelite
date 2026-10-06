@@ -215,12 +215,12 @@ mod tests {
 	fn field_order_applies_to_nested_and_error_values() {
 		let value = json!({
 			"z": 1,
-			"failure": { "$error": "bounds", "$address": 2 },
+			"failure": { "$error": "bounds", "$rva": 2 },
 			"a": 3,
 		});
 		let mut output = Vec::new();
 		render(&mut output, &value, 0).unwrap();
-		assert_eq!(String::from_utf8(output).unwrap(), "z : 1\n\nfailure:\n  $error   : bounds\n  $address : 2\n\na : 3\n");
+		assert_eq!(String::from_utf8(output).unwrap(), "z : 1\n\nfailure:\n  $error : bounds\n  $rva   : 2\n\na : 3\n");
 	}
 
 	#[test]

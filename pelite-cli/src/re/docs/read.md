@@ -81,8 +81,8 @@ Examples:
 
 Results follow TYPE: scalars become JSON numbers, `cstr` and `utf16lez` become strings,
 arrays become arrays, and structs/unions become objects keyed by field name.
-A failed read appears in place as an object with `$error` and `$address`
-(the attempted RVA, or null if conversion failed). Other fields
+A failed read appears in place as an object with `$error` and `$rva`
+(the attempted RVA, or null if conversion failed or the RVA overflowed). Other fields
 or elements can still succeed, but any `$error` makes the command exit with a
 failure status. Type syntax errors fail before any value is printed.
 

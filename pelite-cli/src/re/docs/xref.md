@@ -13,13 +13,13 @@ pointer bytes if relocations are unavailable. It also checks executable
 sections for 32-bit relative displacements. Use this to find places that may
 refer to a function or data item.
 
-Each reference's `address` is the RVA of the pointer or displacement field.
+Each reference's `rva` is the RVA of the pointer or displacement field.
 Matches are candidates: raw bytes can match by chance, and the search does
 not decode instructions. For code matches, investigate nearby symbols with
 `symbol --facts auto` or explicit factmap(s). Query a range
 beginning before the reference and look for a credible preceding code boundary.
 Disassemble from that boundary with `disasm` to verify the instruction and
-its target; symbol facts are hints, not guaranteed boundaries. A reference address
+its target; symbol facts are hints, not guaranteed boundaries. A reference RVA
 can lie inside an instruction; starting disassembly exactly there can misdecode it.
 `--lookback` can include the containing instruction only if the earlier decode
 position is aligned. For data matches, use `read` with `*unk` or a suitable type.
@@ -42,7 +42,7 @@ Example JSON output (one reference shown):
   "target_va": 6442455040,
   "references": [
     {
-      "address": 6449,
+      "rva": 6449,
       "section": ".text"
     }
   ]
