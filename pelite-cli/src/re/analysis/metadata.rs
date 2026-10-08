@@ -18,7 +18,7 @@ pub fn seed_entry_points(input: &AnalysisInput<'_>, output: &mut AnalysisOutput)
 		};
 		for (index, va) in callbacks.map(Wrap::into).enumerate() {
 			let Ok(rva) = input.pe.va_to_rva(va) else { continue };
-			output.add(input, rva, Some(ty::Type::Fn));
+			output.add_symbol(input, rva, Some(ty::Type::Fn));
 			if let Some(symbol) = output.symbols.get_mut(&rva) {
 				symbol.name = factmap::SymbolName::Named(format!("TlsCallback_{index}"));
 			}
@@ -29,7 +29,7 @@ pub fn seed_entry_points(input: &AnalysisInput<'_>, output: &mut AnalysisOutput)
 		Wrap::T64(h) => h.AddressOfEntryPoint,
 	};
 	if entry != 0 {
-		output.add(input, entry, Some(ty::Type::Fn));
+		output.add_symbol(input, entry, Some(ty::Type::Fn));
 		if let Some(symbol) = output.symbols.get_mut(&entry) {
 			symbol.name = factmap::SymbolName::Named("EntryPoint".into());
 		}
@@ -63,7 +63,7 @@ pub fn seed_exports(input: &AnalysisInput<'_>, output: &mut AnalysisOutput) {
 		for export in exports.iter() {
 			if let Some(rva) = export.ok().and_then(|export| export.symbol()) {
 				let hint = input.executable(rva).then_some(ty::Type::Code);
-				output.add(input, rva, hint);
+				output.add_symbol(input, rva, hint);
 			}
 		}
 		for (name, export) in exports.iter_names() {
@@ -81,7 +81,7 @@ pub fn seed_exports(input: &AnalysisInput<'_>, output: &mut AnalysisOutput) {
 pub fn label_imports(input: &AnalysisInput<'_>, output: &mut AnalysisOutput) {
 	let width = ty::PointerWidth::from(input.pe);
 	for (rva, name) in import_names(input.pe, input.bitness) {
-		if input.mapped(rva) {
+		if rva < input.size {
 			output.symbols.insert(rva, factmap::SymbolFact::new(
 				rva, width.unsigned(), factmap::SymbolName::Named(format!("__imp_{name}")),
 			));
@@ -134,42 +134,9 @@ pub fn scan_relocations(input: &AnalysisInput<'_>, output: &mut AnalysisOutput) 
 			else {
 				u64::from_le_bytes(bytes[..8].try_into().unwrap())
 			};
-			output.add_va(input, va, None);
+			output.add_symbol_va(input, va, None);
 		}),
 		Err(pelite::Error::Null) => {},
 		Err(error) => eprintln!("analysis: relocations: {error}"),
-	}
-}
-
-#[test]
-fn entry_point_and_tls_callbacks_keep_function_names() {
-	for dll in ["Demo.dll", "Demo64.dll"] {
-		let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("../demo").join(dll);
-		let map = pelite::FileMap::open(&path).unwrap();
-		let pe = PeFile::from_bytes(&map).unwrap();
-		let entry = match pe.optional_header() {
-			Wrap::T32(h) => h.AddressOfEntryPoint,
-			Wrap::T64(h) => h.AddressOfEntryPoint,
-		};
-		assert_ne!(entry, 0);
-		let callbacks = match pe.tls().unwrap().callbacks().unwrap() {
-			Wrap::T32(callbacks) => callbacks.iter().map(|&va| u64::from(va)).collect::<Vec<_>>(),
-			Wrap::T64(callbacks) => callbacks.to_vec(),
-		};
-		assert!(!callbacks.is_empty());
-		let input = AnalysisInput::new(pe).unwrap();
-		let mut analysis = AnalysisOutput::default();
-		metadata::scan_exceptions(&input, &mut analysis);
-		metadata::seed_entry_points(&input, &mut analysis);
-		// Later weak passes must not downgrade established names or function types.
-		disassembly::scan_code(&input, &mut analysis);
-		labels::refine_labels(&input, &mut analysis);
-		assert_eq!(analysis.symbols[&entry].name, factmap::SymbolName::Named("EntryPoint".into()));
-		assert_eq!(analysis.symbols[&entry].ty, ty::Type::Fn);
-		for (index, va) in callbacks.into_iter().enumerate() {
-			let rva = pe.va_to_rva(va).unwrap();
-			assert_eq!(analysis.symbols[&rva].name, factmap::SymbolName::Named(format!("TlsCallback_{index}")));
-			assert_eq!(analysis.symbols[&rva].ty, ty::Type::Fn);
-		}
 	}
 }

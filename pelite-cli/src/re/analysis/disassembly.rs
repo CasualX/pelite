@@ -25,8 +25,9 @@ pub fn scan_code(input: &AnalysisInput<'_>, output: &mut AnalysisOutput) {
 fn disassemble_bytes(input: &AnalysisInput<'_>, output: &mut AnalysisOutput, bitness: u32, bytes: &[u8], rva: u32) {
 	let Some(ip) = input.pe.image_base().checked_add(rva as u64) else { return };
 	let mut decoder = iced_x86::Decoder::with_ip(bitness, bytes, ip, iced_x86::DecoderOptions::NONE);
+	let mut instruction = iced_x86::Instruction::default();
 	while decoder.can_decode() {
-		let instruction = decoder.decode();
+		decoder.decode_out(&mut instruction);
 		if instruction.is_invalid() {
 			continue;
 		}
@@ -35,10 +36,10 @@ fn disassemble_bytes(input: &AnalysisInput<'_>, output: &mut AnalysisOutput, bit
 			match operand {
 				OpKind::NearBranch16 | OpKind::NearBranch32 | OpKind::NearBranch64 => {
 					let target = instruction.near_branch_target();
-					output.add_va(input, target, Some(ty::Type::Code));
+					add_reference(input, output, &instruction, target, Some(ty::Type::Code));
 					if instruction.mnemonic() == Mnemonic::Call {
 						if let Some(rva) = target.checked_sub(input.pe.image_base()).and_then(|rva| u32::try_from(rva).ok()) {
-							if input.mapped(rva) && input.executable(rva) {
+							if rva < input.size && input.executable(rva) {
 								output.function_candidates.insert(rva);
 							}
 						}
@@ -47,15 +48,25 @@ fn disassemble_bytes(input: &AnalysisInput<'_>, output: &mut AnalysisOutput, bit
 				OpKind::Memory => {
 					let Some(va) = static_memory_address(&instruction) else { continue };
 					let ty = if instruction.mnemonic() == Mnemonic::Lea { None } else { interpretation(instruction.memory_size()) };
-					output.add_va(input, va, ty);
+					add_reference(input, output, &instruction, va, ty);
 				},
-				OpKind::Immediate32 => output.add_va(input, instruction.immediate32() as u64, None),
-				OpKind::Immediate64 => output.add_va(input, instruction.immediate64(), None),
-				OpKind::Immediate32to64 => output.add_va(input, instruction.immediate32to64() as u64, None),
+				OpKind::Immediate32 => add_reference(input, output, &instruction, instruction.immediate32() as u64, None),
+				OpKind::Immediate64 => add_reference(input, output, &instruction, instruction.immediate64(), None),
+				OpKind::Immediate32to64 => add_reference(input, output, &instruction, instruction.immediate32to64() as u64, None),
 				_ => {},
 			}
 		}
 	}
+}
+
+/// Record the instruction source as well as the discovered target symbol.
+fn add_reference(input: &AnalysisInput<'_>, output: &mut AnalysisOutput, instruction: &iced_x86::Instruction, va: u64, interpretation: Option<ty::Type>) {
+	let Ok(target_rva) = input.pe.va_to_rva(va) else { return };
+	let Ok(rva) = input.pe.va_to_rva(instruction.ip()) else { return };
+	if !output.add_symbol(input, target_rva, interpretation) {
+		return;
+	}
+	output.references.push(factmap::RefFact { rva, target_rva });
 }
 
 /// Resolve only memory operands whose address does not depend on runtime state.

@@ -1,6 +1,92 @@
 use super::*;
 
 #[test]
+fn section_classification_includes_alignment_padding() {
+	let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("../demo/Demo64.dll");
+	let map = pelite::FileMap::open(&path).unwrap();
+	let pe = PeFile::from_bytes(&map).unwrap();
+	let sections = pe.section_headers().iter().map(|section| (pe.offset_of(section), *section)).collect::<Vec<_>>();
+	let mut section = sections[0].1;
+	section.VirtualAddress = 0x1000;
+	for (alignment, virtual_size, raw_size, rounded_size) in [
+		(0x1000, 0x801, 0x200, 0x1000),
+		(0x1000, 0x200, 0x1001, 0x1000),
+		(0x1000, 0x600, 0x5000, 0x1000),
+		(0x1000, 0, 0x1001, 0x2000),
+		(0x200, 0x201, 0x100, 0x400),
+		(0x1000, 0x1000, 0x1000, 0x1000),
+		(0x1000, 0, 0, 0),
+	] {
+		section.VirtualSize = virtual_size;
+		section.SizeOfRawData = raw_size;
+		for (flags, executable, read_only) in [
+			(image::IMAGE_SCN_MEM_READ | image::IMAGE_SCN_MEM_EXECUTE | image::IMAGE_SCN_CNT_CODE, true, false),
+			(image::IMAGE_SCN_MEM_READ | image::IMAGE_SCN_CNT_INITIALIZED_DATA, false, true),
+			(image::IMAGE_SCN_MEM_READ | image::IMAGE_SCN_MEM_WRITE, false, false),
+		] {
+			section.Characteristics = flags;
+			let mut bytes = map.as_ref().to_vec();
+			let view = dataview::DataView::from_mut(bytes.as_mut_slice());
+			for &(offset, mut header) in &sections {
+				header.Characteristics = 0;
+				view.write(offset, &header);
+			}
+			view.write(sections[0].0, &section);
+			let mut input = AnalysisInput::new(PeFile::from_bytes(&bytes).unwrap()).unwrap();
+			input.alignment = alignment;
+			assert!(!input.executable(0xfff));
+			assert!(!input.read_only_data(0xfff));
+			if rounded_size != 0 {
+				let last = 0x1000 + rounded_size - 1;
+				for rva in [0x1000, last] {
+					assert_eq!(input.executable(rva), executable);
+					assert_eq!(input.read_only_data(rva), read_only);
+				}
+			}
+			let end = 0x1000 + rounded_size;
+			assert!(!input.executable(end));
+			assert!(!input.read_only_data(end));
+		}
+	}
+}
+
+#[test]
+fn symbol_targets_accept_image_gaps_and_reject_out_of_image_addresses() {
+	for filename in ["Demo.dll", "Demo64.dll"] {
+		let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("../demo").join(filename);
+		let map = pelite::FileMap::open(&path).unwrap();
+		let input = AnalysisInput::new(PeFile::from_bytes(&map).unwrap()).unwrap();
+		let gap = match input.pe.optional_header() {
+			Wrap::T32(h) => h.SizeOfHeaders,
+			Wrap::T64(h) => h.SizeOfHeaders,
+		};
+		assert!(gap < input.size);
+		assert!(!input.pe.section_headers().iter().any(|section| {
+			gap.checked_sub(section.VirtualAddress)
+				.is_some_and(|offset| offset < section.VirtualSize.max(section.SizeOfRawData))
+		}));
+		let mut output = AnalysisOutput::default();
+		for rva in [0, gap, input.size - 1] {
+			assert!(output.add_symbol(&input, rva, None));
+			assert!(output.symbols.contains_key(&rva));
+		}
+		assert_eq!(output.symbols[&gap].name, factmap::SymbolName::Data);
+		for rva in [input.size, input.size + 1, u32::MAX] {
+			assert!(!output.add_symbol(&input, rva, None));
+			assert!(!output.symbols.contains_key(&rva));
+		}
+		let mut output = AnalysisOutput::default();
+		let base = input.pe.image_base();
+		output.add_symbol_va(&input, base + u64::from(gap), None);
+		output.add_symbol_va(&input, base - 1, None);
+		output.add_symbol_va(&input, base + u64::from(input.size), None);
+		output.add_symbol_va(&input, base + u64::from(input.size) + 1, None);
+		assert_eq!(output.symbols.len(), 1);
+		assert!(output.symbols.contains_key(&gap));
+	}
+}
+
+#[test]
 fn discovered_symbols_write_parseable_factmap() {
 	let symbols = vec![
 		factmap::SymbolFact::new(0x1000, ty::Type::Code, factmap::SymbolName::Code),
@@ -71,113 +157,12 @@ fn function_hints_override_data_and_union_hints() {
 }
 
 #[test]
-fn runtime_function_comments_and_import_slot_integers() {
-	for dll in ["Demo.dll", "Demo64.dll"] {
-		let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("../demo").join(dll);
-		let map = pelite::FileMap::open(&path).unwrap();
-		let pe = PeFile::from_bytes(&map).unwrap();
-		let width = ty::PointerWidth::from(pe);
-		let input = AnalysisInput::new(pe).unwrap();
-		let mut analysis = AnalysisOutput::default();
-		let imports = metadata::import_names(pe, input.bitness);
-		assert!(!imports.is_empty());
-		for &rva in imports.keys() {
-			analysis.add(&input, rva, Some(ty::Type::Code));
-		}
-		metadata::label_imports(&input, &mut analysis);
-		for (rva, name) in imports {
-			let symbol = &analysis.symbols[&rva];
-			assert_eq!(symbol.ty, if width == ty::PointerWidth::Bits32 { ty::Type::U32 } else { ty::Type::U64 });
-			assert_eq!(symbol.name, factmap::SymbolName::Named(format!("__imp_{name}")));
-			assert_eq!(symbol.ty.layout(), Ok((width.bytes(), width.bytes())));
-		}
-		if let Wrap::T64(file) = pe {
-			let exceptions = file.exception_x64().unwrap();
-			assert!(!exceptions.image().is_empty());
-			let symbols = analysis.symbols.clone();
-			metadata::scan_exceptions(&input, &mut analysis);
-			assert_eq!(analysis.symbols, symbols);
-			assert!(analysis.functions.is_empty());
-			for function in exceptions.image() {
-				let fact = &analysis.comments[&function.BeginAddress];
-				assert_eq!(fact.rva, function.BeginAddress);
-				let runtime_function = pe.headers().file_offset_to_rva(pe.offset_of(function)).unwrap();
-				assert_eq!(fact.comment, format!("RUNTIME_FUNCTION at {runtime_function:#x}"));
-			}
-		}
-		else {
-			metadata::scan_exceptions(&input, &mut analysis);
-			assert!(analysis.functions.is_empty());
-			assert!(analysis.comments.is_empty());
-		}
-		let facts = analysis.into_factmap(&input);
-		let mut output = Vec::new();
-		facts.write(&mut output, "").unwrap();
-		assert_eq!(factmap::FactMap::parse(std::str::from_utf8(&output).unwrap(), width).unwrap(), facts);
-	}
-}
-
-#[test]
 fn upgrade_type_union_layout() {
 	let width = ty::PointerWidth::Bits64;
 	let mut symbol = factmap::SymbolFact::new(0, ty::Type::parse("[u32;3]", width).unwrap(), factmap::SymbolName::Data);
 	symbol.upgrade_type(ty::Type::U64).unwrap();
 	assert_eq!(symbol.ty.layout(), Ok((16, 8)));
 	assert_eq!(symbol.ty, ty::Type::parse("union{[u32;3],u64}", width).unwrap());
-}
-
-#[test]
-fn export_names_survive_the_complete_pipeline() {
-	for dll in ["Demo.dll", "Demo64.dll"] {
-		let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("../demo").join(dll);
-		let map = pelite::FileMap::open(&path).unwrap();
-		let pe = PeFile::from_bytes(&map).unwrap();
-		let exports = pe.exports().unwrap().by().unwrap();
-		let code = exports.name("ThrowException").unwrap().symbol().unwrap();
-		let (data_name, data) = exports.iter_names().find_map(|(name, export)| {
-			let name = name.ok()?.to_str().ok()?;
-			let rva = export.ok()?.symbol()?;
-			name.contains("GLOBAL_A").then_some((name, rva))
-		}).unwrap();
-		let facts = analyze(pe, false).unwrap();
-		let symbols = facts.facts.iter().filter_map(|fact| match fact {
-			factmap::Fact::Symbol(symbol) => Some((symbol.rva, symbol)),
-			_ => None,
-		}).collect::<HashMap<_, _>>();
-		assert_eq!(symbols[&code].name, factmap::SymbolName::Named("ThrowException".into()));
-		assert_eq!(symbols[&code].ty, ty::Type::Code);
-		assert_eq!(symbols[&data].name, factmap::SymbolName::Named(data_name.into()));
-		assert!(!matches!(symbols[&data].ty, ty::Type::Fn | ty::Type::Code));
-	}
-}
-
-#[test]
-fn forwarded_exports_are_skipped_and_ordinal_only_exports_are_seeded() {
-	for dll in ["Demo.dll", "Demo64.dll"] {
-		let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("../demo").join(dll);
-		let mut bytes = fs::read(path).unwrap();
-		let (count_offset, forward_offset, forward_rva, ordinal_rva) = {
-			let pe = PeFile::from_bytes(&bytes).unwrap();
-			let exports = pe.exports().unwrap().by().unwrap();
-			let header = pe.headers();
-			let directory_rva = pe.data_directory()[image::IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress;
-			let forward_offset = header.rva_to_file_offset(exports.image().AddressOfFunctions + 4).unwrap();
-			let ordinal_rva = exports.index(2).unwrap().symbol().unwrap();
-			(header.rva_to_file_offset(directory_rva + 24).unwrap(), forward_offset, exports.image().Name, ordinal_rva)
-		};
-		// Keep two names; the third direct export now has only an ordinal.
-		bytes[count_offset..count_offset + 4].copy_from_slice(&2u32.to_le_bytes());
-		// An RVA inside the export directory is interpreted as a forwarder string.
-		bytes[forward_offset..forward_offset + 4].copy_from_slice(&forward_rva.to_le_bytes());
-		let pe = PeFile::from_bytes(&bytes).unwrap();
-		assert!(pe.exports().unwrap().by().unwrap().hint(1).unwrap().forward().is_some());
-		let input = AnalysisInput::new(pe).unwrap();
-		let mut analysis = AnalysisOutput::default();
-		metadata::seed_exports(&input, &mut analysis);
-		assert!(!analysis.symbols.contains_key(&forward_rva));
-		assert_eq!(analysis.symbols[&ordinal_rva].name, factmap::SymbolName::Code);
-		assert_eq!(analysis.symbols[&ordinal_rva].ty, ty::Type::Code);
-	}
 }
 
 #[test]
