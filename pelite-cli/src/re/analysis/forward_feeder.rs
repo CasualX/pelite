@@ -2,71 +2,69 @@ use super::*;
 use super::disassembly::static_memory_address;
 use iced_x86::{InstructionInfoFactory, InstructionInfoOptions, Mnemonic, OpAccess, OpKind, Register};
 
-impl Analysis<'_> {
-	/// Experimentally carry static global references forward to indirect register calls.
-	/// This is a linear scan, without control-flow or calling-convention analysis.
-	pub fn forward_feed(&mut self) {
-		for section in self.pe.section_headers() {
-			if section.Characteristics & image::IMAGE_SCN_MEM_EXECUTE == 0 {
-				continue;
-			}
-			let bytes = match self.pe.get_section_bytes(section) {
-				Ok(bytes) => bytes,
-				Err(error) => {
-					eprintln!("analysis: forward feeder at section RVA {:#x}: {error}", section.VirtualAddress);
-					continue;
-				},
-			};
-			let virtual_size = if section.VirtualSize == 0 { section.SizeOfRawData } else { section.VirtualSize };
-			let len = bytes.len().min(virtual_size as usize).min(self.size.saturating_sub(section.VirtualAddress) as usize);
-			self.feed_bytes(&bytes[..len], section.VirtualAddress);
+/// Experimentally carry static global references forward to indirect register calls.
+/// This is a linear scan, without control-flow or calling-convention analysis.
+pub fn forward_feed(input: &AnalysisInput<'_>, output: &mut AnalysisOutput) {
+	for section in input.pe.section_headers() {
+		if section.Characteristics & image::IMAGE_SCN_MEM_EXECUTE == 0 {
+			continue;
 		}
+		let bytes = match input.pe.get_section_bytes(section) {
+			Ok(bytes) => bytes,
+			Err(error) => {
+				eprintln!("analysis: forward feeder at section RVA {:#x}: {error}", section.VirtualAddress);
+				continue;
+			},
+		};
+		let virtual_size = if section.VirtualSize == 0 { section.SizeOfRawData } else { section.VirtualSize };
+		let len = bytes.len().min(virtual_size as usize).min(input.size.saturating_sub(section.VirtualAddress) as usize);
+		feed_bytes(input, output, &bytes[..len], section.VirtualAddress);
 	}
+}
 
-	fn feed_bytes(&mut self, bytes: &[u8], rva: u32) {
-		let Some(ip) = self.pe.image_base().checked_add(u64::from(rva)) else { return };
-		let mut decoder = iced_x86::Decoder::with_ip(self.bitness, bytes, ip, iced_x86::DecoderOptions::NONE);
-		let mut info = InstructionInfoFactory::new();
-		let mut globals = [None; 16];
-		while decoder.can_decode() {
-			let instruction = decoder.decode();
-			if instruction.is_invalid() {
-				globals.fill(None);
-				continue;
-			}
-			if instruction.mnemonic() == Mnemonic::Call && instruction.op0_kind() == OpKind::Register {
-				if let Some(register) = register_index(instruction.op0_register()) {
-					if let Some(global) = globals[register].and_then(|rva| self.symbols.get(&rva)) {
-						let rva = (instruction.ip() - self.pe.image_base()) as u32;
-						let comment = symbols::IndexedSymbol::from(global).to_string();
-						self.comments.insert(rva, factmap::CommentFact { rva, comment });
-					}
+fn feed_bytes(input: &AnalysisInput<'_>, output: &mut AnalysisOutput, bytes: &[u8], rva: u32) {
+	let Some(ip) = input.pe.image_base().checked_add(u64::from(rva)) else { return };
+	let mut decoder = iced_x86::Decoder::with_ip(input.bitness, bytes, ip, iced_x86::DecoderOptions::NONE);
+	let mut info = InstructionInfoFactory::new();
+	let mut globals = [None; 16];
+	while decoder.can_decode() {
+		let instruction = decoder.decode();
+		if instruction.is_invalid() {
+			globals.fill(None);
+			continue;
+		}
+		if instruction.mnemonic() == Mnemonic::Call && instruction.op0_kind() == OpKind::Register {
+			if let Some(register) = register_index(instruction.op0_register()) {
+				if let Some(global) = globals[register].and_then(|rva| output.symbols.get(&rva)) {
+					let rva = (instruction.ip() - input.pe.image_base()) as u32;
+					let comment = symbols::IndexedSymbol::from(global).to_string();
+					output.comments.insert(rva, factmap::CommentFact { rva, comment });
 				}
 			}
-			// Invalidate before recording a new load, including implicit and partial writes.
-			for used in info.info_options(&instruction, InstructionInfoOptions::NO_MEMORY_USAGE).used_registers() {
-				if matches!(used.access(), OpAccess::Write | OpAccess::CondWrite | OpAccess::ReadWrite | OpAccess::ReadCondWrite) {
-					if let Some(register) = register_index(used.register()) {
-						globals[register] = None;
-					}
+		}
+		// Invalidate before recording a new load, including implicit and partial writes.
+		for used in info.info_options(&instruction, InstructionInfoOptions::NO_MEMORY_USAGE).used_registers() {
+			if matches!(used.access(), OpAccess::Write | OpAccess::CondWrite | OpAccess::ReadWrite | OpAccess::ReadCondWrite) {
+				if let Some(register) = register_index(used.register()) {
+					globals[register] = None;
 				}
 			}
-			if instruction.op0_kind() != OpKind::Register || instruction.op1_kind() != OpKind::Memory {
-				continue;
-			}
-			let destination = instruction.op0_register();
-			if !(destination.is_gpr32() || destination.is_gpr64()) {
-				continue;
-			}
-			if instruction.mnemonic() != Mnemonic::Lea
-				&& !(instruction.mnemonic() == Mnemonic::Mov && matches!(instruction.memory_size().size(), 4 | 8)) {
-				continue;
-			}
-			let Some(va) = static_memory_address(&instruction) else { continue };
-			let Ok(global_rva) = self.pe.va_to_rva(va) else { continue };
-			if self.symbols.contains_key(&global_rva) {
-				globals[register_index(destination).unwrap()] = Some(global_rva);
-			}
+		}
+		if instruction.op0_kind() != OpKind::Register || instruction.op1_kind() != OpKind::Memory {
+			continue;
+		}
+		let destination = instruction.op0_register();
+		if !(destination.is_gpr32() || destination.is_gpr64()) {
+			continue;
+		}
+		if instruction.mnemonic() != Mnemonic::Lea
+			&& !(instruction.mnemonic() == Mnemonic::Mov && matches!(instruction.memory_size().size(), 4 | 8)) {
+			continue;
+		}
+		let Some(va) = static_memory_address(&instruction) else { continue };
+		let Ok(global_rva) = input.pe.va_to_rva(va) else { continue };
+		if output.symbols.contains_key(&global_rva) {
+			globals[register_index(destination).unwrap()] = Some(global_rva);
 		}
 	}
 }
@@ -91,13 +89,14 @@ mod tests {
 		bytes
 	}
 
-	fn analyze_bytes(bytes: &[u8]) -> Analysis<'static> {
+	fn analyze_bytes(bytes: &[u8]) -> AnalysisOutput {
 		let pe = PeFile::from_bytes(&IMAGE64.0).unwrap();
-		let mut analysis = Analysis::new(pe).unwrap();
+		let input = AnalysisInput::new(pe).unwrap();
+		let mut analysis = AnalysisOutput::default();
 		for (rva, name) in [(0x3000, "__imp_Function"), (0x3010, "other_global")] {
 			analysis.symbols.insert(rva, factmap::SymbolFact::new(rva, ty::PointerWidth::from(pe).unsigned(), factmap::SymbolName::Named(name.into())));
 		}
-		analysis.feed_bytes(bytes, 0x1000);
+		feed_bytes(&input, &mut analysis, bytes, 0x1000);
 		analysis
 	}
 
@@ -109,7 +108,8 @@ mod tests {
 			let analysis = analyze_bytes(&bytes);
 			assert_eq!(analysis.comments.len(), 1);
 			assert_eq!(analysis.comments[&0x1009].comment, "__imp_Function");
-			let map = analysis.into_factmap();
+			let input = AnalysisInput::new(PeFile::from_bytes(&IMAGE64.0).unwrap()).unwrap();
+			let map = analysis.into_factmap(&input);
 			let mut output = Vec::new();
 			map.write(&mut output, "").unwrap();
 			assert_eq!(factmap::FactMap::parse(std::str::from_utf8(&output).unwrap(), ty::PointerWidth::Bits64).unwrap(), map);
@@ -160,12 +160,13 @@ mod tests {
 	fn x86_dword_global_load() {
 		let pe = PeFile::from_bytes(&IMAGE32.0).unwrap();
 		let width = ty::PointerWidth::from(pe);
-		let mut analysis = Analysis::new(pe).unwrap();
+		let input = AnalysisInput::new(pe).unwrap();
+		let mut analysis = AnalysisOutput::default();
 		analysis.symbols.insert(0x3000, factmap::SymbolFact::new(0x3000, width.pointer(ty::Type::Unknown), factmap::SymbolName::Data));
 		let mut bytes = vec![0xa1]; // mov eax,[absolute address]
 		bytes.extend_from_slice(&((pe.image_base() + 0x3000) as u32).to_le_bytes());
 		bytes.extend_from_slice(&[0xff, 0xd0]); // call eax
-		analysis.feed_bytes(&bytes, 0x1000);
+		feed_bytes(&input, &mut analysis, &bytes, 0x1000);
 		assert_eq!(analysis.comments[&0x1005].comment, "data_3000");
 	}
 }

@@ -77,13 +77,14 @@ fn runtime_function_comments_and_import_slot_integers() {
 		let map = pelite::FileMap::open(&path).unwrap();
 		let pe = PeFile::from_bytes(&map).unwrap();
 		let width = ty::PointerWidth::from(pe);
-		let mut analysis = Analysis::new(pe).unwrap();
-		let imports = imports::import_names(pe, analysis.bitness);
+		let input = AnalysisInput::new(pe).unwrap();
+		let mut analysis = AnalysisOutput::default();
+		let imports = metadata::import_names(pe, input.bitness);
 		assert!(!imports.is_empty());
 		for &rva in imports.keys() {
-			analysis.add(rva, Some(ty::Type::Code));
+			analysis.add(&input, rva, Some(ty::Type::Code));
 		}
-		analysis.label_imports();
+		metadata::label_imports(&input, &mut analysis);
 		for (rva, name) in imports {
 			let symbol = &analysis.symbols[&rva];
 			assert_eq!(symbol.ty, if width == ty::PointerWidth::Bits32 { ty::Type::U32 } else { ty::Type::U64 });
@@ -94,7 +95,7 @@ fn runtime_function_comments_and_import_slot_integers() {
 			let exceptions = file.exception_x64().unwrap();
 			assert!(!exceptions.image().is_empty());
 			let symbols = analysis.symbols.clone();
-			analysis.scan_exceptions();
+			metadata::scan_exceptions(&input, &mut analysis);
 			assert_eq!(analysis.symbols, symbols);
 			assert!(analysis.functions.is_empty());
 			for function in exceptions.image() {
@@ -105,11 +106,11 @@ fn runtime_function_comments_and_import_slot_integers() {
 			}
 		}
 		else {
-			analysis.scan_exceptions();
+			metadata::scan_exceptions(&input, &mut analysis);
 			assert!(analysis.functions.is_empty());
 			assert!(analysis.comments.is_empty());
 		}
-		let facts = analysis.into_factmap();
+		let facts = analysis.into_factmap(&input);
 		let mut output = Vec::new();
 		facts.write(&mut output, "").unwrap();
 		assert_eq!(factmap::FactMap::parse(std::str::from_utf8(&output).unwrap(), width).unwrap(), facts);
@@ -170,8 +171,9 @@ fn forwarded_exports_are_skipped_and_ordinal_only_exports_are_seeded() {
 		bytes[forward_offset..forward_offset + 4].copy_from_slice(&forward_rva.to_le_bytes());
 		let pe = PeFile::from_bytes(&bytes).unwrap();
 		assert!(pe.exports().unwrap().by().unwrap().hint(1).unwrap().forward().is_some());
-		let mut analysis = Analysis::new(pe).unwrap();
-		analysis.seed_exports();
+		let input = AnalysisInput::new(pe).unwrap();
+		let mut analysis = AnalysisOutput::default();
+		metadata::seed_exports(&input, &mut analysis);
 		assert!(!analysis.symbols.contains_key(&forward_rva));
 		assert_eq!(analysis.symbols[&ordinal_rva].name, factmap::SymbolName::Code);
 		assert_eq!(analysis.symbols[&ordinal_rva].ty, ty::Type::Code);
@@ -195,9 +197,10 @@ fn exception_comments_preserve_existing_symbols() {
 		factmap::SymbolName::Named("ret0".into()),
 	] {
 		let expected = name.clone();
-		let mut analysis = Analysis::new(pe).unwrap();
+		let input = AnalysisInput::new(pe).unwrap();
+		let mut analysis = AnalysisOutput::default();
 		analysis.symbols.insert(rva, factmap::SymbolFact::new(rva, ty::Type::Unknown, name));
-		analysis.scan_exceptions();
+		metadata::scan_exceptions(&input, &mut analysis);
 		assert_eq!(analysis.symbols[&rva].name, expected);
 		assert_eq!(analysis.symbols[&rva].ty, ty::Type::Unknown);
 		assert!(analysis.comments.contains_key(&rva));
