@@ -1,4 +1,4 @@
-use pelite::{FileMap, PeFile, image};
+use pelite::{FileMap, PeFile};
 
 use crate::*;
 
@@ -39,12 +39,6 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 			Ok(())
 		},
 	}
-}
-
-fn is_readonly_data(section: &image::IMAGE_SECTION_HEADER) -> bool {
-	let flags = section.Characteristics;
-	flags & image::IMAGE_SCN_MEM_READ != 0
-		&& flags & (image::IMAGE_SCN_MEM_WRITE | image::IMAGE_SCN_MEM_EXECUTE | image::IMAGE_SCN_MEM_DISCARDABLE) == 0
 }
 
 fn template_length(bytes: &[u8]) -> Option<usize> {
@@ -93,7 +87,7 @@ fn template_length(bytes: &[u8]) -> Option<usize> {
 fn analyze(file: PeFile<'_>) -> Vec<TemplateOutput> {
 	let mut output = Vec::new();
 	for section in file.section_headers() {
-		if !is_readonly_data(section) {
+		if !section.is_rdata() {
 			continue;
 		}
 		let Ok(bytes) = file.get_section_bytes(section) else { continue };

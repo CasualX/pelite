@@ -141,7 +141,7 @@ fn mapped_rva(pe: PeFile<'_>, offset: usize, pointer_width: usize) -> Option<u32
 
 fn search_relative_displacements<'a>(pe: PeFile<'a>, target_rva: u32, references: &mut Vec<Reference<'a>>) {
 	for section in pe.section_headers() {
-		if section.Characteristics & (image::IMAGE_SCN_CNT_CODE | image::IMAGE_SCN_MEM_EXECUTE) == 0 {
+		if !section.is_code() {
 			continue;
 		}
 		let Ok(bytes) = pe.get_section_bytes(section) else {

@@ -34,7 +34,7 @@ impl<'a> SectionFilter<'a> {
 	fn includes(&self, section: &pelite::image::IMAGE_SECTION_HEADER) -> bool {
 		match self.selected {
 			Some(selected) => std::ptr::eq(selected, section),
-			None => section.Characteristics & pelite::image::IMAGE_SCN_MEM_EXECUTE == 0,
+			None => !section.is_code(),
 		}
 	}
 }

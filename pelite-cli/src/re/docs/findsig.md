@@ -8,7 +8,8 @@ PATTERN uses the [pelite pattern syntax](https://github.com/CasualX/pelite/blob/
 Quote it in the shell. With no PATTERN, enter one pattern per line on standard
 input; an interactive terminal shows a prompt.
 
-By default, the command scans sections marked executable. `--section` scans
+By default, the command scans readable, executable, non-discardable sections,
+including writable code, regardless of content flags. `--section` scans
 only the named section or its 0-based index, regardless of its flags.
 An unknown name or index is an error.
 

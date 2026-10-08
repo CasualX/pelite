@@ -19,6 +19,9 @@ struct RawType<'a> {
 pub fn analyze(file: PeFile<'_>) -> Result<Vec<TypeOutput>> {
 	let text = file.section_headers().by_name(".text").ok_or_else(|| err("no .text section found"))?;
 	let rdata = file.section_headers().by_name(".rdata").ok_or_else(|| err("no .rdata section found"))?;
+	if !text.is_code() || !rdata.is_rdata() {
+		return Ok(Vec::new());
+	}
 	let relocs = file.base_relocs().map_err(|_| err("no base relocations found"))?;
 
 	let mut vrefs = Vec::new();

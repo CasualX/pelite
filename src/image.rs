@@ -539,6 +539,34 @@ pub struct IMAGE_SECTION_HEADER {
 }
 
 impl IMAGE_SECTION_HEADER {
+	/// Returns whether the section conventionally contains persistent code.
+	/// Requires readable, executable, non-discardable memory; writable code is allowed.
+	#[inline]
+	pub const fn is_code(&self) -> bool {
+		const REQUIRED: u32 = IMAGE_SCN_MEM_READ | IMAGE_SCN_MEM_EXECUTE;
+		self.Characteristics & (REQUIRED | IMAGE_SCN_MEM_DISCARDABLE) == REQUIRED
+	}
+	/// Returns whether the section conventionally contains persistent read-only data.
+	/// Requires readable, non-discardable memory without write or execute permission.
+	#[inline]
+	pub const fn is_rdata(&self) -> bool {
+		const REQUIRED: u32 = IMAGE_SCN_MEM_READ;
+		self.Characteristics & (REQUIRED | IMAGE_SCN_MEM_WRITE | IMAGE_SCN_MEM_EXECUTE | IMAGE_SCN_MEM_DISCARDABLE) == REQUIRED
+	}
+	/// Returns whether the section conventionally contains persistent writable data.
+	/// Requires readable, writable, non-executable, non-discardable memory.
+	#[inline]
+	pub const fn is_data(&self) -> bool {
+		const REQUIRED: u32 = IMAGE_SCN_MEM_READ | IMAGE_SCN_MEM_WRITE;
+		self.Characteristics & (REQUIRED | IMAGE_SCN_MEM_EXECUTE | IMAGE_SCN_MEM_DISCARDABLE) == REQUIRED
+	}
+	/// Returns whether the section has persistent read, write, and execute memory.
+	/// Checks memory permissions and excludes discardable sections.
+	#[inline]
+	pub const fn is_rwx(&self) -> bool {
+		const REQUIRED: u32 = IMAGE_SCN_MEM_READ | IMAGE_SCN_MEM_WRITE | IMAGE_SCN_MEM_EXECUTE;
+		self.Characteristics & (REQUIRED | IMAGE_SCN_MEM_DISCARDABLE) == REQUIRED
+	}
 	/// Returns the name as a byte slice.
 	#[inline]
 	pub fn name_bytes(&self) -> &[u8] {

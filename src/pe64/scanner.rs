@@ -67,9 +67,9 @@ impl<'a, P: Copy + Pe<'a>> Scanner<P> {
 		let selection: ScanSections<'a, P> = self.sections(|_| true);
 		selection.within(range)
 	}
-	/// Scan in executable sections.
+	/// Scan in code sections.
 	pub fn code(self) -> ScanSections<'a, P> {
-		self.sections(|section| section.Characteristics & (IMAGE_SCN_MEM_EXECUTE | IMAGE_SCN_MEM_WRITE) == IMAGE_SCN_MEM_EXECUTE)
+		self.sections(|section| section.is_code())
 	}
 	/// Selects sections using a predicate, evaluated once per section during iteration.
 	pub fn sections<F: FnMut(&image::IMAGE_SECTION_HEADER) -> bool>(self, filter: F) -> ScanSections<'a, P, F> {
