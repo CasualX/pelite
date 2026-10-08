@@ -145,6 +145,16 @@ impl<'a, Pe32: Copy + pe32::Pe<'a>, Pe64: Copy + pe64::Pe<'a>> Wrap<Pe32, Pe64> 
 		symbol - base
 	}
 
+	#[doc = include_str!("../docs/rva_of.md")]
+	#[inline]
+	#[track_caller]
+	pub fn rva_of<T: Pod + ?Sized>(self, symbol: &'a T) -> Result<u32> {
+		match self {
+			Wrap::T32(pe32) => pe32.rva_of(symbol),
+			Wrap::T64(pe64) => pe64.rva_of(symbol),
+		}
+	}
+
 	#[doc = include_str!("../docs/slice.md")]
 	#[inline]
 	pub fn slice(&self, rva: u32, min_size: usize, align: usize) -> Result<&'a [u8]> {

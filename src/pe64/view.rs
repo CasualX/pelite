@@ -145,6 +145,13 @@ impl<'a> PeView<'a> {
 
 		symbol - base
 	}
+
+	#[doc = include_str!("../docs/rva_of.md")]
+	#[inline]
+	#[track_caller]
+	pub fn rva_of<T: Pod + ?Sized>(self, symbol: &'a T) -> Result<Rva> {
+		Pe::rva_of(self, symbol)
+	}
 }
 
 //----------------------------------------------------------------
