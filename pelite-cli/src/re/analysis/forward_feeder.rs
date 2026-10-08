@@ -6,7 +6,7 @@ use iced_x86::{InstructionInfoFactory, InstructionInfoOptions, Mnemonic, OpAcces
 /// This is a linear scan, without control-flow or calling-convention analysis.
 pub fn forward_feed(input: &AnalysisInput<'_>, output: &mut AnalysisOutput) {
 	for section in input.pe.section_headers() {
-		if section.Characteristics & image::IMAGE_SCN_MEM_EXECUTE == 0 {
+		if !section.is_code() {
 			continue;
 		}
 		let bytes = match input.pe.get_section_bytes(section) {

@@ -1,4 +1,4 @@
-use pelite::{FileMap, PeFile, Wrap, image};
+use pelite::{FileMap, PeFile, Wrap};
 
 use crate::*;
 
@@ -44,17 +44,12 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	}
 }
 
-fn is_readonly_data(section: &image::IMAGE_SECTION_HEADER) -> bool {
-	let flags = section.Characteristics;
-	flags & image::IMAGE_SCN_MEM_READ != 0 && flags & (image::IMAGE_SCN_MEM_WRITE | image::IMAGE_SCN_MEM_EXECUTE) == 0
-}
-
 fn source_path(file: PeFile<'_>, pointer: u64, length: u64) -> Option<&'_ str> {
 	if length == 0 || length > MAX_PATH_LENGTH {
 		return None;
 	}
 	let rva = file.va_to_rva(pointer).ok()?;
-	if !file.section_headers().by_rva(rva).is_some_and(is_readonly_data) {
+	if !file.section_headers().by_rva(rva).is_some_and(pelite::image::IMAGE_SECTION_HEADER::is_rdata) {
 		return None;
 	}
 	let bytes = file.slice_bytes(rva).ok()?.get(..length as usize)?;
@@ -84,7 +79,7 @@ fn location(file: PeFile<'_>, rva: u32, pointer: u64, length: u64, line: u32, co
 }
 
 pub fn is_location64(file: pelite::pe64::PeFile<'_>, rva: u32) -> bool {
-	if !file.section_headers().by_rva(rva).is_some_and(is_readonly_data) {
+	if !file.section_headers().by_rva(rva).is_some_and(pelite::image::IMAGE_SECTION_HEADER::is_rdata) {
 		return false;
 	}
 	let Ok(record) = file.derva_slice::<u8>(rva, 24) else { return false };
@@ -105,7 +100,7 @@ fn analyze(file: PeFile<'_>) -> Vec<LocationOutput<'_>> {
 fn analyze32(file: pelite::pe32::PeFile<'_>) -> Vec<LocationOutput<'_>> {
 	let mut output = Vec::new();
 	for section in file.section_headers() {
-		if !is_readonly_data(section) {
+		if !section.is_rdata() {
 			continue;
 		}
 		let Ok(bytes) = file.get_section_bytes(section) else { continue };
@@ -123,7 +118,7 @@ fn analyze32(file: pelite::pe32::PeFile<'_>) -> Vec<LocationOutput<'_>> {
 fn analyze64(file: pelite::pe64::PeFile<'_>) -> Vec<LocationOutput<'_>> {
 	let mut output = Vec::new();
 	for section in file.section_headers() {
-		if !is_readonly_data(section) {
+		if !section.is_rdata() {
 			continue;
 		}
 		let Ok(bytes) = file.get_section_bytes(section) else { continue };

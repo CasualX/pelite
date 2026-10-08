@@ -146,6 +146,7 @@ fn summarize(path: &Path, bytes: &[u8], pe: PeFile<'_>) -> Result<Summary> {
 		last_raw_end = last_raw_end.max(raw_end.min(bytes.len()));
 		let section_bytes = pe.get_section_bytes(section).ok();
 		let entropy = section_bytes.filter(|data| !data.is_empty()).map(shannon_entropy);
+		// Diagnostics describe actual permissions, including unconventional sections.
 		let executable = section.Characteristics & image::IMAGE_SCN_MEM_EXECUTE != 0;
 		let writable = section.Characteristics & image::IMAGE_SCN_MEM_WRITE != 0;
 		if executable && writable {

@@ -465,7 +465,7 @@ fn exec_pattern_language() {
 
 use crate::pattern::Atom::*;
 
-const EXECUTE: u32 = IMAGE_SCN_MEM_EXECUTE;
+const RX: u32 = IMAGE_SCN_MEM_READ | IMAGE_SCN_MEM_EXECUTE;
 const CODE: u32 = IMAGE_SCN_CNT_CODE;
 const HEADER_SIZE: usize = 0x400;
 
@@ -530,7 +530,7 @@ fn collect<'a, P: Copy + Pe<'a>, F: FnMut(&IMAGE_SECTION_HEADER) -> bool>(select
 
 #[test]
 fn sections_are_independent_and_uniqueness_is_global() {
-	let mut bytes = fixture(&[(0x3000, 0x200, 0x200, EXECUTE), (0x1000, 0x200, 0x200, EXECUTE), (0x5000, 0x200, 0x200, CODE)]);
+	let mut bytes = fixture(&[(0x3000, 0x200, 0x200, RX), (0x1000, 0x200, 0x200, RX), (0x5000, 0x200, 0x200, CODE)]);
 	bytes[0x400] = 0xaa;
 	bytes[0x600] = 0xaa;
 	bytes[0x800] = 0xaa;
@@ -557,7 +557,7 @@ fn sections_are_independent_and_uniqueness_is_global() {
 
 #[test]
 fn prefix_optimization_respects_candidate_bounds_and_overlapping_matches() {
-	let mut bytes = fixture(&[(0x1000, 0x200, 0x200, EXECUTE)]);
+	let mut bytes = fixture(&[(0x1000, 0x200, 0x200, RX)]);
 	bytes[0x400..0x40a].copy_from_slice(b"abcdababab");
 	fn check<'a>(pe: impl Copy + Pe<'a>) {
 		let scanner = pe.scanner();
@@ -579,7 +579,7 @@ fn prefix_optimization_respects_candidate_bounds_and_overlapping_matches() {
 
 #[test]
 fn prefix_can_cross_a_backing_section_boundary() {
-	let mut bytes = fixture(&[(0x1000, 2, 2, EXECUTE), (0x1002, 2, 2, 0)]);
+	let mut bytes = fixture(&[(0x1000, 2, 2, RX), (0x1002, 2, 2, 0)]);
 	bytes[0x400..0x402].copy_from_slice(b"ab");
 	bytes[0x600..0x602].copy_from_slice(b"cd");
 	let pat = [Byte(b'a'), Byte(b'b'), Byte(b'c'), Byte(b'd')];
@@ -589,7 +589,7 @@ fn prefix_can_cross_a_backing_section_boundary() {
 
 #[test]
 fn raw_padding_and_virtual_zero_fill_have_explicit_extents() {
-	let mut bytes = fixture(&[(0x1000, 0x400, 0x200, EXECUTE), (0x3000, 0x100, 0x200, EXECUTE), (0x5000, 0, 0x200, EXECUTE)]);
+	let mut bytes = fixture(&[(0x1000, 0x400, 0x200, RX), (0x3000, 0x100, 0x200, RX), (0x5000, 0, 0x200, RX)]);
 	bytes[0x780] = 0xaa; // Raw padding in the second section.
 	bytes[0x800] = 0xaa; // Raw bytes with zero VirtualSize.
 	let pe = PeFile::from_bytes(&bytes).unwrap();
@@ -603,7 +603,7 @@ fn raw_padding_and_virtual_zero_fill_have_explicit_extents() {
 
 #[test]
 fn references_escape_selection_but_scan_stays_in_current_section() {
-	let mut bytes = fixture(&[(0x1000, 0x200, 0x200, EXECUTE), (0x3000, 0x200, 0x200, 0)]);
+	let mut bytes = fixture(&[(0x1000, 0x200, 0x200, RX), (0x3000, 0x200, 0x200, 0)]);
 	// A relative reference followed by an absolute reference in the code section.
 	put32(&mut bytes, 0x400, 0x3000 - 0x1004);
 	bytes[0x404..0x404 + mem::size_of::<Va>()].copy_from_slice(&(0x3000 as Va).to_le_bytes());
@@ -623,7 +623,7 @@ fn references_escape_selection_but_scan_stays_in_current_section() {
 
 #[test]
 fn malformed_sections_are_skipped() {
-	let mut bytes = fixture(&[(0x1000, 0x200, 0x200, EXECUTE), (0x3000, 0x200, 0x200, EXECUTE)]);
+	let mut bytes = fixture(&[(0x1000, 0x200, 0x200, RX), (0x3000, 0x200, 0x200, RX)]);
 	bytes[0x400] = 0xaa;
 	bytes.truncate(0x600);
 	let pe = PeFile::from_bytes(&bytes).unwrap();
@@ -635,7 +635,7 @@ fn malformed_sections_are_skipped() {
 	assert_eq!(scanner.sections(|_| true).find(&[Byte(0xaa)], &mut []), Some(0x1000));
 	assert_eq!(scanner.section(&pe.section_headers().image()[0]).find(&[Byte(0xaa)], &mut []), Some(0x1000));
 	// The mapped source also skips a section extending beyond its supplied bytes.
-	let mut view = mapped(&fixture(&[(0x1000, 0x200, 0x200, EXECUTE), (0x3000, 0x200, 0x200, EXECUTE)]));
+	let mut view = mapped(&fixture(&[(0x1000, 0x200, 0x200, RX), (0x3000, 0x200, 0x200, RX)]));
 	view.truncate(0x3000);
 	assert_eq!(collect(PeView::from_bytes(&view).unwrap().scanner().sections(|_| true), &[Byte(0xaa)]), Ok(Vec::new()));
 	put32(&mut bytes, section_offset(1) + 20, u32::MAX - 1);
@@ -646,14 +646,14 @@ fn malformed_sections_are_skipped() {
 
 #[test]
 fn overlapping_rva_mappings_follow_normal_section_iteration() {
-	let bytes = fixture(&[(0x1000, 0x200, 0x200, EXECUTE), (0x1100, 0x200, 0x200, 0)]);
+	let bytes = fixture(&[(0x1000, 0x200, 0x200, RX), (0x1100, 0x200, 0x200, 0)]);
 	assert_eq!(PeFile::from_bytes(&bytes).unwrap().scanner().code().within(0x1000..0x1001).find(&[], &mut []), Some(0x1000));
 	assert_eq!(PeView::from_bytes(&mapped(&bytes)).unwrap().scanner().code().within(0x1000..0x1001).find(&[], &mut []), Some(0x1000));
 }
 
 #[test]
 fn uniqueness_reexecutes_the_match_to_restore_captures() {
-	let mut bytes = fixture(&[(0x1000, 0x200, 0x200, EXECUTE), (0x3000, 0x200, 0x200, EXECUTE)]);
+	let mut bytes = fixture(&[(0x1000, 0x200, 0x200, RX), (0x3000, 0x200, 0x200, RX)]);
 	bytes[0x400..0x402].copy_from_slice(&[0xaa, 0xbb]);
 	bytes[0x600..0x602].copy_from_slice(&[0xaa, 0xcc]);
 	let pe = PeFile::from_bytes(&bytes).unwrap();
@@ -679,12 +679,12 @@ fn uniqueness_reexecutes_the_match_to_restore_captures() {
 
 #[test]
 fn architecture_wrapper_exposes_the_same_selection() {
-	let mut bytes = fixture(&[(0x1000, 0x200, 0x200, EXECUTE)]);
+	let mut bytes = fixture(&[(0x1000, 0x200, 0x200, RX)]);
 	bytes[0x400] = 0xaa;
 	let pe = crate::PeFile::from_bytes(&bytes).unwrap();
 	let scanner = pe.scanner();
 	assert_eq!(scanner.code().find(&[Byte(0xaa)], &mut []), Some(0x1000));
-	assert_eq!(scanner.sections(|s| s.Characteristics & EXECUTE != 0).within(0x1000..0x1001)
+	assert_eq!(scanner.sections(|s| s.Characteristics & IMAGE_SCN_MEM_EXECUTE != 0).within(0x1000..0x1001)
 		.find(&[Byte(0xaa)], &mut []), Some(0x1000));
 	let mut matches = scanner.section(&pe.section_headers().image()[0]).matches(&[Byte(0xaa)]);
 	assert_eq!(matches.next(&mut []), Some(0x1000));
@@ -693,7 +693,7 @@ fn architecture_wrapper_exposes_the_same_selection() {
 
 #[test]
 fn optimized_search_agrees_with_direct_execution() {
-	let mut bytes = fixture(&[(0x1010, 16, 16, EXECUTE), (0x1000, 16, 16, EXECUTE)]);
+	let mut bytes = fixture(&[(0x1010, 16, 16, RX), (0x1000, 16, 16, RX)]);
 	for i in 0..16 {
 		bytes[0x400 + i] = ((i + 16) % 3) as u8;
 		bytes[0x600 + i] = (i % 3) as u8;

@@ -5,8 +5,8 @@ Usage:
     pelite-cli re scan FILE TYPE [PATTERN] [--section SECTION] [--zerofill] [--string-preview-length N] [--max-dynamic-array-length N] [--format=text|json|json-pretty|nul]
 
 PATTERN uses the syntax and section scanning described by `findsig --help`.
-By default, scan searches sections not marked executable. `--section` searches
-only the named section or its 0-based index, regardless of its flags.
+By default, scan searches data sections. `--section` searches only the named
+section or its 0-based index, regardless of its flags.
 An unknown name or index is an error. With no PATTERN, every byte position in
 the selected sections is considered a match.
 TYPE and the read limits work as described by `read --help`.

@@ -713,7 +713,7 @@ pub unsafe fn scanner_find(pefile: *mut PeFile, args: *const [u8]) {
 	let mut i = 0;
 	let sections = pefile.scanner().sections(|section| {
 		match &args.section {
-			None => section.Characteristics & pelite::image::IMAGE_SCN_MEM_EXECUTE != 0,
+			None => section.is_code(),
 			Some(ScannerSection::ByIndex(index)) => {
 				i += 1;
 				index + 1 == i
@@ -758,7 +758,7 @@ pub unsafe fn scanner_matches(pefile: *mut PeFile, args: *const [u8]) {
 	let mut i = 0;
 	let sections = pefile.scanner().sections(|section| {
 		match &args.section {
-			None => section.Characteristics & pelite::image::IMAGE_SCN_MEM_EXECUTE != 0,
+			None => section.is_code(),
 			Some(ScannerSection::ByIndex(index)) => {
 				i += 1;
 				index + 1 == i

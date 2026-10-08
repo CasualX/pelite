@@ -5,7 +5,7 @@ const MIN_STRING_SCORE: i32 = 40;
 /// Recognize UTF-8 and UTF-16LE NUL-terminated strings at read-only data candidates.
 pub fn label_strings(input: &AnalysisInput<'_>, output: &mut AnalysisOutput) {
 	for section in input.pe.section_headers() {
-		if !is_read_only(section) {
+		if !section.is_rdata() {
 			continue;
 		}
 		let Ok(bytes) = input.pe.get_section_bytes(section) else { continue };
@@ -33,10 +33,6 @@ pub fn label_strings(input: &AnalysisInput<'_>, output: &mut AnalysisOutput) {
 			}
 		}
 	}
-}
-
-fn is_read_only(section: &image::IMAGE_SECTION_HEADER) -> bool {
-	section.Characteristics & (image::IMAGE_SCN_MEM_READ | image::IMAGE_SCN_MEM_WRITE | image::IMAGE_SCN_MEM_EXECUTE) == image::IMAGE_SCN_MEM_READ
 }
 
 fn looks_like_va(pe: PeFile<'_>, rva: u32, bytes: &[u8]) -> bool {

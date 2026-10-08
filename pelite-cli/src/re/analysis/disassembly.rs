@@ -3,7 +3,7 @@ use super::*;
 /// Scan executable bytes linearly for candidate addresses and type hints.
 pub fn scan_code(input: &AnalysisInput<'_>, output: &mut AnalysisOutput) {
 	for section in input.pe.section_headers() {
-		if section.Characteristics & image::IMAGE_SCN_MEM_EXECUTE == 0 {
+		if !section.is_code() {
 			continue;
 		}
 		let bytes = match input.pe.get_section_bytes(section) {

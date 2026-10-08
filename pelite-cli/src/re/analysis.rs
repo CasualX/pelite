@@ -188,7 +188,7 @@ impl AnalysisInput<'_> {
 
 	fn executable(&self, rva: u32) -> bool {
 		self.pe.section_headers().iter().any(|section| {
-			section.Characteristics & image::IMAGE_SCN_MEM_EXECUTE != 0
+			section.is_code()
 				&& rva.checked_sub(section.VirtualAddress)
 					.is_some_and(|offset| offset < section.VirtualSize.max(section.SizeOfRawData))
 		})
@@ -196,8 +196,7 @@ impl AnalysisInput<'_> {
 
 	fn read_only_data(&self, rva: u32) -> bool {
 		self.pe.section_headers().iter().any(|section| {
-			section.Characteristics & (image::IMAGE_SCN_MEM_READ | image::IMAGE_SCN_MEM_WRITE | image::IMAGE_SCN_MEM_EXECUTE)
-				== image::IMAGE_SCN_MEM_READ
+			section.is_rdata()
 				&& rva.checked_sub(section.VirtualAddress)
 					.is_some_and(|offset| offset < section.VirtualSize.max(section.SizeOfRawData))
 		})

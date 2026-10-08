@@ -1,5 +1,3 @@
-use pelite::image;
-
 use super::*;
 
 type Buckets = Vec<[u64; 256]>;
@@ -45,7 +43,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 		let map = pelite::FileMap::open(path)?;
 		let pe = pelite::PeFile::from_bytes(&map)?;
 		for section in pe.section_headers() {
-			if section.Characteristics & image::IMAGE_SCN_MEM_EXECUTE == 0 {
+			if !section.is_code() {
 				continue;
 			}
 			let bytes = pe.get_section_bytes(section)?;

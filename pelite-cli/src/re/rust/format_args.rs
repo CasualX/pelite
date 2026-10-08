@@ -98,7 +98,7 @@ pub fn candidate_relative_xrefs(file: PeFile<'_>) -> Vec<Xref> {
 	let mut save = [0; 3];
 	let mut matches = file.scanner().code().matches(pattern);
 	while matches.next(&mut save).is_some() {
-		if !file.section_headers().by_rva(save[1]).is_some_and(|section| section.Characteristics & image::IMAGE_SCN_MEM_EXECUTE != 0) && file.slice_bytes(save[1]).is_ok() {
+		if file.section_headers().by_rva(save[1]).is_some_and(|section| section.is_rdata()) && file.slice_bytes(save[1]).is_ok() {
 			output.push(Xref {
 				code_rva: save[0],
 				target_rva: save[1],
@@ -111,5 +111,8 @@ pub fn candidate_relative_xrefs(file: PeFile<'_>) -> Vec<Xref> {
 }
 
 pub fn read_format_template(file: PeFile<'_>, rva: Rva) -> Option<FormatTemplate> {
+	if !file.section_headers().by_rva(rva).is_some_and(image::IMAGE_SECTION_HEADER::is_rdata) {
+		return None;
+	}
 	parse_format_template(file.slice_bytes(rva).ok()?)
 }

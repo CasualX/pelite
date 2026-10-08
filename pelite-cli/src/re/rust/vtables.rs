@@ -73,15 +73,6 @@ fn analyze(file: PeFile<'_>) -> Vec<VTableOutput> {
 	}
 }
 
-fn is_readonly_data(section: &image::IMAGE_SECTION_HEADER) -> bool {
-	let flags = section.Characteristics;
-	flags & image::IMAGE_SCN_MEM_READ != 0 && flags & (image::IMAGE_SCN_MEM_WRITE | image::IMAGE_SCN_MEM_EXECUTE) == 0
-}
-
-fn is_executable(section: &image::IMAGE_SECTION_HEADER) -> bool {
-	section.Characteristics & image::IMAGE_SCN_MEM_EXECUTE != 0
-}
-
 fn constant_return(code: &[u8], is_64: bool) -> Option<u64> {
 	let (offset, width) = match code.first()? {
 		0xb0 => (1, 1), // mov al, imm8
@@ -136,14 +127,14 @@ fn relocated_pointers32(file: pelite::pe32::PeFile<'_>, relocs: BaseRelocationDi
 			return;
 		}
 		// Inside a readonly data section
-		if !file.section_headers().by_rva(rva).is_some_and(is_readonly_data) {
+		if !file.section_headers().by_rva(rva).is_some_and(pelite::image::IMAGE_SECTION_HEADER::is_rdata) {
 			return;
 		}
 		// Read the pointer
 		let Ok(target_va) = file.derva_copy::<u32>(rva, false) else { return };
 		let Ok(target_rva) = file.va_to_rva(target_va) else { return };
 		// Check the pointer goes from rdata section to text section
-		if !file.section_headers().by_rva(target_rva).is_some_and(is_executable) {
+		if !file.section_headers().by_rva(target_rva).is_some_and(image::IMAGE_SECTION_HEADER::is_code) {
 			return;
 		}
 		pointers.push(rva);
@@ -155,7 +146,7 @@ fn scanned_pointers32(file: pelite::pe32::PeFile<'_>) -> Vec<u32> {
 	let mut pointers = Vec::new();
 	for section in file.section_headers() {
 		// Look inside readonly data sections
-		if !is_readonly_data(section) {
+		if !section.is_rdata() {
 			continue;
 		}
 		let Ok(bytes) = file.get_section_bytes(section) else {
@@ -172,7 +163,7 @@ fn scanned_pointers32(file: pelite::pe32::PeFile<'_>) -> Vec<u32> {
 				continue;
 			};
 			// Check the pointer goes from rdata section to text section
-			if !file.section_headers().by_rva(target_rva).is_some_and(is_executable) {
+			if !file.section_headers().by_rva(target_rva).is_some_and(image::IMAGE_SECTION_HEADER::is_code) {
 				continue;
 			}
 			pointers.push(rva);
@@ -195,7 +186,7 @@ fn parse_vtable_header32(file: pelite::pe32::PeFile<'_>, rva: u32) -> Option<&'_
 	// Validate drop function
 	if header.drop_fn != 0 {
 		let target_rva = file.va_to_rva(header.drop_fn).ok()?;
-		if !file.section_headers().by_rva(target_rva).is_some_and(is_executable) {
+		if !file.section_headers().by_rva(target_rva).is_some_and(image::IMAGE_SECTION_HEADER::is_code) {
 			return None;
 		}
 	}
@@ -224,7 +215,7 @@ fn function_comment32(file: pelite::pe32::PeFile<'_>, slot: u32, index: usize) -
 	}
 	let (pointer, length) = static_string32(code)?;
 	let string_rva = file.va_to_rva(pointer).ok()?;
-	if !file.section_headers().by_rva(string_rva).is_some_and(is_readonly_data) {
+	if !file.section_headers().by_rva(string_rva).is_some_and(pelite::image::IMAGE_SECTION_HEADER::is_rdata) {
 		return None;
 	}
 	let string = valid_string(file.slice_bytes(string_rva).ok()?, length)?;
@@ -295,14 +286,14 @@ fn relocated_pointers64(file: pelite::pe64::PeFile<'_>, relocs: BaseRelocationDi
 			return;
 		}
 		// Inside a readonly data section
-		if !file.section_headers().by_rva(rva).is_some_and(is_readonly_data) {
+		if !file.section_headers().by_rva(rva).is_some_and(pelite::image::IMAGE_SECTION_HEADER::is_rdata) {
 			return;
 		}
 		// Read the pointer
 		let Ok(target_va) = file.derva_copy::<u64>(rva, false) else { return };
 		let Ok(target_rva) = file.va_to_rva(target_va) else { return };
 		// Check the pointer goes from rdata section to text section
-		if !file.section_headers().by_rva(target_rva).is_some_and(is_executable) {
+		if !file.section_headers().by_rva(target_rva).is_some_and(image::IMAGE_SECTION_HEADER::is_code) {
 			return;
 		}
 		pointers.push(rva);
@@ -314,7 +305,7 @@ fn scanned_pointers64(file: pelite::pe64::PeFile<'_>) -> Vec<u32> {
 	let mut pointers = Vec::new();
 	for section in file.section_headers() {
 		// Look inside readonly data sections
-		if !is_readonly_data(section) {
+		if !section.is_rdata() {
 			continue;
 		}
 		let Ok(bytes) = file.get_section_bytes(section) else {
@@ -331,7 +322,7 @@ fn scanned_pointers64(file: pelite::pe64::PeFile<'_>) -> Vec<u32> {
 				continue;
 			};
 			// Check the pointer goes from rdata section to text section
-			if !file.section_headers().by_rva(target_rva).is_some_and(is_executable) {
+			if !file.section_headers().by_rva(target_rva).is_some_and(image::IMAGE_SECTION_HEADER::is_code) {
 				continue;
 			}
 			pointers.push(rva);
@@ -354,7 +345,7 @@ fn parse_vtable_header64(file: pelite::pe64::PeFile<'_>, rva: u32) -> Option<&'_
 	// Validate drop function
 	if header.drop_fn != 0 {
 		let target_rva = file.va_to_rva(header.drop_fn).ok()?;
-		if !file.section_headers().by_rva(target_rva).is_some_and(is_executable) {
+		if !file.section_headers().by_rva(target_rva).is_some_and(image::IMAGE_SECTION_HEADER::is_code) {
 			return None;
 		}
 	}
@@ -382,7 +373,7 @@ fn function_comment64(file: pelite::pe64::PeFile<'_>, slot: u32, index: usize) -
 		return Some(format!("fn[{index}]: return {value:#x}"));
 	}
 	let (string_rva, length) = static_string64(code, function_rva)?;
-	if !file.section_headers().by_rva(string_rva).is_some_and(is_readonly_data) {
+	if !file.section_headers().by_rva(string_rva).is_some_and(pelite::image::IMAGE_SECTION_HEADER::is_rdata) {
 		return None;
 	}
 	let string = valid_string(file.slice_bytes(string_rva).ok()?, length)?;
