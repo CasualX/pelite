@@ -71,7 +71,7 @@ fn function_hints_override_data_and_union_hints() {
 }
 
 #[test]
-fn metadata_functions_and_import_slot_integers() {
+fn runtime_function_comments_and_import_slot_integers() {
 	for dll in ["Demo.dll", "Demo64.dll"] {
 		let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("../demo").join(dll);
 		let map = pelite::FileMap::open(&path).unwrap();
@@ -93,12 +93,21 @@ fn metadata_functions_and_import_slot_integers() {
 		if let Wrap::T64(file) = pe {
 			let exceptions = file.exception_x64().unwrap();
 			assert!(!exceptions.image().is_empty());
+			let symbols = analysis.symbols.clone();
 			analysis.scan_exceptions();
+			assert_eq!(analysis.symbols, symbols);
+			assert!(analysis.functions.is_empty());
 			for function in exceptions.image() {
-				let symbol = &analysis.symbols[&function.BeginAddress];
-				assert_eq!(symbol.ty, ty::Type::Fn);
-				assert_eq!(symbol.name, factmap::SymbolName::Fn);
+				let fact = &analysis.comments[&function.BeginAddress];
+				assert_eq!(fact.rva, function.BeginAddress);
+				let runtime_function = pe.headers().file_offset_to_rva(pe.offset_of(function)).unwrap();
+				assert_eq!(fact.comment, format!("RUNTIME_FUNCTION at {runtime_function:#x}"));
 			}
+		}
+		else {
+			analysis.scan_exceptions();
+			assert!(analysis.functions.is_empty());
+			assert!(analysis.comments.is_empty());
 		}
 		let facts = analysis.into_factmap();
 		let mut output = Vec::new();
@@ -135,7 +144,7 @@ fn export_names_survive_the_complete_pipeline() {
 			_ => None,
 		}).collect::<HashMap<_, _>>();
 		assert_eq!(symbols[&code].name, factmap::SymbolName::Named("ThrowException".into()));
-		assert_eq!(symbols[&code].ty, if matches!(pe, Wrap::T64(_)) { ty::Type::Fn } else { ty::Type::Code });
+		assert_eq!(symbols[&code].ty, ty::Type::Code);
 		assert_eq!(symbols[&data].name, factmap::SymbolName::Named(data_name.into()));
 		assert!(!matches!(symbols[&data].ty, ty::Type::Fn | ty::Type::Code));
 	}
@@ -170,7 +179,7 @@ fn forwarded_exports_are_skipped_and_ordinal_only_exports_are_seeded() {
 }
 
 #[test]
-fn exception_function_hints_preserve_specific_labels() {
+fn exception_comments_preserve_existing_symbols() {
 	let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("../demo/Demo64.dll");
 	let map = pelite::FileMap::open(&path).unwrap();
 	let pe = PeFile::from_bytes(&map).unwrap();
@@ -185,15 +194,13 @@ fn exception_function_hints_preserve_specific_labels() {
 		factmap::SymbolName::Named("imp_Sleep".into()),
 		factmap::SymbolName::Named("ret0".into()),
 	] {
-		let expected = if matches!(name, factmap::SymbolName::Code | factmap::SymbolName::Data | factmap::SymbolName::RData) {
-			factmap::SymbolName::Fn
-		} else {
-			name.clone()
-		};
+		let expected = name.clone();
 		let mut analysis = Analysis::new(pe).unwrap();
 		analysis.symbols.insert(rva, factmap::SymbolFact::new(rva, ty::Type::Unknown, name));
 		analysis.scan_exceptions();
 		assert_eq!(analysis.symbols[&rva].name, expected);
-		assert_eq!(analysis.symbols[&rva].ty, ty::Type::Fn);
+		assert_eq!(analysis.symbols[&rva].ty, ty::Type::Unknown);
+		assert!(analysis.comments.contains_key(&rva));
+		assert!(analysis.functions.is_empty());
 	}
 }

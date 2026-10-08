@@ -67,19 +67,16 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 					"ty": symbol.ty.to_string(),
 				}),
 				factmap::Fact::Comment(comment) => serde_json::json!({ "rva": comment.rva, "comment": comment.comment }),
-				factmap::Fact::Ref(_) => unreachable!("analysis produces symbols and comments"),
+				factmap::Fact::Function(function) => serde_json::json!({ "rva": function.rva, "content": function.content }),
+				factmap::Fact::Ref(_) => todo!(),
 			}).collect::<Vec<_>>();
 			print_json(&report, matches!(format, OutputFormat::JsonPretty))
 		},
 		OutputFormat::Text => {
 			let mut output = io::stdout().lock();
 			writeln!(output, "RVA       Name           Type")?;
-			for fact in facts.facts {
-				match fact {
-					factmap::Fact::Symbol(symbol) => writeln!(output, "{:#08x}  {:<14} {}", symbol.rva, symbol.name.to_string(), symbol.ty)?,
-					factmap::Fact::Comment(comment) => writeln!(output, "{:#08x}  ; {}", comment.rva, comment.comment)?,
-					factmap::Fact::Ref(_) => unreachable!("analysis produces symbols and comments"),
-				}
+			for fact in &facts.facts {
+				writeln!(output, "{}", fact)?;
 			}
 			Ok(())
 		},
@@ -128,6 +125,8 @@ pub struct Analysis<'a> {
 	pub symbols: HashMap<u32, factmap::SymbolFact>,
 	/// Comments attached to instruction RVAs by analysis passes.
 	pub comments: HashMap<u32, factmap::CommentFact>,
+	/// Function metadata indexed by entry RVA; later discoveries replace earlier ones.
+	pub functions: HashMap<u32, factmap::FunctionFact>,
 }
 
 impl<'a> Analysis<'a> {
@@ -142,7 +141,7 @@ impl<'a> Analysis<'a> {
 			Wrap::T32(h) => (h.SizeOfImage, h.SizeOfHeaders),
 			Wrap::T64(h) => (h.SizeOfImage, h.SizeOfHeaders),
 		};
-		Ok(Analysis { pe, bitness, size, headers_size, symbols: HashMap::new(), comments: HashMap::new() })
+		Ok(Analysis { pe, bitness, size, headers_size, symbols: HashMap::new(), comments: HashMap::new(), functions: HashMap::new() })
 	}
 
 	/// Finish the analysis and return candidates sorted by RVA.
@@ -158,16 +157,14 @@ impl<'a> Analysis<'a> {
 		symbols
 	}
 
-	/// Finish the analysis and return symbol and comment facts sorted by RVA.
+	/// Finish the analysis and return facts sorted by RVA.
 	pub fn into_factmap(mut self) -> factmap::FactMap {
 		let comments = std::mem::take(&mut self.comments);
+		let functions = std::mem::take(&mut self.functions);
 		let mut facts = self.into_symbols().into_iter().map(factmap::Fact::Symbol)
-			.chain(comments.into_values().map(factmap::Fact::Comment)).collect::<Vec<_>>();
-		facts.sort_unstable_by_key(|fact| match fact {
-			factmap::Fact::Symbol(symbol) => (symbol.rva, 0),
-			factmap::Fact::Comment(comment) => (comment.rva, 1),
-			factmap::Fact::Ref(reference) => (reference.rva, 2),
-		});
+			.chain(comments.into_values().map(factmap::Fact::Comment))
+			.chain(functions.into_values().map(factmap::Fact::Function)).collect::<Vec<_>>();
+		facts.sort_unstable_by_key(factmap::Fact::sort_key);
 		factmap::FactMap { facts }
 	}
 }
