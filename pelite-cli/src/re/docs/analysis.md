@@ -2,7 +2,7 @@ Discover candidate code and data symbols in a PE image
 
 Usage:
 
-    pelite-cli re analysis FILE [-o FACTS.txt] [--format=text|json|json-pretty|nul]
+    pelite-cli re analysis FILE [-o FACTS.txt] [--measure-load-time] [--timings] [--format=text|json|json-pretty|nul]
 
 The command scans executable sections of i386 and AMD64 images for direct
 branches, calls, static memory references, and address-like immediates. It
@@ -76,6 +76,16 @@ addresses may refer to another module. Import jump stubs use `imp_NAME`. Named i
 omit the DLL name; ordinal import labels retain it.
 
     pelite-cli re analysis sample.dll -o auto.facts.txt --format=nul
+
+Use `--timings` to log total and individual automatic analysis pass times to stderr for the `analysis` command.
+The total measures the complete in-memory pipeline, excludes writing the database or printing the report.
+Without `--timings`, analysis timing logs are disabled.
+Add `--measure-load-time` with `-o` to read and parse the newly written database
+through the same file loader used by `--facts FACTS.txt`, and log that duration
+separately. Since the file was just written, this generally measures a
+warm filesystem cache rather than cold disk access.
+
+    pelite-cli re analysis sample.dll -o auto.facts.txt --measure-load-time --timings --format=nul
 
 Use `symbol` to query a small address range rather than reading the whole
 database. See `symbol --help` for the user-file format and override rules,

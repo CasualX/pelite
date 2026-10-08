@@ -71,8 +71,13 @@ pub fn load(matches: &clap::ArgMatches, pointer_width: ty::PointerWidth, base: u
 pub fn load_map(path: &Path, pointer_width: ty::PointerWidth, pe: Option<pelite::PeFile<'_>>) -> Result<factmap::FactMap> {
 	if path == Path::new("auto") {
 		let pe = pe.ok_or_else(|| err("--facts auto requires a PE image"))?;
-		return analysis::analyze(pe);
+		return analysis::analyze(pe, false);
 	}
+	load_file(path, pointer_width)
+}
+
+/// Read and parse a factmap file, including files named `auto`.
+pub fn load_file(path: &Path, pointer_width: ty::PointerWidth) -> Result<factmap::FactMap> {
 	let source = fs::read_to_string(path).map_err(|error| err(format!("{}: {error}", path.display())))?;
 	factmap::FactMap::parse(&source, pointer_width)
 		.map_err(|error| err(format!("{}: {error}", path.display())))

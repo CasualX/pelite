@@ -16,6 +16,108 @@ mod strings;
 #[cfg(test)]
 mod tests;
 
+pub fn command() -> clap::Command {
+	clap::Command::new("analysis")
+		.about("Discover candidate symbols using disassembly and base relocations")
+		.after_help(include_str!("docs/analysis.md"))
+		.arg(summary::file_arg().required(true))
+		.arg(clap::Arg::new("timings")
+			.long("timings")
+			.action(clap::ArgAction::SetTrue)
+			.help("Log total and per-pass automatic analysis timings to stderr"))
+		.arg(clap::Arg::new("output")
+			.short('o').long("output")
+			.value_name("FACTS.txt")
+			.value_parser(clap::value_parser!(PathBuf))
+			.help("Write discovered symbols as a new factmap database"))
+		.arg(clap::Arg::new("measure-load-time")
+			.long("measure-load-time")
+			.action(clap::ArgAction::SetTrue)
+			.requires("output")
+			.help("Read and parse the output database after writing it, logging the load time to stderr"))
+}
+
+pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
+	let path = matches.get_one::<PathBuf>("file").expect("required by clap");
+	let map = pelite::FileMap::open(path)?;
+	let pe = PeFile::from_bytes(&map)?;
+	let facts = analyze(pe, matches.get_flag("timings"))?;
+	if let Some(output_path) = matches.get_one::<PathBuf>("output") {
+		let file = fs::OpenOptions::new().write(true).create_new(true).open(output_path)?;
+		let mut file = io::BufWriter::new(file);
+		let filename = path.file_name().unwrap_or(path.as_os_str()).to_string_lossy();
+		let filename = serde_json::to_string(&filename)?;
+		let hash = basenc::LowerHex.encode(Sha256::digest(map.as_ref()).as_ref());
+		let comment = format!("File: {filename}, SHA-256: {hash}");
+		facts.write(&mut file, &comment)?;
+		file.flush()?;
+		drop(file);
+		if matches.get_flag("measure-load-time") {
+			let label = format!("reading and parsing {}", output_path.display());
+			let _loaded = time(true, &label, || symbols::load_file(output_path, ty::PointerWidth::from(pe)))?;
+		}
+	}
+	match format {
+		OutputFormat::Nul => Ok(()),
+		OutputFormat::Json | OutputFormat::JsonPretty => {
+			let report = facts.facts.iter().map(|fact| match fact {
+				factmap::Fact::Symbol(symbol) => serde_json::json!({
+					"rva": symbol.rva,
+					"name": symbol.name.to_string(),
+					"ty": symbol.ty.to_string(),
+				}),
+				factmap::Fact::Comment(comment) => serde_json::json!({ "rva": comment.rva, "comment": comment.comment }),
+				factmap::Fact::Ref(_) => unreachable!("analysis produces symbols and comments"),
+			}).collect::<Vec<_>>();
+			print_json(&report, matches!(format, OutputFormat::JsonPretty))
+		},
+		OutputFormat::Text => {
+			let mut output = io::stdout().lock();
+			writeln!(output, "RVA       Name           Type")?;
+			for fact in facts.facts {
+				match fact {
+					factmap::Fact::Symbol(symbol) => writeln!(output, "{:#08x}  {:<14} {}", symbol.rva, symbol.name.to_string(), symbol.ty)?,
+					factmap::Fact::Comment(comment) => writeln!(output, "{:#08x}  ; {}", comment.rva, comment.comment)?,
+					factmap::Fact::Ref(_) => unreachable!("analysis produces symbols and comments"),
+				}
+			}
+			Ok(())
+		},
+	}
+}
+
+/// Run a closure and optionally log its elapsed time to stderr.
+fn time<T>(timings: bool, label: &str, f: impl FnOnce() -> T) -> T {
+	let start =
+		if !timings { None }
+		else { Some(time::Instant::now()) };
+
+	let result = f();
+
+	if let Some(start) = start {
+		eprintln!("pelite-cli: {label} took {:.3?}", start.elapsed());
+	}
+	result
+}
+
+/// Run the complete automatic analysis pipeline in memory.
+pub fn analyze(pe: PeFile<'_>, timings: bool) -> Result<factmap::FactMap> {
+	time(timings, "automatic analysis (total)", || {
+		let mut analysis = Analysis::new(pe)?;
+		// Run heuristics first, then increasingly authoritative metadata.
+		time(timings, "scan_code", || analysis.scan_code());
+		time(timings, "scan_relocations", || analysis.scan_relocations());
+		time(timings, "refine_labels", || analysis.refine_labels());
+		time(timings, "seed_exports", || analysis.seed_exports());
+		time(timings, "label_strings", || analysis.label_strings());
+		time(timings, "label_imports", || analysis.label_imports());
+		time(timings, "scan_exceptions", || analysis.scan_exceptions());
+		time(timings, "seed_entry_points", || analysis.seed_entry_points());
+		time(timings, "forward_feed", || analysis.forward_feed());
+		Ok(time(timings, "into_factmap", || analysis.into_factmap()))
+	})
+}
+
 /// Candidate symbols accumulated by independently selectable analysis passes.
 pub struct Analysis<'a> {
 	pe: PeFile<'a>,
@@ -67,76 +169,6 @@ impl<'a> Analysis<'a> {
 			factmap::Fact::Ref(reference) => (reference.rva, 2),
 		});
 		factmap::FactMap { facts }
-	}
-}
-
-pub fn command() -> clap::Command {
-	clap::Command::new("analysis")
-		.about("Discover candidate symbols using disassembly and base relocations")
-		.after_help(include_str!("docs/analysis.md"))
-		.arg(summary::file_arg().required(true))
-		.arg(clap::Arg::new("output")
-			.short('o').long("output").value_name("FACTS.txt")
-			.value_parser(clap::value_parser!(PathBuf))
-			.help("Write discovered symbols as a new factmap database"))
-}
-
-/// Run the complete automatic analysis pipeline in memory.
-pub fn analyze(pe: PeFile<'_>) -> Result<factmap::FactMap> {
-	let mut analysis = Analysis::new(pe)?;
-	// Run heuristics first, then increasingly authoritative metadata.
-	analysis.scan_code();
-	analysis.scan_relocations();
-	analysis.refine_labels();
-	analysis.seed_exports();
-	analysis.label_strings();
-	analysis.label_imports();
-	analysis.scan_exceptions();
-	analysis.seed_entry_points();
-	analysis.forward_feed();
-	Ok(analysis.into_factmap())
-}
-
-pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
-	let path = matches.get_one::<PathBuf>("file").expect("required by clap");
-	let map = pelite::FileMap::open(path)?;
-	let facts = analyze(PeFile::from_bytes(&map)?)?;
-	if let Some(output_path) = matches.get_one::<PathBuf>("output") {
-		let file = fs::OpenOptions::new().write(true).create_new(true).open(output_path)?;
-		let mut file = io::BufWriter::new(file);
-		let filename = path.file_name().unwrap_or(path.as_os_str()).to_string_lossy();
-		let filename = serde_json::to_string(&filename)?;
-		let hash = basenc::LowerHex.encode(Sha256::digest(map.as_ref()).as_ref());
-		let comment = format!("File: {filename}, SHA-256: {hash}");
-		facts.write(&mut file, &comment)?;
-		file.flush()?;
-	}
-	match format {
-		OutputFormat::Nul => Ok(()),
-		OutputFormat::Json | OutputFormat::JsonPretty => {
-			let report = facts.facts.iter().map(|fact| match fact {
-				factmap::Fact::Symbol(symbol) => serde_json::json!({
-					"rva": symbol.rva,
-					"name": symbol.name.to_string(),
-					"ty": symbol.ty.to_string(),
-				}),
-				factmap::Fact::Comment(comment) => serde_json::json!({ "rva": comment.rva, "comment": comment.comment }),
-				factmap::Fact::Ref(_) => unreachable!("analysis produces symbols and comments"),
-			}).collect::<Vec<_>>();
-			print_json(&report, matches!(format, OutputFormat::JsonPretty))
-		},
-		OutputFormat::Text => {
-			let mut output = io::stdout().lock();
-			writeln!(output, "RVA       Name           Type")?;
-			for fact in facts.facts {
-				match fact {
-					factmap::Fact::Symbol(symbol) => writeln!(output, "{:#08x}  {:<14} {}", symbol.rva, symbol.name.to_string(), symbol.ty)?,
-					factmap::Fact::Comment(comment) => writeln!(output, "{:#08x}  ; {}", comment.rva, comment.comment)?,
-					factmap::Fact::Ref(_) => unreachable!("analysis produces symbols and comments"),
-				}
-			}
-			Ok(())
-		},
 	}
 }
 

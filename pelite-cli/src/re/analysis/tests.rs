@@ -129,7 +129,7 @@ fn export_names_survive_the_complete_pipeline() {
 			let rva = export.ok()?.symbol()?;
 			name.contains("GLOBAL_A").then_some((name, rva))
 		}).unwrap();
-		let facts = analyze(pe).unwrap();
+		let facts = analyze(pe, false).unwrap();
 		let symbols = facts.facts.iter().filter_map(|fact| match fact {
 			factmap::Fact::Symbol(symbol) => Some((symbol.rva, symbol)),
 			_ => None,
