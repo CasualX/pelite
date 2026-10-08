@@ -4,7 +4,7 @@ type Buckets = Vec<[u64; 256]>;
 
 pub fn command() -> clap::Command {
 	clap::Command::new("markov")
-		.about("Generate bytes from executable PE sections using a Markov chain")
+		.about("Generate decodable x86 code from PE sections using a Markov chain")
 		.after_help(include_str!("docs/markov.md"))
 		.arg(clap::Arg::new("files")
 			.value_name("FILE")
@@ -22,12 +22,10 @@ pub fn command() -> clap::Command {
 			.value_name("SEED")
 			.value_parser(value_parser::parse_u64)
 			.help("Use a deterministic random seed"))
-		.arg(clap::Arg::new("output")
-			.long("output")
-			.short('o')
-			.value_name("FILE")
-			.value_parser(clap::value_parser!(PathBuf))
-			.help("Also write the generated raw bytes to a file"))
+		.arg(clap::Arg::new("raw")
+			.long("raw")
+			.action(clap::ArgAction::SetTrue)
+			.help("Write raw bytes to standard output with --format=text"))
 }
 
 pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
@@ -38,10 +36,17 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 		.copied()
 		.unwrap_or_else(|| urandom::new().random());
 	let mut buckets = vec![[0u64; 256]; 256];
+	let mut machine = None;
 
 	for path in files {
 		let map = pelite::FileMap::open(path)?;
 		let pe = pelite::PeFile::from_bytes(&map)?;
+		let input_machine = pe.file_header().Machine;
+		machine_bitness(input_machine)?;
+		if machine.is_some_and(|machine| machine != input_machine) {
+			return Err(err(format!("{}: input PE files have different Machine values; expected a common architecture", path.display())));
+		}
+		machine = Some(input_machine);
 		for section in pe.section_headers() {
 			if !section.is_code() {
 				continue;
@@ -51,14 +56,16 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 		}
 	}
 
-	let bytes = generate(&buckets, count, seed)?;
-	if let Some(path) = matches.get_one::<PathBuf>("output") {
-		fs::write(path, &bytes)?;
-	}
+	let bitness = machine_bitness(machine.expect("at least one file is required by clap"))?;
+	let bytes = generate(&buckets, count, seed, bitness)?;
 
 	match format {
 		OutputFormat::Nul => Ok(()),
 		OutputFormat::Text => {
+			if matches.get_flag("raw") {
+				io::stdout().lock().write_all(&bytes)?;
+				return Ok(());
+			}
 			let hex = bytes.iter().map(|byte| format!("{byte:02X}")).collect::<Vec<_>>().join(" ");
 			writeln!(io::stdout().lock(), "{hex}")?;
 			Ok(())
@@ -75,7 +82,15 @@ fn analyze(bytes: &[u8], buckets: &mut Buckets) {
 	}
 }
 
-fn generate(buckets: &Buckets, count: usize, seed: u64) -> Result<Vec<u8>> {
+fn machine_bitness(machine: u16) -> Result<u32> {
+	match machine {
+		pelite::image::IMAGE_FILE_MACHINE_I386 => Ok(32),
+		pelite::image::IMAGE_FILE_MACHINE_AMD64 => Ok(64),
+		_ => Err(err(format!("unsupported machine type {machine:#06x}; expected i386 or AMD64"))),
+	}
+}
+
+fn generate(buckets: &Buckets, count: usize, seed: u64, bitness: u32) -> Result<Vec<u8>> {
 	let active: Vec<u8> = buckets
 		.iter()
 		.enumerate()
@@ -87,23 +102,50 @@ fn generate(buckets: &Buckets, count: usize, seed: u64) -> Result<Vec<u8>> {
 	}
 
 	let mut random = urandom::seeded(seed);
-	let mut byte = active[random.uniform(0..active.len())];
-	let mut output = Vec::with_capacity(count);
-	for _ in 0..count {
-		output.push(byte);
-		let bucket = &buckets[byte as usize];
-		let total: u64 = bucket.iter().sum();
-		if total == 0 {
-			byte = active[random.uniform(0..active.len())];
-			continue;
+	let totals: Vec<u64> = buckets.iter().map(|bucket| bucket.iter().sum()).collect();
+	let mut sample = |previous: Option<u8>| {
+		if let Some(previous) = previous.filter(|&byte| totals[byte as usize] != 0) {
+			let mut pick = random.uniform(0..totals[previous as usize]);
+			for (next, &weight) in buckets[previous as usize].iter().enumerate() {
+				if pick < weight {
+					return next as u8;
+				}
+				pick -= weight;
+			}
 		}
-		let mut pick = random.uniform(0..total);
-		for (next, &weight) in bucket.iter().enumerate() {
-			if pick < weight {
-				byte = next as u8;
+		active[random.uniform(0..active.len())]
+	};
+
+	let mut output = Vec::with_capacity(count);
+	while output.len() < count {
+		let mut accepted = false;
+		// Reject only the current instruction, preserving the committed prefix.
+		// Bound attempts because some chains cannot produce a valid instruction
+		// (or cannot fit one into the remaining byte count).
+		for _ in 0..1024 {
+			let mut candidate = [0u8; 15];
+			let mut previous = output.last().copied();
+			for len in 1..=candidate.len().min(count - output.len()) {
+				let byte = sample(previous);
+				candidate[len - 1] = byte;
+				previous = Some(byte);
+				let mut decoder = iced_x86::Decoder::new(bitness, &candidate[..len], iced_x86::DecoderOptions::NONE);
+				let instruction = decoder.decode();
+				if !instruction.is_invalid() {
+					output.extend_from_slice(&candidate[..len]);
+					accepted = true;
+					break;
+				}
+				if decoder.last_error() != iced_x86::DecoderError::NoMoreBytes {
+					break;
+				}
+			}
+			if accepted {
 				break;
 			}
-			pick -= weight;
+		}
+		if !accepted {
+			return Err(err(format!("could not generate a valid {bitness}-bit instruction at byte offset {} after 1024 attempts ({} bytes remaining); try another seed, byte count, or training input", output.len(), count - output.len())));
 		}
 	}
 	Ok(output)
