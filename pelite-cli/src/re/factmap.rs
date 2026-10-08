@@ -2,12 +2,14 @@ use super::*;
 
 mod comment;
 mod fact;
+mod function;
 mod map;
 mod reference;
 mod sym;
 
 pub use self::comment::*;
 pub use self::fact::*;
+pub use self::function::*;
 pub use self::map::*;
 pub use self::reference::*;
 pub use self::sym::*;
@@ -33,7 +35,7 @@ impl error::Error for ParseError {
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum ParseLineError {
 	MissingHeader,
-	UnknownFact,
+	UnknownFact(char),
 	InvalidPrefix(&'static str),
 	MissingField,
 	UnterminatedQuotedField,
@@ -51,7 +53,7 @@ impl fmt::Display for ParseLineError {
 	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
 		match self {
 			ParseLineError::MissingHeader => f.write_str("missing #factmap header"),
-			ParseLineError::UnknownFact => f.write_str("expected a symbol, comment, or reference fact"),
+			ParseLineError::UnknownFact(letter) => write!(f, "unknown fact {letter:?}"),
 			ParseLineError::InvalidPrefix(prefix) => write!(f, "expected {prefix} fact prefix"),
 			ParseLineError::MissingField => f.write_str("expected another field"),
 			ParseLineError::UnterminatedQuotedField => f.write_str("unterminated quoted field"),

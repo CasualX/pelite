@@ -40,12 +40,12 @@ impl FactMap {
 #[test]
 fn mixed_map_round_trip() {
 	let width = ty::PointerWidth::Bits64;
-	let input = "#factmap\n\n  # ignored\n 0x10 code fn \nCx10 \"comment\"\n\t\nRx10 0x20\nSx10 code undef\n";
+	let input = "#factmap\n\n  # ignored\n 0x10 code fn \nCx10 \"comment\"\n\t\nRx10 0x20\nFx10 { \"size\": 42 }\nSx10 code undef\n";
 	let map = FactMap::parse(input, width).unwrap();
 	let mut output = Vec::new();
 	map.write(&mut output, "first line\nsecond line").unwrap();
 	let output = String::from_utf8(output).unwrap();
-	assert_eq!(output, "#factmap\n# first line\n# second line\nSx10 code fn\nCx10 \"comment\"\nRx10 0x20\nSx10 code undef\n");
+	assert_eq!(output, "#factmap\n# first line\n# second line\nSx10 code fn\nCx10 \"comment\"\nRx10 0x20\nFx10 { \"size\": 42 }\nSx10 code undef\n");
 	assert_eq!(FactMap::parse(&output, width).unwrap(), map);
 }
 
@@ -57,6 +57,6 @@ fn map_error_line_numbers() {
 		error: ParseLineError::MissingHeader,
 	});
 	let error = FactMap::parse("#factmap\n\n # ignored\nSx10 code fn\nunknown\n", width).unwrap_err();
-	assert_eq!(error, ParseError { line: 5, error: ParseLineError::UnknownFact });
-	assert_eq!(error.to_string(), "line 5: expected a symbol, comment, or reference fact");
+	assert_eq!(error, ParseError { line: 5, error: ParseLineError::UnknownFact('u') });
+	assert_eq!(error.to_string(), "line 5: unknown fact 'u'");
 }
