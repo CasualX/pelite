@@ -22,14 +22,17 @@ To install the binary from this checkout, run `cargo install --path pelite-cli`.
 
 Run `cargo run -p pelite-cli -- COMMAND --help` for arguments and examples. The [demo examples](../demo/readme.md) show inspection, resource extraction, signature searches, and generated output files.
 
-## Output formats
+## Install the agent skill
 
-Text is the default. Use the global `--format=json` option for compact JSON or `--format=json-pretty` for indented JSON:
+After installing the binary above, make sure `pelite-cli` is on your agent's `PATH`. Copy the [pelite skill](skills/pelite) into a skills directory so the agent can choose it automatically for PE inspection and reverse engineering, without you naming the tool.
 
-```console
-cargo run -p pelite-cli -- summary demo/Demo64.dll --format=json-pretty
-cargo run -p pelite-cli -- resources tree demo/Demo.dll --format=json
-```
+Choose a destination (project paths are relative to the project where you want to use the skill):
+
+| Agent | All your projects | One project |
+| --- | --- | --- |
+| [Codex](https://developers.openai.com/codex/skills/) | `~/.agents/skills/pelite` | `.agents/skills/pelite` |
+| [Claude Code](https://code.claude.com/docs/en/skills) | `~/.claude/skills/pelite` | `.claude/skills/pelite` |
+| [GitHub Copilot](https://docs.github.com/en/copilot/how-tos/copilot-on-github/customize-copilot/customize-cloud-agent/add-skills) | `~/.agents/skills/pelite` | `.agents/skills/pelite` |
 
 ## Invocation tracing
 
