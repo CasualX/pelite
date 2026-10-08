@@ -13,7 +13,7 @@ Analysis includes:
 
   - Direct calls, branches, memory references, and address-like immediates.
   - Exports, imports, relocations, and entry-point functions.
-  - ASCII strings in read-only data sections (type `cstr`).
+  - UTF-8 and UTF-16LE strings in read-only data sections (types `cstr` and `utf16lez`).
   - x64 RUNTIME_FUNCTION records, adding comments at BeginAddress.
   - Import jump stubs (`imp_NAME`) and indirect call annotations.
   - Generic code (`C`), data (`D`), and read-only data (`R`) symbols.
