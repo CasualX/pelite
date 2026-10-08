@@ -98,6 +98,17 @@ pub unsafe trait Pe<'a> {
 		symbol - base
 	}
 
+	#[doc = include_str!("../docs/rva_of.md")]
+	#[inline]
+	#[track_caller]
+	fn rva_of<T: Pod + ?Sized>(self, symbol: &'a T) -> Result<Rva> where Self: Copy {
+		let offset = self.offset_of(symbol);
+		match self.layout() {
+			PeLayout::File => self.headers().file_offset_to_rva(offset),
+			PeLayout::Section => Rva::try_from(offset).map_err(|_| Error::Overflow),
+		}
+	}
+
 	//----------------------------------------------------------------
 
 	#[doc = include_str!("../docs/slice_bytes.md")]

@@ -44,7 +44,7 @@ pub fn scan_exceptions(input: &AnalysisInput<'_>, output: &mut AnalysisOutput) {
 			Ok(exceptions) => {
 				for function in exceptions.image() {
 					let rva = function.BeginAddress;
-					let Ok(runtime_function) = input.pe.headers().file_offset_to_rva(input.pe.offset_of(function)) else {
+					let Ok(runtime_function) = input.pe.rva_of(function) else {
 						continue
 					};
 					let comment = format!("RUNTIME_FUNCTION at {runtime_function:#x}");
