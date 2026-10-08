@@ -27,8 +27,9 @@ fn feed_bytes(input: &AnalysisInput<'_>, output: &mut AnalysisOutput, bytes: &[u
 	let mut decoder = iced_x86::Decoder::with_ip(input.bitness, bytes, ip, iced_x86::DecoderOptions::NONE);
 	let mut info = InstructionInfoFactory::new();
 	let mut globals = [None; 16];
+	let mut instruction = iced_x86::Instruction::default();
 	while decoder.can_decode() {
-		let instruction = decoder.decode();
+		decoder.decode_out(&mut instruction);
 		if instruction.is_invalid() {
 			globals.fill(None);
 			continue;
@@ -43,10 +44,13 @@ fn feed_bytes(input: &AnalysisInput<'_>, output: &mut AnalysisOutput, bytes: &[u
 			}
 		}
 		// Invalidate before recording a new load, including implicit and partial writes.
-		for used in info.info_options(&instruction, InstructionInfoOptions::NO_MEMORY_USAGE).used_registers() {
-			if matches!(used.access(), OpAccess::Write | OpAccess::CondWrite | OpAccess::ReadWrite | OpAccess::ReadCondWrite) {
-				if let Some(register) = register_index(used.register()) {
-					globals[register] = None;
+		// When no origins are tracked, register usage cannot invalidate anything.
+		if globals.iter().any(Option::is_some) {
+			for used in info.info_options(&instruction, InstructionInfoOptions::NO_MEMORY_USAGE).used_registers() {
+				if matches!(used.access(), OpAccess::Write | OpAccess::CondWrite | OpAccess::ReadWrite | OpAccess::ReadCondWrite) {
+					if let Some(register) = register_index(used.register()) {
+						globals[register] = None;
+					}
 				}
 			}
 		}

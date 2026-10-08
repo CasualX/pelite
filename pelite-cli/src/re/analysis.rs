@@ -64,7 +64,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 				}),
 				factmap::Fact::Comment(comment) => serde_json::json!({ "rva": comment.rva, "comment": comment.comment }),
 				factmap::Fact::Function(function) => serde_json::json!({ "rva": function.rva, "content": function.content }),
-				factmap::Fact::Ref(_) => todo!(),
+				factmap::Fact::Ref(reference) => serde_json::json!({ "rva": reference.rva, "target_rva": reference.target_rva }),
 			}).collect::<Vec<_>>();
 			print_json(&report, matches!(format, OutputFormat::JsonPretty))
 		},
@@ -117,7 +117,7 @@ pub struct AnalysisInput<'a> {
 	pe: PeFile<'a>,
 	bitness: u32,
 	size: u32,
-	headers_size: u32,
+	alignment: u32,
 }
 
 /// Results accumulated by independently selectable analysis passes.
@@ -131,6 +131,8 @@ pub struct AnalysisOutput {
 	pub comments: HashMap<u32, factmap::CommentFact>,
 	/// Function metadata indexed by entry RVA; later discoveries replace earlier ones.
 	pub functions: HashMap<u32, factmap::FunctionFact>,
+	/// References from instruction RVAs to statically discovered symbol RVAs.
+	pub references: Vec<factmap::RefFact>,
 }
 
 impl<'a> AnalysisInput<'a> {
@@ -141,19 +143,19 @@ impl<'a> AnalysisInput<'a> {
 			image::IMAGE_FILE_MACHINE_AMD64 => 64,
 			machine => return Err(err(format!("unsupported machine type {machine:#06x}; expected i386 or AMD64"))),
 		};
-		let (size, headers_size) = match pe.optional_header() {
-			Wrap::T32(h) => (h.SizeOfImage, h.SizeOfHeaders),
-			Wrap::T64(h) => (h.SizeOfImage, h.SizeOfHeaders),
+		let (size, alignment) = match pe.optional_header() {
+			Wrap::T32(h) => (h.SizeOfImage, h.SectionAlignment),
+			Wrap::T64(h) => (h.SizeOfImage, h.SectionAlignment),
 		};
-		Ok(AnalysisInput { pe, bitness, size, headers_size })
+		Ok(AnalysisInput { pe, bitness, size, alignment })
 	}
 }
 
 impl AnalysisOutput {
-	/// Finish the analysis and return candidates sorted by RVA.
-	pub fn into_symbols(mut self, input: &AnalysisInput<'_>) -> Vec<factmap::SymbolFact> {
+	/// Finish the analysis and return facts sorted by RVA.
+	pub fn into_factmap(mut self, input: &AnalysisInput<'_>) -> factmap::FactMap {
 		for rva in std::mem::take(&mut self.function_candidates) {
-			self.add(input, rva, Some(ty::Type::Fn));
+			self.add_symbol(input, rva, Some(ty::Type::Fn));
 		}
 		for symbol in self.symbols.values_mut() {
 			if symbol.name == factmap::SymbolName::Code && symbol.ty == ty::Type::Unknown {
@@ -161,61 +163,78 @@ impl AnalysisOutput {
 					.expect("code hints always upgrade successfully");
 			}
 		}
-		let mut symbols = self.symbols.into_values().collect::<Vec<_>>();
-		symbols.sort_unstable_by_key(|symbol| symbol.rva);
-		symbols
-	}
+		let capacity = self.symbols.len() + self.comments.len() + self.references.len() + self.functions.len();
+		let mut other_facts = Vec::with_capacity(capacity - self.references.len());
+		other_facts.extend(self.symbols.into_values().map(factmap::Fact::Symbol));
+		other_facts.extend(self.comments.into_values().map(factmap::Fact::Comment));
+		other_facts.extend(self.functions.into_values().map(factmap::Fact::Function));
+		// These maps have unique RVAs, so their fact sort keys are also unique.
+		other_facts.sort_unstable_by_key(factmap::Fact::sort_key);
+		// Usually already sorted by the linear scans. Keep equal-RVA references in
+		// discovery order, even when executable sections are out of RVA order.
+		self.references.sort_by_key(|reference| reference.rva);
 
-	/// Finish the analysis and return facts sorted by RVA.
-	pub fn into_factmap(mut self, input: &AnalysisInput<'_>) -> factmap::FactMap {
-		let comments = std::mem::take(&mut self.comments);
-		let functions = std::mem::take(&mut self.functions);
-		let mut facts = self.into_symbols(input).into_iter().map(factmap::Fact::Symbol)
-			.chain(comments.into_values().map(factmap::Fact::Comment))
-			.chain(functions.into_values().map(factmap::Fact::Function)).collect::<Vec<_>>();
-		facts.sort_unstable_by_key(factmap::Fact::sort_key);
+		let mut facts = Vec::with_capacity(capacity);
+		facts.extend(interleave_facts(
+			other_facts.into_iter(),
+			self.references.into_iter().map(factmap::Fact::Ref),
+		));
 		factmap::FactMap { facts }
 	}
 }
 
-impl AnalysisInput<'_> {
-	fn mapped(&self, rva: u32) -> bool {
-		rva < self.size && (rva < self.headers_size || self.pe.section_headers().iter().any(|section| {
-			let len = section.VirtualSize.max(section.SizeOfRawData);
-			rva.checked_sub(section.VirtualAddress).is_some_and(|offset| offset < len)
-		}))
-	}
+/// Interleave sorted streams, constructing only the next fact from each input.
+fn interleave_facts(left: impl Iterator<Item = factmap::Fact>, right: impl Iterator<Item = factmap::Fact>) -> impl Iterator<Item = factmap::Fact> {
+	let mut left = left.peekable();
+	let mut right = right.peekable();
+	std::iter::from_fn(move || match (left.peek(), right.peek()) {
+		(Some(a), Some(b)) if a.sort_key() <= b.sort_key() => left.next(),
+		(Some(_), Some(_)) => right.next(),
+		(Some(_), None) => left.next(),
+		(None, _) => right.next(),
+	})
+}
 
+fn align_up(v: u32, a: u32) -> u32 {
+	(v + a - 1) & !(a - 1)
+}
+
+impl AnalysisInput<'_> {
 	fn executable(&self, rva: u32) -> bool {
 		self.pe.section_headers().iter().any(|section| {
-			section.is_code()
-				&& rva.checked_sub(section.VirtualAddress)
-					.is_some_and(|offset| offset < section.VirtualSize.max(section.SizeOfRawData))
+			if !section.is_code() {
+				return false;
+			}
+			let offset = rva.wrapping_sub(section.VirtualAddress);
+			let len = if section.VirtualSize == 0 { section.SizeOfRawData } else { section.VirtualSize };
+			offset < align_up(len, self.alignment)
 		})
 	}
 
 	fn read_only_data(&self, rva: u32) -> bool {
 		self.pe.section_headers().iter().any(|section| {
-			section.is_rdata()
-				&& rva.checked_sub(section.VirtualAddress)
-					.is_some_and(|offset| offset < section.VirtualSize.max(section.SizeOfRawData))
+			if !section.is_rdata() {
+				return false;
+			}
+			let offset = rva.wrapping_sub(section.VirtualAddress);
+			let len = if section.VirtualSize == 0 { section.SizeOfRawData } else { section.VirtualSize };
+			offset < align_up(len, self.alignment)
 		})
 	}
 }
 
 impl AnalysisOutput {
-	fn add(&mut self, input: &AnalysisInput<'_>, rva: u32, interpretation: Option<ty::Type>) {
-		if !input.mapped(rva) {
-			return;
+	/// Add a symbol hint, returning whether the RVA is within the image.
+	fn add_symbol(&mut self, input: &AnalysisInput<'_>, rva: u32, interpretation: Option<ty::Type>) -> bool {
+		if rva >= input.size {
+			return false;
 		}
-		let name = if input.executable(rva) { factmap::SymbolName::Code }
-			else if input.read_only_data(rva) { factmap::SymbolName::RData }
-			else { factmap::SymbolName::Data };
-		let symbol = self.symbols.entry(rva).or_insert_with(|| factmap::SymbolFact::new(
-			rva,
-			ty::Type::Unknown,
-			name,
-		));
+		let symbol = self.symbols.entry(rva).or_insert_with(|| {
+			let name = if input.executable(rva) { factmap::SymbolName::Code }
+				else if input.read_only_data(rva) { factmap::SymbolName::RData }
+				else { factmap::SymbolName::Data };
+			factmap::SymbolFact::new(rva, ty::Type::Unknown, name)
+		});
 		if let Some(interpretation) = interpretation {
 			if interpretation == ty::Type::Fn && matches!(symbol.name, factmap::SymbolName::Data | factmap::SymbolName::RData | factmap::SymbolName::Code) {
 				symbol.name = factmap::SymbolName::Fn;
@@ -226,11 +245,12 @@ impl AnalysisOutput {
 			symbol.upgrade_type(interpretation)
 				.expect("analysis hints are code, functions, or fixed-size numeric types");
 		}
+		true
 	}
 
-	fn add_va(&mut self, input: &AnalysisInput<'_>, va: u64, interpretation: Option<ty::Type>) {
+	fn add_symbol_va(&mut self, input: &AnalysisInput<'_>, va: u64, interpretation: Option<ty::Type>) {
 		if let Some(rva) = va.checked_sub(input.pe.image_base()).and_then(|rva| u32::try_from(rva).ok()) {
-			self.add(input, rva, interpretation);
+			self.add_symbol(input, rva, interpretation);
 		}
 	}
 }

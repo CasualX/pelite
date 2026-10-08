@@ -12,6 +12,7 @@ records.
 Analysis includes:
 
   - Direct calls, branches, memory references, and address-like immediates.
+  - Reference facts from instruction RVAs to discovered targets within the image.
   - Exports, imports, relocations, and entry-point functions.
   - UTF-8 and UTF-16LE strings in read-only data sections (types `cstr` and `utf16lez`).
   - x64 RUNTIME_FUNCTION records, adding comments at BeginAddress.
@@ -21,13 +22,15 @@ Analysis includes:
 
 Results are heuristic candidates, not guaranteed symbols. Embedded data may
 resemble instructions, and indirect targets may remain unresolved.
+Symbol targets may lie anywhere below SizeOfImage, including gaps between sections.
+Executable and read-only classifications include section padding up to SectionAlignment.
 Pass failures are reported to stderr without stopping the remaining analysis.
 
 Output:
 
-  By default, prints a text report of symbols and comments using RVAs.
+  By default, prints a text report of symbols, comments, and references using RVAs.
   Symbols contain an address, name, and type; comments contain an address
-  and text.
+  and text. References contain the instruction RVA and target RVA (`RxSOURCE 0xTARGET`).
 
   --format=text         Text report (default).
   --format=json         JSON report.
