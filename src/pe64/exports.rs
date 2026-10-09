@@ -556,7 +556,7 @@ impl<'b, 'a, P: Copy + Pe<'a>, S: AsRef<[u8]> + ?Sized> GetProcAddress<'a, &'b S
 		"time_date_stamp": 0,
 		"version": "0.0",
 		"ordinal_base": 1,
-		"functions": [ .. ],
+		"functions": [ 4096, "KERNELBASE.Sleep", null, "$error: encoding error" ],
 		"names": {
 			"__autoclassinit": 5,
 			..
@@ -565,6 +565,19 @@ impl<'b, 'a, P: Copy + Pe<'a>, S: AsRef<[u8]> + ?Sized> GetProcAddress<'a, &'b S
 */
 
 serde_impl! {
+	// Keep every address-table slot, including empty and malformed entries.
+	struct SerdeExport<'a>(crate::Result<Export<'a>>);
+	impl Serialize for SerdeExport<'_> {
+		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+			match self.0 {
+				Ok(Export::Symbol(rva)) => rva.serialize(serializer),
+				Ok(Export::Forward(name)) => name.serialize(serializer),
+				Err(Error::Null) => serializer.serialize_none(),
+				Err(err) => serializer.collect_str(&format_args!("$error: {err}")),
+			}
+		}
+	}
+
 	impl<'a, P: Copy + Pe<'a>> Serialize for ExportDirectory<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
 			self.by().ok().serialize(serializer)
@@ -576,7 +589,7 @@ serde_impl! {
 			state.serialize_field("image", self.image())?;
 			state.serialize_field("dll_name", &self.dll_name().ok())?;
 			state.serialize_field("ordinal_base", &self.ordinal_base())?;
-			state.serialize_field("functions", &self.functions())?;
+			state.serialize_field("functions", &SerdeIter(self.iter().map(SerdeExport)))?;
 			state.serialize_field("name_rvas", &self.names())?;
 			state.serialize_field("name_indices", &self.name_indices())?;
 			let names = self
