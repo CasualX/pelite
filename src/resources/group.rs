@@ -58,6 +58,10 @@ use self::image::*;
 const FILE_DIRECTORY_HEADER_SIZE: usize = 6;
 const FILE_DIRECTORY_ENTRY_SIZE: usize = 16;
 
+const fn is_png(image: &[u8]) -> bool {
+	matches!(image, [0x89, b'P', b'N', b'G', b'\r', b'\n', 0x1a, b'\n', ..])
+}
+
 //----------------------------------------------------------------
 
 /// Icon or cursor resource type.
@@ -189,6 +193,8 @@ impl<'a> ResourceGroup<'a> {
 				ResourceGroupType::Cursor => {
 					let width = u16::from_le_bytes([entry_bytes[0], entry_bytes[1]]);
 					let height = u16::from_le_bytes([entry_bytes[2], entry_bytes[3]]);
+					// DIB group heights include the AND mask, whereas PNG heights describe only the image.
+					let height = if is_png(image) { height } else { height / 2 };
 					bytes.extend_from_slice(&[width as u8, height as u8, 0, 0]);
 					bytes.extend_from_slice(&resource[..4]);
 				},
