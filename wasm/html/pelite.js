@@ -2,14 +2,6 @@ const textDecoder = new TextDecoder("utf-8");
 const textEncoder = new TextEncoder();
 
 /**
- * A value produced by parsing JSON returned from the WebAssembly module.
- *
- * The detailed schema depends on the PE structure requested.
- *
- * @typedef {object | null} JSONValue
- */
-
-/**
  * A value returned by the WebAssembly module, or an error reported by it.
  *
  * @template T
@@ -34,7 +26,217 @@ const textEncoder = new TextEncoder();
  * @property {number} [limit=0] Maximum number of matches to return; zero means unlimited.
  */
 
+/**
+ * @typedef {object} PeFileHeader
+ * @property {number} Machine
+ * @property {number} NumberOfSections
+ * @property {number} TimeDateStamp
+ * @property {number} PointerToSymbolTable
+ * @property {number} NumberOfSymbols
+ * @property {number} SizeOfOptionalHeader
+ * @property {number} Characteristics
+ */
+
+/**
+ * @typedef {object} PeOptionalHeader
+ * @property {number} Magic
+ * @property {string} LinkerVersion
+ * @property {number} SizeOfCode
+ * @property {number} SizeOfInitializedData
+ * @property {number} SizeOfUninitializedData
+ * @property {number} AddressOfEntryPoint
+ * @property {number} [BaseOfData] Present only in PE32.
+ * @property {number} BaseOfCode
+ * @property {number} ImageBase
+ * @property {number} SectionAlignment
+ * @property {number} FileAlignment
+ * @property {string} OperatingSystemVersion
+ * @property {string} ImageVersion
+ * @property {string} SubsystemVersion
+ * @property {number} Win32VersionValue
+ * @property {number} SizeOfImage
+ * @property {number} SizeOfHeaders
+ * @property {number} CheckSum
+ * @property {number} Subsystem
+ * @property {number} DllCharacteristics
+ * @property {number} SizeOfStackReserve
+ * @property {number} SizeOfStackCommit
+ * @property {number} SizeOfHeapReserve
+ * @property {number} SizeOfHeapCommit
+ * @property {number} LoaderFlags
+ * @property {number} NumberOfRvaAndSizes
+ */
+
+/** @typedef {{ Name: string, VirtualAddress: number, VirtualSize: number, SizeOfRawData: number, PointerToRawData: number, Characteristics: number }} PeSectionHeader */
+/** @typedef {{ VirtualAddress: number, Size: number }} PeDataDirectory */
+/** @typedef {{ Signature: number, FileHeader: PeFileHeader, OptionalHeader: PeOptionalHeader }} PeNtHeaders */
+/** @typedef {{ DosHeader: PeDosHeader, NtHeaders: PeNtHeaders, SectionHeaders: PeSectionHeader[], DataDirectory: PeDataDirectory[], details: Record<string, unknown> & { 'DataDirectory.Names': (string | null)[] } }} PeHeaders */
+
+/** @typedef {{ ByName: { name: string, hint: number }, ByOrdinal?: never } | { ByOrdinal: { ord: number }, ByName?: never }} PeImportedSymbol */
+/** @typedef {{ address: number, import: PeImportedSymbol | null }} PeImportEntry */
+/** @typedef {{ OriginalFirstThunk: number, TimeDateStamp: number, ForwarderChain: number, Name: number, FirstThunk: number }} PeImportDescriptorImage */
+/** @typedef {{ image: PeImportDescriptorImage, dll_name: string | null, imports: PeImportEntry[] | null }} PeImportDescriptor */
+
+/** @typedef {{ image: Record<string, unknown>, dll_name: string | null, ordinal_base: number, functions: (number | null | string)[], names: Record<string, number> }} PeExportDirectory */
+/** @typedef {{ product: number, build: number, count: number }} PeRichRecord */
+/** @typedef {{ xor_key: number, checksum: number, records: PeRichRecord[] }} PeRichStructure */
+/** @typedef {{ fixed: Record<string, number | string> | null, strings: Record<string, Record<string, string>>, langs: string[] }} PeVersionInfo */
+/** @typedef {{ image: { OffsetToData: number, Size: number, CodePage: number, Reserved: number }, size: number, code_page: number, bytes: string | null }} PeResourceData */
+/** @typedef {{ name: ResourceName | null, directory?: PeResourceTreeEntry[] | null, data?: PeResourceData | null }} PeResourceTreeEntry */
+
+/**
+ * @typedef {object} PeDosHeader
+ * @property {number} e_magic
+ * @property {number} e_cblp
+ * @property {number} e_cp
+ * @property {number} e_crlc
+ * @property {number} e_cparhdr
+ * @property {number} e_minalloc
+ * @property {number} e_maxalloc
+ * @property {number} e_ss
+ * @property {number} e_sp
+ * @property {number} e_csum
+ * @property {number} e_ip
+ * @property {number} e_cs
+ * @property {number} e_lfarlc
+ * @property {number} e_ovno
+ * @property {number[]} e_res
+ * @property {number} e_oemid
+ * @property {number} e_oeminfo
+ * @property {number[]} e_res2
+ * @property {number} e_lfanew
+ */
+
+/** Relocation RVAs and types are parallel arrays. @typedef {{ rvas: number[], types: number[] }} PeBaseRelocations */
+/** @typedef {{ Flags: number, Catalog: number, CatalogOffset: number, Reserved: number }} PeLoadConfigCodeIntegrity */
+
+/**
+ * @typedef {object} PeLoadConfigImage
+ * @property {number} Size
+ * @property {number} TimeDateStamp
+ * @property {string} Version
+ * @property {number} GlobalFlagsClear
+ * @property {number} GlobalFlagsSet
+ * @property {number} CriticalSectionDefaultTimeout
+ * @property {number} DeCommitFreeBlockThreshold
+ * @property {number} DeCommitTotalFreeThreshold
+ * @property {number} LockPrefixTable
+ * @property {number} MaximumAllocationSize
+ * @property {number} VirtualMemoryThreshold
+ * @property {number} ProcessAffinityMask
+ * @property {number} ProcessHeapFlags
+ * @property {number} CSDVersion
+ * @property {number} DependentLoadFlags
+ * @property {number} EditList
+ * @property {number} SecurityCookie
+ * @property {number} SEHandlerTable
+ * @property {number} SEHandlerCount
+ * @property {number} GuardCFCheckFunctionPointer
+ * @property {number} GuardCFDispatchFunctionPointer
+ * @property {number} GuardCFFunctionTable
+ * @property {number} GuardCFFunctionCount
+ * @property {number} GuardFlags
+ * @property {PeLoadConfigCodeIntegrity} CodeIntegrity
+ * @property {number} GuardAddressTakenIatEntryTable
+ * @property {number} GuardAddressTakenIatEntryCount
+ * @property {number} GuardLongJumpTargetTable
+ * @property {number} GuardLongJumpTargetCount
+ * @property {number} DynamicValueRelocTable
+ * @property {number} CHPEMetadataPointer
+ * @property {number} GuardRFFailureRoutine
+ * @property {number} GuardRFFailureRoutineFunctionPointer
+ * @property {number} DynamicValueRelocTableOffset
+ * @property {number} DynamicValueRelocTableSection
+ * @property {number} Reserved2
+ * @property {number} GuardRFVerifyStackPointerFunctionPointer
+ * @property {number} HotPatchTableOffset
+ * @property {number} Reserved3
+ * @property {number} EnclaveConfigurationPointer
+ * @property {number} VolatileMetadataPointer
+ * @property {number} GuardEHContinuationTable
+ * @property {number} GuardEHContinuationCount
+ * @property {number} GuardXFGCheckFunctionPointer
+ * @property {number} GuardXFGDispatchFunctionPointer
+ * @property {number} GuardXFGTableDispatchFunctionPointer
+ * @property {number} CastGuardOsDeterminedFailureMode
+ * @property {number} GuardMemcpyFunctionPointer
+ * @property {number} UmaFunctionPointers
+ */
+
+/** Missing fields in older load-config revisions are zero-filled in image.
+ * @typedef {{ image: PeLoadConfigImage, size: number, security_cookie: number | null, se_handler_table: number[] | null }} PeLoadConfig
+ */
+
+/** @typedef {{ BeginAddress: number, EndAddress: number, UnwindData: number }} PeRuntimeFunctionImage */
+/** @typedef {{ CodeOffset: number, UnwindOpInfo: number }} PeUnwindCode */
+/** @typedef {{ version: number, flags: number, size_of_prolog: number, frame_register: number, frame_offset: number, unwind_codes: PeUnwindCode[] }} PeUnwindInfo */
+/** @typedef {{ image: PeRuntimeFunctionImage, unwind_info: PeUnwindInfo | null }} PeRuntimeFunction */
+
+/**
+ * @typedef {object} PeDebugDirectoryImage
+ * @property {number} Characteristics
+ * @property {number} TimeDateStamp
+ * @property {string} Version
+ * @property {number} Type
+ * @property {number} SizeOfData
+ * @property {number} AddressOfRawData
+ * @property {number} PointerToRawData
+ */
+
+/**
+ * @typedef {object} PeCodeView20Image
+ * @property {number} CvSignature
+ * @property {number} Offset
+ * @property {number} TimeDateStamp
+ * @property {number} Age
+ */
+
+/**
+ * @typedef {object} PeCodeView70Image
+ * @property {number} CvSignature
+ * @property {string} Signature
+ * @property {number} Age
+ */
+
+/**
+ * @typedef {object} PeDebugMiscImage
+ * @property {number} DataType
+ * @property {number} Length
+ * @property {number} Unicode
+ */
+
+/** @typedef {{ format: 'NB10', image: PeCodeView20Image, pdb_file_name: string } | { format: 'RSDS', image: PeCodeView70Image, pdb_file_name: string }} PeCodeView */
+/** Unicode debug names retain their UTF-16 code units. @typedef {{ image: PeDebugMiscImage, name: string | number[] }} PeDebugMisc */
+/** @typedef {{ rva: number, size: number, name: string }} PePgoSection */
+/** These are serialized Rust results, not JavaScript Error instances.
+ * @typedef {{ signature: string, sections: ({ Ok: PePgoSection, Err?: never } | { Err: string, Ok?: never })[] }} PePgo
+ */
+/** Unsupported or unreadable debug entries have null content/type.
+ * @typedef {{ image: PeDebugDirectoryImage, type: string | null, entry: PeCodeView | PeDebugMisc | PePgo | null }} PeDebugDirectoryEntry
+ */
+
+/** @typedef {{ dwLength: number, wRevision: number, wCertificateType: number }} PeCertificateImage */
+/** certificate_data is base64-encoded. @typedef {{ image: PeCertificateImage, certificate_type: number, certificate_data: string }} PeSecurityDirectory */
+
 /** A resource name or unsigned 32-bit resource ID. @typedef {string | number} ResourceName */
+
+/**
+ * File MD5/SHA-256 and conventional import hash, encoded as lowercase hex.
+ * A null imphash means imports could not be fully parsed. Absent imports hash the empty sequence.
+ * @typedef {{ md5: string, sha256: string, imphash: string | null }} PeHashes
+ */
+
+/**
+ * Parsed TLS directory. A null callback array can mean an absent pointer or unreadable data;
+ * image.AddressOfCallBacks distinguishes the absent pointer (zero).
+ * @typedef {{ image: Record<string, number> & { AddressOfCallBacks: number }, raw_data: string | null, slot: number | null, callbacks: number[] | null }} PeTls
+ */
+
+/**
+ * Shannon entropy (0–8 bits per byte) of a section's raw data and up to 16 evenly sized samples.
+ * Empty or unreadable raw data has null entropy and an empty sample array.
+ * @typedef {{ entropy: number | null, samples: number[] }} SectionEntropy
+ */
 
 /** @type {*} */
 let result = null;
@@ -185,37 +387,37 @@ export class PeFile {
 		}
 	}
 
-	/** @returns {Result<JSONValue>} Parsed DOS header JSON. */
+	/** @returns {Result<PeDosHeader>} Parsed DOS header JSON. */
 	dosHeader() {
 		instance.exports.pefileDosHeader(this.p);
 		return takeResult();
 	}
 
-	/** @returns {Result<JSONValue>} Parsed NT headers JSON. */
+	/** @returns {Result<PeNtHeaders>} Parsed NT headers JSON. */
 	ntHeaders() {
 		instance.exports.pefileNtHeaders(this.p);
 		return takeResult();
 	}
 
-	/** @returns {Result<JSONValue>} Parsed COFF file header JSON. */
+	/** @returns {Result<PeFileHeader>} Parsed COFF file header JSON. */
 	fileHeader() {
 		instance.exports.pefileFileHeader(this.p);
 		return takeResult();
 	}
 
-	/** @returns {Result<JSONValue>} Parsed optional header JSON. */
+	/** @returns {Result<PeOptionalHeader>} Parsed optional header JSON. */
 	optionalHeader() {
 		instance.exports.pefileOptionalHeader(this.p);
 		return takeResult();
 	}
 
-	/** @returns {Result<JSONValue>} Parsed section headers JSON. */
+	/** @returns {Result<PeSectionHeader[]>} Parsed section headers JSON. */
 	sectionHeaders() {
 		instance.exports.pefileSectionHeaders(this.p);
 		return takeResult();
 	}
 
-	/** @returns {Result<JSONValue>} Parsed PE headers JSON. */
+	/** @returns {Result<PeHeaders>} Parsed PE headers JSON. */
 	headers() {
 		instance.exports.pefileHeaders(this.p);
 		return takeResult();
@@ -312,61 +514,80 @@ export class PeFile {
 		return takeResult();
 	}
 
-	/** @returns {Result<JSONValue>} Parsed Rich structure JSON. */
+	/** @returns {Result<PeHashes>} File fingerprints. */
+	hashes() {
+		instance.exports.pefileHashes(this.p);
+		return takeResult();
+	}
+
+	/** @returns {Result<SectionEntropy[]>} Entropy entries in sectionHeaders() order, including empty/unreadable sections. */
+	sectionEntropy() {
+		instance.exports.pefileSectionEntropy(this.p);
+		return takeResult();
+	}
+
+
+	/** @returns {Result<PeRichStructure | null>} Parsed Rich structure JSON. */
 	richStructure() {
 		instance.exports.pefileRichStructure(this.p);
 		return takeResult();
 	}
 
-	/** @returns {Result<JSONValue>} Parsed imports JSON. */
+	/** @returns {Result<PeImportDescriptor[] | null>} Parsed imports JSON. */
 	imports() {
 		instance.exports.pefileImports(this.p);
 		return takeResult();
 	}
 
-	/** @returns {Result<JSONValue>} Parsed exports JSON. */
+	/** @returns {Result<PeExportDirectory | null>} Parsed exports JSON. */
 	exports() {
 		instance.exports.pefileExports(this.p);
 		return takeResult();
 	}
 
-	/** @returns {Result<JSONValue>} Parsed base relocations JSON. */
+	/** @returns {Result<PeBaseRelocations | null>} Parsed base relocations JSON. */
 	baseRelocations() {
 		instance.exports.pefileBaseRelocations(this.p);
 		return takeResult();
 	}
 
-	/** @returns {Result<JSONValue>} Parsed load configuration JSON. */
+	/** @returns {Result<PeLoadConfig | null>} Parsed load configuration JSON. */
 	loadConfig() {
 		instance.exports.pefileLoadConfig(this.p);
 		return takeResult();
 	}
 
-	/** @returns {Result<JSONValue>} Parsed TLS directory JSON. */
+	/** @returns {Result<PeTls | null>} Parsed TLS directory, or null if absent. */
 	tls() {
 		instance.exports.pefileTls(this.p);
 		return takeResult();
 	}
 
-	/** @returns {Result<JSONValue>} Parsed x64 exception directory JSON, or `null` for PE32. */
+	/** @returns {Result<PeRuntimeFunction[] | null>} Parsed x64 exception directory JSON, or `null` for PE32. */
 	exceptionsX64() {
 		instance.exports.pefileExceptionsX64(this.p);
 		return takeResult();
 	}
 
-	/** @returns {Result<JSONValue>} Parsed debug directory JSON. */
+	/** @returns {Result<string | null>} Embedded PDB file name/path, or null if absent. Malformed debug data or invalid UTF-8 returns an Error. */
+	pdbFileName() {
+		instance.exports.pefilePdbFileName(this.p);
+		return takeResult();
+	}
+
+	/** @returns {Result<PeDebugDirectoryEntry[] | null>} Parsed debug directory JSON. */
 	debug() {
 		instance.exports.pefileDebug(this.p);
 		return takeResult();
 	}
 
-	/** @returns {Result<JSONValue>} Parsed Authenticode security directory JSON. */
+	/** @returns {Result<PeSecurityDirectory | null>} Parsed Authenticode security directory JSON. */
 	security() {
 		instance.exports.pefileSecurity(this.p);
 		return takeResult();
 	}
 
-	/** @returns {Result<JSONValue>} Parsed resource tree JSON. */
+	/** @returns {Result<PeResourceTreeEntry[] | null>} Parsed resource tree JSON. */
 	resourcesTree() {
 		instance.exports.pefileResourcesTree(this.p);
 		return takeResult();
@@ -390,7 +611,7 @@ export class PeFile {
 		return takeResult();
 	}
 
-	/** @returns {Result<JSONValue>} Parsed version information JSON. */
+	/** @returns {Result<PeVersionInfo | null>} Parsed version information JSON. */
 	resourcesVersionInfo() {
 		instance.exports.pefileResourcesVersionInfo(this.p);
 		return takeResult();

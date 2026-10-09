@@ -15,6 +15,26 @@ impl AsRef<[u8]> for PeFile {
 	}
 }
 
+#[unsafe(export_name = "pefileHashes")]
+pub unsafe fn hashes(pefile: *mut PeFile) {
+	let bytes = unsafe { &*pefile }.as_ref();
+	let pe = match pelite::PeFile::from_bytes(bytes) {
+		Ok(pe) => pe,
+		Err(err) => return return_error(err),
+	};
+	return_json(crate::hashes::hashes(bytes, pe));
+}
+
+#[unsafe(export_name = "pefileSectionEntropy")]
+pub unsafe fn section_entropy(pefile: *mut PeFile) {
+	let bytes = unsafe { &*pefile }.as_ref();
+	let pe = match pelite::PeFile::from_bytes(bytes) {
+		Ok(pe) => pe,
+		Err(err) => return return_error(err),
+	};
+	return_json(crate::section_entropy::section_entropy(pe));
+}
+
 #[unsafe(export_name = "pefileNew")]
 pub unsafe fn new(data: *mut [u8]) -> *mut PeFile {
 	unsafe {
@@ -469,6 +489,28 @@ pub unsafe fn debug(pefile: *mut PeFile) {
 	};
 
 	return_pelite_result(pefile.debug());
+}
+
+#[unsafe(export_name = "pefilePdbFileName")]
+pub unsafe fn pdb_file_name(pefile: *mut PeFile) {
+	let bytes = unsafe { &*pefile }.as_ref();
+	let pe = match pelite::PeFile::from_bytes(bytes) {
+		Ok(pe) => pe,
+		Err(err) => return return_error(err),
+	};
+	let debug = match pe.debug() {
+		Ok(debug) => debug,
+		Err(pelite::Error::Null) => return return_null(),
+		Err(err) => return return_error(err),
+	};
+	match debug.pdb_file_name() {
+		Ok(Some(name)) => match name.to_str() {
+			Ok(name) => return_str(name),
+			Err(err) => return_error(err),
+		},
+		Ok(None) => return_null(),
+		Err(err) => return_error(err),
+	}
 }
 
 #[unsafe(export_name = "pefileSecurity")]
