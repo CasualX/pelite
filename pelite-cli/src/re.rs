@@ -7,7 +7,6 @@ mod analysis;
 mod demangle;
 mod disasm;
 mod disasm_raw;
-mod factmap;
 mod findsig;
 mod hex;
 mod hexdump;
@@ -20,10 +19,10 @@ mod scan;
 mod strings;
 mod symbol;
 mod symbols;
-mod ty;
 mod xref;
 
 use address::Address;
+use pelite_cli::{factmap, ty};
 
 use arch::Arch;
 
