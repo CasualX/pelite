@@ -5,5 +5,7 @@ use std::ptr;
 
 mod wasm32;
 mod pefile;
+mod hashes;
+mod section_entropy;
 
 use crate::wasm32::*;
