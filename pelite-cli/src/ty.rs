@@ -1,9 +1,6 @@
 //! Type DSL for describing data and code in a PE image.
 
-use std::collections::HashSet;
-use std::fmt;
-
-use crate::value_parser;
+use super::*;
 
 /// A type syntax or layout error at a byte offset in the input.
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -396,7 +393,7 @@ impl<'a> Parser<'a> {
 		while self.input.as_bytes().get(self.pos).is_some_and(u8::is_ascii_digit) {
 			self.pos += 1;
 		}
-		value_parser::parse_u32(&self.input[start..self.pos])
+		self.input[start..self.pos].parse::<u32>()
 			.map_err(|_| self.error(ParseErrorKind::InvalidArrayLength))
 	}
 

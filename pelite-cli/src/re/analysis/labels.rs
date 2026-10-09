@@ -51,7 +51,7 @@ pub fn refine_labels(input: &AnalysisInput<'_>, output: &mut AnalysisOutput) {
 		};
 		symbol.name = if label == "thunk" { factmap::SymbolName::Thunk }
 			else { factmap::SymbolName::Named(label) };
-		symbol.upgrade_type(ty::Type::Code)
+		upgrade_type(symbol, ty::Type::Code)
 			.expect("code hints always upgrade successfully");
 	}
 }

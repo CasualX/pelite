@@ -159,7 +159,7 @@ impl AnalysisOutput {
 		}
 		for symbol in self.symbols.values_mut() {
 			if symbol.name == factmap::SymbolName::Code && symbol.ty == ty::Type::Unknown {
-				symbol.upgrade_type(ty::Type::Code)
+				upgrade_type(symbol, ty::Type::Code)
 					.expect("code hints always upgrade successfully");
 			}
 		}
@@ -242,7 +242,7 @@ impl AnalysisOutput {
 			else if interpretation == ty::Type::Code && matches!(symbol.name, factmap::SymbolName::Data | factmap::SymbolName::RData) {
 				symbol.name = factmap::SymbolName::Code;
 			}
-			symbol.upgrade_type(interpretation)
+			upgrade_type(symbol, interpretation)
 				.expect("analysis hints are code, functions, or fixed-size numeric types");
 		}
 		true
@@ -255,57 +255,55 @@ impl AnalysisOutput {
 	}
 }
 
-impl factmap::SymbolFact {
-	/// Merge a type hint, preserving distinct fixed-size hints in a union.
-	/// Unknown hints add no evidence; functions take precedence over code, which
-	/// takes precedence over data hints. Both code and functions are unsized.
-	/// On a layout error, the previous type is unchanged.
-	fn upgrade_type(&mut self, hint: ty::Type) -> result::Result<(), &'static str> {
-		if hint == ty::Type::Unknown || self.ty == hint {
-			return Ok(());
-		}
-		if self.ty == ty::Type::Fn {
-			return Ok(());
-		}
-		if hint == ty::Type::Fn {
-			self.ty = hint;
-			return Ok(());
-		}
-		if self.ty == ty::Type::Unknown || hint == ty::Type::Code {
-			self.ty = hint;
-			return Ok(());
-		}
-		if self.ty == ty::Type::Code {
-			return Ok(());
-		}
-		if let ty::Type::Struct(union) = &self.ty {
-			if union.is_union && union.fields.iter().any(|field| field.ty == hint) {
-				return Ok(());
-			}
-		}
-		let (previous_size, previous_align) = self.ty.layout()?;
-		let (hint_size, hint_align) = hint.layout()?;
-		let align = previous_align.max(hint_align);
-		let size = previous_size.max(hint_size).checked_add(align - 1)
-			.ok_or("type layout overflow")? & !(align - 1);
-		let field = ty::Field { name: ty::FieldName::Unnamed, offset: 0, ty: hint };
-		if let ty::Type::Struct(union) = &mut self.ty {
-			if union.is_union {
-				union.fields.push(field);
-				union.size = size;
-				union.align = align;
-				return Ok(());
-			}
-		}
-		let previous = std::mem::replace(&mut self.ty, ty::Type::Unknown);
-		self.ty = ty::Type::Struct(Box::new(ty::StructType {
-			name: None,
-			fields: vec![ty::Field { name: ty::FieldName::Unnamed, offset: 0, ty: previous }, field],
-			is_union: true,
-			size,
-			align,
-			is_dst: false,
-		}));
-		Ok(())
+/// Merge a type hint, preserving distinct fixed-size hints in a union.
+/// Unknown hints add no evidence; functions take precedence over code, which
+/// takes precedence over data hints. Both code and functions are unsized.
+/// On a layout error, the previous type is unchanged.
+fn upgrade_type(symbol: &mut factmap::SymbolFact, hint: ty::Type) -> result::Result<(), &'static str> {
+	if hint == ty::Type::Unknown || symbol.ty == hint {
+		return Ok(());
 	}
+	if symbol.ty == ty::Type::Fn {
+		return Ok(());
+	}
+	if hint == ty::Type::Fn {
+		symbol.ty = hint;
+		return Ok(());
+	}
+	if symbol.ty == ty::Type::Unknown || hint == ty::Type::Code {
+		symbol.ty = hint;
+		return Ok(());
+	}
+	if symbol.ty == ty::Type::Code {
+		return Ok(());
+	}
+	if let ty::Type::Struct(union) = &symbol.ty {
+		if union.is_union && union.fields.iter().any(|field| field.ty == hint) {
+			return Ok(());
+		}
+	}
+	let (previous_size, previous_align) = symbol.ty.layout()?;
+	let (hint_size, hint_align) = hint.layout()?;
+	let align = previous_align.max(hint_align);
+	let size = previous_size.max(hint_size).checked_add(align - 1)
+		.ok_or("type layout overflow")? & !(align - 1);
+	let field = ty::Field { name: ty::FieldName::Unnamed, offset: 0, ty: hint };
+	if let ty::Type::Struct(union) = &mut symbol.ty {
+		if union.is_union {
+			union.fields.push(field);
+			union.size = size;
+			union.align = align;
+			return Ok(());
+		}
+	}
+	let previous = std::mem::replace(&mut symbol.ty, ty::Type::Unknown);
+	symbol.ty = ty::Type::Struct(Box::new(ty::StructType {
+		name: None,
+		fields: vec![ty::Field { name: ty::FieldName::Unnamed, offset: 0, ty: previous }, field],
+		is_union: true,
+		size,
+		align,
+		is_dst: false,
+	}));
+	Ok(())
 }

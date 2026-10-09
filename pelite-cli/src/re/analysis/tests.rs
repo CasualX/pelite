@@ -34,22 +34,22 @@ fn upgrade_type_hints() {
 	for width in [ty::PointerWidth::Bits32, ty::PointerWidth::Bits64] {
 		let mut symbol = factmap::SymbolFact::new(0x2000, ty::Type::Unknown, factmap::SymbolName::Data);
 		for hint in [ty::Type::Unknown, ty::Type::U32, ty::Type::U32, ty::Type::Unknown] {
-			symbol.upgrade_type(hint).unwrap();
+			upgrade_type(&mut symbol, hint).unwrap();
 		}
 		assert_eq!(symbol.ty, ty::Type::U32);
 		for hint in [width.pointer(ty::Type::Unknown), ty::Type::U64, ty::Type::U32, ty::Type::U64] {
-			symbol.upgrade_type(hint).unwrap();
+			upgrade_type(&mut symbol, hint).unwrap();
 		}
 		assert_eq!(symbol.ty, ty::Type::parse("union{u32,*unk,u64}", width).unwrap());
 		let previous = symbol.clone();
-		assert!(symbol.upgrade_type(ty::Type::CStr).is_err());
+		assert!(upgrade_type(&mut symbol, ty::Type::CStr).is_err());
 		assert_eq!(symbol, previous);
-		symbol.upgrade_type(ty::Type::Code).unwrap();
-		symbol.upgrade_type(ty::Type::U8).unwrap();
+		upgrade_type(&mut symbol, ty::Type::Code).unwrap();
+		upgrade_type(&mut symbol, ty::Type::U8).unwrap();
 		assert_eq!(symbol.ty, ty::Type::Code);
-		symbol.upgrade_type(ty::Type::Fn).unwrap();
+		upgrade_type(&mut symbol, ty::Type::Fn).unwrap();
 		for hint in [ty::Type::Code, ty::Type::U32, ty::Type::Unknown] {
-			symbol.upgrade_type(hint).unwrap();
+			upgrade_type(&mut symbol, hint).unwrap();
 		}
 		assert_eq!(symbol.ty, ty::Type::Fn);
 		assert_eq!(symbol.rva, 0x2000);
@@ -65,7 +65,7 @@ fn function_hints_override_data_and_union_hints() {
 		ty::Type::parse("union{u32,u64}", ty::PointerWidth::Bits64).unwrap(),
 	] {
 		let mut symbol = factmap::SymbolFact::new(0x1000, previous, factmap::SymbolName::Data);
-		symbol.upgrade_type(ty::Type::Fn).unwrap();
+		upgrade_type(&mut symbol, ty::Type::Fn).unwrap();
 		assert_eq!(symbol.ty, ty::Type::Fn);
 	}
 }
@@ -74,7 +74,7 @@ fn function_hints_override_data_and_union_hints() {
 fn upgrade_type_union_layout() {
 	let width = ty::PointerWidth::Bits64;
 	let mut symbol = factmap::SymbolFact::new(0, ty::Type::parse("[u32;3]", width).unwrap(), factmap::SymbolName::Data);
-	symbol.upgrade_type(ty::Type::U64).unwrap();
+	upgrade_type(&mut symbol, ty::Type::U64).unwrap();
 	assert_eq!(symbol.ty.layout(), Ok((16, 8)));
 	assert_eq!(symbol.ty, ty::Type::parse("union{[u32;3],u64}", width).unwrap());
 }
