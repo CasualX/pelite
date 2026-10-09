@@ -461,6 +461,46 @@ export class PeFile {
 	}
 
 	/**
+	 * Copies exactly `bytes` bytes from the virtual image at an RVA.
+	 *
+	 * Gaps, missing file bytes, and section bytes beyond min(VirtualSize, SizeOfRawData)
+	 * are zero-filled. Returns an Error if the range extends beyond SizeOfImage.
+	 *
+	 * @param {number} rva Relative virtual address.
+	 * @param {number} bytes Number of bytes to copy.
+	 * @returns {Result<Uint8Array>}
+	 */
+	hex_dump_bytes(rva, bytes) {
+		if (!Number.isInteger(rva) || rva < 0 || rva > 0xffff_ffff ||
+			!Number.isInteger(bytes) || bytes < 0 || bytes > 0xffff_ffff) {
+			return new Error("hex_dump_bytes expects an unsigned 32-bit RVA and byte count");
+		}
+		instance.exports.pefileHexDumpBytes(this.p, rva, bytes);
+		return takeResult();
+	}
+
+	/**
+	 * Returns a packed mask for `bytes` bytes of the virtual image at an RVA.
+	 *
+	 * Bit i is 1 for a file-backed byte and 0 for zero-fill, even when the on-disk
+	 * value is zero. Byte i uses bit (i % 8) of mask byte floor(i / 8), LSB first.
+	 * The mask has ceil(bytes / 8) bytes; unused final bits are zero.
+	 * Returns an Error if the range extends beyond SizeOfImage.
+	 *
+	 * @param {number} rva Relative virtual address.
+	 * @param {number} bytes Number of virtual image bytes to describe.
+	 * @returns {Result<Uint8Array>}
+	 */
+	hex_dump_mask(rva, bytes) {
+		if (!Number.isInteger(rva) || rva < 0 || rva > 0xffff_ffff ||
+			!Number.isInteger(bytes) || bytes < 0 || bytes > 0xffff_ffff) {
+			return new Error("hex_dump_mask expects an unsigned 32-bit RVA and byte count");
+		}
+		instance.exports.pefileHexDumpMask(this.p, rva, bytes);
+		return takeResult();
+	}
+
+	/**
 	 * Returns a view into the PE image starting at an RVA.
 	 *
 	 * The view borrows WebAssembly memory rather than copying it and may be invalidated if that memory grows.
