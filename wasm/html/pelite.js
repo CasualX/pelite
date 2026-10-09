@@ -431,7 +431,7 @@ export class PeFile {
 	 */
 	vaToRva(va) {
 		let value = instance.exports.pefileVaToRva(this.p, BigInt(va));
-		return takeResult() ?? value;
+		return takeResult() ?? (value >>> 0);
 	}
 
 	/**
@@ -442,7 +442,47 @@ export class PeFile {
 	 */
 	rvaToVa(rva) {
 		let value = instance.exports.pefileRvaToVa(this.p, rva);
-		return takeResult() ?? value;
+		return takeResult() ?? BigInt.asUintN(64, value);
+	}
+
+	/**
+	 * Converts an RVA to a file offset; zero-filled data returns an Error.
+	 * @param {number} rva
+	 * @returns {Result<number>}
+	 */
+	rvaToFileOffset(rva) {
+		let value = instance.exports.pefileRvaToFileOffset(this.p, rva);
+		return takeResult() ?? (value >>> 0);
+	}
+
+	/**
+	 * Converts a virtual address to a file offset; zero-filled data returns an Error.
+	 * @param {number | bigint} va
+	 * @returns {Result<number>}
+	 */
+	vaToFileOffset(va) {
+		let value = instance.exports.pefileVaToFileOffset(this.p, BigInt(va));
+		return takeResult() ?? (value >>> 0);
+	}
+
+	/**
+	 * Converts a file offset to an RVA; unmapped raw data returns an Error.
+	 * @param {number} offset
+	 * @returns {Result<number>}
+	 */
+	fileOffsetToRva(offset) {
+		let value = instance.exports.pefileFileOffsetToRva(this.p, offset);
+		return takeResult() ?? (value >>> 0);
+	}
+
+	/**
+	 * Converts a file offset to a virtual address; unmapped raw data returns an Error.
+	 * @param {number} offset
+	 * @returns {Result<bigint>}
+	 */
+	fileOffsetToVa(offset) {
+		let value = instance.exports.pefileFileOffsetToVa(this.p, offset);
+		return takeResult() ?? BigInt.asUintN(64, value);
 	}
 
 	/**

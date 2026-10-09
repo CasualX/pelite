@@ -123,15 +123,8 @@ pub unsafe fn headers(pefile: *mut PeFile) {
 	return_json(pefile.headers());
 }
 
-#[unsafe(export_name = "pefileVaToRva")]
-pub unsafe fn va_to_rva(pefile: *mut PeFile, va: u64) -> u32 {
-	let pefile = unsafe { &mut *pefile };
-	let pefile = match pelite::PeFile::from_bytes(pefile.as_ref()) {
-		Ok(pefile) => pefile,
-		Err(err) => { return_error(err); return 0; }
-	};
-
-	let result = match pefile {
+fn pe_va_to_rva(pefile: pelite::PeFile<'_>, va: u64) -> pelite::Result<u32> {
+	match pefile {
 		pelite::Wrap::T32(pefile) => {
 			match u32::try_from(va) {
 				Ok(va) => pefile.va_to_rva(va),
@@ -141,7 +134,29 @@ pub unsafe fn va_to_rva(pefile: *mut PeFile, va: u64) -> u32 {
 		pelite::Wrap::T64(pefile) => {
 			pefile.va_to_rva(va)
 		},
+	}
+}
+
+fn pe_rva_to_va(pefile: pelite::PeFile<'_>, rva: u32) -> pelite::Result<u64> {
+	match pefile {
+		pelite::Wrap::T32(pefile) => {
+			pefile.rva_to_va(rva).map(|va| va as u64)
+		},
+		pelite::Wrap::T64(pefile) => {
+			pefile.rva_to_va(rva)
+		},
+	}
+}
+
+#[unsafe(export_name = "pefileVaToRva")]
+pub unsafe fn va_to_rva(pefile: *mut PeFile, va: u64) -> u32 {
+	let pefile = unsafe { &mut *pefile };
+	let pefile = match pelite::PeFile::from_bytes(pefile.as_ref()) {
+		Ok(pefile) => pefile,
+		Err(err) => { return_error(err); return 0; }
 	};
+
+	let result = pe_va_to_rva(pefile, va);
 
 	match result {
 		Ok(rva) => { return_null(); rva }
@@ -157,17 +172,66 @@ pub unsafe fn rva_to_va(pefile: *mut PeFile, rva: u32) -> u64 {
 		Err(err) => { return_error(err); return 0; }
 	};
 
-	let result = match pefile {
-		pelite::Wrap::T32(pefile) => {
-			pefile.rva_to_va(rva).map(|va| va as u64)
-		},
-		pelite::Wrap::T64(pefile) => {
-			pefile.rva_to_va(rva)
-		},
-	};
+	let result = pe_rva_to_va(pefile, rva);
 
 	match result {
 		Ok(va) => { return_null(); va }
+		Err(err) => { return_error(err); 0 }
+	}
+}
+
+#[unsafe(export_name = "pefileRvaToFileOffset")]
+pub unsafe fn rva_to_file_offset(pefile: *mut PeFile, rva: u32) -> u32 {
+	let pefile = unsafe { &*pefile };
+	let pefile = match pelite::PeFile::from_bytes(pefile.as_ref()) {
+		Ok(pefile) => pefile,
+		Err(err) => { return_error(err); return 0; }
+	};
+	let result = pefile.headers().rva_to_file_offset(rva).map(|offset| offset as u32);
+	match result {
+		Ok(value) => { return_null(); value }
+		Err(err) => { return_error(err); 0 }
+	}
+}
+
+#[unsafe(export_name = "pefileVaToFileOffset")]
+pub unsafe fn va_to_file_offset(pefile: *mut PeFile, va: u64) -> u32 {
+	let pefile = unsafe { &*pefile };
+	let pefile = match pelite::PeFile::from_bytes(pefile.as_ref()) {
+		Ok(pefile) => pefile,
+		Err(err) => { return_error(err); return 0; }
+	};
+	let result = pe_va_to_rva(pefile, va).and_then(|rva| pefile.headers().rva_to_file_offset(rva)).map(|offset| offset as u32);
+	match result {
+		Ok(value) => { return_null(); value }
+		Err(err) => { return_error(err); 0 }
+	}
+}
+
+#[unsafe(export_name = "pefileFileOffsetToRva")]
+pub unsafe fn file_offset_to_rva(pefile: *mut PeFile, offset: u32) -> u32 {
+	let pefile = unsafe { &*pefile };
+	let pefile = match pelite::PeFile::from_bytes(pefile.as_ref()) {
+		Ok(pefile) => pefile,
+		Err(err) => { return_error(err); return 0; }
+	};
+	let result = pefile.headers().file_offset_to_rva(offset as usize);
+	match result {
+		Ok(value) => { return_null(); value }
+		Err(err) => { return_error(err); 0 }
+	}
+}
+
+#[unsafe(export_name = "pefileFileOffsetToVa")]
+pub unsafe fn file_offset_to_va(pefile: *mut PeFile, offset: u32) -> u64 {
+	let pefile = unsafe { &*pefile };
+	let pefile = match pelite::PeFile::from_bytes(pefile.as_ref()) {
+		Ok(pefile) => pefile,
+		Err(err) => { return_error(err); return 0; }
+	};
+	let result = pefile.headers().file_offset_to_rva(offset as usize).and_then(|rva| pe_rva_to_va(pefile, rva));
+	match result {
+		Ok(value) => { return_null(); value }
 		Err(err) => { return_error(err); 0 }
 	}
 }
