@@ -1,5 +1,6 @@
 use super::*;
 
+/// A descriptive symbol name or a marker controlling symbol interpretation.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum SymbolName {
 	/// Data.
@@ -38,21 +39,34 @@ impl fmt::Display for SymbolName {
 	}
 }
 
+/// Typed symbol.
+///
+/// ```text
+/// Sx2000 u32 R
+/// ```
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct SymbolFact {
+	/// Symbol address.
 	pub rva: u32,
+	/// Type describing the contents at the symbol address.
 	pub ty: ty::Type,
+	/// Explicit name or marker describing how consumers interpret the symbol.
 	pub name: SymbolName,
 }
 
 impl SymbolFact {
+	/// Construct a symbol record from an address, parsed type, and name or marker.
 	pub fn new(rva: u32, ty: ty::Type, name: SymbolName) -> SymbolFact {
 		SymbolFact { rva, ty, name }
 	}
 }
 
 impl SymbolFact {
-	pub fn parse(line: &str, pointer_width: ty::PointerWidth) -> result::Result<SymbolFact, ParseLineError> {
+	/// Parse `SxRVA type name`, also accepting the legacy `0xRVA` prefix.
+	///
+	/// Types containing whitespace and explicit names use JSON string quoting.
+	/// `pointer_width` determines pointer sizes and alignment in the parsed type.
+	pub fn parse(line: &str, pointer_width: ty::PointerWidth) -> Result<SymbolFact, ParseLineError> {
 		let (rva, rest) = token(line)?;
 		let rva = rva.strip_prefix('0').or_else(|| rva.strip_prefix('S'))
 			.ok_or(ParseLineError::InvalidPrefix("0 or S"))?;

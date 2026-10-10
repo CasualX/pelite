@@ -98,7 +98,7 @@ mod tests {
 		let input = AnalysisInput::new(pe).unwrap();
 		let mut analysis = AnalysisOutput::default();
 		for (rva, name) in [(0x3000, "__imp_Function"), (0x3010, "other_global")] {
-			analysis.symbols.insert(rva, factmap::SymbolFact::new(rva, ty::PointerWidth::from(pe).unsigned(), factmap::SymbolName::Named(name.into())));
+			analysis.symbols.insert(rva, factmap::SymbolFact::new(rva, pointer_width(pe).unsigned(), factmap::SymbolName::Named(name.into())));
 		}
 		feed_bytes(&input, &mut analysis, bytes, 0x1000);
 		analysis
@@ -163,7 +163,7 @@ mod tests {
 	#[test]
 	fn x86_dword_global_load() {
 		let pe = PeFile::from_bytes(&IMAGE32.0).unwrap();
-		let width = ty::PointerWidth::from(pe);
+		let width = pointer_width(pe);
 		let input = AnalysisInput::new(pe).unwrap();
 		let mut analysis = AnalysisOutput::default();
 		analysis.symbols.insert(0x3000, factmap::SymbolFact::new(0x3000, width.pointer(ty::Type::Unknown), factmap::SymbolName::Data));

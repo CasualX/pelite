@@ -61,7 +61,7 @@ pub fn command() -> clap::Command {
 		.arg(clap::Arg::new("arch")
 			.long("arch")
 			.value_name("ARCH")
-			.value_parser(Arch::parse)
+			.value_parser(clap::value_parser!(Arch))
 			.help("Override the PE machine header (x86_16, x86_32 [alias x86], or x86_64)"))
 		.arg(clap::Arg::new("lookback")
 			.long("lookback")
@@ -121,7 +121,7 @@ fn disassemble(
 	let end_ip = image_base + end as u64;
 
 	let color = format == OutputFormat::Text && io::stdout().is_terminal();
-	let facts = symbols::load(matches, ty::PointerWidth::from(pe), image_base, Some(pe))?;
+	let facts = symbols::load(matches, pointer_width(pe), image_base, Some(pe))?;
 	let symbols = Arc::new(facts.symbols);
 	let mut decoded = iced::decode_bytes(bytes, arch.bitness(), decode_ip, start_ip, end_ip, color, Arc::clone(&symbols));
 	iced::append_comments(&mut decoded, &facts.comments);

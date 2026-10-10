@@ -2,7 +2,6 @@ use super::*;
 
 mod addr;
 mod address;
-mod arch;
 mod analysis;
 mod demangle;
 mod disasm;
@@ -22,9 +21,14 @@ mod symbols;
 mod xref;
 
 use address::Address;
-use pelite_cli::{factmap, ty};
+use binfact::*;
 
-use arch::Arch;
+fn pointer_width(pe: pelite::PeFile<'_>) -> ty::PointerWidth {
+	match pe {
+		pelite::Wrap::T32(_) => ty::PointerWidth::Bits32,
+		pelite::Wrap::T64(_) => ty::PointerWidth::Bits64,
+	}
+}
 
 impl Address {
 	fn to_rva(self, pe: pelite::PeFile<'_>) -> Result<u32> {

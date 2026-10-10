@@ -59,7 +59,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	};
 	let map = pelite::FileMap::open(path)?;
 	let pe = pelite::PeFile::from_bytes(&map)?;
-	let ty = ty::Type::parse(source, ty::PointerWidth::from(pe))?;
+	let ty = ty::Type::parse(source, pointer_width(pe))?;
 	let value = match address.to_rva(pe) {
 		Ok(rva) => read_at(pe, rva, &ty, &options),
 		Err(error) => error_value(None, error),

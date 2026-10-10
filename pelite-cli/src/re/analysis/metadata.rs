@@ -79,7 +79,7 @@ pub fn seed_exports(input: &AnalysisInput<'_>, output: &mut AnalysisOutput) {
 /// Label IAT slots as pointer-sized integers, replacing weaker guesses.
 /// Their values may refer to other modules rather than this PE image.
 pub fn label_imports(input: &AnalysisInput<'_>, output: &mut AnalysisOutput) {
-	let width = ty::PointerWidth::from(input.pe);
+	let width = pointer_width(input.pe);
 	for (rva, name) in import_names(input.pe, input.bitness) {
 		if rva < input.size {
 			output.symbols.insert(rva, factmap::SymbolFact::new(

@@ -1,12 +1,19 @@
 use super::*;
 
+/// An ordered collection of facts about an image.
 #[derive(Clone, Debug, Default, Eq, PartialEq)]
 pub struct FactMap {
+	/// Records in source order, including repeated addresses and fact kinds.
 	pub facts: Vec<Fact>,
 }
 
 impl FactMap {
-	pub fn parse(input: &str, pointer_width: ty::PointerWidth) -> result::Result<FactMap, ParseError> {
+	/// Parse a complete `#factmap` file, also accepting the legacy `#symtext` header.
+	///
+	/// Blank lines and lines beginning with `#` after trimming are ignored.
+	/// `pointer_width` determines pointer layouts in symbol types. Parsing preserves
+	/// record order and reports the first invalid line.
+	pub fn parse(input: &str, pointer_width: ty::PointerWidth) -> Result<FactMap, ParseError> {
 		let mut facts = Vec::new();
 		let mut lines = input.lines();
 		if !matches!(lines.next(), Some("#factmap" | "#symtext")) {
@@ -25,6 +32,10 @@ impl FactMap {
 		Ok(FactMap { facts })
 	}
 
+	/// Write the `#factmap` header, optional file comment, and facts in stored order.
+	///
+	/// Each line of `comment` is prefixed with `# `. Facts use their canonical
+	/// text representation; they are neither sorted nor merged.
 	pub fn write(&self, mut output: impl Write, comment: &str) -> io::Result<()> {
 		writeln!(output, "#factmap")?;
 		for line in comment.lines() {
@@ -47,6 +58,21 @@ fn mixed_map_round_trip() {
 	let output = String::from_utf8(output).unwrap();
 	assert_eq!(output, "#factmap\n# first line\n# second line\nSx10 code fn\nCx10 \"comment\"\nRx10 0x20\nFx10 { \"size\": 42 }\nSx10 code undef\n");
 	assert_eq!(FactMap::parse(&output, width).unwrap(), map);
+}
+
+#[test]
+fn decode_map_round_trip() {
+	let width = ty::PointerWidth::Bits64;
+	let map = FactMap::parse("#factmap\nDx1000 5 x86\nCx1000 \"decode region\"\nDx2000 16 x86_64\n", width).unwrap();
+	let mut output = Vec::new();
+	map.write(&mut output, "").unwrap();
+	let output = String::from_utf8(output).unwrap();
+	assert_eq!(output, "#factmap\nDx1000 5 x86_32\nCx1000 \"decode region\"\nDx2000 16 x86_64\n");
+	assert_eq!(FactMap::parse(&output, width).unwrap(), map);
+	assert!(map.facts[1].sort_key() < map.facts[0].sort_key());
+	assert!(map.facts[0].sort_key() < map.facts[2].sort_key());
+	let error = FactMap::parse("#factmap\nDx1000 bad x86\n", width).unwrap_err();
+	assert_eq!(error, ParseError { line: 2, error: ParseLineError::InvalidByteCount });
 }
 
 #[test]
