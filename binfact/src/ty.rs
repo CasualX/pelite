@@ -1,4 +1,4 @@
-//! Type DSL for describing data and code in a PE image.
+//! Type DSL for describing data and code in a binary.
 
 use super::*;
 
@@ -70,22 +70,13 @@ impl fmt::Display for ParseError {
 
 impl std::error::Error for ParseError {}
 
-/// Pointer width of the target PE image, independent of the host architecture.
+/// Pointer width of the target image, independent of the host architecture.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum PointerWidth {
-	/// Four-byte pointers in PE32 images.
+	/// Four-byte pointers.
 	Bits32,
-	/// Eight-byte pointers in PE32+ images.
+	/// Eight-byte pointers.
 	Bits64,
-}
-
-impl From<pelite::PeFile<'_>> for PointerWidth {
-	fn from(pe: pelite::PeFile<'_>) -> Self {
-		match pe {
-			pelite::Wrap::T32(_) => Self::Bits32,
-			pelite::Wrap::T64(_) => Self::Bits64,
-		}
-	}
 }
 
 impl PointerWidth {
@@ -125,7 +116,7 @@ pub enum ArrayLen {
 	Dyn(String),
 }
 
-/// An array of fixed-size elements with layout cached for the target PE.
+/// An array of fixed-size elements.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ArrayType {
 	/// Element type; must have a fixed layout.
@@ -321,7 +312,7 @@ fn align_up(offset: u32, align: u32) -> Result<u32, &'static str> {
 }
 
 impl Type {
-	/// Parse and lay out a type after the PE pointer width is known.
+	/// Parse and type layout.
 	///
 	/// Accepts whitespace between tokens and requires the entire input to be a
 	/// single type. Errors describe invalid syntax or layout and include a byte

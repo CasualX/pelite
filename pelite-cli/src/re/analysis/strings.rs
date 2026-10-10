@@ -36,7 +36,7 @@ pub fn label_strings(input: &AnalysisInput<'_>, output: &mut AnalysisOutput) {
 }
 
 fn looks_like_va(pe: PeFile<'_>, rva: u32, bytes: &[u8]) -> bool {
-	let width = ty::PointerWidth::from(pe).bytes() as usize;
+	let width = pointer_width(pe).bytes() as usize;
 	let Some(address) = pe.image_base().checked_add(u64::from(rva)) else {
 		return false
 	};

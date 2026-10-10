@@ -38,7 +38,7 @@ jobs:
           toolchain: ${{ matrix.rust }}
 
       - name: Check all targets and features
-        run: cargo check --package pelite --package pelite-cli --all-targets --all-features
+        run: cargo check -p pelite -p binfact -p pelite-cli --all-targets --all-features
 
       - name: Check library without default features
         run: cargo check --lib --no-default-features
@@ -47,7 +47,7 @@ jobs:
         run: cargo check --lib --no-default-features --features serde,basenc
 
       - name: Run tests
-        run: cargo test --package pelite --package pelite-cli --all-features --no-fail-fast
+        run: cargo test -p pelite -p binfact -p pelite-cli --all-features --no-fail-fast
 
   wasm:
     name: WebAssembly
@@ -64,7 +64,7 @@ jobs:
           targets: wasm32-unknown-unknown
 
       - name: Build WebAssembly crate
-        run: cargo build --package pelite-wasm --target wasm32-unknown-unknown
+        run: cargo build -p pelite-wasm --target wasm32-unknown-unknown
 
   windows:
     name: Windows / ${{ matrix.target }}
@@ -87,7 +87,7 @@ jobs:
           targets: ${{ matrix.target }}
 
       - name: Check all targets and features
-        run: cargo check --target ${{ matrix.target }} --all-targets --all-features
+        run: cargo check -p pelite -p binfact -p pelite-cli --target ${{ matrix.target }} --all-targets --all-features
 
       - name: Run tests
-        run: cargo test --target ${{ matrix.target }} --all-features --no-fail-fast
+        run: cargo test -p pelite -p binfact -p pelite-cli --target ${{ matrix.target }} --all-features --no-fail-fast

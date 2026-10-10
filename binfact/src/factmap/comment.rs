@@ -1,13 +1,23 @@
 use super::*;
 
+/// Comment annotation.
+///
+/// ```text
+/// Cx1000 "Comment"
+/// ```
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct CommentFact {
+	/// Address of the annotation.
 	pub rva: u32,
+	/// Comment text.
 	pub comment: String,
 }
 
-impl CommentFact {
-	pub fn parse(line: &str) -> result::Result<CommentFact, ParseLineError> {
+impl str::FromStr for CommentFact {
+	type Err = ParseLineError;
+
+	/// Parse `CxRVA "comment"`, decoding JSON string escapes in the comment.
+	fn from_str(line: &str) -> Result<Self, Self::Err> {
 		let (rva, rest) = token(line)?;
 		let rva = rva.strip_prefix('C').ok_or(ParseLineError::InvalidPrefix("C"))?;
 		let rva = parse_rva(rva)?;
@@ -30,12 +40,12 @@ impl fmt::Display for CommentFact {
 
 #[test]
 fn parse_comment() {
-	let fact = CommentFact::parse(r#"Cx1234 "a \"quoted\" comment\nnext line""#).unwrap();
+	let fact = CommentFact::from_str(r#"Cx1234 "a \"quoted\" comment\nnext line""#).unwrap();
 	assert_eq!(fact.rva, 0x1234);
 	assert_eq!(fact.comment, "a \"quoted\" comment\nnext line");
 	assert_eq!(fact.to_string(), r#"Cx1234 "a \"quoted\" comment\nnext line""#);
-	assert_eq!(CommentFact::parse(&fact.to_string()).unwrap(), fact);
-	assert_eq!(CommentFact::parse(" Cx0 \"\" \t").unwrap().comment, "");
+	assert_eq!(CommentFact::from_str(&fact.to_string()).unwrap(), fact);
+	assert_eq!(CommentFact::from_str(" Cx0 \"\" \t").unwrap().comment, "");
 }
 
 #[test]
@@ -50,8 +60,8 @@ fn reject_invalid_comment() {
 		("Cx1 \"unfinished", ParseLineError::UnterminatedQuotedField),
 		("Cx1 \"text\" extra", ParseLineError::UnexpectedText("comment")),
 	] {
-		assert_eq!(CommentFact::parse(line).unwrap_err(), error, "{line}");
+		assert_eq!(CommentFact::from_str(line).unwrap_err(), error, "{line}");
 	}
-	assert!(matches!(CommentFact::parse("Cx1 unquoted"), Err(ParseLineError::InvalidComment(_))));
-	assert!(matches!(CommentFact::parse(r#"Cx1 "bad\q""#), Err(ParseLineError::InvalidComment(_))));
+	assert!(matches!(CommentFact::from_str("Cx1 unquoted"), Err(ParseLineError::InvalidComment(_))));
+	assert!(matches!(CommentFact::from_str(r#"Cx1 "bad\q""#), Err(ParseLineError::InvalidComment(_))));
 }

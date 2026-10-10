@@ -73,7 +73,7 @@ pub fn command() -> clap::Command {
 		.arg(clap::Arg::new("arch")
 			.long("arch")
 			.value_name("ARCH")
-			.value_parser(Arch::parse)
+			.value_parser(clap::value_parser!(Arch))
 			.help("Override the PE machine header (x86_16, x86_32 [alias x86], or x86_64)"))
 		.arg(clap::Arg::new("zerofill")
 			.long("zerofill")
@@ -93,7 +93,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 		.ok_or_else(|| err("RVA plus length overflows"))?;
 	let arch = get_arch(matches, pe)?;
 	let bytes = pe.slice(rva, length, 1)?;
-	let facts = symbols::load(matches, ty::PointerWidth::from(pe), pe.image_base(), Some(pe))?;
+	let facts = symbols::load(matches, pointer_width(pe), pe.image_base(), Some(pe))?;
 
 	// Collect the brief data
 	let mut state = CollectionState::default();

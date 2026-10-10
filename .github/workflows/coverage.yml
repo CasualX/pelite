@@ -47,7 +47,7 @@ jobs:
         uses: taiki-e/install-action@cargo-llvm-cov
 
       - name: Run tests with coverage
-        run: cargo llvm-cov --package pelite --all-features --no-fail-fast --html
+        run: cargo llvm-cov -p pelite -p binfact --all-features --no-fail-fast --html
 
       - name: Print coverage summary
         run: cargo llvm-cov report --summary-only

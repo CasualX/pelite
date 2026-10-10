@@ -1,9 +1,18 @@
 use super::*;
 
+#[cfg(test)]
+use std::str::FromStr;
+
+/// Function metadata.
+///
+/// ```text
+/// Fx1000 {"bytes":199,...}
+/// ```
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct FunctionFact {
+	/// Function entry address.
 	pub rva: u32,
-	/// Opaque content following the function entry RVA, without JSON validation.
+	/// Opaque content, typically JSON but not validated.
 	pub content: String,
 }
 
@@ -34,8 +43,14 @@ impl FunctionFact {
 			_ => content,
 		};
 	}
+}
 
-	pub fn parse(line: &str) -> result::Result<FunctionFact, ParseLineError> {
+impl str::FromStr for FunctionFact {
+	type Err = ParseLineError;
+
+	/// Parse `FxRVA content`, trimming surrounding whitespace from nonempty content.
+	/// The content is preserved without validating it as JSON.
+	fn from_str(line: &str) -> Result<Self, Self::Err> {
 		let (rva, rest) = token(line)?;
 		let rva = rva.strip_prefix('F').ok_or(ParseLineError::InvalidPrefix("F"))?;
 		let rva = parse_rva(rva)?;
@@ -82,6 +97,6 @@ fn reject_invalid_function() {
 		("Fxgg {}", ParseLineError::InvalidRva),
 		("Fx100000000 {}", ParseLineError::InvalidRva),
 	] {
-		assert_eq!(FunctionFact::parse(line).unwrap_err(), error, "{line}");
+		assert_eq!(FunctionFact::from_str(line).unwrap_err(), error, "{line}");
 	}
 }

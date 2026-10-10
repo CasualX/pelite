@@ -50,7 +50,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 		drop(file);
 		if matches.get_flag("measure-load-time") {
 			let label = format!("reading and parsing {}", output_path.display());
-			let _loaded = time(true, &label, || symbols::load_file(output_path, ty::PointerWidth::from(pe)))?;
+			let _loaded = time(true, &label, || symbols::load_file(output_path, pointer_width(pe)))?;
 		}
 	}
 	match format {
@@ -65,6 +65,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 				factmap::Fact::Comment(comment) => serde_json::json!({ "rva": comment.rva, "comment": comment.comment }),
 				factmap::Fact::Function(function) => serde_json::json!({ "rva": function.rva, "content": function.content }),
 				factmap::Fact::Ref(reference) => serde_json::json!({ "rva": reference.rva, "target_rva": reference.target_rva }),
+				factmap::Fact::Decode(decode) => serde_json::json!({ "rva": decode.rva, "bytes": decode.bytes, "arch": decode.arch.to_string() }),
 			}).collect::<Vec<_>>();
 			print_json(&report, matches!(format, OutputFormat::JsonPretty))
 		},

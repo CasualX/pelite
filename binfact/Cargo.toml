@@ -1,0 +1,12 @@
+[package]
+name = "binfact"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.93"
+
+license = "GPL-3.0-only"
+authors = ["Casper <CasualX@users.noreply.github.com>"]
+description = "Shared fact map and type definitions for binary analysis tools"
+
+[dependencies]
+serde_json = { version = "1.0", features = ["preserve_order"] }

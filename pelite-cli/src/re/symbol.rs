@@ -45,7 +45,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 		.ok_or_else(|| err("RVA plus length overflows"))?;
 	let mut symbols = BTreeMap::new();
 	for path in matches.get_many::<PathBuf>("facts").into_iter().flatten() {
-		let map = symbols::load_map(path, ty::PointerWidth::from(pe), Some(pe))?;
+		let map = symbols::load_map(path, pointer_width(pe), Some(pe))?;
 		for fact in map.facts {
 			let factmap::Fact::Symbol(symbol) = fact else { continue };
 			if matches!(symbol.name, factmap::SymbolName::Undef) {

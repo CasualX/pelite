@@ -66,7 +66,7 @@ pub fn command() -> clap::Command {
 		.arg(clap::Arg::new("arch")
 			.long("arch")
 			.value_name("ARCH")
-			.value_parser(Arch::parse)
+			.value_parser(clap::value_parser!(Arch))
 			.required(true)
 			.help("Instruction set and mode (x86_16, x86_32 [alias x86], or x86_64)"))
 		.arg(clap::Arg::new("base")
