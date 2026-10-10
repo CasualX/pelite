@@ -109,9 +109,14 @@ async function runScript() {
 		}
 		const bytes = demoFile?.bytes ?? new Uint8Array(await file.arrayBuffer());
 		const { PeFile } = await import("./pelite.js");
-		using pefile = new PeFile(bytes);
-		const result = eval(codeInput.value);
-		output.textContent = stringify(await result);
+		const pefile = new PeFile(bytes);
+		try {
+			const result = eval(codeInput.value);
+			output.textContent = stringify(await result);
+		}
+		finally {
+			pefile.dispose();
+		}
 	}
 	catch (error) {
 		console.error(error);

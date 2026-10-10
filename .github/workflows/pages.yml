@@ -32,16 +32,18 @@ jobs:
         with:
           targets: wasm32-unknown-unknown
 
-      - name: Build WebAssembly
-        run: ./wasm/build.sh
+      - name: Install Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: pelite-js/package-lock.json
 
-      - name: Assemble playground
+      - name: Build playground
+        working-directory: pelite-js
         run: |
-          mkdir -p _site
-          cp -R wasm/html/. _site/
-          cp demo/Demo.dll _site/Demo.dll
-          cp demo/Demo64.dll _site/Demo64.dll
-          touch _site/.nojekyll
+          npm ci
+          npm run build
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v6
@@ -49,7 +51,7 @@ jobs:
       - name: Upload playground
         uses: actions/upload-pages-artifact@v5
         with:
-          path: _site
+          path: pelite-js/html
 
       - name: Deploy GitHub Pages
         id: deployment

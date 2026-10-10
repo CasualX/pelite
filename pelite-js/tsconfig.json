@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "target": "ES2022",
+    "module": "ESNext",
+    "lib": ["ES2022", "DOM", "ESNext.Disposable"],
+    "strictNullChecks": true,
+    "rootDir": "src",
+    "outDir": "dist"
+  },
+  "include": ["src/pelite.js"]
+}

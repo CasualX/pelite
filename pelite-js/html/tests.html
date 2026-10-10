@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PeLite browser tests</title>
+  <style>
+    body { font: 16px system-ui, sans-serif; max-width: 60rem; margin: 2rem auto; padding: 0 1rem; }
+    pre { white-space: pre-wrap; }
+    [data-status="passed"] { color: #167338; }
+    [data-status="failed"] { color: #b42318; }
+  </style>
+</head>
+<body>
+  <h1>PeLite browser tests</h1>
+  <p><a href="./index.html">Back to playground</a></p>
+  <p>Uses Demo.dll and Demo64.dll copied here from the repository's demo directory by the build.</p>
+  <p id="summary" role="status" data-status="running">Running…</p>
+  <pre id="results"></pre>
+  <script type="module">
+    const summary = document.querySelector("#summary");
+    const results = document.querySelector("#results");
+    let passed = 0;
+    let failed = 0;
+
+    function assert(condition, message) {
+      if (!condition) throw new Error(message);
+    }
+
+    async function test(name, run) {
+      try {
+        await run();
+        passed++;
+        results.textContent += `PASS ${name}\n`;
+      } catch (error) {
+        failed++;
+        results.textContent += `FAIL ${name}\n${error.stack ?? error}\n`;
+      }
+    }
+
+    await test("browser module and PE API", async () => {
+      const api = await import("./pelite.js");
+      assert(Object.keys(api).join() === "PeFile", "Only PeFile should be exported");
+      const { PeFile } = api;
+
+      await test("invalid constructor input", () => {
+        for (const bytes of ["invalid", new Uint8Array()]) {
+          let error;
+          try { new PeFile(bytes); } catch (caught) { error = caught; }
+          assert(error instanceof Error, "Invalid input should throw");
+        }
+      });
+
+      for (const [name, magic] of [["Demo.dll", 0x10b], ["Demo64.dll", 0x20b]]) {
+        await test(name, async () => {
+          const response = await fetch(`./${name}`);
+          assert(response.ok, `Unable to load ${name}: ${response.status}`);
+          const file = new PeFile(new Uint8Array(await response.arrayBuffer()));
+          try {
+            const headers = file.headers();
+            assert(!(headers instanceof Error), String(headers));
+            assert(headers.NtHeaders.OptionalHeader.Magic === magic, "Wrong PE bitness");
+            assert(headers.SectionHeaders.length > 0, "Missing sections");
+            assert(file.read(0, "u16") === 0x5a4d, "DOS signature read failed");
+            assert(file.read(0, "invalid-type") instanceof Error, "Invalid read type should return Error");
+            const scan = file.scannerExec(0, "4D 5A");
+            assert(Array.isArray(scan), "DOS signature scan failed");
+            const bytes = file.hexDumpBytes(0, 2);
+            assert(bytes instanceof Uint8Array && bytes[0] === 0x4d && bytes[1] === 0x5a,
+              "Byte copy failed");
+            const hashes = file.hashes();
+            assert(!(hashes instanceof Error), String(hashes));
+            assert(/^[0-9a-f]{64}$/.test(hashes.sha256), "Invalid SHA-256");
+          } finally {
+            file.dispose();
+            file.dispose();
+          }
+        });
+      }
+    });
+
+    summary.textContent = `${passed} passed, ${failed} failed`;
+    summary.dataset.status = failed ? "failed" : "passed";
+  </script>
+</body>
+</html>
