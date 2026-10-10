@@ -13,7 +13,7 @@ pub fn label_strings(input: &AnalysisInput<'_>, output: &mut AnalysisOutput) {
 		let len = bytes.len().min(virtual_size as usize).min(input.size.saturating_sub(section.VirtualAddress) as usize);
 		let bytes = &bytes[..len];
 		for symbol in output.symbols.values_mut() {
-			if !matches!(symbol.name, factmap::SymbolName::Data | factmap::SymbolName::RData) {
+			if !matches!(symbol.name, SymbolName::Data | SymbolName::RData) {
 				continue;
 			}
 			let Some(offset) = symbol.rva.checked_sub(section.VirtualAddress) else {

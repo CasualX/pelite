@@ -20,7 +20,7 @@ pub fn seed_entry_points(input: &AnalysisInput<'_>, output: &mut AnalysisOutput)
 			let Ok(rva) = input.pe.va_to_rva(va) else { continue };
 			output.add_symbol(input, rva, Some(ty::Type::Fn));
 			if let Some(symbol) = output.symbols.get_mut(&rva) {
-				symbol.name = factmap::SymbolName::Named(format!("TlsCallback_{index}"));
+				symbol.name = SymbolName::Named(format!("TlsCallback_{index}"));
 			}
 		}
 	}
@@ -31,7 +31,7 @@ pub fn seed_entry_points(input: &AnalysisInput<'_>, output: &mut AnalysisOutput)
 	if entry != 0 {
 		output.add_symbol(input, entry, Some(ty::Type::Fn));
 		if let Some(symbol) = output.symbols.get_mut(&entry) {
-			symbol.name = factmap::SymbolName::Named("EntryPoint".into());
+			symbol.name = SymbolName::Named("EntryPoint".into());
 		}
 	}
 }
@@ -48,7 +48,7 @@ pub fn scan_exceptions(input: &AnalysisInput<'_>, output: &mut AnalysisOutput) {
 						continue
 					};
 					let comment = format!("RUNTIME_FUNCTION at {runtime_function:#x}");
-					output.comments.insert(rva, factmap::CommentFact { rva, comment });
+					output.comments.insert(rva, CommentFact { rva, comment });
 				}
 			},
 			Err(pelite::Error::Null) => {},
@@ -70,7 +70,7 @@ pub fn seed_exports(input: &AnalysisInput<'_>, output: &mut AnalysisOutput) {
 			let Some(rva) = export.ok().and_then(|export| export.symbol()) else { continue };
 			let Some(name) = name.ok().and_then(|name| name.to_str().ok()) else { continue };
 			if let Some(symbol) = output.symbols.get_mut(&rva) {
-				symbol.name = factmap::SymbolName::Named(name.to_owned());
+				symbol.name = SymbolName::Named(name.to_owned());
 			}
 		}
 	}
@@ -82,8 +82,8 @@ pub fn label_imports(input: &AnalysisInput<'_>, output: &mut AnalysisOutput) {
 	let width = pointer_width(input.pe);
 	for (rva, name) in import_names(input.pe, input.bitness) {
 		if rva < input.size {
-			output.symbols.insert(rva, factmap::SymbolFact::new(
-				rva, width.unsigned(), factmap::SymbolName::Named(format!("__imp_{name}")),
+			output.symbols.insert(rva, SymbolFact::new(
+				rva, width.unsigned(), SymbolName::Named(format!("__imp_{name}")),
 			));
 		}
 	}

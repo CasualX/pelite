@@ -12,7 +12,7 @@ pub fn refine_labels(input: &AnalysisInput<'_>, output: &mut AnalysisOutput) {
 	use iced_x86::{Mnemonic, OpKind};
 	let imports = import_names(pe, bitness);
 	for symbol in output.symbols.values_mut() {
-		if symbol.name != factmap::SymbolName::Code {
+		if symbol.name != SymbolName::Code {
 			continue;
 		}
 		let rva = symbol.rva;
@@ -49,8 +49,8 @@ pub fn refine_labels(input: &AnalysisInput<'_>, output: &mut AnalysisOutput) {
 			},
 			_ => continue,
 		};
-		symbol.name = if label == "thunk" { factmap::SymbolName::Thunk }
-			else { factmap::SymbolName::Named(label) };
+		symbol.name = if label == "thunk" { SymbolName::Thunk }
+			else { SymbolName::Named(label) };
 		upgrade_type(symbol, ty::Type::Code)
 			.expect("code hints always upgrade successfully");
 	}

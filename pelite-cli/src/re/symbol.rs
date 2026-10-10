@@ -47,11 +47,11 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	for path in matches.get_many::<PathBuf>("facts").into_iter().flatten() {
 		let map = symbols::load_map(path, pointer_width(pe), Some(pe))?;
 		for fact in map.facts {
-			let factmap::Fact::Symbol(symbol) = fact else { continue };
-			if matches!(symbol.name, factmap::SymbolName::Undef) {
+			let Fact::Symbol(symbol) = fact else { continue };
+			if matches!(symbol.name, SymbolName::Undef) {
 				symbols.remove(&symbol.rva);
 			}
-			else if matches!(symbol.name, factmap::SymbolName::Weak) {
+			else if matches!(symbol.name, SymbolName::Weak) {
 				symbols.entry(symbol.rva).or_insert_with(|| symbol);
 			}
 			else {

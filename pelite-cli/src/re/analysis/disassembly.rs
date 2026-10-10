@@ -26,10 +26,29 @@ fn disassemble_bytes(input: &AnalysisInput<'_>, output: &mut AnalysisOutput, bit
 	let Some(ip) = input.pe.image_base().checked_add(rva as u64) else { return };
 	let mut decoder = iced_x86::Decoder::with_ip(bitness, bytes, ip, iced_x86::DecoderOptions::NONE);
 	let mut instruction = iced_x86::Instruction::default();
+	let arch = match bitness {
+		32 => Arch::X86_32,
+		64 => Arch::X86_64,
+		_ => unreachable!("analysis only supports i386 and AMD64"),
+	};
+	let emit_decode = |output: &mut AnalysisOutput, start: usize, end: usize| {
+		if end > start {
+			output.decodes.push(DecodeFact { rva: rva + start as u32, bytes: (end - start) as u32, arch });
+		}
+	};
+	let mut region_start = 0;
 	while decoder.can_decode() {
+		let instruction_start = decoder.position();
 		decoder.decode_out(&mut instruction);
 		if instruction.is_invalid() {
+			emit_decode(output, region_start, instruction_start);
+			region_start = decoder.position();
 			continue;
+		}
+		// Keep complete instructions together, splitting long runs about every 4 KiB.
+		if decoder.position() - region_start >= 0x1000 {
+			emit_decode(output, region_start, decoder.position());
+			region_start = decoder.position();
 		}
 		for operand in instruction.op_kinds() {
 			use iced_x86::{Mnemonic, OpKind};
@@ -57,6 +76,7 @@ fn disassemble_bytes(input: &AnalysisInput<'_>, output: &mut AnalysisOutput, bit
 			}
 		}
 	}
+	emit_decode(output, region_start, decoder.position());
 }
 
 /// Record the instruction source as well as the discovered target symbol.
@@ -66,7 +86,7 @@ fn add_reference(input: &AnalysisInput<'_>, output: &mut AnalysisOutput, instruc
 	if !output.add_symbol(input, target_rva, interpretation) {
 		return;
 	}
-	output.references.push(factmap::RefFact { rva, target_rva });
+	output.references.push(RefFact { rva, target_rva });
 }
 
 /// Resolve only memory operands whose address does not depend on runtime state.
