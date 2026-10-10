@@ -12,6 +12,7 @@ mod scanner;
 mod resources;
 mod disasm;
 mod addr;
+mod read;
 
 use self::wasm32::*;
 use self::pefile::PeFile;
