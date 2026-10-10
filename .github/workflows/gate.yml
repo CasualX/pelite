@@ -49,7 +49,7 @@ jobs:
       - name: Run tests
         run: cargo test -p pelite -p binfact -p pelite-cli --all-features --no-fail-fast
 
-  wasm:
+  pelite-js:
     name: WebAssembly
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -63,8 +63,19 @@ jobs:
         with:
           targets: wasm32-unknown-unknown
 
-      - name: Build WebAssembly crate
-        run: cargo build -p pelite-wasm --target wasm32-unknown-unknown
+      - name: Install Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: pelite-js/package-lock.json
+
+      - name: Build npm package
+        working-directory: pelite-js
+        run: |
+          npm ci
+          npm run build
+          npm pack --dry-run --ignore-scripts
 
   windows:
     name: Windows / ${{ matrix.target }}

@@ -1,0 +1,46 @@
+{
+  "name": "pelite-js",
+  "version": "0.1.0",
+  "description": "Parse and inspect Windows PE executables with WebAssembly in web browsers.",
+  "license": "GPL-3.0-only",
+  "author": "Casper <CasualX@users.noreply.github.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CasualX/pelite.git",
+    "directory": "pelite-js"
+  },
+  "homepage": "https://github.com/CasualX/pelite/tree/master/pelite-js",
+  "bugs": "https://github.com/CasualX/pelite/issues",
+  "keywords": [
+    "pe",
+    "portable-executable",
+    "windows",
+    "wasm",
+    "parser"
+  ],
+  "type": "module",
+  "main": "./dist/pelite.js",
+  "types": "./dist/pelite.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/pelite.d.ts",
+      "default": "./dist/pelite.js"
+    },
+    "./pelite.wasm": "./dist/pelite.wasm",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist/pelite.js",
+    "dist/pelite.wasm",
+    "dist/pelite.d.ts",
+    "license.txt",
+    "readme.md"
+  ],
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "prepack": "npm run build"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}

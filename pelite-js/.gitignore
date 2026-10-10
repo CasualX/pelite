@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.cargo-target/
+*.tgz
+html/pelite.js
+html/pelite.wasm
+html/Demo.dll
+html/Demo64.dll
+html/license.txt

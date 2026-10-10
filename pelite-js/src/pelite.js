@@ -1,5 +1,110 @@
+// SPDX-License-Identifier: GPL-3.0-only
+
 const textDecoder = new TextDecoder("utf-8");
 const textEncoder = new TextEncoder();
+
+/** @type {*} */
+let result = null;
+let imports = {
+	env: {
+		// Returns data in the form of serialized JSON
+		/** @param {number} ptr @param {number} len */
+		returnJSON(ptr, len) {
+			let json = textDecoder.decode(new Uint8Array(instance.exports.memory.buffer, ptr, len));
+			result = JSON.parse(json);
+		},
+		// Returns an UTF-8 string
+		/** @param {number} ptr @param {number} len */
+		returnString(ptr, len) {
+			result = textDecoder.decode(new Uint8Array(instance.exports.memory.buffer, ptr, len));
+		},
+		// Returns an error
+		/** @param {number} ptr @param {number} len */
+		returnError(ptr, len) {
+			let message = textDecoder.decode(new Uint8Array(instance.exports.memory.buffer, ptr, len));
+			result = new Error(message);
+		},
+		// Returns a copied byte array
+		/** @param {number} ptr @param {number} len */
+		returnUint8Array(ptr, len) {
+			result = new Uint8Array(instance.exports.memory.buffer, ptr, len).slice();
+		},
+		// Returns a byte array borrowing the WebAssembly memory
+		/** @param {number} ptr @param {number} len */
+		returnUint8Slice(ptr, len) {
+			result = new Uint8Array(instance.exports.memory.buffer, ptr, len);
+		},
+		returnNull() {
+			result = null;
+		},
+		// Debugging and logging
+		/** @param {number} ptr @param {number} len */
+		consoleLog(ptr, len) {
+			let string = textDecoder.decode(new Uint8Array(instance.exports.memory.buffer, ptr, len));
+			console.log(string);
+		},
+	},
+};
+
+/** @type {*} */
+let instance;
+
+/** @returns {*} The value supplied by the most recent WebAssembly call. */
+function takeResult() {
+	let value = result;
+	result = null;
+	return value;
+}
+
+class WasmBytes {
+	/** @param {Uint8Array} bytes */
+	constructor(bytes) {
+		this.length = bytes.length;
+		this.address = instance.exports.bytesAllocate(this.length);
+
+		new Uint8Array(instance.exports.memory.buffer, this.address, this.length).set(bytes);
+	}
+
+	forget() {
+		this.address = 0;
+		this.length = 0;
+	}
+
+	dispose() {
+		if (this.address !== 0) {
+			instance.exports.bytesFree(this.address, this.length);
+			this.address = 0;
+			this.length = 0;
+		}
+	}
+}
+
+class WasmString {
+	/** @param {string} string */
+	constructor(string) {
+		let bytes = textEncoder.encode(string);
+
+		this.length = bytes.length;
+		this.address = instance.exports.bytesAllocate(this.length);
+
+		new Uint8Array(instance.exports.memory.buffer, this.address, this.length).set(bytes);
+	}
+
+	dispose() {
+		if (this.address !== 0) {
+			instance.exports.bytesFree(this.address, this.length);
+			this.address = 0;
+			this.length = 0;
+		}
+	}
+}
+
+const wasmURL = new URL("./pelite.wasm", import.meta.url);
+const response = await fetch(wasmURL);
+if (!response.ok) {
+	throw new Error(`Unable to load ${wasmURL}: ${response.status} ${response.statusText}`);
+}
+({ instance } = await WebAssembly.instantiate(await response.arrayBuffer(), imports));
 
 /**
  * A value returned by the WebAssembly module, or an error reported by it.
@@ -253,65 +358,6 @@ const textEncoder = new TextEncoder();
  * @typedef {{ entropy: number | null, samples: number[] }} SectionEntropy
  */
 
-/** @type {*} */
-let result = null;
-let imports = {
-	env: {
-		// Returns data in the form of serialized JSON
-		/** @param {number} ptr @param {number} len */
-		returnJSON(ptr, len) {
-			let json = textDecoder.decode(new Uint8Array(instance.exports.memory.buffer, ptr, len));
-			result = JSON.parse(json);
-		},
-		// Returns an UTF-8 string
-		/** @param {number} ptr @param {number} len */
-		returnString(ptr, len) {
-			result = textDecoder.decode(new Uint8Array(instance.exports.memory.buffer, ptr, len));
-		},
-		// Returns an error
-		/** @param {number} ptr @param {number} len */
-		returnError(ptr, len) {
-			let message = textDecoder.decode(new Uint8Array(instance.exports.memory.buffer, ptr, len));
-			result = new Error(message);
-		},
-		// Returns a copied byte array
-		/** @param {number} ptr @param {number} len */
-		returnUint8Array(ptr, len) {
-			result = new Uint8Array(instance.exports.memory.buffer, ptr, len).slice();
-		},
-		// Returns a byte array borrowing the WebAssembly memory
-		/** @param {number} ptr @param {number} len */
-		returnUint8Slice(ptr, len) {
-			result = new Uint8Array(instance.exports.memory.buffer, ptr, len);
-		},
-		returnNull() {
-			result = null;
-		},
-		// Debugging and logging
-		/** @param {number} ptr @param {number} len */
-		consoleLog(ptr, len) {
-			let string = textDecoder.decode(new Uint8Array(instance.exports.memory.buffer, ptr, len));
-			console.log(string);
-		},
-	},
-};
-
-const wasmURL = new URL("./pelite.wasm", import.meta.url);
-
-let wasmResponse = await fetch(wasmURL);
-if (!wasmResponse.ok) {
-	throw new Error(`Unable to load ${wasmURL}: ${wasmResponse.status} ${wasmResponse.statusText}`);
-}
-let wasmArrayBuffer = await wasmResponse.arrayBuffer();
-let { module, instance } = /** @type {*} */ (await WebAssembly.instantiate(wasmArrayBuffer, imports));
-
-/** @returns {*} The value supplied by the most recent WebAssembly call. */
-function takeResult() {
-	let value = result;
-	result = null;
-	return value;
-}
-
 /**
  * @param {ResourceName} name
  * @returns {string}
@@ -324,49 +370,6 @@ function resourceName(name) {
 		return `#${name}`;
 	}
 	throw new TypeError("A resource name must be a string or an unsigned 32-bit integer");
-}
-
-class WasmBytes {
-	/** @param {Uint8Array} bytes */
-	constructor(bytes) {
-		this.length = bytes.length;
-		this.address = instance.exports.bytesAllocate(this.length);
-
-		new Uint8Array(instance.exports.memory.buffer, this.address, this.length).set(bytes);
-	}
-
-	forget() {
-		this.address = 0;
-		this.length = 0;
-	}
-
-	[Symbol.dispose]() {
-		if (this.address !== 0) {
-			instance.exports.bytesFree(this.address, this.length);
-			this.address = 0;
-			this.length = 0;
-		}
-	}
-}
-
-class WasmString {
-	/** @param {string} string */
-	constructor(string) {
-		let bytes = textEncoder.encode(string);
-
-		this.length = bytes.length;
-		this.address = instance.exports.bytesAllocate(this.length);
-
-		new Uint8Array(instance.exports.memory.buffer, this.address, this.length).set(bytes);
-	}
-
-	[Symbol.dispose]() {
-		if (this.address !== 0) {
-			instance.exports.bytesFree(this.address, this.length);
-			this.address = 0;
-			this.length = 0;
-		}
-	}
 }
 
 /**
@@ -385,21 +388,32 @@ export class PeFile {
 		if (!(bytes instanceof Uint8Array)) {
 			throw new TypeError("PeFile expects a Uint8Array");
 		}
-		using wasmBytes = new WasmBytes(bytes);
-		this.p = instance.exports.pefileNew(wasmBytes.address, wasmBytes.length);
-		wasmBytes.forget();
-		if (!this.p) {
-			throw takeResult() ?? new Error("Unable to construct PeFile");
+		const wasmBytes = new WasmBytes(bytes);
+		try {
+			/** @private @type {number} */
+			this.p = instance.exports.pefileNew(wasmBytes.address, wasmBytes.length);
+			wasmBytes.forget();
+			if (!this.p) {
+				throw takeResult() ?? new Error("Unable to construct PeFile");
+			}
+			takeResult();
 		}
-		takeResult();
+		finally {
+			wasmBytes.dispose();
+		}
 	}
 
 	/** Releases the PE image from WebAssembly memory. */
-	[Symbol.dispose]() {
+	dispose() {
 		if (this.p !== 0) {
 			instance.exports.pefileDrop(this.p);
 			this.p = 0;
 		}
+	}
+
+	/** Releases the PE image when used with explicit resource management. */
+	[Symbol.dispose]() {
+		this.dispose();
 	}
 
 	/** @returns {Result<PeDosHeader>} Parsed DOS header JSON. */
@@ -538,9 +552,14 @@ export class PeFile {
 		if (!Number.isInteger(rva) || rva < 0 || rva > 0xffff_ffff || typeof type !== "string") {
 			return new Error("read expects an unsigned 32-bit RVA and a type string");
 		}
-		using argsWasm = new WasmString(JSON.stringify({ type, options }));
-		instance.exports.pefileRead(this.p, rva, argsWasm.address, argsWasm.length);
-		return takeResult();
+		const argsWasm = new WasmString(JSON.stringify({ type, options }));
+		try {
+			instance.exports.pefileRead(this.p, rva, argsWasm.address, argsWasm.length);
+			return takeResult();
+		}
+		finally {
+			argsWasm.dispose();
+		}
 	}
 
 	/**
@@ -699,9 +718,14 @@ export class PeFile {
 	 * @returns {Result<Uint8Array | null>} A copy of the resource bytes, or `null` if not found.
 	 */
 	resourcesGetResource(path) {
-		using nameWasm = new WasmString(path);
-		instance.exports.pefileResourcesGetResource(this.p, nameWasm.address, nameWasm.length);
-		return takeResult();
+		const nameWasm = new WasmString(path);
+		try {
+			instance.exports.pefileResourcesGetResource(this.p, nameWasm.address, nameWasm.length);
+			return takeResult();
+		}
+		finally {
+			nameWasm.dispose();
+		}
 	}
 
 	/** @returns {Result<string | null>} The manifest text, or `null` if not found. */
@@ -727,9 +751,14 @@ export class PeFile {
 	 * @returns {Result<Uint8Array | null>} A copy of the ICO file, or `null` if not found.
 	 */
 	resourcesGetIcon(name) {
-		using nameWasm = new WasmString(resourceName(name));
-		instance.exports.pefileGetIcon(this.p, nameWasm.address, nameWasm.length);
-		return takeResult();
+		const nameWasm = new WasmString(resourceName(name));
+		try {
+			instance.exports.pefileGetIcon(this.p, nameWasm.address, nameWasm.length);
+			return takeResult();
+		}
+		finally {
+			nameWasm.dispose();
+		}
 	}
 
 	/** @returns {Result<Array<ResourceName> | null>} Available cursor names, or `null` if absent. */
@@ -743,9 +772,14 @@ export class PeFile {
 	 * @returns {Result<Uint8Array | null>} A copy of the CUR file, or `null` if not found.
 	 */
 	resourcesGetCursor(name) {
-		using nameWasm = new WasmString(resourceName(name));
-		instance.exports.pefileGetCursor(this.p, nameWasm.address, nameWasm.length);
-		return takeResult();
+		const nameWasm = new WasmString(resourceName(name));
+		try {
+			instance.exports.pefileGetCursor(this.p, nameWasm.address, nameWasm.length);
+			return takeResult();
+		}
+		finally {
+			nameWasm.dispose();
+		}
 	}
 
 	/**
@@ -756,9 +790,14 @@ export class PeFile {
 	 * @returns {Result<number[] | null>} Captured values, or `null` when the pattern does not match.
 	 */
 	scannerExec(rva, pattern) {
-		using patternWasm = new WasmString(pattern);
-		instance.exports.pefileScannerExec(this.p, rva, patternWasm.address, patternWasm.length);
-		return takeResult();
+		const patternWasm = new WasmString(pattern);
+		try {
+			instance.exports.pefileScannerExec(this.p, rva, patternWasm.address, patternWasm.length);
+			return takeResult();
+		}
+		finally {
+			patternWasm.dispose();
+		}
 	}
 
 	/**
@@ -770,9 +809,14 @@ export class PeFile {
 	 */
 	scannerFind(pattern, section) {
 		let argString = JSON.stringify({ pattern, section });
-		using argWasm = new WasmString(argString);
-		instance.exports.pefileScannerFind(this.p, argWasm.address, argWasm.length);
-		return takeResult();
+		const argWasm = new WasmString(argString);
+		try {
+			instance.exports.pefileScannerFind(this.p, argWasm.address, argWasm.length);
+			return takeResult();
+		}
+		finally {
+			argWasm.dispose();
+		}
 	}
 
 	/**
@@ -785,8 +829,13 @@ export class PeFile {
 	 */
 	scannerMatches(pattern, section, options = {}) {
 		let argString = JSON.stringify({ pattern, section, ...options });
-		using argWasm = new WasmString(argString);
-		instance.exports.pefileScannerMatches(this.p, argWasm.address, argWasm.length);
-		return takeResult();
+		const argWasm = new WasmString(argString);
+		try {
+			instance.exports.pefileScannerMatches(this.p, argWasm.address, argWasm.length);
+			return takeResult();
+		}
+		finally {
+			argWasm.dispose();
+		}
 	}
 }

@@ -15,7 +15,7 @@ categories = ["parser-implementations"]
 exclude = ["tests/pocs/pocs.blob"]
 
 [workspace]
-members = [".", "./binfact", "./pelite-cli", "./wasm"]
+members = [".", "./binfact", "./pelite-cli", "./pelite-js/rust"]
 resolver = "2"
 
 [features]
