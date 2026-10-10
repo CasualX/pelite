@@ -8,10 +8,11 @@ use std::{error, fmt, num, str};
 use std::str::FromStr;
 
 mod arch;
-pub mod factmap;
+mod factmap;
 pub mod ty;
 
 pub use self::arch::*;
+pub use self::factmap::*;
 
 fn parse_u32(s: &str) -> Result<u32, num::ParseIntError> {
 	let (s, base) = match s.strip_prefix("0x") {

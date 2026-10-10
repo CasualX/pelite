@@ -52,7 +52,7 @@ fn collect_report(bytes: &[u8], length: usize, arch: Arch, rva: u32, image_base:
 #[test]
 fn lists_symbols_constants_and_displacements_once_in_first_use_order() {
 	let base = 0x180000000;
-	let facts = factmap::FactMap::parse("#factmap\nSx1000 code \"start\"\nSx2000 u32 D\nSx3000 code _\n", ty::PointerWidth::Bits64).unwrap();
+	let facts = FactMap::parse("#factmap\nSx1000 code \"start\"\nSx2000 u32 D\nSx3000 code _\n", ty::PointerWidth::Bits64).unwrap();
 	let mut indexed = symbols::IndexedFacts::default();
 	indexed.extend(facts.facts, base);
 	let bytes = [
@@ -272,7 +272,7 @@ fn finalize_reads_typed_symbols_and_respects_zerofill() {
 	let base = 0x180000000;
 	let image = image(base);
 	let pe = pelite::PeFile::from_bytes(&image).unwrap();
-	let facts = factmap::FactMap::parse("#factmap\nSx2000 u32 \"scalar\"\nSx2008 *u32 \"pointer\"\nSx2010 u32 \"zero\"\nSx2014 code \"opaque\"\nSx2018 u32 _\n", ty::PointerWidth::Bits64).unwrap();
+	let facts = FactMap::parse("#factmap\nSx2000 u32 \"scalar\"\nSx2008 *u32 \"pointer\"\nSx2010 u32 \"zero\"\nSx2014 code \"opaque\"\nSx2018 u32 _\n", ty::PointerWidth::Bits64).unwrap();
 	let mut indexed = symbols::IndexedFacts::default();
 	indexed.extend(facts.facts, base);
 	for zerofill in [false, true] {

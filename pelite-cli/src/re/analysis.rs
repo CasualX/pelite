@@ -57,15 +57,15 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 		OutputFormat::Nul => Ok(()),
 		OutputFormat::Json | OutputFormat::JsonPretty => {
 			let report = facts.facts.iter().map(|fact| match fact {
-				factmap::Fact::Symbol(symbol) => serde_json::json!({
+				Fact::Symbol(symbol) => serde_json::json!({
 					"rva": symbol.rva,
 					"name": symbol.name.to_string(),
 					"ty": symbol.ty.to_string(),
 				}),
-				factmap::Fact::Comment(comment) => serde_json::json!({ "rva": comment.rva, "comment": comment.comment }),
-				factmap::Fact::Function(function) => serde_json::json!({ "rva": function.rva, "content": function.content }),
-				factmap::Fact::Ref(reference) => serde_json::json!({ "rva": reference.rva, "target_rva": reference.target_rva }),
-				factmap::Fact::Decode(decode) => serde_json::json!({ "rva": decode.rva, "bytes": decode.bytes, "arch": decode.arch.to_string() }),
+				Fact::Comment(comment) => serde_json::json!({ "rva": comment.rva, "comment": comment.comment }),
+				Fact::Function(function) => serde_json::json!({ "rva": function.rva, "content": function.content }),
+				Fact::Ref(reference) => serde_json::json!({ "rva": reference.rva, "target_rva": reference.target_rva }),
+				Fact::Decode(decode) => serde_json::json!({ "rva": decode.rva, "bytes": decode.bytes, "arch": decode.arch.to_string() }),
 			}).collect::<Vec<_>>();
 			print_json(&report, matches!(format, OutputFormat::JsonPretty))
 		},
@@ -95,7 +95,7 @@ fn time<T>(timings: bool, label: &str, f: impl FnOnce() -> T) -> T {
 }
 
 /// Run the complete automatic analysis pipeline in memory.
-pub fn analyze(pe: PeFile<'_>, timings: bool) -> Result<factmap::FactMap> {
+pub fn analyze(pe: PeFile<'_>, timings: bool) -> Result<FactMap> {
 	time(timings, "automatic analysis (total)", || {
 		let input = AnalysisInput::new(pe)?;
 		let mut output = AnalysisOutput::default();
@@ -125,15 +125,17 @@ pub struct AnalysisInput<'a> {
 #[derive(Default)]
 pub struct AnalysisOutput {
 	/// Candidates indexed by RVA, available between passes.
-	pub symbols: HashMap<u32, factmap::SymbolFact>,
+	pub symbols: HashMap<u32, SymbolFact>,
 	/// Direct call targets indexed by RVA, promoted to functions when emitting symbols.
 	pub function_candidates: HashSet<u32>,
 	/// Comments attached to instruction RVAs by analysis passes.
-	pub comments: HashMap<u32, factmap::CommentFact>,
+	pub comments: HashMap<u32, CommentFact>,
 	/// Function metadata indexed by entry RVA; later discoveries replace earlier ones.
-	pub functions: HashMap<u32, factmap::FunctionFact>,
+	pub functions: HashMap<u32, FunctionFact>,
 	/// References from instruction RVAs to statically discovered symbol RVAs.
-	pub references: Vec<factmap::RefFact>,
+	pub references: Vec<RefFact>,
+	/// Regions of linearly decoded instructions.
+	pub decodes: Vec<DecodeFact>,
 }
 
 impl<'a> AnalysisInput<'a> {
@@ -154,23 +156,23 @@ impl<'a> AnalysisInput<'a> {
 
 impl AnalysisOutput {
 	/// Finish the analysis and return facts sorted by RVA.
-	pub fn into_factmap(mut self, input: &AnalysisInput<'_>) -> factmap::FactMap {
+	pub fn into_factmap(mut self, input: &AnalysisInput<'_>) -> FactMap {
 		for rva in std::mem::take(&mut self.function_candidates) {
 			self.add_symbol(input, rva, Some(ty::Type::Fn));
 		}
 		for symbol in self.symbols.values_mut() {
-			if symbol.name == factmap::SymbolName::Code && symbol.ty == ty::Type::Unknown {
+			if symbol.name == SymbolName::Code && symbol.ty == ty::Type::Unknown {
 				upgrade_type(symbol, ty::Type::Code)
 					.expect("code hints always upgrade successfully");
 			}
 		}
-		let capacity = self.symbols.len() + self.comments.len() + self.references.len() + self.functions.len();
+		let capacity = self.symbols.len() + self.comments.len() + self.references.len() + self.functions.len() + self.decodes.len();
 		let mut other_facts = Vec::with_capacity(capacity - self.references.len());
-		other_facts.extend(self.symbols.into_values().map(factmap::Fact::Symbol));
-		other_facts.extend(self.comments.into_values().map(factmap::Fact::Comment));
-		other_facts.extend(self.functions.into_values().map(factmap::Fact::Function));
-		// These maps have unique RVAs, so their fact sort keys are also unique.
-		other_facts.sort_unstable_by_key(factmap::Fact::sort_key);
+		other_facts.extend(self.symbols.into_values().map(Fact::Symbol));
+		other_facts.extend(self.comments.into_values().map(Fact::Comment));
+		other_facts.extend(self.functions.into_values().map(Fact::Function));
+		other_facts.extend(self.decodes.into_iter().map(Fact::Decode));
+		other_facts.sort_unstable_by_key(Fact::sort_key);
 		// Usually already sorted by the linear scans. Keep equal-RVA references in
 		// discovery order, even when executable sections are out of RVA order.
 		self.references.sort_by_key(|reference| reference.rva);
@@ -178,14 +180,14 @@ impl AnalysisOutput {
 		let mut facts = Vec::with_capacity(capacity);
 		facts.extend(interleave_facts(
 			other_facts.into_iter(),
-			self.references.into_iter().map(factmap::Fact::Ref),
+			self.references.into_iter().map(Fact::Ref),
 		));
-		factmap::FactMap { facts }
+		FactMap { facts }
 	}
 }
 
 /// Interleave sorted streams, constructing only the next fact from each input.
-fn interleave_facts(left: impl Iterator<Item = factmap::Fact>, right: impl Iterator<Item = factmap::Fact>) -> impl Iterator<Item = factmap::Fact> {
+fn interleave_facts(left: impl Iterator<Item = Fact>, right: impl Iterator<Item = Fact>) -> impl Iterator<Item = Fact> {
 	let mut left = left.peekable();
 	let mut right = right.peekable();
 	std::iter::from_fn(move || match (left.peek(), right.peek()) {
@@ -231,17 +233,17 @@ impl AnalysisOutput {
 			return false;
 		}
 		let symbol = self.symbols.entry(rva).or_insert_with(|| {
-			let name = if input.executable(rva) { factmap::SymbolName::Code }
-				else if input.read_only_data(rva) { factmap::SymbolName::RData }
-				else { factmap::SymbolName::Data };
-			factmap::SymbolFact::new(rva, ty::Type::Unknown, name)
+			let name = if input.executable(rva) { SymbolName::Code }
+				else if input.read_only_data(rva) { SymbolName::RData }
+				else { SymbolName::Data };
+			SymbolFact::new(rva, ty::Type::Unknown, name)
 		});
 		if let Some(interpretation) = interpretation {
-			if interpretation == ty::Type::Fn && matches!(symbol.name, factmap::SymbolName::Data | factmap::SymbolName::RData | factmap::SymbolName::Code) {
-				symbol.name = factmap::SymbolName::Fn;
+			if interpretation == ty::Type::Fn && matches!(symbol.name, SymbolName::Data | SymbolName::RData | SymbolName::Code) {
+				symbol.name = SymbolName::Fn;
 			}
-			else if interpretation == ty::Type::Code && matches!(symbol.name, factmap::SymbolName::Data | factmap::SymbolName::RData) {
-				symbol.name = factmap::SymbolName::Code;
+			else if interpretation == ty::Type::Code && matches!(symbol.name, SymbolName::Data | SymbolName::RData) {
+				symbol.name = SymbolName::Code;
 			}
 			upgrade_type(symbol, interpretation)
 				.expect("analysis hints are code, functions, or fixed-size numeric types");
@@ -260,7 +262,7 @@ impl AnalysisOutput {
 /// Unknown hints add no evidence; functions take precedence over code, which
 /// takes precedence over data hints. Both code and functions are unsized.
 /// On a layout error, the previous type is unchanged.
-fn upgrade_type(symbol: &mut factmap::SymbolFact, hint: ty::Type) -> result::Result<(), &'static str> {
+fn upgrade_type(symbol: &mut SymbolFact, hint: ty::Type) -> result::Result<(), &'static str> {
 	if hint == ty::Type::Unknown || symbol.ty == hint {
 		return Ok(());
 	}

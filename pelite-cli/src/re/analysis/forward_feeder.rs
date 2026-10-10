@@ -39,7 +39,7 @@ fn feed_bytes(input: &AnalysisInput<'_>, output: &mut AnalysisOutput, bytes: &[u
 				if let Some(global) = globals[register].and_then(|rva| output.symbols.get(&rva)) {
 					let rva = (instruction.ip() - input.pe.image_base()) as u32;
 					let comment = symbols::IndexedSymbol::from(global).to_string();
-					output.comments.insert(rva, factmap::CommentFact { rva, comment });
+					output.comments.insert(rva, CommentFact { rva, comment });
 				}
 			}
 		}
@@ -98,7 +98,7 @@ mod tests {
 		let input = AnalysisInput::new(pe).unwrap();
 		let mut analysis = AnalysisOutput::default();
 		for (rva, name) in [(0x3000, "__imp_Function"), (0x3010, "other_global")] {
-			analysis.symbols.insert(rva, factmap::SymbolFact::new(rva, pointer_width(pe).unsigned(), factmap::SymbolName::Named(name.into())));
+			analysis.symbols.insert(rva, SymbolFact::new(rva, pointer_width(pe).unsigned(), SymbolName::Named(name.into())));
 		}
 		feed_bytes(&input, &mut analysis, bytes, 0x1000);
 		analysis
@@ -116,7 +116,7 @@ mod tests {
 			let map = analysis.into_factmap(&input);
 			let mut output = Vec::new();
 			map.write(&mut output, "").unwrap();
-			assert_eq!(factmap::FactMap::parse(std::str::from_utf8(&output).unwrap(), ty::PointerWidth::Bits64).unwrap(), map);
+			assert_eq!(FactMap::parse(std::str::from_utf8(&output).unwrap(), ty::PointerWidth::Bits64).unwrap(), map);
 		}
 	}
 
@@ -166,7 +166,7 @@ mod tests {
 		let width = pointer_width(pe);
 		let input = AnalysisInput::new(pe).unwrap();
 		let mut analysis = AnalysisOutput::default();
-		analysis.symbols.insert(0x3000, factmap::SymbolFact::new(0x3000, width.pointer(ty::Type::Unknown), factmap::SymbolName::Data));
+		analysis.symbols.insert(0x3000, SymbolFact::new(0x3000, width.pointer(ty::Type::Unknown), SymbolName::Data));
 		let mut bytes = vec![0xa1]; // mov eax,[absolute address]
 		bytes.extend_from_slice(&((pe.image_base() + 0x3000) as u32).to_le_bytes());
 		bytes.extend_from_slice(&[0xff, 0xd0]); // call eax
