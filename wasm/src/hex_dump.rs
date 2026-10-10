@@ -1,13 +1,10 @@
-//! Virtual image bytes and packed file-backed byte masks.
-use crate::pefile::PeFile;
-use crate::wasm32::{return_bytes, return_error};
-use std::ops::Range;
+use super::*;
 
 struct CopyRange {
 	/// Byte offsets in the file.
-	source: Range<usize>,
+	source: ops::Range<usize>,
 	/// Byte offsets relative to the requested RVA.
-	dest: Range<usize>,
+	dest: ops::Range<usize>,
 }
 
 /// Clip file-backed header and section ranges to the requested virtual bounds.
@@ -16,7 +13,7 @@ fn copy_ranges(
 	sections: &[pelite::image::IMAGE_SECTION_HEADER],
 	header_size: u32,
 	file_size: usize,
-	bounds: Range<u64>,
+	bounds: ops::Range<u64>,
 	mut copy: impl FnMut(CopyRange),
 ) {
 	let mut visit_range = |virtual_start: u32, file_start: u32, size: u32| {

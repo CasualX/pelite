@@ -1,11 +1,21 @@
 //! Shannon entropy of each section's raw bytes, in section-header order.
 use std::f64::consts::LN_2;
-use pelite::PeFile;
+use super::*;
 
 #[derive(serde::Serialize)]
 pub struct SectionEntropy { pub entropy: Option<f64>, pub samples: Vec<f64> }
 
-pub fn section_entropy(pe: PeFile<'_>) -> Vec<SectionEntropy> {
+#[unsafe(export_name = "pefileSectionEntropy")]
+pub unsafe fn section_entropy(pefile: *mut PeFile) {
+	let bytes = unsafe { &*pefile }.as_ref();
+	let pe = match pelite::PeFile::from_bytes(bytes) {
+		Ok(pe) => pe,
+		Err(err) => return return_error(err),
+	};
+	return_json(section_entropy_impl(pe));
+}
+
+fn section_entropy_impl(pe: pelite::PeFile<'_>) -> Vec<SectionEntropy> {
 	pe.section_headers().iter().map(|section| {
 		let bytes = pe.get_section_bytes(section).ok().filter(|bytes| !bytes.is_empty());
 		SectionEntropy {
