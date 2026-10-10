@@ -522,6 +522,7 @@ export class PeFile {
 	 * pointers (*T), arrays ([T; N] or [T; field]), structs, and unions.
 	 * Fields use natural C alignment; pointers use the PE image's bitness.
 	 * Null pointers return null; opaque pointers (*unk, *code, *fn) return RVAs.
+	 * Reading code, fn, or unk directly returns an error.
 	 * Syntax/options errors and failed root reads return Error. Failed nested
 	 * reads return inline {$error, $rva} objects alongside successful values.
 	 * Integers return JS numbers; u64/i64 can lose precision beyond 53 bits.

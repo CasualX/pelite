@@ -30,9 +30,8 @@ Dynamically sized types (DSTs) have no fixed size:
 `u16` code units for `utf16lez`, excluding the terminator. Truncated previews
 end with `…`.
 
-The opaque DSTs `code`, `fn`, and `unk` read like `*unk` when used directly.
-Pointers to opaque DSTs give the target RVA without reading its contents.
-`*fn` denotes a function pointer; `*code` denotes a pointer to general code.
+Opaque DSTs (`code`, `fn`, `unk`) cannot be read directly. Pointers to opaque
+DSTs return the target RVA without reading its contents.
 
 Field names must be unique within each struct or union. Use `_` for a field
 whose value should be discarded; it can appear more than once. Its type is
@@ -52,8 +51,8 @@ field-length arrays; values above the limit produce a read error.
 
 Integers and floats are little-endian. `*T` uses 4 bytes in PE32
 and 8 bytes in PE32+. A zero pointer produces JSON null; a nonzero pointer
-must convert to a valid RVA. `*unk` gives an RVA number, while `*T` reads the
-value at that RVA unless T is an opaque DST.
+must convert to a valid RVA. Pointers read the value at that RVA unless the
+target type is an opaque DST.
 
 Use `--zerofill` to allow scalar and pointer reads, including dynamic array
 lengths, from a section's virtual zero-filled tail. String reads still require

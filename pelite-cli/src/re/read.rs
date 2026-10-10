@@ -111,10 +111,7 @@ fn try_read_value(pe: pelite::PeFile<'_>, rva: u32, ty: &ty::Type, options: &Rea
 			let va = match ty {
 				ty::Type::Ptr32(_) => u64::from(read!(u32)),
 				ty::Type::Ptr64(_) => read!(u64),
-				_ => match pe { // fallback...
-					pelite::Wrap::T32(_) => u64::from(read!(u32)),
-					pelite::Wrap::T64(_) => read!(u64),
-				},
+				_ => return Err(err(format!("cannot read opaque type '{ty}' directly"))),
 			};
 			if va == 0 {
 				return Ok(serde_json::Value::Null);
