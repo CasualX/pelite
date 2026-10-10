@@ -30,14 +30,13 @@
 		{
 			"title": "Addresses and bytes",
 			"methods": [
+				{ "signature": "read(rva, type, options?)", "description": "Interpret scalars, strings, pointers, arrays, structs, or unions using CLI type syntax; options: zerofill, string_preview_length, max_dynamic_array_length" },
 				{ "signature": "vaToRva(va)", "description": "Convert a virtual address to an RVA" },
 				{ "signature": "rvaToVa(rva)", "description": "Convert an RVA to a virtual address" },
-				{ "signature": "hex_dump_bytes(rva, bytes)", "description": "Copy virtual image bytes, zero-filling gaps and section tails" },
-				{ "signature": "hex_dump_mask(rva, bytes)", "description": "Packed mask: 1 for file-backed bytes, 0 for zero-fill, LSB first" },
+				{ "signature": "hexDumpBytes(rva, bytes)", "description": "Copy virtual image bytes, zero-filling gaps and section tails" },
+				{ "signature": "hexDumpMask(rva, bytes)", "description": "Packed mask: 1 for file-backed bytes, 0 for zero-fill, LSB first" },
 				{ "signature": "sliceBytes(rva, size?, align?)", "description": "View bytes at an RVA without copying" },
-				{ "signature": "sliceCString(rva, encoding?)", "description": "Read a string at an RVA" },
 				{ "signature": "readBytes(va, size?, align?)", "description": "View bytes at a virtual address without copying" },
-				{ "signature": "readCString(va, encoding?)", "description": "Read a string at a virtual address" },
 				{ "signature": "disasm(start, end?)", "description": "Disassemble an RVA range" }
 			]
 		},

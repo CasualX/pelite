@@ -27,6 +27,21 @@ const textEncoder = new TextEncoder();
  */
 
 /**
+ * @typedef {object} ReadOptions
+ * @property {boolean} [zerofill=false] Allow scalar/pointer reads from virtual section tails.
+ * @property {number} [string_preview_length=256] Maximum bytes/code units in string previews.
+ * @property {number} [max_dynamic_array_length=1024] Maximum element count for field-length arrays.
+ */
+
+/**
+ * @typedef {{ $error: string, $rva: number | null }} ReadError
+ */
+
+/**
+ * @typedef {number | string | null | ReadError | ReadValue[] | { [field: string]: ReadValue }} ReadValue
+ */
+
+/**
  * @typedef {object} PeFileHeader
  * @property {number} Machine
  * @property {number} NumberOfSections
@@ -501,6 +516,33 @@ export class PeFile {
 	}
 
 	/**
+	 * Interprets typed data at an RVA using the CLI read type syntax.
+	 *
+	 * Types include u8/u16/u32/u64, i8/i16/i32/i64, f32/f64, cstr, utf16lez,
+	 * pointers (*T), arrays ([T; N] or [T; field]), structs, and unions.
+	 * Fields use natural C alignment; pointers use the PE image's bitness.
+	 * Null pointers return null; opaque pointers (*unk, *code, *fn) return RVAs.
+	 * Syntax/options errors and failed root reads return Error. Failed nested
+	 * reads return inline {$error, $rva} objects alongside successful values.
+	 * Integers return JS numbers; u64/i64 can lose precision beyond 53 bits.
+	 * String previews end with … when truncated and require file-backed bytes.
+	 *
+	 * @param {number} rva Relative virtual address.
+	 * @param {string} type Type expression.
+	 * @param {ReadOptions} [options]
+	 * @returns {Result<ReadValue>}
+	 * @example pefile.read(0x2000, "struct { count: u32, values: *[u16; count] }")
+	 */
+	read(rva, type, options = {}) {
+		if (!Number.isInteger(rva) || rva < 0 || rva > 0xffff_ffff || typeof type !== "string") {
+			return new Error("read expects an unsigned 32-bit RVA and a type string");
+		}
+		using argsWasm = new WasmString(JSON.stringify({ type, options }));
+		instance.exports.pefileRead(this.p, rva, argsWasm.address, argsWasm.length);
+		return takeResult();
+	}
+
+	/**
 	 * Copies exactly `bytes` bytes from the virtual image at an RVA.
 	 *
 	 * Gaps, missing file bytes, and section bytes beyond min(VirtualSize, SizeOfRawData)
@@ -510,10 +552,10 @@ export class PeFile {
 	 * @param {number} bytes Number of bytes to copy.
 	 * @returns {Result<Uint8Array>}
 	 */
-	hex_dump_bytes(rva, bytes) {
+	hexDumpBytes(rva, bytes) {
 		if (!Number.isInteger(rva) || rva < 0 || rva > 0xffff_ffff ||
 			!Number.isInteger(bytes) || bytes < 0 || bytes > 0xffff_ffff) {
-			return new Error("hex_dump_bytes expects an unsigned 32-bit RVA and byte count");
+			return new Error("hexDumpBytes expects an unsigned 32-bit RVA and byte count");
 		}
 		instance.exports.pefileHexDumpBytes(this.p, rva, bytes);
 		return takeResult();
@@ -531,10 +573,10 @@ export class PeFile {
 	 * @param {number} bytes Number of virtual image bytes to describe.
 	 * @returns {Result<Uint8Array>}
 	 */
-	hex_dump_mask(rva, bytes) {
+	hexDumpMask(rva, bytes) {
 		if (!Number.isInteger(rva) || rva < 0 || rva > 0xffff_ffff ||
 			!Number.isInteger(bytes) || bytes < 0 || bytes > 0xffff_ffff) {
-			return new Error("hex_dump_mask expects an unsigned 32-bit RVA and byte count");
+			return new Error("hexDumpMask expects an unsigned 32-bit RVA and byte count");
 		}
 		instance.exports.pefileHexDumpMask(this.p, rva, bytes);
 		return takeResult();
@@ -556,18 +598,6 @@ export class PeFile {
 	}
 
 	/**
-	 * Reads a null-terminated string at an RVA.
-	 *
-	 * @param {number} rva Relative virtual address.
-	 * @param {string} [encoding="utf8"] Use `utf8` for strict UTF-8; any other value is lossy.
-	 * @returns {Result<string>}
-	 */
-	sliceCString(rva, encoding = "utf8") {
-		instance.exports.pefileSliceCString(this.p, rva, encoding === "utf8");
-		return takeResult();
-	}
-
-	/**
 	 * Returns a view into the PE image starting at a virtual address.
 	 *
 	 * The view borrows WebAssembly memory rather than copying it and may be invalidated if that memory grows.
@@ -579,18 +609,6 @@ export class PeFile {
 	 */
 	readBytes(va, min_size = 0, align_of = 1) {
 		instance.exports.pefileReadBytes(this.p, BigInt(va), min_size, align_of);
-		return takeResult();
-	}
-
-	/**
-	 * Reads a null-terminated string at a virtual address.
-	 *
-	 * @param {number | bigint} va Virtual address.
-	 * @param {string} [encoding="utf8"] Use `utf8` for strict UTF-8; any other value is lossy.
-	 * @returns {Result<string>}
-	 */
-	readCString(va, encoding = "utf8") {
-		instance.exports.pefileReadCString(this.p, BigInt(va), encoding === "utf8");
 		return takeResult();
 	}
 
