@@ -20,7 +20,8 @@ Using the library
 let width = binfact::ty::PointerWidth::Bits64;
 let facts = binfact::FactMap::parse("#factmap\nSx2000 *u32 \"counter\"\n", width).unwrap();
 let header = binfact::ty::Type::parse("struct { flags: u16, value: u32 }", width).unwrap();
-assert_eq!(header.layout().unwrap(), (8, 4));
+assert_eq!(header.size(), Ok(8));
+assert_eq!(header.alignment(), 4);
 ```
 
 `FactMap::write` emits the text format in stored order. Parse errors report a

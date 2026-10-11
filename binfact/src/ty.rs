@@ -42,6 +42,8 @@ pub enum ParseErrorKind {
 	DynamicFieldNotLast,
 }
 
+use ParseErrorKind::*;
+
 impl fmt::Display for ParseErrorKind {
 	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
 		match self {
@@ -74,25 +76,25 @@ impl std::error::Error for ParseError {}
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum PointerWidth {
 	/// Four-byte pointers.
-	Bits32,
+	X32,
 	/// Eight-byte pointers.
-	Bits64,
+	X64,
 }
 
 impl PointerWidth {
 	/// An unsigned integer with the target pointer's size and alignment.
 	pub const fn unsigned(self) -> Type {
 		match self {
-			Self::Bits32 => Type::U32,
-			Self::Bits64 => Type::U64,
+			Self::X32 => Type::U32,
+			Self::X64 => Type::U64,
 		}
 	}
 
 	/// Construct a pointer whose size and alignment use this width.
 	pub fn pointer(self, pointee: Type) -> Type {
 		match self {
-			Self::Bits32 => Type::Ptr32(Box::new(pointee)),
-			Self::Bits64 => Type::Ptr64(Box::new(pointee)),
+			Self::X32 => Type::Ptr32(Box::new(pointee)),
+			Self::X64 => Type::Ptr64(Box::new(pointee)),
 		}
 	}
 
@@ -100,8 +102,8 @@ impl PointerWidth {
 	#[inline]
 	pub const fn bytes(self) -> u32 {
 		match self {
-			Self::Bits32 => 4,
-			Self::Bits64 => 8,
+			Self::X32 => 4,
+			Self::X64 => 8,
 		}
 	}
 }
@@ -113,7 +115,7 @@ pub enum ArrayLen {
 	Fixed(u32),
 	/// A containing struct field whose unsigned integer value supplies the count.
 	/// The field is resolved at read time, rather than during parsing.
-	Dyn(String),
+	Dyn(Box<str>),
 }
 
 /// An array of fixed-size elements.
@@ -167,13 +169,12 @@ pub enum Type {
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct StructType {
 	/// Optional descriptive name, with no effect on layout.
-	pub name: Option<String>,
+	pub name: Option<Box<str>>,
 	/// Fields in declaration order, including discarded and unnamed fields.
 	pub fields: Vec<Field>,
 	/// Whether fields overlap as a union instead of following one another.
 	pub is_union: bool,
 	/// Size in bytes, including trailing padding; for a DST, only its fixed prefix.
-	/// A DST's complete size is unavailable through `Type::layout`.
 	pub size: u32,
 	/// Largest field alignment, in bytes; one for an empty struct or union.
 	pub align: u32,
@@ -196,7 +197,7 @@ pub struct Field {
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum FieldName {
 	/// An explicit name, unique within the containing struct or union.
-	Named(String),
+	Named(Box<str>),
 	/// `_`: contributes to layout but omits the value from read output.
 	Discarded,
 	/// A union field without a name, output under its zero-based field index.
@@ -205,20 +206,8 @@ pub enum FieldName {
 
 impl Type {
 	/// Whether this type has no readable contents: `code`, `fn`, or `unk`.
-	/// Pointers to these types return the target RVA without dereferencing it.
 	pub fn is_opaque(&self) -> bool {
 		matches!(self, Self::Code | Self::Fn | Self::Unknown)
-	}
-
-	/// Alignment of the starting address, including dynamically sized types.
-	pub fn alignment(&self) -> u32 {
-		match self {
-			Self::CStr | Self::Code | Self::Fn | Self::Unknown => 1,
-			Self::Utf16LEZ => 2,
-			Self::Array(array) => array.align,
-			Self::Struct(structure) => structure.align,
-			_ => self.layout().expect("fixed-size type").1,
-		}
 	}
 
 	/// Whether this type has no fixed size. Pointers to unsized types are sized.
@@ -226,32 +215,44 @@ impl Type {
 		match self {
 			Self::CStr | Self::Utf16LEZ | Self::Code | Self::Fn | Self::Unknown => true,
 			Self::Array(array) => !matches!(&array.len, ArrayLen::Fixed(_)),
-			Self::Struct(structure) => structure.is_dst,
+			Self::Struct(stru) => stru.is_dst,
 			_ => false,
 		}
 	}
 
-	/// Fixed size and alignment.
-	///
-	/// Returns `(size, alignment)` in bytes, or an error for an unsized type.
-	pub fn layout(&self) -> Result<(u32, u32), &'static str> {
+	/// Alignment of the starting address, including dynamically sized types.
+	pub fn alignment(&self) -> u32 {
 		match self {
-			Self::U8 | Self::I8 => Ok((1, 1)),
-			Self::U16 | Self::I16 => Ok((2, 2)),
-			Self::U32 | Self::I32 | Self::F32 => Ok((4, 4)),
-			Self::U64 | Self::I64 | Self::F64 => Ok((8, 8)),
-			Self::Ptr32(_) => Ok((4, 4)),
-			Self::Ptr64(_) => Ok((8, 8)),
+			Self::U8 | Self::I8 => 1,
+			Self::U16 | Self::I16 => 2,
+			Self::U32 | Self::I32 | Self::F32 | Self::Ptr32(_) => 4,
+			Self::U64 | Self::I64 | Self::F64 | Self::Ptr64(_) => 8,
+			Self::CStr | Self::Code | Self::Fn | Self::Unknown => 1,
+			Self::Utf16LEZ => 2,
+			Self::Array(array) => array.align,
+			Self::Struct(stru) => stru.align,
+		}
+	}
+
+	/// Fixed size in bytes.
+	///
+	/// Returns an error for an unsized type.
+	pub fn size(&self) -> Result<u32, &'static str> {
+		match self {
+			Self::U8 | Self::I8 => Ok(1),
+			Self::U16 | Self::I16 => Ok(2),
+			Self::U32 | Self::I32 | Self::F32 | Self::Ptr32(_) => Ok(4),
+			Self::U64 | Self::I64 | Self::F64 | Self::Ptr64(_) => Ok(8),
 			Self::CStr => Err("cstr is unsized"),
 			Self::Utf16LEZ => Err("utf16lez is unsized"),
 			Self::Code => Err("code is unsized"),
 			Self::Fn => Err("fn is unsized"),
 			Self::Unknown => Err("unk is unsized"),
 			Self::Array(array) => match &array.len {
-				ArrayLen::Fixed(_) => Ok((array.size, array.align)),
+				ArrayLen::Fixed(_) => Ok(array.size),
 				_ => Err("dynamic array is unsized"),
 			},
-			Self::Struct(structure) => if self.is_dst() { Err("struct with a dynamic field is unsized") } else { Ok((structure.size, structure.align)) },
+			Self::Struct(stru) => if self.is_dst() { Err("struct is unsized") } else { Ok(stru.size) },
 		}
 	}
 }
@@ -283,13 +284,13 @@ impl fmt::Display for Type {
 				}
 				f.write_str("]")
 			},
-			Self::Struct(structure) => {
-				f.write_str(if structure.is_union { "union" } else { "struct" })?;
-				if let Some(name) = &structure.name {
+			Self::Struct(stru) => {
+				f.write_str(if stru.is_union { "union" } else { "struct" })?;
+				if let Some(name) = &stru.name {
 					write!(f, " {name}")?;
 				}
 				f.write_str("{")?;
-				for (index, field) in structure.fields.iter().enumerate() {
+				for (index, field) in stru.fields.iter().enumerate() {
 					if index != 0 {
 						f.write_str(",")?;
 					}
@@ -327,7 +328,7 @@ fn parse(input: &str, pointer_width: PointerWidth) -> Result<Type, ParseError> {
 	let ty = parser.ty(0)?;
 	parser.whitespace();
 	if parser.pos != input.len() {
-		return Err(parser.error(ParseErrorKind::UnexpectedTrailingInput));
+		return Err(parser.error(UnexpectedTrailingInput));
 	}
 	Ok(ty)
 }
@@ -360,7 +361,7 @@ impl<'a> Parser<'a> {
 
 	fn expect(&mut self, token: u8) -> Result<(), ParseError> {
 		if !self.eat(token) {
-			return Err(self.error(ParseErrorKind::ExpectedToken(char::from(token))));
+			return Err(self.error(ExpectedToken(char::from(token))));
 		}
 		Ok(())
 	}
@@ -369,7 +370,7 @@ impl<'a> Parser<'a> {
 		self.whitespace();
 		let start = self.pos;
 		if !self.input.as_bytes().get(self.pos).is_some_and(|byte| byte.is_ascii_alphabetic() || *byte == b'_') {
-			return Err(self.error(ParseErrorKind::ExpectedIdentifier));
+			return Err(self.error(ExpectedIdentifier));
 		}
 		self.pos += 1;
 		while self.input.as_bytes().get(self.pos).is_some_and(|byte| byte.is_ascii_alphanumeric() || *byte == b'_') {
@@ -385,36 +386,37 @@ impl<'a> Parser<'a> {
 			self.pos += 1;
 		}
 		self.input[start..self.pos].parse::<u32>()
-			.map_err(|_| self.error(ParseErrorKind::InvalidArrayLength))
+			.map_err(|_| self.error(InvalidArrayLength))
 	}
 
 	fn field_name(&mut self, is_union: bool) -> Result<FieldName, ParseError> {
 		let start = self.pos;
 		if is_union {
 			if let Ok(name) = self.identifier() {
-				let name = name.to_owned();
 				if self.eat(b':') {
-					return Ok(if name == "_" { FieldName::Discarded } else { FieldName::Named(name) });
+					return Ok(if name == "_" { FieldName::Discarded } else { FieldName::Named(name.into()) });
 				}
 			}
 			self.pos = start;
 			return Ok(FieldName::Unnamed);
 		}
-		let name = self.identifier()?.to_owned();
+		let name = self.identifier()?;
 		self.expect(b':')?;
-		Ok(if name == "_" { FieldName::Discarded } else { FieldName::Named(name) })
+		Ok(if name == "_" { FieldName::Discarded } else { FieldName::Named(name.into()) })
 	}
 
 	fn ty(&mut self, depth: usize) -> Result<Type, ParseError> {
 		if depth >= 64 {
-			return Err(self.error(ParseErrorKind::NestingTooDeep));
+			return Err(self.error(NestingTooDeep));
 		}
 
+		// Pointer
 		if self.eat(b'*') {
 			let pointee = self.ty(depth + 1)?;
 			return Ok(self.pointer_width.pointer(pointee));
 		}
 
+		// Array
 		if self.eat(b'[') {
 			let ty = self.ty(depth + 1)?;
 			self.expect(b';')?;
@@ -423,17 +425,19 @@ impl<'a> Parser<'a> {
 				ArrayLen::Fixed(self.array_len()?)
 			}
 			else {
-				ArrayLen::Dyn(self.identifier()?.to_owned())
+				ArrayLen::Dyn(self.identifier()?.into())
 			};
 			self.expect(b']')?;
-			let (element_size, align) = ty.layout().map_err(|message| self.error(ParseErrorKind::UnsizedType(message)))?;
+			let element_size = ty.size().map_err(|message| self.error(UnsizedType(message)))?;
+			let align = ty.alignment();
 			let size = match &len {
-				ArrayLen::Fixed(len) => element_size.checked_mul(*len).ok_or_else(|| self.error(ParseErrorKind::ArraySizeOverflow))?,
+				ArrayLen::Fixed(len) => element_size.checked_mul(*len).ok_or_else(|| self.error(ArraySizeOverflow))?,
 				ArrayLen::Dyn(_) => 0,
 			};
 			return Ok(Type::Array(Box::new(ArrayType { ty, len, size, align })));
 		}
 
+		// Keyword
 		let name = self.identifier()?;
 		match name {
 			"u8" => Ok(Type::U8),
@@ -453,7 +457,7 @@ impl<'a> Parser<'a> {
 			"unk" => Ok(Type::Unknown),
 			"struct" => self.structure(depth + 1, false),
 			"union" => self.structure(depth + 1, true),
-			_ => Err(self.error(ParseErrorKind::UnknownType(name.to_owned()))),
+			_ => Err(self.error(UnknownType(name.to_owned()))),
 		}
 	}
 
@@ -481,28 +485,19 @@ impl<'a> Parser<'a> {
 			let dynamic = ty.is_dst();
 			is_dst |= dynamic;
 			if dynamic && is_union {
-				return Err(self.error(ParseErrorKind::DynamicUnionField));
+				return Err(self.error(DynamicUnionField));
 			}
 
 			// Compute offset, size and alignment
-			let (field_size, field_align) = if dynamic {
-				(0, ty.alignment())
-			}
-			else {
-				ty.layout().map_err(|message| self.error(ParseErrorKind::UnsizedType(message)))?
-			};
-			let field_offset = if is_union {
-				0
-			}
-			else {
-				align_up(offset, field_align).map_err(|_| self.error(ParseErrorKind::TypeLayoutOverflow))?
-			};
-			let field_end = field_offset.checked_add(field_size).ok_or_else(|| self.error(ParseErrorKind::StructSizeOverflow))?;
+			let field_size = if dynamic { 0 } else { ty.size().map_err(|message| self.error(UnsizedType(message)))? };
+			let field_align = ty.alignment();
+			let field_offset = if is_union { 0 } else { align_up(offset, field_align).map_err(|_| self.error(TypeLayoutOverflow))? };
+			let field_end = field_offset.checked_add(field_size).ok_or_else(|| self.error(StructSizeOverflow))?;
 
 			// Append the field
 			if let FieldName::Named(name) = &name {
 				if !field_names.insert(name.clone()) {
-					return Err(self.error(ParseErrorKind::DuplicateField(name.clone())));
+					return Err(self.error(DuplicateField(name.to_string())));
 				}
 			}
 			fields.push(Field { name, offset: field_offset, ty });
@@ -519,14 +514,14 @@ impl<'a> Parser<'a> {
 			}
 			if dynamic {
 				if !self.eat(b'}') {
-					return Err(self.error(ParseErrorKind::DynamicFieldNotLast));
+					return Err(self.error(DynamicFieldNotLast));
 				}
 				break;
 			}
 		}
 
-		let size = align_up(size, align).map_err(|_| self.error(ParseErrorKind::TypeLayoutOverflow))?;
-		let name = name.map(str::to_owned);
+		let size = align_up(size, align).map_err(|_| self.error(TypeLayoutOverflow))?;
+		let name = name.map(Box::<str>::from);
 		Ok(Type::Struct(Box::new(StructType { name, fields, is_union, size, align, is_dst })))
 	}
 }

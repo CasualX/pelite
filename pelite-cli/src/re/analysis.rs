@@ -285,8 +285,10 @@ fn upgrade_type(symbol: &mut SymbolFact, hint: ty::Type) -> result::Result<(), &
 			return Ok(());
 		}
 	}
-	let (previous_size, previous_align) = symbol.ty.layout()?;
-	let (hint_size, hint_align) = hint.layout()?;
+	let previous_size = symbol.ty.size()?;
+	let previous_align = symbol.ty.alignment();
+	let hint_size = hint.size()?;
+	let hint_align = hint.alignment();
 	let align = previous_align.max(hint_align);
 	let size = previous_size.max(hint_size).checked_add(align - 1)
 		.ok_or("type layout overflow")? & !(align - 1);

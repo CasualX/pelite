@@ -137,7 +137,7 @@ fn disassemble(
 	let end_ip = base.checked_add(end as u64).ok_or_else(|| err("base plus end offset overflows"))?;
 
 	let color = format == OutputFormat::Text && io::stdout().is_terminal();
-	let pointer_width = if arch.bitness() == 64 { ty::PointerWidth::Bits64 } else { ty::PointerWidth::Bits32 };
+	let pointer_width = if arch.bitness() == 64 { ty::PointerWidth::X64 } else { ty::PointerWidth::X32 };
 	let facts = symbols::load(matches, pointer_width, base, None)?;
 	let symbols = Arc::new(facts.symbols);
 	let mut decoded = iced::decode_bytes(&bytes[decode_start..end], arch.bitness(), decode_ip, start_ip, end_ip, color, Arc::clone(&symbols));

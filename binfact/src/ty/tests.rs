@@ -2,27 +2,28 @@ use super::*;
 
 #[test]
 fn pointer_width_is_part_of_the_type() {
-	let pointer32 = parse("**fn", PointerWidth::Bits32).unwrap();
-	let pointer64 = parse("**fn", PointerWidth::Bits64).unwrap();
+	let pointer32 = parse("**fn", PointerWidth::X32).unwrap();
+	let pointer64 = parse("**fn", PointerWidth::X64).unwrap();
 	assert_eq!(pointer32, Type::Ptr32(Box::new(Type::Ptr32(Box::new(Type::Fn)))));
 	assert_eq!(pointer64, Type::Ptr64(Box::new(Type::Ptr64(Box::new(Type::Fn)))));
-	assert_eq!(pointer32.layout(), Ok((4, 4)));
-	assert_eq!(pointer64.layout(), Ok((8, 8)));
+	assert_eq!(pointer32.size(), Ok(4));
+	assert_eq!(pointer64.size(), Ok(8));
 	assert_eq!(pointer32.alignment(), 4);
 	assert_eq!(pointer64.alignment(), 8);
 	assert_ne!(pointer32, pointer64);
 	assert_eq!(pointer32.to_string(), pointer64.to_string());
-	assert_eq!(parse(&pointer32.to_string(), PointerWidth::Bits64).unwrap(), pointer64);
-	let array32 = parse("[*fn; 3]", PointerWidth::Bits32).unwrap();
-	let array64 = parse("[*fn; 3]", PointerWidth::Bits64).unwrap();
-	assert_eq!(array32.layout(), Ok((12, 4)));
-	assert_eq!(array64.layout(), Ok((24, 8)));
+	assert_eq!(parse(&pointer32.to_string(), PointerWidth::X64).unwrap(), pointer64);
+	let array32 = parse("[*fn; 3]", PointerWidth::X32).unwrap();
+	let array64 = parse("[*fn; 3]", PointerWidth::X64).unwrap();
+	assert_eq!(array32.size(), Ok(12));
+	assert_eq!(array32.alignment(), 4);
+	assert_eq!(array64.size(), Ok(24));
+	assert_eq!(array64.alignment(), 8);
 }
 
 #[test]
 fn parse_errors_have_kinds_and_byte_offsets() {
-	use ParseErrorKind::*;
-	for pointer_width in [PointerWidth::Bits32, PointerWidth::Bits64] {
+	for pointer_width in [PointerWidth::X32, PointerWidth::X64] {
 		for (source, offset, kind) in [
 			("u8 extra", 3, UnexpectedTrailingInput),
 			("u8 é", 3, UnexpectedTrailingInput),
@@ -46,19 +47,21 @@ fn parse_errors_have_kinds_and_byte_offsets() {
 		assert_eq!(parse(&format!("{}u8", "*".repeat(64)), pointer_width).unwrap_err(),
 			ParseError { offset: 64, kind: NestingTooDeep });
 	}
-	let error = parse("bogus", PointerWidth::Bits64).unwrap_err();
+	let error = parse("bogus", PointerWidth::X64).unwrap_err();
 	assert_eq!(error.to_string(), "unknown type 'bogus' at byte 5");
 }
 
 #[test]
 fn parses_composite_types_and_whitespace() {
-	for pointer_width in [PointerWidth::Bits32, PointerWidth::Bits64] {
+	for pointer_width in [PointerWidth::X32, PointerWidth::X64] {
 		let width = pointer_width.bytes();
 		assert_eq!(parse(" cstr ", pointer_width).unwrap(), Type::CStr);
 		assert!(Type::CStr.is_dst());
 		for (source, pointee) in [("*code", Type::Code), ("*fn", Type::Fn), ("*unk", Type::Unknown)] {
 			assert_eq!(parse(source, pointer_width).unwrap(), pointer_width.pointer(pointee));
-			assert_eq!(parse(source, pointer_width).unwrap().layout().unwrap(), (width, width));
+			let ty = parse(source, pointer_width).unwrap();
+			assert_eq!(ty.size(), Ok(width));
+			assert_eq!(ty.alignment(), width);
 		}
 		assert_eq!(parse("* cstr", pointer_width).unwrap(), pointer_width.pointer(Type::CStr));
 		assert!(!parse("*cstr", pointer_width).unwrap().is_dst());
@@ -68,9 +71,14 @@ fn parses_composite_types_and_whitespace() {
 		let array = parse("[i32; 256]", pointer_width).unwrap();
 		let Type::Array(values) = &array else { panic!("expected an array") };
 		assert_eq!((values.size, values.align), (1024, 4));
-		assert_eq!(array.layout().unwrap(), (1024, 4));
-		assert_eq!(parse("[[u16; 3]; 2]", pointer_width).unwrap().layout().unwrap(), (12, 2));
-		assert_eq!(parse("[*cstr; 3]", pointer_width).unwrap().layout().unwrap(), (width * 3, width));
+		assert_eq!(array.size(), Ok(1024));
+		assert_eq!(array.alignment(), 4);
+		let ty = parse("[[u16; 3]; 2]", pointer_width).unwrap();
+		assert_eq!(ty.size(), Ok(12));
+		assert_eq!(ty.alignment(), 2);
+		let ty = parse("[*cstr; 3]", pointer_width).unwrap();
+		assert_eq!(ty.size(), Ok(width * 3));
+		assert_eq!(ty.alignment(), width);
 		assert!(parse("**cstr", pointer_width).is_ok());
 		assert!(parse("struct {}", pointer_width).is_ok());
 		assert!(parse("[u32; 0]", pointer_width).is_ok());
@@ -79,7 +87,7 @@ fn parses_composite_types_and_whitespace() {
 
 #[test]
 fn formatted_types_parse_back_to_the_same_type() {
-	for pointer_width in [PointerWidth::Bits32, PointerWidth::Bits64] {
+	for pointer_width in [PointerWidth::X32, PointerWidth::X64] {
 		for source in [
 			"u64", "*unk", "code", "fn", "*fn", "unk", "**cstr", "utf16lez", "*utf16lez", "[struct { a: u8, b: *f64 }; 3]",
 			"union Value { _: [u8; 8], first: u32, second: u64 }",
@@ -97,56 +105,64 @@ fn formatted_types_parse_back_to_the_same_type() {
 
 #[test]
 fn lays_out_structs_with_target_alignment_and_trailing_padding() {
-	for (pointer_width, offsets, size) in [(PointerWidth::Bits32, [0, 4, 8], 12), (PointerWidth::Bits64, [0, 8, 16], 24)] {
+	for (pointer_width, offsets, size) in [(PointerWidth::X32, [0, 4, 8], 12), (PointerWidth::X64, [0, 8, 16], 24)] {
 		let width = pointer_width.bytes();
 		let ty = parse("struct Entry { tag: u8, value: *f64, tail: u8, }", pointer_width).unwrap();
 		let Type::Struct(structure) = &ty else { panic!("expected a struct") };
 		assert_eq!(structure.name.as_deref(), Some("Entry"));
 		assert_eq!(structure.fields.iter().map(|field| field.offset).collect::<Vec<_>>(), offsets);
-		assert_eq!(structure.fields[1].name, FieldName::Named("value".to_owned()));
+		assert_eq!(structure.fields[1].name, FieldName::Named("value".into()));
 		assert_eq!((structure.size, structure.align), (size, width));
-		assert_eq!(ty.layout().unwrap(), (size, width));
+		assert_eq!(ty.size(), Ok(size));
+		assert_eq!(ty.alignment(), width);
 		let array = parse("[struct { tag: u8, value: *f64, tail: u8 }; 2]", pointer_width).unwrap();
-		assert_eq!(array.layout().unwrap(), (size * 2, width));
+		assert_eq!(array.size(), Ok(size * 2));
+		assert_eq!(array.alignment(), width);
 		let nested = parse("struct { tag: u8, inner: struct { value: *unk, tail: u8 }, end: u8 }", pointer_width).unwrap();
 		let Type::Struct(structure) = &nested else { panic!("expected a struct") };
 		assert_eq!(structure.fields[1].offset, width);
 		assert_eq!(structure.fields[2].offset, width * 3);
-		assert_eq!(nested.layout().unwrap(), (width * 4, width));
+		assert_eq!(nested.size(), Ok(width * 4));
+		assert_eq!(nested.alignment(), width);
 	}
 }
 
 #[test]
 fn unions_overlay_fields_and_use_largest_field_layout() {
-	for pointer_width in [PointerWidth::Bits32, PointerWidth::Bits64] {
+	for pointer_width in [PointerWidth::X32, PointerWidth::X64] {
 		let width = pointer_width.bytes();
 		let ty = parse("union Value { bytes: [u8; 3], word: u16, pointer: *unk, }", pointer_width).unwrap();
 		let Type::Struct(structure) = &ty else { panic!("union should read as a struct") };
 		assert_eq!(structure.name.as_deref(), Some("Value"));
 		assert_eq!(structure.fields.iter().map(|field| field.offset).collect::<Vec<_>>(), [0, 0, 0]);
 		assert_eq!((structure.size, structure.align), (width, width));
-		assert_eq!(ty.layout().unwrap(), (width, width));
+		assert_eq!(ty.size(), Ok(width));
+		assert_eq!(ty.alignment(), width);
 		let array = parse("[union { byte: u8, pointer: *unk }; 2]", pointer_width).unwrap();
-		assert_eq!(array.layout().unwrap(), (width * 2, width));
+		assert_eq!(array.size(), Ok(width * 2));
+		assert_eq!(array.alignment(), width);
 		let nested = parse("struct { tag: u8, value: union { byte: u8, pointer: *unk }, tail: u8 }", pointer_width).unwrap();
 		let Type::Struct(structure) = &nested else { panic!("expected a struct") };
 		assert_eq!(structure.fields.iter().map(|field| field.offset).collect::<Vec<_>>(), [0, width, width * 2]);
-		assert_eq!(nested.layout().unwrap(), (width * 3, width));
+		assert_eq!(nested.size(), Ok(width * 3));
+		assert_eq!(nested.alignment(), width);
 	}
-	let ty = parse("union { bytes: [u8; 3], word: u16 }", PointerWidth::Bits32).unwrap();
+	let ty = parse("union { bytes: [u8; 3], word: u16 }", PointerWidth::X32).unwrap();
 	let Type::Struct(structure) = &ty else { panic!("expected a union") };
 	assert_eq!((structure.size, structure.align), (4, 2));
-	assert_eq!(ty.layout().unwrap(), (4, 2));
-	let Type::Struct(empty) = parse("union {}", PointerWidth::Bits32).unwrap() else { panic!("expected a union") };
+	assert_eq!(ty.size(), Ok(4));
+	assert_eq!(ty.alignment(), 2);
+	let Type::Struct(empty) = parse("union {}", PointerWidth::X32).unwrap() else { panic!("expected a union") };
 	assert_eq!((empty.size, empty.align), (0, 1));
 }
 
 #[test]
 fn unnamed_union_fields_are_distinct_from_discarded_fields() {
-	for pointer_width in [PointerWidth::Bits32, PointerWidth::Bits64] {
+	for pointer_width in [PointerWidth::X32, PointerWidth::X64] {
 		let ty = parse("union{u32,u64}", pointer_width).unwrap();
 		assert_eq!(ty.to_string(), "union{u32,u64}");
-		assert_eq!(ty.layout(), Ok((8, 8)));
+		assert_eq!(ty.size(), Ok(8));
+		assert_eq!(ty.alignment(), 8);
 		let Type::Struct(union) = ty else { panic!("expected union") };
 		assert_eq!(union.fields.iter().map(|field| field.name.clone()).collect::<Vec<_>>(), [FieldName::Unnamed, FieldName::Unnamed]);
 		let mixed = parse("union{named:u8,_:u16,u32}", pointer_width).unwrap();
@@ -160,27 +176,27 @@ fn unnamed_union_fields_are_distinct_from_discarded_fields() {
 
 #[test]
 fn discarded_fields_contribute_to_layout() {
-	for pointer_width in [PointerWidth::Bits32, PointerWidth::Bits64] {
+	for pointer_width in [PointerWidth::X32, PointerWidth::X64] {
 		let ty = parse("struct { _: u8, a: u16, _: [u8; 3], _: u8, b: u32 }", pointer_width).unwrap();
 		let Type::Struct(structure) = ty else { panic!("expected a struct") };
 		assert_eq!(structure.fields.iter().map(|field| (field.name.clone(), field.offset)).collect::<Vec<_>>(),
-			[(FieldName::Discarded, 0), (FieldName::Named("a".to_owned()), 2), (FieldName::Discarded, 4),
-				(FieldName::Discarded, 7), (FieldName::Named("b".to_owned()), 8)]);
+			[(FieldName::Discarded, 0), (FieldName::Named("a".into()), 2), (FieldName::Discarded, 4),
+				(FieldName::Discarded, 7), (FieldName::Named("b".into()), 8)]);
 		assert_eq!((structure.size, structure.align), (12, 4));
 
 		let ty = parse("union { _: [u8; 8], value: u16, _: u32 }", pointer_width).unwrap();
 		let Type::Struct(structure) = ty else { panic!("expected a union") };
 		assert_eq!(structure.fields.iter().map(|field| (field.name.clone(), field.offset)).collect::<Vec<_>>(),
-			[(FieldName::Discarded, 0), (FieldName::Named("value".to_owned()), 0), (FieldName::Discarded, 0)]);
+			[(FieldName::Discarded, 0), (FieldName::Named("value".into()), 0), (FieldName::Discarded, 0)]);
 		assert_eq!((structure.size, structure.align), (8, 4));
 	}
 }
 
 #[test]
 fn rejects_duplicate_named_fields() {
-	for pointer_width in [PointerWidth::Bits32, PointerWidth::Bits64] {
+	for pointer_width in [PointerWidth::X32, PointerWidth::X64] {
 		for source in ["struct { x: u8, _: u8, x: u16 }", "union { x: u8, x: u16 }"] {
-			assert_eq!(parse(source, pointer_width).unwrap_err().kind, ParseErrorKind::DuplicateField("x".to_owned()));
+			assert_eq!(parse(source, pointer_width).unwrap_err().kind, DuplicateField("x".to_owned()));
 		}
 		assert!(parse("struct { x: u8, inner: struct { x: u16 } }", pointer_width).is_ok());
 		assert!(parse("struct { _: cstr }", pointer_width).unwrap().is_dst());
@@ -189,7 +205,7 @@ fn rejects_duplicate_named_fields() {
 
 #[test]
 fn rejects_invalid_unsized_and_overflowing_types() {
-	for pointer_width in [PointerWidth::Bits32, PointerWidth::Bits64] {
+	for pointer_width in [PointerWidth::X32, PointerWidth::X64] {
 		let width = pointer_width.bytes();
 		for source in [
 			"", "ptr", "U32", "u33", "i32 garbage", "u32[]", "*", "[i32]", "[i32; -1]",
@@ -203,21 +219,21 @@ fn rejects_invalid_unsized_and_overflowing_types() {
 			assert!(parse(source, pointer_width).is_err(), "accepted {source:?} for width {width}");
 		}
 	}
-	assert!(parse(&format!("{}u8", "*".repeat(100)), PointerWidth::Bits64).is_err());
+	assert!(parse(&format!("{}u8", "*".repeat(100)), PointerWidth::X64).is_err());
 }
 
 #[test]
 fn parses_dynamic_array_length_names() {
-	for pointer_width in [PointerWidth::Bits32, PointerWidth::Bits64] {
+	for pointer_width in [PointerWidth::X32, PointerWidth::X64] {
 		for integer in ["u8", "u16", "u32", "u64"] {
 			let source = format!("struct {{ pad: u8, count: {integer}, values: [u16; count] }}");
 			let ty = parse(&source, pointer_width).unwrap();
 			let Type::Struct(structure) = &ty else { panic!("expected struct") };
 			assert!(ty.is_dst());
-			assert!(ty.layout().is_err());
+			assert!(ty.size().is_err());
 			let Type::Array(array) = &structure.fields[2].ty else { panic!("expected array") };
-			assert_eq!(array.len, ArrayLen::Dyn("count".to_owned()));
-			assert!(array.ty.layout().is_ok());
+			assert_eq!(array.len, ArrayLen::Dyn("count".into()));
+			assert!(array.ty.size().is_ok());
 			assert!(structure.fields[2].offset > structure.fields[1].offset);
 		}
 		for source in ["[u8; count]", "struct { values: *[u8; count], count: u8 }", "struct { count: i32, values: [u8; count] }"] {
@@ -235,21 +251,22 @@ fn rejects_invalid_dynamic_array_layouts() {
 		"[struct { count: u8, values: [u8; count] }; 2]",
 		"struct { count: u8, values: [[u8; count]; 2] }",
 	] {
-		assert!(parse(source, PointerWidth::Bits64).is_err(), "accepted {source}");
+		assert!(parse(source, PointerWidth::X64).is_err(), "accepted {source}");
 	}
 }
 
 #[test]
 fn trailing_cstr_is_dynamic_but_pointers_have_fixed_layout() {
-	for pointer_width in [PointerWidth::Bits32, PointerWidth::Bits64] {
+	for pointer_width in [PointerWidth::X32, PointerWidth::X64] {
 		let ty = parse("struct { tag: u16, text: cstr }", pointer_width).unwrap();
 		let Type::Struct(structure) = &ty else { panic!("expected struct") };
 		assert_eq!(structure.fields[1].offset, 2);
 		assert!(ty.is_dst());
-		assert!(ty.layout().is_err());
+		assert!(ty.size().is_err());
 		let pointer = parse("*struct { text: cstr }", pointer_width).unwrap();
 		assert!(!pointer.is_dst());
-		assert_eq!(pointer.layout().unwrap(), (pointer_width.bytes(), pointer_width.bytes()));
+		assert_eq!(pointer.size(), Ok(pointer_width.bytes()));
+		assert_eq!(pointer.alignment(), pointer_width.bytes());
 		assert!(parse("struct { count: u8, values: *[u8; count], tail: u8 }", pointer_width).is_ok());
 		assert!(parse("struct { text: cstr, tail: u8 }", pointer_width).is_err());
 		assert!(parse("union { text: cstr }", pointer_width).is_err());
@@ -259,12 +276,12 @@ fn trailing_cstr_is_dynamic_but_pointers_have_fixed_layout() {
 
 #[test]
 fn unsized_types() {
-	for pointer_width in [PointerWidth::Bits32, PointerWidth::Bits64] {
+	for pointer_width in [PointerWidth::X32, PointerWidth::X64] {
 		for (source, expected) in [("code", Type::Code), ("fn", Type::Fn), ("unk", Type::Unknown), ("cstr", Type::CStr)] {
 			let ty = parse(source, pointer_width).unwrap();
 			assert_eq!(ty, expected);
 			assert!(ty.is_dst());
-			assert!(ty.layout().is_err());
+			assert!(ty.size().is_err());
 			assert_eq!(ty.alignment(), 1);
 			assert!(parse(&format!("[{source}; 2]"), pointer_width).is_err());
 			assert!(parse(&format!("union {{ data: {source} }}"), pointer_width).is_err());
@@ -277,17 +294,19 @@ fn unsized_types() {
 
 #[test]
 fn wide_strings_have_two_byte_alignment_and_no_fixed_size() {
-	for pointer_width in [PointerWidth::Bits32, PointerWidth::Bits64] {
+	for pointer_width in [PointerWidth::X32, PointerWidth::X64] {
 		let ty = parse("utf16lez", pointer_width).unwrap();
 		assert_eq!(ty, Type::Utf16LEZ);
 		assert!(ty.is_dst());
 		assert_eq!(ty.alignment(), 2);
-		assert!(ty.layout().is_err());
+		assert!(ty.size().is_err());
 		let Type::Struct(structure) = parse("struct { tag: u8, text: utf16lez }", pointer_width).unwrap() else { panic!("expected struct") };
 		assert_eq!(structure.fields[1].offset, 2);
 		assert!(structure.is_dst);
 		let width = pointer_width.bytes();
-		assert_eq!(parse("[*utf16lez; 3]", pointer_width).unwrap().layout(), Ok((width * 3, width)));
+		let ty = parse("[*utf16lez; 3]", pointer_width).unwrap();
+		assert_eq!(ty.size(), Ok(width * 3));
+		assert_eq!(ty.alignment(), width);
 		for source in ["[utf16lez; 1]", "union { text: utf16lez }", "struct { text: utf16lez, tail: u8 }"] {
 			assert!(parse(source, pointer_width).is_err(), "accepted {source}");
 		}

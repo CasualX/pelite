@@ -2,7 +2,7 @@ use super::*;
 
 #[derive(Clone, Debug)]
 pub enum IndexedSymbol {
-	Named(String),
+	Named(Box<str>),
 	Generated { name: &'static str, rva: u32 },
 	Weak(u32),
 }
@@ -55,7 +55,7 @@ pub fn arg() -> clap::Arg {
 pub struct IndexedFacts {
 	pub symbols: HashMap<u64, IndexedSymbol>,
 	pub types: HashMap<u64, ty::Type>,
-	pub comments: HashMap<u64, String>,
+	pub comments: HashMap<u64, Box<str>>,
 	pub functions: HashMap<u64, FunctionFact>,
 }
 

@@ -10,7 +10,7 @@ pub struct CommentFact {
 	/// Address of the annotation.
 	pub rva: u32,
 	/// Comment text.
-	pub comment: String,
+	pub comment: Box<str>,
 }
 
 impl str::FromStr for CommentFact {
@@ -25,7 +25,7 @@ impl str::FromStr for CommentFact {
 		if !rest.trim_ascii().is_empty() {
 			return Err(ParseLineError::UnexpectedText("comment"));
 		}
-		let comment = serde_json::from_str::<String>(comment)
+		let comment = serde_json::from_str::<Box<str>>(comment)
 			.map_err(|error| ParseLineError::InvalidComment(error.to_string()))?;
 		Ok(CommentFact { rva, comment })
 	}
@@ -42,10 +42,10 @@ impl fmt::Display for CommentFact {
 fn parse_comment() {
 	let fact = CommentFact::from_str(r#"Cx1234 "a \"quoted\" comment\nnext line""#).unwrap();
 	assert_eq!(fact.rva, 0x1234);
-	assert_eq!(fact.comment, "a \"quoted\" comment\nnext line");
+	assert_eq!(fact.comment.as_ref(), "a \"quoted\" comment\nnext line");
 	assert_eq!(fact.to_string(), r#"Cx1234 "a \"quoted\" comment\nnext line""#);
 	assert_eq!(CommentFact::from_str(&fact.to_string()).unwrap(), fact);
-	assert_eq!(CommentFact::from_str(" Cx0 \"\" \t").unwrap().comment, "");
+	assert_eq!(CommentFact::from_str(" Cx0 \"\" \t").unwrap().comment.as_ref(), "");
 }
 
 #[test]

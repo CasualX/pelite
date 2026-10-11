@@ -5,7 +5,7 @@ fn discovered_symbols_write_parseable_factmap() {
 	let symbols = vec![
 		SymbolFact::new(0x1000, ty::Type::Code, SymbolName::Code),
 		SymbolFact::new(0x1100, ty::Type::Code, SymbolName::Thunk),
-		SymbolFact::new(0x2000, ty::Type::parse("union{u32,u64}", ty::PointerWidth::Bits64).unwrap(), SymbolName::Data),
+		SymbolFact::new(0x2000, ty::Type::parse("union{u32,u64}", ty::PointerWidth::X64).unwrap(), SymbolName::Data),
 		SymbolFact::new(0x2100, ty::Type::Unknown, SymbolName::Data),
 		SymbolFact::new(0x3000, ty::Type::Code, SymbolName::Named("imp_Sleep".into())),
 		SymbolFact::new(0x3100, ty::Type::Code, SymbolName::Named("imp_Sleep".into())),
@@ -13,7 +13,7 @@ fn discovered_symbols_write_parseable_factmap() {
 	let mut output = Vec::new();
 	FactMap { facts: symbols.into_iter().map(Fact::Symbol).collect() }.write(&mut output, "").unwrap();
 	let text = std::str::from_utf8(&output).unwrap();
-	let map = FactMap::parse(text, ty::PointerWidth::Bits64).unwrap();
+	let map = FactMap::parse(text, ty::PointerWidth::X64).unwrap();
 	let entries = map.facts.iter().map(|fact| {
 		let Fact::Symbol(symbol) = fact else { panic!("expected a symbol fact") };
 		symbol
@@ -31,7 +31,7 @@ fn discovered_symbols_write_parseable_factmap() {
 
 #[test]
 fn upgrade_type_hints() {
-	for width in [ty::PointerWidth::Bits32, ty::PointerWidth::Bits64] {
+	for width in [ty::PointerWidth::X32, ty::PointerWidth::X64] {
 		let mut symbol = SymbolFact::new(0x2000, ty::Type::Unknown, SymbolName::Data);
 		for hint in [ty::Type::Unknown, ty::Type::U32, ty::Type::U32, ty::Type::Unknown] {
 			upgrade_type(&mut symbol, hint).unwrap();
@@ -62,7 +62,7 @@ fn function_hints_override_data_and_union_hints() {
 	for previous in [
 		ty::Type::Unknown,
 		ty::Type::U64,
-		ty::Type::parse("union{u32,u64}", ty::PointerWidth::Bits64).unwrap(),
+		ty::Type::parse("union{u32,u64}", ty::PointerWidth::X64).unwrap(),
 	] {
 		let mut symbol = SymbolFact::new(0x1000, previous, SymbolName::Data);
 		upgrade_type(&mut symbol, ty::Type::Fn).unwrap();
@@ -72,10 +72,11 @@ fn function_hints_override_data_and_union_hints() {
 
 #[test]
 fn upgrade_type_union_layout() {
-	let width = ty::PointerWidth::Bits64;
+	let width = ty::PointerWidth::X64;
 	let mut symbol = SymbolFact::new(0, ty::Type::parse("[u32;3]", width).unwrap(), SymbolName::Data);
 	upgrade_type(&mut symbol, ty::Type::U64).unwrap();
-	assert_eq!(symbol.ty.layout(), Ok((16, 8)));
+	assert_eq!(symbol.ty.size(), Ok(16));
+	assert_eq!(symbol.ty.alignment(), 8);
 	assert_eq!(symbol.ty, ty::Type::parse("union{[u32;3],u64}", width).unwrap());
 }
 

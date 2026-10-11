@@ -50,7 +50,7 @@ pub fn refine_labels(input: &AnalysisInput<'_>, output: &mut AnalysisOutput) {
 			_ => continue,
 		};
 		symbol.name = if label == "thunk" { SymbolName::Thunk }
-			else { SymbolName::Named(label) };
+			else { SymbolName::Named(label.into_boxed_str()) };
 		upgrade_type(symbol, ty::Type::Code)
 			.expect("code hints always upgrade successfully");
 	}

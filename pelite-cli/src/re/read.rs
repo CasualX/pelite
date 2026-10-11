@@ -125,7 +125,7 @@ fn try_read_value(pe: pelite::PeFile<'_>, rva: u32, ty: &ty::Type, options: &Rea
 		ty::Type::CStr => serde_json::to_value(read_cstr(pe.slice_bytes(rva)?, options.string_preview_length)?),
 		ty::Type::Utf16LEZ => serde_json::to_value(read_utf16lez(pe.slice_bytes(rva)?, options.string_preview_length)?),
 		ty::Type::Array(array) => {
-			let (stride, _) = array.ty.layout().map_err(err)?;
+			let stride = array.ty.size().map_err(err)?;
 			let len = match &array.len {
 				ty::ArrayLen::Fixed(len) => *len,
 				ty::ArrayLen::Dyn(name) => {
@@ -162,7 +162,7 @@ fn try_read_value(pe: pelite::PeFile<'_>, rva: u32, ty: &ty::Type, options: &Rea
 			let mut fields = serde_json::Map::new();
 			for (index, field) in structure.fields.iter().enumerate() {
 				let name = match &field.name {
-					ty::FieldName::Named(name) => name.clone(),
+					ty::FieldName::Named(name) => name.to_string(),
 					ty::FieldName::Discarded => continue,
 					ty::FieldName::Unnamed => index.to_string(),
 				};
