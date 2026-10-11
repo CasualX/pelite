@@ -50,7 +50,7 @@ impl FactMap {
 
 #[test]
 fn mixed_map_round_trip() {
-	let width = ty::PointerWidth::Bits64;
+	let width = ty::PointerWidth::X64;
 	let input = "#factmap\n\n  # ignored\n 0x10 code fn \nCx10 \"comment\"\n\t\nRx10 0x20\nFx10 { \"size\": 42 }\nSx10 code undef\n";
 	let map = FactMap::parse(input, width).unwrap();
 	let mut output = Vec::new();
@@ -62,7 +62,7 @@ fn mixed_map_round_trip() {
 
 #[test]
 fn decode_map_round_trip() {
-	let width = ty::PointerWidth::Bits64;
+	let width = ty::PointerWidth::X64;
 	let map = FactMap::parse("#factmap\nDx1000 5 x86\nCx1000 \"decode region\"\nDx2000 16 x86_64\n", width).unwrap();
 	let mut output = Vec::new();
 	map.write(&mut output, "").unwrap();
@@ -77,7 +77,7 @@ fn decode_map_round_trip() {
 
 #[test]
 fn map_error_line_numbers() {
-	let width = ty::PointerWidth::Bits64;
+	let width = ty::PointerWidth::X64;
 	assert_eq!(FactMap::parse("", width).unwrap_err(), ParseError {
 		line: 1,
 		error: ParseLineError::MissingHeader,

@@ -25,8 +25,8 @@ use binfact::*;
 
 fn pointer_width(pe: pelite::PeFile<'_>) -> ty::PointerWidth {
 	match pe {
-		pelite::Wrap::T32(_) => ty::PointerWidth::Bits32,
-		pelite::Wrap::T64(_) => ty::PointerWidth::Bits64,
+		pelite::Wrap::T32(_) => ty::PointerWidth::X32,
+		pelite::Wrap::T64(_) => ty::PointerWidth::X64,
 	}
 }
 

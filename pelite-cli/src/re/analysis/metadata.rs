@@ -20,7 +20,7 @@ pub fn seed_entry_points(input: &AnalysisInput<'_>, output: &mut AnalysisOutput)
 			let Ok(rva) = input.pe.va_to_rva(va) else { continue };
 			output.add_symbol(input, rva, Some(ty::Type::Fn));
 			if let Some(symbol) = output.symbols.get_mut(&rva) {
-				symbol.name = SymbolName::Named(format!("TlsCallback_{index}"));
+				symbol.name = SymbolName::Named(format!("TlsCallback_{index}").into_boxed_str());
 			}
 		}
 	}
@@ -47,7 +47,7 @@ pub fn scan_exceptions(input: &AnalysisInput<'_>, output: &mut AnalysisOutput) {
 					let Ok(runtime_function) = input.pe.rva_of(function) else {
 						continue
 					};
-					let comment = format!("RUNTIME_FUNCTION at {runtime_function:#x}");
+					let comment = format!("RUNTIME_FUNCTION at {runtime_function:#x}").into_boxed_str();
 					output.comments.insert(rva, CommentFact { rva, comment });
 				}
 			},
@@ -70,7 +70,7 @@ pub fn seed_exports(input: &AnalysisInput<'_>, output: &mut AnalysisOutput) {
 			let Some(rva) = export.ok().and_then(|export| export.symbol()) else { continue };
 			let Some(name) = name.ok().and_then(|name| name.to_str().ok()) else { continue };
 			if let Some(symbol) = output.symbols.get_mut(&rva) {
-				symbol.name = SymbolName::Named(name.to_owned());
+				symbol.name = SymbolName::Named(name.into());
 			}
 		}
 	}
@@ -83,7 +83,7 @@ pub fn label_imports(input: &AnalysisInput<'_>, output: &mut AnalysisOutput) {
 	for (rva, name) in import_names(input.pe, input.bitness) {
 		if rva < input.size {
 			output.symbols.insert(rva, SymbolFact::new(
-				rva, width.unsigned(), SymbolName::Named(format!("__imp_{name}")),
+				rva, width.unsigned(), SymbolName::Named(format!("__imp_{name}").into_boxed_str()),
 			));
 		}
 	}

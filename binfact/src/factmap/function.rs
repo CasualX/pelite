@@ -13,12 +13,12 @@ pub struct FunctionFact {
 	/// Function entry address.
 	pub rva: u32,
 	/// Opaque content, typically JSON but not validated.
-	pub content: String,
+	pub content: Box<str>,
 }
 
 impl FunctionFact {
 	/// Recursively merge JSON objects; other values and non-JSON content are replaced.
-	pub fn merge_content(&mut self, content: String) {
+	pub fn merge_content(&mut self, content: Box<str>) {
 		fn merge(previous: &mut serde_json::Value, newer: serde_json::Value) {
 			match (previous, newer) {
 				(serde_json::Value::Object(previous), serde_json::Value::Object(newer)) => {
@@ -38,7 +38,7 @@ impl FunctionFact {
 		self.content = match (serde_json::from_str::<serde_json::Value>(&self.content), serde_json::from_str::<serde_json::Value>(&content)) {
 			(Ok(mut previous), Ok(newer)) => {
 				merge(&mut previous, newer);
-				previous.to_string()
+				previous.to_string().into_boxed_str()
 			},
 			_ => content,
 		};
@@ -58,7 +58,7 @@ impl str::FromStr for FunctionFact {
 		if content.is_empty() {
 			return Err(ParseLineError::MissingField);
 		}
-		Ok(FunctionFact { rva, content: content.to_owned() })
+		Ok(FunctionFact { rva, content: content.into() })
 	}
 }
 
@@ -80,7 +80,7 @@ fn merge_function_content_replaces_non_objects_and_invalid_json() {
 	] {
 		let mut fact = FunctionFact { rva: 0x10, content: previous.into() };
 		fact.merge_content(newer.into());
-		assert_eq!(fact.content, expected);
+		assert_eq!(fact.content.as_ref(), expected);
 	}
 }
 

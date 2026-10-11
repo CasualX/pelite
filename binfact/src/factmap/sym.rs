@@ -21,7 +21,7 @@ pub enum SymbolName {
 	/// Remove an earlier symbol at the same RVA.
 	Undef,
 	/// Named symbol.
-	Named(String),
+	Named(Box<str>),
 }
 
 impl fmt::Display for SymbolName {
@@ -124,31 +124,31 @@ fn parse_symbol_names() {
 		("fn", SymbolName::Fn),
 		("thunk", SymbolName::Thunk),
 		("undef", SymbolName::Undef),
-		("\"fn\"", SymbolName::Named("fn".to_owned())),
-		("\"R\"", SymbolName::Named("R".to_owned())),
+		("\"fn\"", SymbolName::Named("fn".into())),
+		("\"R\"", SymbolName::Named("R".into())),
 	] {
-		let fact = SymbolFact::parse(&format!("Sx1234 code {name}"), ty::PointerWidth::Bits64).unwrap();
+		let fact = SymbolFact::parse(&format!("Sx1234 code {name}"), ty::PointerWidth::X64).unwrap();
 		assert_eq!(fact, SymbolFact::new(0x1234, ty::Type::Code, expected));
-		assert_eq!(SymbolFact::parse(&format!("0x1234 code {name}"), ty::PointerWidth::Bits64).unwrap(), fact);
+		assert_eq!(SymbolFact::parse(&format!("0x1234 code {name}"), ty::PointerWidth::X64).unwrap(), fact);
 		assert_eq!(fact.to_string(), format!("Sx1234 code {name}"));
-		assert_eq!(SymbolFact::parse(&fact.to_string(), ty::PointerWidth::Bits64).unwrap(), fact);
+		assert_eq!(SymbolFact::parse(&fact.to_string(), ty::PointerWidth::X64).unwrap(), fact);
 	}
 }
 
 #[test]
 fn parse_quoted_symbol() {
-	for width in [ty::PointerWidth::Bits32, ty::PointerWidth::Bits64] {
+	for width in [ty::PointerWidth::X32, ty::PointerWidth::X64] {
 		let fact = SymbolFact::parse(r#"Sx20 "union { u32, u64 }" "a \"quoted\" name""#, width).unwrap();
 		assert_eq!(fact.rva, 0x20);
 		assert_eq!(fact.ty.to_string(), "union{u32,u64}");
-		assert_eq!(fact.name, SymbolName::Named("a \"quoted\" name".to_owned()));
+		assert_eq!(fact.name, SymbolName::Named("a \"quoted\" name".into()));
 		assert_eq!(SymbolFact::parse(&fact.to_string(), width).unwrap(), fact);
 	}
 }
 
 #[test]
 fn reject_invalid_symbol() {
-	let width = ty::PointerWidth::Bits64;
+	let width = ty::PointerWidth::X64;
 	for (line, error) in [
 		("", ParseLineError::MissingField),
 		("x1 code fn", ParseLineError::InvalidPrefix("0 or S")),

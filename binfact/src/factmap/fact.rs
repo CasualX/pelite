@@ -79,7 +79,7 @@ impl Fact {
 
 #[test]
 fn dispatch_fact() {
-	let width = ty::PointerWidth::Bits64;
+	let width = ty::PointerWidth::X64;
 	assert!(matches!(Fact::parse("0x10 code fn", width).unwrap(), Fact::Symbol(_)));
 	assert!(matches!(Fact::parse("Sx10 code fn", width).unwrap(), Fact::Symbol(_)));
 	assert!(matches!(Fact::parse("Cx10 \"comment\"", width).unwrap(), Fact::Comment(_)));

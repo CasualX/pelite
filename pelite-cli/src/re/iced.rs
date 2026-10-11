@@ -24,7 +24,7 @@ pub enum TextPrefix<'a> {
 }
 
 /// Append factmap comments at instruction starts to both plain and colored text.
-pub fn append_comments(instructions: &mut [DecodedInstruction<'_>], comments: &HashMap<u64, String>) {
+pub fn append_comments(instructions: &mut [DecodedInstruction<'_>], comments: &HashMap<u64, Box<str>>) {
 	for item in instructions {
 		let Some(comment) = comments.get(&item.ip).filter(|comment| !comment.is_empty()) else { continue };
 		// Keep multiline comments on one instruction line in text and JSON output.

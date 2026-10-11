@@ -38,7 +38,7 @@ fn feed_bytes(input: &AnalysisInput<'_>, output: &mut AnalysisOutput, bytes: &[u
 			if let Some(register) = register_index(instruction.op0_register()) {
 				if let Some(global) = globals[register].and_then(|rva| output.symbols.get(&rva)) {
 					let rva = (instruction.ip() - input.pe.image_base()) as u32;
-					let comment = symbols::IndexedSymbol::from(global).to_string();
+					let comment = symbols::IndexedSymbol::from(global).to_string().into_boxed_str();
 					output.comments.insert(rva, CommentFact { rva, comment });
 				}
 			}
@@ -111,12 +111,12 @@ mod tests {
 			bytes.extend_from_slice(&[0xb1, 1, 0xff, 0xd0]); // mov cl,1; call rax
 			let analysis = analyze_bytes(&bytes);
 			assert_eq!(analysis.comments.len(), 1);
-			assert_eq!(analysis.comments[&0x1009].comment, "__imp_Function");
+			assert_eq!(analysis.comments[&0x1009].comment.as_ref(), "__imp_Function");
 			let input = AnalysisInput::new(PeFile::from_bytes(&IMAGE64.0).unwrap()).unwrap();
 			let map = analysis.into_factmap(&input);
 			let mut output = Vec::new();
 			map.write(&mut output, "").unwrap();
-			assert_eq!(FactMap::parse(std::str::from_utf8(&output).unwrap(), ty::PointerWidth::Bits64).unwrap(), map);
+			assert_eq!(FactMap::parse(std::str::from_utf8(&output).unwrap(), ty::PointerWidth::X64).unwrap(), map);
 		}
 	}
 
@@ -144,7 +144,7 @@ mod tests {
 		let mut bytes = global_load(0x8b, 0x1000, 0x3000);
 		bytes.extend_from_slice(&global_load(0x8b, 0x1007, 0x3010));
 		bytes.extend_from_slice(&[0x48, 0x85, 0xc0, 0xff, 0xd0]); // test rax,rax; call rax
-		assert_eq!(analyze_bytes(&bytes).comments[&0x1011].comment, "other_global");
+		assert_eq!(analyze_bytes(&bytes).comments[&0x1011].comment.as_ref(), "other_global");
 	}
 
 	#[test]
@@ -171,6 +171,6 @@ mod tests {
 		bytes.extend_from_slice(&((pe.image_base() + 0x3000) as u32).to_le_bytes());
 		bytes.extend_from_slice(&[0xff, 0xd0]); // call eax
 		feed_bytes(&input, &mut analysis, &bytes, 0x1000);
-		assert_eq!(analysis.comments[&0x1005].comment, "data_3000");
+		assert_eq!(analysis.comments[&0x1005].comment.as_ref(), "data_3000");
 	}
 }

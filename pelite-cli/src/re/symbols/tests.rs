@@ -2,7 +2,7 @@ use super::*;
 
 #[test]
 fn function_json_merges_within_and_across_sources() {
-	let width = ty::PointerWidth::Bits64;
+	let width = ty::PointerWidth::X64;
 	let mut indexed = IndexedFacts::default();
 	for source in [
 		r#"#factmap
@@ -29,17 +29,17 @@ Fx20 {"other":true}
 
 #[test]
 fn later_function_facts_replace_content_within_and_across_sources() {
-	let width = ty::PointerWidth::Bits64;
+	let width = ty::PointerWidth::X64;
 	let mut indexed = IndexedFacts::default();
 	let first = FactMap::parse("#factmap\nFx10 first\nFx10 second\nFx20 {}\n", width).unwrap();
 	indexed.extend(first.facts, 0x180000000);
-	assert_eq!(indexed.functions[&0x180000010].content, "second");
+	assert_eq!(indexed.functions[&0x180000010].content.as_ref(), "second");
 	let second = FactMap::parse("#factmap\nFx10 arbitrary replacement data\n", width).unwrap();
 	indexed.extend(second.facts, 0x180000000);
 	assert_eq!(indexed.functions.len(), 2);
 	assert_eq!(indexed.functions[&0x180000010].rva, 0x10);
-	assert_eq!(indexed.functions[&0x180000010].content, "arbitrary replacement data");
-	assert_eq!(indexed.functions[&0x180000020].content, "{}");
+	assert_eq!(indexed.functions[&0x180000010].content.as_ref(), "arbitrary replacement data");
+	assert_eq!(indexed.functions[&0x180000020].content.as_ref(), "{}");
 	assert!(indexed.symbols.is_empty());
 	indexed.extend([Fact::Function(FunctionFact { rva: 1, content: "{}".into() })], u64::MAX);
 	assert_eq!(indexed.functions.len(), 2);
@@ -47,7 +47,7 @@ fn later_function_facts_replace_content_within_and_across_sources() {
 
 #[test]
 fn comment_facts_are_indexed_and_later_comments_override() {
-	let width = ty::PointerWidth::Bits64;
+	let width = ty::PointerWidth::X64;
 	let mut indexed = IndexedFacts::default();
 	let first = FactMap::parse("#factmap\nSx10 code fn\nCx10 \"generated\"\nCx20 \"other\"\n", width).unwrap();
 	let second = FactMap::parse("#factmap\nCx10 \"user override\"\n", width).unwrap();
@@ -55,13 +55,13 @@ fn comment_facts_are_indexed_and_later_comments_override() {
 	indexed.extend(second.facts, 0x180000000);
 	assert_eq!(indexed.symbols.len(), 1);
 	assert_eq!(indexed.comments.len(), 2);
-	assert_eq!(indexed.comments[&0x180000010], "user override");
-	assert_eq!(indexed.comments[&0x180000020], "other");
+	assert_eq!(indexed.comments[&0x180000010].as_ref(), "user override");
+	assert_eq!(indexed.comments[&0x180000020].as_ref(), "other");
 }
 
 #[test]
 fn indexing_ignores_non_symbol_facts() {
-	let map = FactMap::parse("#factmap\nSx10 code fn\nCx10 \"comment\"\nRx10 0x20\nCx20 \"another comment\"\n", ty::PointerWidth::Bits64).unwrap();
+	let map = FactMap::parse("#factmap\nSx10 code fn\nCx10 \"comment\"\nRx10 0x20\nCx20 \"another comment\"\n", ty::PointerWidth::X64).unwrap();
 	let mut symbols = HashMap::new();
 	index(&mut symbols, map.facts, 0x180000000);
 	assert_eq!(symbols.len(), 1);
@@ -70,7 +70,7 @@ fn indexing_ignores_non_symbol_facts() {
 
 #[test]
 fn weak_entries_preserve_strong_symbols_and_can_be_replaced_or_removed() {
-	let width = ty::PointerWidth::Bits64;
+	let width = ty::PointerWidth::X64;
 	let first = FactMap::parse("#factmap\nSx1000 code \"named\"\nSx1010 code fn\nSx1020 code _\nSx1030 code _\nSx1040 code _\nSx1050 code fn\n", width).unwrap();
 	let second = FactMap::parse("#factmap\nSx1000 code _\nSx1010 code _\nSx1020 code \"replacement\"\nSx1030 code C\nSx1040 unk undef\nSx1050 unk undef\nSx1050 code _\nSx1060 code _\n", width).unwrap();
 	let base = 0x180000000;
@@ -90,7 +90,7 @@ fn weak_entries_preserve_strong_symbols_and_can_be_replaced_or_removed() {
 
 #[test]
 fn undef_removes_symbols_and_later_entries_can_reintroduce_them() {
-	let width = ty::PointerWidth::Bits64;
+	let width = ty::PointerWidth::X64;
 	let first = FactMap::parse("#factmap\nSx1000 code fn\nSx1010 u32 D\n", width).unwrap();
 	let second = FactMap::parse("#factmap\nSx1000 unk undef\nSx1010 unk undef\nSx1020 unk undef\nSx1030 code fn\nSx1030 unk undef\nSx1000 code \"new\"\n", width).unwrap();
 	let mut symbols = HashMap::new();
@@ -102,7 +102,7 @@ fn undef_removes_symbols_and_later_entries_can_reintroduce_them() {
 
 #[test]
 fn later_symbol_entries_replace_earlier_names() {
-	let width = ty::PointerWidth::Bits64;
+	let width = ty::PointerWidth::X64;
 	let first = FactMap::parse("#factmap\nSx1000 code C\nSx1010 code \"first\"\nSx1020 code fn\nSx1030 code thunk\nSx2000 u32 D\nSx2010 u32 R\n", width).unwrap();
 	let second = FactMap::parse("#factmap\nSx1010 code \"last\"\n", width).unwrap();
 	let mut symbols = HashMap::new();
@@ -120,7 +120,7 @@ fn later_symbol_entries_replace_earlier_names() {
 
 #[test]
 fn auto_facts_require_a_pe_image() {
-	let error = load_map(Path::new("auto"), ty::PointerWidth::Bits64, None).unwrap_err();
+	let error = load_map(Path::new("auto"), ty::PointerWidth::X64, None).unwrap_err();
 	assert!(error.to_string().contains("--facts auto requires a PE image"));
 	assert_ne!(Path::new("./auto"), Path::new("auto"));
 }
@@ -128,7 +128,7 @@ fn auto_facts_require_a_pe_image() {
 #[test]
 fn indexed_types_follow_symbol_overrides_weak_anchors_and_removals() {
 	let mut indexed = IndexedFacts::default();
-	let width = ty::PointerWidth::Bits64;
+	let width = ty::PointerWidth::X64;
 	for source in [
 		"#factmap\nSx10 u32 \"first\"\nSx20 u32 D\nSx30 code _\n",
 		"#factmap\nSx10 code _\nSx20 unk undef\nSx30 cstr \"last\"\n",
