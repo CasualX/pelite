@@ -17,6 +17,13 @@ The command reports matching RVAs. Each JSON `matches`
 entry is an array: the first number is the match RVA, followed by any captures.
 Text is the default; use `json` or `json-pretty` for structured output.
 
+To help a pattern work across future versions of a binary, keep it as short as
+possible while still identifying the intended match. Mask operands likely to
+change, such as field offsets, and retain constants likely to stay the same.
+When updating a pattern, aim to support both the current and previous versions.
+Compatibility with the previous version can be dropped after significant
+structural changes, such as a compiler update.
+
 Examples:
 
     pelite-cli re findsig sample.dll '48 8B ? 48 85 C0'

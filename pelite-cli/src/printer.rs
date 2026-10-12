@@ -178,10 +178,17 @@ fn display(value: &serde_json::Value) -> String {
 	match value {
 		serde_json::Value::Null => "null".to_owned(),
 		serde_json::Value::Bool(value) => value.to_string(),
-		serde_json::Value::Number(value) => match value.as_u64() {
-			Some(value) if value >= 10 => format!("{value} (0x{value:x})"),
-			_ => value.to_string(),
-		},
+		serde_json::Value::Number(value) => {
+			if let Some(value) = value.as_u64() && value >= 10 {
+				format!("{value} ({value:#x})")
+			}
+			else if let Some(value) = value.as_i64() && value <= -10 {
+				format!("{value} (-{:#x})", value.unsigned_abs())
+			}
+			else {
+				value.to_string()
+			}
+		}
 		serde_json::Value::String(value) if value.is_empty() => "\"\"".to_owned(),
 		serde_json::Value::String(value) => value.clone(),
 		serde_json::Value::Array(array) => format!("[{}]", array.iter().map(display).collect::<Vec<_>>().join(", ")),
@@ -198,6 +205,23 @@ mod tests {
 	use serde_json::json;
 
 	use super::*;
+
+	#[test]
+	fn integers_include_signed_hex_for_magnitudes_at_least_ten() {
+		for (value, expected) in [
+			(json!(-42), "-42 (-0x2a)"),
+			(json!(-10), "-10 (-0xa)"),
+			(json!(-9), "-9"),
+			(json!(0), "0"),
+			(json!(9), "9"),
+			(json!(10), "10 (0xa)"),
+			(json!(i64::MIN), "-9223372036854775808 (-0x8000000000000000)"),
+			(json!(u64::MAX), "18446744073709551615 (0xffffffffffffffff)"),
+			(json!(-42.5), "-42.5"),
+		] {
+			assert_eq!(display(&value), expected);
+		}
+	}
 
 	#[test]
 	fn flat_object_arrays_become_tables() {
