@@ -19,13 +19,17 @@ members = [".", "./binfact", "./pelite-cli", "./pelite-js/rust"]
 resolver = "2"
 
 [features]
-default = ["mmap", "derive_pod"]
+default = ["std", "derive_pod"]
 mmap = ["std", "dep:libc", "dep:windows-sys"]
 unstable = []
 derive_pod = ["dataview/derive_pod"]
 basenc = ["dep:basenc"]
 serde = ["dep:serde", "intptr/serde"]
 std = []
+
+[[example]]
+name = "readme"
+required-features = ["std"]
 
 [profile.release]
 lto = true

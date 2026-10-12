@@ -2,14 +2,14 @@
 The code from the readme, try me out with `cargo run --example readme`.
  */
 
-use pelite::FileMap;
+use pelite::PeMemory;
 use pelite::pe64::PeFile;
 
 fn main() {
 	// Load the desired file into memory
-	let file_map = FileMap::open("demo/Demo64.dll").unwrap();
+	let memory = PeMemory::open("demo/Demo64.dll").unwrap();
 	// Process the image file
-	dll_deps(file_map.as_ref()).unwrap();
+	dll_deps(memory.as_ref()).unwrap();
 }
 
 fn dll_deps(image: &[u8]) -> pelite::Result<()> {

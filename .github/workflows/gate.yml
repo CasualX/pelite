@@ -46,6 +46,9 @@ jobs:
       - name: Check no_std serialization support
         run: cargo check --lib --no-default-features --features serde,basenc
 
+      - name: Run library tests with default features
+        run: cargo test -p pelite
+
       - name: Run tests
         run: cargo test -p pelite -p binfact -p pelite-cli --all-features --no-fail-fast
 
@@ -99,6 +102,9 @@ jobs:
 
       - name: Check all targets and features
         run: cargo check -p pelite -p binfact -p pelite-cli --target ${{ matrix.target }} --all-targets --all-features
+
+      - name: Run library tests with default features
+        run: cargo test -p pelite --target ${{ matrix.target }}
 
       - name: Run tests
         run: cargo test -p pelite -p binfact -p pelite-cli --target ${{ matrix.target }} --all-features --no-fail-fast

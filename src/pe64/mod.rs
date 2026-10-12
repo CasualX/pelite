@@ -18,21 +18,22 @@
 //!
 //! ## Executable files on disk
 //!
-//! To load a file on disk, read it into memory using the [filesystem API](https://doc.rust-lang.org/std/fs/),
-//! read it using the [`memmap` crate](https://crates.io/crates/memmap) or get it done quickly and without any
-//! additional dependencies using the provided [`FileMap`][crate::FileMap] loader.
+//! To load a file on disk, use [`PeMemory`][crate::PeMemory] to read it into an aligned
+//! buffer. Its `open` method requires the `std` feature, which is enabled by default.
+//! For memory-mapped files, enable the `mmap` feature and use `FileMap`.
 //!
 //! Take a byte slice of the entire file contents and construct it with [`PeFile::from_bytes`].
 //!
 //! ```
+//! # #[cfg(feature = "std")] {
 //! # #![allow(dead_code)]
 //! use std::path::Path;
-//! use pelite::{FileMap, Result};
+//! use pelite::{PeMemory, Result};
 //! use pelite::pe64;
 //!
-//! fn file_map<P: AsRef<Path> + ?Sized>(path: &P) -> Result<()> {
+//! fn read_file<P: AsRef<Path> + ?Sized>(path: &P) -> Result<()> {
 //! 	let path = path.as_ref();
-//! 	if let Ok(map) = FileMap::open(path) {
+//! 	if let Ok(map) = PeMemory::open(path) {
 //! 		let file = pe64::PeFile::from_bytes(&map)?;
 //!
 //! 		// Access the file contents
@@ -43,19 +44,20 @@
 //! 	}
 //! 	Ok(())
 //! }
+//! # }
 //! ```
 //!
 //! ## Executable images in memory
 //!
-//! To simulate the system loading and mapping images with virtual memory alignment use the [`ImageMap`][crate::ImageMap] loader.
-//! Note however that this is only available on Windows targets as this maps the image using Windows file mapping facilities.
+//! To simulate the system loading and mapping images with virtual memory alignment,
+//! enable the `mmap` feature and use the `ImageMap` loader on Windows or Unix targets.
 //!
 //! Take a byte slice of the entire image and construct it with [`PeView::from_bytes`].
 //!
 //! If you don't know which to choose, go with [`PeFile`].
 //!
 //! ```
-//! # #[cfg(windows)] {
+//! # #[cfg(all(feature = "mmap", any(windows, unix)))] {
 //! # #![allow(dead_code)]
 //! use std::path::Path;
 //! use pelite::{ImageMap, Result};
