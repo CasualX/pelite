@@ -455,10 +455,30 @@ export class PeFile {
 	/**
 	 * Converts a virtual address to an RVA.
 	 *
-	 * @param {number | bigint} va Virtual address.
-	 * @returns {Result<number>} The corresponding RVA.
+	 * @overload
+	 * @param {number | bigint} va
+	 * @param {false} [optional=false]
+	 * @returns {Result<number>}
 	 */
-	vaToRva(va) {
+	/**
+	 * Converts a virtual address to an RVA.
+	 *
+	 * @overload
+	 * @param {number | bigint} va
+	 * @param {boolean} [optional=false] Return null when the input is zero.
+	 * @returns {Result<number | null>}
+	 */
+	/**
+	 * Converts a virtual address to an RVA.
+	 *
+	 * @param {number | bigint} va Virtual address.
+	 * @param {boolean} [optional=false] Return null when the input is zero.
+	 * @returns {Result<number | null>} The corresponding RVA.
+	 */
+	vaToRva(va, optional = false) {
+		if (optional && (va === 0 || va === 0n)) {
+			return null;
+		}
 		let value = instance.exports.pefileVaToRva(this.p, BigInt(va));
 		return takeResult() ?? (value >>> 0);
 	}
@@ -466,50 +486,150 @@ export class PeFile {
 	/**
 	 * Converts an RVA to a virtual address.
 	 *
-	 * @param {number} rva Relative virtual address.
-	 * @returns {Result<bigint>} The corresponding virtual address.
+	 * @overload
+	 * @param {number} rva
+	 * @param {false} [optional=false]
+	 * @returns {Result<bigint>}
 	 */
-	rvaToVa(rva) {
+	/**
+	 * Converts an RVA to a virtual address.
+	 *
+	 * @overload
+	 * @param {number} rva
+	 * @param {boolean} [optional=false] Return null when the input is zero.
+	 * @returns {Result<bigint | null>}
+	 */
+	/**
+	 * Converts an RVA to a virtual address.
+	 *
+	 * @param {number} rva Relative virtual address.
+	 * @param {boolean} [optional=false] Return null when the input is zero.
+	 * @returns {Result<bigint | null>} The corresponding virtual address.
+	 */
+	rvaToVa(rva, optional = false) {
+		if (optional && rva === 0) {
+			return null;
+		}
 		let value = instance.exports.pefileRvaToVa(this.p, rva);
 		return takeResult() ?? BigInt.asUintN(64, value);
 	}
 
 	/**
 	 * Converts an RVA to a file offset; zero-filled data returns an Error.
+	 *
+	 * @overload
 	 * @param {number} rva
+	 * @param {false} [optional=false]
 	 * @returns {Result<number>}
 	 */
-	rvaToFileOffset(rva) {
+	/**
+	 * Converts an RVA to a file offset; zero-filled data returns an Error.
+	 *
+	 * @overload
+	 * @param {number} rva
+	 * @param {boolean} [optional=false] Return null when the input is zero.
+	 * @returns {Result<number | null>}
+	 */
+	/**
+	 * Converts an RVA to a file offset; zero-filled data returns an Error.
+	 * @param {number} rva
+	 * @param {boolean} [optional=false] Return null when the input is zero.
+	 * @returns {Result<number | null>}
+	 */
+	rvaToFileOffset(rva, optional = false) {
+		if (optional && rva === 0) {
+			return null;
+		}
 		let value = instance.exports.pefileRvaToFileOffset(this.p, rva);
 		return takeResult() ?? (value >>> 0);
 	}
 
 	/**
 	 * Converts a virtual address to a file offset; zero-filled data returns an Error.
+	 *
+	 * @overload
 	 * @param {number | bigint} va
+	 * @param {false} [optional=false]
 	 * @returns {Result<number>}
 	 */
-	vaToFileOffset(va) {
+	/**
+	 * Converts a virtual address to a file offset; zero-filled data returns an Error.
+	 *
+	 * @overload
+	 * @param {number | bigint} va
+	 * @param {boolean} [optional=false] Return null when the input is zero.
+	 * @returns {Result<number | null>}
+	 */
+	/**
+	 * Converts a virtual address to a file offset; zero-filled data returns an Error.
+	 * @param {number | bigint} va
+	 * @param {boolean} [optional=false] Return null when the input is zero.
+	 * @returns {Result<number | null>}
+	 */
+	vaToFileOffset(va, optional = false) {
+		if (optional && (va === 0 || va === 0n)) {
+			return null;
+		}
 		let value = instance.exports.pefileVaToFileOffset(this.p, BigInt(va));
 		return takeResult() ?? (value >>> 0);
 	}
 
 	/**
 	 * Converts a file offset to an RVA; unmapped raw data returns an Error.
+	 *
+	 * @overload
 	 * @param {number} offset
+	 * @param {false} [optional=false]
 	 * @returns {Result<number>}
 	 */
-	fileOffsetToRva(offset) {
+	/**
+	 * Converts a file offset to an RVA; unmapped raw data returns an Error.
+	 *
+	 * @overload
+	 * @param {number} offset
+	 * @param {boolean} [optional=false] Return null when the input is zero.
+	 * @returns {Result<number | null>}
+	 */
+	/**
+	 * Converts a file offset to an RVA; unmapped raw data returns an Error.
+	 * @param {number} offset
+	 * @param {boolean} [optional=false] Return null when the input is zero.
+	 * @returns {Result<number | null>}
+	 */
+	fileOffsetToRva(offset, optional = false) {
+		if (optional && offset === 0) {
+			return null;
+		}
 		let value = instance.exports.pefileFileOffsetToRva(this.p, offset);
 		return takeResult() ?? (value >>> 0);
 	}
 
 	/**
 	 * Converts a file offset to a virtual address; unmapped raw data returns an Error.
+	 *
+	 * @overload
 	 * @param {number} offset
+	 * @param {false} [optional=false]
 	 * @returns {Result<bigint>}
 	 */
-	fileOffsetToVa(offset) {
+	/**
+	 * Converts a file offset to a virtual address; unmapped raw data returns an Error.
+	 *
+	 * @overload
+	 * @param {number} offset
+	 * @param {boolean} [optional=false] Return null when the input is zero.
+	 * @returns {Result<bigint | null>}
+	 */
+	/**
+	 * Converts a file offset to a virtual address; unmapped raw data returns an Error.
+	 * @param {number} offset
+	 * @param {boolean} [optional=false] Return null when the input is zero.
+	 * @returns {Result<bigint | null>}
+	 */
+	fileOffsetToVa(offset, optional = false) {
+		if (optional && offset === 0) {
+			return null;
+		}
 		let value = instance.exports.pefileFileOffsetToVa(this.p, offset);
 		return takeResult() ?? BigInt.asUintN(64, value);
 	}
@@ -530,7 +650,7 @@ export class PeFile {
 	}
 
 	/**
-	 * Interprets typed data at an RVA using the CLI read type syntax.
+	 * Interprets typed data at an RVA using the read type syntax.
 	 *
 	 * Types include u8/u16/u32/u64, i8/i16/i32/i64, f32/f64, cstr, utf16lez,
 	 * pointers (*T), arrays ([T; N] or [T; field]), structs, and unions.

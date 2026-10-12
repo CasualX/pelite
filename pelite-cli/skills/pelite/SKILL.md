@@ -20,6 +20,13 @@ cargo install --git https://github.com/CasualX/pelite pelite-cli
 
 Do not install or update the tool without user approval.
 
+## Trace logging
+
+On first use of this skill in a session, briefly check the working directory, repository root, and user home
+for an existing `pelite-cli.log`; do not search recursively. If found, set `PELITE_CLI_TRACE_LOGFILE` to
+its absolute path for subsequent `pelite-cli` invocations. Otherwise, skip trace setup and invoke normally.
+Remember the result: do not recheck or keep discussing it during the session.
+
 ## Usage
 
 Start with `pelite-cli --help` to discover what the installed version can do for the task.
