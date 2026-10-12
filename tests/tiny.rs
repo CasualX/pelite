@@ -1,5 +1,5 @@
 use pelite::pe32::{PeFile, PeView, image};
-use pelite::{FileMap, ImageMap, Pod};
+use pelite::Pod;
 
 // For fun let's try loading tiny PE files.
 // The examples are sourced from:
@@ -347,11 +347,11 @@ fn tiny_import_209() {
 	assert_eq!(kernel32.int().unwrap().len(), 1);
 }
 
-#[cfg(feature = "serde")]
+#[cfg(all(feature = "std", feature = "serde"))]
 #[test]
 fn serialize_pe32_import_slot_address() {
-	let file_map = FileMap::open("tests/tiny/tiny.import.209").unwrap();
-	let file = PeFile::from_bytes(&file_map).unwrap();
+	let memory = pelite::PeMemory::open("tests/tiny/tiny.import.209").unwrap();
+	let file = PeFile::from_bytes(&memory).unwrap();
 	let descriptor = file.imports().unwrap().into_iter().next().unwrap();
 	let json = serde_json::to_value(file).unwrap();
 	assert!(json.get("iat").is_none());
@@ -430,20 +430,22 @@ fn tiny_webdav_133() {
 	assert_eq!(unc.iat().unwrap().len(), 1);
 }
 
+#[cfg(feature = "mmap")]
 #[test]
 fn imagemap_pe32() {
-	let mapped = ImageMap::open("tests/tiny/tiny.c.1024").unwrap();
-	let file_map = FileMap::open("tests/tiny/tiny.c.1024").unwrap();
+	let mapped = pelite::ImageMap::open("tests/tiny/tiny.c.1024").unwrap();
+	let file_map = pelite::FileMap::open("tests/tiny/tiny.c.1024").unwrap();
 	let expected = PeFile::from_bytes(&file_map).unwrap().to_view();
 	assert_eq!(mapped.as_ref(), expected.as_ref());
 	PeView::from_bytes(&mapped).unwrap();
 }
 
+#[cfg(feature = "mmap")]
 #[test]
 fn file_map_exact_bytes() {
 	for path in ["tests/tiny/tiny.97", "tests/tiny/tiny.c.1024"] {
 		let expected = std::fs::read(path).unwrap();
-		let mapped = FileMap::open(path).unwrap();
+		let mapped = pelite::FileMap::open(path).unwrap();
 		assert_eq!(mapped.as_ref(), expected, "{path}");
 	}
 }

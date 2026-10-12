@@ -1,6 +1,8 @@
+#![cfg(feature = "std")]
+
 use pelite::pe64::*;
 use pelite::util::CStr;
-use pelite::{Error, FileMap};
+use pelite::{Error, PeMemory};
 
 const FILE_NAME: &str = "demo/Demo64.dll";
 
@@ -8,7 +10,7 @@ const FILE_NAME: &str = "demo/Demo64.dll";
 
 #[test]
 fn conversions_use_aligned_buffers() {
-	let file_map = FileMap::open(FILE_NAME).unwrap();
+	let file_map = PeMemory::open(FILE_NAME).unwrap();
 	let file = PeFile::from_bytes(&file_map).unwrap();
 	let view = file.to_view();
 	assert_eq!((view.as_ref() as &[u8]).as_ptr() as usize % 16, 0);
@@ -20,7 +22,7 @@ fn conversions_use_aligned_buffers() {
 
 #[test]
 fn slice_edges() {
-	let file_map = FileMap::open(FILE_NAME).unwrap();
+	let file_map = PeMemory::open(FILE_NAME).unwrap();
 	let file = PeFile::from_bytes(&file_map).unwrap();
 
 	let assert_edges = |rva: Rva, len: usize| {
@@ -46,7 +48,7 @@ fn slice_edges() {
 
 #[test]
 fn rich_structure() {
-	let file_map = FileMap::open(FILE_NAME).unwrap();
+	let file_map = PeMemory::open(FILE_NAME).unwrap();
 	let file = PeFile::from_bytes(&file_map).unwrap();
 	let rich_structure = file.rich_structure().unwrap();
 
@@ -69,7 +71,7 @@ fn rich_structure() {
 
 #[test]
 fn exports() {
-	let file_map = FileMap::open(FILE_NAME).unwrap();
+	let file_map = PeMemory::open(FILE_NAME).unwrap();
 	let file = PeFile::from_bytes(&file_map).unwrap();
 	let exports_by = file.exports().unwrap().by().unwrap();
 
@@ -112,7 +114,7 @@ fn exports() {
 
 #[test]
 fn wrap_get_export() {
-	let file_map = FileMap::open(FILE_NAME).unwrap();
+	let file_map = PeMemory::open(FILE_NAME).unwrap();
 	let file = pelite::PeFile::from_bytes(&file_map).unwrap();
 
 	assert_eq!(file.get_export("ThrowException"), Ok(pelite::Export::Symbol(&0x10C0)));
@@ -126,7 +128,7 @@ fn wrap_get_export() {
 #[test]
 fn wrapped_headers_convert_file_offsets_for_both_formats() {
 	for path in ["demo/Demo.dll", "demo/Demo64.dll"] {
-		let file_map = FileMap::open(path).unwrap();
+		let file_map = PeMemory::open(path).unwrap();
 		let file = pelite::PeFile::from_bytes(&file_map).unwrap();
 		let headers = file.headers();
 		assert_eq!(headers.rva_to_file_offset(0x1000), Ok(0x400), "{path}");
@@ -137,7 +139,7 @@ fn wrapped_headers_convert_file_offsets_for_both_formats() {
 #[test]
 fn wrapped_images_convert_u64_virtual_addresses_for_both_formats() {
 	for path in ["demo/Demo.dll", "demo/Demo64.dll"] {
-		let file_map = FileMap::open(path).unwrap();
+		let file_map = PeMemory::open(path).unwrap();
 		let file = pelite::PeFile::from_bytes(&file_map).unwrap();
 		let va = file.image_base() + 0x1000;
 		assert_eq!(file.rva_to_va(0x1000), Ok(va), "{path}");
@@ -145,7 +147,7 @@ fn wrapped_images_convert_u64_virtual_addresses_for_both_formats() {
 		assert_eq!(file.va_to_rva(0), Err(Error::Null), "{path}");
 		assert_eq!(file.rva_to_va(0), Ok(file.image_base()), "{path}");
 	}
-	let file_map = FileMap::open("demo/Demo.dll").unwrap();
+	let file_map = PeMemory::open("demo/Demo.dll").unwrap();
 	let file = pelite::PeFile::from_bytes(&file_map).unwrap();
 	assert_eq!(file.va_to_rva(u32::MAX as u64 + 1), Err(Error::Bounds));
 }
@@ -184,7 +186,7 @@ fn rva_to_va_reports_address_overflow() {
 
 #[test]
 fn imports() {
-	let file_map = FileMap::open(FILE_NAME).unwrap();
+	let file_map = PeMemory::open(FILE_NAME).unwrap();
 	let file = PeFile::from_bytes(&file_map).unwrap();
 	let imports = file.imports().unwrap();
 
@@ -214,7 +216,7 @@ fn imports() {
 
 #[test]
 fn base_relocs() {
-	let file_map = FileMap::open(FILE_NAME).unwrap();
+	let file_map = PeMemory::open(FILE_NAME).unwrap();
 	let file = PeFile::from_bytes(&file_map).unwrap();
 	let base_relocs = file.base_relocs().unwrap();
 
@@ -254,7 +256,7 @@ fn base_relocs() {
 
 #[test]
 fn find_data() {
-	let file_map = FileMap::open(FILE_NAME).unwrap();
+	let file_map = PeMemory::open(FILE_NAME).unwrap();
 	let file = PeFile::from_bytes(&file_map).unwrap();
 	let resources = file.resources().unwrap();
 	let data = resources.find_data("/#MANIFEST/#2/#1033").unwrap();
@@ -270,7 +272,7 @@ fn find_data() {
 
 #[test]
 fn tls() {
-	let file_map = FileMap::open(FILE_NAME).unwrap();
+	let file_map = PeMemory::open(FILE_NAME).unwrap();
 	let file = PeFile::from_bytes(&file_map).unwrap();
 	let tls = file.tls().unwrap();
 
@@ -283,7 +285,7 @@ fn tls() {
 
 #[test]
 fn load_config() {
-	let file_map = FileMap::open(FILE_NAME).unwrap();
+	let file_map = PeMemory::open(FILE_NAME).unwrap();
 	let file = PeFile::from_bytes(&file_map).unwrap();
 	let load_config = file.load_config().unwrap();
 	let image = load_config.image_copy();
@@ -307,7 +309,7 @@ fn load_config() {
 
 #[test]
 fn debug() {
-	let file_map = FileMap::open(FILE_NAME).unwrap();
+	let file_map = PeMemory::open(FILE_NAME).unwrap();
 	let file = PeFile::from_bytes(&file_map).unwrap();
 	let debug = file.debug().unwrap();
 
@@ -318,7 +320,7 @@ fn debug() {
 
 #[test]
 fn security() {
-	let file_map = FileMap::open(FILE_NAME).unwrap();
+	let file_map = PeMemory::open(FILE_NAME).unwrap();
 	let file = PeFile::from_bytes(&file_map).unwrap();
 	let security = file.security();
 
@@ -329,7 +331,7 @@ fn security() {
 
 #[test]
 fn exception_x64() {
-	let file_map = FileMap::open(FILE_NAME).unwrap();
+	let file_map = PeMemory::open(FILE_NAME).unwrap();
 	let file = PeFile::from_bytes(&file_map).unwrap();
 	let exception = file.exception_x64().unwrap();
 
@@ -347,7 +349,7 @@ fn exception_x64() {
 #[test]
 fn scanner() {
 	let mut save = [0; 8];
-	let file_map = FileMap::open(FILE_NAME).unwrap();
+	let file_map = PeMemory::open(FILE_NAME).unwrap();
 	let file = PeFile::from_bytes(&file_map).unwrap();
 
 	let pat = pelite::pattern!("4C8B41'? 4C2BC2 ????????? 0FB60A 420FB60402 2BC8 75% 8B15${'} 85 C9");
@@ -367,7 +369,7 @@ fn scanner() {
 
 //----------------------------------------------------------------
 
-#[cfg(any(windows, unix))]
+#[cfg(all(feature = "mmap", any(windows, unix)))]
 #[test]
 fn imagemap() {
 	use pelite::pe64::PeView;
@@ -375,7 +377,7 @@ fn imagemap() {
 	let image = pelite::ImageMap::open(FILE_NAME).unwrap();
 	let _view = PeView::from_bytes(&image).unwrap();
 	#[cfg(unix)] {
-		let file_map = FileMap::open(FILE_NAME).unwrap();
+		let file_map = PeMemory::open(FILE_NAME).unwrap();
 		let expected = PeFile::from_bytes(&file_map).unwrap().to_view();
 		assert_eq!(image.as_ref(), expected.as_ref());
 	}

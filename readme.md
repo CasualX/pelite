@@ -45,20 +45,28 @@ In your Cargo.toml, put
 pelite = "0.10"
 ```
 
+For efficient file loading, we recommend enabling `mmap`, which provides `FileMap`
+and `ImageMap`. Memory mapping lets the operating system load file pages on demand.
+
+```
+[dependencies]
+pelite = { version = "0.10", features = ["mmap"] }
+```
+
 Examples
 --------
 
 Try this example: `cargo run --example readme`.
 
 ```rust
-use pelite::FileMap;
+use pelite::PeMemory;
 use pelite::pe64::{Pe, PeFile};
 
 fn main() {
 	// Load the desired file into memory
-	let file_map = FileMap::open("demo/Demo64.dll").unwrap();
+	let memory = PeMemory::open("demo/Demo64.dll").unwrap();
 	// Process the image file
-	dll_deps(file_map.as_ref()).unwrap();
+	dll_deps(memory.as_ref()).unwrap();
 }
 
 fn dll_deps(image: &[u8]) -> pelite::Result<()> {
