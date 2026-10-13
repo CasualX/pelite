@@ -2,7 +2,7 @@ Disassemble instructions from a PE image
 
 Usage:
 
-    pelite-cli re disasm FILE ADDRESS (BYTES | --trace [--trace-limit N]) [--facts FACTS.txt|auto]... [--layout none|indent|rva|va] [--arch x86_16|x86_32|x86_64] [--hex] [--lookback BYTES] [--format=text|json|json-pretty|nul]
+    pelite-cli re disasm FILE ADDRESS (BYTES | --trace [--trace-limit N]) [--facts FACTS.txt|auto]... [--layout none|indent|rva|fo|va] [--arch x86_16|x86_32|x86_64] [--hex] [--lookback BYTES] [--format=text|json|json-pretty|nul]
 
 See `pelite-cli re --help` for ADDRESS syntax (`rva:`, `va:`, `fo:`, or `sym:`).
 
@@ -31,12 +31,16 @@ data may decode misleadingly.
 The PE machine header selects `x86_32` or `x86_64` by default. Use `--arch` to
 override the decoding mode.
 
-`--layout` controls text output and defaults to `indent`. Use `none` for no
-prefix, or `rva` or `va` to include the section name and address. Add `--hex`
-to show instruction bytes in text output. These options do not affect JSON.
+`--layout` controls text output and defaults to `indent`. Use `none`
+for no prefix, `rva` or `va` to include the section name and address, or `fo`
+for the file offset. Layout does not affect JSON. Add `--hex` to include
+instruction bytes in text and JSON output; JSON omits `bytes` without it.
 
 `--format` defaults to `text`. Use `json` or `json-pretty` for machine-readable
-output; both include the instruction RVA in `rva`. Use `nul` to suppress
+output. Both include the virtual address in `ip`. `prefix` is the section name
+at the requested start, shared by all instructions. The symbol name is `label`, omitted without
+a symbol. Annotations are separate strings in `comments`, omitted when empty.
+`instruction` contains only the formatted instruction. Use `nul` to suppress
 successful output while still reporting errors.
 
 Facts
@@ -47,8 +51,15 @@ Use `--facts FACTS.txt` to apply `#factmap` symbols and comments, or
 
     --facts auto --facts user.facts.txt
 
-Comments at instruction starts are appended as `;` comments. Reference facts
-do not affect disassembly. Symbol types do not control decoding.
+Comments at instruction starts and symbols inside instructions appear as `;`
+comments in text and entries in the JSON `comments` array.
+Symbols at instruction starts appear as text labels and JSON `label` values.
+Reference facts do not affect disassembly. Symbol types do not control decoding.
+
+Relative branches and IP-relative memory references can resolve to symbols
+without relocations. Absolute immediates and memory displacements require a
+matching base relocation. If the PE has no usable relocation table, these
+absolute values remain numeric even when they match a known symbol.
 
 Examples
 --------
@@ -58,14 +69,15 @@ Examples
     pelite-cli re disasm sample.dll rva:0x1000 --trace --trace-limit 64
     pelite-cli re disasm sample.dll fo:1024 128 --hex
     pelite-cli re disasm sample.dll va:0x180002000 0x80 --lookback 16
-    pelite-cli re disasm sample.dll rva:0x1000 0x100 --format=json-pretty
+    pelite-cli re disasm sample.dll rva:0x1000 0x100 --hex --format=json-pretty
 
-Example JSON output:
+Example JSON output with `--hex`:
 
 ```json
 [
   {
-    "rva": 4096,
+    "ip": 6442455040,
+    "prefix": ".text",
     "bytes": [184, 1, 0, 0, 0],
     "instruction": "mov eax,1"
   }

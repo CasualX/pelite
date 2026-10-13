@@ -114,7 +114,14 @@ fn later_symbol_entries_replace_earlier_names() {
 	assert_eq!(symbols[&0x180001030].to_string(), "thunk_1030");
 	assert_eq!(symbols[&0x180002000].to_string(), "data_2000");
 	assert_eq!(symbols[&0x180002010].to_string(), "rdata_2010");
-	let decoded = iced::decode_bytes(&[0x8b, 0x05, 0xfa, 0x0f, 0, 0], 64, 0x180001000, 0x180001000, 0x180001006, false, Arc::new(symbols));
+	let options = iced::DecodeOptions {
+		prefix: "fo",
+		color: false,
+		facts: IndexedFacts { symbols, ..Default::default() },
+		relocations: BTreeSet::new(),
+		relocation_width: 0,
+	};
+	let decoded = iced::decode_bytes(&[0x8b, 0x05, 0xfa, 0x0f, 0, 0], 64, 0x180001000, 0x180001000, 0x180001006, options);
 	assert!(decoded[0].instruction.contains("data_2000"), "{}", decoded[0].instruction);
 }
 

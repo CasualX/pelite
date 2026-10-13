@@ -41,7 +41,7 @@
 				{ "signature": "hexDumpMask(rva, bytes)", "description": "Packed mask: 1 for file-backed bytes, 0 for zero-fill, LSB first" },
 				{ "signature": "sliceBytes(rva, size?, align?)", "description": "View bytes at an RVA without copying" },
 				{ "signature": "readBytes(va, size?, align?)", "description": "View bytes at a virtual address without copying" },
-				{ "signature": "disasm(start, end?)", "description": "Disassemble an RVA range" }
+				{ "signature": "disasm(start, end?, options?)", "description": "Disassemble an RVA range; option: lookback (include overlapping instructions). Returns rva, prefix, bytes, instruction, label (null when absent), and comments (empty when absent)" }
 			]
 		},
 		{

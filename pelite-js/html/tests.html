@@ -71,6 +71,22 @@
             const hashes = file.hashes();
             assert(!(hashes instanceof Error), String(hashes));
             assert(/^[0-9a-f]{64}$/.test(hashes.sha256), "Invalid SHA-256");
+            const { AddressOfEntryPoint: entry } = headers.NtHeaders.OptionalHeader;
+            const decoded = file.disasm(entry);
+            assert(Array.isArray(decoded) && decoded.length === 1, "Entry instruction disassembly failed");
+            assert(decoded[0].rva === entry && typeof decoded[0].prefix === "string", "Invalid instruction RVA");
+            assert(!("address" in decoded[0]) && !("ip" in decoded[0]), "Unexpected legacy address");
+            assert(decoded[0].label === null || typeof decoded[0].label === "string", "Invalid or missing label");
+            assert(Array.isArray(decoded[0].comments), "Missing instruction comments");
+            const opcodes = decoded[0].bytes;
+            assert(Array.isArray(opcodes) && opcodes.length > 0, "Instruction bytes missing");
+            const overlap = file.disasm(entry + opcodes.length - 1, entry + opcodes.length, { lookback: opcodes.length - 1 });
+            assert(Array.isArray(overlap) && overlap.length === 1 && overlap[0].rva === decoded[0].rva,
+              "Lookback did not retain the overlapping instruction");
+            const empty = file.disasm(entry, entry, { lookback: 16 });
+            assert(Array.isArray(empty) && empty.length === 0, "Empty range should produce no instructions");
+            assert(file.disasm(entry + 1, entry) instanceof Error, "Reversed range should return Error");
+            assert(file.disasm(entry, null, { lookback: -1 }) instanceof Error, "Invalid lookback should return Error");
           } finally {
             file.dispose();
             file.dispose();
