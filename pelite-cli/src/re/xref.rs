@@ -41,18 +41,16 @@ pub fn command() -> clap::Command {
 			.value_name("ADDRESS")
 			.value_parser(Address::parse)
 			.required(true))
+		.arg(symbols::arg())
 }
 
 pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let path = matches.get_one::<PathBuf>("file").expect("required by clap");
-	let address = *matches.get_one::<Address>("address").expect("required by clap");
+	let address = matches.get_one::<Address>("address").expect("required by clap");
 	let map = pelite::FileMap::open(path)?;
 	let pe = PeFile::from_bytes(&map)?;
-	let target_rva = match address {
-		Address::Rva(rva) => rva,
-		Address::Va(va) => pe.va_to_rva(va)?,
-		Address::Fo(fo) => pe.headers().file_offset_to_rva(fo)?,
-	};
+	let facts = symbols::load(matches, pointer_width(pe), pe.image_base(), Some(pe))?;
+	let target_rva = address.to_rva(pe, &facts)?;
 	let target_va = pe.rva_to_va(target_rva)?;
 	let mut references = Vec::new();
 	match pe {

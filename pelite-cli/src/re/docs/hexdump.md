@@ -2,9 +2,9 @@ Display bytes from a PE image
 
 Usage:
 
-    pelite-cli re hexdump FILE ADDRESS BYTES [-o OUTPUT] [--format=text|json|json-pretty|nul]
+    pelite-cli re hexdump FILE ADDRESS BYTES [-o OUTPUT] [--facts FACTS.txt|auto]... [--format=text|json|json-pretty|nul]
 
-See `pelite-cli re --help` for ADDRESS syntax (`rva:`, `va:`, or `fo:`).
+See `pelite-cli re --help` for ADDRESS syntax (`rva:`, `va:`, `fo:`, or `sym:`).
 BYTES is the number of bytes to dump, in decimal or 0xhex.
 
 Text output shows 16 bytes per row with virtual addresses, hex bytes, and an

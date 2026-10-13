@@ -20,14 +20,16 @@ pub fn command() -> clap::Command {
 			.value_name("ADDRESS")
 			.value_parser(Address::parse)
 			.required(true))
+		.arg(symbols::arg())
 }
 
 pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let path = matches.get_one::<PathBuf>("file").expect("required by clap");
-	let address = *matches.get_one::<Address>("address").expect("required by clap");
+	let address = matches.get_one::<Address>("address").expect("required by clap");
 	let map = pelite::FileMap::open(path)?;
 	let pe = pelite::PeFile::from_bytes(&map)?;
-	let rva = address.to_rva(pe)?;
+	let facts = symbols::load(matches, pointer_width(pe), pe.image_base(), Some(pe))?;
+	let rva = address.to_rva(pe, &facts)?;
 	let va = pe.rva_to_va(rva)?;
 	let fo = pe.headers().rva_to_file_offset(rva).ok();
 	let section = get_section_name_by_rva(pe, rva);

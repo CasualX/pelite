@@ -54,6 +54,7 @@ pub fn arg() -> clap::Arg {
 #[derive(Default)]
 pub struct IndexedFacts {
 	pub symbols: HashMap<u64, IndexedSymbol>,
+	pub symbol_facts: BTreeMap<u32, SymbolFact>,
 	pub types: HashMap<u64, ty::Type>,
 	pub comments: HashMap<u64, Box<str>>,
 	pub functions: HashMap<u64, FunctionFact>,
@@ -85,6 +86,10 @@ pub fn load_file(path: &Path, pointer_width: ty::PointerWidth) -> Result<FactMap
 }
 
 impl IndexedFacts {
+	pub fn slow_lookup_by_name(&self, name: &str) -> Option<&SymbolFact> {
+		self.symbol_facts.values().find(|symbol| matches!(&symbol.name, SymbolName::Named(value) if value.as_ref() == name))
+	}
+
 	pub fn extend(&mut self, facts: impl IntoIterator<Item = Fact>, base: u64) {
 		for fact in facts {
 			match fact {
@@ -109,9 +114,11 @@ impl IndexedFacts {
 					if let Some(address) = base.checked_add(u64::from(symbol.rva)) {
 						if matches!(symbol.name, SymbolName::Undef) {
 							self.types.remove(&address);
+							self.symbol_facts.remove(&symbol.rva);
 						}
 						else if !matches!(symbol.name, SymbolName::Weak) || !self.symbols.contains_key(&address) {
 							self.types.insert(address, symbol.ty.clone());
+							self.symbol_facts.insert(symbol.rva, symbol.clone());
 						}
 					}
 					index(&mut self.symbols, std::iter::once(Fact::Symbol(symbol)), base);

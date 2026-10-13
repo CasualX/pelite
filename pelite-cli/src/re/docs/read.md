@@ -2,7 +2,7 @@ Read typed data from a PE image
 
 Usage:
 
-    pelite-cli re read FILE ADDRESS TYPE [--zerofill] [--string-preview-length N] [--max-dynamic-array-length N] [--format=text|json|json-pretty|nul]
+    pelite-cli re read FILE ADDRESS TYPE [--zerofill] [--string-preview-length N] [--max-dynamic-array-length N] [--facts FACTS.txt|auto]... [--format=text|json|json-pretty|nul]
 
 See `pelite-cli re --help` for ADDRESS syntax.
 

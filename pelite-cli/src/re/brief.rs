@@ -84,16 +84,16 @@ pub fn command() -> clap::Command {
 
 pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let path = matches.get_one::<PathBuf>("file").expect("required by clap");
-	let address = *matches.get_one::<Address>("address").expect("required by clap");
+	let address = matches.get_one::<Address>("address").expect("required by clap");
 	let length = *matches.get_one::<usize>("length").expect("required by clap");
 	let map = pelite::FileMap::open(path)?;
 	let pe = pelite::PeFile::from_bytes(&map)?;
-	let rva = address.to_rva(pe)?;
+	let facts = symbols::load(matches, pointer_width(pe), pe.image_base(), Some(pe))?;
+	let rva = address.to_rva(pe, &facts)?;
 	u32::try_from(length).ok().and_then(|length| rva.checked_add(length))
 		.ok_or_else(|| err("RVA plus length overflows"))?;
 	let arch = get_arch(matches, pe)?;
 	let bytes = pe.slice(rva, length, 1)?;
-	let facts = symbols::load(matches, pointer_width(pe), pe.image_base(), Some(pe))?;
 
 	// Collect the brief data
 	let mut state = CollectionState::default();

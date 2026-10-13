@@ -2,7 +2,7 @@ Find candidate references to a PE address
 
 Usage:
 
-    pelite-cli re xref FILE ADDRESS [--format=text|json|json-pretty|nul]
+    pelite-cli re xref FILE ADDRESS [--facts FACTS.txt|auto]... [--format=text|json|json-pretty|nul]
 
 See `pelite-cli re --help` for ADDRESS syntax.
 

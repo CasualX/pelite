@@ -46,11 +46,12 @@ pub fn command() -> clap::Command {
 		.arg(clap::Arg::new("type")
 			.value_name("TYPE")
 			.required(true))
+		.arg(symbols::arg())
 }
 
 pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let path = matches.get_one::<PathBuf>("file").expect("required by clap");
-	let address = *matches.get_one::<Address>("address").expect("required by clap");
+	let address = matches.get_one::<Address>("address").expect("required by clap");
 	let source = matches.get_one::<String>("type").expect("required by clap");
 	let options = ReadOptions {
 		zerofill: matches.get_flag("zerofill"),
@@ -60,7 +61,8 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let map = pelite::FileMap::open(path)?;
 	let pe = pelite::PeFile::from_bytes(&map)?;
 	let ty = ty::Type::parse(source, pointer_width(pe))?;
-	let value = match address.to_rva(pe) {
+	let facts = symbols::load(matches, pointer_width(pe), pe.image_base(), Some(pe))?;
+	let value = match address.to_rva(pe, &facts) {
 		Ok(rva) => read_at(pe, rva, &ty, &options),
 		Err(error) => error_value(None, error),
 	};
