@@ -31,11 +31,14 @@ fn pointer_width(pe: pelite::PeFile<'_>) -> ty::PointerWidth {
 }
 
 impl Address {
-	fn to_rva(self, pe: pelite::PeFile<'_>) -> Result<u32> {
+	fn to_rva(&self, pe: pelite::PeFile<'_>, facts: &symbols::IndexedFacts) -> Result<u32> {
 		match self {
-			Address::Rva(rva) => Ok(rva),
-			Address::Va(va) => Ok(pe.va_to_rva(va)?),
-			Address::Fo(fo) => Ok(pe.headers().file_offset_to_rva(fo)?),
+			Address::Rva(rva) => Ok(*rva),
+			Address::Va(va) => Ok(pe.va_to_rva(*va)?),
+			Address::Fo(fo) => Ok(pe.headers().file_offset_to_rva(*fo)?),
+			Address::Sym(name) => facts.slow_lookup_by_name(name)
+				.map(|symbol| symbol.rva)
+				.ok_or_else(|| err(format!("symbol {name:?} not found"))),
 		}
 	}
 }

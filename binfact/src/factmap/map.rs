@@ -8,6 +8,17 @@ pub struct FactMap {
 }
 
 impl FactMap {
+	/// Find the first symbol with an exact explicit name by linearly scanning the facts.
+	///
+	/// Markers and other fact kinds are ignored. Facts are searched in stored order;
+	/// overrides and removals are not applied by this lookup.
+	pub fn slow_lookup_symbol_by_name(&self, name: &str) -> Option<&SymbolFact> {
+		self.facts.iter().find_map(|fact| match fact {
+			Fact::Symbol(symbol) if matches!(&symbol.name, SymbolName::Named(value) if value.as_ref() == name) => Some(symbol),
+			_ => None,
+		})
+	}
+
 	/// Parse a complete `#factmap` file, also accepting the legacy `#symtext` header.
 	///
 	/// Blank lines and lines beginning with `#` after trimming are ignored.
@@ -46,6 +57,23 @@ impl FactMap {
 		}
 		Ok(())
 	}
+}
+
+#[test]
+fn lookup_symbol_by_name() {
+	let symbols = [
+		SymbolFact::new(0x10, ty::Type::Code, SymbolName::Fn),
+		SymbolFact::new(0x20, ty::Type::U32, SymbolName::Named("fn".into())),
+		SymbolFact::new(0x30, ty::Type::Code, SymbolName::Named("fn".into())),
+		SymbolFact::new(0x40, ty::Type::Code, SymbolName::Named("a::name+* with spaces".into())),
+	];
+	let mut map = FactMap::parse("#factmap\nCx0 \"fn\"\n", ty::PointerWidth::X64).unwrap();
+	map.facts.extend(symbols.iter().cloned().map(Fact::Symbol));
+	assert_eq!(map.slow_lookup_symbol_by_name("fn"), Some(&symbols[1]));
+	assert_eq!(map.slow_lookup_symbol_by_name("a::name+* with spaces"), Some(&symbols[3]));
+	assert_eq!(map.slow_lookup_symbol_by_name("Fn"), None);
+	assert_eq!(map.slow_lookup_symbol_by_name("missing"), None);
+	assert_eq!(FactMap::default().slow_lookup_symbol_by_name("fn"), None);
 }
 
 #[test]

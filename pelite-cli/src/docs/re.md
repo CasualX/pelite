@@ -8,6 +8,12 @@ ADDRESS is `kind:EXPR`, where `rva:` selects a relative virtual address,
 `va:0x180001000`, and `fo:1024`. The result must fit the address kind:
 32 bits for RVA, 64 bits for VA, and the platform's `usize` for file offsets.
 
+ADDRESS also accepts `sym:NAME` to look up an exact, case-sensitive explicit
+symbol name in the loaded facts. Use `--facts FACTS.txt` or `--facts auto`; repeat
+`--facts` in override order. Replaced or undefined symbols no longer resolve.
+A missing name is an error. The entire text after `sym:` is the name, including
+any arithmetic characters; quote names containing spaces or shell metacharacters.
+
 Commands taking ADDRESS BYTES select a range starting at ADDRESS with the
 given byte count. BYTES accepts decimal or `0xhex`.
 The end is excluded; a byte count of zero produces an empty range.
@@ -27,6 +33,7 @@ Examples:
     pelite-cli re disasm sample.dll rva:0x1000 --trace
     pelite-cli re brief sample.dll rva:0x1000 0x100 --facts auto
     pelite-cli re xref sample.dll rva:0x1000
+    pelite-cli re addr sample.dll sym:EntryPoint --facts auto
     pelite-cli re msvc rtti sample.dll
 
 Use `pelite-cli re COMMAND --help` for arguments and examples.

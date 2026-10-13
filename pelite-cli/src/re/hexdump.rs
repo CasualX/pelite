@@ -58,15 +58,17 @@ pub fn command() -> clap::Command {
 			.value_name("FILE")
 			.value_parser(clap::value_parser!(PathBuf))
 			.help("Write raw bytes to a new file"))
+		.arg(symbols::arg())
 }
 
 pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let path = matches.get_one::<PathBuf>("file").expect("required by clap");
-	let address = *matches.get_one::<Address>("address").expect("required by clap");
+	let address = matches.get_one::<Address>("address").expect("required by clap");
 	let len = *matches.get_one::<usize>("length").expect("required by clap");
 	let map = pelite::FileMap::open(path)?;
 	let pe = pelite::PeFile::from_bytes(&map)?;
-	let start = address.to_rva(pe)?;
+	let facts = symbols::load(matches, pointer_width(pe), pe.image_base(), Some(pe))?;
+	let start = address.to_rva(pe, &facts)?;
 	u32::try_from(len).ok().and_then(|len| start.checked_add(len))
 		.ok_or_else(|| err("RVA plus length overflows"))?;
 	let (image_base, address_width) = match pe.optional_header() {

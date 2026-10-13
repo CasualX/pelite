@@ -4,7 +4,7 @@ Usage:
 
     pelite-cli re disasm FILE ADDRESS (BYTES | --trace [--trace-limit N]) [--facts FACTS.txt|auto]... [--layout none|indent|rva|va] [--arch x86_16|x86_32|x86_64] [--hex] [--lookback BYTES] [--format=text|json|json-pretty|nul]
 
-See `pelite-cli re --help` for ADDRESS syntax (`rva:`, `va:`, or `fo:`).
+See `pelite-cli re --help` for ADDRESS syntax (`rva:`, `va:`, `fo:`, or `sym:`).
 
 Disassembly starts at ADDRESS and proceeds in address order.
 

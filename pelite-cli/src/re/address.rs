@@ -1,23 +1,30 @@
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub enum Address {
 	Rva(u32),
 	Va(u64),
 	Fo(usize),
+	Sym(Box<str>),
 }
 
 impl Address {
 	pub fn parse(value: &str) -> Result<Self, String> {
-		let (kind, expression) = value.split_once(':').ok_or("expected rva:EXPR, va:EXPR, or fo:EXPR")?;
+		let (kind, expression) = value.split_once(':').ok_or("expected rva:EXPR, va:EXPR, fo:EXPR, or sym:NAME")?;
 		Self::parse_parts(kind, expression)
 	}
 
 	fn parse_parts(kind: &str, expression: &str) -> Result<Self, String> {
+		if kind == "sym" {
+			if expression.is_empty() {
+				return Err("expected a symbol name after sym:".to_owned());
+			}
+			return Ok(Self::Sym(expression.into()));
+		}
 		let value = Expr::eval(expression)?;
 		match kind {
 			"rva" => u32::try_from(value).map(Self::Rva).map_err(|_| "RVA must fit in 32 bits".to_owned()),
 			"va" => Ok(Self::Va(value)),
 			"fo" => usize::try_from(value).map(Self::Fo).map_err(|_| "file offset must fit in usize".to_owned()),
-			_ => Err("expected rva:EXPR, va:EXPR, or fo:EXPR".to_owned()),
+			_ => Err("expected rva:EXPR, va:EXPR, fo:EXPR, or sym:NAME".to_owned()),
 		}
 	}
 }
@@ -30,11 +37,14 @@ fn parses_all_address_kinds() {
 	assert_eq!(Address::parse("va:0x180001000"), Ok(Address::Va(0x180001000)));
 	assert_eq!(Address::parse("fo:1024"), Ok(Address::Fo(1024)));
 	assert_eq!(Address::parse("fo:0x400"), Ok(Address::Fo(0x400)));
+	assert_eq!(Address::parse("sym:main"), Ok(Address::Sym("main".into())));
+	assert_eq!(Address::parse("sym:a::name+* with spaces"), Ok(Address::Sym("a::name+* with spaces".into())));
 }
 
 #[test]
 fn rejects_invalid_addresses() {
 	assert!(Address::parse("1000").is_err());
+	assert!(Address::parse("sym:").is_err());
 	assert!(Address::parse("rva:").is_err());
 	assert!(Address::parse("rva:0x").is_err());
 	assert!(Address::parse("rva:1000h").is_err());

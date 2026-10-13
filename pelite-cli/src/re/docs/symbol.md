@@ -7,7 +7,7 @@ Usage:
 Looks up symbols within an address range using one or more #factmap files.
 Results are sorted by RVA and include symbol names and types. Without --facts, the result is empty.
 
-ADDRESS accepts rva:, va:, or fo: prefixes (see `re --help`).
+ADDRESS accepts rva:, va:, fo:, or sym: prefixes (see `re --help`).
 BYTES is the range size in decimal or 0xhex. The end is exclusive.
 
 Symbol sources:

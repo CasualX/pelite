@@ -2,7 +2,7 @@ Convert a PE address between RVA, VA, and file offset
 
 Usage:
 
-    pelite-cli re addr FILE ADDRESS [--format=text|json|json-pretty|nul]
+    pelite-cli re addr FILE ADDRESS [--facts FACTS.txt|auto]... [--format=text|json|json-pretty|nul]
 
 See `pelite-cli re --help` for ADDRESS syntax.
 

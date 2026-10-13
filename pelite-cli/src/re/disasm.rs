@@ -84,10 +84,11 @@ pub fn command() -> clap::Command {
 
 pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let path = matches.get_one::<PathBuf>("file").expect("required by clap");
-	let address = *matches.get_one::<Address>("address").expect("required by clap");
+	let address = matches.get_one::<Address>("address").expect("required by clap");
 	let map = pelite::FileMap::open(path)?;
 	let pe = pelite::PeFile::from_bytes(&map)?;
-	let start = address.to_rva(pe)?;
+	let facts = symbols::load(matches, pointer_width(pe), pe.image_base(), Some(pe))?;
+	let start = address.to_rva(pe, &facts)?;
 	let arch = get_arch(matches, pe)?;
 	let length = if matches.get_flag("trace") {
 		let limit = *matches.get_one::<usize>("trace-limit").expect("defaulted by clap");
@@ -97,12 +98,13 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 		*matches.get_one::<usize>("length").expect("required by clap")
 	};
 	let lookback = *matches.get_one::<u32>("lookback").expect("defaulted by clap");
-	disassemble(matches, format, pe, start, length, arch, lookback)
+	disassemble(matches, format, pe, start, length, arch, lookback, facts)
 }
 
 fn disassemble(
 	matches: &clap::ArgMatches, format: OutputFormat, pe: pelite::PeFile<'_>,
 	rva: u32, len: usize, arch: Arch, lookback: u32,
+	facts: symbols::IndexedFacts,
 ) -> Result {
 	let end = u32::try_from(len).ok().and_then(|len| rva.checked_add(len))
 		.ok_or_else(|| err("RVA plus length overflows"))?;
@@ -121,7 +123,6 @@ fn disassemble(
 	let end_ip = image_base + end as u64;
 
 	let color = format == OutputFormat::Text && io::stdout().is_terminal();
-	let facts = symbols::load(matches, pointer_width(pe), image_base, Some(pe))?;
 	let symbols = Arc::new(facts.symbols);
 	let mut decoded = iced::decode_bytes(bytes, arch.bitness(), decode_ip, start_ip, end_ip, color, Arc::clone(&symbols));
 	iced::append_comments(&mut decoded, &facts.comments);

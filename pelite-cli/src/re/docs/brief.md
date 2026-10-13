@@ -4,7 +4,7 @@ Usage:
 
     pelite-cli re brief FILE ADDRESS BYTES [--arch ARCH] [--zerofill] [--facts FACTS.txt|auto]... [--format=json-pretty]
 
-See `pelite-cli re --help` for ADDRESS syntax (`rva:`, `va:`, or `fo:`).
+See `pelite-cli re --help` for ADDRESS syntax (`rva:`, `va:`, `fo:`, or `sym:`).
 
 Start at an instruction boundary. BYTES accepts decimal or 0xhex; instructions
 starting inside the range are included even if they extend past its end.
