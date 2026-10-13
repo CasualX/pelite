@@ -115,9 +115,17 @@ if (!response.ok) {
 
 /**
  * @typedef {object} DisassembledInstruction
- * @property {string} address The formatted section name and virtual address.
+ * @property {number} rva The instruction address relative to the image base, an unsigned 32-bit value.
+ * @property {string} prefix The section name at the requested start.
+ * @property {string | null} label The symbol name at the instruction start, or null if absent.
  * @property {number[]} bytes The encoded instruction bytes.
  * @property {string} instruction The formatted instruction.
+ * @property {string[]} comments Annotations, including symbols inside the instruction; empty if none.
+ */
+
+/**
+ * @typedef {object} DisasmOptions
+ * @property {number} [lookback=0] Decode up to this many bytes earlier and include overlapping instructions.
  */
 
 /**
@@ -636,16 +644,29 @@ export class PeFile {
 
 	/**
 	 * Disassemble instructions starting in the half-open RVA range [start, end).
+	 * With lookback, also includes an instruction overlapping `start`.
+	 * Absolute operand symbols require matching base relocations; relative targets
+	 * resolve directly. Labels come from exports and import address table entries.
 	 *
 	 * @param {number} start Start RVA.
 	 * @param {number | null} [end=null] End RVA; defaults to one byte after `start`.
+	 * @param {DisasmOptions} [options]
 	 * @returns {Result<DisassembledInstruction[]>}
 	 */
-	disasm(start, end = null) {
+	disasm(start, end = null, options = {}) {
 		if (end === null) {
 			end = start + 1;
 		}
-		instance.exports.pefileDisasm(this.p, start, end);
+		if (options === null || typeof options !== "object") {
+			return new Error("disasm expects an options object");
+		}
+		const lookback = options.lookback ?? 0;
+		if (!Number.isInteger(start) || start < 0 || start > 0xffff_ffff ||
+			!Number.isInteger(end) || end < start || end > 0xffff_ffff ||
+			!Number.isInteger(lookback) || lookback < 0 || lookback > 0xffff_ffff) {
+			return new Error("disasm expects unsigned 32-bit RVAs and lookback");
+		}
+		instance.exports.pefileDisasm(this.p, start, end, lookback);
 		return takeResult();
 	}
 

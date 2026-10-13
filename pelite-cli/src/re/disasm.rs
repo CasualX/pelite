@@ -1,32 +1,5 @@
 use super::*;
 
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
-enum AddressLayout {
-	None,
-	Indent,
-	Rva,
-	Va,
-}
-
-impl AddressLayout {
-	fn parse(value: &str) -> std::result::Result<Self, String> {
-		match value {
-			"none" => Ok(Self::None),
-			"indent" => Ok(Self::Indent),
-			"rva" => Ok(Self::Rva),
-			"va" => Ok(Self::Va),
-			_ => Err("expected none, indent, rva, or va".to_owned()),
-		}
-	}
-}
-
-#[derive(serde::Serialize)]
-struct DisassembledInstruction<'a> {
-	rva: u32,
-	bytes: &'a [u8],
-	instruction: String,
-}
-
 pub fn command() -> clap::Command {
 	clap::Command::new("disasm")
 		.about("Disassemble bytes or trace to the first control transfer using iced-x86")
@@ -72,13 +45,8 @@ pub fn command() -> clap::Command {
 		.arg(clap::Arg::new("hex")
 			.long("hex")
 			.action(clap::ArgAction::SetTrue)
-			.help("Show instruction opcode bytes in text output"))
-		.arg(clap::Arg::new("layout")
-			.long("layout")
-			.value_name("MODE")
-			.value_parser(AddressLayout::parse)
-			.default_value("indent")
-			.help("Choose plain, indented, RVA, or VA text layout"))
+			.help("Include instruction opcode bytes in text and JSON output"))
+		.arg(iced::layout_arg(false))
 		.arg(symbols::arg())
 }
 
@@ -92,7 +60,8 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let arch = get_arch(matches, pe)?;
 	let length = if matches.get_flag("trace") {
 		let limit = *matches.get_one::<usize>("trace-limit").expect("defaulted by clap");
-		trace_bytes(pe.slice_bytes(start)?, arch.bitness(), start, pe.image_base(), limit)?
+		let ip = pe.image_base().checked_add(u64::from(start)).ok_or_else(|| err("start address overflows"))?;
+		iced::trace_bytes(pe.slice_bytes(start)?, arch.bitness(), ip, limit)?
 	}
 	else {
 		*matches.get_one::<usize>("length").expect("required by clap")
@@ -117,131 +86,73 @@ fn disassemble(
 			pe.slice(start, len, 1).ok().map(|bytes| (start, bytes))
 		})
 		.unwrap_or((rva, bytes));
+	// An x86 instruction starting before end can consume up to 14 bytes beyond it.
+	let decode_len = if len == 0 { 0 } else { ((end - decode_start) as usize).saturating_add(14) };
+	let bytes = &bytes[..bytes.len().min(decode_len)];
 	let image_base = pe.image_base();
 	let start_ip = image_base + rva as u64;
 	let decode_ip = image_base + decode_start as u64;
 	let end_ip = image_base + end as u64;
 
-	let color = format == OutputFormat::Text && io::stdout().is_terminal();
-	let symbols = Arc::new(facts.symbols);
-	let mut decoded = iced::decode_bytes(bytes, arch.bitness(), decode_ip, start_ip, end_ip, color, Arc::clone(&symbols));
-	iced::append_comments(&mut decoded, &facts.comments);
-	match format {
-		OutputFormat::Nul => Ok(()),
-		OutputFormat::Json | OutputFormat::JsonPretty => {
-			let mut instructions = Vec::with_capacity(decoded.len());
-			for item in decoded {
-				instructions.push(DisassembledInstruction {
-					rva: u32::try_from(item.ip - image_base)?,
-					bytes: item.bytes,
-					instruction: item.instruction,
-				});
-			}
-			print_json(&instructions, format == OutputFormat::JsonPretty)
-		},
-		OutputFormat::Text => {
-			let layout = *matches.get_one::<AddressLayout>("layout").expect("defaulted by clap");
-			let stdout = io::stdout();
-			iced::print_text(&mut stdout.lock(), &decoded, &symbols, color, matches.get_flag("hex"), |ip| {
-				let rva = (ip - image_base) as u32;
-				match layout {
-					AddressLayout::None => iced::TextPrefix::None,
-					AddressLayout::Indent => iced::TextPrefix::Indent,
-					AddressLayout::Rva => iced::TextPrefix::Address { label: get_section_name_by_rva(pe, rva), value: u64::from(rva) },
-					AddressLayout::Va => iced::TextPrefix::Address { label: get_section_name_by_rva(pe, rva), value: ip },
-				}
-			})?;
-			Ok(())
-		},
+	let prefix = get_section_name_by_rva(pe, rva);
+	let mut options = iced::DecodeOptions::new(format, prefix, facts);
+	let (relocations, relocation_width) = match pe {
+		pelite::Wrap::T32(pe) => (load_relocs32(pe, decode_start, bytes.len()), 4),
+		pelite::Wrap::T64(pe) => (load_relocs64(pe, decode_start, bytes.len()), 8),
+	};
+	options.relocations = relocations;
+	options.relocation_width = relocation_width;
+	let mut decoded = iced::decode_bytes(bytes, arch.bitness(), decode_ip, start_ip, end_ip, options);
+	if !matches.get_flag("hex") {
+		iced::omit_bytes(&mut decoded);
 	}
-}
-
-fn is_control_flow(instr: &iced_x86::Instruction) -> bool {
-	instr.flow_control() != iced_x86::FlowControl::Next || instr.mnemonic() == iced_x86::Mnemonic::Hlt
-}
-
-fn trace_bytes(bytes: &[u8], bitness: u32, rva: u32, image_base: u64, trace_limit: usize) -> Result<usize> {
-	let ip = image_base + u64::from(rva);
-	let mut decoder = iced_x86::Decoder::with_ip(bitness, bytes, ip, iced_x86::DecoderOptions::NONE);
-	let mut count = 0;
-	while decoder.can_decode() {
-		let offset = decoder.position();
-		let instruction_rva = u64::from(rva) + offset as u64;
-		let instr = decoder.decode();
-		if instr.is_invalid() {
-			return Err(err(format!("(bad): unable to decode instruction at rva:{instruction_rva:#x} after {count} instructions, {offset} bytes")));
-		}
-		count += 1;
-		if is_control_flow(&instr) || (trace_limit != 0 && count >= trace_limit) {
-			return Ok(decoder.position());
+	let layout = if format == OutputFormat::Text && !decoded.is_empty() {
+		match matches.get_one::<iced::AddressLayout>("layout").expect("defaulted by clap") {
+			iced::AddressLayout::None => iced::TextLayout::None,
+			iced::AddressLayout::Indent => iced::TextLayout::Indent,
+			iced::AddressLayout::Rva => iced::TextLayout::Address { prefix, offset: image_base },
+			iced::AddressLayout::Va => iced::TextLayout::Address { prefix, offset: 0 },
+			iced::AddressLayout::FileOffset => iced::TextLayout::Address {
+				prefix: "fo", offset: start_ip.wrapping_sub(pe.headers().rva_to_file_offset(rva)? as u64),
+			},
 		}
 	}
-	Err(err(format!("no control-transfer instruction before end of available data at rva:{:#x} after {count} instructions, {} bytes", u64::from(rva) + decoder.position() as u64, decoder.position())))
+	else {
+		iced::TextLayout::None
+	};
+	iced::print(&decoded, format, layout)
 }
 
-#[test]
-fn stops_at_control_transfers_including_their_bytes() {
-	let endings: &[&[u8]] = &[
-		&[0xe8, 0, 0, 0, 0], // direct call
-		&[0xff, 0xd0], // indirect call
-		&[0xe9, 0, 0, 0, 0], // direct jump
-		&[0xff, 0xe0], // indirect jump
-		&[0x75, 0], // conditional jump
-		&[0xe2, 0], // loop
-		&[0xe3, 0], // jrcxz
-		&[0xcd, 0x80], // int
-		&[0xcc], // int3
-		&[0xc3], // ret
-		&[0xc2, 8, 0], // ret with stack adjustment
-		&[0x48, 0xcf], // iretq
-		&[0x0f, 0x05], // syscall
-		&[0x0f, 0x0b], // ud2: valid decoding, traps when executed
-		&[0xf4], // hlt
-		&[0xc7, 0xf8, 0, 0, 0, 0], // xbegin
-	];
-	for ending in endings {
-		let mut bytes = vec![0x90, 0x48, 0x89, 0xe5];
-		bytes.extend_from_slice(ending);
-		bytes.push(0x90);
-		let trace = trace_bytes(&bytes, 64, 0x1000, 0x180000000, 0).unwrap();
-		assert_eq!(trace, 4 + ending.len(), "{ending:02x?}");
-	}
+/// Collect offsets of complete HIGHLOW fields within the decode slice.
+fn load_relocs32(pe: pelite::pe32::PeFile<'_>, start: u32, len: usize) -> BTreeSet<usize> {
+	let mut result = BTreeSet::new();
+	let Ok(relocs) = pe.base_relocs() else { return result };
+	relocs.for_each(|rva, ty| {
+		if ty != pelite::image::IMAGE_REL_BASED_HIGHLOW {
+			return;
+		}
+		let Some(offset) = rva.checked_sub(start) else { return };
+		let offset = offset as usize;
+		if offset.checked_add(4).is_some_and(|end| end <= len) {
+			result.insert(offset);
+		}
+	});
+	result
 }
 
-#[test]
-fn invalid_and_truncated_instructions_fail_with_successful_counts() {
-	for bytes in [&[0x90, 0x06][..], &[0x90, 0xe8, 0][..]] {
-		let error = trace_bytes(bytes, 64, 0x1000, 0x180000000, 0).unwrap_err().to_string();
-		assert!(error.contains("(bad)"));
-		assert!(error.contains("rva:0x1001"));
-		assert!(error.contains("after 1 instructions, 1 bytes"));
-	}
-}
-
-#[test]
-fn exhaustion_does_not_report_success() {
-	for bytes in [&[][..], &[0x90][..]] {
-		let error = trace_bytes(bytes, 64, 0x1000, 0x180000000, 0).unwrap_err().to_string();
-		assert!(error.contains("no control-transfer instruction before end of available data"));
-	}
-}
-
-#[test]
-fn instruction_limit_stops_on_complete_instructions() {
-	// The invalid instruction after the limit must not be decoded.
-	let bytes = [0x90, 0x48, 0x89, 0xe5, 0x06];
-	let trace = trace_bytes(&bytes, 64, 0x1000, 0x180000000, 2).unwrap();
-	assert_eq!(trace, 4);
-	assert!(trace_bytes(&bytes, 64, 0x1000, 0x180000000, 3).is_err());
-}
-
-#[test]
-fn zero_limit_traces_beyond_default_and_control_flow_stops_early() {
-	let mut bytes = vec![0x90; 300];
-	bytes.push(0xc3);
-	for (limit, count) in [(256, 256), (0, 301), (400, 301)] {
-		let trace = trace_bytes(&bytes, 64, 0x1000, 0x180000000, limit).unwrap();
-		assert_eq!(trace, count);
-	}
-	assert!(trace_bytes(&bytes[..300], 64, 0x1000, 0x180000000, 0).is_err());
+/// Collect offsets of complete DIR64 fields within the decode slice.
+fn load_relocs64(pe: pelite::pe64::PeFile<'_>, start: u32, len: usize) -> BTreeSet<usize> {
+	let mut result = BTreeSet::new();
+	let Ok(relocs) = pe.base_relocs() else { return result };
+	relocs.for_each(|rva, ty| {
+		if ty != pelite::image::IMAGE_REL_BASED_DIR64 {
+			return;
+		}
+		let Some(offset) = rva.checked_sub(start) else { return };
+		let offset = offset as usize;
+		if offset.checked_add(8).is_some_and(|end| end <= len) {
+			result.insert(offset);
+		}
+	});
+	result
 }

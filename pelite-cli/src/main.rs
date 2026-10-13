@@ -1,6 +1,5 @@
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
 use std::path::{Path, PathBuf};
-use std::sync::Arc;
 use std::{error, fmt, fs, process, result, time};
 use std::io::{self, BufRead, IsTerminal, Write};
 

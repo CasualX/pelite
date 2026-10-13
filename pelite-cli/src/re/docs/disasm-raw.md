@@ -35,12 +35,17 @@ Use `--arch` to select the decoding mode; it is required for raw input.
 `--base` is the instruction address at file offset zero (default: 0), so an
 instruction's `ip` is `base + offset`. Offset and base accept decimal or 0xhex.
 
-`--layout` controls text output and defaults to `indent`. Use `none` for no
-prefix, or `fo` or `va` to include the file offset or instruction address. Add `--hex`
-to show instruction bytes in text output. These options do not affect JSON.
+`--layout` controls text output and defaults to `indent`. Use `none`
+for no prefix, or `fo` or `va` to include the file offset or instruction
+address. Layout does not affect JSON. Add `--hex` to include instruction bytes
+in text and JSON output; JSON omits `bytes` without it.
 
 `--format` defaults to `text`. Use `json` or `json-pretty` for machine-readable
-output; both include the file offset in `offset` and instruction address in `ip`.
+output; both include the instruction address in `ip` (`base + offset`).
+`prefix` is always `"fo"` for raw input.
+The symbol name is `label`, omitted without a symbol. Annotations are separate
+strings in `comments`, omitted when empty. `instruction` contains only the formatted
+instruction. PE disassembly uses the same fields.
 Use `nul` to suppress successful output while still reporting errors.
 
 Facts
@@ -51,8 +56,13 @@ Repeat in override order:
 
     --facts raw.facts.txt --facts user.facts.txt
 
-Comments at instruction starts are appended as `;` comments. Reference facts
-do not affect disassembly. Symbol types do not control decoding.
+Comments at instruction starts and symbols inside instructions appear as `;`
+comments in text and entries in the JSON `comments` array.
+Symbols at instruction starts appear as text labels and JSON `label` values.
+Reference facts do not affect disassembly. Symbol types do not control decoding.
+
+Raw input has no PE relocation metadata. Operand values resolve by matching
+addresses in the supplied facts, including absolute immediates and displacements.
 
 The RVA field in each `#factmap` entry is treated as a file offset; its
 instruction address is `base + offset`. PE symbol files from `analysis`
@@ -70,21 +80,21 @@ Examples
     pelite-cli re disasm-raw code.bin --arch x86_64 --offset 1024 --length 128 --hex
     pelite-cli re disasm-raw code.bin --arch x86_64 --offset 0x100 --length 0x80 --base 0x180000000 --lookback 16
     pelite-cli re disasm-raw code.bin --arch x86_64 --facts raw.facts.txt --layout fo
-    printf '\xb8\x01\x00\x00\x00\xc3' | pelite-cli re disasm-raw - --arch x86 --base 0x1000 --format=json-pretty
+    printf '\xb8\x01\x00\x00\x00\xc3' | pelite-cli re disasm-raw - --arch x86 --base 0x1000 --hex --format=json-pretty
 
-Example JSON output:
+Example JSON output with `--hex`:
 
 ```json
 [
   {
-    "offset": 0,
     "ip": 4096,
+    "prefix": "fo",
     "bytes": [184, 1, 0, 0, 0],
     "instruction": "mov eax,1"
   },
   {
-    "offset": 5,
     "ip": 4101,
+    "prefix": "fo",
     "bytes": [195],
     "instruction": "ret"
   }

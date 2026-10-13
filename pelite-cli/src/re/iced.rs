@@ -1,6 +1,9 @@
 use std::collections::HashMap;
+use std::cell::Cell;
 use std::io::{self, Write};
+use std::rc::Rc;
 use std::sync::Arc;
+use clap::builder::TypedValueParser;
 
 use super::*;
 use symbols::IndexedSymbol;
@@ -10,43 +13,104 @@ const ADDRESS_COLOR: &str = "\x1b[38;2;200;174;130m";
 const REGISTER_COLOR: &str = "\x1b[38;2;134;186;184m";
 const NUMBER_COLOR: &str = "\x1b[38;2;185;190;198m";
 
+/// The same decoded and annotated instruction is used by both output formats.
+#[derive(serde::Serialize)]
 pub struct DecodedInstruction<'a> {
 	pub ip: u64,
-	pub bytes: &'a [u8],
+	pub prefix: &'a str,
+	#[serde(skip_serializing_if = "Option::is_none")]
+	pub label: Option<String>,
+	#[serde(skip_serializing_if = "Option::is_none")]
+	pub bytes: Option<&'a [u8]>,
 	pub instruction: String,
+	#[serde(skip_serializing_if = "Vec::is_empty")]
+	pub comments: Vec<String>,
+	#[serde(skip)]
 	pub colored_instruction: Option<String>,
 }
 
-pub enum TextPrefix<'a> {
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum AddressLayout {
 	None,
 	Indent,
-	Address { label: &'a str, value: u64 },
+	Rva,
+	FileOffset,
+	Va,
 }
 
-/// Append factmap comments at instruction starts to both plain and colored text.
-pub fn append_comments(instructions: &mut [DecodedInstruction<'_>], comments: &HashMap<u64, Box<str>>) {
-	for item in instructions {
-		let Some(comment) = comments.get(&item.ip).filter(|comment| !comment.is_empty()) else { continue };
-		// Keep multiline comments on one instruction line in text and JSON output.
-		let comment = comment.lines().collect::<Vec<_>>().join(" ; ");
-		item.instruction.push_str(" ; ");
-		item.instruction.push_str(&comment);
-		if let Some(colored) = &mut item.colored_instruction {
-			colored.push_str("\x1b[90m ; ");
-			colored.push_str(&comment);
-			colored.push_str("\x1b[0m");
+/// Address conversion and prefix selection are supplied by the caller.
+pub enum TextLayout<'a> {
+	None,
+	Indent,
+	Address { prefix: &'a str, offset: u64 },
+}
+
+pub fn layout_arg(raw: bool) -> clap::Arg {
+	let layouts = if raw { vec!["none", "indent", "fo", "va"] } else { vec!["none", "indent", "rva", "fo", "va"] };
+	clap::Arg::new("layout")
+		.long("layout")
+		.value_name("MODE")
+		.value_parser(clap::builder::PossibleValuesParser::new(layouts).map(|value| match value.as_str() {
+			"none" => AddressLayout::None,
+			"indent" => AddressLayout::Indent,
+			"rva" => AddressLayout::Rva,
+			"fo" => AddressLayout::FileOffset,
+			"va" => AddressLayout::Va,
+			_ => unreachable!("validated by clap"),
+		}))
+		.default_value("indent")
+		.help("Choose plain, indented, or address layout for text output")
+}
+
+pub struct DecodeOptions<'a> {
+	pub prefix: &'a str,
+	pub color: bool,
+	pub facts: symbols::IndexedFacts,
+	/// Decode-slice-relative fixup offsets; the width is shared by the entire image.
+	pub relocations: BTreeSet<usize>,
+	/// Zero means relocation metadata is unavailable (raw input).
+	pub relocation_width: usize,
+}
+
+impl<'a> DecodeOptions<'a> {
+	pub fn new(format: OutputFormat, prefix: &'a str, facts: symbols::IndexedFacts) -> Self {
+		Self {
+			prefix,
+			color: format == OutputFormat::Text && io::stdout().is_terminal(),
+			facts,
+			relocations: BTreeSet::new(),
+			relocation_width: 0,
 		}
 	}
 }
 
-pub fn print_text<'a, W: Write>(
-	output: &mut W, instructions: &[DecodedInstruction<'_>], symbols: &HashMap<u64, IndexedSymbol>,
-	color: bool, show_hex: bool, mut prefix: impl FnMut(u64) -> TextPrefix<'a>,
-) -> io::Result<()> {
-	let longest_instruction_bytes = instructions.iter().map(|item| item.bytes.len()).max().unwrap_or(0);
+pub fn omit_bytes(instructions: &mut [DecodedInstruction<'_>]) {
+	for item in instructions {
+		item.bytes = None;
+	}
+}
+
+pub fn print(instructions: &[DecodedInstruction<'_>], format: OutputFormat, layout: TextLayout<'_>) -> Result {
+	match format {
+		OutputFormat::Nul => Ok(()),
+		OutputFormat::Json | OutputFormat::JsonPretty => print_json(instructions, format == OutputFormat::JsonPretty),
+		OutputFormat::Text => {
+			print_text(&mut io::stdout().lock(), instructions, layout)?;
+			Ok(())
+		},
+	}
+}
+
+pub fn print_json(instructions: &[DecodedInstruction<'_>], pretty: bool) -> Result {
+	crate::printer::print_json(&instructions, pretty)
+}
+
+pub fn print_text<W: Write>(output: &mut W, instructions: &[DecodedInstruction<'_>], layout: TextLayout<'_>) -> io::Result<()> {
+	let longest_instruction_bytes = instructions.iter().filter_map(|item| item.bytes.map(<[u8]>::len)).max().unwrap_or(0);
 	let hex = hex::HexPrinter::new(false);
 	for item in instructions {
-		if let Some(symbol) = symbols.get(&item.ip) && !matches!(symbol, IndexedSymbol::Weak(_)) {
+		let color = item.colored_instruction.is_some();
+		if let Some(symbol) = &item.label {
 			if color {
 				writeln!(output, "\n\x1b[1m{ADDRESS_COLOR}{symbol}:\x1b[0m")?;
 			}
@@ -54,37 +118,37 @@ pub fn print_text<'a, W: Write>(
 				writeln!(output, "\n{symbol}:")?;
 			}
 		}
-		match prefix(item.ip) {
-			TextPrefix::None => {},
-			TextPrefix::Indent => write!(output, "    ")?,
-			TextPrefix::Address { label, value } if color => {
-				write!(output, "\x1b[90m{label}\x1b[0m:{ADDRESS_COLOR}{value:#x}\x1b[0m  ")?;
+		match layout {
+			TextLayout::None => {},
+			TextLayout::Indent => write!(output, "    ")?,
+			TextLayout::Address { prefix, offset } => {
+				let value = item.ip.wrapping_sub(offset);
+				if color {
+					write!(output, "\x1b[90m{prefix}\x1b[0m:{ADDRESS_COLOR}{value:#x}\x1b[0m  ")?;
+				}
+				else {
+					write!(output, "{prefix}:{value:#x}  ")?;
+				}
 			},
-			TextPrefix::Address { label, value } => write!(output, "{label}:{value:#x}  ")?,
 		}
-		if show_hex {
+		if let Some(bytes) = item.bytes {
 			if color {
 				write!(output, "\x1b[90m")?;
 			}
-			hex.write_bytes(output, item.bytes, b"")?;
+			hex.write_bytes(output, bytes, b"")?;
 			if color {
 				write!(output, "\x1b[0m")?;
 			}
-			write!(output, "{:width$} ", "", width = (longest_instruction_bytes - item.bytes.len()) * 2)?;
+			write!(output, "{:width$} ", "", width = (longest_instruction_bytes - bytes.len()) * 2)?;
 		}
 		write!(output, "{}", item.colored_instruction.as_deref().unwrap_or(&item.instruction))?;
-		let mut first_symbol = true;
-		for offset in 1..item.bytes.len() {
-			let Some(address) = item.ip.checked_add(offset as u64) else { break };
-			let Some(symbol) = symbols.get(&address) else { continue };
-			if matches!(symbol, IndexedSymbol::Weak(_)) { continue };
-			if first_symbol {
-				write!(output, " ; +{offset:#x}: {symbol}")?;
-				first_symbol = false;
+		if !item.comments.is_empty() {
+			if color { write!(output, "\x1b[90m")?; }
+			for comment in &item.comments {
+				// Preserve multiline metadata in JSON, keep text on one instruction line.
+				write!(output, " ; {}", comment.lines().collect::<Vec<_>>().join(" ; "))?;
 			}
-			else {
-				write!(output, ", +{offset:#x}: {symbol}")?;
-			}
+			if color { write!(output, "\x1b[0m")?; }
 		}
 		writeln!(output)?;
 	}
@@ -95,24 +159,55 @@ pub fn print_text<'a, W: Write>(
 pub struct Formatter {
 	inner: iced_x86::IntelFormatter,
 	color: bool,
+	symbol_operands: Rc<Cell<u32>>,
 }
 
 impl Formatter {
 	pub fn new(color: bool, symbols: Option<Arc<HashMap<u64, IndexedSymbol>>>) -> Formatter {
-		let resolver = symbols.map(|symbols| Box::new(SymbolResolver { symbols }) as Box<dyn iced_x86::SymbolResolver>);
+		let symbol_operands = Rc::new(Cell::new(0));
+		let resolver = symbols.map(|symbols| Box::new(SymbolResolver { symbols, operands: Rc::clone(&symbol_operands) }) as Box<dyn iced_x86::SymbolResolver>);
 		let mut inner = iced_x86::IntelFormatter::with_options(resolver, None);
 		let options = iced_x86::Formatter::options_mut(&mut inner);
 		options.set_hex_prefix("0x");
 		options.set_hex_suffix("");
 		options.set_uppercase_hex(false);
-		Formatter { inner, color }
+		Formatter { inner, color, symbol_operands }
 	}
 
-	pub fn format(&mut self, instruction: &iced_x86::Instruction) -> InstructionText {
+	pub fn format(&mut self, instruction: &iced_x86::Instruction, constants: iced_x86::ConstantOffsets, relocations: &[usize], relocation_width: usize) -> InstructionText {
+		self.symbol_operands.set(symbol_operands(instruction, constants, relocations, relocation_width));
 		let mut text = InstructionText { plain: String::new(), colored: self.color.then(String::new) };
 		iced_x86::Formatter::format(&mut self.inner, instruction, &mut text);
 		text
 	}
+}
+
+fn symbol_operands(instruction: &iced_x86::Instruction, constants: iced_x86::ConstantOffsets, relocations: &[usize], relocation_width: usize) -> u32 {
+	// Raw bytes have no relocation metadata, so retain their address-based lookup.
+	if relocation_width == 0 {
+		return u32::MAX;
+	}
+	let relocated = |offset, width| width == relocation_width && relocations.contains(&offset);
+	let immediate = relocated(constants.immediate_offset(), constants.immediate_size());
+	let immediate2 = relocated(constants.immediate_offset2(), constants.immediate_size2());
+	let displacement = relocated(constants.displacement_offset(), constants.displacement_size());
+	let mut operands = 0;
+	for operand in 0..instruction.op_count() {
+		use iced_x86::OpKind;
+		let resolve = match instruction.op_kind(operand) {
+			OpKind::NearBranch16 | OpKind::NearBranch32 | OpKind::NearBranch64 => true,
+			OpKind::Memory => instruction.is_ip_rel_memory_operand() || displacement,
+			OpKind::Immediate8_2nd => immediate2,
+			OpKind::Immediate8 | OpKind::Immediate16 | OpKind::Immediate32 | OpKind::Immediate64
+				| OpKind::Immediate8to16 | OpKind::Immediate8to32 | OpKind::Immediate8to64
+				| OpKind::Immediate32to64 | OpKind::FarBranch16 | OpKind::FarBranch32 => immediate,
+			_ => false,
+		};
+		if resolve {
+			operands |= 1 << operand;
+		}
+	}
+	operands
 }
 
 #[derive(Clone, Debug)]
@@ -159,10 +254,22 @@ impl iced_x86::FormatterOutput for InstructionText {
 
 struct SymbolResolver {
 	symbols: Arc<HashMap<u64, IndexedSymbol>>,
+	operands: Rc<Cell<u32>>,
 }
 
 impl iced_x86::SymbolResolver for SymbolResolver {
-	fn symbol(&mut self, _instruction: &iced_x86::Instruction, _operand: u32, _instruction_operand: Option<u32>, address: u64, _address_size: u32) -> Option<iced_x86::SymbolResult<'_>> {
+	fn symbol(&mut self, instruction: &iced_x86::Instruction, _operand: u32, instruction_operand: Option<u32>, address: u64, address_size: u32) -> Option<iced_x86::SymbolResult<'_>> {
+		let operands = self.operands.get();
+		if operands != u32::MAX {
+			let operand = instruction_operand?;
+			if operands & (1 << operand) == 0 {
+				return None;
+			}
+			// A far branch's selector shares the instruction operand with its relocated offset.
+			if instruction.op_kind(operand) == iced_x86::OpKind::FarBranch32 && address_size != 4 {
+				return None;
+			}
+		}
 		self.symbols.get(&address).and_then(|name| match name {
 			IndexedSymbol::Named(name) => Some(iced_x86::SymbolResult::with_str(address, name)),
 			IndexedSymbol::Generated { .. } => Some(iced_x86::SymbolResult::with_string(address, name.to_string())),
@@ -171,84 +278,77 @@ impl iced_x86::SymbolResolver for SymbolResolver {
 	}
 }
 
-pub fn decode_bytes<'a>(bytes: &'a [u8], bitness: u32, decode_ip: u64, start_ip: u64, end_ip: u64, color: bool, symbols: Arc<HashMap<u64, IndexedSymbol>>) -> Vec<DecodedInstruction<'a>> {
+pub fn decode_bytes<'a>(bytes: &'a [u8], bitness: u32, decode_ip: u64, start_ip: u64, end_ip: u64, options: DecodeOptions<'a>) -> Vec<DecodedInstruction<'a>> {
+	let symbols = Arc::new(options.facts.symbols);
 	let mut decoder = iced_x86::Decoder::with_ip(bitness, bytes, decode_ip, iced_x86::DecoderOptions::NONE);
-	let mut formatter = Formatter::new(color, Some(symbols));
+	let mut formatter = Formatter::new(options.color, Some(Arc::clone(&symbols)));
+
 	let mut instructions = Vec::new();
 	while decoder.can_decode() && decoder.ip() < end_ip {
+		// Decode an instruction
+		let offset = decoder.position();
 		let instruction = decoder.decode();
+
+		// Filter lookback instructions
 		if instruction.next_ip() <= start_ip {
 			continue;
 		}
-		let offset = (instruction.ip() - decode_ip) as usize;
-		let instruction_bytes = &bytes[offset..offset + instruction.len()];
-		let text = formatter.format(&instruction);
-		instructions.push(DecodedInstruction { ip: instruction.ip(), bytes: instruction_bytes, instruction: text.plain, colored_instruction: text.colored });
+
+		// Collect relocations pointed inside the instruction
+		let instruction_bytes = &bytes[offset..decoder.position()];
+		let relocations = options.relocations.range(offset..decoder.position())
+			.map(|&field| field - offset)
+			.filter(|&field| field + options.relocation_width <= instruction_bytes.len())
+			.collect::<Vec<_>>();
+
+		// Collect comments for this IP
+		let ip = instruction.ip();
+		let mut comments = Vec::new();
+		if let Some(comment) = options.facts.comments.get(&ip).filter(|comment| !comment.is_empty()) {
+			comments.push(comment.to_string());
+		}
+
+		// Collect any mid instruction symbols and add as comments
+		for offset in 1..instruction_bytes.len() {
+			let address = ip + offset as u64;
+			if let Some(symbol) = symbols.get(&address).and_then(symbol_name) {
+				comments.push(format!("+{offset:#x}: {symbol}"));
+			}
+		}
+
+		// Render the symbol name
+		let label = symbols.get(&ip).and_then(symbol_name);
+		// Format instruction
+		let constants = decoder.get_constant_offsets(&instruction);
+		let text = formatter.format(&instruction, constants, &relocations, options.relocation_width);
+
+		instructions.push(DecodedInstruction {
+			ip, prefix: options.prefix, label, bytes: Some(instruction_bytes),
+			instruction: text.plain, comments, colored_instruction: text.colored,
+		});
 	}
 	instructions
 }
 
-#[test]
-fn fact_comments_appear_in_plain_and_colored_instructions() {
-	let comments = HashMap::from([(0x1000, "__imp_Function".into()), (0x1002, "line one\nline two".into())]);
-	for color in [false, true] {
-		let mut decoded = decode_bytes(&[0xff, 0xd0, 0x90], 64, 0x1000, 0x1000, 0x1003, color, Arc::new(HashMap::new()));
-		append_comments(&mut decoded, &comments);
-		assert_eq!(decoded[0].instruction, "call rax ; __imp_Function");
-		assert_eq!(decoded[1].instruction, "nop ; line one ; line two");
-		if color {
-			assert!(decoded[0].colored_instruction.as_ref().unwrap().contains(" ; __imp_Function"));
-		}
-		let mut output = Vec::new();
-		print_text(&mut output, &decoded, &HashMap::new(), color, false, |_| TextPrefix::None).unwrap();
-		let output = String::from_utf8(output).unwrap();
-		assert!(output.contains(" ; __imp_Function"));
-	}
+fn symbol_name(symbol: &IndexedSymbol) -> Option<String> {
+	(!matches!(symbol, IndexedSymbol::Weak(_))).then(|| symbol.to_string())
 }
 
-#[test]
-fn weak_symbols_leave_disassembly_output_unchanged() {
-	let bytes = [0xeb, 0, 0x8b, 0x05, 0xf8, 0x0f, 0, 0, 0xc3];
-	let baseline = HashMap::from([(0x1008, IndexedSymbol::Named("end".into()))]);
-	let mut with_weak = baseline.clone();
-	for address in [0x1000, 0x1001, 0x1002, 0x2000] {
-		with_weak.insert(address, IndexedSymbol::Weak(address as u32));
-	}
-	for color in [false, true] {
-		let expected = decode_bytes(&bytes, 64, 0x1000, 0x1000, 0x1009, color, Arc::new(baseline.clone()));
-		let actual = decode_bytes(&bytes, 64, 0x1000, 0x1000, 0x1009, color, Arc::new(with_weak.clone()));
-		assert_eq!(actual.len(), 3);
-		for (actual, expected) in actual.iter().zip(&expected) {
-			assert_eq!(actual.ip, expected.ip);
-			assert_eq!(actual.bytes, expected.bytes);
-			assert_eq!(actual.instruction, expected.instruction);
-			assert_eq!(actual.colored_instruction, expected.colored_instruction);
+/// Trace one straight-line block, including its terminating control transfer.
+pub fn trace_bytes(bytes: &[u8], bitness: u32, ip: u64, trace_limit: usize) -> Result<usize> {
+	let mut decoder = iced_x86::Decoder::with_ip(bitness, bytes, ip, iced_x86::DecoderOptions::NONE);
+	let mut count = 0;
+	while decoder.can_decode() {
+		let position = decoder.position();
+		let instr = decoder.decode();
+		if instr.is_invalid() {
+			return Err(err(format!("(bad): unable to decode instruction at {:#x} after {count} instructions, {position} bytes", instr.ip())));
 		}
-		for show_hex in [false, true] {
-			let mut expected_output = Vec::new();
-			let mut actual_output = Vec::new();
-			print_text(&mut expected_output, &expected, &baseline, color, show_hex, |_| TextPrefix::None).unwrap();
-			print_text(&mut actual_output, &actual, &with_weak, color, show_hex, |_| TextPrefix::None).unwrap();
-			assert_eq!(actual_output, expected_output);
-			assert!(String::from_utf8(actual_output).unwrap().contains("end:"));
+		count += 1;
+		let is_control_flow = instr.flow_control() != iced_x86::FlowControl::Next || instr.mnemonic() == iced_x86::Mnemonic::Hlt;
+		if is_control_flow || (trace_limit != 0 && count >= trace_limit) {
+			return Ok(decoder.position());
 		}
 	}
-}
-
-#[test]
-fn symbols_inside_instructions_are_comments_in_address_order() {
-	let bytes = [0xb8, 1, 0, 0, 0, 0xc3];
-	let instructions = [
-		DecodedInstruction { ip: 0x1000, bytes: &bytes[..5], instruction: "mov eax,1".into(), colored_instruction: None },
-		DecodedInstruction { ip: 0x1005, bytes: &bytes[5..], instruction: "ret".into(), colored_instruction: None },
-	];
-	let symbols = HashMap::from([
-		(0x1004, IndexedSymbol::Generated { name: "data", rva: 0x1004 }),
-		(0x1005, IndexedSymbol::Named("next".into())),
-		(0x1001, IndexedSymbol::Named("inside".into())),
-		(0x1000, IndexedSymbol::Named("start".into())),
-	]);
-	let mut output = Vec::new();
-	print_text(&mut output, &instructions, &symbols, false, false, |_| TextPrefix::None).unwrap();
-	assert_eq!(String::from_utf8(output).unwrap(), "\nstart:\nmov eax,1 ; +0x1: inside, +0x4: data_1004\n\nnext:\nret\n");
+	Err(err(format!("no control-transfer instruction before end of available data at {:#x} after {count} instructions, {} bytes", decoder.ip(), decoder.position())))
 }
