@@ -12,7 +12,7 @@ pub enum Fact {
 	/// Decodable region with a specified arch.
 	///
 	/// ```text
-	/// Dx1000 255 x86_64
+	/// Dx1000 x86_64 255
 	/// ```
 	Decode(DecodeFact),
 	/// Function metadata.
@@ -85,7 +85,7 @@ fn dispatch_fact() {
 	assert!(matches!(Fact::parse("Cx10 \"comment\"", width).unwrap(), Fact::Comment(_)));
 	assert!(matches!(Fact::parse("Rx10 0x20", width).unwrap(), Fact::Ref(_)));
 	assert!(matches!(Fact::parse("Fx10 {}", width).unwrap(), Fact::Function(_)));
-	assert!(matches!(Fact::parse("Dx10 5 x86_64", width).unwrap(), Fact::Decode(_)));
+	assert!(matches!(Fact::parse("Dx10 x86_64 5", width).unwrap(), Fact::Decode(_)));
 	assert_eq!(Fact::parse("unknown", width).unwrap_err(), ParseLineError::UnknownFact('u'));
 	assert_eq!(Fact::parse("Zx10", width).unwrap_err(), ParseLineError::UnknownFact('Z'));
 	assert_eq!(Fact::parse("", width).unwrap_err(), ParseLineError::MissingField);

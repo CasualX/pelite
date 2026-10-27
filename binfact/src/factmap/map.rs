@@ -91,15 +91,15 @@ fn mixed_map_round_trip() {
 #[test]
 fn decode_map_round_trip() {
 	let width = ty::PointerWidth::X64;
-	let map = FactMap::parse("#factmap\nDx1000 5 x86\nCx1000 \"decode region\"\nDx2000 16 x86_64\n", width).unwrap();
+	let map = FactMap::parse("#factmap\nDx1000 x86 5\nCx1000 \"decode region\"\nDx2000 16 x86_64\n", width).unwrap();
 	let mut output = Vec::new();
 	map.write(&mut output, "").unwrap();
 	let output = String::from_utf8(output).unwrap();
-	assert_eq!(output, "#factmap\nDx1000 5 x86_32\nCx1000 \"decode region\"\nDx2000 16 x86_64\n");
+	assert_eq!(output, "#factmap\nDx1000 x86_32 5\nCx1000 \"decode region\"\nDx2000 x86_64 16\n");
 	assert_eq!(FactMap::parse(&output, width).unwrap(), map);
 	assert!(map.facts[1].sort_key() < map.facts[0].sort_key());
 	assert!(map.facts[0].sort_key() < map.facts[2].sort_key());
-	let error = FactMap::parse("#factmap\nDx1000 bad x86\n", width).unwrap_err();
+	let error = FactMap::parse("#factmap\nDx1000 x86 bad\n", width).unwrap_err();
 	assert_eq!(error, ParseError { line: 2, error: ParseLineError::InvalidByteCount });
 }
 

@@ -60,8 +60,9 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let arch = get_arch(matches, pe)?;
 	let length = if matches.get_flag("trace") {
 		let limit = *matches.get_one::<usize>("trace-limit").expect("defaulted by clap");
-		let ip = pe.image_base().checked_add(u64::from(start)).ok_or_else(|| err("start address overflows"))?;
-		iced::trace_bytes(pe.slice_bytes(start)?, arch.bitness(), ip, limit)?
+		let ip = pe.image_base() + start as u64;
+		let bytes = pe.slice_bytes(start)?;
+		iced::trace_bytes(bytes, arch.bitness(), ip, limit)?
 	}
 	else {
 		*matches.get_one::<usize>("length").expect("required by clap")
