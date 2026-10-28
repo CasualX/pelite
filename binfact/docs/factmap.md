@@ -28,7 +28,7 @@ line. File comments use their own lines rather than trailing a record.
 | `CxRVA "COMMENT"` | Address comment |
 | `RxRVA 0xTARGET` | Reference |
 | `FxRVA CONTENT` | Function metadata |
-| `DxRVA BYTES ARCH` | Decode region |
+| `DxRVA ARCH BYTES` | Decode region |
 
 `RVA` is hexadecimal, without a `0x` prefix after the record letter: `Sx1000`
 is a symbol at RVA `0x1000`. RVAs must fit in 32 bits.
@@ -41,7 +41,7 @@ Sx2000 "struct { count: u32, entries: *[u32; count] }" "entry_table"
 Cx1000 "Reads entries from the table."
 Rx1000 0x2000
 Fx1000 {"bytes":48}
-Dx1000 48 x86_64
+Dx1000 x86_64 48
 ```
 
 ## Symbols (`S`)
@@ -116,10 +116,10 @@ the old text.
 
 ## Decode regions (`D`)
 
-A decode fact describes a region's start RVA, byte count, and instruction mode:
+A decode fact describes a region's start RVA, instruction mode, and byte count:
 
 ```text
-Dx1000 48 x86_64
+Dx1000 x86_64 48
 ```
 
 Byte counts fit in 32 bits and are normally decimal; `0x`-prefixed counts are
