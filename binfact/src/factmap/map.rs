@@ -104,6 +104,22 @@ fn decode_map_round_trip() {
 }
 
 #[test]
+fn align_map_round_trip() {
+	let width = ty::PointerWidth::X64;
+	let map = FactMap::parse("#factmap\nAx100E 4\nDx100e x86_64 2\nAx1010 0\n", width).unwrap();
+	let mut output = Vec::new();
+	map.write(&mut output, "").unwrap();
+	let output = String::from_utf8(output).unwrap();
+	assert_eq!(output, "#factmap\nAx100e 4\nDx100e x86_64 2\nAx1010 0\n");
+	assert_eq!(FactMap::parse(&output, width).unwrap(), map);
+	assert!(map.facts[1].sort_key() < map.facts[0].sort_key());
+	assert!(map.facts[0].sort_key() < map.facts[2].sort_key());
+	assert_eq!(FactMap::parse("#factmap\nAx100e 256\n", width).unwrap_err(), ParseError {
+		line: 2, error: ParseLineError::InvalidAlign,
+	});
+}
+
+#[test]
 fn map_error_line_numbers() {
 	let width = ty::PointerWidth::X64;
 	assert_eq!(FactMap::parse("", width).unwrap_err(), ParseError {

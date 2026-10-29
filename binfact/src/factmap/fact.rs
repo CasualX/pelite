@@ -3,6 +3,12 @@ use super::*;
 /// Address-associated record in a fact map.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum Fact {
+	/// Alignment padding.
+	///
+	/// ```text
+	/// Ax100e 4
+	/// ```
+	Align(AlignFact),
 	/// Textual annotation.
 	///
 	/// ```text
@@ -38,6 +44,7 @@ pub enum Fact {
 impl fmt::Display for Fact {
 	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
 		match self {
+			Fact::Align(a) => a.fmt(f),
 			Fact::Comment(c) => c.fmt(f),
 			Fact::Decode(d) => d.fmt(f),
 			Fact::Function(fun) => fun.fmt(f),
@@ -48,7 +55,7 @@ impl fmt::Display for Fact {
 }
 
 impl Fact {
-	/// Order by RVA, then symbols, comments, references, functions, and decode regions.
+	/// Order by RVA, then symbols, comments, references, functions, decode regions, and alignment padding.
 	pub fn sort_key(&self) -> u64 {
 		let (rva, rank) = match self {
 			Fact::Symbol(symbol) => (symbol.rva, 0),
@@ -56,6 +63,7 @@ impl Fact {
 			Fact::Ref(reference) => (reference.rva, 2),
 			Fact::Function(function) => (function.rva, 3),
 			Fact::Decode(decode) => (decode.rva, 4),
+			Fact::Align(align) => (align.rva, 5),
 		};
 		(u64::from(rva) << 8) | rank
 	}
@@ -66,6 +74,7 @@ impl Fact {
 	/// pointer layouts for symbol types; other fact kinds do not use it.
 	pub fn parse(line: &str, pointer_width: ty::PointerWidth) -> Result<Fact, ParseLineError> {
 		match line.chars().next() {
+			Some('A') => line.parse().map(Fact::Align),
 			Some('0' | 'S') => SymbolFact::parse(line, pointer_width).map(Fact::Symbol),
 			Some('C') => line.parse().map(Fact::Comment),
 			Some('D') => line.parse().map(Fact::Decode),
@@ -80,6 +89,7 @@ impl Fact {
 #[test]
 fn dispatch_fact() {
 	let width = ty::PointerWidth::X64;
+	assert!(matches!(Fact::parse("Ax100e 4", width).unwrap(), Fact::Align(AlignFact { rva: 0x100e, align: 4 })));
 	assert!(matches!(Fact::parse("0x10 code fn", width).unwrap(), Fact::Symbol(_)));
 	assert!(matches!(Fact::parse("Sx10 code fn", width).unwrap(), Fact::Symbol(_)));
 	assert!(matches!(Fact::parse("Cx10 \"comment\"", width).unwrap(), Fact::Comment(_)));

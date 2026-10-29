@@ -5,6 +5,7 @@
 
 use super::*;
 
+mod align;
 mod comment;
 mod decode;
 mod fact;
@@ -13,6 +14,7 @@ mod map;
 mod reference;
 mod sym;
 
+pub use self::align::*;
 pub use self::comment::*;
 pub use self::decode::*;
 pub use self::fact::*;
@@ -62,6 +64,8 @@ pub enum ParseLineError {
 	InvalidTargetRva,
 	/// A decode byte count is not a decimal integer fitting in `u32`.
 	InvalidByteCount,
+	/// An alignment exponent is not a decimal integer fitting in `u8`.
+	InvalidAlign,
 	/// A decode architecture name is unsupported.
 	InvalidArch(ArchParseError),
 	/// A comment field is not a valid JSON string.
@@ -89,6 +93,7 @@ impl fmt::Display for ParseLineError {
 			ParseLineError::InvalidRva => f.write_str("RVA must be x-prefixed hex fitting in 32 bits"),
 			ParseLineError::InvalidTargetRva => f.write_str("target RVA must be 0xhex fitting in 32 bits"),
 			ParseLineError::InvalidByteCount => f.write_str("byte count must be a decimal integer fitting in 32 bits"),
+			ParseLineError::InvalidAlign => f.write_str("alignment exponent must be a decimal integer fitting in 8 bits"),
 			ParseLineError::InvalidArch(error) => write!(f, "invalid architecture: {error}"),
 			ParseLineError::InvalidComment(error) => write!(f, "invalid quoted comment: {error}"),
 			ParseLineError::InvalidQuotedType(error) => write!(f, "invalid quoted type: {error}"),
