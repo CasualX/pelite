@@ -57,6 +57,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 		OutputFormat::Nul => Ok(()),
 		OutputFormat::Json | OutputFormat::JsonPretty => {
 			let report = facts.facts.iter().map(|fact| match fact {
+				Fact::Align(align) => serde_json::json!({ "rva": align.rva, "align": align.align }),
 				Fact::Symbol(symbol) => serde_json::json!({
 					"rva": symbol.rva,
 					"name": symbol.name.to_string(),

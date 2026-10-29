@@ -29,6 +29,7 @@ line. File comments use their own lines rather than trailing a record.
 | `RxRVA 0xTARGET` | Reference |
 | `FxRVA CONTENT` | Function metadata |
 | `DxRVA ARCH BYTES` | Decode region |
+| `AxRVA ALIGN` | Alignment padding |
 
 `RVA` is hexadecimal, without a `0x` prefix after the record letter: `Sx1000`
 is a symbol at RVA `0x1000`. RVAs must fit in 32 bits.
@@ -127,6 +128,20 @@ also accepted. Supported modes are `x86_16`, `x86_32`, and `x86_64`, with
 `x86` accepted as an alias for `x86_32`. The writer uses decimal counts and
 the canonical mode name. A decode fact describes the region without decoding
 its instructions itself.
+
+## Alignment padding (`A`)
+
+An alignment fact marks padding starting at an RVA up to the next boundary
+of `1 << ALIGN` bytes. `ALIGN` is a decimal exponent fitting in `u8`, rather
+than a byte count:
+
+```text
+Ax100e 4
+```
+
+This marks two padding bytes at `0x100e`, ending at the 16-byte boundary
+`0x1010`. An already aligned RVA needs no padding. The fact stores only the
+RVA and exponent; parsing does not inspect bytes or compute the padding size.
 
 ## Editing and combining facts
 
