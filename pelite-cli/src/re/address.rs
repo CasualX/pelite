@@ -120,12 +120,12 @@ fn literal(s: &mut &str) -> Result<u64, String> {
 	let end = s.find(['+', '-', '*']).unwrap_or(s.len());
 	let (number, rest) = s.split_at(end);
 	*s = rest;
-	let (digits, radix) = match number.strip_prefix("0x") {
-		Some(hex) => (hex, 16),
-		None => (number, 10),
+	let (digits, radix) = match number.as_bytes() {
+		[b'0' | b'A'..=b'Z', b'x', ..] => (&number[2..], 16),
+		_ => (number, 10),
 	};
 	if digits.is_empty() || !digits.bytes().all(|byte| if radix == 16 { byte.is_ascii_hexdigit() } else { byte.is_ascii_digit() }) {
-		return Err("expected a decimal or 0xhex u64 literal".to_owned());
+		return Err("expected a decimal, 0xhex, or [A-Z]xhex u64 literal".to_owned());
 	}
 	u64::from_str_radix(digits, radix).map_err(|_| "literal exceeds u64 range".to_owned())
 }
@@ -135,6 +135,7 @@ fn evaluates_expressions() {
 	for (expression, expected) in [
 		("0", 0),
 		("0xff", 255),
+		("Sx1000+Rx20*2", 0x1040),
 		("0x1000+0x100+32*8", 0x1200),
 		("0x1000+0x20*8-4*4", 0x10f0),
 		("2*3*4+10-2-3", 29),
@@ -147,9 +148,16 @@ fn evaluates_expressions() {
 }
 
 #[test]
+fn parses_fact_address_prefixes() {
+	for prefix in 'A'..='Z' {
+		assert_eq!(Address::parse(&format!("rva:{prefix}x1000")), Ok(Address::Rva(0x1000)));
+	}
+}
+
+#[test]
 fn rejects_invalid_expressions() {
 	for expression in [
-		"", "0Xff", "1+0Xff", "0Xff*2",
+		"", "0Xff", "1+0Xff", "0Xff*2", "sx1000", "1x1000", "SSx1000", "Sx", "Sxg", "SX1000",
 		"+1", "-1", "*1", "1+", "1-", "1*", "1++2", "1--2", "1+-2", "1-+2", "1**2", "1*+2", "1*-2",
 		"(1+2)*3", "1/2", "1%2", "1<<2", "1.0", "1_000", "1 2", "1 +2", "0x+1", "0x-1", "0xg", "１２",
 		"18446744073709551616-1", "0x10000000000000000*0",
