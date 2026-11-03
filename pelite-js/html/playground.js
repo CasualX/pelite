@@ -108,7 +108,7 @@ async function runScript() {
 			throw new Error("Please select a local file or one of the demos first.");
 		}
 		const bytes = demoFile?.bytes ?? new Uint8Array(await file.arrayBuffer());
-		const { PeFile } = await import("./pelite.js");
+		const { PeFile, Facts } = await import("./pelite.js");
 		const pefile = new PeFile(bytes);
 		try {
 			const result = eval(codeInput.value);

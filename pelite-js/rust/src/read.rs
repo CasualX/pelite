@@ -2,7 +2,6 @@
 
 use super::*;
 use binfact::ty;
-use std::fmt;
 
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
