@@ -7,6 +7,18 @@ pub struct FactMap {
 	pub facts: Vec<Fact>,
 }
 
+/// Format the `#factmap` header and canonical records in stored order, each
+/// followed by a newline. File comments are omitted.
+impl fmt::Display for FactMap {
+	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+		writeln!(f, "#factmap")?;
+		for fact in &self.facts {
+			writeln!(f, "{fact}")?;
+		}
+		Ok(())
+	}
+}
+
 impl FactMap {
 	/// Find the first symbol with an exact explicit name by linearly scanning the facts.
 	///
@@ -92,9 +104,7 @@ fn mixed_map_round_trip() {
 fn decode_map_round_trip() {
 	let width = ty::PointerWidth::X64;
 	let map = FactMap::parse("#factmap\nDx1000 x86 5\nCx1000 \"decode region\"\nDx2000 16 x86_64\n", width).unwrap();
-	let mut output = Vec::new();
-	map.write(&mut output, "").unwrap();
-	let output = String::from_utf8(output).unwrap();
+	let output = map.to_string();
 	assert_eq!(output, "#factmap\nDx1000 x86_32 5\nCx1000 \"decode region\"\nDx2000 x86_64 16\n");
 	assert_eq!(FactMap::parse(&output, width).unwrap(), map);
 	assert!(map.facts[1].sort_key() < map.facts[0].sort_key());
@@ -107,9 +117,7 @@ fn decode_map_round_trip() {
 fn align_map_round_trip() {
 	let width = ty::PointerWidth::X64;
 	let map = FactMap::parse("#factmap\nAx100E 4\nDx100e x86_64 2\nAx1010 0\n", width).unwrap();
-	let mut output = Vec::new();
-	map.write(&mut output, "").unwrap();
-	let output = String::from_utf8(output).unwrap();
+	let output = map.to_string();
 	assert_eq!(output, "#factmap\nAx100e 4\nDx100e x86_64 2\nAx1010 0\n");
 	assert_eq!(FactMap::parse(&output, width).unwrap(), map);
 	assert!(map.facts[1].sort_key() < map.facts[0].sort_key());

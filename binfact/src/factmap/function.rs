@@ -49,8 +49,11 @@ impl str::FromStr for FunctionFact {
 	type Err = ParseLineError;
 
 	/// Parse `FxRVA content`, trimming surrounding whitespace from nonempty content.
-	/// The content is preserved without validating it as JSON.
+	/// The content is preserved without validating it as JSON. Line endings are rejected.
 	fn from_str(line: &str) -> Result<Self, Self::Err> {
+		if line.contains(['\r', '\n']) {
+			return Err(ParseLineError::UnexpectedNewline);
+		}
 		let (rva, rest) = token(line)?;
 		let rva = rva.strip_prefix('F').ok_or(ParseLineError::InvalidPrefix("F"))?;
 		let rva = parse_rva(rva)?;
@@ -96,6 +99,11 @@ fn reject_invalid_function() {
 		("Fx {}", ParseLineError::InvalidRva),
 		("Fxgg {}", ParseLineError::InvalidRva),
 		("Fx100000000 {}", ParseLineError::InvalidRva),
+		("Fx1 {}\nCx2 \"comment\"", ParseLineError::UnexpectedNewline),
+		("Fx1 {}\rCx2 \"comment\"", ParseLineError::UnexpectedNewline),
+		("Fx1 {}\r\nCx2 \"comment\"", ParseLineError::UnexpectedNewline),
+		("Fx1\n{}", ParseLineError::UnexpectedNewline),
+		("Fx1 {}\n", ParseLineError::UnexpectedNewline),
 	] {
 		assert_eq!(FunctionFact::from_str(line).unwrap_err(), error, "{line}");
 	}

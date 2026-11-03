@@ -40,7 +40,7 @@
 
     await test("browser module and PE API", async () => {
       const api = await import("./pelite.js");
-      assert(Object.keys(api).join() === "PeFile", "Only PeFile should be exported");
+      assert(Object.keys(api).sort().join() === "Facts,PeFile", "Unexpected public exports");
       const { PeFile } = api;
 
       await test("invalid constructor input", () => {

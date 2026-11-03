@@ -78,6 +78,8 @@ pub enum ParseLineError {
 	InvalidType(ty::ParseError),
 	/// A symbol name is neither a supported marker nor a quoted string.
 	InvalidSymbolName,
+	/// A record contains a carriage return or newline.
+	UnexpectedNewline,
 	/// Unexpected text follows the field named in the payload.
 	UnexpectedText(&'static str),
 }
@@ -100,6 +102,7 @@ impl fmt::Display for ParseLineError {
 			ParseLineError::InvalidQuotedName(error) => write!(f, "invalid quoted name: {error}"),
 			ParseLineError::InvalidType(error) => write!(f, "invalid type: {error}"),
 			ParseLineError::InvalidSymbolName => f.write_str("name must be D, R, C, _, fn, thunk, undef, or a quoted string"),
+			ParseLineError::UnexpectedNewline => f.write_str("fact record must not contain line endings"),
 			ParseLineError::UnexpectedText(field) => write!(f, "unexpected text after {field}"),
 		}
 	}

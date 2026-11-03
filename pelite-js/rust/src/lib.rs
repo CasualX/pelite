@@ -1,7 +1,7 @@
 #![allow(non_snake_case)]
 
 use std::{collections::HashMap, sync::Arc};
-use std::{ops, ptr};
+use std::{fmt, ops, ptr, str};
 
 mod wasm32;
 mod pefile;
@@ -13,6 +13,7 @@ mod resources;
 mod disasm;
 mod addr;
 mod read;
+mod facts;
 
 use self::wasm32::*;
 use self::pefile::PeFile;

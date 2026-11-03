@@ -14,28 +14,57 @@ Keep them together and serve your project over HTTP:
 
   const response = await fetch("example.dll");
   if (!response.ok) throw new Error(`Unable to load example.dll: ${response.status}`);
-  const pefile = new PeFile(new Uint8Array(await response.arrayBuffer()));
-  try {
-    const headers = pefile.headers();
-    if (headers instanceof Error) throw headers;
-    console.log(headers);
-  } finally {
-    pefile.dispose();
-  }
+  using pefile = new PeFile(new Uint8Array(await response.arrayBuffer()));
+  const headers = pefile.headers();
+  if (headers instanceof Error) throw headers;
+  console.log(headers);
 </script>
 ```
 
 The module fetches its adjacent `pelite.wasm` during evaluation, so `PeFile` is
 ready when the import completes. It requires a browser supporting ES modules,
-top-level await, and WebAssembly. Your project needs no package manager or build
-step. Optionally copy `dist/pelite.d.ts` for editor type hints.
+top-level await, WebAssembly, and `using` declarations. Your project needs no
+package manager or build step. Optionally copy `dist/pelite.d.ts` for editor type hints.
 
 Construction throws for invalid files; parsing methods return an `Error` value
-on failure. Call `dispose()` when finished. In browsers supporting explicit
-resource management, `using pefile = new PeFile(bytes)` also disposes it
-at the end of the scope. Byte views from `sliceBytes()` and `readBytes()` borrow
+on failure. A `using` declaration disposes the handle at the end of its scope;
+otherwise call `dispose()` when finished. Byte views from `sliceBytes()` and `readBytes()` borrow
 WASM memory and may be invalidated by memory growth or disposal; copy them with
 `.slice()` to retain them.
+
+## Facts layers
+
+`Facts` owns a collection of layers independently of `PeFile`. Pass the
+target pointer width in bits (32 or 64) when constructing it. Import and export
+native `#factmap` text; labels are stored separately.
+
+```js
+import { Facts } from "pelite-js";
+
+using layers = new Facts(64);
+const index = layers.addLayer('#factmap\nSx1000 code "entry"\n');
+if (index instanceof Error) throw index;
+const labeled = layers.setLayerLabel(index, "Analysis");
+if (labeled instanceof Error) throw labeled;
+const annotated = layers.addFact(index, 'Cx1000 "Entry point"');
+if (annotated instanceof Error) throw annotated;
+const text = layers.getLayer(index); // canonical #factmap text
+if (text instanceof Error) throw text;
+```
+
+Indices start at zero; negative indices count from the end (`-1` is the last
+layer). `addLayer(facts)` appends a layer with an empty label and returns
+its index. Omitting `facts` creates an empty layer.
+`shiftLayer(index, destination)` moves to the final destination index. `mergeLayer(base, index)` appends the source records to the base,
+retains the base label, and removes the source. Indices resolve before mutation.
+Use `getLayerLabel`, `setLayerLabel`, and `deleteLayer` to manage
+layers. Other mutations return `null` on success. All operations return `Error`
+on failure; failed validation leaves the layers unchanged.
+
+Record order and duplicates are preserved; original whitespace and file comments
+are discarded on export. `addFact` takes one record without a header or newline.
+Call `dispose()` when finished, or use a `using` declaration. Layers do not yet
+affect `PeFile` operations.
 
 ## Install from a GitHub Release
 
@@ -75,6 +104,7 @@ rustup target add wasm32-unknown-unknown
 cd pelite-js
 npm ci
 npm run build
+npm test
 ```
 
 ## License
