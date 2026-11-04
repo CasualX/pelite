@@ -358,7 +358,7 @@ impl CollectionState {
 		let image_base = pe.image_base();
 		let mut values = serde_json::Map::new();
 		let references = self.references.into_iter().map(|va| {
-			match facts.symbols.get(&va).filter(|symbol| !matches!(symbol, symbols::IndexedSymbol::Weak(_))) {
+			match facts.symbols.get(&va) {
 				Some(symbol) => {
 					let name = symbol.to_string();
 					if let Some(ty) = facts.types.get(&va).filter(|ty| !ty.is_opaque()) {
