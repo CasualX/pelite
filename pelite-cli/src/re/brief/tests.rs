@@ -52,7 +52,7 @@ fn collect_report(bytes: &[u8], length: usize, arch: Arch, rva: u32, image_base:
 #[test]
 fn lists_symbols_constants_and_displacements_once_in_first_use_order() {
 	let base = 0x180000000;
-	let facts = FactMap::parse("#factmap\nSx1000 code \"start\"\nSx2000 u32 D\nSx3000 code _\n", ty::PointerWidth::X64).unwrap();
+	let facts = FactMap::parse("#factmap\nSx1000 code \"start\"\nSx2000 u32 D\n", ty::PointerWidth::X64).unwrap();
 	let mut indexed = symbols::IndexedFacts::default();
 	indexed.extend(facts.facts, base);
 	let bytes = [
@@ -114,8 +114,7 @@ fn unresolved_references_are_signed_rvas_even_across_address_wraparound() {
 	// [rip-0x1007] at RVA 0x1000 targets RVA -1.
 	let bytes = [0x8b, 0x05, 0xf9, 0xef, 0xff, 0xff];
 	for base in [0, 0x180000000, 0x8000000000000000, u64::MAX - 0x800] {
-		let symbols = HashMap::from([(base.wrapping_sub(1), symbols::IndexedSymbol::Weak(0))]);
-		let report = collect_report(&bytes, bytes.len(), Arch::X86_64, 0x1000, base, &symbols).unwrap();
+		let report = collect_report(&bytes, bytes.len(), Arch::X86_64, 0x1000, base, &HashMap::new()).unwrap();
 		assert_eq!(report.references, [Reference::Rva(-1)]);
 		assert_eq!(serde_json::to_value(report).unwrap(), serde_json::json!({"references": [-1], "values": {}, "instructions": {"encodings": ["Legacy"], "cpuid_features": [], "segment_overrides": [], "register_classes": ["GPR"], "privileged": false}, "control_flow": {"direct_jumps": 0, "conditional_branches": 0, "indirect_branches": 0, "internal_targets": 0, "external_branches": 0, "leaders": 1, "returns": 0, "return_pop": []}, "constants": {"immediates": [], "comparisons": [], "displacements": []}}));
 	}
@@ -272,7 +271,7 @@ fn finalize_reads_typed_symbols_and_respects_zerofill() {
 	let base = 0x180000000;
 	let image = image(base);
 	let pe = pelite::PeFile::from_bytes(&image).unwrap();
-	let facts = FactMap::parse("#factmap\nSx2000 u32 \"scalar\"\nSx2008 *u32 \"pointer\"\nSx2010 u32 \"zero\"\nSx2014 code \"opaque\"\nSx2018 u32 _\n", ty::PointerWidth::X64).unwrap();
+	let facts = FactMap::parse("#factmap\nSx2000 u32 \"scalar\"\nSx2008 *u32 \"pointer\"\nSx2010 u32 \"zero\"\nSx2014 code \"opaque\"\n", ty::PointerWidth::X64).unwrap();
 	let mut indexed = symbols::IndexedFacts::default();
 	indexed.extend(facts.facts, base);
 	for zerofill in [false, true] {

@@ -38,10 +38,9 @@ Factmap format:
     R       Read-only data    (rdata_RVA)
     fn      Generic function  (fn_RVA)
     thunk   Jump stub         (thunk_RVA)
-    _       Weak name; does not override existing symbols.
     undef   Remove an earlier symbol at this RVA.
 
-  Quote names to use them literally, e.g. "fn" or "_".
+  Quote names to use them literally, e.g. "fn" or "C".
   Use `SxRVA unk undef` to discard a false candidate.
   Function metadata at the same RVA merges JSON objects across files;
   other values are replaced by later definitions.

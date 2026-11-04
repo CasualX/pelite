@@ -4,7 +4,6 @@ use super::*;
 pub enum IndexedSymbol {
 	Named(Box<str>),
 	Generated { name: &'static str, rva: u32 },
-	Weak(u32),
 }
 
 impl From<SymbolFact> for IndexedSymbol {
@@ -22,7 +21,6 @@ impl From<&SymbolFact> for IndexedSymbol {
 			SymbolName::Data => IndexedSymbol::Generated { name: "data", rva: symbol.rva },
 			SymbolName::RData => IndexedSymbol::Generated { name: "rdata", rva: symbol.rva },
 			SymbolName::Code => IndexedSymbol::Generated { name: "code", rva: symbol.rva },
-			SymbolName::Weak => IndexedSymbol::Weak(symbol.rva),
 			SymbolName::Fn => IndexedSymbol::Generated { name: "fn", rva: symbol.rva },
 			SymbolName::Thunk => IndexedSymbol::Generated { name: "thunk", rva: symbol.rva },
 			SymbolName::Undef => IndexedSymbol::Generated { name: "undef", rva: symbol.rva },
@@ -36,7 +34,6 @@ impl fmt::Display for IndexedSymbol {
 		match self {
 			IndexedSymbol::Named(name) => f.write_str(name),
 			IndexedSymbol::Generated { name, rva } => write!(f, "{name}_{rva:x}"),
-			IndexedSymbol::Weak(rva) => write!(f, ".{rva:x}"),
 		}
 	}
 }
@@ -116,7 +113,7 @@ impl IndexedFacts {
 							self.types.remove(&address);
 							self.symbol_facts.remove(&symbol.rva);
 						}
-						else if !matches!(symbol.name, SymbolName::Weak) || !self.symbols.contains_key(&address) {
+						else {
 							self.types.insert(address, symbol.ty.clone());
 							self.symbol_facts.insert(symbol.rva, symbol.clone());
 						}
@@ -135,9 +132,6 @@ pub fn index(symbols: &mut HashMap<u64, IndexedSymbol>, facts: impl IntoIterator
 		if let Some(address) = base.checked_add(u64::from(symbol.rva)) {
 			if matches!(symbol.name, SymbolName::Undef) {
 				symbols.remove(&address);
-			}
-			else if matches!(symbol.name, SymbolName::Weak) {
-				symbols.entry(address).or_insert_with(|| IndexedSymbol::from(symbol));
 			}
 			else {
 				symbols.insert(address, IndexedSymbol::from(symbol));

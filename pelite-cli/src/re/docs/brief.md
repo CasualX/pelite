@@ -65,8 +65,8 @@ it to apply your own names. Text is the default; JSON preserves the same shape:
 
 Read failures remain as `$error` objects in `values`, including errors inside
 arrays or structs. Reading continues for other symbols; these errors do not
-make `brief` return a failure status. Symbols typed `code`, `fn`, or `unk`,
-weak anchors, and unnamed RVA references have no values.
+make `brief` return a failure status. Symbols typed `code`, `fn`, or `unk`
+and unnamed RVA references have no values.
 
 Use `--zerofill` to allow typed scalar and pointer reads, including dynamic
 array lengths, from a section's virtual zero-filled tail. String reads still

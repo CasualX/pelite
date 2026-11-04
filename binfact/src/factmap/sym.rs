@@ -9,11 +9,6 @@ pub enum SymbolName {
 	RData,
 	/// Code.
 	Code,
-	/// Weak
-	///
-	/// Weak anchors mark an instruction start, but do not contribute labels or symbols.
-	/// They do not override a previously defined symbol.
-	Weak,
 	/// Function.
 	Fn,
 	/// Function thunk.
@@ -30,7 +25,6 @@ impl fmt::Display for SymbolName {
 			SymbolName::Data => f.write_str("D"),
 			SymbolName::RData => f.write_str("R"),
 			SymbolName::Code => f.write_str("C"),
-			SymbolName::Weak => f.write_str("_"),
 			SymbolName::Fn => f.write_str("fn"),
 			SymbolName::Thunk => f.write_str("thunk"),
 			SymbolName::Undef => f.write_str("undef"),
@@ -86,7 +80,6 @@ impl SymbolFact {
 			"D" => SymbolName::Data,
 			"R" => SymbolName::RData,
 			"C" => SymbolName::Code,
-			"_" => SymbolName::Weak,
 			"fn" => SymbolName::Fn,
 			"thunk" => SymbolName::Thunk,
 			"undef" => SymbolName::Undef,
@@ -120,7 +113,6 @@ fn parse_symbol_names() {
 		("D", SymbolName::Data),
 		("R", SymbolName::RData),
 		("C", SymbolName::Code),
-		("_", SymbolName::Weak),
 		("fn", SymbolName::Fn),
 		("thunk", SymbolName::Thunk),
 		("undef", SymbolName::Undef),

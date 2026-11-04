@@ -270,10 +270,9 @@ impl iced_x86::SymbolResolver for SymbolResolver {
 				return None;
 			}
 		}
-		self.symbols.get(&address).and_then(|name| match name {
-			IndexedSymbol::Named(name) => Some(iced_x86::SymbolResult::with_str(address, name)),
-			IndexedSymbol::Generated { .. } => Some(iced_x86::SymbolResult::with_string(address, name.to_string())),
-			IndexedSymbol::Weak(_) => None,
+		self.symbols.get(&address).map(|name| match name {
+			IndexedSymbol::Named(name) => iced_x86::SymbolResult::with_str(address, name),
+			IndexedSymbol::Generated { .. } => iced_x86::SymbolResult::with_string(address, name.to_string()),
 		})
 	}
 }
@@ -311,13 +310,13 @@ pub fn decode_bytes<'a>(bytes: &'a [u8], bitness: u32, decode_ip: u64, start_ip:
 		// Collect any mid instruction symbols and add as comments
 		for offset in 1..instruction_bytes.len() {
 			let address = ip + offset as u64;
-			if let Some(symbol) = symbols.get(&address).and_then(symbol_name) {
+			if let Some(symbol) = symbols.get(&address).map(ToString::to_string) {
 				comments.push(format!("+{offset:#x}: {symbol}"));
 			}
 		}
 
 		// Render the symbol name
-		let label = symbols.get(&ip).and_then(symbol_name);
+		let label = symbols.get(&ip).map(ToString::to_string);
 		// Format instruction
 		let constants = decoder.get_constant_offsets(&instruction);
 		let text = formatter.format(&instruction, constants, &relocations, options.relocation_width);
@@ -328,10 +327,6 @@ pub fn decode_bytes<'a>(bytes: &'a [u8], bitness: u32, decode_ip: u64, start_ip:
 		});
 	}
 	instructions
-}
-
-fn symbol_name(symbol: &IndexedSymbol) -> Option<String> {
-	(!matches!(symbol, IndexedSymbol::Weak(_))).then(|| symbol.to_string())
 }
 
 /// Trace one straight-line block, including its terminating control transfer.

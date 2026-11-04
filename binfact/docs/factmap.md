@@ -66,7 +66,6 @@ Unquoted names are reserved markers for consumers to interpret:
 | `R` | Generic read-only data |
 | `fn` | Generic function |
 | `thunk` | Jump stub |
-| `_` | Weak anchor; does not override an existing symbol |
 | `undef` | Remove an earlier symbol at this RVA |
 
 For example, `Sx2010 unk undef` withdraws a candidate symbol. Quoting a marker
@@ -153,7 +152,7 @@ is rerun.
 `FactMap` preserves source order, including repeated addresses and fact kinds.
 Parsing and writing do not sort, deduplicate, or apply overrides. Consumers
 choose how to combine records; for example, `pelite-cli` applies later symbol
-definitions over earlier ones and honors weak and removal markers.
+definitions over earlier ones and honors removal markers.
 
 Parse errors identify the first invalid line. For compatibility, the parser
 also accepts the legacy `#symtext` header and `0xRVA TYPE NAME` symbol syntax;
