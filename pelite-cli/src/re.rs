@@ -18,6 +18,7 @@ mod scan;
 mod strings;
 mod symbol;
 mod symbols;
+mod text_view;
 mod xref;
 
 use address::Address;
@@ -66,6 +67,7 @@ pub fn command() -> clap::Command {
 		.subcommand(read::command())
 		.subcommand(scan::command())
 		.subcommand(disasm::command())
+		.subcommand(text_view::command())
 		.subcommand(brief::command())
 		.subcommand(disasm_raw::command())
 		.subcommand(hexdump::command())
@@ -87,6 +89,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 		Some(("read", matches)) => read::run(matches, format),
 		Some(("scan", matches)) => scan::run(matches, format),
 		Some(("disasm", matches)) => disasm::run(matches, format),
+		Some(("text-view", matches)) => text_view::run(matches, format),
 		Some(("brief", matches)) => brief::run(matches, format),
 		Some(("disasm-raw", matches)) => disasm_raw::run(matches, format),
 		Some(("hexdump", matches)) => hexdump::run(matches, format),

@@ -1,6 +1,7 @@
 use std::{fs, path::Path, process::Command};
 
 mod diff;
+mod text_view;
 
 fn assert_snapshot(snapshot_path: &Path, value: &str) {
 	if std::env::var_os("UPDATE_SNAPSHOTS").is_some() {

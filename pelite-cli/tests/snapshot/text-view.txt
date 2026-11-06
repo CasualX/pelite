@@ -1,0 +1,26 @@
+.text:0x1000 fn Entry:
+.text:0x1000     jmp short 0x1001
+.text:0x1000     ; -> 0x1030 Greeting
+.text:0x1000     ; -> 0x1001
+.text:0x1001     ; Inside the jump
+.text:0x1001     ; z first
+.text:0x1001     ; a second
+.text:0x1001   ~ push rax ; overlaps @0x1000
+.text:0x1002   ~ Embedded: u8 = 240 ; overlaps @0x1001
+.text:0x1003     pop rax
+.text:0x1004     .bytes cc cc cc cc 00 00 00 00 00 00 00 00
+.text:0x1010 struct Record:
+.text:0x1010     .enabled: u8 = 1
+.text:0x1011     .pad 3
+.text:0x1014     .count: u32 = 42
+.text:0x1018     .handler: *cstr = &0x1030
+.text:0x1020     .entries[0].id: u16 = 0
+.text:0x1022     .entries[0].active: u8 = 0
+.text:0x1023     .pad 1
+.text:0x1024     .entries[1].id: u16 = 0
+.text:0x1026     .entries[1].active: u8 = 0
+.text:0x1027     .pad 1
+.text:0x1028     .bytes 00 00 00 00 00 00 00 00
+.text:0x1030     Greeting: cstr = "hello"
+.text:0x1036     .align 16
+.text:0x1040     .bytes 00 00 00 00

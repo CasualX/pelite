@@ -171,14 +171,21 @@ impl Formatter {
 		options.set_hex_prefix("0x");
 		options.set_hex_suffix("");
 		options.set_uppercase_hex(false);
+		options.set_leading_zeros(false);
+		options.set_branch_leading_zeros(false);
+		options.set_displacement_leading_zeros(false);
 		Formatter { inner, color, symbol_operands }
 	}
 
 	pub fn format(&mut self, instruction: &iced_x86::Instruction, constants: iced_x86::ConstantOffsets, relocations: &[usize], relocation_width: usize) -> InstructionText {
-		self.symbol_operands.set(symbol_operands(instruction, constants, relocations, relocation_width));
 		let mut text = InstructionText { plain: String::new(), colored: self.color.then(String::new) };
-		iced_x86::Formatter::format(&mut self.inner, instruction, &mut text);
+		self.format_to(instruction, constants, relocations, relocation_width, &mut text);
 		text
+	}
+
+	pub fn format_to(&mut self, instruction: &iced_x86::Instruction, constants: iced_x86::ConstantOffsets, relocations: &[usize], relocation_width: usize, output: &mut dyn iced_x86::FormatterOutput) {
+		self.symbol_operands.set(symbol_operands(instruction, constants, relocations, relocation_width));
+		iced_x86::Formatter::format(&mut self.inner, instruction, output);
 	}
 }
 
