@@ -60,7 +60,8 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	};
 	let map = pelite::FileMap::open(path)?;
 	let pe = pelite::PeFile::from_bytes(&map)?;
-	let ty = ty::Type::parse(source, pointer_width(pe))?;
+	let ty = ty::Type::parse(source, pointer_width(pe))
+		.map_err(|error| err(format!("failed to parse type {source:?}: {error}")))?;
 	let facts = symbols::load(matches, pointer_width(pe), pe.image_base(), Some(pe))?;
 	let value = match address.to_rva(pe, &facts) {
 		Ok(rva) => read_at(pe, rva, &ty, &options),

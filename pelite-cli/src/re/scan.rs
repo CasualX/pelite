@@ -86,11 +86,49 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let pe = pelite::PeFile::from_bytes(&map)?;
 	let sections = SectionFilter::new(pe, matches.get_one::<String>("section").map(String::as_str))?;
 	let pointer_width = pointer_width(pe);
-	let ty = ty::Type::parse(source, pointer_width)?;
+	let ty = ty::Type::parse(source, pointer_width)
+		.map_err(|error| err(format!("failed to parse type {source:?}: {error}")))?;
+	validate_type(&ty, None)
+		.map_err(|error| err(format!("cannot scan type {source:?}: {error}")))?;
 
 	let pattern = matches.get_one::<String>("pattern").map(String::as_str).unwrap_or("?");
 	let result = scan_pattern(pe, &ty, &options, pattern, &sections)?;
 	print("Scan", &result, format)
+}
+
+// Reject definitions that cannot be read regardless of the bytes at a match.
+// Pointer dereferences retain the containing struct, just as read_value does.
+fn validate_type(ty: &ty::Type, fields: Option<&[ty::Field]>) -> Result {
+	match ty {
+		ty::Type::Code | ty::Type::Fn | ty::Type::Unknown => return Err(err(format!("cannot read opaque type '{ty}' directly"))),
+		ty::Type::Ptr32(pointee) | ty::Type::Ptr64(pointee) => {
+			if !pointee.is_opaque() { validate_type(pointee, fields)?; }
+		},
+		ty::Type::Array(array) => {
+			if let ty::ArrayLen::Dyn(name) = &array.len {
+				let fields = fields.ok_or_else(|| err("dynamic array requires a containing struct"))?;
+				let field = fields.iter().find(|field| matches!(&field.name, ty::FieldName::Named(field_name) if field_name == name))
+					.ok_or_else(|| err(format!("array length field '{name}' is not in the containing struct")))?;
+				if !matches!(field.ty, ty::Type::U8 | ty::Type::U16 | ty::Type::U32 | ty::Type::U64) {
+					return Err(err(format!("array length field '{name}' must be u8, u16, u32, or u64")));
+				}
+			}
+			if !matches!(array.len, ty::ArrayLen::Fixed(0)) { validate_type(&array.ty, fields)?; }
+		},
+		ty::Type::Struct(structure) => {
+			for (index, field) in structure.fields.iter().enumerate() {
+				let name = match &field.name {
+					ty::FieldName::Discarded => continue,
+					ty::FieldName::Named(name) => name.to_string(),
+					ty::FieldName::Unnamed => index.to_string(),
+				};
+				validate_type(&field.ty, Some(&structure.fields))
+					.map_err(|error| err(format!("field {name:?}: {error}")))?;
+			}
+		},
+		_ => {},
+	}
+	Ok(())
 }
 
 fn scan_pattern(pe: pelite::PeFile<'_>, ty: &ty::Type, options: &read::ReadOptions, source: &str, sections: &SectionFilter<'_>) -> Result<Vec<ScanResult>> {
