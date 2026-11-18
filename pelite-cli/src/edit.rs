@@ -36,7 +36,7 @@ pub fn command() -> clap::Command {
 
 pub fn run(matches: &clap::ArgMatches) -> Result {
 	let path = matches.get_one::<PathBuf>("file").expect("required by clap");
-	let mut bytes = pelite::PeMemory::open(path)?;
+	let mut bytes = pelite::PeMemory::open(path).file_context("open", path)?;
 
 	if matches.get_flag("image") {
 		convert_image(&mut bytes)?;
@@ -53,7 +53,7 @@ pub fn run(matches: &clap::ArgMatches) -> Result {
 	}
 
 	let output = matches.get_one::<PathBuf>("output").unwrap_or(path);
-	fs::write(output, &bytes)?;
+	fs::write(output, &bytes).file_context("write", output)?;
 	Ok(())
 }
 

@@ -134,7 +134,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 		selected = TopicSet::all();
 	}
 
-	let map = pelite::FileMap::open(path)?;
+	let map = pelite::FileMap::open(path).file_context("open", path)?;
 	let pe = PeFile::from_bytes(&map)?;
 
 	let mut output = BTreeMap::new();

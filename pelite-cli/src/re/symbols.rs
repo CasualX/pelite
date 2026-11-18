@@ -77,7 +77,7 @@ pub fn load_map(path: &Path, pointer_width: ty::PointerWidth, pe: Option<pelite:
 
 /// Read and parse a factmap file, including files named `auto`.
 pub fn load_file(path: &Path, pointer_width: ty::PointerWidth) -> Result<FactMap> {
-	let source = fs::read_to_string(path).map_err(|error| err(format!("{}: {error}", path.display())))?;
+	let source = fs::read_to_string(path).file_context("read", path)?;
 	FactMap::parse(&source, pointer_width)
 		.map_err(|error| err(format!("{}: {error}", path.display())))
 }

@@ -30,7 +30,7 @@ pub fn command() -> clap::Command {
 
 pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let path = matches.get_one::<PathBuf>("file").expect("required by clap");
-	let map = FileMap::open(path)?;
+	let map = FileMap::open(path).file_context("open", path)?;
 	let file = open_x64(map.as_ref())?;
 	let mut grouped = BTreeMap::<u32, Vec<u32>>::new();
 	for xref in candidate_relative_xrefs(file) {

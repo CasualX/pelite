@@ -228,16 +228,16 @@ fn extract_groups(resources: ResourceDirectory<'_>, matches: &clap::ArgMatches, 
 		}
 	}
 
-	fs::create_dir_all(destination)?;
+	fs::create_dir_all(destination).file_context("create directory", destination)?;
 	let mut extracted = Vec::with_capacity(prepared.len());
 	for group in prepared {
 		let path = destination.join(&group.file_name);
 		if force {
-			fs::write(&path, &group.contents)?;
+			fs::write(&path, &group.contents).file_context("write", &path)?;
 		}
 		else {
-			let mut file = fs::OpenOptions::new().write(true).create_new(true).open(&path)?;
-			file.write_all(&group.contents)?;
+			let mut file = fs::OpenOptions::new().write(true).create_new(true).open(&path).file_context("create", &path)?;
+			file.write_all(&group.contents).file_context("write", &path)?;
 		}
 		extracted.push(ExtractedGroup {
 			kind: group.info.kind,

@@ -106,7 +106,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 }
 
 fn analyze(path: &Path, min_confidence: i32, filters: &[Filter], format: OutputFormat) -> Result {
-	let map = pelite::FileMap::open(path)?;
+	let map = pelite::FileMap::open(path).file_context("open", path)?;
 	let pe = pelite::PeFile::from_bytes(&map)?;
 	let mut found = Vec::new();
 	for section in pe.section_headers() {

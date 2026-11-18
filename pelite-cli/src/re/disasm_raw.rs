@@ -68,7 +68,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 		io::stdin().read_to_end(&mut bytes)?;
 	}
 	else {
-		bytes = fs::read(path)?;
+		bytes = fs::read(path).file_context("read", path)?;
 	}
 	let arch = *matches.get_one::<Arch>("arch").expect("required by clap");
 	let offset = usize::try_from(*matches.get_one::<u64>("offset").expect("defaulted by clap"))?;

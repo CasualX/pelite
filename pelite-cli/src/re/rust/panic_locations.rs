@@ -26,7 +26,7 @@ pub fn command() -> clap::Command {
 
 pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let path = matches.get_one::<PathBuf>("file").expect("required by clap");
-	let map = FileMap::open(path)?;
+	let map = FileMap::open(path).file_context("open", path)?;
 	let file = PeFile::from_bytes(&map)?;
 	let output = analyze(file);
 	match format {
