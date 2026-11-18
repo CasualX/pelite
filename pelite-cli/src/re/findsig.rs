@@ -59,7 +59,7 @@ pub fn command() -> clap::Command {
 pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let path = matches.get_one::<PathBuf>("file").expect("required by clap");
 
-	let map = pelite::FileMap::open(path)?;
+	let map = pelite::FileMap::open(path).file_context("open", path)?;
 	let pe = pelite::PeFile::from_bytes(&map)?;
 	let sections = SectionFilter::new(pe, matches.get_one::<String>("section").map(String::as_str))?;
 	let file_name = path.file_name().and_then(|name| name.to_str()).unwrap_or("<input>");

@@ -58,7 +58,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 		string_preview_length: *matches.get_one::<usize>("string-preview-length").expect("defaulted by clap"),
 		max_dynamic_array_length: *matches.get_one::<u32>("max-dynamic-array-length").expect("defaulted by clap"),
 	};
-	let map = pelite::FileMap::open(path)?;
+	let map = pelite::FileMap::open(path).file_context("open", path)?;
 	let pe = pelite::PeFile::from_bytes(&map)?;
 	let ty = ty::Type::parse(source, pointer_width(pe))
 		.map_err(|error| err(format!("failed to parse type {source:?}: {error}")))?;

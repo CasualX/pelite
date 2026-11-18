@@ -5,6 +5,7 @@ use std::io::{self, BufRead, IsTerminal, Write};
 
 mod depwalk;
 mod edit;
+mod file_context;
 mod imphash;
 mod inspect;
 mod license;
@@ -18,6 +19,7 @@ mod value_parser;
 mod version_info;
 
 use printer::*;
+use file_context::FileContext;
 
 type Result<T = ()> = result::Result<T, Box<dyn error::Error>>;
 

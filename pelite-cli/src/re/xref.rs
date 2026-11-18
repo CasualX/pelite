@@ -47,7 +47,7 @@ pub fn command() -> clap::Command {
 pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let path = matches.get_one::<PathBuf>("file").expect("required by clap");
 	let address = matches.get_one::<Address>("address").expect("required by clap");
-	let map = pelite::FileMap::open(path)?;
+	let map = pelite::FileMap::open(path).file_context("open", path)?;
 	let pe = PeFile::from_bytes(&map)?;
 	let facts = symbols::load(matches, pointer_width(pe), pe.image_base(), Some(pe))?;
 	let target_rva = address.to_rva(pe, &facts)?;

@@ -35,18 +35,18 @@ pub fn command() -> clap::Command {
 
 pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let path = matches.get_one::<PathBuf>("file").expect("required by clap");
-	let map = pelite::FileMap::open(path)?;
+	let map = pelite::FileMap::open(path).file_context("open", path)?;
 	let pe = PeFile::from_bytes(&map)?;
 	let facts = analyze(pe, matches.get_flag("timings"))?;
 	if let Some(output_path) = matches.get_one::<PathBuf>("output") {
-		let file = fs::OpenOptions::new().write(true).create_new(true).open(output_path)?;
+		let file = fs::OpenOptions::new().write(true).create_new(true).open(output_path).file_context("create", output_path)?;
 		let mut file = io::BufWriter::new(file);
 		let filename = path.file_name().unwrap_or(path.as_os_str()).to_string_lossy();
 		let filename = serde_json::to_string(&filename)?;
 		let hash = basenc::LowerHex.encode(Sha256::digest(map.as_ref()).as_ref());
 		let comment = format!("File: {filename}, SHA-256: {hash}");
-		facts.write(&mut file, &comment)?;
-		file.flush()?;
+		facts.write(&mut file, &comment).file_context("write", output_path)?;
+		file.flush().file_context("flush", output_path)?;
 		drop(file);
 		if matches.get_flag("measure-load-time") {
 			let label = format!("reading and parsing {}", output_path.display());

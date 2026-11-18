@@ -82,7 +82,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 		string_preview_length: *matches.get_one::<usize>("string-preview-length").expect("defaulted by clap"),
 		max_dynamic_array_length: *matches.get_one::<u32>("max-dynamic-array-length").expect("defaulted by clap"),
 	};
-	let map = pelite::FileMap::open(path)?;
+	let map = pelite::FileMap::open(path).file_context("open", path)?;
 	let pe = pelite::PeFile::from_bytes(&map)?;
 	let sections = SectionFilter::new(pe, matches.get_one::<String>("section").map(String::as_str))?;
 	let pointer_width = pointer_width(pe);

@@ -50,7 +50,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 }
 
 fn calculate(path: &Path) -> Result<ImportHash> {
-	let map = pelite::FileMap::open(path)?;
+	let map = pelite::FileMap::open(path).file_context("open", path)?;
 	let pe = pelite::PeFile::from_bytes(&map)?;
 	let mut names = Vec::new();
 	let imports = match pe.imports() {

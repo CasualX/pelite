@@ -46,7 +46,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let language = matches.get_one::<u16>("resource-language").copied();
 	let include_source = matches.get_flag("source");
 
-	let map = pelite::FileMap::open(path)?;
+	let map = pelite::FileMap::open(path).file_context("open", path)?;
 	let pe = pelite::PeFile::from_bytes(&map)?;
 	let resources = match pe.resources() {
 		Ok(resources) => resources,

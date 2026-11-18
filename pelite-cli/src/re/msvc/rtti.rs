@@ -21,7 +21,7 @@ pub fn command() -> clap::Command {
 
 pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let path = matches.get_one::<PathBuf>("file").expect("required by clap");
-	let map = FileMap::open(path)?;
+	let map = FileMap::open(path).file_context("open", path)?;
 	let mut output = analyze(PeFile::from_bytes(&map)?)?;
 	let demangle = matches.get_flag("demangle");
 	if matches!(format, OutputFormat::Text) {

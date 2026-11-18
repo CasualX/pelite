@@ -103,7 +103,7 @@ pub fn file_arg() -> clap::Arg {
 
 pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let path = matches.get_one::<PathBuf>("file").expect("required by clap");
-	let map = pelite::FileMap::open(path)?;
+	let map = pelite::FileMap::open(path).file_context("open", path)?;
 	let pe = PeFile::from_bytes(&map)?;
 	let output = summarize(path, map.as_ref(), pe)?;
 

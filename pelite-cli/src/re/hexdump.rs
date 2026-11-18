@@ -65,7 +65,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let path = matches.get_one::<PathBuf>("file").expect("required by clap");
 	let address = matches.get_one::<Address>("address").expect("required by clap");
 	let len = *matches.get_one::<usize>("length").expect("required by clap");
-	let map = pelite::FileMap::open(path)?;
+	let map = pelite::FileMap::open(path).file_context("open", path)?;
 	let pe = pelite::PeFile::from_bytes(&map)?;
 	let facts = symbols::load(matches, pointer_width(pe), pe.image_base(), Some(pe))?;
 	let start = address.to_rva(pe, &facts)?;
@@ -78,8 +78,8 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 	let bytes = pe.slice(start, len, 1)?;
 	let bytes = &bytes[..len];
 	if let Some(output_path) = matches.get_one::<PathBuf>("output") {
-		let mut file = fs::OpenOptions::new().write(true).create_new(true).open(output_path)?;
-		file.write_all(bytes)?;
+		let mut file = fs::OpenOptions::new().write(true).create_new(true).open(output_path).file_context("create", output_path)?;
+		file.write_all(bytes).file_context("write", output_path)?;
 		return Ok(());
 	}
 	let start_address = image_base.checked_add(u64::from(start)).ok_or_else(|| err("image base plus start RVA overflows"))?;
