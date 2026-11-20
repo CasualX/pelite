@@ -347,7 +347,10 @@ if (!response.ok) {
  */
 
 /** @typedef {{ dwLength: number, wRevision: number, wCertificateType: number }} PeCertificateImage */
-/** certificate_data is base64-encoded. @typedef {{ image: PeCertificateImage, certificate_type: number, certificate_data: string }} PeSecurityDirectory */
+/** The payload is base64-encoded. @typedef {{ image: PeCertificateImage, payload: string }} PeCertificate */
+/** A malformed entry appears as a `$error` object after any valid certificates.
+ * @typedef {(PeCertificate | { $error: string })[]} PeSecurityDirectory
+ */
 
 /** A resource name or unsigned 32-bit resource ID. @typedef {string | number} ResourceName */
 
@@ -833,7 +836,7 @@ export class PeFile {
 		return takeResult();
 	}
 
-	/** @returns {Result<PeSecurityDirectory | null>} Parsed Authenticode security directory JSON. */
+	/** @returns {Result<PeSecurityDirectory | null>} Certificates in file order, or null if the security directory is absent. */
 	security() {
 		instance.exports.pefileSecurity(this.p);
 		return takeResult();

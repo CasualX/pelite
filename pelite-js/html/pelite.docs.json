@@ -23,7 +23,7 @@
 				{ "signature": "tls()", "description": "TLS directory" },
 				{ "signature": "exceptionsX64()", "description": "x64 exception entries, or null for PE32" },
 				{ "signature": "debug()", "description": "Debug directory" },
-				{ "signature": "security()", "description": "Authenticode security directory" },
+				{ "signature": "security()", "description": "Certificates with base64 payloads, followed by a $error entry if parsing fails" },
 				{ "signature": "richStructure()", "description": "Rich structure" }
 			]
 		},
