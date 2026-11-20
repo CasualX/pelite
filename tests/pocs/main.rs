@@ -177,7 +177,10 @@ macro_rules! checks {
 			pub fn security<'a, P: Copy + Pe<'a>>(pe: P) -> Result<()> {
 				let security = pe.security()?;
 				let _ = format!("{security:?}");
-				let _ = (security.certificate_type(), security.certificate_data());
+				for certificate in security {
+					let certificate = certificate?;
+					let _ = (certificate.certificate_type(), certificate.payload());
+				}
 				Ok(())
 			}
 

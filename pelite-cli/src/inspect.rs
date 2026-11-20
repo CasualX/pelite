@@ -17,10 +17,11 @@ enum Topic {
 	Exceptions = 9,
 	Debug = 10,
 	Clr = 11,
+	Security = 12,
 }
 
 impl Topic {
-	const ALL: [Topic; 12] = [
+	const ALL: [Topic; 13] = [
 		Topic::Dos,
 		Topic::RichStructure,
 		Topic::Headers,
@@ -33,6 +34,7 @@ impl Topic {
 		Topic::Exceptions,
 		Topic::Debug,
 		Topic::Clr,
+		Topic::Security,
 	];
 
 	fn flag(self) -> &'static str {
@@ -49,6 +51,7 @@ impl Topic {
 			Topic::Exceptions => "exceptions",
 			Topic::Debug => "debug",
 			Topic::Clr => "clr",
+			Topic::Security => "security",
 		}
 	}
 }
@@ -159,6 +162,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 			Topic::Exceptions => ("exceptions", exceptions(pe)),
 			Topic::Debug => ("debug", value_opt(pe.debug())),
 			Topic::Clr => ("clr", clr(pe)),
+			Topic::Security => ("security", value_opt(pe.security())),
 		};
 		output.insert(key, result.unwrap_or_else(|error| serde_json::json!({ "$error": error.to_string() })));
 	}
