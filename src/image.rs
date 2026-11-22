@@ -850,114 +850,141 @@ pub struct IMAGE_BASE_RELOCATION {
 
 //----------------------------------------------------------------
 
-#[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(serde::Serialize))]
-#[repr(C)]
-pub struct IMAGE_LOAD_CONFIG_DIRECTORY32 {
-	pub Size: u32,
-	pub TimeDateStamp: u32,
-	pub Version: IMAGE_VERSION<u16>,
-	pub GlobalFlagsClear: u32,
-	pub GlobalFlagsSet: u32,
-	pub CriticalSectionDefaultTimeout: u32,
-	pub DeCommitFreeBlockThreshold: u32,
-	pub DeCommitTotalFreeThreshold: u32,
-	pub LockPrefixTable: u32,
-	pub MaximumAllocationSize: u32,
-	pub VirtualMemoryThreshold: u32,
-	pub ProcessHeapFlags: u32,
-	pub ProcessAffinityMask: u32,
-	pub CSDVersion: u16,
-	pub DependentLoadFlags: u16,
-	pub EditList: u32,
-	pub SecurityCookie: u32,
-	pub SEHandlerTable: u32,
-	pub SEHandlerCount: u32,
-	pub GuardCFCheckFunctionPointer: u32,
-	pub GuardCFDispatchFunctionPointer: u32,
-	pub GuardCFFunctionTable: u32,
-	pub GuardCFFunctionCount: u32,
-	pub GuardFlags: u32,
-	pub CodeIntegrity: IMAGE_LOAD_CONFIG_CODE_INTEGRITY,
-	pub GuardAddressTakenIatEntryTable: u32,
-	pub GuardAddressTakenIatEntryCount: u32,
-	pub GuardLongJumpTargetTable: u32,
-	pub GuardLongJumpTargetCount: u32,
-	pub DynamicValueRelocTable: u32,
-	pub CHPEMetadataPointer: u32,
-	pub GuardRFFailureRoutine: u32,
-	pub GuardRFFailureRoutineFunctionPointer: u32,
-	pub DynamicValueRelocTableOffset: u32,
-	pub DynamicValueRelocTableSection: u16,
-	pub Reserved2: u16,
-	pub GuardRFVerifyStackPointerFunctionPointer: u32,
-	pub HotPatchTableOffset: u32,
-	pub Reserved3: u32,
-	pub EnclaveConfigurationPointer: u32,
-	pub VolatileMetadataPointer: u32,
-	pub GuardEHContinuationTable: u32,
-	pub GuardEHContinuationCount: u32,
-	pub GuardXFGCheckFunctionPointer: u32,
-	pub GuardXFGDispatchFunctionPointer: u32,
-	pub GuardXFGTableDispatchFunctionPointer: u32,
-	pub CastGuardOsDeterminedFailureMode: u32,
-	pub GuardMemcpyFunctionPointer: u32,
-	pub UmaFunctionPointers: u32,
+// Define each directory layout and its serialized field offsets together.
+macro_rules! load_config_directory {
+	($name:ident, $offsets:ident { $($field:ident: $ty:ty,)* }) => {
+		#[derive(Copy, Clone, Debug)]
+		#[cfg_attr(feature = "serde", derive(serde::Serialize))]
+		#[repr(C)]
+		pub struct $name {
+			$(pub $field: $ty,)*
+		}
+
+		#[cfg(feature = "serde")]
+		#[derive(serde::Serialize)]
+		pub(crate) struct $offsets {
+			$($field: u16,)*
+		}
+
+		#[cfg(feature = "serde")]
+		impl $name {
+			pub(crate) const FIELD_OFFSETS: $offsets = $offsets {
+				$($field: {
+					let offset = core::mem::offset_of!(Self, $field);
+					assert!(offset <= u16::MAX as usize);
+					offset as u16
+				},)*
+			};
+		}
+	};
 }
 
-#[derive(Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(serde::Serialize))]
-#[repr(C)]
-pub struct IMAGE_LOAD_CONFIG_DIRECTORY64 {
-	pub Size: u32,
-	pub TimeDateStamp: u32,
-	pub Version: IMAGE_VERSION<u16>,
-	pub GlobalFlagsClear: u32,
-	pub GlobalFlagsSet: u32,
-	pub CriticalSectionDefaultTimeout: u32,
-	pub DeCommitFreeBlockThreshold: U64,
-	pub DeCommitTotalFreeThreshold: U64,
-	pub LockPrefixTable: U64,
-	pub MaximumAllocationSize: U64,
-	pub VirtualMemoryThreshold: U64,
-	pub ProcessAffinityMask: U64,
-	pub ProcessHeapFlags: u32,
-	pub CSDVersion: u16,
-	pub DependentLoadFlags: u16,
-	pub EditList: U64,
-	pub SecurityCookie: U64,
-	pub SEHandlerTable: U64,
-	pub SEHandlerCount: U64,
-	pub GuardCFCheckFunctionPointer: U64,
-	pub GuardCFDispatchFunctionPointer: U64,
-	pub GuardCFFunctionTable: U64,
-	pub GuardCFFunctionCount: U64,
-	pub GuardFlags: u32,
-	pub CodeIntegrity: IMAGE_LOAD_CONFIG_CODE_INTEGRITY,
-	pub GuardAddressTakenIatEntryTable: U64,
-	pub GuardAddressTakenIatEntryCount: U64,
-	pub GuardLongJumpTargetTable: U64,
-	pub GuardLongJumpTargetCount: U64,
-	pub DynamicValueRelocTable: U64,
-	pub CHPEMetadataPointer: U64,
-	pub GuardRFFailureRoutine: U64,
-	pub GuardRFFailureRoutineFunctionPointer: U64,
-	pub DynamicValueRelocTableOffset: u32,
-	pub DynamicValueRelocTableSection: u16,
-	pub Reserved2: u16,
-	pub GuardRFVerifyStackPointerFunctionPointer: U64,
-	pub HotPatchTableOffset: u32,
-	pub Reserved3: u32,
-	pub EnclaveConfigurationPointer: U64,
-	pub VolatileMetadataPointer: U64,
-	pub GuardEHContinuationTable: U64,
-	pub GuardEHContinuationCount: U64,
-	pub GuardXFGCheckFunctionPointer: U64,
-	pub GuardXFGDispatchFunctionPointer: U64,
-	pub GuardXFGTableDispatchFunctionPointer: U64,
-	pub CastGuardOsDeterminedFailureMode: U64,
-	pub GuardMemcpyFunctionPointer: U64,
-	pub UmaFunctionPointers: U64,
+load_config_directory! {
+	IMAGE_LOAD_CONFIG_DIRECTORY32, LoadConfigOffsets32 {
+		Size: u32,
+		TimeDateStamp: u32,
+		Version: IMAGE_VERSION<u16>,
+		GlobalFlagsClear: u32,
+		GlobalFlagsSet: u32,
+		CriticalSectionDefaultTimeout: u32,
+		DeCommitFreeBlockThreshold: u32,
+		DeCommitTotalFreeThreshold: u32,
+		LockPrefixTable: u32,
+		MaximumAllocationSize: u32,
+		VirtualMemoryThreshold: u32,
+		ProcessHeapFlags: u32,
+		ProcessAffinityMask: u32,
+		CSDVersion: u16,
+		DependentLoadFlags: u16,
+		EditList: u32,
+		SecurityCookie: u32,
+		SEHandlerTable: u32,
+		SEHandlerCount: u32,
+		GuardCFCheckFunctionPointer: u32,
+		GuardCFDispatchFunctionPointer: u32,
+		GuardCFFunctionTable: u32,
+		GuardCFFunctionCount: u32,
+		GuardFlags: u32,
+		CodeIntegrity: IMAGE_LOAD_CONFIG_CODE_INTEGRITY,
+		GuardAddressTakenIatEntryTable: u32,
+		GuardAddressTakenIatEntryCount: u32,
+		GuardLongJumpTargetTable: u32,
+		GuardLongJumpTargetCount: u32,
+		DynamicValueRelocTable: u32,
+		CHPEMetadataPointer: u32,
+		GuardRFFailureRoutine: u32,
+		GuardRFFailureRoutineFunctionPointer: u32,
+		DynamicValueRelocTableOffset: u32,
+		DynamicValueRelocTableSection: u16,
+		Reserved2: u16,
+		GuardRFVerifyStackPointerFunctionPointer: u32,
+		HotPatchTableOffset: u32,
+		Reserved3: u32,
+		EnclaveConfigurationPointer: u32,
+		VolatileMetadataPointer: u32,
+		GuardEHContinuationTable: u32,
+		GuardEHContinuationCount: u32,
+		GuardXFGCheckFunctionPointer: u32,
+		GuardXFGDispatchFunctionPointer: u32,
+		GuardXFGTableDispatchFunctionPointer: u32,
+		CastGuardOsDeterminedFailureMode: u32,
+		GuardMemcpyFunctionPointer: u32,
+		UmaFunctionPointers: u32,
+	}
+}
+
+load_config_directory! {
+	IMAGE_LOAD_CONFIG_DIRECTORY64, LoadConfigOffsets64 {
+		Size: u32,
+		TimeDateStamp: u32,
+		Version: IMAGE_VERSION<u16>,
+		GlobalFlagsClear: u32,
+		GlobalFlagsSet: u32,
+		CriticalSectionDefaultTimeout: u32,
+		DeCommitFreeBlockThreshold: U64,
+		DeCommitTotalFreeThreshold: U64,
+		LockPrefixTable: U64,
+		MaximumAllocationSize: U64,
+		VirtualMemoryThreshold: U64,
+		ProcessAffinityMask: U64,
+		ProcessHeapFlags: u32,
+		CSDVersion: u16,
+		DependentLoadFlags: u16,
+		EditList: U64,
+		SecurityCookie: U64,
+		SEHandlerTable: U64,
+		SEHandlerCount: U64,
+		GuardCFCheckFunctionPointer: U64,
+		GuardCFDispatchFunctionPointer: U64,
+		GuardCFFunctionTable: U64,
+		GuardCFFunctionCount: U64,
+		GuardFlags: u32,
+		CodeIntegrity: IMAGE_LOAD_CONFIG_CODE_INTEGRITY,
+		GuardAddressTakenIatEntryTable: U64,
+		GuardAddressTakenIatEntryCount: U64,
+		GuardLongJumpTargetTable: U64,
+		GuardLongJumpTargetCount: U64,
+		DynamicValueRelocTable: U64,
+		CHPEMetadataPointer: U64,
+		GuardRFFailureRoutine: U64,
+		GuardRFFailureRoutineFunctionPointer: U64,
+		DynamicValueRelocTableOffset: u32,
+		DynamicValueRelocTableSection: u16,
+		Reserved2: u16,
+		GuardRFVerifyStackPointerFunctionPointer: U64,
+		HotPatchTableOffset: u32,
+		Reserved3: u32,
+		EnclaveConfigurationPointer: U64,
+		VolatileMetadataPointer: U64,
+		GuardEHContinuationTable: U64,
+		GuardEHContinuationCount: U64,
+		GuardXFGCheckFunctionPointer: U64,
+		GuardXFGDispatchFunctionPointer: U64,
+		GuardXFGTableDispatchFunctionPointer: U64,
+		CastGuardOsDeterminedFailureMode: U64,
+		GuardMemcpyFunctionPointer: U64,
+		UmaFunctionPointers: U64,
+	}
 }
 
 //----------------------------------------------------------------
@@ -1444,6 +1471,8 @@ assert_offsetof!(48, IMAGE_LOAD_CONFIG_DIRECTORY32, ProcessAffinityMask);
 assert_sizeof!(328, IMAGE_LOAD_CONFIG_DIRECTORY64);
 assert_alignof!(4, IMAGE_LOAD_CONFIG_DIRECTORY64);
 assert_offsetof!(24, IMAGE_LOAD_CONFIG_DIRECTORY64, DeCommitFreeBlockThreshold);
+assert_offsetof!(64, IMAGE_LOAD_CONFIG_DIRECTORY64, ProcessAffinityMask);
+assert_offsetof!(72, IMAGE_LOAD_CONFIG_DIRECTORY64, ProcessHeapFlags);
 assert_offsetof!(144, IMAGE_LOAD_CONFIG_DIRECTORY64, GuardFlags);
 assert_offsetof!(320, IMAGE_LOAD_CONFIG_DIRECTORY64, UmaFunctionPointers);
 assert_sizeof!(3 * 4, IMAGE_LOAD_CONFIG_CODE_INTEGRITY);

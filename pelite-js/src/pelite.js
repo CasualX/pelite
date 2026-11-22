@@ -295,7 +295,8 @@ if (!response.ok) {
  */
 
 /** Missing fields in older load-config revisions are zero-filled in image.
- * @typedef {{ image: PeLoadConfigImage, size: number, security_cookie: number | null, se_handler_table: number[] | null }} PeLoadConfig
+ * Offsets are byte offsets from the start of the load configuration directory.
+ * @typedef {{ image: PeLoadConfigImage, offsets: Record<keyof PeLoadConfigImage, number>, size: number, security_cookie: number | null, se_handler_table: number[] | null }} PeLoadConfig
  */
 
 /** @typedef {{ BeginAddress: number, EndAddress: number, UnwindData: number }} PeRuntimeFunctionImage */

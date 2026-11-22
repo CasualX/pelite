@@ -148,8 +148,9 @@ impl<'a, P: Copy + Pe<'a>> fmt::Debug for LoadConfigDirectory<'a, P> {
 serde_impl! {
 	impl<'a, P: Copy + Pe<'a>> Serialize for LoadConfigDirectory<'a, P> {
 		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-			let mut state = serializer.serialize_struct("LoadConfigDirectory", 4)?;
+			let mut state = serializer.serialize_struct("LoadConfigDirectory", 5)?;
 			state.serialize_field("image", &self.image_copy())?;
+			state.serialize_field("offsets", &IMAGE_LOAD_CONFIG_DIRECTORY::FIELD_OFFSETS)?;
 			state.serialize_field("size", &self.size())?;
 			state.serialize_field("security_cookie", &self.security_cookie().ok())?;
 			state.serialize_field("se_handler_table", &self.se_handler_table().ok())?;
