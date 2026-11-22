@@ -303,6 +303,13 @@ fn load_config() {
 	assert_eq!(load_config.get(dataview::Field!(IMAGE_LOAD_CONFIG_DIRECTORY.SecurityCookie)).map(|value| value.get()), Some(0x180005000));
 	assert_eq!(load_config.get(dataview::Field!(IMAGE_LOAD_CONFIG_DIRECTORY.GuardFlags)), None);
 	assert_eq!(load_config.get(dataview::Field!(IMAGE_LOAD_CONFIG_DIRECTORY.HotPatchTableOffset)), None);
+
+	#[cfg(feature = "serde")]
+	{
+		let value = serde_json::to_value(load_config).unwrap();
+		assert_eq!(value["offsets"]["GuardFlags"], 144);
+		assert_eq!(value["offsets"]["UmaFunctionPointers"], 320);
+	}
 }
 
 //----------------------------------------------------------------
