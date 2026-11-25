@@ -316,11 +316,18 @@ fn load_config() {
 
 #[test]
 fn debug() {
+	use pelite::debug::DebugData;
+
 	let file_map = PeMemory::open(FILE_NAME).unwrap();
 	let file = PeFile::from_bytes(&file_map).unwrap();
-	let debug = file.debug().unwrap();
+	let mapped_image = file.to_view();
+	let mapped = PeView::from_bytes(&mapped_image).unwrap();
+	for debug in [file.debug().unwrap(), mapped.debug().unwrap()] {
+		assert_eq!(debug.pdb_file_name().unwrap().unwrap(), r"D:\Projects\pelite\proto\Demo\x64\Release\Demo.pdb");
 
-	assert_eq!(debug.pdb_file_name().unwrap().unwrap(), r"D:\Projects\pelite\proto\Demo\x64\Release\Demo.pdb");
+		let feature = debug.iter().find_map(|entry| entry.entry().unwrap().and_then(DebugData::as_vc_feature)).unwrap();
+		assert_eq!((feature.PreVCPP, feature.CCPP, feature.GS, feature.SDL, feature.GuardN), (0, 21, 21, 5, 0));
+	}
 }
 
 //----------------------------------------------------------------

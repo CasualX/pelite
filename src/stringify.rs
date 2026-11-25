@@ -175,6 +175,19 @@ flags! {
 	/*8000*/15, IMAGE_DLLCHARACTERISTICS_TERMINAL_SERVER_AWARE => "Terminal Server aware",
 }
 
+flags! {
+	/// Stringifies the `IMAGE_DLLCHARACTERISTICS_EX_*` flags in an extended DLL characteristics debug record.
+	pub ExDllChars(ex_dll_chars: u32),
+	0, IMAGE_DLLCHARACTERISTICS_EX_CET_COMPAT => "CET shadow stack compatible",
+	1, IMAGE_DLLCHARACTERISTICS_EX_CET_COMPAT_STRICT_MODE => "CET strict mode",
+	2, IMAGE_DLLCHARACTERISTICS_EX_CET_SET_CONTEXT_IP_VALIDATION_RELAXED_MODE => "Relaxed CET set-context IP validation",
+	3, IMAGE_DLLCHARACTERISTICS_EX_CET_DYNAMIC_APIS_ALLOW_IN_PROC => "Allows CET dynamic APIs in process",
+	4, IMAGE_DLLCHARACTERISTICS_EX_CET_RESERVED_1 => "Reserved for CET policy downgrade",
+	5, IMAGE_DLLCHARACTERISTICS_EX_CET_RESERVED_2 => "Reserved for CET policy downgrade",
+	6, IMAGE_DLLCHARACTERISTICS_EX_FORWARD_CFI_COMPAT => "Forward-edge CFI compatible",
+	7, IMAGE_DLLCHARACTERISTICS_EX_HOTPATCH_COMPATIBLE => "Hotpatch compatible",
+}
+
 enum1! {
 	/// Stringifies the `IMAGE_DIRECTORY_ENTRY_*` constants for [`IMAGE_OPTIONAL_HEADER::DataDirectory`][IMAGE_OPTIONAL_HEADER64::DataDirectory].
 	DirectoryEntry(entry: usize),
@@ -384,6 +397,7 @@ enum1! {
 	IMAGE_DEBUG_TYPE_ILTCG => "ILTCG",
 	IMAGE_DEBUG_TYPE_MPX => "MPX",
 	IMAGE_DEBUG_TYPE_REPRO => "Repro",
+	IMAGE_DEBUG_TYPE_EX_DLLCHARACTERISTICS => "Extended DLL characteristics",
 }
 
 #[cfg(test)]

@@ -136,15 +136,22 @@ impl<'a> DebugDirectoryEntry<'a> {
 	/// # Errors
 	///
 	/// * [Bounds][Error::Bounds]: Data is unavailable or a supported record is truncated.
-	/// * [Misaligned][Error::Misaligned]: A CodeView, miscellaneous, or PGO record is misaligned.
+	/// * [Misaligned][Error::Misaligned]: A CodeView, miscellaneous, VC feature, or PGO record is misaligned.
 	/// * [BadMagic][Error::BadMagic]: A CodeView signature is unsupported.
 	/// * [Encoding][Error::Encoding]: A required name lacks a NUL terminator.
-	/// * [Invalid][Error::Invalid]: A UTF-16 name or PGO record has an invalid byte length.
+	/// * [Invalid][Error::Invalid]: A UTF-16 name, PGO record, or reproducible-build hash has an invalid byte length.
 	pub fn entry(&self) -> Result<Option<DebugData<'a>>> {
 		match self.image.Type {
 			image::IMAGE_DEBUG_TYPE_CODEVIEW => Ok(Some(DebugData::CodeView(code_view(self)?))),
 			image::IMAGE_DEBUG_TYPE_MISC => Ok(Some(DebugData::Misc(debug_misc(self)?))),
+			image::IMAGE_DEBUG_TYPE_VC_FEATURE => Ok(Some(DebugData::VcFeature(vc_feature(self)?))),
 			image::IMAGE_DEBUG_TYPE_POGO => Ok(Some(DebugData::Pgo(pgo(self)?))),
+			image::IMAGE_DEBUG_TYPE_REPRO => Ok(Some(DebugData::Repro(repro(self.data().ok_or(Error::Bounds)?)?))),
+			image::IMAGE_DEBUG_TYPE_EX_DLLCHARACTERISTICS => {
+				let data = self.data().ok_or(Error::Bounds)?;
+				let bits = u32::from_le_bytes(*data.first_chunk().ok_or(Error::Bounds)?);
+				Ok(Some(DebugData::ExDllChars(ExDllChars(bits))))
+			},
 			_ => Ok(None),
 		}
 	}
@@ -235,6 +242,18 @@ fn debug_misc_name(data: &[u8], unicode: bool) -> Result<DebugMiscName<'_>> {
 	Ok(DebugMiscName::Unicode(&words[..len]))
 }
 
+fn vc_feature<'a>(dir: &DebugDirectoryEntry<'a>) -> Result<&'a image::IMAGE_DEBUG_VC_FEATURE> {
+	let data = dir.data().ok_or(Error::Bounds)?;
+	if data.len() < mem::size_of::<image::IMAGE_DEBUG_VC_FEATURE>() {
+		return Err(Error::Bounds);
+	}
+	if !data.as_ptr().aligned_to(mem::align_of::<image::IMAGE_DEBUG_VC_FEATURE>()) {
+		return Err(Error::Misaligned);
+	}
+	// SAFETY: The complete record is in bounds and aligned, and all fields are u32.
+	Ok(unsafe { &*data.as_ptr().cast::<image::IMAGE_DEBUG_VC_FEATURE>() })
+}
+
 fn pgo<'a>(dir: &DebugDirectoryEntry<'a>) -> Result<Pgo<'a>> {
 	let data = dir.data().ok_or(Error::Bounds)?;
 	if data.len() < 4 {
@@ -254,6 +273,19 @@ fn pgo<'a>(dir: &DebugDirectoryEntry<'a>) -> Result<Pgo<'a>> {
 	Ok(pgo)
 }
 
+fn repro(data: &[u8]) -> Result<Repro<'_>> {
+	if data.is_empty() {
+		return Ok(Repro { hash: None });
+	}
+	let (length, data) = data.split_first_chunk().ok_or(Error::Bounds)?;
+	let length = u32::from_le_bytes(*length) as usize;
+	let hash = data.get(..length).ok_or(Error::Bounds)?;
+	if hash.len() != data.len() {
+		return Err(Error::Invalid);
+	}
+	Ok(Repro { hash: Some(hash) })
+}
+
 //----------------------------------------------------------------
 
 /// Decoded contents of a debug directory entry.
@@ -264,8 +296,14 @@ pub enum DebugData<'a> {
 	CodeView(CodeView<'a>),
 	/// Miscellaneous debug information.
 	Misc(DebugMisc<'a>),
+	/// Visual C++ feature counters.
+	VcFeature(&'a image::IMAGE_DEBUG_VC_FEATURE),
 	/// Profile-guided optimization information.
 	Pgo(Pgo<'a>),
+	/// Reproducible-build marker or hash.
+	Repro(Repro<'a>),
+	/// Extended DLL characteristics.
+	ExDllChars(ExDllChars),
 }
 impl<'a> DebugData<'a> {
 	/// Returns the CodeView entry, if this variant contains one.
@@ -282,10 +320,31 @@ impl<'a> DebugData<'a> {
 			_ => None,
 		}
 	}
+	/// Returns the Visual C++ feature counters, if this variant contains them.
+	pub fn as_vc_feature(self) -> Option<&'a image::IMAGE_DEBUG_VC_FEATURE> {
+		match self {
+			DebugData::VcFeature(feature) => Some(feature),
+			_ => None,
+		}
+	}
 	/// Returns the PGO entry, if this variant contains one.
 	pub fn as_pgo(self) -> Option<Pgo<'a>> {
 		match self {
 			DebugData::Pgo(pgo) => Some(pgo),
+			_ => None,
+		}
+	}
+	/// Returns the reproducible-build record, if this variant contains one.
+	pub fn as_repro(self) -> Option<Repro<'a>> {
+		match self {
+			DebugData::Repro(repro) => Some(repro),
+			_ => None,
+		}
+	}
+	/// Returns the extended DLL characteristics, if this variant contains them.
+	pub fn as_ex_dll_chars(self) -> Option<ExDllChars> {
+		match self {
+			DebugData::ExDllChars(characteristics) => Some(characteristics),
 			_ => None,
 		}
 	}
@@ -537,6 +596,40 @@ pub struct PgoItem<'a> {
 	pub name: &'a CStr,
 }
 
+/// A reproducible-build marker with an optional embedded hash.
+#[derive(Copy, Clone, Debug)]
+pub struct Repro<'a> {
+	hash: Option<&'a [u8]>,
+}
+impl<'a> Repro<'a> {
+	/// Returns the embedded hash bytes, if present.
+	pub fn hash(&self) -> Option<&'a [u8]> {
+		self.hash
+	}
+}
+
+/// Extended DLL characteristics stored in a debug directory entry.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub struct ExDllChars(u32);
+impl ExDllChars {
+	/// Returns the complete bitmask, including bits without a known name.
+	pub fn bits(self) -> u32 {
+		self.0
+	}
+	/// Iterates over the names of the set `IMAGE_DLLCHARACTERISTICS_EX_*` flags.
+	pub fn flags(self) -> impl Clone + Iterator<Item = &'static str> {
+		crate::stringify::ExDllChars(self.0).to_strs()
+	}
+}
+impl fmt::Debug for ExDllChars {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		f.debug_struct("ExDllChars")
+			.field("bits", &self.bits())
+			.field("flags", &crate::util::DebugList(self.flags()))
+			.finish()
+	}
+}
+
 //----------------------------------------------------------------
 
 serde_impl! {
@@ -556,7 +649,17 @@ serde_impl! {
 			else {
 				state.serialize_field("type", &self.image.Type)?;
 			}
-			state.serialize_field("entry", &self.entry().ok().flatten())?;
+			match self.entry() {
+				Err(error) if is_human_readable => {
+					#[derive(serde::Serialize)]
+					struct EntryError {
+						#[serde(rename = "$error")]
+						error: &'static str,
+					}
+					state.serialize_field("entry", &EntryError { error: error.to_str() })?;
+				},
+				entry => state.serialize_field("entry", &entry.ok().flatten())?,
+			}
 			state.end()
 		}
 	}
@@ -597,6 +700,30 @@ serde_impl! {
 			let mut state = serializer.serialize_struct("Pgo", 2)?;
 			state.serialize_field("signature", &self.signature())?;
 			state.serialize_field("sections", &SerdeIter(self.iter()))?;
+			state.end()
+		}
+	}
+	impl Serialize for Repro<'_> {
+		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+			let is_human_readable = serializer.is_human_readable();
+			let mut state = serializer.serialize_struct("Repro", 1)?;
+			if is_human_readable {
+				state.serialize_field("hash", &self.hash.map(|hash| basenc::LowerHex.encode(hash)))?;
+			}
+			else {
+				state.serialize_field("hash", &self.hash)?;
+			}
+			state.end()
+		}
+	}
+	impl Serialize for ExDllChars {
+		fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+			if !serializer.is_human_readable() {
+				return serializer.serialize_u32(self.bits());
+			}
+			let mut state = serializer.serialize_struct("ExDllChars", 2)?;
+			state.serialize_field("bits", &self.bits())?;
+			state.serialize_field("flags", &SerdeIter(self.flags()))?;
 			state.end()
 		}
 	}
