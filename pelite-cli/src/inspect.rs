@@ -160,7 +160,7 @@ pub fn run(matches: &clap::ArgMatches, format: OutputFormat) -> Result {
 			Topic::LoadConfig => ("load_config", value_opt(pe.load_config())),
 			Topic::Tls => ("tls", value_opt(pe.tls())),
 			Topic::Exceptions => ("exceptions", exceptions(pe)),
-			Topic::Debug => ("debug", value_opt(pe.debug())),
+			Topic::Debug => ("debug", debug(pe)),
 			Topic::Clr => ("clr", clr(pe)),
 			Topic::Security => ("security", value_opt(pe.security())),
 		};
@@ -199,6 +199,31 @@ fn exceptions(pe: PeFile<'_>) -> Result<serde_json::Value> {
 			_ => Err(pelite::Error::Invalid.into()),
 		},
 	}
+}
+
+fn debug(pe: PeFile<'_>) -> Result<serde_json::Value> {
+	let directory = match pe.debug() {
+		Ok(directory) => directory,
+		Err(error) if error.is_null() => return Ok(serde_json::Value::Null),
+		Err(error) => return Err(error.into()),
+	};
+	let headers = pe.headers();
+	let mut records = Vec::with_capacity(directory.image().len());
+	for record in directory {
+		let image = record.image();
+		let mut output = value(record)?;
+		if image.SizeOfData != 0 && image.AddressOfRawData != 0 && image.PointerToRawData != 0
+			&& let Ok(mapped_offset) = headers.rva_to_file_offset(image.AddressOfRawData)
+			&& mapped_offset != image.PointerToRawData as usize
+		{
+			output["$warning"] = format!(
+				"AddressOfRawData maps to file offset {mapped_offset:#x}, which differs from PointerToRawData {:#x}",
+				image.PointerToRawData,
+			).into();
+		}
+		records.push(output);
+	}
+	Ok(serde_json::Value::Array(records))
 }
 
 fn clr(pe: PeFile<'_>) -> Result<serde_json::Value> {
