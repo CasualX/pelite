@@ -126,7 +126,7 @@ serde_impl! {
 			else {
 				state.serialize_field("raw_data", &self.raw_data().ok())?;
 			}
-			state.serialize_field("slot", &self.slot().ok())?;
+			state.serialize_field("slot", &self.pe.va_to_rva(self.image.AddressOfIndex.into()).ok())?;
 			state.serialize_field("callbacks", &self.callbacks().ok())?;
 			state.end()
 		}
