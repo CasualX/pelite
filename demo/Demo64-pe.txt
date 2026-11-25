@@ -1306,7 +1306,7 @@ sections:
 tls:
   callbacks : [6442456256 (0x1800014c0)]
   raw_data  : AAA=
-  slot      : 0
+  slot      : 20800 (0x5140)
 
   image:
     AddressOfCallBacks    : 6442463616 (0x180003180)
