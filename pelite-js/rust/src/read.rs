@@ -2,6 +2,7 @@
 
 use super::*;
 use binfact::ty;
+use std::collections::BTreeMap;
 
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
@@ -32,7 +33,36 @@ struct ReadArgs {
 	options: ReadOptions,
 }
 
-fn interpret(pe: pelite::PeFile<'_>, rva: u32, args: &[u8]) -> Result<serde_json::Value> {
+// Keep strings, collections, and errors to one pointer inside the enum.
+#[derive(serde::Serialize)]
+#[serde(untagged)]
+enum ReadValue {
+	U8(u8),
+	U16(u16),
+	U32(u32),
+	U64(u64),
+	I8(i8),
+	I16(i16),
+	I32(i32),
+	I64(i64),
+	F32(f32),
+	F64(f64),
+	String(Box<String>),
+	Null,
+	Array(Box<Vec<ReadValue>>),
+	Object(Box<BTreeMap<String, ReadValue>>),
+	Error(Box<ReadError>),
+}
+
+#[derive(serde::Serialize)]
+struct ReadError {
+	#[serde(rename = "$error")]
+	message: String,
+	#[serde(rename = "$rva")]
+	rva: Option<u32>,
+}
+
+fn interpret(pe: pelite::PeFile<'_>, rva: u32, args: &[u8]) -> Result<ReadValue> {
 	let args: ReadArgs = serde_json::from_slice(args)?;
 	let width = match pe {
 		pelite::Wrap::T32(_) => ty::PointerWidth::X32,
@@ -49,16 +79,9 @@ pub unsafe fn read(pefile: *mut PeFile, rva: u32, args: *const [u8]) {
 		Err(err) => return return_error(err),
 	};
 	match interpret(pe, rva, unsafe { &*args }) {
-		Ok(value) => {
-			// A failed root read follows the usual wasm Error convention. Nested
-			// failures stay inline so callers can inspect successful fields too.
-			if let Some(error) = value.get("$error").and_then(|v| v.as_str()) {
-				return_error(error);
-			}
-			else {
-				return_json(value);
-			}
-		},
+		// Report root failures as wasm errors and serialize nested failures inline.
+		Ok(ReadValue::Error(error)) => return_error(error.message),
+		Ok(value) => return_json(value),
 		Err(err) => return_error(err),
 	}
 }
@@ -69,33 +92,33 @@ struct StructContext<'a> {
 	fields: &'a [ty::Field],
 }
 
-fn error_value(rva: Option<u32>, error: impl fmt::Display) -> serde_json::Value {
-	serde_json::json!({ "$error": error.to_string(), "$rva": rva })
+fn error_value(rva: Option<u32>, error: impl fmt::Display) -> ReadValue {
+	ReadValue::Error(Box::new(ReadError { message: error.to_string(), rva }))
 }
 
-pub fn read_at(pe: pelite::PeFile<'_>, rva: u32, ty: &ty::Type, options: &ReadOptions) -> serde_json::Value {
+fn read_at(pe: pelite::PeFile<'_>, rva: u32, ty: &ty::Type, options: &ReadOptions) -> ReadValue {
 	read_value(pe, rva, ty, options, None)
 }
 
-fn read_value(pe: pelite::PeFile<'_>, rva: u32, ty: &ty::Type, options: &ReadOptions, context: Option<&StructContext<'_>>) -> serde_json::Value {
+fn read_value(pe: pelite::PeFile<'_>, rva: u32, ty: &ty::Type, options: &ReadOptions, context: Option<&StructContext<'_>>) -> ReadValue {
 	try_read_value(pe, rva, ty, options, context).unwrap_or_else(|error| error_value(Some(rva), error))
 }
 
-fn try_read_value(pe: pelite::PeFile<'_>, rva: u32, ty: &ty::Type, options: &ReadOptions, context: Option<&StructContext<'_>>) -> Result<serde_json::Value> {
+fn try_read_value(pe: pelite::PeFile<'_>, rva: u32, ty: &ty::Type, options: &ReadOptions, context: Option<&StructContext<'_>>) -> Result<ReadValue> {
 	macro_rules! read {
 		($ty:ty) => { pe.derva_copy::<$ty>(rva, options.zerofill)? };
 	}
 	let value = match ty {
-		ty::Type::U8 => serde_json::to_value(read!(u8)),
-		ty::Type::U16 => serde_json::to_value(read!(u16)),
-		ty::Type::U32 => serde_json::to_value(read!(u32)),
-		ty::Type::U64 => serde_json::to_value(read!(u64)),
-		ty::Type::I8 => serde_json::to_value(read!(i8)),
-		ty::Type::I16 => serde_json::to_value(read!(i16)),
-		ty::Type::I32 => serde_json::to_value(read!(i32)),
-		ty::Type::I64 => serde_json::to_value(read!(i64)),
-		ty::Type::F32 => serde_json::to_value(read!(f32)),
-		ty::Type::F64 => serde_json::to_value(read!(f64)),
+		ty::Type::U8 => ReadValue::U8(read!(u8)),
+		ty::Type::U16 => ReadValue::U16(read!(u16)),
+		ty::Type::U32 => ReadValue::U32(read!(u32)),
+		ty::Type::U64 => ReadValue::U64(read!(u64)),
+		ty::Type::I8 => ReadValue::I8(read!(i8)),
+		ty::Type::I16 => ReadValue::I16(read!(i16)),
+		ty::Type::I32 => ReadValue::I32(read!(i32)),
+		ty::Type::I64 => ReadValue::I64(read!(i64)),
+		ty::Type::F32 => ReadValue::F32(read!(f32)),
+		ty::Type::F64 => ReadValue::F64(read!(f64)),
 		ty::Type::Code | ty::Type::Fn | ty::Type::Unknown | ty::Type::Ptr32(_) | ty::Type::Ptr64(_) => {
 			let va = match ty {
 				ty::Type::Ptr32(_) => u64::from(read!(u32)),
@@ -103,16 +126,16 @@ fn try_read_value(pe: pelite::PeFile<'_>, rva: u32, ty: &ty::Type, options: &Rea
 				_ => return Err(err(format!("cannot read opaque type '{ty}' directly"))),
 			};
 			if va == 0 {
-				return Ok(serde_json::Value::Null);
+				return Ok(ReadValue::Null);
 			}
 			let target = pe.va_to_rva(va)?;
 			if let ty::Type::Ptr32(pointee) | ty::Type::Ptr64(pointee) = ty && !pointee.is_opaque() {
 				return Ok(read_value(pe, target, pointee, options, context));
 			}
-			serde_json::to_value(target)
+			ReadValue::U32(target)
 		},
-		ty::Type::CStr => serde_json::to_value(read_cstr(pe.slice_bytes(rva)?, options.string_preview_length)?),
-		ty::Type::Utf16LEZ => serde_json::to_value(read_utf16lez(pe.slice_bytes(rva)?, options.string_preview_length)?),
+		ty::Type::CStr => ReadValue::String(Box::new(read_cstr(pe.slice_bytes(rva)?, options.string_preview_length)?)),
+		ty::Type::Utf16LEZ => ReadValue::String(Box::new(read_utf16lez(pe.slice_bytes(rva)?, options.string_preview_length)?)),
 		ty::Type::Array(array) => {
 			let stride = array.ty.size().map_err(err)?;
 			let len = match &array.len {
@@ -144,11 +167,11 @@ fn try_read_value(pe: pelite::PeFile<'_>, rva: u32, ty: &ty::Type, options: &Rea
 				};
 				values.push(value);
 			}
-			return Ok(serde_json::Value::Array(values));
+			ReadValue::Array(Box::new(values))
 		},
 		ty::Type::Struct(structure) => {
 			let context = StructContext { rva, fields: &structure.fields };
-			let mut fields = serde_json::Map::new();
+			let mut fields = BTreeMap::new();
 			for (index, field) in structure.fields.iter().enumerate() {
 				let name = match &field.name {
 					ty::FieldName::Named(name) => name.to_string(),
@@ -161,10 +184,10 @@ fn try_read_value(pe: pelite::PeFile<'_>, rva: u32, ty: &ty::Type, options: &Rea
 				};
 				fields.insert(name, value);
 			}
-			return Ok(serde_json::Value::Object(fields));
+			ReadValue::Object(Box::new(fields))
 		},
 	};
-	Ok(value?)
+	Ok(value)
 }
 
 fn read_cstr(bytes: &[u8], string_preview_length: usize) -> Result<String> {
