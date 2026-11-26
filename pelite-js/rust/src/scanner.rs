@@ -25,7 +25,7 @@ pub unsafe fn scanner_exec(pefile: *mut PeFile, rva: u32, pattern: *const [u8]) 
 	}
 
 	let slots = pelite::pattern::captures_len(&pattern);
-	return_json(&save[..slots]);
+	return_value(&save[..slots]);
 }
 
 #[derive(serde::Deserialize)]
@@ -92,7 +92,7 @@ pub unsafe fn scanner_find(pefile: *mut PeFile, args: *const [u8]) {
 	};
 
 	let save = save[..pelite::pattern::captures_len(&pattern)].to_vec();
-	return_json(ScannerFindResult { rva, save });
+	return_value(ScannerFindResult { rva, save });
 }
 
 #[unsafe(export_name = "pefileScannerMatches")]
@@ -150,5 +150,5 @@ pub unsafe fn scanner_matches(pefile: *mut PeFile, args: *const [u8]) {
 		}
 	}
 
-	return_json(captures);
+	return_value(captures);
 }

@@ -2,16 +2,109 @@
 
 const textDecoder = new TextDecoder("utf-8");
 const textEncoder = new TextEncoder();
+const tlvTextDecoder = new TextDecoder("utf-8", { fatal: true, ignoreBOM: true });
+
+// Keep in sync with rust/src/tlv.rs. Only strings and byte buffers carry
+// a byte length. Arrays and objects end with an End tag.
+const TlvTag = {
+	False: 0, True: 1,
+	U8: 2, U16: 3, U32: 4, U64: 5, U128: 6,
+	I8: 7, I16: 8, I32: 9, I64: 10, I128: 11,
+	F32: 12, F64: 13, StringU8len: 14, StringU32len: 15, Null: 16,
+	BytesU8len: 17, BytesU32len: 18, Array: 19, Object: 20, End: 255,
+};
+
+/** @param {Uint8Array} bytes @returns {*} */
+function decodeTlv(bytes) {
+	let view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+	let offset = 0;
+
+	/** @param {number} width */
+	function advance(width) {
+		let start = offset;
+		offset += width;
+		return start;
+	}
+
+	/** @param {number} length */
+	function readBlob(length) {
+		let start = advance(length);
+		if (offset > bytes.length) throw new Error("Truncated TLV byte payload");
+		return bytes.subarray(start, offset);
+	}
+
+	function readU128() {
+		let low = view.getBigUint64(advance(8), true);
+		let high = view.getBigUint64(advance(8), true);
+		return (high << 64n) | low;
+	}
+
+	/** @param {number} [tag] @returns {*} */
+	function readValue(tag = view.getUint8(offset++)) {
+		switch (tag) {
+			case TlvTag.False: return false;
+			case TlvTag.True: return true;
+			case TlvTag.U8: return view.getUint8(offset++);
+			case TlvTag.U16: return view.getUint16(advance(2), true);
+			case TlvTag.U32: return view.getUint32(advance(4), true);
+			case TlvTag.U64: return view.getBigUint64(advance(8), true);
+			case TlvTag.U128: return readU128();
+			case TlvTag.I8: return view.getInt8(offset++);
+			case TlvTag.I16: return view.getInt16(advance(2), true);
+			case TlvTag.I32: return view.getInt32(advance(4), true);
+			case TlvTag.I64: return view.getBigInt64(advance(8), true);
+			case TlvTag.I128: return BigInt.asIntN(128, readU128());
+			case TlvTag.F32: return view.getFloat32(advance(4), true);
+			case TlvTag.F64: return view.getFloat64(advance(8), true);
+			case TlvTag.StringU8len: return tlvTextDecoder.decode(readBlob(view.getUint8(offset++)));
+			case TlvTag.StringU32len: return tlvTextDecoder.decode(readBlob(view.getUint32(advance(4), true)));
+			case TlvTag.Null: return null;
+			case TlvTag.BytesU8len: return readBlob(view.getUint8(offset++)).slice();
+			case TlvTag.BytesU32len: return readBlob(view.getUint32(advance(4), true)).slice();
+			case TlvTag.Array: {
+				let array = [];
+				for (let next; (next = view.getUint8(offset++)) !== TlvTag.End;) {
+					array.push(readValue(next));
+				}
+				return array;
+			}
+			case TlvTag.Object: {
+				/** @type {Record<string, *>} */
+				let object = {};
+				for (let next; (next = view.getUint8(offset++)) !== TlvTag.End;) {
+					let key = String(readValue(next));
+					let value = readValue();
+					if (key === "__proto__") {
+						Object.defineProperty(object, key, { value, writable: true, enumerable: true, configurable: true });
+					}
+					else {
+						object[key] = value;
+					}
+				}
+				return object;
+			}
+			default: throw new Error(`Unexpected TLV tag ${tag}`);
+		}
+	}
+
+	let value = readValue();
+	if (offset !== bytes.length) throw new Error("Trailing bytes after TLV value");
+	return value;
+}
 
 /** @type {*} */
 let result = null;
 let imports = {
 	env: {
-		// Returns data in the form of serialized JSON
+		// Decode while the Rust output buffer is live.
 		/** @param {number} ptr @param {number} len */
-		returnJSON(ptr, len) {
-			let json = textDecoder.decode(new Uint8Array(instance.exports.memory.buffer, ptr, len));
-			result = JSON.parse(json);
+		returnTlv(ptr, len) {
+			try {
+				result = decodeTlv(new Uint8Array(instance.exports.memory.buffer, ptr >>> 0, len >>> 0));
+			}
+			catch (error) {
+				result = error;
+			}
 		},
 		// Returns an UTF-8 string
 		/** @param {number} ptr @param {number} len */
@@ -154,7 +247,7 @@ if (!response.ok) {
  */
 
 /**
- * @typedef {number | string | null | ReadError | ReadValue[] | { [field: string]: ReadValue }} ReadValue
+ * @typedef {number | bigint | string | null | ReadError | ReadValue[] | { [field: string]: ReadValue }} ReadValue
  */
 
 /**
@@ -178,7 +271,7 @@ if (!response.ok) {
  * @property {number} AddressOfEntryPoint
  * @property {number} [BaseOfData] Present only in PE32.
  * @property {number} BaseOfCode
- * @property {number} ImageBase
+ * @property {number | bigint} ImageBase PE32+ uses bigint.
  * @property {number} SectionAlignment
  * @property {number} FileAlignment
  * @property {string} OperatingSystemVersion
@@ -190,15 +283,15 @@ if (!response.ok) {
  * @property {number} CheckSum
  * @property {number} Subsystem
  * @property {number} DllCharacteristics
- * @property {number} SizeOfStackReserve
- * @property {number} SizeOfStackCommit
- * @property {number} SizeOfHeapReserve
- * @property {number} SizeOfHeapCommit
+ * @property {number | bigint} SizeOfStackReserve
+ * @property {number | bigint} SizeOfStackCommit
+ * @property {number | bigint} SizeOfHeapReserve
+ * @property {number | bigint} SizeOfHeapCommit
  * @property {number} LoaderFlags
  * @property {number} NumberOfRvaAndSizes
  */
 
-/** @typedef {{ Name: string, VirtualAddress: number, VirtualSize: number, SizeOfRawData: number, PointerToRawData: number, Characteristics: number }} PeSectionHeader */
+/** @typedef {{ Name: string | Uint8Array, VirtualAddress: number, VirtualSize: number, SizeOfRawData: number, PointerToRawData: number, Characteristics: number }} PeSectionHeader */
 /** @typedef {{ VirtualAddress: number, Size: number }} PeDataDirectory */
 /** @typedef {{ Signature: number, FileHeader: PeFileHeader, OptionalHeader: PeOptionalHeader }} PeNtHeaders */
 /** @typedef {{ DosHeader: PeDosHeader, NtHeaders: PeNtHeaders, SectionHeaders: PeSectionHeader[], DataDirectory: PeDataDirectory[], details: Record<string, unknown> & { 'DataDirectory.Names': (string | null)[] } }} PeHeaders */
@@ -249,49 +342,49 @@ if (!response.ok) {
  * @property {number} GlobalFlagsClear
  * @property {number} GlobalFlagsSet
  * @property {number} CriticalSectionDefaultTimeout
- * @property {number} DeCommitFreeBlockThreshold
- * @property {number} DeCommitTotalFreeThreshold
- * @property {number} LockPrefixTable
- * @property {number} MaximumAllocationSize
- * @property {number} VirtualMemoryThreshold
- * @property {number} ProcessAffinityMask
+ * @property {number | bigint} DeCommitFreeBlockThreshold
+ * @property {number | bigint} DeCommitTotalFreeThreshold
+ * @property {number | bigint} LockPrefixTable
+ * @property {number | bigint} MaximumAllocationSize
+ * @property {number | bigint} VirtualMemoryThreshold
+ * @property {number | bigint} ProcessAffinityMask
  * @property {number} ProcessHeapFlags
  * @property {number} CSDVersion
  * @property {number} DependentLoadFlags
- * @property {number} EditList
- * @property {number} SecurityCookie
- * @property {number} SEHandlerTable
- * @property {number} SEHandlerCount
- * @property {number} GuardCFCheckFunctionPointer
- * @property {number} GuardCFDispatchFunctionPointer
- * @property {number} GuardCFFunctionTable
- * @property {number} GuardCFFunctionCount
+ * @property {number | bigint} EditList
+ * @property {number | bigint} SecurityCookie
+ * @property {number | bigint} SEHandlerTable
+ * @property {number | bigint} SEHandlerCount
+ * @property {number | bigint} GuardCFCheckFunctionPointer
+ * @property {number | bigint} GuardCFDispatchFunctionPointer
+ * @property {number | bigint} GuardCFFunctionTable
+ * @property {number | bigint} GuardCFFunctionCount
  * @property {number} GuardFlags
  * @property {PeLoadConfigCodeIntegrity} CodeIntegrity
- * @property {number} GuardAddressTakenIatEntryTable
- * @property {number} GuardAddressTakenIatEntryCount
- * @property {number} GuardLongJumpTargetTable
- * @property {number} GuardLongJumpTargetCount
- * @property {number} DynamicValueRelocTable
- * @property {number} CHPEMetadataPointer
- * @property {number} GuardRFFailureRoutine
- * @property {number} GuardRFFailureRoutineFunctionPointer
+ * @property {number | bigint} GuardAddressTakenIatEntryTable
+ * @property {number | bigint} GuardAddressTakenIatEntryCount
+ * @property {number | bigint} GuardLongJumpTargetTable
+ * @property {number | bigint} GuardLongJumpTargetCount
+ * @property {number | bigint} DynamicValueRelocTable
+ * @property {number | bigint} CHPEMetadataPointer
+ * @property {number | bigint} GuardRFFailureRoutine
+ * @property {number | bigint} GuardRFFailureRoutineFunctionPointer
  * @property {number} DynamicValueRelocTableOffset
  * @property {number} DynamicValueRelocTableSection
  * @property {number} Reserved2
- * @property {number} GuardRFVerifyStackPointerFunctionPointer
+ * @property {number | bigint} GuardRFVerifyStackPointerFunctionPointer
  * @property {number} HotPatchTableOffset
  * @property {number} Reserved3
- * @property {number} EnclaveConfigurationPointer
- * @property {number} VolatileMetadataPointer
- * @property {number} GuardEHContinuationTable
- * @property {number} GuardEHContinuationCount
- * @property {number} GuardXFGCheckFunctionPointer
- * @property {number} GuardXFGDispatchFunctionPointer
- * @property {number} GuardXFGTableDispatchFunctionPointer
- * @property {number} CastGuardOsDeterminedFailureMode
- * @property {number} GuardMemcpyFunctionPointer
- * @property {number} UmaFunctionPointers
+ * @property {number | bigint} EnclaveConfigurationPointer
+ * @property {number | bigint} VolatileMetadataPointer
+ * @property {number | bigint} GuardEHContinuationTable
+ * @property {number | bigint} GuardEHContinuationCount
+ * @property {number | bigint} GuardXFGCheckFunctionPointer
+ * @property {number | bigint} GuardXFGDispatchFunctionPointer
+ * @property {number | bigint} GuardXFGTableDispatchFunctionPointer
+ * @property {number | bigint} CastGuardOsDeterminedFailureMode
+ * @property {number | bigint} GuardMemcpyFunctionPointer
+ * @property {number | bigint} UmaFunctionPointers
  */
 
 /** Missing fields in older load-config revisions are zero-filled in image.
@@ -364,7 +457,7 @@ if (!response.ok) {
 /**
  * Parsed TLS directory. A null callback array can mean an absent pointer or unreadable data;
  * image.AddressOfCallBacks distinguishes the absent pointer (zero).
- * @typedef {{ image: Record<string, number> & { AddressOfCallBacks: number }, raw_data: string | null, slot: number | null, callbacks: number[] | null }} PeTls
+ * @typedef {{ image: Record<string, number | bigint> & { AddressOfCallBacks: number | bigint }, raw_data: string | null, slot: number | null, callbacks: number[] | bigint[] | null }} PeTls
  */
 
 /**
@@ -426,37 +519,37 @@ export class PeFile {
 		this.dispose();
 	}
 
-	/** @returns {Result<PeDosHeader>} Parsed DOS header JSON. */
+	/** @returns {Result<PeDosHeader>} Parsed DOS header. */
 	dosHeader() {
 		instance.exports.pefileDosHeader(this.p);
 		return takeResult();
 	}
 
-	/** @returns {Result<PeNtHeaders>} Parsed NT headers JSON. */
+	/** @returns {Result<PeNtHeaders>} Parsed NT headers. */
 	ntHeaders() {
 		instance.exports.pefileNtHeaders(this.p);
 		return takeResult();
 	}
 
-	/** @returns {Result<PeFileHeader>} Parsed COFF file header JSON. */
+	/** @returns {Result<PeFileHeader>} Parsed COFF file header. */
 	fileHeader() {
 		instance.exports.pefileFileHeader(this.p);
 		return takeResult();
 	}
 
-	/** @returns {Result<PeOptionalHeader>} Parsed optional header JSON. */
+	/** @returns {Result<PeOptionalHeader>} Parsed optional header. */
 	optionalHeader() {
 		instance.exports.pefileOptionalHeader(this.p);
 		return takeResult();
 	}
 
-	/** @returns {Result<PeSectionHeader[]>} Parsed section headers JSON. */
+	/** @returns {Result<PeSectionHeader[]>} Parsed section headers. */
 	sectionHeaders() {
 		instance.exports.pefileSectionHeaders(this.p);
 		return takeResult();
 	}
 
-	/** @returns {Result<PeHeaders>} Parsed PE headers JSON. */
+	/** @returns {Result<PeHeaders>} Parsed PE headers. */
 	headers() {
 		instance.exports.pefileHeaders(this.p);
 		return takeResult();
@@ -662,7 +755,7 @@ export class PeFile {
 		if (options === null || typeof options !== "object") {
 			return new Error("disasm expects an options object");
 		}
-		const lookback = options.lookback ?? 0;
+		let lookback = options.lookback ?? 0;
 		if (!Number.isInteger(start) || start < 0 || start > 0xffff_ffff ||
 			!Number.isInteger(end) || end < start || end > 0xffff_ffff ||
 			!Number.isInteger(lookback) || lookback < 0 || lookback > 0xffff_ffff) {
@@ -682,7 +775,7 @@ export class PeFile {
 	 * Reading code, fn, or unk directly returns an error.
 	 * Syntax/options errors and failed root reads return Error. Failed nested
 	 * reads return inline {$error, $rva} objects alongside successful values.
-	 * Integers return JS numbers; u64/i64 can lose precision beyond 53 bits.
+	 * The u64 and i64 types return bigint. Smaller integers return number.
 	 * String previews end with … when truncated and require file-backed bytes.
 	 *
 	 * @param {number} rva Relative virtual address.
@@ -783,31 +876,31 @@ export class PeFile {
 	}
 
 
-	/** @returns {Result<PeRichStructure | null>} Parsed Rich structure JSON. */
+	/** @returns {Result<PeRichStructure | null>} Parsed Rich structure. */
 	richStructure() {
 		instance.exports.pefileRichStructure(this.p);
 		return takeResult();
 	}
 
-	/** @returns {Result<PeImportDescriptor[] | null>} Parsed imports JSON. */
+	/** @returns {Result<PeImportDescriptor[] | null>} Parsed imports. */
 	imports() {
 		instance.exports.pefileImports(this.p);
 		return takeResult();
 	}
 
-	/** @returns {Result<PeExportDirectory | null>} Parsed exports JSON. */
+	/** @returns {Result<PeExportDirectory | null>} Parsed exports. */
 	exports() {
 		instance.exports.pefileExports(this.p);
 		return takeResult();
 	}
 
-	/** @returns {Result<PeBaseRelocations | null>} Parsed base relocations JSON. */
+	/** @returns {Result<PeBaseRelocations | null>} Parsed base relocations. */
 	baseRelocations() {
 		instance.exports.pefileBaseRelocations(this.p);
 		return takeResult();
 	}
 
-	/** @returns {Result<PeLoadConfig | null>} Parsed load configuration JSON. */
+	/** @returns {Result<PeLoadConfig | null>} Parsed load configuration. */
 	loadConfig() {
 		instance.exports.pefileLoadConfig(this.p);
 		return takeResult();
@@ -819,7 +912,7 @@ export class PeFile {
 		return takeResult();
 	}
 
-	/** @returns {Result<PeRuntimeFunction[] | null>} Parsed x64 exception directory JSON, or `null` for PE32. */
+	/** @returns {Result<PeRuntimeFunction[] | null>} Parsed x64 exception directory, or `null` for PE32. */
 	exceptionsX64() {
 		instance.exports.pefileExceptionsX64(this.p);
 		return takeResult();
@@ -831,7 +924,7 @@ export class PeFile {
 		return takeResult();
 	}
 
-	/** @returns {Result<PeDebugDirectoryEntry[] | null>} Parsed debug directory JSON. */
+	/** @returns {Result<PeDebugDirectoryEntry[] | null>} Parsed debug directory. */
 	debug() {
 		instance.exports.pefileDebug(this.p);
 		return takeResult();
@@ -843,7 +936,7 @@ export class PeFile {
 		return takeResult();
 	}
 
-	/** @returns {Result<PeResourceTreeEntry[] | null>} Parsed resource tree JSON. */
+	/** @returns {Result<PeResourceTreeEntry[] | null>} Parsed resource tree. */
 	resourcesTree() {
 		instance.exports.pefileResourcesTree(this.p);
 		return takeResult();
@@ -867,7 +960,7 @@ export class PeFile {
 		return takeResult();
 	}
 
-	/** @returns {Result<PeVersionInfo | null>} Parsed version information JSON. */
+	/** @returns {Result<PeVersionInfo | null>} Parsed version information. */
 	resourcesVersionInfo() {
 		instance.exports.pefileResourcesVersionInfo(this.p);
 		return takeResult();
@@ -980,10 +1073,9 @@ export class Facts {
 		this.dispose();
 	}
 
-	/** @returns {Result<number>} Number of stored facts layers; initially zero. */
+	/** @returns {number} Number of stored facts layers; initially zero. */
 	getNumLayers() {
-		instance.exports.factsGetNumLayers(this.p);
-		return takeResult();
+		return instance.exports.factsGetNumLayers(this.p) >>> 0;
 	}
 
 	/**
@@ -1011,8 +1103,8 @@ export class Facts {
 			return new Error("Facts must be a string");
 		}
 		using factsWasm = new WasmString(facts);
-		instance.exports.factsAddLayer(this.p, factsWasm.address, factsWasm.length);
-		return takeResult();
+		let index = instance.exports.factsAddLayer(this.p, factsWasm.address, factsWasm.length);
+		return takeResult() ?? (index >>> 0);
 	}
 
 	/**

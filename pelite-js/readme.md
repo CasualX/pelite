@@ -32,6 +32,12 @@ otherwise call `dispose()` when finished. Byte views from `sliceBytes()` and `re
 WASM memory and may be invalidated by memory growth or disposal; copy them with
 `.slice()` to retain them.
 
+Structured results expose 64-bit integers as `bigint`, including `u64` and
+`i64` typed reads and PE32+ fields such as `ImageBase`. RVAs and smaller
+integers use `number`. Byte buffers in structured results are owned `Uint8Array`
+values. To stringify results containing BigInts as JSON, use a replacer that
+converts them to strings.
+
 ## Facts layers
 
 `Facts` owns a collection of layers independently of `PeFile`. Pass the

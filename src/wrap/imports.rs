@@ -10,6 +10,7 @@ pub enum Import<'a> {
 	/// For more information see this [blog post](https://blogs.msdn.microsoft.com/oldnewthing/20100317-00/?p=14573) by Raymond Chen.
 	ByName {
 		/// Suggested index in the export name pointer table.
+		#[cfg_attr(feature = "serde", serde(serialize_with = "serialize_import_hint"))]
 		hint: usize,
 		/// Imported symbol name.
 		name: &'a CStr,
@@ -19,6 +20,11 @@ pub enum Import<'a> {
 		/// Export ordinal requested from the target library.
 		ord: u16,
 	},
+}
+
+#[cfg(feature = "serde")]
+fn serialize_import_hint<S: serde::Serializer>(hint: &usize, serializer: S) -> core::result::Result<S::Ok, S::Error> {
+	serializer.serialize_u32(*hint as u32)
 }
 
 /// An imported symbol and the RVA of its IAT slot.

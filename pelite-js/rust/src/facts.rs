@@ -127,14 +127,14 @@ pub unsafe fn drop(handle: *mut Facts) {
 
 fn return_result<T: serde::Serialize, E: ToString>(result: Result<T, E>) {
 	match result {
-		Ok(value) => return_json(value),
+		Ok(value) => return_value(value),
 		Err(err) => return_error(err),
 	}
 }
 
 #[unsafe(export_name = "factsGetNumLayers")]
-pub unsafe fn get_num_layers(handle: *const Facts) {
-	return_json(unsafe { &*handle }.len());
+pub unsafe fn get_num_layers(handle: *const Facts) -> usize {
+	unsafe { &*handle }.len()
 }
 
 #[unsafe(export_name = "factsGetLayer")]
@@ -145,14 +145,22 @@ pub unsafe fn get_layer(handle: *const Facts, i: i32) {
 }
 
 #[unsafe(export_name = "factsAddLayer")]
-pub unsafe fn add_layer(handle: *mut Facts, facts: *const [u8]) {
+pub unsafe fn add_layer(handle: *mut Facts, facts: *const [u8]) -> usize {
 	let handle = unsafe { &mut *handle };
-	return_result((|| -> Result<_, Error> {
-		let facts = str::from_utf8(unsafe { &*facts }).map_err(Error::Utf8)?;
-		let width = handle.pointer_width;
-		let map = binfact::FactMap::parse(facts, width).map_err(Error::ParseMap)?;
-		Ok(handle.add(map))
-	})());
+	let facts = match str::from_utf8(unsafe { &*facts }).map_err(Error::Utf8) {
+		Ok(v) => v,
+		Err(err) => {
+			return_error(err);
+			return 0;
+		}
+	};
+	match binfact::FactMap::parse(facts, handle.pointer_width).map_err(Error::ParseMap) {
+		Ok(map) => handle.add(map),
+		Err(err) => {
+			return_error(err);
+			return 0;
+		},
+	}
 }
 
 #[unsafe(export_name = "factsDeleteLayer")]
