@@ -38,6 +38,18 @@ integers use `number`. Byte buffers in structured results are owned `Uint8Array`
 values. To stringify results containing BigInts as JSON, use a replacer that
 converts them to strings.
 
+## C++ symbol names
+
+`demangle(name)` converts MSVC and Itanium C++ symbols into readable names.
+It works independently of `PeFile` and returns the original string for plain,
+unsupported, or invalid names, and symbols longer than 4 KiB.
+
+```js
+import { demangle } from "pelite-js";
+
+console.log(demangle("_ZN4demo3runEi")); // demo::run(int)
+```
+
 ## Facts layers
 
 `Facts` owns a collection of layers independently of `PeFile`. Pass the

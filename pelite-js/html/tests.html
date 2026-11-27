@@ -41,8 +41,17 @@
 
     await test("browser module and PE API", async () => {
       const api = await import("./pelite.js");
-      assert(Object.keys(api).sort().join() === "Facts,PeFile", "Unexpected public exports");
-      const { Facts, PeFile } = api;
+      assert(Object.keys(api).sort().join() === "Facts,PeFile,demangle", "Unexpected public exports");
+      const { Facts, PeFile, demangle } = api;
+
+      await test("C++ symbol demangling", () => {
+        assert(demangle("?Run@Demo@@YAHH@Z") === "int __cdecl Demo::Run(int)", "MSVC name did not demangle");
+        assert(demangle("_ZN4demo3runEi") === "demo::run(int)", "Itanium name did not demangle");
+        assert(demangle("__ZN4demo3runEi") === "demo::run(int)", "COFF-prefixed Itanium name did not demangle");
+        for (const name of ["CreateFileW", "#123", "?invalid", "_Z", "?".repeat(4097)]) {
+          assert(demangle(name) === name, `Expected original spelling for ${name.slice(0, 32)}`);
+        }
+      });
 
       await test("invalid constructor input", () => {
         for (const bytes of ["invalid", new Uint8Array()]) {
