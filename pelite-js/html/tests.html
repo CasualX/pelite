@@ -32,7 +32,8 @@
         await run();
         passed++;
         results.textContent += `PASS ${name}\n`;
-      } catch (error) {
+      }
+      catch (error) {
         failed++;
         results.textContent += `FAIL ${name}\n${error.stack ?? error}\n`;
       }
@@ -41,7 +42,7 @@
     await test("browser module and PE API", async () => {
       const api = await import("./pelite.js");
       assert(Object.keys(api).sort().join() === "Facts,PeFile", "Unexpected public exports");
-      const { PeFile } = api;
+      const { Facts, PeFile } = api;
 
       await test("invalid constructor input", () => {
         for (const bytes of ["invalid", new Uint8Array()]) {
@@ -49,6 +50,33 @@
           try { new PeFile(bytes); } catch (caught) { error = caught; }
           assert(error instanceof Error, "Invalid input should throw");
         }
+      });
+
+      await test("typed structured results", async () => {
+        const response = await fetch("./Demo64.dll");
+        assert(response.ok, "Unable to load Demo64.dll");
+        const bytes = new Uint8Array(await response.arrayBuffer());
+        const view = new DataView(bytes.buffer);
+        // Put exact integer and float samples in the DOS header's reserved words.
+        view.setBigUint64(0x20, 0xffff_ffff_ffff_ffffn, true);
+        view.setBigInt64(0x28, -0x8000_0000_0000_0000n, true);
+        view.setFloat32(0x30, 0.1, true);
+        const ntHeader = view.getUint32(0x3c, true);
+        const section = ntHeader + 24 + view.getUint16(ntHeader + 20, true);
+        bytes.set([0xff, 0], section);
+
+        using file = new PeFile(bytes);
+        const value = file.read(0x20, "struct { __proto__: struct { unsigned: u64, signed: i64 }, float: f32 }");
+        assert(Object.getPrototypeOf(value) === Object.prototype && Object.hasOwn(value, "__proto__"), "The __proto__ field should be an own property");
+        assert(value.__proto__.unsigned === 0xffff_ffff_ffff_ffffn, "u64 lost precision");
+        assert(value.__proto__.signed === -0x8000_0000_0000_0000n, "i64 lost precision");
+        assert(value.float === Math.fround(0.1), "f32 did not retain its value");
+        assert(file.read(0x20, "u8") === 0xff, "Small integers should be numbers");
+
+        const name = file.sectionHeaders()[0].Name;
+        assert(name instanceof Uint8Array && name[0] === 0xff, "Raw section name should be a Uint8Array");
+        file.dispose();
+        assert(name[0] === 0xff, "Returned bytes should survive disposal");
       });
 
       for (const [name, magic] of [["Demo.dll", 0x10b], ["Demo64.dll", 0x20b]]) {
@@ -60,14 +88,14 @@
             const headers = file.headers();
             assert(!(headers instanceof Error), String(headers));
             assert(headers.NtHeaders.OptionalHeader.Magic === magic, "Wrong PE bitness");
+            assert(typeof headers.NtHeaders.OptionalHeader.ImageBase === (magic === 0x20b ? "bigint" : "number"), "ImageBase should follow the PE bitness");
             assert(headers.SectionHeaders.length > 0, "Missing sections");
             assert(file.read(0, "u16") === 0x5a4d, "DOS signature read failed");
             assert(file.read(0, "invalid-type") instanceof Error, "Invalid read type should return Error");
             const scan = file.scannerExec(0, "4D 5A");
             assert(Array.isArray(scan), "DOS signature scan failed");
             const bytes = file.hexDumpBytes(0, 2);
-            assert(bytes instanceof Uint8Array && bytes[0] === 0x4d && bytes[1] === 0x5a,
-              "Byte copy failed");
+            assert(bytes instanceof Uint8Array && bytes[0] === 0x4d && bytes[1] === 0x5a, "Byte copy failed");
             const hashes = file.hashes();
             assert(!(hashes instanceof Error), String(hashes));
             assert(/^[0-9a-f]{64}$/.test(hashes.sha256), "Invalid SHA-256");
@@ -81,13 +109,13 @@
             const opcodes = decoded[0].bytes;
             assert(Array.isArray(opcodes) && opcodes.length > 0, "Instruction bytes missing");
             const overlap = file.disasm(entry + opcodes.length - 1, entry + opcodes.length, { lookback: opcodes.length - 1 });
-            assert(Array.isArray(overlap) && overlap.length === 1 && overlap[0].rva === decoded[0].rva,
-              "Lookback did not retain the overlapping instruction");
+            assert(Array.isArray(overlap) && overlap.length === 1 && overlap[0].rva === decoded[0].rva, "Lookback did not retain the overlapping instruction");
             const empty = file.disasm(entry, entry, { lookback: 16 });
             assert(Array.isArray(empty) && empty.length === 0, "Empty range should produce no instructions");
             assert(file.disasm(entry + 1, entry) instanceof Error, "Reversed range should return Error");
             assert(file.disasm(entry, null, { lookback: -1 }) instanceof Error, "Invalid lookback should return Error");
-          } finally {
+          }
+          finally {
             file.dispose();
             file.dispose();
           }

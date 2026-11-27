@@ -594,7 +594,7 @@ serde_impl! {
 			state.serialize_field("name_indices", &self.name_indices())?;
 			let names = self
 				.iter_name_indices()
-				.filter_map(|(name, index)| name.ok().and_then(|name| name.to_str().ok()).map(|name| (name, index)));
+				.filter_map(|(name, index)| name.ok().and_then(|name| name.to_str().ok()).map(|name| (name, index as u32)));
 			state.serialize_field("names", &SerdeKV(names))?;
 			state.end()
 		}

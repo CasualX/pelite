@@ -569,7 +569,7 @@ serde_impl! {
 			let is_human_readable = serializer.is_human_readable();
 			let mut state = serializer.serialize_struct("ResourceDataEntry", 4)?;
 			state.serialize_field("image", self.image())?;
-			state.serialize_field("size", &self.size())?;
+			state.serialize_field("size", &self.image.Size)?;
 			state.serialize_field("code_page", &self.code_page())?;
 			if cfg!(feature = "basenc") && is_human_readable {
 				#[cfg(feature = "basenc")]

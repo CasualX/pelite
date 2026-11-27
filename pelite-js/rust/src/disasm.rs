@@ -79,7 +79,7 @@ pub unsafe fn disasm(pefile: *mut PeFile, start: u32, end: u32, lookback: u32) {
 		Err(err) => return return_error(err),
 	};
 	match disassemble(pefile, start, end, lookback) {
-		Ok(instructions) => return_json(instructions),
+		Ok(instructions) => return_value(instructions),
 		Err(err) => return_error(err),
 	}
 }

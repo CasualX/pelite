@@ -12,7 +12,7 @@ pub unsafe fn section_entropy(pefile: *mut PeFile) {
 		Ok(pe) => pe,
 		Err(err) => return return_error(err),
 	};
-	return_json(section_entropy_impl(pe));
+	return_value(section_entropy_impl(pe));
 }
 
 fn section_entropy_impl(pe: pelite::PeFile<'_>) -> Vec<SectionEntropy> {

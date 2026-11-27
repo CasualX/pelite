@@ -257,7 +257,7 @@ serde_impl! {
 			let mut state = serializer.serialize_struct("X64UnwindInfo", 6)?;
 			state.serialize_field("version", &self.version())?;
 			state.serialize_field("flags", &self.flags())?;
-			state.serialize_field("size_of_prolog", &self.size_of_prolog())?;
+			state.serialize_field("size_of_prolog", &self.image.SizeOfProlog)?;
 			state.serialize_field("frame_register", &self.frame_register())?;
 			state.serialize_field("frame_offset", &self.frame_offset())?;
 			state.serialize_field("unwind_codes", &self.unwind_codes())?;

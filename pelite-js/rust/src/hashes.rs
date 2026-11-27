@@ -16,7 +16,7 @@ pub unsafe fn hashes(pefile: *mut PeFile) {
 		Ok(pe) => pe,
 		Err(err) => return return_error(err),
 	};
-	return_json(hashes_impl(pe));
+	return_value(hashes_impl(pe));
 }
 
 fn hash_sha256(bytes: &[u8]) -> String {

@@ -4,6 +4,7 @@ use std::{collections::HashMap, sync::Arc};
 use std::{fmt, ops, ptr, str};
 
 mod wasm32;
+mod tlv;
 mod pefile;
 mod hashes;
 mod hex_dump;

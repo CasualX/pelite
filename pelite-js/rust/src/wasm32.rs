@@ -2,7 +2,7 @@
 #[allow(dead_code)]
 #[link(wasm_import_module = "env")]
 unsafe extern "C" {
-	fn returnJSON(ptr: *const u8, len: usize);
+	fn returnTlv(ptr: *const u8, len: usize);
 	fn returnString(ptr: *const u8, len: usize);
 	fn returnError(ptr: *const u8, len: usize);
 	fn returnUint8Array(ptr: *const u8, len: usize);
@@ -11,16 +11,16 @@ unsafe extern "C" {
 	fn consoleLog(ptr: *const u8, len: usize);
 }
 
-pub fn return_json<T: serde::Serialize>(value: T) {
-	let json = serde_json::to_string(&value).unwrap();
-	unsafe {
-		returnJSON(json.as_ptr(), json.len());
+pub fn return_value<T: serde::Serialize>(value: T) {
+	match super::tlv::to_vec(value) {
+		Ok(bytes) => unsafe { returnTlv(bytes.as_ptr(), bytes.len()) },
+		Err(err) => return_error(err),
 	}
 }
 
 pub fn return_pelite_result<T: serde::Serialize>(value: pelite::Result<T>) {
 	match value {
-		Ok(value) => return_json(value),
+		Ok(value) => return_value(value),
 		Err(pelite::Error::Null) => return_null(),
 		Err(err) => return_error(err),
 	}
@@ -29,7 +29,7 @@ pub fn return_pelite_result<T: serde::Serialize>(value: pelite::Result<T>) {
 pub fn return_resource_find_result<T: serde::Serialize>(value: Result<T, pelite::resources::ResourceFindError>) {
 	use pelite::resources::ResourceFindError::{NotFound, Pe};
 	match value {
-		Ok(value) => return_json(value),
+		Ok(value) => return_value(value),
 		Err(NotFound | Pe(pelite::Error::Null)) => return_null(),
 		Err(err) => return_error(err),
 	}

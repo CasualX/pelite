@@ -39,7 +39,7 @@ pub unsafe fn dos_header(pefile: *mut PeFile) {
 		Err(err) => return return_error(err),
 	};
 
-	return_json(pefile.dos_header());
+	return_value(pefile.dos_header());
 }
 
 #[unsafe(export_name = "pefileNtHeaders")]
@@ -50,7 +50,7 @@ pub unsafe fn nt_headers(pefile: *mut PeFile) {
 		Err(err) => return return_error(err),
 	};
 
-	return_json(pefile.nt_headers());
+	return_value(pefile.nt_headers());
 }
 
 #[unsafe(export_name = "pefileFileHeader")]
@@ -61,7 +61,7 @@ pub unsafe fn file_header(pefile: *mut PeFile) {
 		Err(err) => return return_error(err),
 	};
 
-	return_json(pefile.file_header());
+	return_value(pefile.file_header());
 }
 
 #[unsafe(export_name = "pefileOptionalHeader")]
@@ -72,7 +72,7 @@ pub unsafe fn optional_header(pefile: *mut PeFile) {
 		Err(err) => return return_error(err),
 	};
 
-	return_json(pefile.optional_header());
+	return_value(pefile.optional_header());
 }
 
 #[unsafe(export_name = "pefileSectionHeaders")]
@@ -83,7 +83,7 @@ pub unsafe fn section_headers(pefile: *mut PeFile) {
 		Err(err) => return return_error(err),
 	};
 
-	return_json(pefile.section_headers());
+	return_value(pefile.section_headers());
 }
 
 #[unsafe(export_name = "pefileHeaders")]
@@ -94,7 +94,7 @@ pub unsafe fn headers(pefile: *mut PeFile) {
 		Err(err) => return return_error(err),
 	};
 
-	return_json(pefile.headers());
+	return_value(pefile.headers());
 }
 
 #[unsafe(export_name = "pefileRichStructure")]

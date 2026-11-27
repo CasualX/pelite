@@ -81,7 +81,7 @@ pub unsafe fn read(pefile: *mut PeFile, rva: u32, args: *const [u8]) {
 	match interpret(pe, rva, unsafe { &*args }) {
 		// Report root failures as wasm errors and serialize nested failures inline.
 		Ok(ReadValue::Error(error)) => return_error(error.message),
-		Ok(value) => return_json(value),
+		Ok(value) => return_value(value),
 		Err(err) => return_error(err),
 	}
 }
