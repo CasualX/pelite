@@ -12,6 +12,7 @@ mod section_entropy;
 mod scanner;
 mod resources;
 mod disasm;
+mod demangle;
 mod addr;
 mod read;
 mod facts;

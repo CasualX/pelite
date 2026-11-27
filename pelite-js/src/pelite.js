@@ -200,6 +200,20 @@ if (!response.ok) {
 ({ instance } = await WebAssembly.instantiate(await response.arrayBuffer(), imports));
 
 /**
+ * Demangle an MSVC or Itanium C++ symbol. Return the original name if it cannot be demangled.
+ * @param {string} name
+ * @returns {string}
+ */
+export function demangle(name) {
+	if (typeof name !== "string") {
+		throw new TypeError("Expected a symbol name");
+	}
+	using input = new WasmString(name);
+	instance.exports.demangleSymbol(input.address, input.length);
+	return takeResult() ?? name;
+}
+
+/**
  * A value returned by the WebAssembly module, or an error reported by it.
  *
  * @template T
